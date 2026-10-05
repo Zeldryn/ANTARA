@@ -105,7 +105,7 @@
   .mars-arrival-actions { justify-content: center; flex-direction: column; gap: 9px; margin-top: 17px; }
   .mars-caption .mars-explore-button { min-height: 45px; padding: 0 17px 0 20px; gap: 23px; font-size: 9px; }
   .mars-arrival-actions .replay-button { padding: 8px 12px; }
-  .mars-exploration { top: auto; left: 5%; right: 5%; bottom: 5.5%; width: auto; max-height: min(42vh, 310px); overflow-y: auto; padding: 16px 17px 14px; background: linear-gradient(145deg, #06101bed, #040b14dc); scrollbar-width: thin; }
+  .mars-exploration { top: auto; left: 5%; right: 5%; bottom: 5.5%; width: auto; max-height: min(38vh, 280px); overflow-y: auto; padding: 16px 17px 14px; background: linear-gradient(145deg, #06101bed, #040b14dc); scrollbar-width: thin; }
   .mars-exploration h3 { margin-top: 15px; font-size: 29px; }
   .mars-topic-subtitle { margin-bottom: 10px; font-size: 7px; }
   .mars-topic-summary { font-size: 10px; line-height: 1.55; }
@@ -118,7 +118,7 @@
 }
 
 @media (max-height: 650px) and (max-width: 700px) {
-  .mars-exploration { max-height: 39vh; bottom: 4%; }
+  .mars-exploration { max-height: 35vh; bottom: 4%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -126,3 +126,5 @@
   .mars-focus-ring { animation: none; }
   .mars-exploration.is-switching h3, .mars-exploration.is-switching .mars-topic-subtitle, .mars-exploration.is-switching .mars-topic-summary, .mars-exploration.is-switching .mars-topic-facts, .mars-exploration.is-switching .mars-topic-source { animation: none; }
 }
+
+.mars-next-planet:disabled { opacity: .28; cursor: default; pointer-events: none; }

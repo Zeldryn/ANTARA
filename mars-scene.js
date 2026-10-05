@@ -159,6 +159,8 @@ window.MarsScene = class MarsScene {
     this.active = false;
     this.time = 0;
     this.frame = null;
+    this.departing = false;
+    this.departureStartedAt = 0;
     this.mode = "pending";
     this.pointer = { x: 0, y: 0 };
     this.cameraOffset = { x: 0, y: 0 };
@@ -347,13 +349,13 @@ window.MarsScene = class MarsScene {
     this.camera.position.z = 6;
     const texture = new THREE.Texture(this.surface);
     texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = Math.min(4, this.renderer.capabilities.getMaxAnisotropy());
+    texture.anisotropy = Math.min(8, this.renderer.capabilities.getMaxAnisotropy());
     texture.needsUpdate = true;
     const relief = texture.clone();
     relief.colorSpace = THREE.NoColorSpace;
     relief.needsUpdate = true;
     const material = new THREE.MeshStandardMaterial({ map: texture, bumpMap: relief, bumpScale: 0.018, roughness: 0.98, metalness: 0 });
-    this.planet = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), material);
+    this.planet = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 96), material);
     this.planet.rotation.set(0.09, 0.6, 0.12);
     this.planetGroup = new THREE.Group();
     this.planetGroup.add(this.planet);
@@ -481,6 +483,8 @@ window.MarsScene = class MarsScene {
     this.active = true;
     this.time = 0;
     this.announced = false;
+    this.departing = false;
+    this.departureStartedAt = 0;
     this.element.hidden = false;
     this.exploring = false;
     this.explorationBlend = this.explorationBlendTarget = 0;
@@ -503,6 +507,18 @@ window.MarsScene = class MarsScene {
     this.tick(this.previous);
   }
 
+  beginExit() {
+    if (!this.active || this.departing) return;
+    this.departing = true;
+    this.departureStartedAt = this.time;
+    this.caption.inert = true;
+    this.exploration.inert = true;
+    if (!this.frame) {
+      this.previous = performance.now();
+      this.tick(this.previous);
+    }
+  }
+
   stop() {
     this.active = false;
     cancelAnimationFrame(this.frame);
@@ -511,6 +527,7 @@ window.MarsScene = class MarsScene {
     this.element.style.opacity = "0";
     this.element.classList.remove("is-exploring");
     this.exploring = false;
+    this.departing = false;
     this.explorationBlend = this.explorationBlendTarget = 0;
     this.caption.inert = true;
     this.exploration.inert = true;
@@ -541,7 +558,7 @@ window.MarsScene = class MarsScene {
       || Math.abs(this.topicYawTarget - this.topicYaw) > 0.001
       || Math.abs(this.topicPitchTarget - this.topicPitch) > 0.001
       || Math.abs(this.topicRollTarget - this.topicRoll) > 0.001;
-    if (!this.motion.matches || this.time < 14 || this.mode === "pending" || explorationMoving) this.frame = requestAnimationFrame(this.tick);
+    if (!this.motion.matches || this.time < 14 || this.mode === "pending" || explorationMoving || this.departing) this.frame = requestAnimationFrame(this.tick);
   }
 
   setReticleProjection(x, y, visible) {
@@ -588,19 +605,21 @@ window.MarsScene = class MarsScene {
   render() {
     const smooth = value => { const v = Math.max(0, Math.min(1, value)); return v * v * v * (v * (v * 6 - 15) + 10); };
     const t = this.time;
-    const approach = this.motion.matches ? 1 : smooth((t - 0.6) / 12);
+    const approach = this.motion.matches ? 1 : smooth((t - 0.35) / 6.0);
+    const departure = this.departing ? smooth((t - this.departureStartedAt) / (this.motion.matches ? 0.01 : 5.5)) : 0;
+    const departureFade = smooth((departure - 0.58) / 0.42);
     const arrivalDistance = this.finalDistance * Math.pow(15, 1 - approach);
     const exploreZoom = 1 - this.explorationBlend * (this.mobile ? 0.13 : 0.24);
-    this.distance = arrivalDistance * exploreZoom;
+    this.distance = arrivalDistance * exploreZoom * (1 + departure * 7.5);
     const arrivalYaw = this.motion.matches ? 0.6 : 0.6 + t * 0.024;
     const exploreYaw = this.topicYaw + (this.motion.matches ? 0 : Math.sin(t * 0.14) * 0.012);
     const fallbackYaw = arrivalYaw * (1 - this.explorationBlend) + exploreYaw * this.explorationBlend;
     const fallbackPitch = 0.09 * (1 - this.explorationBlend) + this.topicPitch * this.explorationBlend;
     const fallbackRoll = MARS_EXPLORATION_ROLL * (1 - this.explorationBlend) + this.topicRoll * this.explorationBlend;
     this.renderedRotation = fallbackYaw;
-    const reveal = smooth(t / (this.motion.matches ? 1 : 1.8));
-    this.element.style.opacity = String(reveal);
-    const caption = smooth((t - (this.motion.matches ? 1 : 9)) / 2.5);
+    const reveal = smooth(t / (this.motion.matches ? 1 : 1.45));
+    this.element.style.opacity = String(reveal * (1 - departureFade));
+    const caption = smooth((t - (this.motion.matches ? 1 : 4.7)) / 1.7) * (1 - departure);
     this.caption.style.opacity = String(caption);
     this.caption.style.transform = `translateY(${this.motion.matches ? 0 : (1 - caption) * 12}px)`;
     this.credit.style.opacity = String(caption * 0.9);
@@ -637,6 +656,10 @@ window.MarsScene = class MarsScene {
 
       const pointerStrength = 1 - this.explorationBlend * 0.55;
       this.camera.position.set(this.motion.matches ? 0 : this.cameraOffset.x * 0.13 * pointerStrength, this.motion.matches ? 0 : -this.cameraOffset.y * 0.09 * pointerStrength, this.distance);
+      if (this.starfield) {
+        this.starfield.rotation.y = -departure * 0.30;
+        this.starfield.rotation.x = departure * 0.05;
+      }
       this.camera.lookAt(0, 0, 0);
       this.renderer.render(this.scene, this.camera);
       this.updateMarkerProjectionWebGL();

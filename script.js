@@ -173,6 +173,37 @@ class MissionAudio {
     this.cue("hover", { gain: 0.07 });
   }
 
+  travel(duration = 6) {
+    if (!this.context || !this.master || this.muted || this.unavailable || document.hidden) return;
+    try {
+      const now = this.context.currentTime;
+      const samples = Math.max(1, Math.floor(this.context.sampleRate * duration));
+      const buffer = this.context.createBuffer(1, samples, this.context.sampleRate);
+      const data = buffer.getChannelData(0);
+      let last = 0;
+      for (let i = 0; i < samples; i++) {
+        const white = Math.random() * 2 - 1;
+        last = last * 0.985 + white * 0.015;
+        data[i] = last * 0.55 + white * 0.05;
+      }
+      const source = this.context.createBufferSource();
+      source.buffer = buffer;
+      const filter = this.context.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(520, now);
+      filter.frequency.exponentialRampToValueAtTime(1250, now + duration * 0.52);
+      filter.frequency.exponentialRampToValueAtTime(430, now + duration);
+      const gain = this.context.createGain();
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.105, now + 0.65);
+      gain.gain.setValueAtTime(0.105, now + Math.max(0.8, duration - 1.2));
+      gain.gain.linearRampToValueAtTime(0, now + duration);
+      source.connect(filter); filter.connect(gain); gain.connect(this.master);
+      source.start(now); source.stop(now + duration + 0.03);
+      source.onended = () => { source.disconnect(); filter.disconnect(); gain.disconnect(); };
+    } catch { /* Travel audio is optional and must never interrupt navigation. */ }
+  }
+
   stop(duration = 0.8) {
     this.generation += 1; // Invalidate audio that is still fetching/decoding.
     if (!this.context) return;
@@ -317,6 +348,7 @@ class LaunchVisual {
 const mission = document.getElementById("mission");
 const launchButton = document.getElementById("launch-button");
 const replayButton = document.getElementById("replay-button");
+const marsNextPlanet = document.getElementById("mars-next-planet");
 const audioToggle = document.getElementById("audio-toggle");
 const audioLabel = document.getElementById("audio-label");
 const preparation = document.getElementById("preparation");
@@ -335,7 +367,7 @@ let elapsed = 0;
 let previousFrame = 0;
 let animationFrame = null;
 let activeStep = -1;
-let earthMarsTimer = null;
+let planetTravelTimer = null;
 
 const sound = new MissionAudio(() => {
   audioToggle.classList.toggle("is-muted", sound.muted || sound.unavailable);
@@ -409,24 +441,45 @@ function travelToMars() {
   if (phase !== "earth") return;
   phase = "mars-transition";
   earth.beginExit();
+  mars.start();
+  sound.travel(reducedMotion.matches ? 0.2 : 6.2);
   mission.classList.remove("is-earth");
   mission.classList.add("is-mars");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU PLANET MERAH";
   locationDetail.textContent = "TUJUAN BERIKUTNYA • MARS";
-  announcement.textContent = "Meninggalkan orbit Bumi. Menuju Mars.";
-  mars.start();
-  clearTimeout(earthMarsTimer);
-  earthMarsTimer = setTimeout(() => {
+  announcement.textContent = "Meninggalkan Bumi. Mars mulai terlihat di kejauhan.";
+  clearTimeout(planetTravelTimer);
+  planetTravelTimer = setTimeout(() => {
     earth.stop();
     phase = "mars";
-    earthMarsTimer = null;
-  }, reducedMotion.matches ? 20 : 1200);
+    planetTravelTimer = null;
+  }, reducedMotion.matches ? 30 : 6200);
+}
+
+function travelToEarth() {
+  if (phase !== "mars") return;
+  phase = "earth-transition";
+  if (mars.exploring) mars.exitExploration();
+  mars.beginExit();
+  earth.start({ approach: true });
+  sound.travel(reducedMotion.matches ? 0.2 : 6.2);
+  mission.classList.remove("is-mars");
+  mission.classList.add("is-earth");
+  if (flightStatus) flightStatus.textContent = "PERJALANAN KEMBALI KE BUMI";
+  locationDetail.textContent = "PLANET ASAL • BUMI";
+  announcement.textContent = "Meninggalkan Mars. Bumi mulai terlihat di kejauhan.";
+  clearTimeout(planetTravelTimer);
+  planetTravelTimer = setTimeout(() => {
+    mars.stop();
+    phase = "earth";
+    planetTravelTimer = null;
+  }, reducedMotion.matches ? 30 : 6200);
 }
 
 function resetMission() {
   cancelAnimationFrame(animationFrame);
-  clearTimeout(earthMarsTimer);
-  earthMarsTimer = null;
+  clearTimeout(planetTravelTimer);
+  planetTravelTimer = null;
   sound.stop(1.1);
   phase = "idle";
   flight.reset();
@@ -442,9 +495,14 @@ function resetMission() {
   sound.onStateChange();
   launchButton.focus({ preventScroll: true });
 }
-replayButton.addEventListener("click", resetMission);
+replayButton.addEventListener("click", travelToEarth);
+if (marsNextPlanet) marsNextPlanet.addEventListener("click", () => {
+  announcement.textContent = "Planet berikutnya belum tersedia pada versi uji ini.";
+});
 document.addEventListener("keydown", event => {
   if (event.key === "ArrowRight" && phase === "earth") travelToMars();
+  else if (event.key === "ArrowLeft" && phase === "mars") travelToEarth();
+  else if (event.key === "ArrowRight" && phase === "mars") announcement.textContent = "Planet berikutnya belum tersedia pada versi uji ini.";
   if (event.key === "Escape" && phase !== "idle") resetMission();
 });
 window.addEventListener("resize", () => flight.resize());

@@ -51,7 +51,7 @@
 @media (max-width: 700px) {
   .earth-information {
     top: auto; left: 5%; right: 5%; bottom: 5.5%; width: auto;
-    max-height: min(42vh, 310px); overflow-y: auto; padding: 16px 17px 14px;
+    max-height: min(38vh, 280px); overflow-y: auto; padding: 16px 17px 14px;
     background: linear-gradient(145deg, #06101bed, #040b14dc); scrollbar-width: thin;
   }
   .earth-information-topline { padding-bottom: 11px; }
@@ -64,7 +64,7 @@
 }
 
 @media (max-height: 650px) and (max-width: 700px) {
-  .earth-information { max-height: 39vh; bottom: 4%; }
+  .earth-information { max-height: 35vh; bottom: 4%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
