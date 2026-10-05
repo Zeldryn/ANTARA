@@ -485,7 +485,7 @@ function travelToMars() {
       mission.classList.add("is-mars");
       phase = "mars";
       if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT MARS";
-      locationDetail.textContent = "TUJUAN PERTAMA • MARS";
+      locationDetail.textContent = "PLANET KE-4 • MARS";
       announcement.textContent = "Tiba di Mars.";
     }
   });

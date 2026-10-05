@@ -35,13 +35,33 @@
 .earth-facts li::before { content: ""; position: absolute; left: 0; top: .72em; width: 6px; height: 1px; background: #edc57eaa; }
 .earth-source { display: inline-flex; align-self: flex-start; align-items: center; gap: 7px; margin-top: 12px; color: #768595; font-size: 7px; letter-spacing: 1.25px; text-decoration: none; text-transform: uppercase; transition: color .22s ease; }
 .earth-source:hover { color: #d8c293; }
-.earth-controls { display: grid; grid-template-columns: 38px 1fr 38px; align-items: center; gap: 13px; margin-top: 22px; }
-.earth-nav { width: 38px; height: 38px; display: grid; place-items: center; padding: 0; border: 1px solid #d5dce82a; border-radius: 50%; background: #07101a99; color: #d6dde7; transition: border-color .25s ease, color .25s ease, transform .25s ease, opacity .25s ease; }
-.earth-nav svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.35; }
-.earth-nav:hover:not(:disabled) { border-color: #edc57e88; color: #edc57e; transform: scale(1.055); }
-.earth-nav:disabled { opacity: .22; cursor: default; }
-.earth-route { position: relative; height: 1px; background: #8793a129; }
-.earth-route::after { content: "BUMI  →  MARS"; position: absolute; left: 50%; top: -4px; transform: translate(-50%, -100%); color: #728091; font-size: 6px; letter-spacing: 1.5px; white-space: nowrap; }
+.earth-controls {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 10px; margin-top: 19px;
+}
+.earth-nav {
+  min-height: 46px; display: flex; align-items: center; gap: 7px; padding: 0 2px; border: 0;
+  border-top: 1px solid #d5dce821; border-bottom: 1px solid #d5dce821; border-radius: 0;
+  background: transparent; color: #929daa; text-align: left;
+  transition: color .25s ease, border-color .25s ease, opacity .25s ease;
+}
+.earth-nav svg { flex: 0 0 auto; width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.25; }
+.earth-nav span { display: grid; gap: 3px; min-width: 0; }
+.earth-nav small, .earth-nav strong { display: block; font-weight: 500; text-transform: uppercase; }
+.earth-nav small { color: #6f7c8b; font-size: 5.5px; letter-spacing: 1.15px; white-space: nowrap; }
+.earth-nav strong { color: inherit; font-size: 6.6px; line-height: 1.3; letter-spacing: .8px; }
+.earth-prev { justify-content: flex-start; }
+.earth-next { justify-content: flex-end; text-align: right; }
+.earth-nav:hover:not(:disabled) { color: #dfc38f; border-color: #edc57e62; }
+.earth-nav:disabled { opacity: .46; cursor: default; }
+.earth-explore-button {
+  min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  padding: 0 12px; border-radius: 2px; border: 1px solid #d9bd88a6;
+  background: linear-gradient(120deg, #cfb47f, #b99359); color: #171b24;
+  font-size: 7.5px; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; white-space: nowrap;
+  box-shadow: 0 6px 22px #b9792e12, inset 0 1px #fff0c899;
+}
+.earth-explore-button svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 1.45; }
+.earth-explore-button.is-locked:disabled { opacity: .78; cursor: not-allowed; filter: saturate(.72); }
 
 .earth-emergency-sphere {
   position: absolute; left: 64%; top: 47%; width: 380px; height: 380px; transform: translate(-50%, -50%) rotate(-10.3deg);
@@ -71,7 +91,13 @@
   .earth-facts { gap: 5px; margin: 10px 0 9px; }
   .earth-facts li { font-size: 8px; line-height: 1.4; }
   .earth-source { margin-top: 8px; }
-  .earth-controls { margin-top: 12px; }
+  .earth-controls { gap: 6px; margin-top: 12px; }
+  .earth-nav { min-height: 42px; gap: 4px; }
+  .earth-nav svg { width: 12px; height: 12px; }
+  .earth-nav small { font-size: 4.5px; letter-spacing: .75px; }
+  .earth-nav strong { font-size: 5.5px; letter-spacing: .55px; }
+  .earth-explore-button { min-height: 42px; padding: 0 9px; gap: 6px; font-size: 6.5px; }
+  .earth-explore-button svg { width: 11px; height: 11px; }
   .earth-information-scroll { padding-right: 12px; }
 }
 
@@ -80,5 +106,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .earth-information, .earth-nav { transition-duration: .01ms !important; }
+  .earth-information, .earth-nav, .earth-explore-button { transition-duration: .01ms !important; }
 }

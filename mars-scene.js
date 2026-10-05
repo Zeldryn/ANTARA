@@ -611,7 +611,7 @@ window.MarsScene = class MarsScene {
       this.announced = true;
       this.caption.inert = false;
       this.caption.classList.add("is-visible");
-      document.getElementById("announcement").textContent = "Tujuan pertama: Mars.";
+      document.getElementById("announcement").textContent = "Mars, si Planet Merah.";
       // Never steal focus from someone using mute during the approach.
       if (document.activeElement === document.body || document.activeElement.id === "launch-button") document.getElementById("mars-title").focus({ preventScroll: true });
     }
