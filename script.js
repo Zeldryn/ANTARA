@@ -27,6 +27,7 @@ class MissionAudio {
     this.failedAssets = new Set();
     this.generation = 0;
     this.lastHover = 0;
+    this.lastClick = 0;
     this.suspendTimer = null;
     try { this.muted = localStorage.getItem("antariksa-muted") === "true"; } catch { /* Storage is optional. */ }
   }
@@ -171,6 +172,16 @@ class MissionAudio {
     if (now - this.lastHover < 180) return;
     this.lastHover = now;
     this.cue("hover", { gain: 0.07 });
+  }
+
+  uiClick() {
+    if (!this.started || this.muted || this.unavailable || document.hidden) return;
+    const now = performance.now();
+    // Fast controls can be tapped repeatedly, but accidental duplicate handlers
+    // for the same physical click should never stack two copies on top of each other.
+    if (now - this.lastClick < 45) return;
+    this.lastClick = now;
+    this.cue("hover", { gain: 0.095 });
   }
 
   travel(duration = 6.2) {
@@ -407,6 +418,14 @@ const sound = new MissionAudio(() => {
   if (!sound.unavailable && sound.failedAssets.size) audioToggle.title = "Sebagian audio tidak dapat dimuat. Misi tetap dapat dilanjutkan.";
 });
 sound.onStateChange();
+
+// One shared UI-audio bridge for components loaded before this file (notably
+// dynamically-rendered Earth/Mars image previews and the top-level lightbox).
+window.AntariksaUIAudio = Object.freeze({
+  click: () => sound.uiClick(),
+  hover: () => sound.hover()
+});
+
 // Fetch quietly in advance, but never create/resume an AudioContext on page load.
 if ("requestIdleCallback" in window) requestIdleCallback(() => sound.preload(), { timeout: 2000 });
 else setTimeout(() => sound.preload(), 800);
@@ -548,7 +567,26 @@ document.addEventListener("keydown", event => {
 });
 window.addEventListener("resize", () => flight.resize());
 
-audioToggle.addEventListener("click", () => sound.setMuted(!sound.muted));
+audioToggle.addEventListener("click", () => {
+  const willMute = !sound.muted;
+  // Turning sound off gets its feedback before mute is applied; turning it on
+  // gets feedback immediately after audio has been restored.
+  if (willMute) sound.uiClick();
+  sound.setMuted(willMute);
+  if (!willMute) sound.uiClick();
+});
+
+// Static and dynamically-created scene controls share one filtered delegate.
+// Planet-to-planet buttons are excluded because sound.travel() already supplies
+// their single intended action sound. The launch button already has activation audio.
+mission.addEventListener("click", event => {
+  const control = event.target.closest("button, a[href]");
+  if (!control || !mission.contains(control)) return;
+  if (control.matches("button:disabled") || control.dataset.uiSound === "manual") return;
+  if (control === launchButton || control === earth.nextButton || control === marsPreviousButton || control === audioToggle) return;
+  sound.uiClick();
+});
+
 for (const button of [launchButton, earth.nextButton, marsPreviousButton, mars.exploreButton, audioToggle]) {
   button.addEventListener("pointerenter", event => { if (event.pointerType === "mouse") sound.hover(); });
   button.addEventListener("focus", () => sound.hover());

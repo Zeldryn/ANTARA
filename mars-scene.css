@@ -198,3 +198,29 @@
   .mars-focus-title { font-size: 6.5px; }
   .mars-focus-context { font-size: 5px; }
 }
+
+
+/* Shared secondary action for returning from Earth/Mars exploration. */
+.mars-exploration-close.return-panorama-button {
+  width: fit-content;
+  min-width: 188px;
+  padding: 8px 14px;
+  border: 1px solid #b9a57a4a;
+  border-radius: 2px;
+  background: #07101a66;
+  color: #7f8b98;
+  cursor: pointer;
+  transition: color .2s ease, border-color .2s ease, background-color .2s ease, transform .16s ease;
+}
+.mars-exploration-close.return-panorama-button:hover {
+  border-color: #ccb8897a;
+  background: #0a142080;
+  color: #cbd2d9;
+}
+.mars-exploration-close.return-panorama-button:active {
+  transform: translateY(1px);
+}
+.mars-exploration-close.return-panorama-button:focus-visible {
+  outline: 1px solid #d5c292;
+  outline-offset: 3px;
+}

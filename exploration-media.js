@@ -2,6 +2,10 @@
 
 // Shared marker-side visual preview and lightbox for Earth + Mars.
 window.ExplorationMedia = {
+  playUISound() {
+    window.AntariksaUIAudio?.click?.();
+  },
+
   lightbox: null,
   activeImages: [],
   activeIndex: 0,
@@ -54,6 +58,7 @@ window.ExplorationMedia = {
     const backdrop = document.createElement("button");
     backdrop.type = "button";
     backdrop.className = "exploration-lightbox-backdrop";
+    backdrop.dataset.uiSound = "manual";
     backdrop.setAttribute("aria-label", "Tutup pratinjau visual");
 
     const dialog = document.createElement("figure");
@@ -66,18 +71,21 @@ window.ExplorationMedia = {
     const close = document.createElement("button");
     close.type = "button";
     close.className = "exploration-lightbox-close";
+    close.dataset.uiSound = "manual";
     close.setAttribute("aria-label", "Tutup visual");
     close.innerHTML = '<span aria-hidden="true">×</span>';
 
     const previous = document.createElement("button");
     previous.type = "button";
     previous.className = "exploration-lightbox-nav exploration-lightbox-prev";
+    previous.dataset.uiSound = "manual";
     previous.setAttribute("aria-label", "Visual sebelumnya");
     previous.innerHTML = '<span aria-hidden="true">‹</span>';
 
     const next = document.createElement("button");
     next.type = "button";
     next.className = "exploration-lightbox-nav exploration-lightbox-next";
+    next.dataset.uiSound = "manual";
     next.setAttribute("aria-label", "Visual berikutnya");
     next.innerHTML = '<span aria-hidden="true">›</span>';
 
@@ -119,6 +127,7 @@ window.ExplorationMedia = {
     source.target = "_blank";
     source.rel = "noopener noreferrer";
     source.textContent = "Sumber visual ↗";
+    source.addEventListener("click", () => this.playUISound());
 
     headingRow.append(title, counter);
     caption.append(headingRow, description, metadata, source);
@@ -135,22 +144,26 @@ window.ExplorationMedia = {
     backdrop.addEventListener("click", event => {
       event.preventDefault();
       event.stopPropagation();
+      this.playUISound();
       this.closeLightbox();
     });
-    close.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); this.closeLightbox(); });
-    previous.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); this.stepLightbox(-1); });
-    next.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); this.stepLightbox(1); });
+    close.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); this.playUISound(); this.closeLightbox(); });
+    previous.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); this.playUISound(); this.stepLightbox(-1); });
+    next.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); this.playUISound(); this.stepLightbox(1); });
 
     document.addEventListener("keydown", event => {
       if (!this.lightbox || this.lightbox.root.hidden) return;
       if (event.key === "Escape") {
         event.preventDefault();
+        this.playUISound();
         this.closeLightbox();
-      } else if (event.key === "ArrowLeft" && this.activeImages.length > 1) {
+      } else if (event.key === "ArrowLeft" && this.activeImages.length > 1 && this.activeIndex > 0) {
         event.preventDefault();
+        this.playUISound();
         this.stepLightbox(-1);
-      } else if (event.key === "ArrowRight" && this.activeImages.length > 1) {
+      } else if (event.key === "ArrowRight" && this.activeImages.length > 1 && this.activeIndex < this.activeImages.length - 1) {
         event.preventDefault();
+        this.playUISound();
         this.stepLightbox(1);
       }
     });
@@ -294,6 +307,7 @@ window.ExplorationMedia = {
     const clickedIndex = liveFrames.indexOf(frame);
     if (clickedIndex < 0 || !liveImages[clickedIndex]) return;
 
+    this.playUISound();
     this.openLightbox(liveImages, clickedIndex, stop, frame);
   },
 
@@ -323,6 +337,7 @@ window.ExplorationMedia = {
       const frame = document.createElement("button");
       frame.type = "button";
       frame.className = "exploration-marker-frame";
+      frame.dataset.uiSound = "manual";
       frame.dataset.imageIndex = String(index);
       frame.setAttribute("aria-label", `Perbesar visual ${index + 1} untuk ${stop.title}`);
       frame._explorationImage = item;
