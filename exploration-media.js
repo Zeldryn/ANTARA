@@ -1,6 +1,6 @@
 "use strict";
 
-// Shared marker-side visual preview and lightbox for Earth + Mars.
+// Shared marker-side visual preview and lightbox for Earth, Mars, and Venus.
 window.ExplorationMedia = {
   playUISound() {
     window.AntariksaUIAudio?.click?.();
@@ -73,7 +73,7 @@ window.ExplorationMedia = {
     close.className = "exploration-lightbox-close";
     close.dataset.uiSound = "manual";
     close.setAttribute("aria-label", "Tutup visual");
-    close.innerHTML = '<span aria-hidden="true">×</span>';
+    close.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 
     const previous = document.createElement("button");
     previous.type = "button";
@@ -135,7 +135,7 @@ window.ExplorationMedia = {
     root.append(backdrop, dialog);
     document.body.append(root);
 
-    // The viewer is top-level under <body>. Swallow pointer gestures so no Earth/Mars
+    // The viewer is top-level under <body>. Swallow pointer gestures so no planet
     // canvas interaction can receive a click/drag while the lightbox is open.
     ["pointerdown", "pointermove", "pointerup"].forEach(type => {
       root.addEventListener(type, event => event.stopPropagation());
@@ -311,8 +311,8 @@ window.ExplorationMedia = {
     this.openLightbox(liveImages, clickedIndex, stop, frame);
   },
 
-  render(prefix, stop) {
-    const host = document.getElementById(`${prefix}-marker-media`);
+  render(prefix, stop, hostOverride = null) {
+    const host = hostOverride || document.getElementById(`${prefix}-marker-media`);
     if (!host) return;
 
     // Changing topic/landmark must never retain stale modal state.

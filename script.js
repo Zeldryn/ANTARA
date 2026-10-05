@@ -392,7 +392,9 @@ class LaunchVisual {
 
 const mission = document.getElementById("mission");
 const launchButton = document.getElementById("launch-button");
+const earthPreviousButton = document.getElementById("earth-prev-planet");
 const marsPreviousButton = document.getElementById("mars-prev-planet");
+const venusNextButton = document.getElementById("venus-next-planet");
 const audioToggle = document.getElementById("audio-toggle");
 const audioLabel = document.getElementById("audio-label");
 const preparation = document.getElementById("preparation");
@@ -403,6 +405,7 @@ const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const flight = new LaunchVisual();
 const earth = new EarthScene({ onNext: travelToMars });
 const mars = new MarsScene();
+const venus = new VenusScene();
 const locationDetail = document.querySelector(".location-detail");
 const originalLocation = locationDetail.textContent;
 const preparationProgress = document.querySelector(".preparation-track span");
@@ -423,7 +426,7 @@ const sound = new MissionAudio(() => {
 sound.onStateChange();
 
 // One shared UI-audio bridge for components loaded before this file (notably
-// dynamically-rendered Earth/Mars image previews and the top-level lightbox).
+// dynamically-rendered Earth/Mars/Venus image previews and the top-level lightbox).
 window.AntariksaUIAudio = Object.freeze({
   click: () => sound.uiClick(),
   hover: () => sound.hover()
@@ -482,11 +485,63 @@ launchButton.addEventListener("click", () => {
   // Warm up local assets and shaders while the existing launch plays unchanged.
   earth.prepare();
   mars.prepare();
+  venus.prepare();
   mission.classList.add("is-preparing");
   if (flightStatus) flightStatus.textContent = "PERSIAPAN MISI BERLANGSUNG";
   previousFrame = performance.now();
   animationFrame = requestAnimationFrame(advancePreparation);
 });
+
+function animatePlanetSwap(fromScene, toScene, { transitionPhase, finalPhase, fromClass, toClass, status, location, announcementText, arrivalStatus, arrivalLocation } = {}) {
+  if (!fromScene?.active || fromScene.exploring) return;
+  phase = transitionPhase;
+  if (flightStatus) flightStatus.textContent = status;
+  locationDetail.textContent = location;
+  announcement.textContent = announcementText;
+  const duration = reducedMotion.matches ? 0 : 720;
+  sound.travel(reducedMotion.matches ? 0.35 : 1.45);
+
+  const completeSwap = () => {
+    if (phase !== transitionPhase) return;
+    fromScene.stop();
+    mission.classList.remove(fromClass);
+    mission.classList.add(toClass);
+    toScene.start({ settled: true });
+    phase = finalPhase;
+    if (flightStatus) flightStatus.textContent = arrivalStatus;
+    locationDetail.textContent = arrivalLocation;
+    announcement.textContent = finalPhase === "venus" ? "Tiba di Venus." : "Kembali di Bumi.";
+    if (duration && typeof toScene.element.animate === "function") {
+      toScene.element.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 720, easing: "cubic-bezier(.2,.75,.2,1)", fill: "none" });
+    }
+  };
+
+  if (!duration || typeof fromScene.element.animate !== "function") { completeSwap(); return; }
+  const fade = fromScene.element.animate([{ opacity: 1 }, { opacity: 0 }], { duration, easing: "ease-in", fill: "forwards" });
+  fade.finished.then(completeSwap, completeSwap);
+}
+
+function travelToVenus() {
+  if (phase !== "earth" || earth.exploring) return;
+  animatePlanetSwap(earth, venus, {
+    transitionPhase: "venus-transition", finalPhase: "venus",
+    fromClass: "is-earth", toClass: "is-venus",
+    status: "PERJALANAN MENUJU VENUS", location: "TUJUAN SEBELUMNYA • VENUS",
+    announcementText: "Meninggalkan Bumi. Kamera beralih menuju Venus.",
+    arrivalStatus: "TIBA DI ORBIT VENUS", arrivalLocation: "PLANET KE-2 • VENUS"
+  });
+}
+
+function travelVenusToEarth() {
+  if (phase !== "venus" || venus.exploring) return;
+  animatePlanetSwap(venus, earth, {
+    transitionPhase: "venus-earth-transition", finalPhase: "earth",
+    fromClass: "is-venus", toClass: "is-earth",
+    status: "PERJALANAN MENUJU BUMI", location: "TUJUAN BERIKUTNYA • BUMI",
+    announcementText: "Meninggalkan Venus. Menuju Bumi.",
+    arrivalStatus: "TIBA DI ORBIT BUMI", arrivalLocation: "PLANET ASAL • BUMI"
+  });
+}
 
 function travelToMars() {
   if (phase !== "earth") return;
@@ -544,8 +599,9 @@ function resetMission() {
   flight.reset();
   earth.stop();
   mars.stop();
+  venus.stop();
   preparationProgress.style.transform = "scaleX(0)";
-  mission.classList.remove("is-earth", "is-mars", "is-preparing");
+  mission.classList.remove("is-earth", "is-mars", "is-venus", "is-preparing");
   locationDetail.textContent = originalLocation;
   preparation.style.opacity = "";
   document.querySelector(".intro").inert = false;
@@ -554,6 +610,8 @@ function resetMission() {
   sound.onStateChange();
   launchButton.focus({ preventScroll: true });
 }
+earthPreviousButton.addEventListener("click", travelToVenus);
+venusNextButton.addEventListener("click", travelVenusToEarth);
 marsPreviousButton.addEventListener("click", travelToEarth);
 document.addEventListener("keydown", event => {
   if (phase === "earth" && earth.exploring) {
@@ -564,7 +622,17 @@ document.addEventListener("keydown", event => {
     if (event.key === "Escape") { event.preventDefault(); earth.exitExploration(); }
     return;
   }
+  if (phase === "venus" && venus.exploring) {
+    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      venus.setExplorationStop(venus.topicIndex + (event.key === "ArrowRight" ? 1 : -1));
+    }
+    if (event.key === "Escape") { event.preventDefault(); venus.exitExploration(); }
+    return;
+  }
   if (event.key === "ArrowRight" && phase === "earth") travelToMars();
+  if (event.key === "ArrowLeft" && phase === "earth") travelToVenus();
+  if (event.key === "ArrowRight" && phase === "venus" && !venus.exploring) travelVenusToEarth();
   if (event.key === "ArrowLeft" && phase === "mars" && !mars.exploring) travelToEarth();
   if (event.key === "Escape" && phase !== "idle") resetMission();
 });
@@ -580,7 +648,7 @@ audioToggle.addEventListener("click", () => {
 });
 
 // Every real interactive control gets one consistent UI sound. Use capture phase so
-// Earth/Mars handlers cannot swallow the click before audio feedback is dispatched.
+// Earth/Mars/Venus handlers cannot swallow the click before audio feedback is dispatched.
 // This also covers dynamically-rendered progress controls. The top-level lightbox
 // keeps its existing manual audio handlers and is marked data-ui-sound="manual".
 document.addEventListener("click", event => {
@@ -596,12 +664,12 @@ document.addEventListener("click", event => {
   if (control.dataset.uiSound === "manual") return;
 
   // These actions already have their own intentional audio and must not double-fire.
-  if (control === launchButton || control === earth.nextButton || control === marsPreviousButton || control === audioToggle) return;
+  if (control === launchButton || control === earth.nextButton || control === earthPreviousButton || control === venusNextButton || control === marsPreviousButton || control === audioToggle) return;
 
   sound.uiClick();
 }, true);
 
-for (const button of [launchButton, earth.nextButton, marsPreviousButton, mars.exploreButton, audioToggle]) {
+for (const button of [launchButton, earth.nextButton, earthPreviousButton, venusNextButton, venus.exploreButton, marsPreviousButton, mars.exploreButton, audioToggle]) {
   button.addEventListener("pointerenter", event => { if (event.pointerType === "mouse") sound.hover(); });
   button.addEventListener("focus", () => sound.hover());
 }

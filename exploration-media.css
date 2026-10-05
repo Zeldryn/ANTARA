@@ -1,4 +1,4 @@
-/* Shared marker-side media for Earth and Mars. */
+/* Shared marker-side media for Earth, Mars, and Venus. */
 .exploration-marker-media {
   position: absolute;
   z-index: 3;
@@ -110,14 +110,15 @@
 }
 
 .earth-location-dot:not(.is-relocating) .exploration-marker-media,
-.mars-focus-reticle.is-marker-visible .exploration-marker-media {
+.mars-focus-reticle.is-marker-visible .exploration-marker-media,
+.venus-focus-reticle.is-marker-visible .exploration-marker-media {
   opacity: 1;
   transform: none;
 }
 
 .exploration-photo-source { display: none !important; }
 
-/* One lightbox implementation shared by both planet scenes. */
+/* One lightbox implementation shared by all planet scenes. */
 .exploration-lightbox {
   position: fixed;
   inset: 0;
@@ -245,6 +246,17 @@
   width: 38px;
   height: 38px;
   font-size: 1.35rem;
+}
+
+.exploration-lightbox-close svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  pointer-events: none;
 }
 .exploration-lightbox-nav {
   top: 50%;

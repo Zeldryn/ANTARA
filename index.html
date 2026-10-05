@@ -14,9 +14,11 @@
   <link rel="stylesheet" href="exploration-media.css">
   <link rel="stylesheet" href="earth-scene.css">
   <link rel="stylesheet" href="mars-scene.css">
+  <link rel="stylesheet" href="venus-scene.css">
   <script src="exploration-media.js" defer></script>
   <script src="earth-scene.js" defer></script>
   <script src="mars-scene.js" defer></script>
+  <script src="venus-scene.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -89,7 +91,7 @@
         <h2 id="earth-title" tabindex="-1">Bumi<span>.</span></h2>
         <p class="mars-whisper">Si Planet Biru.</p>
         <div class="mars-arrival-actions" role="group" aria-label="Navigasi planet">
-          <button class="mars-planet-nav mars-planet-prev" id="earth-prev-planet" type="button" disabled aria-label="Planet sebelumnya: Venus, belum tersedia">
+          <button class="mars-planet-nav mars-planet-prev" id="earth-prev-planet" type="button" aria-label="Planet sebelumnya: Venus">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
             <span><small>Planet sebelumnya</small><strong>Venus</strong></span>
           </button>
@@ -146,6 +148,70 @@
         </span>
         <div class="exploration-marker-media" id="earth-marker-media" hidden></div>
       </div>
+    </section>
+    <section class="venus-scene" id="venus-scene" aria-labelledby="venus-title" hidden>
+      <div class="venus-space-haze" aria-hidden="true"></div>
+      <div class="venus-viewport" id="venus-viewport" role="img" aria-label="Venus, planet berbatu yang tertutup atmosfer tebal, berputar perlahan di luar angkasa."></div>
+      <div class="venus-edge-shade" aria-hidden="true"></div>
+      <div class="venus-caption">
+        <p class="eyebrow" aria-hidden="true"><span></span></p>
+        <h2 id="venus-title" tabindex="-1">Venus<span>.</span></h2>
+        <p class="venus-whisper">Si Planet Terpanas.</p>
+        <div class="venus-arrival-actions" role="group" aria-label="Navigasi planet">
+          <button class="venus-planet-nav venus-planet-prev" id="venus-prev-planet" type="button" disabled aria-label="Planet sebelumnya: Merkurius, belum tersedia">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+            <span><small>Planet sebelumnya</small><strong>Merkurius</strong></span>
+          </button>
+          <button class="venus-explore-button" id="venus-explore-button" type="button">
+            <span>Jelajahi Venus</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+          <button class="venus-planet-nav venus-planet-next" id="venus-next-planet" type="button" aria-label="Planet selanjutnya: Bumi">
+            <span><small>Planet selanjutnya</small><strong>Bumi</strong></span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="venus-focus-reticle" id="venus-focus-reticle" aria-hidden="true">
+        <span class="venus-focus-ring"></span>
+        <span class="venus-focus-dot"></span>
+        <span class="venus-focus-line"></span>
+        <span class="venus-focus-label">
+          <span class="venus-focus-title" id="venus-focus-label"></span>
+          <span class="venus-focus-context" id="venus-focus-context"></span>
+        </span>
+        <div class="exploration-marker-media" id="venus-marker-media" hidden></div>
+      </div>
+
+      <div class="exploration-marker-media venus-context-media" id="venus-context-media" hidden></div>
+
+      <aside class="venus-exploration" id="venus-exploration" aria-labelledby="venus-topic-title" aria-live="polite" inert>
+        <div class="venus-exploration-topline">
+          <span class="venus-topic-kicker" id="venus-topic-kicker">SUHU EKSTREM</span>
+          <span class="venus-topic-count"><span id="venus-topic-current">01</span> / <span id="venus-topic-total">06</span></span>
+        </div>
+        <h3 id="venus-topic-title" tabindex="-1">Planet Terpanas</h3>
+        <p class="venus-topic-subtitle" id="venus-topic-subtitle"></p>
+        <div class="venus-topic-scroll" id="venus-topic-scroll">
+          <p class="venus-topic-summary" id="venus-topic-summary"></p>
+          <ul class="venus-topic-facts" id="venus-topic-facts"></ul>
+        </div>
+        <a class="venus-topic-source" id="venus-topic-source" href="https://science.nasa.gov/venus/venus-facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
+        <a class="exploration-photo-source" id="venus-photo-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
+        <div class="venus-exploration-controls">
+          <button class="venus-topic-nav venus-topic-prev" id="venus-topic-prev" type="button" aria-label="Topik Venus sebelumnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+          </button>
+          <div class="venus-topic-progress" id="venus-topic-progress" aria-hidden="true"></div>
+          <button class="venus-topic-nav venus-topic-next" id="venus-topic-next" type="button" aria-label="Topik Venus berikutnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+        <button class="venus-exploration-close return-panorama-button" id="venus-exploration-close" type="button">Kembali ke panorama Venus</button>
+      </aside>
+
+      <a class="venus-credit" href="https://science.nasa.gov/3d-resources/venus-surface-texture/" target="_blank" rel="noopener noreferrer">Permukaan radar: Magellan · NASA/JPL-Caltech</a>
     </section>
     <section class="mars-scene" id="mars-scene" aria-labelledby="mars-title" hidden>
       <div class="mars-space-haze" aria-hidden="true"></div>
