@@ -125,10 +125,20 @@ window.ExplorationMedia = {
     root.append(backdrop, dialog);
     document.body.append(root);
 
-    backdrop.addEventListener("click", () => this.closeLightbox());
-    close.addEventListener("click", () => this.closeLightbox());
-    previous.addEventListener("click", () => this.stepLightbox(-1));
-    next.addEventListener("click", () => this.stepLightbox(1));
+    // The viewer is top-level under <body>. Swallow pointer gestures so no Earth/Mars
+    // canvas interaction can receive a click/drag while the lightbox is open.
+    ["pointerdown", "pointermove", "pointerup"].forEach(type => {
+      root.addEventListener(type, event => event.stopPropagation());
+    });
+
+    backdrop.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      this.closeLightbox();
+    });
+    close.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); this.closeLightbox(); });
+    previous.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); this.stepLightbox(-1); });
+    next.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); this.stepLightbox(1); });
 
     document.addEventListener("keydown", event => {
       if (!this.lightbox || this.lightbox.root.hidden) return;
@@ -235,6 +245,22 @@ window.ExplorationMedia = {
     }
   },
 
+  stopPreviewPointerEvent(event) {
+    event.stopPropagation();
+  },
+
+  handleThumbnailClick(event, frame, gallery, stop) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const liveFrames = [...gallery.querySelectorAll(".exploration-marker-frame")];
+    const liveImages = liveFrames.map(button => button._explorationImage).filter(Boolean);
+    const clickedIndex = liveFrames.indexOf(frame);
+    if (clickedIndex < 0 || !liveImages[clickedIndex]) return;
+
+    this.openLightbox(liveImages, clickedIndex, stop, frame);
+  },
+
   render(prefix, stop) {
     const host = document.getElementById(`${prefix}-marker-media`);
     if (!host) return;
@@ -261,7 +287,7 @@ window.ExplorationMedia = {
       const frame = document.createElement("button");
       frame.type = "button";
       frame.className = "exploration-marker-frame";
-      frame.disabled = true;
+      frame.dataset.imageIndex = String(index);
       frame.setAttribute("aria-label", `Perbesar visual ${index + 1} untuk ${stop.title}`);
       frame._explorationImage = item;
 
@@ -281,7 +307,6 @@ window.ExplorationMedia = {
       image.style.objectPosition = item.position;
       image.addEventListener("load", () => {
         status.hidden = true;
-        frame.disabled = false;
       });
       image.addEventListener("error", () => {
         frame.remove();
@@ -289,12 +314,10 @@ window.ExplorationMedia = {
       });
       image.src = item.src;
 
-      frame.addEventListener("click", () => {
-        const liveFrames = [...gallery.querySelectorAll(".exploration-marker-frame:not(:disabled)")];
-        const liveImages = liveFrames.map(button => button._explorationImage).filter(Boolean);
-        const liveIndex = liveFrames.indexOf(frame);
-        if (liveIndex >= 0) this.openLightbox(liveImages, liveIndex, stop, frame);
+      ["pointerdown", "pointermove", "pointerup"].forEach(type => {
+        frame.addEventListener(type, event => this.stopPreviewPointerEvent(event));
       });
+      frame.addEventListener("click", event => this.handleThumbnailClick(event, frame, gallery, stop));
 
       frame.append(image, chip, status);
       gallery.append(frame);

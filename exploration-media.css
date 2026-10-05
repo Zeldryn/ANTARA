@@ -9,12 +9,14 @@
   transform: translateY(7px) scale(.985);
   transition: opacity .42s ease .12s, transform .52s cubic-bezier(.2,.75,.2,1) .12s;
   filter: drop-shadow(0 12px 24px #0008);
+  pointer-events: auto;
 }
 .exploration-marker-media[hidden],
 .exploration-marker-media [hidden] { display: none; }
 
 .exploration-marker-gallery {
   display: grid;
+  pointer-events: auto;
   grid-template-columns: minmax(0, 124px);
   justify-content: end;
   gap: 6px;
@@ -35,6 +37,8 @@
   box-shadow: inset 0 0 0 1px #ffffff08;
   appearance: none;
   cursor: zoom-in;
+  pointer-events: auto;
+  touch-action: manipulation;
   transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
 }
 .exploration-marker-frame:hover:not(:disabled) {
@@ -56,6 +60,7 @@
 }
 .exploration-marker-frame img {
   display: block;
+  pointer-events: auto;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -116,10 +121,12 @@
 .exploration-lightbox {
   position: fixed;
   inset: 0;
-  z-index: 120;
+  z-index: 10000;
   display: grid;
   place-items: center;
   padding: clamp(12px, 2.5vw, 28px);
+  pointer-events: auto;
+  touch-action: none;
 }
 .exploration-lightbox[hidden] { display: none; }
 .exploration-lightbox-backdrop {
@@ -158,7 +165,7 @@
 .exploration-lightbox-image {
   display: block;
   max-width: 90vw;
-  max-height: 78vh;
+  max-height: 85vh;
   width: auto;
   height: auto;
   object-fit: contain;
