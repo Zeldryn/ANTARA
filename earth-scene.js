@@ -1,6 +1,11 @@
 "use strict";
 
-// Earth introduction scene. It keeps the existing page structure and renderer isolation.
+// NASA Blue Marble Next Generation surface mosaic, stored locally for reliable rendering.
+const EARTH_SURFACE_TEXTURE = "assets/textures/earth-blue-marble-4k.jpg";
+const MARS_TRAVEL_TEXTURE = "assets/textures/mars-surface-2k.jpg";
+
+// Earth owns the post-launch Earth view and the lightweight planet-to-planet travel bridge.
+// The existing Mars renderer still owns the actual Mars arrival/exploration scene.
 window.EarthScene = class EarthScene {
   constructor({ onNext } = {}) {
     this.element = document.getElementById("earth-scene");
@@ -14,9 +19,13 @@ window.EarthScene = class EarthScene {
     this.time = 0;
     this.frame = null;
     this.mode = "pending";
-    this.exiting = false;
-    this.approaching = false;
-    this.exitStartedAt = 0;
+    this.travelMode = null;
+    this.travelStartedAt = 0;
+    this.travelDuration = 6.2;
+    this.travelRevealFired = false;
+    this.travelCoveredFired = false;
+    this.travelCompleteFired = false;
+    this.travelCallbacks = {};
     this.pointer = { x: 0, y: 0 };
     this.cameraOffset = { x: 0, y: 0 };
     this.tick = this.tick.bind(this);
@@ -27,7 +36,7 @@ window.EarthScene = class EarthScene {
     });
 
     this.nextButton.addEventListener("click", () => {
-      if (this.active && !this.exiting) this.onNext();
+      if (this.active && !this.travelMode) this.onNext();
     });
     window.addEventListener("resize", () => { if (this.active) { this.resize(); this.render(); } });
     document.addEventListener("visibilitychange", () => {
@@ -42,7 +51,7 @@ window.EarthScene = class EarthScene {
       if (!this.motion.matches && !this.frame) { this.previous = performance.now(); this.tick(this.previous); }
     });
     this.element.addEventListener("pointermove", event => {
-      if (event.pointerType !== "mouse" || this.motion.matches) return;
+      if (event.pointerType !== "mouse" || this.motion.matches || this.travelMode) return;
       const rect = this.element.getBoundingClientRect();
       this.pointer.x = (event.clientX - rect.left) / rect.width - 0.5;
       this.pointer.y = (event.clientY - rect.top) / rect.height - 0.5;
@@ -50,76 +59,69 @@ window.EarthScene = class EarthScene {
     this.element.addEventListener("pointerleave", () => { this.pointer.x = this.pointer.y = 0; });
   }
 
-  loadImage(path) {
+  loadImage(src) {
     return new Promise((resolve, reject) => {
       const image = new Image();
-      const timeout = setTimeout(() => reject(new Error(`Texture timeout: ${path}`)), 9000);
-      image.onload = () => { clearTimeout(timeout); resolve(image); };
-      image.onerror = () => { clearTimeout(timeout); reject(new Error(`Texture unavailable: ${path}`)); };
-      image.src = path;
+      image.decoding = "async";
+      image.onload = () => resolve(image);
+      image.onerror = reject;
+      image.src = src;
     });
   }
 
   prepare() {
     if (this.loading) return this.loading;
-    this.loading = (async () => {
-      const [moduleResult, surfaceResult, cloudsResult, roughnessResult, reliefResult] = await Promise.allSettled([
-        import("./assets/vendor/three/three.module.min.js"),
-        this.loadImage("assets/textures/earth-blue-marble-4k.jpg"),
-        this.loadImage("assets/textures/earth-clouds-2k.png"),
-        this.loadImage("assets/textures/earth-roughness-2k.jpg"),
-        this.loadImage("assets/textures/earth-relief-2k.jpg")
-      ]);
-
-      this.surface = surfaceResult.status === "fulfilled" ? surfaceResult.value : this.makeProceduralSurface();
-      this.cloudSurface = cloudsResult.status === "fulfilled" ? cloudsResult.value : null;
-      this.roughnessSurface = roughnessResult.status === "fulfilled" ? roughnessResult.value : null;
-      this.reliefSurface = reliefResult.status === "fulfilled" ? reliefResult.value : null;
-      this.element.dataset.texture = surfaceResult.status === "fulfilled" ? "blue-marble" : "procedural";
-
-      if (moduleResult.status === "fulfilled") {
-        try { this.createThreeScene(moduleResult.value); }
+    this.loading = Promise.all([
+      this.loadImage(EARTH_SURFACE_TEXTURE),
+      this.loadImage(MARS_TRAVEL_TEXTURE),
+      import("./assets/vendor/three/three.module.min.js")
+    ])
+      .then(([earthSurface, marsSurface, THREE]) => {
+        this.surface = earthSurface;
+        this.marsSurface = marsSurface;
+        try { this.createThreeScene(THREE); }
         catch { this.createCanvasFallback(); }
-      } else this.createCanvasFallback();
-      this.resize();
-      if (this.renderer?.compileAsync) await this.renderer.compileAsync(this.scene, this.camera).catch(() => {});
-      if (this.active) this.render();
-    })().catch(() => {
-      this.surface = this.surface || this.makeProceduralSurface();
-      try { this.createCanvasFallback(); }
-      catch {
-        this.mode = "css";
-        this.element.dataset.renderer = "css";
-        this.viewport.innerHTML = '<div class="earth-emergency-sphere"></div>';
-      }
-    });
+        this.resize();
+        if (this.renderer?.compileAsync) return this.renderer.compileAsync(this.scene, this.camera);
+      })
+      .catch(async () => {
+        try {
+          if (!this.surface) this.surface = await this.loadImage(EARTH_SURFACE_TEXTURE);
+          if (!this.marsSurface) this.marsSurface = await this.loadImage(MARS_TRAVEL_TEXTURE);
+          this.createCanvasFallback();
+          this.resize();
+        } catch {
+          this.mode = "css";
+          this.element.dataset.renderer = "css";
+          this.viewport.innerHTML = '<div class="earth-emergency-sphere"></div>';
+          this.resize();
+        }
+      })
+      .finally(() => { if (this.active) this.render(); });
     return this.loading;
   }
 
-  makeProceduralSurface() {
-    const canvas = document.createElement("canvas");
-    canvas.width = 1024;
-    canvas.height = 512;
-    const ctx = canvas.getContext("2d");
-    const ocean = ctx.createLinearGradient(0, 0, 0, 512);
-    ocean.addColorStop(0, "#173f68");
-    ocean.addColorStop(0.48, "#0d4775");
-    ocean.addColorStop(1, "#082b4b");
-    ctx.fillStyle = ocean;
-    ctx.fillRect(0, 0, 1024, 512);
-    ctx.fillStyle = "#667b46";
-    ctx.beginPath(); ctx.ellipse(220, 195, 105, 68, -.35, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(545, 200, 165, 78, .12, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(760, 320, 70, 45, .15, 0, Math.PI * 2); ctx.fill();
-    return canvas;
+  makeAtmosphere(THREE, color, strength = 0.26, radius = 1.024) {
+    return new THREE.Mesh(new THREE.SphereGeometry(radius, 72, 48), new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      uniforms: { glowColor: { value: new THREE.Color(color) }, glowStrength: { value: strength } },
+      vertexShader: `varying vec3 vWorld; varying vec3 vNormal;
+        void main(){ vec4 world=modelMatrix*vec4(position,1.); vWorld=world.xyz;
+        vNormal=normalize(mat3(modelMatrix)*normal); gl_Position=projectionMatrix*viewMatrix*world; }`,
+      fragmentShader: `uniform vec3 glowColor; uniform float glowStrength; varying vec3 vWorld; varying vec3 vNormal;
+        void main(){ vec3 n=normalize(vNormal); vec3 eye=normalize(cameraPosition-vWorld);
+        float rim=pow(1.-max(dot(n,eye),0.),3.4);
+        gl_FragColor=vec4(glowColor,rim*glowStrength); }`
+    }));
   }
 
-  textureFromImage(THREE, image, { srgb = false, anisotropy = 1 } = {}) {
-    if (!image) return null;
+  createTexture(THREE, image, anisotropy) {
     const texture = new THREE.Texture(image);
     texture.needsUpdate = true;
-    texture.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
-    texture.anisotropy = anisotropy;
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = Math.min(anisotropy, this.renderer.capabilities.getMaxAnisotropy());
     return texture;
   }
 
@@ -134,77 +136,66 @@ window.EarthScene = class EarthScene {
     this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.6));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.02;
+    this.renderer.toneMappingExposure = 1.04;
     this.viewport.replaceChildren(canvas);
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(36, 1, 0.1, 450);
     this.camera.position.z = 6;
-    const maxAniso = Math.min(8, this.renderer.capabilities.getMaxAnisotropy());
-    const surface = this.textureFromImage(THREE, this.surface, { srgb: true, anisotropy: maxAniso });
-    const roughness = this.textureFromImage(THREE, this.roughnessSurface, { anisotropy: maxAniso });
-    const relief = this.textureFromImage(THREE, this.reliefSurface, { anisotropy: maxAniso });
-    const material = new THREE.MeshStandardMaterial({
-      map: surface,
-      roughnessMap: roughness,
-      bumpMap: relief,
-      bumpScale: 0.012,
-      roughness: 0.76,
-      metalness: 0
-    });
 
-    this.planet = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 96), material);
-    this.planet.rotation.z = -0.18;
+    const sphere = new THREE.SphereGeometry(1, 128, 96);
+    const earthTexture = this.createTexture(THREE, this.surface, 8);
+    const earthMaterial = new THREE.MeshStandardMaterial({
+      map: earthTexture,
+      roughness: 0.76,
+      metalness: 0,
+      transparent: true,
+      opacity: 1
+    });
+    this.planet = new THREE.Mesh(sphere, earthMaterial);
     this.planetGroup = new THREE.Group();
     this.planetGroup.add(this.planet);
+    this.atmosphere = this.makeAtmosphere(THREE, 0x3e8fe7, 0.25, 1.025);
+    this.planetGroup.add(this.atmosphere);
     this.scene.add(this.planetGroup);
 
-    if (this.cloudSurface) {
-      const cloudTexture = this.textureFromImage(THREE, this.cloudSurface, { srgb: true, anisotropy: maxAniso });
-      this.clouds = new THREE.Mesh(
-        new THREE.SphereGeometry(1.013, 128, 96),
-        new THREE.MeshPhongMaterial({
-          map: cloudTexture,
-          alphaMap: cloudTexture,
-          transparent: true,
-          opacity: 0.55,
-          depthWrite: false,
-          color: 0xffffff,
-          shininess: 4
-        })
-      );
-      this.clouds.rotation.z = -0.18;
-      this.planetGroup.add(this.clouds);
-    }
-
-    const sun = new THREE.DirectionalLight(0xfff0da, 3.75);
-    sun.position.set(-4.6, 2.7, 4.5);
-    this.scene.add(sun);
-    this.scene.add(new THREE.AmbientLight(0x6b83a1, 0.11));
-    const fill = new THREE.DirectionalLight(0x4175a8, 0.12);
-    fill.position.set(4, -1.5, -3.5);
-    this.scene.add(fill);
-
-    this.atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1.028, 96, 64), new THREE.ShaderMaterial({
+    const marsTexture = this.createTexture(THREE, this.marsSurface, 8);
+    this.travelMarsMaterial = new THREE.MeshStandardMaterial({
+      map: marsTexture,
+      roughness: 0.96,
+      metalness: 0,
       transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      vertexShader: `varying vec3 vWorld; varying vec3 vNormal;
-        void main(){ vec4 world=modelMatrix*vec4(position,1.); vWorld=world.xyz;
-        vNormal=normalize(mat3(modelMatrix)*normal); gl_Position=projectionMatrix*viewMatrix*world; }`,
-      fragmentShader: `varying vec3 vWorld; varying vec3 vNormal;
-        void main(){ vec3 n=normalize(vNormal); vec3 eye=normalize(cameraPosition-vWorld);
-        float rim=pow(1.-max(dot(n,eye),0.),3.1);
-        float light=max(dot(n,normalize(vec3(-4.6,2.7,4.5))),0.);
-        gl_FragColor=vec4(.12,.43,1.,rim*(.16+.34*light)); }`
-    }));
-    this.planetGroup.add(this.atmosphere);
+      opacity: 0
+    });
+    this.travelMars = new THREE.Mesh(sphere.clone(), this.travelMarsMaterial);
+    this.travelMarsGroup = new THREE.Group();
+    this.travelMarsGroup.add(this.travelMars);
+    this.travelMarsAtmosphere = this.makeAtmosphere(THREE, 0xb96542, 0.095, 1.018);
+    this.travelMarsAtmosphere.material.opacity = 0;
+    this.travelMarsGroup.add(this.travelMarsAtmosphere);
+    this.travelMarsGroup.visible = false;
+    this.scene.add(this.travelMarsGroup);
+
+    const sun = new THREE.DirectionalLight(0xffefd7, 3.35);
+    sun.position.set(-4.8, 2.9, 4.6);
+    this.scene.add(sun);
+    this.scene.add(new THREE.AmbientLight(0x54759f, 0.095));
+    const fill = new THREE.DirectionalLight(0x2c5c92, 0.10);
+    fill.position.set(3, -1.5, -2);
+    this.scene.add(fill);
 
     const positions = new Float32Array(this.stars.length * 3);
     this.stars.forEach((star, i) => positions.set([(star.x - 0.5) * 190, (star.y - 0.5) * 140, -20 - star.z * 160], i * 3));
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    this.starfield = new THREE.Points(geometry, new THREE.PointsMaterial({ color: 0xb5c6dc, size: 0.13, transparent: true, opacity: 0.52, depthWrite: false, sizeAttenuation: true }));
+    this.starfield = new THREE.Points(geometry, new THREE.PointsMaterial({
+      color: 0xb5c6dc,
+      size: 0.13,
+      transparent: true,
+      opacity: 0.52,
+      depthWrite: false,
+      sizeAttenuation: true
+    }));
     this.scene.add(this.starfield);
 
     canvas.addEventListener("webglcontextlost", event => {
@@ -239,6 +230,7 @@ window.EarthScene = class EarthScene {
     const radius = this.mobile ? Math.min(this.width * 0.34, this.height * 0.20) : Math.min(this.height * 0.29, this.width * 0.23);
     this.finalRadius = radius;
     this.finalDistance = this.height / (2 * Math.tan(Math.PI / 10) * radius);
+
     if (this.mode === "webgl") {
       this.renderer.setSize(this.width, this.height);
       this.camera.aspect = this.width / this.height;
@@ -251,16 +243,16 @@ window.EarthScene = class EarthScene {
     }
   }
 
-  start({ approach = false } = {}) {
+  start({ settled = false } = {}) {
     this.active = true;
-    this.time = 0;
-    this.exiting = false;
-    this.approaching = approach;
-    this.exitStartedAt = 0;
+    this.time = settled ? 6 : 0;
+    this.travelMode = null;
+    this.travelCallbacks = {};
+    this.travelCompleteFired = false;
     this.element.hidden = false;
     this.element.classList.remove("is-leaving");
-    this.information.inert = true;
-    this.information.classList.remove("is-visible");
+    this.information.inert = !settled;
+    this.information.classList.toggle("is-visible", settled);
     this.pointer.x = this.pointer.y = this.cameraOffset.x = this.cameraOffset.y = 0;
     this.prepare();
     this.resize();
@@ -269,13 +261,42 @@ window.EarthScene = class EarthScene {
     this.tick(this.previous);
   }
 
-  beginExit() {
-    if (!this.active || this.exiting) return;
-    this.exiting = true;
-    this.exitStartedAt = this.time;
+  beginTravelToMars({ onReveal, onComplete } = {}) {
+    if (!this.active || this.travelMode) return;
+    this.travelMode = "to-mars";
+    this.travelStartedAt = this.time;
+    this.travelDuration = this.motion.matches ? 0.4 : 6.2;
+    this.travelRevealFired = false;
+    this.travelCompleteFired = false;
+    this.travelCallbacks = { onReveal, onComplete };
     this.element.classList.add("is-leaving");
     this.information.inert = true;
+    this.pointer.x = this.pointer.y = 0;
     if (!this.frame) { this.previous = performance.now(); this.tick(this.previous); }
+  }
+
+  beginTravelFromMars({ onCovered, onComplete, marsRotation = 0.9024 } = {}) {
+    if (this.active && this.travelMode) return;
+    this.active = true;
+    this.time = 0;
+    this.travelMode = "to-earth";
+    this.travelStartedAt = 0;
+    this.travelDuration = this.motion.matches ? 0.4 : 6.2;
+    this.travelCoveredFired = false;
+    this.travelCompleteFired = false;
+    this.travelCallbacks = { onCovered, onComplete };
+    this.travelMarsStartRotation = marsRotation;
+    this.element.hidden = false;
+    this.element.style.opacity = "0";
+    this.element.classList.add("is-leaving");
+    this.information.classList.remove("is-visible");
+    this.information.inert = true;
+    this.pointer.x = this.pointer.y = this.cameraOffset.x = this.cameraOffset.y = 0;
+    this.prepare();
+    this.resize();
+    cancelAnimationFrame(this.frame);
+    this.previous = performance.now();
+    this.tick(this.previous);
   }
 
   stop() {
@@ -287,6 +308,8 @@ window.EarthScene = class EarthScene {
     this.element.classList.remove("is-leaving");
     this.information.classList.remove("is-visible");
     this.information.inert = true;
+    this.travelMode = null;
+    this.travelCallbacks = {};
     this.time = 0;
   }
 
@@ -300,21 +323,37 @@ window.EarthScene = class EarthScene {
     this.cameraOffset.x += (this.pointer.x - this.cameraOffset.x) * damping;
     this.cameraOffset.y += (this.pointer.y - this.cameraOffset.y) * damping;
     this.render();
-    if (!this.motion.matches || this.time < 9 || this.exiting || this.mode === "pending") this.frame = requestAnimationFrame(this.tick);
+    if (!this.motion.matches || this.time < 8 || this.travelMode || this.mode === "pending") this.frame = requestAnimationFrame(this.tick);
+  }
+
+  clamp(value) { return Math.max(0, Math.min(1, value)); }
+  smooth(value) {
+    const v = this.clamp(value);
+    return v * v * v * (v * (v * 6 - 15) + 10);
   }
 
   render() {
-    const clamp = value => Math.max(0, Math.min(1, value));
-    const smooth = value => { const v = clamp(value); return v * v * v * (v * (v * 6 - 15) + 10); };
-    const t = this.time;
-    const reveal = this.motion.matches ? 1 : smooth(t / 1.1);
-    const framing = this.motion.matches ? 1 : smooth((t - 0.25) / (this.approaching ? 4.9 : 4.4));
-    const infoReveal = this.motion.matches ? 1 : smooth((t - (this.approaching ? 4.6 : 4.3)) / 1.25);
-    const exit = this.exiting ? smooth((t - this.exitStartedAt) / (this.motion.matches ? 0.01 : 4.5)) : 0;
-    const exitFade = smooth((exit - 0.55) / 0.45);
-    this.element.style.opacity = String(reveal * (1 - exitFade));
+    if (this.travelMode) this.renderTravel();
+    else this.renderEarth();
+  }
 
-    if (infoReveal > 0.02 && !this.information.classList.contains("is-visible") && !this.exiting) {
+  normalLayout() {
+    const halfHeight = Math.tan(Math.PI / 10) * this.finalDistance;
+    return {
+      halfHeight,
+      x: halfHeight * (this.camera?.aspect || this.width / this.height) * (this.mobile ? 0 : 0.23),
+      y: halfHeight * (this.mobile ? 0.25 : 0.055)
+    };
+  }
+
+  renderEarth() {
+    const t = this.time;
+    const reveal = this.motion.matches ? 1 : this.smooth(t / 1.25);
+    const framing = this.motion.matches ? 1 : this.smooth((t - 0.35) / 4.4);
+    const infoReveal = this.motion.matches ? 1 : this.smooth((t - 4.3) / 1.35);
+    this.element.style.opacity = String(reveal);
+
+    if (infoReveal > 0.02 && !this.information.classList.contains("is-visible")) {
       this.information.classList.add("is-visible");
       this.information.inert = false;
       document.getElementById("announcement").textContent = "Bumi, rumah kita. Planet ketiga dari Matahari.";
@@ -322,27 +361,15 @@ window.EarthScene = class EarthScene {
     }
 
     const drift = this.motion.matches ? 0 : Math.sin(t * 0.32) * 0.025;
-    const rotation = 0.55 + (this.motion.matches ? 0 : t * 0.028);
-    const introDistance = this.approaching
-      ? this.finalDistance * (7.0 - 6.0 * framing)
-      : this.finalDistance * (0.58 + framing * 0.42);
-    const distance = introDistance * (1 + exit * 5.5);
+    const rotation = 4.58 + (this.motion.matches ? 0 : t * 0.026);
+    const distance = this.finalDistance * (0.58 + framing * 0.42);
 
     if (this.mode === "webgl") {
-      const halfHeight = Math.tan(Math.PI / 10) * this.finalDistance;
-      const groupX = this.mobile ? 0 : 0.23 * framing;
-      const groupY = this.mobile ? 0.25 * framing : 0.055 * framing;
-      this.planetGroup.position.set(halfHeight * this.camera.aspect * groupX, halfHeight * groupY + drift, 0);
-      this.planet.rotation.y = rotation;
-      this.planet.rotation.z = -0.18;
-      if (this.clouds) {
-        this.clouds.rotation.y = rotation * 1.012 + t * 0.004;
-        this.clouds.rotation.z = -0.18;
-      }
-      if (this.starfield) {
-        this.starfield.rotation.y = exit * 0.32;
-        this.starfield.rotation.x = exit * 0.055;
-      }
+      const layout = this.normalLayout();
+      this.travelMarsGroup.visible = false;
+      this.planetGroup.visible = true;
+      this.planetGroup.position.set(layout.x * framing, layout.y * framing + drift, 0);
+      this.planet.rotation.set(0, rotation, -0.18);
       const pointerStrength = 1 - infoReveal * 0.35;
       this.camera.position.set(
         this.motion.matches ? 0 : this.cameraOffset.x * 0.10 * pointerStrength,
@@ -352,7 +379,7 @@ window.EarthScene = class EarthScene {
       this.camera.lookAt(0, 0, 0);
       this.renderer.render(this.scene, this.camera);
     } else if (this.mode === "canvas") {
-      this.drawCanvasFallback(framing, rotation, distance, drift);
+      this.drawCanvasEarth(framing, rotation, distance, drift);
     } else if (this.mode === "css") {
       const planet = this.viewport.firstElementChild;
       if (!planet) return;
@@ -365,34 +392,155 @@ window.EarthScene = class EarthScene {
     }
   }
 
-  drawCanvasFallback(framing, rotation, distance, drift) {
+  travelState() {
+    const elapsed = this.time - this.travelStartedAt;
+    const progress = this.smooth(elapsed / this.travelDuration);
+    const pullback = this.smooth(progress / 0.31);
+    const pan = this.smooth((progress - 0.23) / 0.39);
+    const approach = this.smooth((progress - 0.58) / 0.42);
+    return { elapsed, progress, pullback, pan, approach };
+  }
+
+  renderTravel() {
+    const state = this.travelState();
+    const reverse = this.travelMode === "to-earth";
+    const layout = this.normalLayout();
+    const aspect = this.camera?.aspect || this.width / this.height;
+    const separation = layout.halfHeight * aspect * (this.mobile ? 3.9 : 3.25);
+    const marsDestinationX = layout.halfHeight * aspect * (this.mobile ? 0 : 0.28);
+    const marsDestinationY = layout.halfHeight * (this.mobile ? 0.28 : 0.10);
+    const destinationCameraX = separation + layout.x - marsDestinationX;
+    const cameraX = destinationCameraX * (reverse ? 1 - state.pan : state.pan);
+    const cameraZ = this.finalDistance * (1 + 1.55 * state.pullback * (1 - state.approach));
+    const earthOpacity = reverse ? this.smooth((state.progress - 0.27) / 0.19) : 1;
+    const marsOpacity = reverse ? 1 : this.smooth((state.progress - 0.28) / 0.20);
+    const earthRotation = 4.72 + this.time * 0.024;
+    const marsRotation = reverse
+      ? (this.travelMarsStartRotation ?? 0.9024) + state.progress * 0.08
+      : 0.62 + state.progress * (0.9024 - 0.62);
+    const overlayOpacity = reverse ? this.smooth(state.progress / 0.075) : 1;
+    this.element.style.opacity = String(overlayOpacity);
+
+    if (!reverse && state.progress >= 0.86 && !this.travelRevealFired) {
+      this.travelRevealFired = true;
+      this.travelCallbacks.onReveal?.();
+    }
+    if (reverse && state.progress >= 0.10 && !this.travelCoveredFired) {
+      this.travelCoveredFired = true;
+      this.travelCallbacks.onCovered?.();
+    }
+
+    if (this.mode === "webgl") {
+      this.planetGroup.visible = earthOpacity > 0.002;
+      this.travelMarsGroup.visible = marsOpacity > 0.002;
+      this.planetGroup.position.set(layout.x, layout.y, 0);
+      this.travelMarsGroup.position.set(layout.x + separation, marsDestinationY, 0);
+      this.planet.rotation.set(0, earthRotation, -0.18);
+      this.travelMars.rotation.set(0.09, marsRotation, -0.07);
+      this.planet.material.opacity = earthOpacity;
+      this.atmosphere.material.uniforms.glowStrength.value = 0.25 * earthOpacity;
+      this.travelMarsMaterial.opacity = marsOpacity;
+      this.travelMarsAtmosphere.material.uniforms.glowStrength.value = 0.095 * marsOpacity;
+
+      this.camera.position.set(cameraX, 0, cameraZ);
+      const lookOffset = Math.sin(state.pan * Math.PI) * separation * 0.055 * (reverse ? -1 : 1);
+      this.camera.lookAt(cameraX + lookOffset, 0, 0);
+      this.renderer.render(this.scene, this.camera);
+    } else if (this.mode === "canvas") {
+      this.drawCanvasTravel(state, reverse, earthOpacity, marsOpacity);
+    } else if (this.mode === "css") {
+      const planet = this.viewport.firstElementChild;
+      if (planet) {
+        const radius = this.finalRadius * this.finalDistance / cameraZ;
+        const screenPan = reverse ? 1 - state.pan : state.pan;
+        planet.style.width = planet.style.height = `${radius * 2}px`;
+        planet.style.left = `${64 - screenPan * 95}%`;
+        planet.style.top = "47%";
+        planet.style.opacity = String(earthOpacity);
+      }
+    }
+
+    if (state.progress >= 0.999 && !this.travelCompleteFired) {
+      this.travelCompleteFired = true;
+      const callback = this.travelCallbacks.onComplete;
+      if (reverse) {
+        this.travelMode = null;
+        this.travelCallbacks = {};
+        this.time = 6;
+        this.element.classList.remove("is-leaving");
+        this.element.style.opacity = "1";
+        this.information.classList.add("is-visible");
+        this.information.inert = false;
+        document.getElementById("announcement").textContent = "Kembali ke Bumi.";
+      }
+      callback?.();
+    }
+  }
+
+  drawTexturedDisc(image, cx, cy, radius, rotation, opacity, atmosphereColor) {
+    if (!image || opacity <= 0.002) return;
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.clip();
+    const sourceWidth = image.width;
+    const shift = ((rotation / (Math.PI * 2)) % 1 + 1) % 1 * sourceWidth;
+    const drawWidth = radius * Math.PI * 2;
+    const x = cx - radius - (shift / sourceWidth) * drawWidth;
+    ctx.drawImage(image, x, cy - radius, drawWidth, radius * 2);
+    ctx.drawImage(image, x + drawWidth, cy - radius, drawWidth, radius * 2);
+    const shade = ctx.createRadialGradient(cx - radius * 0.42, cy - radius * 0.28, radius * 0.04, cx, cy, radius * 1.08);
+    shade.addColorStop(0, "rgba(255,245,225,.12)");
+    shade.addColorStop(0.55, "rgba(12,28,48,.06)");
+    shade.addColorStop(1, "rgba(0,3,10,.90)");
+    ctx.fillStyle = shade;
+    ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
+    ctx.restore();
+    ctx.save();
+    ctx.globalAlpha = opacity * 0.42;
+    ctx.strokeStyle = atmosphereColor;
+    ctx.lineWidth = Math.max(1, radius * 0.012);
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius * 1.01, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  drawStars() {
+    const ctx = this.ctx;
+    for (const star of this.stars.slice(0, 110)) {
+      ctx.fillStyle = `rgba(179,197,222,${0.12 + star.size * 0.35})`;
+      ctx.fillRect(star.x * this.width, star.y * this.height, 0.5 + star.size, 0.5 + star.size);
+    }
+  }
+
+  drawCanvasEarth(framing, rotation, distance, drift) {
     const ctx = this.ctx;
     const w = this.width;
     const h = this.height;
     ctx.clearRect(0, 0, w, h);
-    for (const star of this.stars.slice(0, 110)) {
-      ctx.fillStyle = `rgba(179,197,222,${0.12 + star.size * 0.35})`;
-      ctx.fillRect(star.x * w, star.y * h, 0.5 + star.size, 0.5 + star.size);
-    }
+    this.drawStars();
     const radius = this.finalRadius * this.finalDistance / distance;
     const cx = w * (this.mobile ? 0.5 : 0.5 + 0.14 * framing);
     const cy = h * (this.mobile ? 0.36 - 0.05 * framing : 0.5 - 0.03 * framing) + drift * 18;
-    ctx.save();
-    ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.clip();
-    const sourceWidth = this.surface.width;
-    const shift = ((rotation / (Math.PI * 2)) % 1 + 1) % 1 * sourceWidth;
-    const drawWidth = radius * Math.PI * 2;
-    const x = cx - radius - (shift / sourceWidth) * drawWidth;
-    ctx.drawImage(this.surface, x, cy - radius, drawWidth, radius * 2);
-    ctx.drawImage(this.surface, x + drawWidth, cy - radius, drawWidth, radius * 2);
-    const shade = ctx.createRadialGradient(cx - radius * 0.42, cy - radius * 0.28, radius * 0.05, cx, cy, radius * 1.08);
-    shade.addColorStop(0, "rgba(255,255,255,.12)");
-    shade.addColorStop(0.53, "rgba(15,40,72,.06)");
-    shade.addColorStop(1, "rgba(0,3,10,.92)");
-    ctx.fillStyle = shade; ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
-    ctx.restore();
-    ctx.strokeStyle = "rgba(80,160,255,.24)";
-    ctx.lineWidth = Math.max(1, radius * 0.012);
-    ctx.beginPath(); ctx.arc(cx, cy, radius * 1.01, 0, Math.PI * 2); ctx.stroke();
+    this.drawTexturedDisc(this.surface, cx, cy, radius, rotation, 1, "rgba(80,160,255,.45)");
+  }
+
+  drawCanvasTravel(state, reverse, earthOpacity, marsOpacity) {
+    const ctx = this.ctx;
+    const w = this.width;
+    const h = this.height;
+    ctx.clearRect(0, 0, w, h);
+    this.drawStars();
+    const cameraScale = 1 + 1.55 * state.pullback * (1 - state.approach);
+    const radius = this.finalRadius / cameraScale;
+    const pan = reverse ? 1 - state.pan : state.pan;
+    const earthX = w * (this.mobile ? 0.5 : 0.64) - pan * w * 1.08;
+    const marsX = earthX + w * 1.08;
+    const cy = h * (this.mobile ? 0.36 : 0.47);
+    this.drawTexturedDisc(this.surface, earthX, cy, radius, 4.72 + this.time * 0.024, earthOpacity, "rgba(80,160,255,.45)");
+    this.drawTexturedDisc(this.marsSurface, marsX, cy, radius, 0.62 + this.time * 0.021, marsOpacity, "rgba(212,117,76,.30)");
   }
 };

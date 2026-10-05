@@ -89,14 +89,14 @@
         </div>
         <h2 id="earth-title" tabindex="-1">Bumi<span>.</span></h2>
         <p class="earth-subtitle">Planet ketiga dari Matahari</p>
-        <p class="earth-summary">Rumah kita adalah dunia berbatu dengan lautan luas, atmosfer pelindung, dan satu-satunya tempat yang sejauh ini diketahui memiliki kehidupan.</p>
-        <ul class="earth-facts">
-          <li>Planet ketiga dari Matahari dan rumah bagi seluruh kehidupan yang kita kenal.</li>
-          <li>Sekitar 71% permukaannya tertutup lautan.</li>
-          <li>Atmosfer dekat permukaan terdiri terutama dari nitrogen, sekitar 78%, dan oksigen, sekitar 21%.</li>
-          <li>Bumi memiliki satu satelit alami, Bulan.</li>
-          <li>Keraknya aktif dan terus berubah melalui sistem lempeng tektonik.</li>
-        </ul>
+        <div class="earth-information-scroll">
+          <p class="earth-summary">Rumah kita adalah dunia berbatu dengan lautan luas, atmosfer pelindung, dan satu-satunya tempat yang sejauh ini diketahui memiliki kehidupan.</p>
+          <ul class="earth-facts">
+            <li>Sekitar 71% permukaan Bumi tertutup air.</li>
+            <li>Atmosfer dekat permukaan terutama terdiri dari nitrogen dan oksigen.</li>
+            <li>Bumi adalah satu-satunya planet yang diketahui memiliki kehidupan.</li>
+          </ul>
+        </div>
         <a class="earth-source" href="https://science.nasa.gov/earth/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
         <div class="earth-controls">
           <button class="earth-nav earth-prev" type="button" aria-label="Planet sebelumnya" disabled>
@@ -116,14 +116,20 @@
       <div class="mars-caption">
         <p class="eyebrow"><span></span> TUJUAN PERTAMA</p>
         <h2 id="mars-title" tabindex="-1">Mars<span>.</span></h2>
-        <p class="mars-whisper">Planet keempat dari Matahari, dunia merah dengan atmosfer tipis yang didominasi karbon dioksida.</p>
-        <div class="mars-arrival-actions">
+        <p class="mars-whisper">Dunia baru di hadapan kita.</p>
+        <div class="mars-arrival-actions" role="group" aria-label="Navigasi planet">
+          <button class="mars-planet-nav mars-planet-prev" id="mars-prev-planet" type="button" aria-label="Kembali ke planet sebelumnya, Bumi">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+            <span><small>Planet sebelumnya</small><strong>Bumi</strong></span>
+          </button>
           <button class="mars-explore-button" id="mars-explore-button" type="button">
             <span>Jelajahi Mars</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
-          <button class="replay-button" id="replay-button" type="button"><span aria-hidden="true">←</span> Kembali ke Bumi</button>
-          <button class="replay-button mars-next-planet" id="mars-next-planet" type="button" disabled aria-label="Planet berikutnya belum tersedia"><span>Planet berikutnya</span> <span aria-hidden="true">→</span></button>
+          <button class="mars-planet-nav mars-planet-next" id="mars-next-planet" type="button" disabled aria-label="Planet selanjutnya belum tersedia">
+            <span><small>Berikutnya</small><strong>Planet selanjutnya</strong></span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
         </div>
       </div>
 
@@ -141,8 +147,10 @@
         </div>
         <h3 id="mars-topic-title" tabindex="-1">Olympus Mons</h3>
         <p class="mars-topic-subtitle" id="mars-topic-subtitle"></p>
-        <p class="mars-topic-summary" id="mars-topic-summary"></p>
-        <ul class="mars-topic-facts" id="mars-topic-facts"></ul>
+        <div class="mars-topic-scroll" id="mars-topic-scroll">
+          <p class="mars-topic-summary" id="mars-topic-summary"></p>
+          <ul class="mars-topic-facts" id="mars-topic-facts"></ul>
+        </div>
         <a class="mars-topic-source" id="mars-topic-source" href="https://science.nasa.gov/mars/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
         <div class="mars-exploration-controls">
           <button class="mars-topic-nav mars-topic-prev" id="mars-topic-prev" type="button" aria-label="Topik Mars sebelumnya">

@@ -31,12 +31,15 @@
 @media (max-height: 700px) and (min-width: 701px) { .mars-caption { bottom: 18%; } .mars-caption h2 { font-size: 76px; } }
 
 /* Mars exploration extends the arrival scene without changing the launch or landing composition. */
-.mars-arrival-actions { display: flex; align-items: center; gap: 14px; margin-top: 22px; }
+.mars-arrival-actions {
+  display: grid; grid-template-columns: minmax(130px, 1fr) auto minmax(130px, 1fr); align-items: center; gap: 14px;
+  width: min(680px, 73vw); margin-top: 22px;
+}
 .mars-caption .mars-explore-button {
   display: inline-flex; align-items: center; justify-content: space-between; gap: 28px;
   min-height: 48px; padding: 0 18px 0 21px; border-radius: 2px; border: 1px solid #f0cf92;
   background: linear-gradient(120deg, #ecc987, #dcae61); color: #171b24; font-size: 10px;
-  font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase;
+  font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; white-space: nowrap;
   box-shadow: 0 7px 28px #b9792e1f, inset 0 1px #fff4cf;
   transition: transform .28s ease, background .28s ease, box-shadow .28s ease;
 }
@@ -44,10 +47,23 @@
 .mars-caption .mars-explore-button:hover { transform: translateY(-2px); background: #f2d49a; box-shadow: 0 9px 34px #b9792e33, inset 0 1px #fff4cf; }
 .mars-caption .mars-explore-button:hover svg { transform: translateX(3px); }
 .mars-caption .mars-explore-button:active { transform: translateY(0) scale(.985); }
-.mars-arrival-actions .replay-button { margin-top: 0; }
+.mars-planet-nav {
+  min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 4px; border: 0; border-top: 1px solid #d5dce821; border-bottom: 1px solid #d5dce821;
+  background: transparent; color: #929daa; text-align: left; transition: color .25s ease, border-color .25s ease, opacity .25s ease;
+}
+.mars-planet-nav svg { flex: 0 0 auto; width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.25; }
+.mars-planet-nav span { display: grid; gap: 3px; min-width: 0; }
+.mars-planet-nav small, .mars-planet-nav strong { display: block; font-weight: 500; text-transform: uppercase; white-space: nowrap; }
+.mars-planet-nav small { color: #6f7c8b; font-size: 6px; letter-spacing: 1.45px; }
+.mars-planet-nav strong { color: inherit; font-size: 8px; letter-spacing: 1.15px; }
+.mars-planet-prev { justify-content: flex-start; }
+.mars-planet-next { justify-content: flex-end; text-align: right; }
+.mars-planet-nav:hover:not(:disabled) { color: #dfc38f; border-color: #edc57e62; }
+.mars-planet-nav:disabled { opacity: .38; cursor: default; }
 
 .mars-exploration {
-  position: absolute; z-index: 6; top: 20%; left: 6.5%; width: min(390px, 34vw); padding: 24px 25px 22px;
+  position: absolute; z-index: 6; top: 20%; left: 6.5%; width: min(390px, 34vw); height: clamp(430px, 58vh, 560px); max-height: calc(100vh - 180px); max-height: calc(100dvh - 180px); padding: 24px 25px 22px;
+  display: flex; flex-direction: column; overflow: hidden;
   border: 1px solid #d8c29625; border-left-color: #edc57e77; border-radius: 2px;
   background: linear-gradient(145deg, #07101ad9, #050b14b8); box-shadow: 0 25px 90px #00000038;
   backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
@@ -63,11 +79,17 @@
 .mars-topic-count #mars-topic-current { color: #edc57e; }
 .mars-exploration h3 { margin: 20px 0 5px; color: #f9f4e8; font-family: Georgia, "Times New Roman", serif; font-size: clamp(31px, 3vw, 43px); line-height: 1.03; font-weight: 400; letter-spacing: -1px; outline: none; }
 .mars-topic-subtitle { margin: 0 0 17px; color: #d8bf91; font-size: 8px; line-height: 1.5; letter-spacing: 2.1px; text-transform: uppercase; }
+.mars-exploration-topline, .mars-exploration h3, .mars-topic-subtitle, .mars-topic-source, .mars-exploration-controls, .mars-exploration-close { flex: 0 0 auto; }
+.mars-topic-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; scrollbar-gutter: stable; padding-right: 14px; scrollbar-width: thin; scrollbar-color: #aa90696e transparent; }
+.mars-topic-scroll::-webkit-scrollbar { width: 5px; }
+.mars-topic-scroll::-webkit-scrollbar-track { background: transparent; }
+.mars-topic-scroll::-webkit-scrollbar-thumb { background: #aa90696e; border-radius: 999px; }
+.mars-topic-scroll::-webkit-scrollbar-thumb:hover { background: #c7aa768f; }
 .mars-topic-summary { margin: 0; color: #c0c9d4; font-size: 12px; line-height: 1.65; letter-spacing: .12px; }
 .mars-topic-facts { display: grid; gap: 9px; margin: 18px 0 17px; padding: 0; list-style: none; }
 .mars-topic-facts li { position: relative; padding-left: 15px; color: #9eabb9; font-size: 10px; line-height: 1.55; }
 .mars-topic-facts li::before { content: ""; position: absolute; left: 0; top: .72em; width: 6px; height: 1px; background: #edc57eaa; }
-.mars-topic-source { display: inline-flex; align-items: center; gap: 7px; color: #768595; font-size: 7px; letter-spacing: 1.25px; text-decoration: none; text-transform: uppercase; transition: color .22s ease; }
+.mars-topic-source { display: inline-flex; align-self: flex-start; align-items: center; gap: 7px; margin-top: 12px; color: #768595; font-size: 7px; letter-spacing: 1.25px; text-decoration: none; text-transform: uppercase; transition: color .22s ease; }
 .mars-topic-source:hover { color: #d8c293; }
 .mars-exploration-controls { display: grid; grid-template-columns: 38px 1fr 38px; align-items: center; gap: 13px; margin-top: 22px; }
 .mars-topic-nav { width: 38px; height: 38px; display: grid; place-items: center; padding: 0; border: 1px solid #d5dce82a; border-radius: 50%; background: #07101a99; color: #d6dde7; transition: border-color .25s ease, color .25s ease, transform .25s ease, opacity .25s ease; }
@@ -102,23 +124,29 @@
 }
 
 @media (max-width: 700px) {
-  .mars-arrival-actions { justify-content: center; flex-direction: column; gap: 9px; margin-top: 17px; }
-  .mars-caption .mars-explore-button { min-height: 45px; padding: 0 17px 0 20px; gap: 23px; font-size: 9px; }
-  .mars-arrival-actions .replay-button { padding: 8px 12px; }
-  .mars-exploration { top: auto; left: 5%; right: 5%; bottom: 5.5%; width: auto; max-height: min(38vh, 280px); overflow-y: auto; padding: 16px 17px 14px; background: linear-gradient(145deg, #06101bed, #040b14dc); scrollbar-width: thin; }
+  .mars-arrival-actions { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; width: 100%; margin-top: 17px; }
+  .mars-caption .mars-explore-button { min-height: 45px; padding: 0 13px 0 15px; gap: 13px; font-size: 8px; }
+  .mars-caption .mars-explore-button svg { width: 15px; height: 15px; }
+  .mars-planet-nav { min-height: 45px; gap: 5px; padding: 0 2px; }
+  .mars-planet-nav svg { width: 14px; height: 14px; }
+  .mars-planet-nav small { font-size: 5px; letter-spacing: .9px; }
+  .mars-planet-nav strong { font-size: 6.5px; letter-spacing: .75px; }
+  .mars-exploration { top: auto; left: 5%; right: 5%; bottom: 5.5%; width: auto; height: min(46vh, 330px); height: min(46dvh, 330px); max-height: calc(100vh - 48px); max-height: calc(100dvh - 48px); overflow: hidden; padding: 16px 17px 14px; background: linear-gradient(145deg, #06101bed, #040b14dc); }
   .mars-exploration h3 { margin-top: 15px; font-size: 29px; }
   .mars-topic-subtitle { margin-bottom: 10px; font-size: 7px; }
   .mars-topic-summary { font-size: 10px; line-height: 1.55; }
   .mars-topic-facts { gap: 6px; margin: 12px 0 11px; }
   .mars-topic-facts li { font-size: 8.5px; line-height: 1.45; }
+  .mars-topic-source { margin-top: 8px; }
   .mars-exploration-controls { margin-top: 14px; }
   .mars-exploration-close { margin-top: 10px; }
+  .mars-topic-scroll { padding-right: 12px; }
   .mars-focus-line { width: 26px; }
   .mars-focus-label { left: 57px; width: 100px; font-size: 5.5px; }
 }
 
 @media (max-height: 650px) and (max-width: 700px) {
-  .mars-exploration { max-height: 35vh; bottom: 4%; }
+  .mars-exploration { height: min(48vh, 300px); height: min(48dvh, 300px); max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px); bottom: 4%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -126,5 +154,3 @@
   .mars-focus-ring { animation: none; }
   .mars-exploration.is-switching h3, .mars-exploration.is-switching .mars-topic-subtitle, .mars-exploration.is-switching .mars-topic-summary, .mars-exploration.is-switching .mars-topic-facts, .mars-exploration.is-switching .mars-topic-source { animation: none; }
 }
-
-.mars-next-planet:disabled { opacity: .28; cursor: default; pointer-events: none; }
