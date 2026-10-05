@@ -2,6 +2,43 @@
 
 // Educational copy is kept separate from rendering logic. Facts are condensed from
 // NASA Science pages linked per stop so the interface stays concise and verifiable.
+//
+// Geographic coordinates use the IAU/USGS Mars convention: planetocentric latitude,
+// positive-east longitude in the 0..360 degree range. The Solar System Scope texture
+// is a standard equirectangular map with -180 degrees at the left edge and 0 degrees
+// at its center. Olympus Mons and Valles Marineris align without an extra correction,
+// so one global longitude calibration of 0 degrees is used for every marker.
+const MARS_TEXTURE_LONGITUDE_OFFSET_DEG = 0;
+const MARS_DEG_TO_RAD = Math.PI / 180;
+const MARS_TAU = Math.PI * 2;
+const MARS_EXPLORATION_ROLL = 0.12;
+
+const wrapMarsRadians = angle => Math.atan2(Math.sin(angle), Math.cos(angle));
+const unwrapMarsAngleNear = (angle, reference) => reference + wrapMarsRadians(angle - reference);
+
+const marsLocationOrientation = location => {
+  const longitude = wrapMarsRadians((location.longitudeEast + MARS_TEXTURE_LONGITUDE_OFFSET_DEG) * MARS_DEG_TO_RAD);
+  return {
+    // THREE.SphereGeometry maps geographic longitude to local
+    // (x, z) = (cos(lon), -sin(lon)). Ry(-PI/2-lon), then Rx(lat),
+    // brings that exact surface normal to +Z while keeping north toward +Y.
+    yaw: -Math.PI / 2 - longitude,
+    pitch: location.latitude * MARS_DEG_TO_RAD,
+    roll: MARS_EXPLORATION_ROLL
+  };
+};
+
+const marsSurfacePoint = (location, radius = 1) => {
+  const latitude = location.latitude * MARS_DEG_TO_RAD;
+  const longitude = wrapMarsRadians((location.longitudeEast + MARS_TEXTURE_LONGITUDE_OFFSET_DEG) * MARS_DEG_TO_RAD);
+  const cosLatitude = Math.cos(latitude);
+  return {
+    x: radius * cosLatitude * Math.cos(longitude),
+    y: radius * Math.sin(latitude),
+    z: -radius * cosLatitude * Math.sin(longitude)
+  };
+};
+
 const MARS_EXPLORATION_STOPS = Object.freeze([
   {
     title: "Olympus Mons",
@@ -14,7 +51,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Puncaknya memiliki kompleks kaldera hasil runtuhan setelah magma terkuras."
     ],
     source: "https://science.nasa.gov/photojournal/olympus-mons/",
-    yaw: 0, shift: { x: 0.00, y: -0.01 }, focus: [72, 37], mobileFocus: [58, 25]
+    location: { label: "Olympus Mons", latitude: 18.65, longitudeEast: 226.20, source: "https://planetarynames.wr.usgs.gov/Feature/4453" },
+    shift: { x: 0.00, y: -0.01 }
   },
   {
     title: "Valles Marineris",
@@ -27,7 +65,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Kedalamannya dapat mencapai sekitar 9,3 km dari tepi ke dasar."
     ],
     source: "https://science.nasa.gov/mars/facts/",
-    yaw: 0.82, shift: { x: 0.018, y: 0.018 }, focus: [69, 45], mobileFocus: [44, 27]
+    location: { label: "Valles Marineris", latitude: -14.01, longitudeEast: 301.41, source: "https://planetarynames.wr.usgs.gov/Feature/6288" },
+    shift: { x: 0.018, y: 0.018 }
   },
   {
     title: "Kawah Jezero",
@@ -40,7 +79,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Perseverance mendarat di sini pada 18 Februari 2021 untuk mencari tanda kehidupan mikroba purba dan mengumpulkan sampel."
     ],
     source: "https://science.nasa.gov/mission/mars-2020-perseverance/",
-    yaw: 1.63, shift: { x: -0.012, y: 0.03 }, focus: [73, 51], mobileFocus: [61, 30]
+    location: { label: "Kawah Jezero", latitude: 18.41, longitudeEast: 77.69, source: "https://planetarynames.wr.usgs.gov/Feature/14300" },
+    shift: { x: -0.012, y: 0.03 }
   },
   {
     title: "Tudung Es Kutub",
@@ -53,7 +93,10 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Di kutub selatan, es air tetap tertutup lapisan tipis es karbon dioksida bahkan saat musim panas."
     ],
     source: "https://science.nasa.gov/earth/frozen-ice-on-earth-and-well-beyond/",
-    yaw: 2.45, shift: { x: 0.008, y: -0.045 }, focus: [67, 29], mobileFocus: [48, 19]
+    // The plural topic is anchored to the named north-polar residual-cap region,
+    // Planum Boreum, instead of an invented screen coordinate.
+    location: { label: "Planum Boreum", latitude: 87.32, longitudeEast: 54.96, source: "https://planetarynames.wr.usgs.gov/Feature/4754" },
+    shift: { x: 0.008, y: -0.045 }
   },
   {
     title: "Atmosfer Mars",
@@ -66,7 +109,10 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Gas lain yang penting antara lain nitrogen dan argon."
     ],
     source: "https://science.nasa.gov/resource/the-five-most-abundant-gases-in-the-martian-atmosphere/",
-    yaw: 3.25, shift: { x: 0.028, y: -0.005 }, focus: [79, 39], mobileFocus: [66, 23]
+    // This global topic is spatially anchored to Gale because the panel's measurement
+    // is specifically from Curiosity/SAM at Gale Crater.
+    location: { label: "Gale Crater · SAM", latitude: -5.37, longitudeEast: 137.81, source: "https://planetarynames.wr.usgs.gov/Feature/2071" },
+    shift: { x: 0.028, y: -0.005 }
   },
   {
     title: "Badai Debu & Musim",
@@ -79,7 +125,9 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Sebagian badai dapat berkembang hingga mencakup hampir seluruh planet dan mengurangi cahaya untuk wahana bertenaga surya."
     ],
     source: "https://science.nasa.gov/helio-and-you-seasons-on-earth-mars-and-beyond/",
-    yaw: 4.06, shift: { x: -0.025, y: 0.008 }, focus: [64, 43], mobileFocus: [40, 25]
+    // NASA documents Hellas as a frequent origin region for major/global dust storms.
+    location: { label: "Hellas Planitia", latitude: -42.43, longitudeEast: 70.50, source: "https://planetarynames.wr.usgs.gov/Feature/2432" },
+    shift: { x: -0.025, y: 0.008 }
   }
 ]);
 
@@ -118,12 +166,16 @@ window.MarsScene = class MarsScene {
     this.explorationBlend = 0;
     this.explorationBlendTarget = 0;
     this.topicIndex = 0;
-    this.topicYaw = 0;
-    this.topicYawTarget = 0;
+    this.topicYaw = 0.6;
+    this.topicYawTarget = 0.6;
+    this.topicPitch = 0.09;
+    this.topicPitchTarget = 0.09;
+    this.topicRoll = MARS_EXPLORATION_ROLL;
+    this.topicRollTarget = MARS_EXPLORATION_ROLL;
     this.topicShift = { x: 0, y: 0 };
     this.topicShiftTarget = { x: 0, y: 0 };
-    this.exploreBaseRotation = 0.6;
     this.renderedRotation = 0.6;
+    this.markerLocalPoint = marsSurfacePoint(MARS_EXPLORATION_STOPS[0].location);
     this.caption.inert = true;
     this.exploration.inert = true;
     this.stars = Array.from({ length: 240 }, (_, n) => {
@@ -163,10 +215,17 @@ window.MarsScene = class MarsScene {
     const nextIndex = Math.max(0, Math.min(MARS_EXPLORATION_STOPS.length - 1, index));
     const stop = MARS_EXPLORATION_STOPS[nextIndex];
     this.topicIndex = nextIndex;
-    this.topicYawTarget = stop.yaw;
+    const orientation = marsLocationOrientation(stop.location);
+    this.topicYawTarget = immediate ? orientation.yaw : unwrapMarsAngleNear(orientation.yaw, this.topicYaw);
+    this.topicPitchTarget = orientation.pitch;
+    this.topicRollTarget = orientation.roll;
     this.topicShiftTarget = { ...stop.shift };
+    this.markerLocalPoint = marsSurfacePoint(stop.location);
+    if (this.markerAnchor) this.markerAnchor.position.set(this.markerLocalPoint.x, this.markerLocalPoint.y, this.markerLocalPoint.z);
     if (immediate || this.motion.matches) {
       this.topicYaw = this.topicYawTarget;
+      this.topicPitch = this.topicPitchTarget;
+      this.topicRoll = this.topicRollTarget;
       this.topicShift = { ...this.topicShiftTarget };
     }
 
@@ -186,11 +245,7 @@ window.MarsScene = class MarsScene {
     this.topicPrev.disabled = nextIndex === 0;
     this.topicNext.disabled = nextIndex === MARS_EXPLORATION_STOPS.length - 1;
     Array.from(this.topicProgress.children).forEach((bar, i) => bar.classList.toggle("is-active", i === nextIndex));
-    this.focusLabel.textContent = stop.title;
-    this.focusReticle.style.setProperty("--focus-x", `${stop.focus[0]}%`);
-    this.focusReticle.style.setProperty("--focus-y", `${stop.focus[1]}%`);
-    this.focusReticle.style.setProperty("--focus-mobile-x", `${stop.mobileFocus[0]}%`);
-    this.focusReticle.style.setProperty("--focus-mobile-y", `${stop.mobileFocus[1]}%`);
+    this.focusLabel.textContent = stop.location.label;
     if (!immediate && !this.motion.matches) this.exploration.classList.add("is-switching");
 
     if (this.active) {
@@ -203,9 +258,14 @@ window.MarsScene = class MarsScene {
   enterExploration() {
     if (!this.active || this.exploring) return;
     this.exploring = true;
-    this.exploreBaseRotation = this.renderedRotation;
-    this.topicYaw = 0;
-    this.topicYawTarget = MARS_EXPLORATION_STOPS[this.topicIndex].yaw;
+    // Start from the arrival pose, then converge on the selected geographic target.
+    this.topicYaw = this.renderedRotation;
+    this.topicPitch = 0.09;
+    this.topicRoll = MARS_EXPLORATION_ROLL;
+    const orientation = marsLocationOrientation(MARS_EXPLORATION_STOPS[this.topicIndex].location);
+    this.topicYawTarget = unwrapMarsAngleNear(orientation.yaw, this.topicYaw);
+    this.topicPitchTarget = orientation.pitch;
+    this.topicRollTarget = orientation.roll;
     this.explorationBlendTarget = 1;
     this.element.classList.add("is-exploring");
     this.caption.inert = true;
@@ -213,6 +273,8 @@ window.MarsScene = class MarsScene {
     if (this.motion.matches) {
       this.explorationBlend = 1;
       this.topicYaw = this.topicYawTarget;
+      this.topicPitch = this.topicPitchTarget;
+      this.topicRoll = this.topicRollTarget;
       this.topicShift = { ...this.topicShiftTarget };
       this.render();
     } else if (!this.frame) {
@@ -296,6 +358,31 @@ window.MarsScene = class MarsScene {
     this.planetGroup = new THREE.Group();
     this.planetGroup.add(this.planet);
     this.scene.add(this.planetGroup);
+
+    // Real geographic anchor attached to the Mars mesh. The existing DOM reticle
+    // only visualizes this 3D point after projection into screen space.
+    this.markerAnchor = new THREE.Object3D();
+    this.markerAnchor.position.set(
+      this.markerLocalPoint.x,
+      this.markerLocalPoint.y,
+      this.markerLocalPoint.z
+    );
+    this.planet.add(this.markerAnchor);
+
+    this.markerWorldPosition = new THREE.Vector3();
+    this.planetWorldPosition = new THREE.Vector3();
+    this.markerProjectedPosition = new THREE.Vector3();
+    this.markerSurfaceNormal = new THREE.Vector3();
+    this.markerToCamera = new THREE.Vector3();
+    this.arrivalEuler = new THREE.Euler();
+    this.arrivalQuaternion = new THREE.Quaternion();
+    this.exploreQuaternion = new THREE.Quaternion();
+    this.yawQuaternion = new THREE.Quaternion();
+    this.pitchQuaternion = new THREE.Quaternion();
+    this.rollQuaternion = new THREE.Quaternion();
+    this.axisX = new THREE.Vector3(1, 0, 0);
+    this.axisY = new THREE.Vector3(0, 1, 0);
+    this.axisZ = new THREE.Vector3(0, 0, 1);
     const sun = new THREE.DirectionalLight(0xffe2c2, 2.6);
     sun.position.set(-3.5, 2.5, 4);
     this.scene.add(sun, new THREE.AmbientLight(0x899bb7, 0.13));
@@ -397,7 +484,9 @@ window.MarsScene = class MarsScene {
     this.element.hidden = false;
     this.exploring = false;
     this.explorationBlend = this.explorationBlendTarget = 0;
-    this.topicYaw = this.topicYawTarget = 0;
+    this.topicYaw = this.topicYawTarget = 0.6;
+    this.topicPitch = this.topicPitchTarget = 0.09;
+    this.topicRoll = this.topicRollTarget = MARS_EXPLORATION_ROLL;
     this.topicShift = { x: 0, y: 0 };
     this.topicShiftTarget = { ...MARS_EXPLORATION_STOPS[0].shift };
     this.element.classList.remove("is-exploring");
@@ -443,11 +532,57 @@ window.MarsScene = class MarsScene {
     const topicDamping = this.motion.matches ? 1 : 1 - Math.exp(-delta * 2.15);
     this.explorationBlend += (this.explorationBlendTarget - this.explorationBlend) * exploreDamping;
     this.topicYaw += (this.topicYawTarget - this.topicYaw) * topicDamping;
+    this.topicPitch += (this.topicPitchTarget - this.topicPitch) * topicDamping;
+    this.topicRoll += (this.topicRollTarget - this.topicRoll) * topicDamping;
     this.topicShift.x += (this.topicShiftTarget.x - this.topicShift.x) * topicDamping;
     this.topicShift.y += (this.topicShiftTarget.y - this.topicShift.y) * topicDamping;
     this.render();
-    const explorationMoving = Math.abs(this.explorationBlendTarget - this.explorationBlend) > 0.001 || Math.abs(this.topicYawTarget - this.topicYaw) > 0.001;
+    const explorationMoving = Math.abs(this.explorationBlendTarget - this.explorationBlend) > 0.001
+      || Math.abs(this.topicYawTarget - this.topicYaw) > 0.001
+      || Math.abs(this.topicPitchTarget - this.topicPitch) > 0.001
+      || Math.abs(this.topicRollTarget - this.topicRoll) > 0.001;
     if (!this.motion.matches || this.time < 14 || this.mode === "pending" || explorationMoving) this.frame = requestAnimationFrame(this.tick);
+  }
+
+  setReticleProjection(x, y, visible) {
+    if (!this.focusReticle) return;
+    this.focusReticle.style.left = `${x}px`;
+    this.focusReticle.style.top = `${y}px`;
+    this.focusReticle.style.setProperty("--marker-opacity", visible ? ".92" : "0");
+  }
+
+  updateMarkerProjectionWebGL() {
+    if (!this.markerAnchor || !this.planet || !this.camera || !this.width || !this.height) return;
+    this.markerAnchor.getWorldPosition(this.markerWorldPosition);
+    this.planet.getWorldPosition(this.planetWorldPosition);
+    this.markerSurfaceNormal.copy(this.markerWorldPosition).sub(this.planetWorldPosition).normalize();
+    this.markerToCamera.copy(this.camera.position).sub(this.markerWorldPosition).normalize();
+    const facing = this.markerSurfaceNormal.dot(this.markerToCamera);
+    this.markerProjectedPosition.copy(this.markerWorldPosition).project(this.camera);
+    const ndcX = this.markerProjectedPosition.x;
+    const ndcY = this.markerProjectedPosition.y;
+    const visible = this.exploring && facing > 0.015 && this.markerProjectedPosition.z < 1
+      && Math.abs(ndcX) < 1.15 && Math.abs(ndcY) < 1.15;
+    this.setReticleProjection((ndcX * 0.5 + 0.5) * this.width, (-ndcY * 0.5 + 0.5) * this.height, visible);
+  }
+
+  updateMarkerProjectionFallback(yaw, pitch, roll, cx, cy, radius) {
+    const point = this.markerLocalPoint;
+    const cosYaw = Math.cos(yaw), sinYaw = Math.sin(yaw);
+    const cosPitch = Math.cos(pitch), sinPitch = Math.sin(pitch);
+    const cosRoll = Math.cos(roll), sinRoll = Math.sin(roll);
+
+    const x1 = cosYaw * point.x + sinYaw * point.z;
+    const y1 = point.y;
+    const z1 = -sinYaw * point.x + cosYaw * point.z;
+    const x2 = x1;
+    const y2 = cosPitch * y1 - sinPitch * z1;
+    const z2 = sinPitch * y1 + cosPitch * z1;
+    const x3 = cosRoll * x2 - sinRoll * y2;
+    const y3 = sinRoll * x2 + cosRoll * y2;
+    const z3 = z2;
+
+    this.setReticleProjection(cx + radius * x3, cy - radius * y3, this.exploring && z3 > 0.015);
   }
 
   render() {
@@ -457,10 +592,12 @@ window.MarsScene = class MarsScene {
     const arrivalDistance = this.finalDistance * Math.pow(15, 1 - approach);
     const exploreZoom = 1 - this.explorationBlend * (this.mobile ? 0.13 : 0.24);
     this.distance = arrivalDistance * exploreZoom;
-    const arrivalRotation = this.motion.matches ? 0.6 : 0.6 + t * 0.024;
-    const exploreRotation = this.exploreBaseRotation + this.topicYaw + (this.motion.matches ? 0 : Math.sin(t * 0.14) * 0.012);
-    const rotation = arrivalRotation * (1 - this.explorationBlend) + exploreRotation * this.explorationBlend;
-    this.renderedRotation = rotation;
+    const arrivalYaw = this.motion.matches ? 0.6 : 0.6 + t * 0.024;
+    const exploreYaw = this.topicYaw + (this.motion.matches ? 0 : Math.sin(t * 0.14) * 0.012);
+    const fallbackYaw = arrivalYaw * (1 - this.explorationBlend) + exploreYaw * this.explorationBlend;
+    const fallbackPitch = 0.09 * (1 - this.explorationBlend) + this.topicPitch * this.explorationBlend;
+    const fallbackRoll = MARS_EXPLORATION_ROLL * (1 - this.explorationBlend) + this.topicRoll * this.explorationBlend;
+    this.renderedRotation = fallbackYaw;
     const reveal = smooth(t / (this.motion.matches ? 1 : 1.8));
     this.element.style.opacity = String(reveal);
     const caption = smooth((t - (this.motion.matches ? 1 : 9)) / 2.5);
@@ -486,20 +623,32 @@ window.MarsScene = class MarsScene {
       const groupX = baseX * (1 - this.explorationBlend) + exploreX * this.explorationBlend;
       const groupY = baseY * (1 - this.explorationBlend) + exploreY * this.explorationBlend;
       this.planetGroup.position.set(halfHeight * this.camera.aspect * groupX, halfHeight * groupY + drift * (1 - this.explorationBlend * 0.45), 0);
-      this.planet.rotation.y = rotation;
+
+      // Preserve the arrival pose, but in exploration orient the real sphere from
+      // geographic latitude/longitude. Composition is Rz * Rx * Ry so the chosen
+      // surface normal points toward +Z while Mars north remains upright.
+      this.arrivalEuler.set(0.09, arrivalYaw, MARS_EXPLORATION_ROLL, "XYZ");
+      this.arrivalQuaternion.setFromEuler(this.arrivalEuler);
+      this.yawQuaternion.setFromAxisAngle(this.axisY, exploreYaw);
+      this.pitchQuaternion.setFromAxisAngle(this.axisX, this.topicPitch);
+      this.rollQuaternion.setFromAxisAngle(this.axisZ, this.topicRoll);
+      this.exploreQuaternion.copy(this.rollQuaternion).multiply(this.pitchQuaternion).multiply(this.yawQuaternion);
+      this.planet.quaternion.copy(this.arrivalQuaternion).slerp(this.exploreQuaternion, this.explorationBlend);
+
       const pointerStrength = 1 - this.explorationBlend * 0.55;
       this.camera.position.set(this.motion.matches ? 0 : this.cameraOffset.x * 0.13 * pointerStrength, this.motion.matches ? 0 : -this.cameraOffset.y * 0.09 * pointerStrength, this.distance);
       this.camera.lookAt(0, 0, 0);
       this.renderer.render(this.scene, this.camera);
+      this.updateMarkerProjectionWebGL();
     } else if (this.mode === "canvas") {
-      // Software sphere: inverse spherical UV mapping + Lambert sunlight. Texture
-      // features foreshorten at the limb and rotate through it, unlike a flat disc.
-      this.drawFallback(rotation, approach, drift);
+      // Software fallback applies the same true geographic transform to texture and marker.
+      this.drawFallback(fallbackYaw, fallbackPitch, fallbackRoll, approach, drift);
     } else if (this.mode === "css") {
       const planet = this.viewport.firstElementChild;
       const radius = this.finalRadius * this.finalDistance / this.distance;
       planet.style.width = planet.style.height = `${radius * 2}px`;
-      planet.style.backgroundPositionX = `${-rotation * 100}px`;
+      planet.style.backgroundPositionX = `${-fallbackYaw * 100}px`;
+      this.focusReticle.style.setProperty("--marker-opacity", "0");
       const cssLeft = this.mobile ? 50 + this.explorationBlend * this.topicShift.x * 60 : 64 + this.explorationBlend * (5 + this.topicShift.x * 45);
       const cssTop = this.mobile ? 36 - this.explorationBlend * (8 - this.topicShift.y * 35) : 45 - this.explorationBlend * (2 - this.topicShift.y * 35);
       planet.style.left = `${cssLeft}%`;
@@ -507,7 +656,7 @@ window.MarsScene = class MarsScene {
     }
   }
 
-  drawFallback(rotation, approach, drift) {
+  drawFallback(yaw, pitch, roll, approach, drift) {
     const ctx = this.ctx;
     const w = this.width, h = this.height;
     ctx.clearRect(0, 0, w, h);
@@ -515,6 +664,10 @@ window.MarsScene = class MarsScene {
       ctx.fillStyle = `rgba(179,197,222,${0.12 + star.size * 0.35})`;
       ctx.fillRect(star.x * w, star.y * h, 0.5 + star.size, 0.5 + star.size);
     }
+
+    const cosYaw = Math.cos(yaw), sinYaw = Math.sin(yaw);
+    const cosPitch = Math.cos(pitch), sinPitch = Math.sin(pitch);
+    const cosRoll = Math.cos(roll), sinRoll = Math.sin(roll);
     const data = this.sphereImage.data;
     for (let y = 0; y < 360; y++) for (let x = 0; x < 360; x++) {
       const nx = (x + 0.5) / 180 - 1, ny = 1 - (y + 0.5) / 180;
@@ -522,9 +675,24 @@ window.MarsScene = class MarsScene {
       const i = (y * 360 + x) * 4;
       if (r2 > 1) { data[i + 3] = 0; continue; }
       const nz = Math.sqrt(1 - r2);
-      const u = ((Math.atan2(nz, nx) + rotation) / (Math.PI * 2) + 1) % 1;
-      const v = Math.acos(ny) / Math.PI;
-      const j = (Math.min(511, Math.floor(v * 512)) * 1024 + Math.floor(u * 1024)) * 4;
+
+      // Inverse of Rz(roll) * Rx(pitch) * Ry(yaw): screen normal -> Mars local.
+      const zx = cosRoll * nx + sinRoll * ny;
+      const zy = -sinRoll * nx + cosRoll * ny;
+      const zz = nz;
+      const px = zx;
+      const py = cosPitch * zy + sinPitch * zz;
+      const pz = -sinPitch * zy + cosPitch * zz;
+      const lx = cosYaw * px - sinYaw * pz;
+      const ly = py;
+      const lz = sinYaw * px + cosYaw * pz;
+
+      const longitude = Math.atan2(-lz, lx);
+      const u = ((longitude + Math.PI) / MARS_TAU + 1) % 1;
+      const v = Math.acos(Math.max(-1, Math.min(1, ly))) / Math.PI;
+      const sampleX = Math.min(1023, Math.max(0, Math.floor(u * 1024)));
+      const sampleY = Math.min(511, Math.max(0, Math.floor(v * 512)));
+      const j = (sampleY * 1024 + sampleX) * 4;
       const light = 0.045 + Math.max(0, nx * -0.6 + ny * 0.43 + nz * 0.67) * 1.12;
       data[i] = Math.min(255, this.surfacePixels[j] * light);
       data[i + 1] = Math.min(255, this.surfacePixels[j + 1] * light * 0.97);
@@ -540,5 +708,6 @@ window.MarsScene = class MarsScene {
     const exploreY = this.mobile ? 0.21 - this.topicShift.y * 0.3 : 0.065 - this.topicShift.y * 0.3;
     const cy = h * (0.5 - arrivalY * (1 - this.explorationBlend) - exploreY * this.explorationBlend) - drift * 50 * (1 - this.explorationBlend * 0.45);
     ctx.drawImage(this.sphereCanvas, cx - radius, cy - radius, radius * 2, radius * 2);
+    this.updateMarkerProjectionFallback(yaw, pitch, roll, cx, cy, radius);
   }
 };

@@ -82,11 +82,11 @@
 .mars-exploration.is-switching h3, .mars-exploration.is-switching .mars-topic-subtitle, .mars-exploration.is-switching .mars-topic-summary, .mars-exploration.is-switching .mars-topic-facts, .mars-exploration.is-switching .mars-topic-source { animation: mars-topic-in .48s ease both; }
 
 .mars-focus-reticle {
-  --focus-x: 72%; --focus-y: 38%; position: absolute; z-index: 5; left: var(--focus-x); top: var(--focus-y);
+  position: absolute; z-index: 5; left: 0; top: 0;
   width: 24px; height: 24px; transform: translate(-50%, -50%) scale(.72); opacity: 0; pointer-events: none;
-  transition: left 1s cubic-bezier(.2,.75,.2,1), top 1s cubic-bezier(.2,.75,.2,1), opacity .45s ease, transform .6s ease;
+  transition: opacity .45s ease, transform .6s ease;
 }
-.mars-scene.is-exploring .mars-focus-reticle { opacity: .92; transform: translate(-50%, -50%) scale(1); transition-delay: 0s, 0s, .45s, .45s; }
+.mars-scene.is-exploring .mars-focus-reticle { opacity: var(--marker-opacity, .92); transform: translate(-50%, -50%) scale(1); transition-delay: .45s, .45s; }
 .mars-focus-ring { position: absolute; inset: 0; border: 1px solid #f1cf8cb8; border-radius: 50%; box-shadow: 0 0 16px #e6aa5252, inset 0 0 10px #e6aa5224; animation: mars-focus-pulse 2.8s ease-in-out infinite; }
 .mars-focus-dot { position: absolute; left: 50%; top: 50%; width: 3px; height: 3px; border-radius: 50%; background: #f4d494; transform: translate(-50%, -50%); box-shadow: 0 0 8px #f3c56f; }
 .mars-focus-line { position: absolute; left: 26px; top: 12px; width: 42px; height: 1px; background: linear-gradient(90deg, #edc57e8f, #edc57e12); }
@@ -113,7 +113,6 @@
   .mars-topic-facts li { font-size: 8.5px; line-height: 1.45; }
   .mars-exploration-controls { margin-top: 14px; }
   .mars-exploration-close { margin-top: 10px; }
-  .mars-focus-reticle { left: var(--focus-mobile-x, var(--focus-x)); top: var(--focus-mobile-y, var(--focus-y)); }
   .mars-focus-line { width: 26px; }
   .mars-focus-label { left: 57px; width: 100px; font-size: 5.5px; }
 }
