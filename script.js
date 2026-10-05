@@ -534,6 +534,14 @@ function resetMission() {
 }
 marsPreviousButton.addEventListener("click", travelToEarth);
 document.addEventListener("keydown", event => {
+  if (phase === "earth" && earth.exploring) {
+    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      earth.setExplorationStop(earth.topicIndex + (event.key === "ArrowRight" ? 1 : -1));
+    }
+    if (event.key === "Escape") { event.preventDefault(); earth.exitExploration(); }
+    return;
+  }
   if (event.key === "ArrowRight" && phase === "earth") travelToMars();
   if (event.key === "ArrowLeft" && phase === "mars" && !mars.exploring) travelToEarth();
   if (event.key === "Escape" && phase !== "idle") resetMission();

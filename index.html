@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="earth-scene.css">
   <link rel="stylesheet" href="mars-scene.css">
+  <link rel="stylesheet" href="exploration-media.css">
+  <script src="exploration-media.js" defer></script>
   <script src="earth-scene.js" defer></script>
   <script src="mars-scene.js" defer></script>
   <script src="script.js" defer></script>
@@ -82,37 +84,67 @@
       <div class="earth-viewport" id="earth-viewport" role="img" aria-label="Bumi, planet biru tempat kita tinggal, berputar perlahan di luar angkasa."></div>
       <div class="earth-edge-shade" aria-hidden="true"></div>
 
-      <aside class="earth-information" id="earth-information" aria-labelledby="earth-title">
-        <div class="earth-information-topline">
-          <span class="earth-kicker">PLANET ASAL KITA</span>
-          <span class="earth-sequence">01 / 02</span>
-        </div>
+      <div class="mars-caption earth-caption" id="earth-information">
+        <p class="eyebrow" aria-hidden="true"><span></span></p>
         <h2 id="earth-title" tabindex="-1">Bumi<span>.</span></h2>
-        <p class="earth-subtitle">Planet ketiga dari Matahari</p>
-        <div class="earth-information-scroll">
-          <p class="earth-summary">Rumah kita adalah dunia berbatu dengan lautan luas, atmosfer pelindung, dan satu-satunya tempat yang sejauh ini diketahui memiliki kehidupan.</p>
-          <ul class="earth-facts">
-            <li>Sekitar 71% permukaan Bumi tertutup air.</li>
-            <li>Atmosfer dekat permukaan terutama terdiri dari nitrogen dan oksigen.</li>
-            <li>Bumi adalah satu-satunya planet yang diketahui memiliki kehidupan.</li>
-          </ul>
-        </div>
-        <a class="earth-source" href="https://science.nasa.gov/earth/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
-        <div class="earth-controls" role="group" aria-label="Navigasi planet">
-          <button class="earth-nav earth-prev" type="button" aria-label="Planet sebelumnya: Venus, planet ke-2 dari Matahari, belum tersedia" disabled>
+        <p class="mars-whisper">Si Planet Biru.</p>
+        <div class="mars-arrival-actions" role="group" aria-label="Navigasi planet">
+          <button class="mars-planet-nav mars-planet-prev" id="earth-prev-planet" type="button" disabled aria-label="Planet sebelumnya: Venus, belum tersedia">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
-            <span><small>Planet sebelumnya</small><strong>Planet ke-2 dari Matahari</strong></span>
+            <span><small>Planet sebelumnya</small><strong>Venus</strong></span>
           </button>
-          <button class="earth-explore-button is-locked" type="button" aria-label="Jelajahi Bumi, segera hadir" aria-disabled="true" disabled>
+          <button class="mars-explore-button" id="earth-explore-button" type="button">
             <span>Jelajahi Bumi</span>
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="6.5" y="10.5" width="11" height="9" rx="1.5"/><path d="M9 10.5V8a3 3 0 0 1 6 0v2.5"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
-          <button class="earth-nav earth-next" id="earth-next" type="button" aria-label="Planet selanjutnya: Mars">
+          <button class="mars-planet-nav mars-planet-next" id="earth-next" type="button" aria-label="Planet selanjutnya: Mars">
             <span><small>Planet selanjutnya</small><strong>Mars</strong></span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
         </div>
+      </div>
+
+      <aside class="mars-exploration earth-exploration" id="earth-exploration" aria-labelledby="earth-topic-title" inert>
+        <div class="mars-exploration-topline">
+          <span class="mars-topic-kicker" id="earth-topic-kicker">TITIK EKSPLORASI</span>
+          <span class="mars-topic-count"><span id="earth-topic-current">01</span> / <span id="earth-topic-total">11</span></span>
+        </div>
+        <h3 id="earth-topic-title" tabindex="-1">Rumah Kita</h3>
+        <div class="earth-topic-meta">
+          <img class="earth-country-flag" id="earth-topic-flag" width="16" height="12" alt="" hidden>
+          <p class="mars-topic-subtitle" id="earth-topic-subtitle"></p>
+        </div>
+        <div class="mars-topic-scroll" id="earth-topic-scroll">
+          <figure class="exploration-media" id="earth-topic-media" hidden></figure>
+          <p class="mars-topic-summary" id="earth-topic-summary"></p>
+          <section class="earth-history" id="earth-topic-history-section" aria-labelledby="earth-history-heading" hidden>
+            <h4 class="earth-content-heading" id="earth-history-heading">Sejarah</h4>
+            <p class="mars-topic-summary" id="earth-topic-history"></p>
+          </section>
+          <h4 class="earth-content-heading" id="earth-topic-facts-heading" hidden>Fakta Singkat</h4>
+          <ul class="mars-topic-facts" id="earth-topic-facts"></ul>
+        </div>
+        <a class="mars-topic-source" id="earth-topic-source" href="https://science.nasa.gov/earth/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
+        <div class="mars-exploration-controls">
+          <button class="mars-topic-nav mars-topic-prev" id="earth-topic-prev" type="button" aria-label="Topik Bumi sebelumnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+          </button>
+          <div class="mars-topic-progress" id="earth-topic-progress" aria-hidden="true"></div>
+          <button class="mars-topic-nav mars-topic-next" id="earth-topic-next" type="button" aria-label="Topik Bumi berikutnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+        <button class="mars-exploration-close" id="earth-exploration-close" type="button">Kembali ke panorama Bumi</button>
       </aside>
+
+      <div class="earth-location-dot" aria-hidden="true">
+        <span class="earth-location-ring"></span>
+        <span class="earth-location-line"></span>
+        <span class="earth-location-label">
+          <span class="earth-location-title" id="earth-marker-title"></span>
+          <span class="earth-location-country" id="earth-marker-country"></span>
+        </span>
+      </div>
     </section>
     <section class="mars-scene" id="mars-scene" aria-labelledby="mars-title" hidden>
       <div class="mars-space-haze" aria-hidden="true"></div>
@@ -153,6 +185,7 @@
         <h3 id="mars-topic-title" tabindex="-1">Olympus Mons</h3>
         <p class="mars-topic-subtitle" id="mars-topic-subtitle"></p>
         <div class="mars-topic-scroll" id="mars-topic-scroll">
+          <figure class="exploration-media" id="mars-topic-media" hidden></figure>
           <p class="mars-topic-summary" id="mars-topic-summary"></p>
           <ul class="mars-topic-facts" id="mars-topic-facts"></ul>
         </div>

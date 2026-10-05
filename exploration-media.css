@@ -1,0 +1,14 @@
+/* Media lives inside the existing scroller; header, sources and controls stay fixed. */
+.exploration-media { margin: 0 0 18px; }
+.exploration-media[hidden], .exploration-media [hidden] { display: none; }
+.exploration-media-frame { position: relative; width: 100%; height: clamp(100px, 15vh, 140px); overflow: hidden; border: 1px solid #bca47738; border-radius: 3px; background: #030912; }
+.exploration-media-frame img { display: block; width: 100%; height: 100%; }
+.exploration-media-status { position: absolute; inset: 0; display: grid; place-content: center; padding: 20px; color: #b9bec6; font-size: 11px; line-height: 1.6; text-align: center; background: #030912; }
+.exploration-media figcaption { display: grid; gap: 4px; padding-top: 8px; color: #a9b1bb; font-size: 10px; line-height: 1.5; overflow-wrap: anywhere; }
+.exploration-media figcaption a { width: fit-content; color: #c4b08c; text-decoration: underline; text-decoration-color: #c4b08c50; text-underline-offset: 3px; }
+.exploration-media figcaption a:hover { color: #e2caa4; }
+.exploration-media figcaption a:focus-visible { outline: 1px solid #d2b382; outline-offset: 3px; }
+@media (max-width: 700px), (max-height: 700px) {
+  .exploration-media-frame { height: 100px; }
+  .exploration-media { margin-bottom: 14px; }
+}

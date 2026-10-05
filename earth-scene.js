@@ -4,6 +4,268 @@
 const EARTH_SURFACE_TEXTURE = "assets/textures/earth-blue-marble-4k.jpg";
 const MARS_TRAVEL_TEXTURE = "assets/textures/mars-surface-2k.jpg";
 
+const EARTH_EXPLORATION_STOPS = [
+  {
+    "title": "Rumah Kita",
+    "subtitle": "Planet ketiga dari Matahari",
+    "summary": "Bumi adalah dunia berbatu dengan lautan luas, atmosfer pelindung, dan satu-satunya tempat yang sejauh ini diketahui memiliki kehidupan.",
+    "facts": [
+      "Sekitar 71% permukaannya tertutup air.",
+      "Atmosfer dekat permukaan terutama terdiri dari nitrogen dan oksigen.",
+      "Bumi memiliki satu satelit alami: Bulan."
+    ],
+    "source": "https://science.nasa.gov/earth/facts/",
+    "sourceName": "NASA Science",
+    "location": null
+  },
+  {
+    "title": "Laut & Daratan",
+    "subtitle": "Si Planet Biru",
+    "summary": "Lautan mendominasi permukaan Bumi. Daratan membentuk benua dan pulau yang menjadi rumah bagi beragam ekosistem.",
+    "facts": [
+      "Sekitar 29% permukaan Bumi berupa daratan.",
+      "Air cair di permukaan membedakan Bumi dari planet lain yang telah kita amati."
+    ],
+    "source": "https://science.nasa.gov/earth/facts/",
+    "sourceName": "NASA Science",
+    "location": null
+  },
+  {
+    "title": "Atmosfer",
+    "subtitle": "Selimut tipis kehidupan",
+    "summary": "Lapisan gas di sekitar Bumi membantu menjaga suhu dan melindungi permukaan dari banyak meteoroid.",
+    "facts": [
+      "Udara dekat permukaan mengandung sekitar 78% nitrogen dan 21% oksigen.",
+      "Sekitar 1% sisanya berupa gas lain; jumlah uap air bervariasi."
+    ],
+    "source": "https://science.nasa.gov/earth/facts/",
+    "sourceName": "NASA Science",
+    "location": null
+  },
+  {
+    "title": "Kehidupan",
+    "subtitle": "Satu rumah bersama",
+    "summary": "Sejauh pengetahuan kita, Bumi adalah satu-satunya planet yang memiliki kehidupan. Air cair dan kondisi lingkungan yang mendukung membuatnya istimewa.",
+    "facts": [
+      "Belum ada kehidupan di luar Bumi yang terkonfirmasi.",
+      "Lanjutkan perjalanan untuk mengenal tujuh karya manusia pilihan New7Wonders tahun 2007."
+    ],
+    "source": "https://science.nasa.gov/earth/facts/",
+    "sourceName": "NASA Science",
+    "location": null
+  },
+  {
+    "title": "Tembok Besar Tiongkok",
+    "subtitle": "Badaling, Tiongkok",
+    "summary": "Jaringan pertahanan yang dibangun lintas dinasti di wilayah utara Tiongkok.",
+    "facts": [
+      "Terdiri dari tembok, menara pengawas, benteng, dan jalur di atas dinding.",
+      "Strukturnya mengikuti punggung bukit dan medan pegunungan.",
+      "Titik pada globe menandai Badaling, salah satu bagian yang terkenal."
+    ],
+    "source": "https://whc.unesco.org/en/list/438/",
+    "sourceName": "UNESCO",
+    "location": {
+      "latitude": 40.354,
+      "longitude": 116.006
+    },
+    "displayCountry": "Tiongkok",
+    "cityOrRegion": "Badaling",
+    "flag": "assets/flags/cn.svg",
+    "history": "Sekitar 220 SM, Qin Shi Huang menyatukan bagian-bagian benteng yang lebih tua. Pembangunannya berlanjut lintas dinasti hingga masa Ming (1368–1644) untuk memperkuat pertahanan di utara Tiongkok.",
+    "image": "assets/exploration/great-wall.webp",
+    "imageAlt": "Foto Tembok Besar Tiongkok mengikuti punggung pegunungan di Badaling",
+    "imageCredit": "Ktausz",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Great_wall_panorama.jpg",
+    "imageLicense": "CC BY-SA 3.0",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "imageFit": "contain",
+    "imageCaption": "Badaling, Tiongkok",
+    "imageWidth": 1000,
+    "imageHeight": 263
+  },
+  {
+    "title": "Petra",
+    "subtitle": "Wadi Musa, Yordania",
+    "summary": "Kota Nabatea yang memadukan bangunan pahatan batu dengan bentang gurun.",
+    "facts": [
+      "Sebagian bangunannya dipahat langsung pada tebing batu.",
+      "Saluran, bendungan, dan penampungan air membantu kehidupan di gurun.",
+      "Arsitekturnya memadukan tradisi setempat dengan pengaruh Helenistik."
+    ],
+    "source": "https://whc.unesco.org/en/list/326/",
+    "sourceName": "UNESCO",
+    "location": {
+      "latitude": 30.3285,
+      "longitude": 35.4444
+    },
+    "displayCountry": "Yordania",
+    "cityOrRegion": "Wadi Musa",
+    "flag": "assets/flags/jo.svg",
+    "history": "Petra berkembang sebagai ibu kota kerajaan Nabatea dan pusat perdagangan pada masa Helenistik serta Romawi. Kota ini menghubungkan jalur kafilah dari Arabia, Mesir, dan kawasan Mediterania.",
+    "image": "assets/exploration/petra.webp",
+    "imageAlt": "Foto fasad Al-Khazneh yang dipahat pada tebing batu di Petra, Yordania",
+    "imageCredit": "Markv; koreksi perspektif: Berthold Werner",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Treasury_Petra.jpg",
+    "imageLicense": "CC BY-SA 3.0",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "imageFit": "contain",
+    "imageCaption": "Al-Khazneh, Petra",
+    "imageWidth": 845,
+    "imageHeight": 709
+  },
+  {
+    "title": "Kristus Penebus",
+    "subtitle": "Rio de Janeiro, Brasil",
+    "summary": "Patung Art Deco di puncak Corcovado yang menjadi ikon kota Rio de Janeiro.",
+    "facts": [
+      "Tinggi patung sekitar 30 meter, di atas alas setinggi 8 meter.",
+      "Bentangan kedua lengannya sekitar 28 meter.",
+      "Terbuat dari beton bertulang dengan lapisan batu sabun."
+    ],
+    "source": "https://world.new7wonders.com/wonders/cristo-redentor-1931-rio-de-janeiro-brazil/",
+    "sourceName": "New7Wonders",
+    "location": {
+      "latitude": -22.9519,
+      "longitude": -43.2105
+    },
+    "displayCountry": "Brasil",
+    "cityOrRegion": "Rio de Janeiro",
+    "flag": "assets/flags/br.svg",
+    "history": "Dibangun pada 1922–1931 sebagai monumen Kristen, patung ini melibatkan pematung Paul Landowski dan insinyur Heitor da Silva Costa. Sosok berlengan terbuka itu kemudian menjadi lambang budaya Rio de Janeiro.",
+    "image": "assets/exploration/christ-redeemer.webp",
+    "imageAlt": "Foto patung Christ the Redeemer dengan kedua lengan terbuka di Rio de Janeiro, Brasil",
+    "imageCredit": "acediscovery",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Christ-Redeemer-Rio-de-Janeiro.jpg",
+    "imageLicense": "CC BY 4.0",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "imageFit": "contain",
+    "imageCaption": "Corcovado, Rio de Janeiro",
+    "imageWidth": 1000,
+    "imageHeight": 750
+  },
+  {
+    "title": "Machu Picchu",
+    "subtitle": "Cusco, Peru",
+    "summary": "Situs Inka yang menyatu dengan lereng curam Pegunungan Andes.",
+    "facts": [
+      "Berada pada ketinggian sekitar 2.430 meter.",
+      "Sekitar 200 struktur tersusun mengikuti punggung pegunungan.",
+      "Teras pertanian dan saluran irigasi menyatu dengan lingkungan alam."
+    ],
+    "source": "https://whc.unesco.org/en/list/274/",
+    "sourceName": "UNESCO",
+    "location": {
+      "latitude": -13.1631,
+      "longitude": -72.545
+    },
+    "displayCountry": "Peru",
+    "cityOrRegion": "Cusco",
+    "flag": "assets/flags/pe.svg",
+    "history": "Dibangun oleh peradaban Inka pada abad ke-15, Machu Picchu memadukan ruang upacara, hunian, dan pertanian di punggung Andes. Situs ini menjadi salah satu peninggalan penting kemampuan tata ruang dan teknik bangunan Inka.",
+    "image": "assets/exploration/machu-picchu.webp",
+    "imageAlt": "Foto teras dan bangunan batu Machu Picchu di pegunungan Andes, Peru",
+    "imageCredit": "Martin St-Amant (S23678)",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Machu_Picchu_D%C3%A9cembre_2006_-_Panorama_1.jpg",
+    "imageLicense": "CC BY 3.0",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+    "imageFit": "contain",
+    "imageCaption": "Machu Picchu, Andes",
+    "imageWidth": 1000,
+    "imageHeight": 625
+  },
+  {
+    "title": "Chichén Itzá",
+    "subtitle": "Yucatán, Meksiko",
+    "summary": "Salah satu pusat penting peradaban Maya di Semenanjung Yucatán.",
+    "facts": [
+      "El Castillo juga dikenal sebagai Kuil Kukulkan.",
+      "El Caracol merupakan bangunan bundar yang dikaitkan dengan pengamatan astronomi.",
+      "Cenote, lubang alami berisi air, menjadi sumber air penting bagi kota."
+    ],
+    "source": "https://whc.unesco.org/en/list/483/",
+    "sourceName": "UNESCO",
+    "location": {
+      "latitude": 20.6843,
+      "longitude": -88.5678
+    },
+    "displayCountry": "Meksiko",
+    "cityOrRegion": "Yucatán",
+    "flag": "assets/flags/mx.svg",
+    "history": "Chichén Itzá tumbuh sebagai kota Maya pada periode Klasik. Bangunan awalnya berkembang pada abad ke-6 hingga ke-10, lalu memperlihatkan perpaduan tradisi Maya dan pengaruh dari Meksiko tengah.",
+    "image": "assets/exploration/chichen-itza.webp",
+    "imageAlt": "Foto piramida El Castillo di Chichén Itzá, Meksiko",
+    "imageCredit": "Daniel Schwen",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Chichen_Itza_3.jpg",
+    "imageLicense": "CC BY-SA 4.0",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "imageFit": "contain",
+    "imageCaption": "El Castillo, Chichén Itzá",
+    "imageWidth": 1000,
+    "imageHeight": 532
+  },
+  {
+    "title": "Colosseum",
+    "subtitle": "Roma, Italia",
+    "summary": "Amfiteater besar peninggalan Romawi yang juga dikenal sebagai Amfiteater Flavia.",
+    "facts": [
+      "Nama aslinya adalah Amfiteater Flavia.",
+      "Arena dilengkapi sistem panggung dan ruang pelayanan yang rumit.",
+      "Pada masa berikutnya, sebagian bangunannya dipakai sebagai hunian dan sumber bahan bangunan."
+    ],
+    "source": "https://colosseo.it/en/area/the-colosseum/",
+    "sourceName": "Parco archeologico del Colosseo",
+    "location": {
+      "latitude": 41.8902,
+      "longitude": 12.4922
+    },
+    "displayCountry": "Italia",
+    "cityOrRegion": "Roma",
+    "flag": "assets/flags/it.svg",
+    "history": "Dibangun pada abad pertama Masehi oleh dinasti Flavia, Colosseum menjadi tempat pertarungan gladiator dan pertunjukan publik. Bangunannya memperlihatkan kemampuan teknik serta penyelenggaraan acara besar dalam masyarakat Romawi.",
+    "image": "assets/exploration/colosseum.webp",
+    "imageAlt": "Foto lengkungan bertingkat Colosseum di Roma, Italia",
+    "imageCredit": "DAVID ILIFF",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Colosseum_in_Rome%2C_Italy_-_April_2007.jpg",
+    "imageLicense": "CC BY-SA 2.5",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/2.5/",
+    "imageFit": "contain",
+    "imageCaption": "Colosseum, Roma",
+    "imageWidth": 1000,
+    "imageHeight": 587
+  },
+  {
+    "title": "Taj Mahal",
+    "subtitle": "Agra, India",
+    "summary": "Mausoleum marmer abad ke-17 yang dibangun atas perintah Kaisar Mughal Shah Jahan.",
+    "facts": [
+      "Terletak di tepi Sungai Yamuna.",
+      "Empat menara mengapit bangunan makam pada sudut pelatarannya.",
+      "Hiasannya memadukan kaligrafi dan tatahan batu pada marmer."
+    ],
+    "source": "https://whc.unesco.org/en/list/252/",
+    "sourceName": "UNESCO",
+    "location": {
+      "latitude": 27.1751,
+      "longitude": 78.0421
+    },
+    "displayCountry": "India",
+    "cityOrRegion": "Agra",
+    "flag": "assets/flags/in.svg",
+    "history": "Shah Jahan memerintahkan pembangunan kompleks ini pada abad ke-17 untuk mengenang istrinya, Mumtaz Mahal. Makam utamanya selesai pada 1648, sementara bangunan pelengkap diselesaikan hingga 1653.",
+    "image": "assets/exploration/taj-mahal.webp",
+    "imageAlt": "Foto Taj Mahal dan taman di depannya di Agra, India",
+    "imageCredit": "Sidheeq",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Taj_Mahal_complete_clear_view.jpg",
+    "imageLicense": "CC BY-SA 4.0",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "imageFit": "contain",
+    "imageCaption": "Taj Mahal, Agra",
+    "imageWidth": 600,
+    "imageHeight": 800
+  }
+];
+
 // Earth owns the post-launch Earth view and the lightweight planet-to-planet travel bridge.
 // The existing Mars renderer still owns the actual Mars arrival/exploration scene.
 window.EarthScene = class EarthScene {
@@ -29,6 +291,28 @@ window.EarthScene = class EarthScene {
     this.pointer = { x: 0, y: 0 };
     this.cameraOffset = { x: 0, y: 0 };
     this.tick = this.tick.bind(this);
+    this.exploring = false;
+    this.topicIndex = 0;
+    this.pose = { yaw: 4.58, pitch: 0, roll: -0.18 };
+    this.poseTarget = { ...this.pose };
+    this.exploration = document.getElementById("earth-exploration");
+    this.exploreButton = document.getElementById("earth-explore-button");
+    this.marker = this.element.querySelector(".earth-location-dot");
+    this.exploreButton.addEventListener("click", () => this.enterExploration());
+    document.getElementById("earth-exploration-close").addEventListener("click", () => this.exitExploration());
+    document.getElementById("earth-topic-prev").addEventListener("click", () => this.setExplorationStop(this.topicIndex - 1));
+    document.getElementById("earth-topic-next").addEventListener("click", () => this.setExplorationStop(this.topicIndex + 1));
+    const progress = document.getElementById("earth-topic-progress");
+    progress.removeAttribute("aria-hidden");
+    progress.replaceChildren(...EARTH_EXPLORATION_STOPS.map((stop, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.setAttribute("aria-label", stop.title);
+      button.title = stop.title;
+      button.addEventListener("click", () => this.setExplorationStop(index));
+      return button;
+    }));
+    this.setExplorationStop(0);
 
     this.stars = Array.from({ length: 220 }, (_, n) => {
       const rand = seed => { const v = Math.sin(seed * 113.7 + 283.1) * 43758.5453; return v - Math.floor(v); };
@@ -39,6 +323,13 @@ window.EarthScene = class EarthScene {
       if (this.active && !this.travelMode) this.onNext();
     });
     window.addEventListener("resize", () => { if (this.active) { this.resize(); this.render(); } });
+    // Observe the actual scene box as viewport-unit layout settles after resizing.
+    if (window.ResizeObserver) {
+      this.sizeObserver = new ResizeObserver(() => {
+        if (this.active) { this.resize(); this.render(); }
+      });
+      this.sizeObserver.observe(this.element.parentElement);
+    }
     document.addEventListener("visibilitychange", () => {
       if (!this.active) return;
       cancelAnimationFrame(this.frame);
@@ -57,6 +348,113 @@ window.EarthScene = class EarthScene {
       this.pointer.y = (event.clientY - rect.top) / rect.height - 0.5;
     });
     this.element.addEventListener("pointerleave", () => { this.pointer.x = this.pointer.y = 0; });
+  }
+
+
+  wake() {
+    if (this.active && !this.frame) { this.previous = performance.now(); this.tick(this.previous); }
+  }
+
+  enterExploration() {
+    if (!this.active || this.travelMode || this.exploring) return;
+    this.exploring = true;
+    this.information.inert = true;
+    this.exploration.inert = false;
+    this.element.classList.add("is-exploring");
+    this.setExplorationStop(this.topicIndex);
+    document.getElementById("earth-topic-title").focus({ preventScroll: true });
+  }
+
+  exitExploration(focus = true) {
+    this.exploring = false;
+    this.exploration.inert = true;
+    this.element.classList.remove("is-exploring");
+    this.information.inert = false;
+    this.marker.style.opacity = "0";
+    if (focus) this.exploreButton.focus({ preventScroll: true });
+    this.wake();
+  }
+
+  setExplorationStop(index) {
+    this.topicIndex = Math.max(0, Math.min(EARTH_EXPLORATION_STOPS.length - 1, index));
+    const stop = EARTH_EXPLORATION_STOPS[this.topicIndex];
+    window.ExplorationMedia.render("earth", stop);
+    const get = name => document.getElementById(`earth-topic-${name}`);
+    get("title").textContent = stop.title;
+    get("kicker").textContent = stop.location ? "TUJUH KEAJAIBAN DUNIA MODERN" : "MENGENAL BUMI";
+    get("subtitle").textContent = stop.cityOrRegion ? `${stop.cityOrRegion}, ${stop.displayCountry}` : stop.subtitle;
+    const flag = get("flag");
+    flag.hidden = !stop.flag;
+    if (stop.flag) flag.src = stop.flag;
+    else flag.removeAttribute("src");
+    get("history-section").hidden = !stop.history;
+    get("history").textContent = stop.history || "";
+    get("facts-heading").hidden = !stop.location;
+    this.marker.classList.add("is-relocating");
+    this.marker.style.opacity = "0";
+    document.getElementById("earth-marker-title").textContent = stop.location ? stop.title : "";
+    document.getElementById("earth-marker-country").textContent = stop.displayCountry || "";
+    get("summary").textContent = stop.summary;
+    get("facts").replaceChildren(...stop.facts.map(text => { const li = document.createElement("li"); li.textContent = text; return li; }));
+    get("scroll").scrollTop = 0;
+    get("source").href = stop.source;
+    get("source").textContent = `Sumber: ${stop.sourceName} ↗`;
+    get("current").textContent = String(this.topicIndex + 1).padStart(2, "0");
+    get("total").textContent = String(EARTH_EXPLORATION_STOPS.length).padStart(2, "0");
+    get("prev").disabled = this.topicIndex === 0;
+    get("next").disabled = this.topicIndex === EARTH_EXPLORATION_STOPS.length - 1;
+    [...get("progress").children].forEach((button, i) => {
+      button.classList.toggle("is-active", i === this.topicIndex);
+      button.setAttribute("aria-current", i === this.topicIndex ? "step" : "false");
+    });
+    this.exploration.classList.remove("is-switching");
+    if (this.exploring) {
+      void this.exploration.offsetWidth;
+      this.exploration.classList.add("is-switching");
+      document.getElementById("announcement").textContent = `Eksplorasi Bumi ${this.topicIndex + 1}: ${stop.title}.`;
+    }
+    if (stop.location) {
+      // Blue Marble: u=(longitude+180)/360, v=(90-latitude)/180.
+      // SphereGeometry local point: (cos(lat)cos(lon), sin(lat), -cos(lat)sin(lon)).
+      // Rz * Rx(latitude) * Ry(-pi/2-longitude) brings it to the front (+Z).
+      const yaw = -Math.PI / 2 - stop.location.longitude * Math.PI / 180;
+      const delta = Math.atan2(Math.sin(yaw - this.pose.yaw), Math.cos(yaw - this.pose.yaw));
+      this.poseTarget = { yaw: this.pose.yaw + delta, pitch: stop.location.latitude * Math.PI / 180, roll: 0 };
+      if (this.motion.matches && this.active && this.exploring) {
+        this.pose = { ...this.poseTarget };
+        this.render();
+      }
+    }
+    this.wake();
+  }
+
+  applyEarthPose() {
+    const T = this.THREE;
+    this.planet.quaternion.setFromEuler(new T.Euler(this.pose.pitch, this.pose.yaw, this.pose.roll, "ZXY"));
+  }
+
+  updateMarker() {
+    const location = EARTH_EXPLORATION_STOPS[this.topicIndex].location;
+    if (!this.exploring || !location || this.travelMode || this.mode !== "webgl") { this.marker.style.opacity = "0"; return; }
+    const T = this.THREE, lat = location.latitude * Math.PI / 180, lon = location.longitude * Math.PI / 180;
+    const normal = new T.Vector3(Math.cos(lat)*Math.cos(lon), Math.sin(lat), -Math.cos(lat)*Math.sin(lon)).applyQuaternion(this.planet.quaternion);
+    const point = normal.clone().multiplyScalar(1.006).add(this.planetGroup.position);
+    const visible = normal.dot(this.camera.position.clone().sub(point)) > 0;
+    const settled = Math.abs(this.poseTarget.yaw-this.pose.yaw) + Math.abs(this.poseTarget.pitch-this.pose.pitch) < 0.025;
+    point.project(this.camera);
+    this.positionMarker((point.x+1)*this.width/2, (1-point.y)*this.height/2, visible && settled);
+  }
+
+  positionMarker(x, y, visible) {
+    this.marker.style.left = `${x}px`;
+    this.marker.style.top = `${y}px`;
+    this.marker.classList.toggle("is-relocating", !visible);
+    this.marker.classList.toggle("is-left", !this.mobile && x + 250 > this.width - 20);
+    // Keep the narrow-screen label above the target and within the viewport.
+    const labelWidth = Math.min(200, this.width - 32);
+    const center = Math.max(16 + labelWidth/2, Math.min(this.width-16-labelWidth/2, x));
+    this.marker.style.setProperty("--label-shift", `${center-x}px`);
+    this.marker.style.opacity = visible ? ".9" : "0";
   }
 
   loadImage(src) {
@@ -217,6 +615,16 @@ window.EarthScene = class EarthScene {
     if (!ctx) throw new Error("Canvas unavailable");
     this.canvas = canvas;
     this.ctx = ctx;
+    // Use the same inverse spherical sampling as Mars, including latitude.
+    const source = document.createElement("canvas");
+    source.width = 1024; source.height = 512;
+    const sourceContext = source.getContext("2d", { willReadFrequently: true });
+    sourceContext.drawImage(this.surface, 0, 0, 1024, 512);
+    this.surfacePixels = sourceContext.getImageData(0, 0, 1024, 512).data;
+    this.sphereCanvas = document.createElement("canvas");
+    this.sphereCanvas.width = this.sphereCanvas.height = 360;
+    this.sphereContext = this.sphereCanvas.getContext("2d");
+    this.sphereImage = this.sphereContext.createImageData(360, 360);
     this.viewport.replaceChildren(canvas);
     this.mode = "canvas";
     this.element.dataset.renderer = this.mode;
@@ -244,6 +652,7 @@ window.EarthScene = class EarthScene {
   }
 
   start({ settled = false } = {}) {
+    this.exitExploration(false);
     this.active = true;
     this.time = settled ? 6 : 0;
     this.travelMode = null;
@@ -263,6 +672,7 @@ window.EarthScene = class EarthScene {
 
   beginTravelToMars({ onReveal, onComplete } = {}) {
     if (!this.active || this.travelMode) return;
+    this.exitExploration(false);
     this.travelMode = "to-mars";
     this.travelStartedAt = this.time;
     this.travelDuration = this.motion.matches ? 0.4 : 6.2;
@@ -277,6 +687,7 @@ window.EarthScene = class EarthScene {
 
   beginTravelFromMars({ onCovered, onComplete, marsRotation = 0.9024 } = {}) {
     if (this.active && this.travelMode) return;
+    this.exitExploration(false);
     this.active = true;
     this.time = 0;
     this.travelMode = "to-earth";
@@ -301,6 +712,7 @@ window.EarthScene = class EarthScene {
 
   stop() {
     this.active = false;
+    this.exitExploration(false);
     cancelAnimationFrame(this.frame);
     this.frame = null;
     this.element.hidden = true;
@@ -322,6 +734,11 @@ window.EarthScene = class EarthScene {
     const damping = 1 - Math.exp(-delta * 2);
     this.cameraOffset.x += (this.pointer.x - this.cameraOffset.x) * damping;
     this.cameraOffset.y += (this.pointer.y - this.cameraOffset.y) * damping;
+    const location = EARTH_EXPLORATION_STOPS[this.topicIndex].location;
+    if (!this.exploring || !location) this.poseTarget = { yaw: this.pose.yaw + (this.motion.matches ? 0 : delta * .026), pitch: 0, roll: -.18 };
+    if (!this.exploring || !location) this.pose.yaw = this.poseTarget.yaw;
+    const easing = this.motion.matches ? 1 : 1 - Math.exp(-delta * 3.5);
+    for (const key of ["yaw", "pitch", "roll"]) this.pose[key] += (this.poseTarget[key] - this.pose[key]) * easing;
     this.render();
     if (!this.motion.matches || this.time < 8 || this.travelMode || this.mode === "pending") this.frame = requestAnimationFrame(this.tick);
   }
@@ -355,9 +772,9 @@ window.EarthScene = class EarthScene {
 
     if (infoReveal > 0.02 && !this.information.classList.contains("is-visible")) {
       this.information.classList.add("is-visible");
-      this.information.inert = false;
+      this.information.inert = this.exploring;
       document.getElementById("announcement").textContent = "Bumi, rumah kita. Planet ketiga dari Matahari.";
-      if (document.activeElement === document.body || document.activeElement.id === "launch-button") this.title.focus({ preventScroll: true });
+      if (!this.exploring && (document.activeElement === document.body || document.activeElement.id === "launch-button")) this.title.focus({ preventScroll: true });
     }
 
     const drift = this.motion.matches ? 0 : Math.sin(t * 0.32) * 0.025;
@@ -369,7 +786,7 @@ window.EarthScene = class EarthScene {
       this.travelMarsGroup.visible = false;
       this.planetGroup.visible = true;
       this.planetGroup.position.set(layout.x * framing, layout.y * framing + drift, 0);
-      this.planet.rotation.set(0, rotation, -0.18);
+      this.applyEarthPose();
       const pointerStrength = 1 - infoReveal * 0.35;
       this.camera.position.set(
         this.motion.matches ? 0 : this.cameraOffset.x * 0.10 * pointerStrength,
@@ -377,7 +794,10 @@ window.EarthScene = class EarthScene {
         distance
       );
       this.camera.lookAt(0, 0, 0);
+      this.planet.material.opacity = 1;
+      this.atmosphere.material.uniforms.glowStrength.value = .25;
       this.renderer.render(this.scene, this.camera);
+      this.updateMarker();
     } else if (this.mode === "canvas") {
       this.drawCanvasEarth(framing, rotation, distance, drift);
     } else if (this.mode === "css") {
@@ -435,7 +855,7 @@ window.EarthScene = class EarthScene {
       this.travelMarsGroup.visible = marsOpacity > 0.002;
       this.planetGroup.position.set(layout.x, layout.y, 0);
       this.travelMarsGroup.position.set(layout.x + separation, marsDestinationY, 0);
-      this.planet.rotation.set(0, earthRotation, -0.18);
+      this.applyEarthPose();
       this.travelMars.rotation.set(0.09, marsRotation, -0.07);
       this.planet.material.opacity = earthOpacity;
       this.atmosphere.material.uniforms.glowStrength.value = 0.25 * earthOpacity;
@@ -525,7 +945,48 @@ window.EarthScene = class EarthScene {
     const radius = this.finalRadius * this.finalDistance / distance;
     const cx = w * (this.mobile ? 0.5 : 0.5 + 0.14 * framing);
     const cy = h * (this.mobile ? 0.36 - 0.05 * framing : 0.5 - 0.03 * framing) + drift * 18;
-    this.drawTexturedDisc(this.surface, cx, cy, radius, rotation, 1, "rgba(80,160,255,.45)");
+    const { yaw, pitch, roll } = this.pose;
+    const cosYaw = Math.cos(yaw), sinYaw = Math.sin(yaw);
+    const cosPitch = Math.cos(pitch), sinPitch = Math.sin(pitch);
+    const cosRoll = Math.cos(roll), sinRoll = Math.sin(roll);
+    const data = this.sphereImage.data;
+    for (let y = 0; y < 360; y++) for (let x = 0; x < 360; x++) {
+      const nx = (x + 0.5) / 180 - 1, ny = 1 - (y + 0.5) / 180;
+      const r2 = nx * nx + ny * ny;
+      const i = (y * 360 + x) * 4;
+      if (r2 > 1) { data[i + 3] = 0; continue; }
+      const nz = Math.sqrt(1 - r2);
+
+      // Inverse of Rz(roll) * Rx(pitch) * Ry(yaw): screen normal -> Earth local.
+      const zx = cosRoll * nx + sinRoll * ny;
+      const zy = -sinRoll * nx + cosRoll * ny;
+      const zz = nz;
+      const px = zx;
+      const py = cosPitch * zy + sinPitch * zz;
+      const pz = -sinPitch * zy + cosPitch * zz;
+      const lx = cosYaw * px - sinYaw * pz;
+      const ly = py;
+      const lz = sinYaw * px + cosYaw * pz;
+
+      const longitude = Math.atan2(-lz, lx);
+      const u = ((longitude + Math.PI) / (Math.PI * 2) + 1) % 1;
+      const v = Math.acos(Math.max(-1, Math.min(1, ly))) / Math.PI;
+      const sampleX = Math.min(1023, Math.max(0, Math.floor(u * 1024)));
+      const sampleY = Math.min(511, Math.max(0, Math.floor(v * 512)));
+      const j = (sampleY * 1024 + sampleX) * 4;
+      const light = 0.045 + Math.max(0, nx * -0.6 + ny * 0.43 + nz * 0.67) * 1.12;
+      data[i] = Math.min(255, this.surfacePixels[j] * light);
+      data[i + 1] = Math.min(255, this.surfacePixels[j + 1] * light * 0.97);
+      data[i + 2] = Math.min(255, this.surfacePixels[j + 2] * light * 0.93);
+      data[i + 3] = Math.min(255, (1 - r2) * 180 * 255);
+    }
+    this.sphereContext.putImageData(this.sphereImage, 0, 0);
+    ctx.drawImage(this.sphereCanvas, cx-radius, cy-radius, radius*2, radius*2);
+    const location = EARTH_EXPLORATION_STOPS[this.topicIndex].location;
+    const settled = Math.abs(this.poseTarget.yaw-yaw)+Math.abs(this.poseTarget.pitch-pitch) < .025;
+    if (this.exploring && location && settled) {
+      this.positionMarker(cx, cy, true);
+    } else this.marker.style.opacity = "0";
   }
 
   drawCanvasTravel(state, reverse, earthOpacity, marsOpacity) {

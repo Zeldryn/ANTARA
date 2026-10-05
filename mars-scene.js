@@ -41,6 +41,16 @@ const marsSurfacePoint = (location, radius = 1) => {
 
 const MARS_EXPLORATION_STOPS = Object.freeze([
   {
+    image: "assets/exploration/olympus-mons.webp",
+    imageAlt: "Olympus Mons · mosaik Viking",
+    imageCredit: "NASA/JPL/USGS",
+    imageSource: "https://science.nasa.gov/photojournal/olympus-mons/",
+    imageLicense: "Kebijakan gambar NASA",
+    imageLicenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    imageFit: "contain",
+    imageCaption: "Olympus Mons · mosaik Viking",
+    imageWidth: 866,
+    imageHeight: 800,
     title: "Olympus Mons",
     kicker: "GUNUNG API RAKSASA",
     subtitle: "Gunung api terbesar yang dikenal di Tata Surya",
@@ -55,6 +65,16 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     shift: { x: 0.00, y: -0.01 }
   },
   {
+    image: "assets/exploration/valles-marineris.webp",
+    imageAlt: "Valles Marineris · mosaik Viking",
+    imageCredit: "NASA/JPL-Caltech",
+    imageSource: "https://science.nasa.gov/resource/valles-marineris-the-grand-canyon-of-mars/",
+    imageLicense: "Kebijakan gambar NASA",
+    imageLicenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    imageFit: "contain",
+    imageCaption: "Valles Marineris · mosaik Viking",
+    imageWidth: 800,
+    imageHeight: 800,
     title: "Valles Marineris",
     kicker: "NGARAI PLANET",
     subtitle: "Sistem ngarai terbesar di Tata Surya",
@@ -69,6 +89,16 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     shift: { x: 0.018, y: 0.018 }
   },
   {
+    image: "assets/exploration/jezero.webp",
+    imageAlt: "Citra berwarna olahan memperlihatkan endapan delta di Kawah Jezero, Mars",
+    imageCredit: "NASA/JPL-Caltech/MSSS/JHU-APL",
+    imageSource: "https://science.nasa.gov/photojournal/jezero-crater-mars-2020s-landing-site/",
+    imageLicense: "Kebijakan gambar NASA",
+    imageLicenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    imageFit: "contain",
+    imageCaption: "Delta Jezero · warna olahan",
+    imageWidth: 998,
+    imageHeight: 800,
     title: "Kawah Jezero",
     kicker: "JEJAK AIR PURBA",
     subtitle: "Laboratorium alam bagi Perseverance",
@@ -83,6 +113,16 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     shift: { x: -0.012, y: 0.03 }
   },
   {
+    image: "assets/exploration/polar-cap.webp",
+    imageAlt: "Citra Viking 1 memperlihatkan tudung es kutub utara Mars pada musim panas",
+    imageCredit: "NASA/JPL/USGS",
+    imageSource: "https://science.nasa.gov/photojournal/north-polar-ice-cap/",
+    imageLicense: "Kebijakan gambar NASA",
+    imageLicenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    imageFit: "contain",
+    imageCaption: "Kutub utara · mosaik Viking",
+    imageWidth: 950,
+    imageHeight: 800,
     title: "Tudung Es Kutub",
     kicker: "ES YANG BERUBAH MUSIM",
     subtitle: "Air beku dan karbon dioksida beku",
@@ -99,6 +139,16 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     shift: { x: 0.008, y: -0.045 }
   },
   {
+    image: "assets/exploration/atmosphere.webp",
+    imageAlt: "Citra Curiosity memperlihatkan senja kebiruan di atmosfer berdebu Kawah Gale, Mars",
+    imageCredit: "NASA/JPL-Caltech/MSSS/Texas A&M Univ.",
+    imageSource: "https://science.nasa.gov/photojournal/sunset-in-mars-gale-crater/",
+    imageLicense: "Kebijakan gambar NASA",
+    imageLicenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    imageFit: "contain",
+    imageCaption: "Senja di Gale · warna diproses",
+    imageWidth: 996,
+    imageHeight: 800,
     title: "Atmosfer Mars",
     kicker: "UDARA YANG SANGAT TIPIS",
     subtitle: "Didominasi karbon dioksida",
@@ -115,6 +165,16 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     shift: { x: 0.028, y: -0.005 }
   },
   {
+    image: "assets/exploration/dust-storm.webp",
+    imageAlt: "Mars · Juni dan Juli 2001",
+    imageCredit: "NASA/JPL-Caltech/MSSS",
+    imageSource: "https://science.nasa.gov/resource/the-2001-great-dust-storms-hellassyrtis-major/",
+    imageLicense: "Kebijakan gambar NASA",
+    imageLicenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    imageFit: "contain",
+    imageCaption: "Mars · Juni dan Juli 2001",
+    imageWidth: 1000,
+    imageHeight: 533,
     title: "Badai Debu & Musim",
     kicker: "CUACA PLANET MERAH",
     subtitle: "Debu dapat menyelimuti hampir seluruh planet",
@@ -215,6 +275,7 @@ window.MarsScene = class MarsScene {
   setExplorationStop(index, { immediate = false, announce = true } = {}) {
     const nextIndex = Math.max(0, Math.min(MARS_EXPLORATION_STOPS.length - 1, index));
     const stop = MARS_EXPLORATION_STOPS[nextIndex];
+    window.ExplorationMedia.render("mars", stop);
     this.topicIndex = nextIndex;
     const orientation = marsLocationOrientation(stop.location);
     this.topicYawTarget = immediate ? orientation.yaw : unwrapMarsAngleNear(orientation.yaw, this.topicYaw);

@@ -1,8 +1,8 @@
 # Antariksa
 
-A cinematic Indonesian Solar System opening and Mars approach. HTML, CSS,
-vanilla JavaScript, and a locally vendored Three.js renderer for scene two.
-No backend, login, lessons, or planet exploration controls.
+An Indonesian Solar System journey using HTML, CSS, vanilla JavaScript, and local
+Three.js assets. Launch from Earth, explore Earth facts and seven modern wonders,
+then continue to the existing Mars journey. No backend or build step is needed.
 
 Run locally from this folder:
 
@@ -10,12 +10,20 @@ Run locally from this folder:
 python -m http.server 8000
 ```
 
-Open http://localhost:8000. Use a local HTTP server so browsers can fetch audio.
-Press **Siap Meluncur?** for the 8.3-second launch cinematic: a separate Nusantara
-rocket rises from below, ignites, and accelerates vertically out of the scene.
-The scene then dissolves into deep space, where a distant Mars approaches over
-12 seconds and continues rotating. **Kembali ke bumi** resets it for replay;
-**Escape** returns to the opening during flight or the Mars scene.
+Open http://localhost:8000. XAMPP also works when the complete folder is copied
+into htdocs. Keep all assets and scripts together. A local HTTP server enables
+ES modules, WebGL and audio reliably. Direct file opening may fall back to CSS; precise geographic rotation requires HTTP.
+
+Press **Siap Meluncur?**, then **Jelajahi Bumi**. The first Earth view shows only
+**Bumi. / Si Planet Biru.** Exploration contains four science topics followed by
+seven modern wonders. Use the arrows or progress bars to select a topic. Selecting
+a wonder rotates the existing globe to its latitude and longitude. The gold dot
+appears once the globe settles. **Kembali ke panorama Bumi** returns to the intro,
+and **Mars** continues the existing camera journey. Venus remains unavailable.
+Arrow keys change Earth topics during exploration; Escape exits Earth exploration.
+Outside that mode, the existing Escape shortcut returns to the opening.
+See `IMPLEMENTATION.md` for coordinates, implementation details and test results.
+
 The speaker button sets or changes mute, including before the first mission.
 
 The scene supports keyboard navigation, a remembered mute preference, reduced
@@ -68,3 +76,7 @@ Browser verification (Python standard library, installed Chromium browser):
 ```sh
 python tools/verify_browser.py --browser "path/to/chromium-browser"
 ```
+
+
+## Foto eksplorasi
+Seven Wonders dan keenam topik Mars sekarang memakai gambar lokal WebP. Kredit/lisensi muncul pada kartu; metadata tersedia dalam `assets/exploration/sources.json`. Laporan perubahan dan hasil pengecekan: `IMPLEMENTATION.md`. Jalankan situs melalui server lokal seperti petunjuk di atas.

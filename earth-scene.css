@@ -108,3 +108,59 @@
 @media (prefers-reduced-motion: reduce) {
   .earth-information, .earth-nav, .earth-explore-button { transition-duration: .01ms !important; }
 }
+
+/* Earth reuses the Mars caption, card, arrows, scroll and typography components. */
+.earth-caption { transition: opacity .65s ease, transform .8s ease; }
+.earth-caption.is-visible { opacity: 1; transform: none; }
+.earth-scene.is-exploring .earth-caption,
+.earth-scene.is-leaving .earth-caption { opacity: 0; transform: translateY(14px); pointer-events: none; }
+.earth-scene.is-exploring .earth-exploration { opacity: 1; transform: none; pointer-events: auto; visibility: visible; transition-delay: .18s, .18s, 0s; }
+.earth-scene.is-leaving .earth-exploration { opacity: 0; pointer-events: none; }
+#earth-topic-progress button { position: relative; height: 30px; min-width: 0; border: 0; padding: 0; background: transparent; color: #edc57e; }
+#earth-topic-progress button::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: #8793a155; }
+#earth-topic-progress button.is-active::after { background: #edc57e; height: 2px; }
+.earth-scene button:focus-visible { outline: 1px solid #edc57e; outline-offset: 4px; }
+.earth-location-dot { position: absolute; z-index: 5; width: 6px; height: 6px; border-radius: 50%; background: #edc57e; box-shadow: 0 0 0 5px #edc57e22; transform: translate(-50%, -50%); opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+@media (max-height: 700px) and (min-width: 701px) {
+  .earth-scene .earth-exploration { top: 16%; height: calc(100dvh - 145px); max-height: calc(100dvh - 145px); padding-top: 18px; padding-bottom: 16px; }
+  .earth-exploration h3 { margin-top: 14px; }
+  .earth-exploration .mars-exploration-controls { margin-top: 12px; }
+  .earth-exploration .mars-exploration-close { margin-top: 8px; }
+}
+@media (max-width: 700px) {
+  .earth-scene .earth-exploration { height: min(46dvh, 370px); bottom: 75px; }
+  .earth-exploration h3 { margin-top: 10px; }
+  .earth-exploration .mars-exploration-topline { padding-bottom: 9px; }
+  .earth-exploration .mars-topic-subtitle { margin-bottom: 8px; }
+  .earth-exploration .mars-exploration-controls { margin-top: 8px; }
+  .earth-exploration .mars-exploration-close { margin-top: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .earth-caption, .earth-location-dot { transition-duration: .01ms; }
+}
+
+/* Seven Wonders: restrained country metadata, history and geographic callouts. */
+.earth-topic-meta { flex: 0 0 auto; display: flex; align-items: flex-start; gap: 8px; margin-bottom: 17px; }
+.earth-topic-meta .mars-topic-subtitle { margin: 0; }
+.earth-country-flag { display: block; flex: 0 0 auto; width: 16px; height: 12px; margin-top: 1px; opacity: .8; border: 1px solid #d8c29633; object-fit: cover; }
+.earth-country-flag[hidden], .earth-history[hidden], .earth-content-heading[hidden] { display: none; }
+.earth-exploration .earth-content-heading { margin: 19px 0 8px; font-size: 8px; font-weight: 500; letter-spacing: 1.8px; color: #d5be91; text-transform: uppercase; }
+.earth-exploration .earth-content-heading + .mars-topic-facts { margin-top: 0; }
+.earth-location-dot { box-shadow: none; }
+.earth-location-dot.is-relocating { opacity: 0 !important; transition: none; }
+.earth-location-ring { position: absolute; inset: -7px; border: 1px solid #edc57e88; border-radius: 50%; }
+.earth-location-line { position: absolute; left: 15px; top: 3px; width: 35px; height: 1px; background: #edc57e70; }
+.earth-location-label { position: absolute; left: 58px; top: -6px; width: 172px; display: grid; gap: 6px; text-transform: uppercase; text-shadow: 0 1px 4px #030812; }
+.earth-location-title { font-size: 9px; font-weight: 500; line-height: 1.5; letter-spacing: 1.3px; color: #e4cd9f; }
+.earth-location-country { font-size: 7px; line-height: 1.5; letter-spacing: 2px; color: #a4adba; }
+.earth-location-dot.is-left .earth-location-line { left: auto; right: 15px; }
+.earth-location-dot.is-left .earth-location-label { left: auto; right: 58px; text-align: right; }
+@media (max-width: 700px) {
+  .earth-topic-meta { gap: 7px; margin-bottom: 8px; }
+  .earth-country-flag { width: 14px; height: 10.5px; margin-top: 0; }
+  .earth-exploration .earth-content-heading { margin-top: 14px; font-size: 7px; }
+  .earth-location-line { left: 3px; top: auto; bottom: 15px; width: 1px; height: 23px; }
+  .earth-location-label { left: calc(3px + var(--label-shift, 0px)); top: auto; bottom: 45px; width: min(200px, calc(100vw - 32px)); transform: translateX(-50%); text-align: center; gap: 3px; }
+  .earth-location-title { font-size: 8px; letter-spacing: 1px; }
+  .earth-location-country { font-size: 7px; letter-spacing: 1.6px; }
+}
