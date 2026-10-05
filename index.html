@@ -11,7 +11,9 @@
   <link rel="preload" href="assets/mission-key-art-portrait.png" as="image" media="(max-width: 700px)" fetchpriority="high">
   <link rel="preload" href="assets/nusantara-rocket.svg" as="image">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="earth-scene.css">
   <link rel="stylesheet" href="mars-scene.css">
+  <script src="earth-scene.js" defer></script>
   <script src="mars-scene.js" defer></script>
   <script src="script.js" defer></script>
 </head>
@@ -75,6 +77,36 @@
       <span id="preparation-step">Menghubungkan pusat kendali…</span>
       <div class="preparation-track"><span></span></div>
     </div>
+    <section class="earth-scene" id="earth-scene" aria-labelledby="earth-title" hidden>
+      <div class="earth-space-haze" aria-hidden="true"></div>
+      <div class="earth-viewport" id="earth-viewport" role="img" aria-label="Bumi, planet biru tempat kita tinggal, berputar perlahan di luar angkasa."></div>
+      <div class="earth-edge-shade" aria-hidden="true"></div>
+
+      <aside class="earth-information" id="earth-information" aria-labelledby="earth-title">
+        <div class="earth-information-topline">
+          <span class="earth-kicker">PLANET ASAL KITA</span>
+          <span class="earth-sequence">01 / 02</span>
+        </div>
+        <h2 id="earth-title" tabindex="-1">Bumi<span>.</span></h2>
+        <p class="earth-subtitle">Planet ketiga dari Matahari</p>
+        <p class="earth-summary">Rumah kita adalah dunia berbatu dengan lautan luas, atmosfer pelindung, dan satu-satunya tempat yang sejauh ini diketahui memiliki kehidupan.</p>
+        <ul class="earth-facts">
+          <li>Sekitar 71% permukaan Bumi tertutup air.</li>
+          <li>Atmosfer dekat permukaan terutama terdiri dari nitrogen dan oksigen.</li>
+          <li>Bumi adalah satu-satunya planet yang diketahui memiliki kehidupan.</li>
+        </ul>
+        <a class="earth-source" href="https://science.nasa.gov/earth/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
+        <div class="earth-controls">
+          <button class="earth-nav earth-prev" type="button" aria-label="Planet sebelumnya" disabled>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+          </button>
+          <div class="earth-route" aria-hidden="true"></div>
+          <button class="earth-nav earth-next" id="earth-next" type="button" aria-label="Lanjut ke Mars">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+      </aside>
+    </section>
     <section class="mars-scene" id="mars-scene" aria-labelledby="mars-title" hidden>
       <div class="mars-space-haze" aria-hidden="true"></div>
       <div class="mars-viewport" id="mars-viewport" role="img" aria-label="Mars, planet berwarna merah dengan permukaan berbatu, berputar perlahan di luar angkasa."></div>

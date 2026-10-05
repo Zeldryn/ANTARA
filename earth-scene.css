@@ -1,0 +1,72 @@
+/* Earth introduction is a separate post-launch scene. Existing landing and Mars styling stay intact. */
+.earth-scene { position: absolute; inset: 0; overflow: hidden; z-index: 5; background: #030812; opacity: 0; }
+.earth-scene[hidden] { display: none; }
+.earth-space-haze { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 64% 42%, #17375b55, transparent 55%), radial-gradient(ellipse at 48% 58%, #17466f18, transparent 48%); }
+.earth-viewport { position: absolute; inset: 0; }
+.earth-viewport canvas { display: block; width: 100%; height: 100%; }
+.earth-edge-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, #03081299, transparent 20%, transparent 82%, #03081233); }
+
+.earth-information {
+  position: absolute; z-index: 6; top: 21%; left: 6.5%; width: min(390px, 34vw); padding: 24px 25px 22px;
+  border: 1px solid #d8c29625; border-left-color: #edc57e77; border-radius: 2px;
+  background: linear-gradient(145deg, #07101ad9, #050b14b8); box-shadow: 0 25px 90px #00000038;
+  backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+  opacity: 0; transform: translate3d(-14px, 8px, 0); pointer-events: none;
+  transition: opacity .75s ease, transform .9s cubic-bezier(.2,.75,.2,1);
+}
+.earth-information.is-visible { opacity: 1; transform: translate3d(0,0,0); pointer-events: auto; }
+.earth-scene.is-leaving .earth-information { opacity: 0; transform: translate3d(-8px, 5px, 0); pointer-events: none; transition-duration: .45s; }
+.earth-information-topline { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-bottom: 15px; border-bottom: 1px solid #d8e0ea14; }
+.earth-kicker, .earth-sequence { color: #d5be91; font-size: 7px; letter-spacing: 2.4px; text-transform: uppercase; }
+.earth-sequence { color: #8f9aaa; letter-spacing: 1.7px; }
+.earth-information h2 { margin: 20px 0 5px; color: #f9f4e8; font-family: Georgia, "Times New Roman", serif; font-size: clamp(42px, 4.8vw, 68px); line-height: 1; font-weight: 400; letter-spacing: -2px; outline: none; }
+.earth-information h2 span { color: #edc57e; }
+.earth-subtitle { margin: 0 0 17px; color: #d8bf91; font-size: 8px; line-height: 1.5; letter-spacing: 2.1px; text-transform: uppercase; }
+.earth-summary { margin: 0; color: #c0c9d4; font-size: 12px; line-height: 1.65; letter-spacing: .12px; }
+.earth-facts { display: grid; gap: 9px; margin: 18px 0 17px; padding: 0; list-style: none; }
+.earth-facts li { position: relative; padding-left: 15px; color: #9eabb9; font-size: 10px; line-height: 1.55; }
+.earth-facts li::before { content: ""; position: absolute; left: 0; top: .72em; width: 6px; height: 1px; background: #edc57eaa; }
+.earth-source { display: inline-flex; align-items: center; gap: 7px; color: #768595; font-size: 7px; letter-spacing: 1.25px; text-decoration: none; text-transform: uppercase; transition: color .22s ease; }
+.earth-source:hover { color: #d8c293; }
+.earth-controls { display: grid; grid-template-columns: 38px 1fr 38px; align-items: center; gap: 13px; margin-top: 22px; }
+.earth-nav { width: 38px; height: 38px; display: grid; place-items: center; padding: 0; border: 1px solid #d5dce82a; border-radius: 50%; background: #07101a99; color: #d6dde7; transition: border-color .25s ease, color .25s ease, transform .25s ease, opacity .25s ease; }
+.earth-nav svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.35; }
+.earth-nav:hover:not(:disabled) { border-color: #edc57e88; color: #edc57e; transform: scale(1.055); }
+.earth-nav:disabled { opacity: .22; cursor: default; }
+.earth-route { position: relative; height: 1px; background: #8793a129; }
+.earth-route::after { content: "BUMI  →  MARS"; position: absolute; left: 50%; top: -4px; transform: translate(-50%, -100%); color: #728091; font-size: 6px; letter-spacing: 1.5px; white-space: nowrap; }
+
+.earth-emergency-sphere { position: absolute; left: 64%; top: 47%; width: 380px; height: 380px; transform: translate(-50%, -50%) rotate(-10.3deg); border-radius: 50%; background: radial-gradient(circle at 34% 30%, #5d9dcc 0 8%, #1a6596 24%, #134872 54%, #07182a 82%); box-shadow: inset -76px -22px 95px #000d, 0 0 22px #347ed23b, 0 0 80px #1c5ca41a; }
+.earth-emergency-sphere::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(ellipse at 45% 42%, #78935a 0 8%, transparent 9%), radial-gradient(ellipse at 55% 58%, #87965b 0 7%, transparent 8%), radial-gradient(ellipse at 31% 62%, #667f4d 0 5%, transparent 6%); opacity: .9; }
+
+.is-earth .masthead, .is-mars .masthead { opacity: 1; transition: opacity 2s; }
+.is-earth .preparation { opacity: 0; }
+
+@media (max-width: 900px) and (min-width: 701px) {
+  .earth-information { left: 4.5%; width: min(350px, 43vw); padding: 20px; }
+  .earth-information h2 { font-size: 54px; }
+  .earth-summary { font-size: 11px; }
+}
+
+@media (max-width: 700px) {
+  .earth-information {
+    top: auto; left: 5%; right: 5%; bottom: 5.5%; width: auto;
+    max-height: min(42vh, 310px); overflow-y: auto; padding: 16px 17px 14px;
+    background: linear-gradient(145deg, #06101bed, #040b14dc); scrollbar-width: thin;
+  }
+  .earth-information-topline { padding-bottom: 11px; }
+  .earth-information h2 { margin-top: 12px; font-size: 34px; letter-spacing: -1px; }
+  .earth-subtitle { margin-bottom: 9px; font-size: 7px; }
+  .earth-summary { font-size: 9.5px; line-height: 1.5; }
+  .earth-facts { gap: 5px; margin: 10px 0 9px; }
+  .earth-facts li { font-size: 8px; line-height: 1.4; }
+  .earth-controls { margin-top: 12px; }
+}
+
+@media (max-height: 650px) and (max-width: 700px) {
+  .earth-information { max-height: 39vh; bottom: 4%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .earth-information, .earth-nav { transition-duration: .01ms !important; }
+}

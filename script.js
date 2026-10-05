@@ -325,6 +325,7 @@ const announcement = document.getElementById("announcement");
 const flightStatus = document.getElementById("flight-status");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const flight = new LaunchVisual();
+const earth = new EarthScene({ onNext: travelToMars });
 const mars = new MarsScene();
 const locationDetail = document.querySelector(".location-detail");
 const originalLocation = locationDetail.textContent;
@@ -334,6 +335,7 @@ let elapsed = 0;
 let previousFrame = 0;
 let animationFrame = null;
 let activeStep = -1;
+let earthMarsTimer = null;
 
 const sound = new MissionAudio(() => {
   audioToggle.classList.toggle("is-muted", sound.muted || sound.unavailable);
@@ -372,14 +374,14 @@ function advancePreparation(timestamp) {
     announcement.textContent = preparationSteps[step].text;
   }
   if (elapsed >= LAUNCH_TIMING.finish) {
-    phase = "mars";
+    phase = "earth";
     preparation.setAttribute("aria-hidden", "true");
     preparation.style.opacity = "0";
-    mission.classList.add("is-mars");
-    if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU PLANET MERAH";
-    locationDetail.textContent = "TUJUAN PERTAMA • MARS";
-    announcement.textContent = "Memasuki luar angkasa. Mendekati Mars.";
-    mars.start();
+    mission.classList.add("is-earth");
+    if (flightStatus) flightStatus.textContent = "MEMASUKI ORBIT BUMI";
+    locationDetail.textContent = "PLANET ASAL • BUMI";
+    announcement.textContent = "Memasuki luar angkasa. Bumi terlihat di hadapan kita.";
+    earth.start();
     return;
   }
   animationFrame = requestAnimationFrame(advancePreparation);
@@ -395,6 +397,7 @@ launchButton.addEventListener("click", () => {
   sound.startMission();
   flight.start();
   // Warm up local assets and shaders while the existing launch plays unchanged.
+  earth.prepare();
   mars.prepare();
   mission.classList.add("is-preparing");
   if (flightStatus) flightStatus.textContent = "PERSIAPAN MISI BERLANGSUNG";
@@ -402,14 +405,35 @@ launchButton.addEventListener("click", () => {
   animationFrame = requestAnimationFrame(advancePreparation);
 });
 
+function travelToMars() {
+  if (phase !== "earth") return;
+  phase = "mars-transition";
+  earth.beginExit();
+  mission.classList.remove("is-earth");
+  mission.classList.add("is-mars");
+  if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU PLANET MERAH";
+  locationDetail.textContent = "TUJUAN BERIKUTNYA • MARS";
+  announcement.textContent = "Meninggalkan orbit Bumi. Menuju Mars.";
+  mars.start();
+  clearTimeout(earthMarsTimer);
+  earthMarsTimer = setTimeout(() => {
+    earth.stop();
+    phase = "mars";
+    earthMarsTimer = null;
+  }, reducedMotion.matches ? 20 : 1200);
+}
+
 function resetMission() {
   cancelAnimationFrame(animationFrame);
+  clearTimeout(earthMarsTimer);
+  earthMarsTimer = null;
   sound.stop(1.1);
   phase = "idle";
   flight.reset();
+  earth.stop();
   mars.stop();
   preparationProgress.style.transform = "scaleX(0)";
-  mission.classList.remove("is-mars", "is-preparing");
+  mission.classList.remove("is-earth", "is-mars", "is-preparing");
   locationDetail.textContent = originalLocation;
   preparation.style.opacity = "";
   document.querySelector(".intro").inert = false;
@@ -420,6 +444,7 @@ function resetMission() {
 }
 replayButton.addEventListener("click", resetMission);
 document.addEventListener("keydown", event => {
+  if (event.key === "ArrowRight" && phase === "earth") travelToMars();
   if (event.key === "Escape" && phase !== "idle") resetMission();
 });
 window.addEventListener("resize", () => flight.resize());
