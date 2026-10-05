@@ -180,6 +180,8 @@
   letter-spacing: .14em;
   text-transform: uppercase;
 }
+.exploration-lightbox-loading[hidden] { display: none; }
+.exploration-lightbox-loading.is-error { color: #b8a27b; }
 .exploration-lightbox-caption {
   display: grid;
   gap: 4px;

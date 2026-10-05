@@ -7,6 +7,7 @@ window.ExplorationMedia = {
   activeIndex: 0,
   activeStop: null,
   previousFocus: null,
+  lightboxRequestId: 0,
 
   canonicalSrc(src) {
     return String(src || "")
@@ -154,18 +155,54 @@ window.ExplorationMedia = {
       }
     });
 
-    image.addEventListener("load", () => {
-      loading.hidden = true;
-      image.hidden = false;
-    });
-    image.addEventListener("error", () => {
-      image.hidden = true;
-      loading.hidden = false;
-      loading.textContent = "Visual gagal dimuat";
-    });
-
     this.lightbox = { root, dialog, previous, next, image, loading, title, counter, description, metadata, source };
     return this.lightbox;
+  },
+
+  setLightboxLoading(modal, state, message = "Memuat visual…") {
+    modal.loading.textContent = message;
+    modal.loading.hidden = state === "ready";
+    modal.loading.classList.toggle("is-error", state === "error");
+    modal.image.hidden = state !== "ready";
+  },
+
+  loadLightboxImage(item) {
+    const modal = this.ensureLightbox();
+    const requestId = ++this.lightboxRequestId;
+    const image = modal.image;
+    const expectedSrc = item.src;
+
+    this.setLightboxLoading(modal, "loading");
+    image.alt = item.alt;
+
+    const isCurrentRequest = () => requestId === this.lightboxRequestId
+      && this.activeImages[this.activeIndex]?.src === expectedSrc;
+
+    const finishSuccess = async () => {
+      if (!isCurrentRequest()) return;
+      try {
+        if (typeof image.decode === "function") await image.decode();
+      } catch (_) {
+        // Some browsers reject decode() for an image that still rendered correctly.
+      }
+      if (!isCurrentRequest() || !image.complete || image.naturalWidth <= 0) return;
+      this.setLightboxLoading(modal, "ready");
+    };
+
+    const finishError = () => {
+      if (!isCurrentRequest()) return;
+      this.setLightboxLoading(modal, "error", "Visual tidak dapat dimuat.");
+    };
+
+    image.onload = finishSuccess;
+    image.onerror = finishError;
+    image.src = expectedSrc;
+
+    // Cached images can already be complete before a new load event is observed.
+    if (image.complete) {
+      if (image.naturalWidth > 0) void finishSuccess();
+      else finishError();
+    }
   },
 
   updateLightbox() {
@@ -173,11 +210,7 @@ window.ExplorationMedia = {
     const item = this.activeImages[this.activeIndex];
     if (!item) return;
 
-    modal.image.hidden = true;
-    modal.loading.hidden = false;
-    modal.loading.textContent = "Memuat visual…";
-    modal.image.src = item.src;
-    modal.image.alt = item.alt;
+    this.loadLightboxImage(item);
     modal.title.textContent = this.activeStop?.title || "Visual eksplorasi";
     modal.counter.textContent = `${String(this.activeIndex + 1).padStart(2, "0")} / ${String(this.activeImages.length).padStart(2, "0")}`;
     modal.description.textContent = item.caption || item.alt || "";
@@ -230,8 +263,11 @@ window.ExplorationMedia = {
 
     modal.root.hidden = true;
     modal.root.setAttribute("aria-hidden", "true");
+    this.lightboxRequestId += 1;
+    modal.image.onload = null;
+    modal.image.onerror = null;
     modal.image.removeAttribute("src");
-    modal.image.hidden = true;
+    this.setLightboxLoading(modal, "loading");
     document.documentElement.classList.remove("is-exploration-lightbox-open");
 
     const focusTarget = this.previousFocus;

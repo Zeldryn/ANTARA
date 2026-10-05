@@ -12,6 +12,10 @@ const MARS_TEXTURE_LONGITUDE_OFFSET_DEG = 0;
 const MARS_DEG_TO_RAD = Math.PI / 180;
 const MARS_TAU = Math.PI * 2;
 const MARS_EXPLORATION_ROLL = 0.12;
+const MARS_EXPLORATION_DISTANCE_SCALE_DESKTOP = 1.04;
+const MARS_EXPLORATION_DISTANCE_SCALE_MOBILE = 1.05;
+const MARS_EXPLORATION_CENTER_X_DESKTOP = 0.23;
+const MARS_EXPLORATION_CENTER_Y_DESKTOP = 0.055;
 
 const wrapMarsRadians = angle => Math.atan2(Math.sin(angle), Math.cos(angle));
 const unwrapMarsAngleNear = (angle, reference) => reference + wrapMarsRadians(angle - reference);
@@ -754,8 +758,11 @@ window.MarsScene = class MarsScene {
     const t = this.time;
     const approach = this.motion.matches ? 1 : smooth((t - 0.6) / 12);
     const arrivalDistance = this.finalDistance * Math.pow(15, 1 - approach);
-    const exploreZoom = 1 - this.explorationBlend * (this.mobile ? 0.13 : 0.24);
-    this.distance = arrivalDistance * exploreZoom;
+    const explorationDistanceScale = this.mobile
+      ? MARS_EXPLORATION_DISTANCE_SCALE_MOBILE
+      : MARS_EXPLORATION_DISTANCE_SCALE_DESKTOP;
+    const explorationFramingScale = 1 + this.explorationBlend * (explorationDistanceScale - 1);
+    this.distance = arrivalDistance * explorationFramingScale;
     const arrivalYaw = this.motion.matches ? 0.6 : 0.6 + t * 0.024;
     const exploreYaw = this.topicYaw + (this.motion.matches ? 0 : Math.sin(t * 0.14) * 0.012);
     const fallbackYaw = arrivalYaw * (1 - this.explorationBlend) + exploreYaw * this.explorationBlend;
@@ -781,9 +788,9 @@ window.MarsScene = class MarsScene {
     if (this.mode === "webgl") {
       const halfHeight = Math.tan(Math.PI / 10) * this.finalDistance;
       const baseX = this.mobile ? 0 : 0.28;
-      const exploreX = this.mobile ? this.topicShift.x * 0.7 : 0.39 + this.topicShift.x;
+      const exploreX = this.mobile ? this.topicShift.x * 0.7 : MARS_EXPLORATION_CENTER_X_DESKTOP + this.topicShift.x;
       const baseY = this.mobile ? 0.28 : 0.1;
-      const exploreY = this.mobile ? 0.20 + this.topicShift.y : 0.075 + this.topicShift.y;
+      const exploreY = this.mobile ? 0.20 + this.topicShift.y : MARS_EXPLORATION_CENTER_Y_DESKTOP + this.topicShift.y;
       const groupX = baseX * (1 - this.explorationBlend) + exploreX * this.explorationBlend;
       const groupY = baseY * (1 - this.explorationBlend) + exploreY * this.explorationBlend;
       this.planetGroup.position.set(halfHeight * this.camera.aspect * groupX, halfHeight * groupY + drift * (1 - this.explorationBlend * 0.45), 0);
@@ -813,8 +820,8 @@ window.MarsScene = class MarsScene {
       planet.style.width = planet.style.height = `${radius * 2}px`;
       planet.style.backgroundPositionX = `${-fallbackYaw * 100}px`;
       this.focusReticle.style.setProperty("--marker-opacity", "0");
-      const cssLeft = this.mobile ? 50 + this.explorationBlend * this.topicShift.x * 60 : 64 + this.explorationBlend * (5 + this.topicShift.x * 45);
-      const cssTop = this.mobile ? 36 - this.explorationBlend * (8 - this.topicShift.y * 35) : 45 - this.explorationBlend * (2 - this.topicShift.y * 35);
+      const cssLeft = this.mobile ? 50 + this.explorationBlend * this.topicShift.x * 60 : 64 + this.explorationBlend * (this.topicShift.x * 45);
+      const cssTop = this.mobile ? 36 - this.explorationBlend * (8 - this.topicShift.y * 35) : 45 + this.explorationBlend * (2 + this.topicShift.y * 35);
       planet.style.left = `${cssLeft}%`;
       planet.style.top = `${cssTop}%`;
     }
@@ -866,10 +873,10 @@ window.MarsScene = class MarsScene {
     this.sphereContext.putImageData(this.sphereImage, 0, 0);
     const radius = this.finalRadius * this.finalDistance / this.distance;
     const arrivalX = this.mobile ? 0 : 0.14 * approach;
-    const exploreX = this.mobile ? this.topicShift.x * 0.12 : 0.19 + this.topicShift.x * 0.42;
+    const exploreX = this.mobile ? this.topicShift.x * 0.12 : 0.14 + this.topicShift.x * 0.42;
     const cx = w * (0.5 + arrivalX * (1 - this.explorationBlend) + exploreX * this.explorationBlend);
     const arrivalY = this.mobile ? 0.14 : 0.05;
-    const exploreY = this.mobile ? 0.21 - this.topicShift.y * 0.3 : 0.065 - this.topicShift.y * 0.3;
+    const exploreY = this.mobile ? 0.21 - this.topicShift.y * 0.3 : 0.03 - this.topicShift.y * 0.3;
     const cy = h * (0.5 - arrivalY * (1 - this.explorationBlend) - exploreY * this.explorationBlend) - drift * 50 * (1 - this.explorationBlend * 0.45);
     ctx.drawImage(this.sphereCanvas, cx - radius, cy - radius, radius * 2, radius * 2);
     this.updateMarkerProjectionFallback(yaw, pitch, roll, cx, cy, radius);
