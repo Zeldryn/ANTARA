@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#091322">
+  <meta name="description" content="Langkah kecilmu, awal petualangan besar. Bersiap menjelajah Tata Surya bersama Antariksa.">
+  <title>Antariksa — Misi Jelajah Tata Surya</title>
+  <link rel="icon" href="assets/orbit.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/mission-key-art.png" as="image" media="(min-width: 701px)" fetchpriority="high">
+  <link rel="preload" href="assets/mission-key-art-portrait.png" as="image" media="(max-width: 700px)" fetchpriority="high">
+  <link rel="preload" href="assets/nusantara-rocket.svg" as="image">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="mars-scene.css">
+  <script src="mars-scene.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="mission" id="mission">
+    <div class="scene" aria-hidden="true">
+      <div class="scene-art"></div>
+      <div class="scene-shade"></div>
+      <svg class="navigation-orbits" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+        <path class="orbit-path" d="M-100 270 C300 910 1060 1060 1680 430"/>
+        <path class="orbit-secondary" d="M-60 810 C440 410 1220 460 1680 900"/>
+        <circle class="navigation-point" r="3"><animateMotion dur="32s" repeatCount="indefinite" path="M-100 270 C300 910 1060 1060 1680 430"/></circle>
+      </svg>
+      <div class="foreground-motes"><i></i><i></i><i></i><i></i></div>
+      <div class="stars"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="engine-glow"></div>
+      <div class="vapor vapor-one"></div><div class="vapor vapor-two"></div>
+      <div class="beacon"></div>
+    </div>
+    <header class="masthead">
+      <a class="brand" href="./" aria-label="Antariksa, halaman awal">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="10"/><ellipse cx="20" cy="20" rx="19" ry="7" transform="rotate(-35 20 20)"/><circle class="orbit-dot" cx="29" cy="8" r="2.5"/></svg>
+        <span>ANTARIKSA<span class="brand-caption">SEBUAH PERJALANAN PENGETAHUAN</span></span>
+      </a>
+      <div class="mission-index"><span class="index-line"></span> EKSPEDISI TATA SURYA <span class="edition">/ 001</span></div>
+    </header>
+
+    <section class="intro" aria-labelledby="mission-title">
+      <div class="eyebrow"><span></span> DARI BUMI, MENUJU MIMPI <span></span></div>
+      <h1 id="mission-title">Misi Jelajah <span>Tata Surya</span></h1>
+      <button class="launch-button" id="launch-button" type="button">
+        <span>Siap Meluncur?</span>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </button>
+      <div class="launch-caption">SEBUAH PERJALANAN PENGETAHUAN</div>
+    </section>
+
+    <footer class="mission-footer">
+      <div class="location"><span class="indonesia-flag" aria-hidden="true"></span><span>BERANGKAT DARI INDONESIA<span class="location-detail">PUSAT PELUNCURAN • BUMI</span></span></div>
+      <button class="audio-control" id="audio-toggle" type="button" aria-label="Bisukan audio" aria-pressed="false" title="Audio dimulai setelah Siap Meluncur? ditekan">
+        <svg class="speaker-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-slash" d="m16 9 6 6m0-6-6 6"/></svg>
+        <span id="audio-label">AUDIO SIAP</span>
+      </button>
+    </footer>
+
+    <!-- Independent flight layer: the opening artwork and typography stay intact. -->
+    <div class="launch-stage" id="launch-stage" aria-hidden="true" hidden>
+      <div class="launch-sky"></div>
+      <div class="launch-horizon"></div>
+      <div class="launch-bloom" id="launch-bloom"></div>
+      <canvas class="launch-particles" id="launch-particles"></canvas>
+      <div class="launch-vehicle" id="launch-vehicle">
+        <div class="engine-aura"></div>
+        <div class="exhaust-plume"><div class="exhaust-core"></div></div>
+        <img class="rocket-body" src="assets/nusantara-rocket.svg" width="180" height="540" alt="" decoding="sync">
+      </div>
+      <div class="launch-vignette"></div>
+    </div>
+    <div class="preparation" id="preparation" aria-hidden="true">
+      <span class="preparation-label">PERSIAPAN PELUNCURAN</span>
+      <span id="preparation-step">Menghubungkan pusat kendali…</span>
+      <div class="preparation-track"><span></span></div>
+    </div>
+    <section class="mars-scene" id="mars-scene" aria-labelledby="mars-title" hidden>
+      <div class="mars-space-haze" aria-hidden="true"></div>
+      <div class="mars-viewport" id="mars-viewport" role="img" aria-label="Mars, planet berwarna merah dengan permukaan berbatu, berputar perlahan di luar angkasa."></div>
+      <div class="mars-edge-shade" aria-hidden="true"></div>
+      <div class="mars-caption">
+        <p class="eyebrow"><span></span> TUJUAN PERTAMA</p>
+        <h2 id="mars-title" tabindex="-1">Mars<span>.</span></h2>
+        <p class="mars-whisper">Dunia baru di hadapan kita.</p>
+        <button class="replay-button" id="replay-button" type="button"><span aria-hidden="true">↶</span> Kembali ke bumi</button>
+      </div>
+      <a class="mars-credit" href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Tekstur: Solar System Scope · CC BY 4.0</a>
+    </section>
+    <p class="sr-only" id="announcement" role="status" aria-live="polite"></p>
+    <noscript><p class="noscript-note">Aktifkan JavaScript untuk memulai persiapan misi dan audio.</p></noscript>
+  </main>
+</body>
+</html>

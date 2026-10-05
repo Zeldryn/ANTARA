@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="540" viewBox="0 0 180 540" fill="none">
+  <defs>
+    <linearGradient id="hull" x1="57" y1="0" x2="123" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#68768a"/><stop offset=".15" stop-color="#b7c4d0"/><stop offset=".36" stop-color="#fcf7e9"/><stop offset=".62" stop-color="#e6e6dc"/><stop offset=".86" stop-color="#a6b1bc"/><stop offset="1" stop-color="#424e63"/></linearGradient>
+    <linearGradient id="nose" x1="61" y1="68" x2="119" y2="85" gradientUnits="userSpaceOnUse"><stop stop-color="#263345"/><stop offset=".42" stop-color="#667584"/><stop offset=".55" stop-color="#374354"/><stop offset="1" stop-color="#0d1829"/></linearGradient>
+    <linearGradient id="gold" x1="56" y1="0" x2="124" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#8d7045"/><stop offset=".35" stop-color="#f8deb0"/><stop offset=".7" stop-color="#d7ae6e"/><stop offset="1" stop-color="#715337"/></linearGradient>
+    <linearGradient id="booster" x1="28" y1="0" x2="57" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#344457"/><stop offset=".3" stop-color="#c7cfd2"/><stop offset=".5" stop-color="#f0efe3"/><stop offset="1" stop-color="#788694"/></linearGradient>
+    <linearGradient id="fin" x1="21" y1="404" x2="70" y2="455" gradientUnits="userSpaceOnUse"><stop stop-color="#d0b482"/><stop offset=".3" stop-color="#5b6570"/><stop offset="1" stop-color="#131e2f"/></linearGradient>
+    <linearGradient id="bell" x1="0" y1="464" x2="0" y2="510" gradientUnits="userSpaceOnUse"><stop stop-color="#111c2b"/><stop offset=".5" stop-color="#515c66"/><stop offset=".89" stop-color="#172334"/><stop offset="1" stop-color="#f2ca90"/></linearGradient>
+    <pattern id="thermal" width="6" height="9" patternUnits="userSpaceOnUse"><path d="M0 0h6v9" stroke="#adc0cb" stroke-opacity=".16" stroke-width=".5"/></pattern>
+  </defs>
+  <!-- Slender ogive fairing, brushed alloy fuselage, and restrained gold hardware. -->
+  <path d="M58 111C59 73 69 31 90 9c21 22 31 64 32 102v337H58Z" fill="url(#hull)" stroke="#172437" stroke-width="1.5"/>
+  <path d="M58 111C59 73 69 31 90 9c21 22 31 64 32 102Z" fill="url(#nose)"/>
+  <path d="M64 105C66 69 75 36 90 13" stroke="#f7d7a5" stroke-opacity=".8" stroke-width="1.2"/>
+  <path d="M90 12v91" stroke="#a5bbcc" stroke-opacity=".2" stroke-width=".6"/>
+  <path d="M58 111h64v6H58Z" fill="url(#gold)"/>
+  <path d="M58 122h64M58 152h64M58 306h64M58 313h64M58 396h64" stroke="#425267" stroke-opacity=".5" stroke-width=".8"/>
+  <path d="M65 123v276M116 124v272" stroke="#ffffff" stroke-opacity=".22" stroke-width=".7"/>
+  <path d="M58 152h64v5H58Z" fill="#29364a"/>
+  <!-- Large, correctly proportioned red-over-white Indonesian flag. -->
+  <rect x="69" y="181" width="42" height="28" rx=".7" fill="#fcfaf1" stroke="#536275" stroke-width=".7"/>
+  <path d="M69 182a1 1 0 0 1 1-1h40a1 1 0 0 1 1 1v13H69Z" fill="#c8323b"/>
+  <text x="90" y="225" text-anchor="middle" fill="#243146" font-family="Arial,sans-serif" font-size="7.5" font-weight="700" letter-spacing="1.15">INDONESIA</text>
+  <path d="M81 245h18M85 248h10" stroke="#a5834e" stroke-width="1"/>
+  <text x="90" y="273" text-anchor="middle" fill="#29374b" font-family="Arial,sans-serif" font-size="6" letter-spacing="1">NUSANTARA</text>
+  <text x="90" y="286" text-anchor="middle" fill="#5b6777" font-family="Arial,sans-serif" font-size="5.5" letter-spacing="2">01</text>
+  <rect x="80" y="329" width="20" height="36" rx="2" fill="#a3adb4" stroke="#667387" stroke-width=".6"/>
+  <rect x="83" y="332" width="14" height="30" rx="1" fill="#36475b"/>
+  <path d="M87 336v22M92 336v22" stroke="#d5b578" stroke-width=".6"/>
+  <path d="M59 397h62v43H59Z" fill="url(#nose)"/><path d="M59 397h62v43H59Z" fill="url(#thermal)"/>
+  <path d="M58 394h64v5H58ZM58 438h64v7H58Z" fill="url(#gold)"/>
+  <path d="m58 445 7 29h50l7-29" fill="url(#nose)" stroke="#7a8893" stroke-width=".8"/>
+  <path d="M69 474h13l-2 8 5 24H65l6-24ZM98 474h13l-2 8 6 24H95l5-24Z" fill="url(#bell)" stroke="#8a887c" stroke-width=".5"/>
+  <path d="M81 469h18l-2 15 8 29H75l8-29Z" fill="url(#bell)" stroke="#838a8c" stroke-width=".6"/>
+  <path d="M76 512h28" stroke="#fff0cd" stroke-width="1.5"/>
+  <!-- Matched auxiliary boosters and swept stabilization surfaces. -->
+  <g id="left-booster">
+    <path d="M32 272c0-18 4-33 11-43 8 10 12 25 12 43v190H32Z" fill="url(#booster)" stroke="#253448" stroke-width="1"/>
+    <path d="M32 272h23v4H32Z" fill="url(#gold)"/>
+    <path d="M32 317h23M32 393h23" stroke="#657486" stroke-width="1"/>
+    <path d="M32 439h23v24H32Z" fill="#273549"/><path d="M32 437h23v4H32Z" fill="url(#gold)"/>
+    <path d="M36 463h15l-1 9 6 16H30l7-16Z" fill="url(#bell)"/>
+    <path d="m33 399-16 38-5 39 20-15Z" fill="url(#fin)" stroke="#bda67f" stroke-width=".7"/>
+    <path d="M55 313h3v7h-3M55 416h3v7h-3" fill="#cdb387"/>
+    <path d="M38 282v143" stroke="#fff2d8" stroke-opacity=".6" stroke-width=".6"/>
+  </g>
+  <use href="#left-booster" transform="translate(180 0) scale(-1 1)"/>
+  <path d="M88 415h4v61h-4Z" fill="#6a7581"/><path d="M89 416v59" stroke="#e4d4b3" stroke-width=".6"/>
+  <g fill="#455468"><circle cx="62" cy="128" r=".8"/><circle cx="118" cy="128" r=".8"/><circle cx="62" cy="300" r=".8"/><circle cx="118" cy="300" r=".8"/><circle cx="62" cy="385" r=".8"/><circle cx="118" cy="385" r=".8"/></g>
+</svg>

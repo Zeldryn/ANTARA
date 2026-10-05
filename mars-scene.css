@@ -1,0 +1,31 @@
+/* Scene two is independent: none of these rules change the opening composition. */
+.mars-scene { position: absolute; inset: 0; overflow: hidden; z-index: 4; background: #030812; opacity: 0; }
+.mars-scene[hidden] { display: none; }
+.mars-space-haze { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 65% 40%, #15213255, transparent 58%), radial-gradient(ellipse at 55% 55%, #50271812, transparent 45%); }
+.mars-viewport { position: absolute; inset: 0; }
+.mars-viewport canvas { display: block; width: 100%; height: 100%; }
+.mars-edge-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, #03081299, transparent 20%, transparent 82%, #03081233); }
+.mars-caption { position: absolute; left: 10%; bottom: 17%; opacity: 0; transform: translateY(12px); pointer-events: none; }
+.mars-caption.is-visible { pointer-events: auto; }
+.mars-caption .eyebrow { justify-content: flex-start; font-size: 8px; letter-spacing: 3.5px; gap: 12px; }
+.mars-caption .eyebrow span { width: 30px; height: 1px; background: #edc57e88; }
+.mars-caption h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: clamp(68px, 8vw, 120px); line-height: 1; letter-spacing: -3px; margin: 19px 0 15px; outline: none; color: #f9f4e8; }
+.mars-caption h2 span { color: #edc57e; }
+.mars-whisper { color: #a1acba; font-size: 12px; letter-spacing: .6px; }
+.mars-caption .replay-button { margin-top: 20px; padding-left: 0; border: 0; color: #b7bfcc; font-size: 10px; letter-spacing: .4px; }
+.mars-caption .replay-button:hover { color: #edc57e; }
+.mars-credit { position: absolute; right: 3.5%; bottom: 83px; font-size: 7px; letter-spacing: .5px; color: #78828e; text-decoration: none; opacity: 0; }
+.mars-credit:hover { color: #d6c3a5; }
+.is-mars .masthead { opacity: 1; transition: opacity 2s; }
+.is-mars .preparation { opacity: 0; }
+.mars-emergency-sphere { position: absolute; width: 200px; height: 200px; transform: translate(-50%, -50%); border-radius: 50%; background: #a25d3b url("assets/textures/mars-surface-2k.jpg") center / auto 100%; box-shadow: inset -45px -15px 65px #000e, inset 8px 4px 12px #efb18244; }
+@media (max-width: 700px) {
+  .mars-caption { left: 8%; right: 8%; bottom: 17%; text-align: center; }
+  .mars-caption .eyebrow { justify-content: center; font-size: 7px; letter-spacing: 3px; }
+  .mars-caption .eyebrow span { display: none; }
+  .mars-caption h2 { font-size: 66px; margin: 14px 0 10px; }
+  .mars-whisper { font-size: 10px; }
+  .mars-caption .replay-button { margin-top: 9px; }
+  .mars-credit { right: 0; left: 0; bottom: 76px; text-align: center; font-size: 6px; }
+}
+@media (max-height: 700px) and (min-width: 701px) { .mars-caption { bottom: 18%; } .mars-caption h2 { font-size: 76px; } }
