@@ -83,8 +83,44 @@
         <p class="eyebrow"><span></span> TUJUAN PERTAMA</p>
         <h2 id="mars-title" tabindex="-1">Mars<span>.</span></h2>
         <p class="mars-whisper">Dunia baru di hadapan kita.</p>
-        <button class="replay-button" id="replay-button" type="button"><span aria-hidden="true">↶</span> Kembali ke bumi</button>
+        <div class="mars-arrival-actions">
+          <button class="mars-explore-button" id="mars-explore-button" type="button">
+            <span>Jelajahi Mars</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+          <button class="replay-button" id="replay-button" type="button"><span aria-hidden="true">↶</span> Kembali ke bumi</button>
+        </div>
       </div>
+
+      <div class="mars-focus-reticle" id="mars-focus-reticle" aria-hidden="true">
+        <span class="mars-focus-ring"></span>
+        <span class="mars-focus-dot"></span>
+        <span class="mars-focus-line"></span>
+        <span class="mars-focus-label" id="mars-focus-label"></span>
+      </div>
+
+      <aside class="mars-exploration" id="mars-exploration" aria-labelledby="mars-topic-title" aria-live="polite">
+        <div class="mars-exploration-topline">
+          <span class="mars-topic-kicker" id="mars-topic-kicker">TITIK EKSPLORASI</span>
+          <span class="mars-topic-count"><span id="mars-topic-current">01</span> / <span id="mars-topic-total">06</span></span>
+        </div>
+        <h3 id="mars-topic-title" tabindex="-1">Olympus Mons</h3>
+        <p class="mars-topic-subtitle" id="mars-topic-subtitle"></p>
+        <p class="mars-topic-summary" id="mars-topic-summary"></p>
+        <ul class="mars-topic-facts" id="mars-topic-facts"></ul>
+        <a class="mars-topic-source" id="mars-topic-source" href="https://science.nasa.gov/mars/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
+        <div class="mars-exploration-controls">
+          <button class="mars-topic-nav mars-topic-prev" id="mars-topic-prev" type="button" aria-label="Topik Mars sebelumnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+          </button>
+          <div class="mars-topic-progress" id="mars-topic-progress" aria-hidden="true"></div>
+          <button class="mars-topic-nav mars-topic-next" id="mars-topic-next" type="button" aria-label="Topik Mars berikutnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+        <button class="mars-exploration-close" id="mars-exploration-close" type="button">Kembali ke panorama Mars</button>
+      </aside>
+
       <a class="mars-credit" href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Tekstur: Solar System Scope · CC BY 4.0</a>
     </section>
     <p class="sr-only" id="announcement" role="status" aria-live="polite"></p>

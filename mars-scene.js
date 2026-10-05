@@ -1,5 +1,88 @@
 "use strict";
 
+// Educational copy is kept separate from rendering logic. Facts are condensed from
+// NASA Science pages linked per stop so the interface stays concise and verifiable.
+const MARS_EXPLORATION_STOPS = Object.freeze([
+  {
+    title: "Olympus Mons",
+    kicker: "GUNUNG API RAKSASA",
+    subtitle: "Gunung api terbesar yang dikenal di Tata Surya",
+    summary: "Olympus Mons adalah gunung api perisai raksasa yang mendominasi wilayah vulkanik Mars. Ukurannya menunjukkan betapa lama aktivitas vulkanik dapat membangun bentang alam di Planet Merah.",
+    facts: [
+      "Tingginya sekitar 27 km di atas dataran sekitarnya.",
+      "Lebar dasarnya lebih dari 600 km.",
+      "Puncaknya memiliki kompleks kaldera hasil runtuhan setelah magma terkuras."
+    ],
+    source: "https://science.nasa.gov/photojournal/olympus-mons/",
+    yaw: 0, shift: { x: 0.00, y: -0.01 }, focus: [72, 37], mobileFocus: [58, 25]
+  },
+  {
+    title: "Valles Marineris",
+    kicker: "NGARAI PLANET",
+    subtitle: "Sistem ngarai terbesar di Tata Surya",
+    summary: "Valles Marineris membelah wilayah dekat ekuator Mars. Sistem ngarai ini kemungkinan berawal dari retakan besar pada kerak Mars, lalu diperlebar oleh proses geologi dan erosi.",
+    facts: [
+      "Panjangnya sekitar 3.870 km.",
+      "Lebarnya mencapai sekitar 600 km di bagian terlebar.",
+      "Kedalamannya dapat mencapai sekitar 9,3 km dari tepi ke dasar."
+    ],
+    source: "https://science.nasa.gov/mars/facts/",
+    yaw: 0.82, shift: { x: 0.018, y: 0.018 }, focus: [69, 45], mobileFocus: [44, 27]
+  },
+  {
+    title: "Kawah Jezero",
+    kicker: "JEJAK AIR PURBA",
+    subtitle: "Laboratorium alam bagi Perseverance",
+    summary: "Jezero dipilih karena bukti menunjukkan kawah ini pernah menampung danau serta delta sungai purba. Daerah seperti ini dapat menyimpan petunjuk tentang kondisi Mars miliaran tahun lalu.",
+    facts: [
+      "Diameter kawahnya sekitar 45 km.",
+      "Lebih dari 3,5 miliar tahun lalu, air pernah mengalir masuk dan membentuk danau serta delta.",
+      "Perseverance mendarat di sini pada 18 Februari 2021 untuk mencari tanda kehidupan mikroba purba dan mengumpulkan sampel."
+    ],
+    source: "https://science.nasa.gov/mission/mars-2020-perseverance/",
+    yaw: 1.63, shift: { x: -0.012, y: 0.03 }, focus: [73, 51], mobileFocus: [61, 30]
+  },
+  {
+    title: "Tudung Es Kutub",
+    kicker: "ES YANG BERUBAH MUSIM",
+    subtitle: "Air beku dan karbon dioksida beku",
+    summary: "Kutub Mars berubah mengikuti musim. Lapisan es karbon dioksida tumbuh saat musim dingin dan menyusut ketika wilayah kutub kembali menerima lebih banyak sinar Matahari.",
+    facts: [
+      "Lapisan es musiman mengandung karbon dioksida beku atau dry ice.",
+      "Pada musim panas utara, tudung yang tersisa terutama berupa es air.",
+      "Di kutub selatan, es air tetap tertutup lapisan tipis es karbon dioksida bahkan saat musim panas."
+    ],
+    source: "https://science.nasa.gov/earth/frozen-ice-on-earth-and-well-beyond/",
+    yaw: 2.45, shift: { x: 0.008, y: -0.045 }, focus: [67, 29], mobileFocus: [48, 19]
+  },
+  {
+    title: "Atmosfer Mars",
+    kicker: "UDARA YANG SANGAT TIPIS",
+    subtitle: "Didominasi karbon dioksida",
+    summary: "Mars memiliki atmosfer yang jauh lebih tipis daripada Bumi. Udara tipis ini sulit menahan panas, sementara debu halus yang tersuspensi membuat langit Mars tampak berkabut kemerahan.",
+    facts: [
+      "Pengukuran Curiosity di Gale Crater menunjukkan sekitar 95,9% atmosfer berupa karbon dioksida.",
+      "Tekanan atmosfer permukaan Mars kurang dari 1% tekanan atmosfer Bumi.",
+      "Gas lain yang penting antara lain nitrogen dan argon."
+    ],
+    source: "https://science.nasa.gov/resource/the-five-most-abundant-gases-in-the-martian-atmosphere/",
+    yaw: 3.25, shift: { x: 0.028, y: -0.005 }, focus: [79, 39], mobileFocus: [66, 23]
+  },
+  {
+    title: "Badai Debu & Musim",
+    kicker: "CUACA PLANET MERAH",
+    subtitle: "Debu dapat menyelimuti hampir seluruh planet",
+    summary: "Mars memiliki empat musim seperti Bumi, tetapi tahun Mars jauh lebih panjang. Perubahan musim membantu menggerakkan atmosfer tipisnya dan dapat memicu badai debu raksasa.",
+    facts: [
+      "Satu tahun Mars berlangsung sekitar 687 hari Bumi, sehingga musimnya lebih panjang.",
+      "Badai debu besar paling aktif pada musim semi dan musim panas di belahan selatan.",
+      "Sebagian badai dapat berkembang hingga mencakup hampir seluruh planet dan mengurangi cahaya untuk wahana bertenaga surya."
+    ],
+    source: "https://science.nasa.gov/helio-and-you-seasons-on-earth-mars-and-beyond/",
+    yaw: 4.06, shift: { x: -0.025, y: 0.008 }, focus: [64, 43], mobileFocus: [40, 25]
+  }
+]);
+
 // Scene two owns its renderer and animation loop. Loading is local and optional:
 // the flight controller never waits for WebGL, a module, or an image to succeed.
 window.MarsScene = class MarsScene {
@@ -8,6 +91,22 @@ window.MarsScene = class MarsScene {
     this.viewport = document.getElementById("mars-viewport");
     this.caption = this.element.querySelector(".mars-caption");
     this.credit = this.element.querySelector(".mars-credit");
+    this.exploreButton = document.getElementById("mars-explore-button");
+    this.exploration = document.getElementById("mars-exploration");
+    this.explorationClose = document.getElementById("mars-exploration-close");
+    this.topicTitle = document.getElementById("mars-topic-title");
+    this.topicKicker = document.getElementById("mars-topic-kicker");
+    this.topicSubtitle = document.getElementById("mars-topic-subtitle");
+    this.topicSummary = document.getElementById("mars-topic-summary");
+    this.topicFacts = document.getElementById("mars-topic-facts");
+    this.topicSource = document.getElementById("mars-topic-source");
+    this.topicCurrent = document.getElementById("mars-topic-current");
+    this.topicTotal = document.getElementById("mars-topic-total");
+    this.topicProgress = document.getElementById("mars-topic-progress");
+    this.topicPrev = document.getElementById("mars-topic-prev");
+    this.topicNext = document.getElementById("mars-topic-next");
+    this.focusReticle = document.getElementById("mars-focus-reticle");
+    this.focusLabel = document.getElementById("mars-focus-label");
     this.motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     this.active = false;
     this.time = 0;
@@ -15,12 +114,30 @@ window.MarsScene = class MarsScene {
     this.mode = "pending";
     this.pointer = { x: 0, y: 0 };
     this.cameraOffset = { x: 0, y: 0 };
+    this.exploring = false;
+    this.explorationBlend = 0;
+    this.explorationBlendTarget = 0;
+    this.topicIndex = 0;
+    this.topicYaw = 0;
+    this.topicYawTarget = 0;
+    this.topicShift = { x: 0, y: 0 };
+    this.topicShiftTarget = { x: 0, y: 0 };
+    this.exploreBaseRotation = 0.6;
+    this.renderedRotation = 0.6;
     this.caption.inert = true;
+    this.exploration.inert = true;
     this.stars = Array.from({ length: 240 }, (_, n) => {
       const rand = seed => { const v = Math.sin(seed * 127.1 + 417.3) * 43758.5453; return v - Math.floor(v); };
       return { x: rand(n), y: rand(n + 400), z: rand(n + 800), size: rand(n + 1200) };
     });
     this.tick = this.tick.bind(this);
+    this.topicTotal.textContent = String(MARS_EXPLORATION_STOPS.length).padStart(2, "0");
+    this.topicProgress.replaceChildren(...MARS_EXPLORATION_STOPS.map(() => document.createElement("span")));
+    this.setExplorationStop(0, { immediate: true, announce: false });
+    this.exploreButton.addEventListener("click", () => this.enterExploration());
+    this.explorationClose.addEventListener("click", () => this.exitExploration());
+    this.topicPrev.addEventListener("click", () => this.setExplorationStop(this.topicIndex - 1));
+    this.topicNext.addEventListener("click", () => this.setExplorationStop(this.topicIndex + 1));
     window.addEventListener("resize", () => { if (this.active) { this.resize(); this.render(); } });
     document.addEventListener("visibilitychange", () => {
       if (!this.active) return;
@@ -40,6 +157,83 @@ window.MarsScene = class MarsScene {
       this.pointer.y = (event.clientY - rect.top) / rect.height - 0.5;
     });
     this.element.addEventListener("pointerleave", () => { this.pointer.x = this.pointer.y = 0; });
+  }
+
+  setExplorationStop(index, { immediate = false, announce = true } = {}) {
+    const nextIndex = Math.max(0, Math.min(MARS_EXPLORATION_STOPS.length - 1, index));
+    const stop = MARS_EXPLORATION_STOPS[nextIndex];
+    this.topicIndex = nextIndex;
+    this.topicYawTarget = stop.yaw;
+    this.topicShiftTarget = { ...stop.shift };
+    if (immediate || this.motion.matches) {
+      this.topicYaw = this.topicYawTarget;
+      this.topicShift = { ...this.topicShiftTarget };
+    }
+
+    this.exploration.classList.remove("is-switching");
+    void this.exploration.offsetWidth;
+    this.topicKicker.textContent = stop.kicker;
+    this.topicTitle.textContent = stop.title;
+    this.topicSubtitle.textContent = stop.subtitle;
+    this.topicSummary.textContent = stop.summary;
+    this.topicFacts.replaceChildren(...stop.facts.map(fact => {
+      const item = document.createElement("li");
+      item.textContent = fact;
+      return item;
+    }));
+    this.topicSource.href = stop.source;
+    this.topicCurrent.textContent = String(nextIndex + 1).padStart(2, "0");
+    this.topicPrev.disabled = nextIndex === 0;
+    this.topicNext.disabled = nextIndex === MARS_EXPLORATION_STOPS.length - 1;
+    Array.from(this.topicProgress.children).forEach((bar, i) => bar.classList.toggle("is-active", i === nextIndex));
+    this.focusLabel.textContent = stop.title;
+    this.focusReticle.style.setProperty("--focus-x", `${stop.focus[0]}%`);
+    this.focusReticle.style.setProperty("--focus-y", `${stop.focus[1]}%`);
+    this.focusReticle.style.setProperty("--focus-mobile-x", `${stop.mobileFocus[0]}%`);
+    this.focusReticle.style.setProperty("--focus-mobile-y", `${stop.mobileFocus[1]}%`);
+    if (!immediate && !this.motion.matches) this.exploration.classList.add("is-switching");
+
+    if (this.active) {
+      if (!this.motion.matches && !this.frame) { this.previous = performance.now(); this.tick(this.previous); }
+      else this.render();
+    }
+    if (announce && this.exploring) document.getElementById("announcement").textContent = `Eksplorasi Mars ${nextIndex + 1} dari ${MARS_EXPLORATION_STOPS.length}: ${stop.title}.`;
+  }
+
+  enterExploration() {
+    if (!this.active || this.exploring) return;
+    this.exploring = true;
+    this.exploreBaseRotation = this.renderedRotation;
+    this.topicYaw = 0;
+    this.topicYawTarget = MARS_EXPLORATION_STOPS[this.topicIndex].yaw;
+    this.explorationBlendTarget = 1;
+    this.element.classList.add("is-exploring");
+    this.caption.inert = true;
+    this.exploration.inert = false;
+    if (this.motion.matches) {
+      this.explorationBlend = 1;
+      this.topicYaw = this.topicYawTarget;
+      this.topicShift = { ...this.topicShiftTarget };
+      this.render();
+    } else if (!this.frame) {
+      this.previous = performance.now();
+      this.tick(this.previous);
+    }
+    document.getElementById("announcement").textContent = `Mode eksplorasi Mars dimulai. ${MARS_EXPLORATION_STOPS[this.topicIndex].title}.`;
+    this.topicTitle.focus({ preventScroll: true });
+  }
+
+  exitExploration() {
+    if (!this.exploring) return;
+    this.exploring = false;
+    this.explorationBlendTarget = 0;
+    this.element.classList.remove("is-exploring");
+    this.exploration.inert = true;
+    this.caption.inert = false;
+    if (this.motion.matches) { this.explorationBlend = 0; this.render(); }
+    else if (!this.frame) { this.previous = performance.now(); this.tick(this.previous); }
+    document.getElementById("announcement").textContent = "Kembali ke panorama Mars.";
+    this.exploreButton.focus({ preventScroll: true });
   }
 
   prepare() {
@@ -201,9 +395,17 @@ window.MarsScene = class MarsScene {
     this.time = 0;
     this.announced = false;
     this.element.hidden = false;
+    this.exploring = false;
+    this.explorationBlend = this.explorationBlendTarget = 0;
+    this.topicYaw = this.topicYawTarget = 0;
+    this.topicShift = { x: 0, y: 0 };
+    this.topicShiftTarget = { ...MARS_EXPLORATION_STOPS[0].shift };
+    this.element.classList.remove("is-exploring");
     this.caption.inert = true;
+    this.exploration.inert = true;
     this.caption.classList.remove("is-visible");
     this.caption.style.opacity = "0";
+    this.setExplorationStop(0, { immediate: true, announce: false });
     this.pointer.x = this.pointer.y = this.cameraOffset.x = this.cameraOffset.y = 0;
     this.prepare();
     this.resize();
@@ -218,7 +420,11 @@ window.MarsScene = class MarsScene {
     this.frame = null;
     this.element.hidden = true;
     this.element.style.opacity = "0";
+    this.element.classList.remove("is-exploring");
+    this.exploring = false;
+    this.explorationBlend = this.explorationBlendTarget = 0;
     this.caption.inert = true;
+    this.exploration.inert = true;
     this.credit.tabIndex = -1;
     this.time = 0;
   }
@@ -233,23 +439,35 @@ window.MarsScene = class MarsScene {
     const damping = 1 - Math.exp(-delta * 2);
     this.cameraOffset.x += (this.pointer.x - this.cameraOffset.x) * damping;
     this.cameraOffset.y += (this.pointer.y - this.cameraOffset.y) * damping;
+    const exploreDamping = this.motion.matches ? 1 : 1 - Math.exp(-delta * 2.5);
+    const topicDamping = this.motion.matches ? 1 : 1 - Math.exp(-delta * 2.15);
+    this.explorationBlend += (this.explorationBlendTarget - this.explorationBlend) * exploreDamping;
+    this.topicYaw += (this.topicYawTarget - this.topicYaw) * topicDamping;
+    this.topicShift.x += (this.topicShiftTarget.x - this.topicShift.x) * topicDamping;
+    this.topicShift.y += (this.topicShiftTarget.y - this.topicShift.y) * topicDamping;
     this.render();
-    if (!this.motion.matches || this.time < 14 || this.mode === "pending") this.frame = requestAnimationFrame(this.tick);
+    const explorationMoving = Math.abs(this.explorationBlendTarget - this.explorationBlend) > 0.001 || Math.abs(this.topicYawTarget - this.topicYaw) > 0.001;
+    if (!this.motion.matches || this.time < 14 || this.mode === "pending" || explorationMoving) this.frame = requestAnimationFrame(this.tick);
   }
 
   render() {
     const smooth = value => { const v = Math.max(0, Math.min(1, value)); return v * v * v * (v * (v * 6 - 15) + 10); };
     const t = this.time;
     const approach = this.motion.matches ? 1 : smooth((t - 0.6) / 12);
-    this.distance = this.finalDistance * Math.pow(15, 1 - approach);
-    const rotation = this.motion.matches ? 0.6 : 0.6 + t * 0.024;
+    const arrivalDistance = this.finalDistance * Math.pow(15, 1 - approach);
+    const exploreZoom = 1 - this.explorationBlend * (this.mobile ? 0.13 : 0.24);
+    this.distance = arrivalDistance * exploreZoom;
+    const arrivalRotation = this.motion.matches ? 0.6 : 0.6 + t * 0.024;
+    const exploreRotation = this.exploreBaseRotation + this.topicYaw + (this.motion.matches ? 0 : Math.sin(t * 0.14) * 0.012);
+    const rotation = arrivalRotation * (1 - this.explorationBlend) + exploreRotation * this.explorationBlend;
+    this.renderedRotation = rotation;
     const reveal = smooth(t / (this.motion.matches ? 1 : 1.8));
     this.element.style.opacity = String(reveal);
     const caption = smooth((t - (this.motion.matches ? 1 : 9)) / 2.5);
     this.caption.style.opacity = String(caption);
     this.caption.style.transform = `translateY(${this.motion.matches ? 0 : (1 - caption) * 12}px)`;
     this.credit.style.opacity = String(caption * 0.9);
-    this.credit.tabIndex = caption > 0.5 ? 0 : -1;
+    this.credit.tabIndex = caption > 0.5 && !this.exploring ? 0 : -1;
     if (caption > 0.5 && !this.announced) {
       this.announced = true;
       this.caption.inert = false;
@@ -261,9 +479,16 @@ window.MarsScene = class MarsScene {
     const drift = this.motion.matches ? 0 : Math.sin(t * 0.24) * 0.018;
     if (this.mode === "webgl") {
       const halfHeight = Math.tan(Math.PI / 10) * this.finalDistance;
-      this.planetGroup.position.set(this.mobile ? 0 : halfHeight * this.camera.aspect * 0.28, halfHeight * (this.mobile ? 0.28 : 0.1) + drift, 0);
+      const baseX = this.mobile ? 0 : 0.28;
+      const exploreX = this.mobile ? this.topicShift.x * 0.7 : 0.39 + this.topicShift.x;
+      const baseY = this.mobile ? 0.28 : 0.1;
+      const exploreY = this.mobile ? 0.20 + this.topicShift.y : 0.075 + this.topicShift.y;
+      const groupX = baseX * (1 - this.explorationBlend) + exploreX * this.explorationBlend;
+      const groupY = baseY * (1 - this.explorationBlend) + exploreY * this.explorationBlend;
+      this.planetGroup.position.set(halfHeight * this.camera.aspect * groupX, halfHeight * groupY + drift * (1 - this.explorationBlend * 0.45), 0);
       this.planet.rotation.y = rotation;
-      this.camera.position.set(this.motion.matches ? 0 : this.cameraOffset.x * 0.13, this.motion.matches ? 0 : -this.cameraOffset.y * 0.09, this.distance);
+      const pointerStrength = 1 - this.explorationBlend * 0.55;
+      this.camera.position.set(this.motion.matches ? 0 : this.cameraOffset.x * 0.13 * pointerStrength, this.motion.matches ? 0 : -this.cameraOffset.y * 0.09 * pointerStrength, this.distance);
       this.camera.lookAt(0, 0, 0);
       this.renderer.render(this.scene, this.camera);
     } else if (this.mode === "canvas") {
@@ -275,8 +500,10 @@ window.MarsScene = class MarsScene {
       const radius = this.finalRadius * this.finalDistance / this.distance;
       planet.style.width = planet.style.height = `${radius * 2}px`;
       planet.style.backgroundPositionX = `${-rotation * 100}px`;
-      planet.style.left = `${this.mobile ? 50 : 64}%`;
-      planet.style.top = `${this.mobile ? 36 : 45}%`;
+      const cssLeft = this.mobile ? 50 + this.explorationBlend * this.topicShift.x * 60 : 64 + this.explorationBlend * (5 + this.topicShift.x * 45);
+      const cssTop = this.mobile ? 36 - this.explorationBlend * (8 - this.topicShift.y * 35) : 45 - this.explorationBlend * (2 - this.topicShift.y * 35);
+      planet.style.left = `${cssLeft}%`;
+      planet.style.top = `${cssTop}%`;
     }
   }
 
@@ -306,8 +533,12 @@ window.MarsScene = class MarsScene {
     }
     this.sphereContext.putImageData(this.sphereImage, 0, 0);
     const radius = this.finalRadius * this.finalDistance / this.distance;
-    const cx = w * (0.5 + (this.mobile ? 0 : 0.14 * approach));
-    const cy = h * (0.5 - (this.mobile ? 0.14 : 0.05) * approach) - drift * 50;
+    const arrivalX = this.mobile ? 0 : 0.14 * approach;
+    const exploreX = this.mobile ? this.topicShift.x * 0.12 : 0.19 + this.topicShift.x * 0.42;
+    const cx = w * (0.5 + arrivalX * (1 - this.explorationBlend) + exploreX * this.explorationBlend);
+    const arrivalY = this.mobile ? 0.14 : 0.05;
+    const exploreY = this.mobile ? 0.21 - this.topicShift.y * 0.3 : 0.065 - this.topicShift.y * 0.3;
+    const cy = h * (0.5 - arrivalY * (1 - this.explorationBlend) - exploreY * this.explorationBlend) - drift * 50 * (1 - this.explorationBlend * 0.45);
     ctx.drawImage(this.sphereCanvas, cx - radius, cy - radius, radius * 2, radius * 2);
   }
 };
