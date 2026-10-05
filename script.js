@@ -181,6 +181,9 @@ class MissionAudio {
     // for the same physical click should never stack two copies on top of each other.
     if (now - this.lastClick < 45) return;
     this.lastClick = now;
+    // Browsers may suspend Web Audio after an idle/background period. A real UI
+    // activation is a valid user gesture, so resume here before playing feedback.
+    if (this.context?.state === "suspended") this.context.resume().catch(() => this.fail());
     this.cue("hover", { gain: 0.095 });
   }
 
@@ -576,16 +579,27 @@ audioToggle.addEventListener("click", () => {
   if (!willMute) sound.uiClick();
 });
 
-// Static and dynamically-created scene controls share one filtered delegate.
-// Planet-to-planet buttons are excluded because sound.travel() already supplies
-// their single intended action sound. The launch button already has activation audio.
-mission.addEventListener("click", event => {
-  const control = event.target.closest("button, a[href]");
-  if (!control || !mission.contains(control)) return;
-  if (control.matches("button:disabled") || control.dataset.uiSound === "manual") return;
+// Every real interactive control gets one consistent UI sound. Use capture phase so
+// Earth/Mars handlers cannot swallow the click before audio feedback is dispatched.
+// This also covers dynamically-rendered progress controls. The top-level lightbox
+// keeps its existing manual audio handlers and is marked data-ui-sound="manual".
+document.addEventListener("click", event => {
+  const target = event.target instanceof Element ? event.target : null;
+  const control = target?.closest("button, a[href], [role=\"button\"]");
+  if (!control) return;
+
+  const insideMission = mission.contains(control);
+  const insideLightbox = Boolean(control.closest(".exploration-lightbox"));
+  if (!insideMission && !insideLightbox) return;
+
+  if (control.matches("button:disabled, [aria-disabled=\"true\"]")) return;
+  if (control.dataset.uiSound === "manual") return;
+
+  // These actions already have their own intentional audio and must not double-fire.
   if (control === launchButton || control === earth.nextButton || control === marsPreviousButton || control === audioToggle) return;
+
   sound.uiClick();
-});
+}, true);
 
 for (const button of [launchButton, earth.nextButton, marsPreviousButton, mars.exploreButton, audioToggle]) {
   button.addEventListener("pointerenter", event => { if (event.pointerType === "mouse") sound.hover(); });
