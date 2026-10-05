@@ -1,0 +1,266 @@
+{
+  "earth": {
+    "great-wall.webp": [
+      {
+        "src": "assets/exploration/great-wall.webp",
+        "alt": "Foto Tembok Besar Tiongkok mengikuti punggung pegunungan di Badaling",
+        "credit": "Ktausz",
+        "source": "https://commons.wikimedia.org/wiki/File:Great_wall_panorama.jpg",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "caption": "Panorama Tembok Besar di Badaling"
+      },
+      {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/6/6f/GreatWallTower.jpg",
+        "alt": "Foto bagian Tembok Besar di dekat Menara Utara keempat, Badaling",
+        "credit": "Leonard G.",
+        "source": "https://commons.wikimedia.org/wiki/File:GreatWallTower.jpg",
+        "license": "CC SA 1.0",
+        "licenseUrl": "https://creativecommons.org/licenses/sa/1.0/",
+        "caption": "Sudut berbeda Tembok Besar di Badaling"
+      }
+    ],
+    "petra.webp": [
+      {
+        "src": "assets/exploration/petra.webp",
+        "alt": "Foto fasad Al-Khazneh yang dipahat pada tebing batu di Petra, Yordania",
+        "credit": "Markv; koreksi perspektif: Berthold Werner",
+        "source": "https://commons.wikimedia.org/wiki/File:Treasury_Petra.jpg",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "caption": "Al-Khazneh / Treasury, Petra"
+      },
+      {
+        "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Ad-Deir.jpg/1280px-Ad-Deir.jpg",
+        "alt": "Foto Ad-Deir atau Monastery di Petra, Yordania",
+        "credit": "Kruppsdaddy",
+        "source": "https://commons.wikimedia.org/wiki/File:Ad-Deir.jpg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "caption": "Ad-Deir / Monastery, Petra"
+      }
+    ],
+    "christ-redeemer.webp": [
+      {
+        "src": "assets/exploration/christ-redeemer.webp",
+        "alt": "Foto patung Christ the Redeemer dengan kedua lengan terbuka di Rio de Janeiro, Brasil",
+        "credit": "acediscovery",
+        "source": "https://commons.wikimedia.org/wiki/File:Christ-Redeemer-Rio-de-Janeiro.jpg",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "caption": "Christ the Redeemer, Corcovado"
+      },
+      {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Aerial_view_of_Cristo_Redentor%2C_Rio_de_Janeiro.jpg",
+        "alt": "Foto udara Christ the Redeemer dan Gunung Corcovado di Rio de Janeiro",
+        "credit": "Florent Pécassou",
+        "source": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_Cristo_Redentor,_Rio_de_Janeiro.jpg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "caption": "Pemandangan udara Christ the Redeemer"
+      }
+    ],
+    "machu-picchu.webp": [
+      {
+        "src": "assets/exploration/machu-picchu.webp",
+        "alt": "Foto teras dan bangunan batu Machu Picchu di pegunungan Andes, Peru",
+        "credit": "Martin St-Amant (S23678)",
+        "source": "https://commons.wikimedia.org/wiki/File:Machu_Picchu_D%C3%A9cembre_2006_-_Panorama_1.jpg",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+        "caption": "Panorama Machu Picchu"
+      },
+      {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/d/d2/Terraces_at_Machu_Picchu.jpg",
+        "alt": "Foto teras pertanian dan jalur batu di Machu Picchu, Peru",
+        "credit": "Gedankenstuecke",
+        "source": "https://commons.wikimedia.org/wiki/File:Terraces_at_Machu_Picchu.jpg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "caption": "Teras Machu Picchu dari sudut berbeda"
+      }
+    ],
+    "chichen-itza.webp": [
+      {
+        "src": "assets/exploration/chichen-itza.webp",
+        "alt": "Foto piramida El Castillo di Chichén Itzá, Meksiko",
+        "credit": "Daniel Schwen",
+        "source": "https://commons.wikimedia.org/wiki/File:Chichen_Itza_3.jpg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "caption": "El Castillo, Chichén Itzá"
+      },
+      {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Temple_of_the_warriors_chichen_itza.jpg",
+        "alt": "Foto Temple of the Warriors di Chichén Itzá, Meksiko",
+        "credit": "André Möller",
+        "source": "https://commons.wikimedia.org/wiki/File:Temple_of_the_warriors_chichen_itza.jpg",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "caption": "Temple of the Warriors, Chichén Itzá"
+      }
+    ],
+    "colosseum.webp": [
+      {
+        "src": "assets/exploration/colosseum.webp",
+        "alt": "Foto bagian luar Colosseum di Roma, Italia",
+        "credit": "DAVID ILIFF",
+        "source": "https://commons.wikimedia.org/wiki/File:Colosseum_in_Rome%2C_Italy_-_April_2007.jpg",
+        "license": "CC BY-SA 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5/",
+        "caption": "Eksterior Colosseum, Roma"
+      },
+      {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Rome_Colosseum_interior_view.jpg",
+        "alt": "Foto interior arena dan tribun Colosseum di Roma, Italia",
+        "credit": "Nicholas Hartmann",
+        "source": "https://commons.wikimedia.org/wiki/File:Rome_Colosseum_interior_view.jpg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "caption": "Interior Colosseum, Roma"
+      }
+    ],
+    "taj-mahal.webp": [
+      {
+        "src": "assets/exploration/taj-mahal.webp",
+        "alt": "Foto Taj Mahal dan taman di depannya di Agra, India",
+        "credit": "Sidheeq",
+        "source": "https://commons.wikimedia.org/wiki/File:Taj_Mahal_complete_clear_view.jpg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "caption": "Taj Mahal dari sisi selatan"
+      },
+      {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/e/e1/View_of_Taj_Mahal_from_Mehtab_Bagh.jpg",
+        "alt": "Foto Taj Mahal dari Mehtab Bagh di sisi utara Sungai Yamuna",
+        "credit": "Idiem1119",
+        "source": "https://commons.wikimedia.org/wiki/File:View_of_Taj_Mahal_from_Mehtab_Bagh.jpg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "caption": "Taj Mahal dari Mehtab Bagh"
+      }
+    ]
+  },
+  "mars": {
+    "olympus-mons.webp": [
+      {
+        "src": "assets/exploration/olympus-mons.webp",
+        "alt": "Mosaik Viking Orbiter memperlihatkan Olympus Mons di Mars",
+        "credit": "NASA/JPL/USGS",
+        "source": "https://science.nasa.gov/photojournal/olympus-mons/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Olympus Mons · mosaik Viking"
+      },
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04689/PIA04689.jpg?crop=faces%2Cfocalpoint&fit=clip&h=2305&w=1537",
+        "alt": "Citra Mars Global Surveyor memperlihatkan wilayah puncak dan dinding kaldera Olympus Mons",
+        "credit": "NASA/JPL/Malin Space Science Systems",
+        "source": "https://science.nasa.gov/photojournal/top-of-olympus-mons/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Puncak dan kaldera Olympus Mons"
+      }
+    ],
+    "valles-marineris.webp": [
+      {
+        "src": "assets/exploration/valles-marineris.webp",
+        "alt": "Mosaik Viking memperlihatkan sistem ngarai Valles Marineris di Mars",
+        "credit": "NASA/JPL-Caltech",
+        "source": "https://science.nasa.gov/resource/valles-marineris-the-grand-canyon-of-mars/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Valles Marineris · mosaik luas"
+      },
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia22/pia22238/PIA22238.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1800&w=2880",
+        "alt": "Citra HiRISE berwarna olahan memperlihatkan batuan di kedalaman Valles Marineris",
+        "credit": "NASA/JPL-Caltech/Univ. of Arizona",
+        "source": "https://science.nasa.gov/photojournal/geologic-history-revealed-in-valles-marineris/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Detail geologi Valles Marineris"
+      }
+    ],
+    "jezero.webp": [
+      {
+        "src": "assets/exploration/jezero.webp",
+        "alt": "Citra berwarna olahan memperlihatkan endapan delta di Kawah Jezero, Mars",
+        "credit": "NASA/JPL-Caltech/MSSS/JHU-APL",
+        "source": "https://science.nasa.gov/photojournal/jezero-crater-mars-2020s-landing-site/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Delta Jezero · citra orbital"
+      },
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/mars/downloadable_items/4/5/45791_PIA24485_K4_ZCAM_main_sol004_Delta_Remnant_unannotated.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1648",
+        "alt": "Pandangan Perseverance dari permukaan menuju sisa delta di Kawah Jezero",
+        "credit": "NASA/JPL-Caltech/ASU/MSSS",
+        "source": "https://science.nasa.gov/resource/perseverance-view-of-the-delta-in-jezero-crater/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Delta Jezero dari permukaan Mars"
+      }
+    ],
+    "polar-cap.webp": [
+      {
+        "src": "assets/exploration/polar-cap.webp",
+        "alt": "Citra Viking 1 memperlihatkan tudung es kutub utara Mars pada musim panas",
+        "credit": "NASA/JPL/USGS",
+        "source": "https://science.nasa.gov/photojournal/north-polar-ice-cap/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Tudung es kutub utara Mars"
+      },
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia25/pia25614/PIA25614.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1397&w=490",
+        "alt": "Citra Mars Odyssey memperlihatkan lapisan es dan debu pada tudung kutub selatan Mars",
+        "credit": "NASA/JPL-Caltech/ASU",
+        "source": "https://science.nasa.gov/photojournal/pj-south-polar-cap-11/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Lapisan tudung es kutub selatan Mars"
+      }
+    ],
+    "atmosphere.webp": [
+      {
+        "src": "assets/exploration/atmosphere.webp",
+        "alt": "Citra Curiosity memperlihatkan senja kebiruan di atmosfer berdebu Kawah Gale, Mars",
+        "credit": "NASA/JPL-Caltech/MSSS/Texas A&M Univ.",
+        "source": "https://science.nasa.gov/photojournal/sunset-in-mars-gale-crater/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Senja kebiruan di Kawah Gale"
+      },
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04271/PIA04271.jpg?crop=faces%2Cfocalpoint&fit=clip&h=540&w=810",
+        "alt": "Citra Mars Global Surveyor memperlihatkan lapisan tipis haze di limb Mars",
+        "credit": "NASA/JPL/Malin Space Science Systems",
+        "source": "https://science.nasa.gov/photojournal/the-martian-limb/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Haze atmosfer pada limb Mars"
+      }
+    ],
+    "dust-storm.webp": [
+      {
+        "src": "assets/exploration/dust-storm.webp",
+        "alt": "Perbandingan Mars pada badai debu besar tahun 2001",
+        "credit": "NASA/JPL-Caltech/MSSS",
+        "source": "https://science.nasa.gov/resource/the-2001-great-dust-storms-hellassyrtis-major/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Badai debu besar Mars 2001"
+      },
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia22/pia22519/PIA22519.jpg?crop=faces%2Cfocalpoint&fit=clip&h=709&w=1438",
+        "alt": "Peta Mars Reconnaissance Orbiter memperlihatkan perkembangan badai debu raksasa tahun 2018",
+        "credit": "NASA/JPL-Caltech/MSSS",
+        "source": "https://science.nasa.gov/photojournal/2018-giant-dust-storm-on-mars/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Badai debu raksasa Mars 2018"
+      }
+    ]
+  }
+}

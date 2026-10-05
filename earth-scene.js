@@ -73,16 +73,28 @@ const EARTH_EXPLORATION_STOPS = [
     "cityOrRegion": "Badaling",
     "flag": "assets/flags/cn.svg",
     "history": "Sekitar 220 SM, Qin Shi Huang menyatukan bagian-bagian benteng yang lebih tua. Pembangunannya berlanjut lintas dinasti hingga masa Ming (1368–1644) untuk memperkuat pertahanan di utara Tiongkok.",
-    "image": "assets/exploration/great-wall.webp",
-    "imageAlt": "Foto Tembok Besar Tiongkok mengikuti punggung pegunungan di Badaling",
-    "imageCredit": "Ktausz",
-    "imageSource": "https://commons.wikimedia.org/wiki/File:Great_wall_panorama.jpg",
-    "imageLicense": "CC BY-SA 3.0",
-    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-    "imageFit": "contain",
-    "imageCaption": "Badaling, Tiongkok",
-    "imageWidth": 1000,
-    "imageHeight": 263
+    images: [
+      {
+        src: "assets/exploration/great-wall.webp",
+        alt: "Foto Tembok Besar Tiongkok mengikuti punggung pegunungan di Badaling",
+        credit: "Ktausz",
+        source: "https://commons.wikimedia.org/wiki/File:Great_wall_panorama.jpg",
+        license: "CC BY-SA 3.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
+        caption: "Panorama Tembok Besar di Badaling",
+        fit: "cover"
+      },
+      {
+        src: "https://upload.wikimedia.org/wikipedia/commons/6/6f/GreatWallTower.jpg",
+        alt: "Foto bagian Tembok Besar di dekat Menara Utara keempat, Badaling",
+        credit: "Leonard G.",
+        source: "https://commons.wikimedia.org/wiki/File:GreatWallTower.jpg",
+        license: "CC SA 1.0",
+        licenseUrl: "https://creativecommons.org/licenses/sa/1.0/",
+        caption: "Sudut berbeda Tembok Besar di Badaling",
+        fit: "cover"
+      }
+    ]
   },
   {
     "title": "Petra",
@@ -103,16 +115,28 @@ const EARTH_EXPLORATION_STOPS = [
     "cityOrRegion": "Wadi Musa",
     "flag": "assets/flags/jo.svg",
     "history": "Petra berkembang sebagai ibu kota kerajaan Nabatea dan pusat perdagangan pada masa Helenistik serta Romawi. Kota ini menghubungkan jalur kafilah dari Arabia, Mesir, dan kawasan Mediterania.",
-    "image": "assets/exploration/petra.webp",
-    "imageAlt": "Foto fasad Al-Khazneh yang dipahat pada tebing batu di Petra, Yordania",
-    "imageCredit": "Markv; koreksi perspektif: Berthold Werner",
-    "imageSource": "https://commons.wikimedia.org/wiki/File:Treasury_Petra.jpg",
-    "imageLicense": "CC BY-SA 3.0",
-    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-    "imageFit": "contain",
-    "imageCaption": "Al-Khazneh, Petra",
-    "imageWidth": 845,
-    "imageHeight": 709
+    images: [
+      {
+        src: "assets/exploration/petra.webp",
+        alt: "Foto fasad Al-Khazneh yang dipahat pada tebing batu di Petra, Yordania",
+        credit: "Markv; koreksi perspektif: Berthold Werner",
+        source: "https://commons.wikimedia.org/wiki/File:Treasury_Petra.jpg",
+        license: "CC BY-SA 3.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
+        caption: "Al-Khazneh / Treasury, Petra",
+        fit: "cover"
+      },
+      {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Ad-Deir.jpg/1280px-Ad-Deir.jpg",
+        alt: "Foto Ad-Deir atau Monastery di Petra, Yordania",
+        credit: "Kruppsdaddy",
+        source: "https://commons.wikimedia.org/wiki/File:Ad-Deir.jpg",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+        caption: "Ad-Deir / Monastery, Petra",
+        fit: "cover"
+      }
+    ]
   },
   {
     "title": "Kristus Penebus",
@@ -133,16 +157,28 @@ const EARTH_EXPLORATION_STOPS = [
     "cityOrRegion": "Rio de Janeiro",
     "flag": "assets/flags/br.svg",
     "history": "Dibangun pada 1922–1931 sebagai monumen Kristen, patung ini melibatkan pematung Paul Landowski dan insinyur Heitor da Silva Costa. Sosok berlengan terbuka itu kemudian menjadi lambang budaya Rio de Janeiro.",
-    "image": "assets/exploration/christ-redeemer.webp",
-    "imageAlt": "Foto patung Christ the Redeemer dengan kedua lengan terbuka di Rio de Janeiro, Brasil",
-    "imageCredit": "acediscovery",
-    "imageSource": "https://commons.wikimedia.org/wiki/File:Christ-Redeemer-Rio-de-Janeiro.jpg",
-    "imageLicense": "CC BY 4.0",
-    "imageLicenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-    "imageFit": "contain",
-    "imageCaption": "Corcovado, Rio de Janeiro",
-    "imageWidth": 1000,
-    "imageHeight": 750
+    images: [
+      {
+        src: "assets/exploration/christ-redeemer.webp",
+        alt: "Foto patung Christ the Redeemer dengan kedua lengan terbuka di Rio de Janeiro, Brasil",
+        credit: "acediscovery",
+        source: "https://commons.wikimedia.org/wiki/File:Christ-Redeemer-Rio-de-Janeiro.jpg",
+        license: "CC BY 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+        caption: "Christ the Redeemer, Corcovado",
+        fit: "cover"
+      },
+      {
+        src: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Aerial_view_of_Cristo_Redentor%2C_Rio_de_Janeiro.jpg",
+        alt: "Foto udara Christ the Redeemer dan Gunung Corcovado di Rio de Janeiro",
+        credit: "Florent Pécassou",
+        source: "https://commons.wikimedia.org/wiki/File:Aerial_view_of_Cristo_Redentor,_Rio_de_Janeiro.jpg",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+        caption: "Pemandangan udara Christ the Redeemer",
+        fit: "cover"
+      }
+    ]
   },
   {
     "title": "Machu Picchu",
@@ -163,16 +199,28 @@ const EARTH_EXPLORATION_STOPS = [
     "cityOrRegion": "Cusco",
     "flag": "assets/flags/pe.svg",
     "history": "Dibangun oleh peradaban Inka pada abad ke-15, Machu Picchu memadukan ruang upacara, hunian, dan pertanian di punggung Andes. Situs ini menjadi salah satu peninggalan penting kemampuan tata ruang dan teknik bangunan Inka.",
-    "image": "assets/exploration/machu-picchu.webp",
-    "imageAlt": "Foto teras dan bangunan batu Machu Picchu di pegunungan Andes, Peru",
-    "imageCredit": "Martin St-Amant (S23678)",
-    "imageSource": "https://commons.wikimedia.org/wiki/File:Machu_Picchu_D%C3%A9cembre_2006_-_Panorama_1.jpg",
-    "imageLicense": "CC BY 3.0",
-    "imageLicenseUrl": "https://creativecommons.org/licenses/by/3.0/",
-    "imageFit": "contain",
-    "imageCaption": "Machu Picchu, Andes",
-    "imageWidth": 1000,
-    "imageHeight": 625
+    images: [
+      {
+        src: "assets/exploration/machu-picchu.webp",
+        alt: "Foto teras dan bangunan batu Machu Picchu di pegunungan Andes, Peru",
+        credit: "Martin St-Amant (S23678)",
+        source: "https://commons.wikimedia.org/wiki/File:Machu_Picchu_D%C3%A9cembre_2006_-_Panorama_1.jpg",
+        license: "CC BY 3.0",
+        licenseUrl: "https://creativecommons.org/licenses/by/3.0/",
+        caption: "Panorama Machu Picchu",
+        fit: "cover"
+      },
+      {
+        src: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Terraces_at_Machu_Picchu.jpg",
+        alt: "Foto teras pertanian dan jalur batu di Machu Picchu, Peru",
+        credit: "Gedankenstuecke",
+        source: "https://commons.wikimedia.org/wiki/File:Terraces_at_Machu_Picchu.jpg",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+        caption: "Teras Machu Picchu dari sudut berbeda",
+        fit: "cover"
+      }
+    ]
   },
   {
     "title": "Chichén Itzá",
@@ -193,16 +241,28 @@ const EARTH_EXPLORATION_STOPS = [
     "cityOrRegion": "Yucatán",
     "flag": "assets/flags/mx.svg",
     "history": "Chichén Itzá tumbuh sebagai kota Maya pada periode Klasik. Bangunan awalnya berkembang pada abad ke-6 hingga ke-10, lalu memperlihatkan perpaduan tradisi Maya dan pengaruh dari Meksiko tengah.",
-    "image": "assets/exploration/chichen-itza.webp",
-    "imageAlt": "Foto piramida El Castillo di Chichén Itzá, Meksiko",
-    "imageCredit": "Daniel Schwen",
-    "imageSource": "https://commons.wikimedia.org/wiki/File:Chichen_Itza_3.jpg",
-    "imageLicense": "CC BY-SA 4.0",
-    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-    "imageFit": "contain",
-    "imageCaption": "El Castillo, Chichén Itzá",
-    "imageWidth": 1000,
-    "imageHeight": 532
+    images: [
+      {
+        src: "assets/exploration/chichen-itza.webp",
+        alt: "Foto piramida El Castillo di Chichén Itzá, Meksiko",
+        credit: "Daniel Schwen",
+        source: "https://commons.wikimedia.org/wiki/File:Chichen_Itza_3.jpg",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+        caption: "El Castillo, Chichén Itzá",
+        fit: "cover"
+      },
+      {
+        src: "https://upload.wikimedia.org/wikipedia/commons/b/bf/Temple_of_the_warriors_chichen_itza.jpg",
+        alt: "Foto Temple of the Warriors di Chichén Itzá, Meksiko",
+        credit: "André Möller",
+        source: "https://commons.wikimedia.org/wiki/File:Temple_of_the_warriors_chichen_itza.jpg",
+        license: "CC BY-SA 3.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
+        caption: "Temple of the Warriors, Chichén Itzá",
+        fit: "cover"
+      }
+    ]
   },
   {
     "title": "Colosseum",
@@ -223,16 +283,28 @@ const EARTH_EXPLORATION_STOPS = [
     "cityOrRegion": "Roma",
     "flag": "assets/flags/it.svg",
     "history": "Dibangun pada abad pertama Masehi oleh dinasti Flavia, Colosseum menjadi tempat pertarungan gladiator dan pertunjukan publik. Bangunannya memperlihatkan kemampuan teknik serta penyelenggaraan acara besar dalam masyarakat Romawi.",
-    "image": "assets/exploration/colosseum.webp",
-    "imageAlt": "Foto lengkungan bertingkat Colosseum di Roma, Italia",
-    "imageCredit": "DAVID ILIFF",
-    "imageSource": "https://commons.wikimedia.org/wiki/File:Colosseum_in_Rome%2C_Italy_-_April_2007.jpg",
-    "imageLicense": "CC BY-SA 2.5",
-    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/2.5/",
-    "imageFit": "contain",
-    "imageCaption": "Colosseum, Roma",
-    "imageWidth": 1000,
-    "imageHeight": 587
+    images: [
+      {
+        src: "assets/exploration/colosseum.webp",
+        alt: "Foto bagian luar Colosseum di Roma, Italia",
+        credit: "DAVID ILIFF",
+        source: "https://commons.wikimedia.org/wiki/File:Colosseum_in_Rome%2C_Italy_-_April_2007.jpg",
+        license: "CC BY-SA 2.5",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/2.5/",
+        caption: "Eksterior Colosseum, Roma",
+        fit: "cover"
+      },
+      {
+        src: "https://upload.wikimedia.org/wikipedia/commons/e/e9/Rome_Colosseum_interior_view.jpg",
+        alt: "Foto interior arena dan tribun Colosseum di Roma, Italia",
+        credit: "Nicholas Hartmann",
+        source: "https://commons.wikimedia.org/wiki/File:Rome_Colosseum_interior_view.jpg",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+        caption: "Interior Colosseum, Roma",
+        fit: "cover"
+      }
+    ]
   },
   {
     "title": "Taj Mahal",
@@ -253,16 +325,28 @@ const EARTH_EXPLORATION_STOPS = [
     "cityOrRegion": "Agra",
     "flag": "assets/flags/in.svg",
     "history": "Shah Jahan memerintahkan pembangunan kompleks ini pada abad ke-17 untuk mengenang istrinya, Mumtaz Mahal. Makam utamanya selesai pada 1648, sementara bangunan pelengkap diselesaikan hingga 1653.",
-    "image": "assets/exploration/taj-mahal.webp",
-    "imageAlt": "Foto Taj Mahal dan taman di depannya di Agra, India",
-    "imageCredit": "Sidheeq",
-    "imageSource": "https://commons.wikimedia.org/wiki/File:Taj_Mahal_complete_clear_view.jpg",
-    "imageLicense": "CC BY-SA 4.0",
-    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-    "imageFit": "contain",
-    "imageCaption": "Taj Mahal, Agra",
-    "imageWidth": 600,
-    "imageHeight": 800
+    images: [
+      {
+        src: "assets/exploration/taj-mahal.webp",
+        alt: "Foto Taj Mahal dan taman di depannya di Agra, India",
+        credit: "Sidheeq",
+        source: "https://commons.wikimedia.org/wiki/File:Taj_Mahal_complete_clear_view.jpg",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+        caption: "Taj Mahal dari sisi selatan",
+        fit: "cover"
+      },
+      {
+        src: "https://upload.wikimedia.org/wikipedia/commons/e/e1/View_of_Taj_Mahal_from_Mehtab_Bagh.jpg",
+        alt: "Foto Taj Mahal dari Mehtab Bagh di sisi utara Sungai Yamuna",
+        credit: "Idiem1119",
+        source: "https://commons.wikimedia.org/wiki/File:View_of_Taj_Mahal_from_Mehtab_Bagh.jpg",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
+        caption: "Taj Mahal dari Mehtab Bagh",
+        fit: "cover"
+      }
+    ]
   }
 ];
 
@@ -400,14 +484,9 @@ window.EarthScene = class EarthScene {
     get("source").href = stop.source;
     get("source").textContent = `Sumber: ${stop.sourceName} ↗`;
     const photoSource = document.getElementById("earth-photo-source");
-    photoSource.hidden = !stop.imageSource;
-    if (stop.imageSource) {
-      photoSource.href = stop.imageSource;
-      photoSource.textContent = `Visual: ${stop.imageCredit || "sumber gambar"}${stop.imageLicense ? ` · ${stop.imageLicense}` : ""} ↗`;
-    } else {
-      photoSource.removeAttribute("href");
-      photoSource.textContent = "";
-    }
+    photoSource.hidden = true;
+    photoSource.removeAttribute("href");
+    photoSource.textContent = "";
     get("current").textContent = String(this.topicIndex + 1).padStart(2, "0");
     get("total").textContent = String(EARTH_EXPLORATION_STOPS.length).padStart(2, "0");
     get("prev").disabled = this.topicIndex === 0;
