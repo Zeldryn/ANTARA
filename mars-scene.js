@@ -209,6 +209,7 @@ window.MarsScene = class MarsScene {
     this.topicSummary = document.getElementById("mars-topic-summary");
     this.topicFacts = document.getElementById("mars-topic-facts");
     this.topicSource = document.getElementById("mars-topic-source");
+    this.photoSource = document.getElementById("mars-photo-source");
     this.topicCurrent = document.getElementById("mars-topic-current");
     this.topicTotal = document.getElementById("mars-topic-total");
     this.topicProgress = document.getElementById("mars-topic-progress");
@@ -216,6 +217,7 @@ window.MarsScene = class MarsScene {
     this.topicNext = document.getElementById("mars-topic-next");
     this.focusReticle = document.getElementById("mars-focus-reticle");
     this.focusLabel = document.getElementById("mars-focus-label");
+    this.focusContext = document.getElementById("mars-focus-context");
     this.motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     this.active = false;
     this.time = 0;
@@ -276,6 +278,8 @@ window.MarsScene = class MarsScene {
     const nextIndex = Math.max(0, Math.min(MARS_EXPLORATION_STOPS.length - 1, index));
     const stop = MARS_EXPLORATION_STOPS[nextIndex];
     window.ExplorationMedia.render("mars", stop);
+    this.focusReticle.classList.remove("is-marker-visible");
+    this.focusReticle.classList.add("is-relocating");
     this.topicIndex = nextIndex;
     const orientation = marsLocationOrientation(stop.location);
     this.topicYawTarget = immediate ? orientation.yaw : unwrapMarsAngleNear(orientation.yaw, this.topicYaw);
@@ -304,11 +308,22 @@ window.MarsScene = class MarsScene {
     }));
     if (this.topicScroll) this.topicScroll.scrollTop = 0;
     this.topicSource.href = stop.source;
+    this.photoSource.hidden = !stop.imageSource;
+    if (stop.imageSource) {
+      this.photoSource.href = stop.imageSource;
+      this.photoSource.textContent = `Visual: ${stop.imageCredit || "sumber gambar"}${stop.imageLicense ? ` · ${stop.imageLicense}` : ""} ↗`;
+    } else {
+      this.photoSource.removeAttribute("href");
+      this.photoSource.textContent = "";
+    }
     this.topicCurrent.textContent = String(nextIndex + 1).padStart(2, "0");
     this.topicPrev.disabled = nextIndex === 0;
     this.topicNext.disabled = nextIndex === MARS_EXPLORATION_STOPS.length - 1;
     Array.from(this.topicProgress.children).forEach((bar, i) => bar.classList.toggle("is-active", i === nextIndex));
     this.focusLabel.textContent = stop.location.label;
+    const latitudeHemisphere = stop.location.latitude >= 0 ? "N" : "S";
+    const longitude = ((stop.location.longitudeEast % 360) + 360) % 360;
+    this.focusContext.textContent = `MARS · ${Math.abs(stop.location.latitude).toFixed(2)}°${latitudeHemisphere} · ${longitude.toFixed(2)}°E`;
     if (!immediate && !this.motion.matches) this.exploration.classList.add("is-switching");
 
     if (this.active) {
@@ -353,6 +368,8 @@ window.MarsScene = class MarsScene {
     this.exploring = false;
     this.explorationBlendTarget = 0;
     this.element.classList.remove("is-exploring");
+    this.focusReticle.classList.remove("is-marker-visible");
+    this.focusReticle.classList.add("is-relocating");
     this.exploration.inert = true;
     this.caption.inert = false;
     if (this.motion.matches) { this.explorationBlend = 0; this.render(); }
@@ -607,11 +624,28 @@ window.MarsScene = class MarsScene {
     if (!this.motion.matches || this.time < 14 || this.mode === "pending" || explorationMoving) this.frame = requestAnimationFrame(this.tick);
   }
 
+  topicIsSettled() {
+    const angularError = Math.abs(this.topicYawTarget - this.topicYaw)
+      + Math.abs(this.topicPitchTarget - this.topicPitch)
+      + Math.abs(this.topicRollTarget - this.topicRoll);
+    const shiftError = Math.abs(this.topicShiftTarget.x - this.topicShift.x)
+      + Math.abs(this.topicShiftTarget.y - this.topicShift.y);
+    return this.explorationBlend > .94 && angularError < .03 && shiftError < .012;
+  }
+
   setReticleProjection(x, y, visible) {
     if (!this.focusReticle) return;
     this.focusReticle.style.left = `${x}px`;
     this.focusReticle.style.top = `${y}px`;
-    this.focusReticle.style.setProperty("--marker-opacity", visible ? ".92" : "0");
+    const show = Boolean(visible && this.exploring && this.topicIsSettled());
+    this.focusReticle.classList.toggle("is-marker-visible", show);
+    this.focusReticle.classList.toggle("is-relocating", !show);
+    this.focusReticle.classList.toggle("is-left", this.width > 700 && x + 250 > this.width - 20);
+    this.focusReticle.classList.toggle("is-below", y < (this.width <= 700 ? 180 : 135));
+    const previewWidth = this.width <= 700 ? Math.min(200, this.width - 32) : 214;
+    const safeCenter = Math.max(16 + previewWidth / 2, Math.min(this.width - 16 - previewWidth / 2, x));
+    this.focusReticle.style.setProperty("--marker-shift", `${safeCenter - x}px`);
+    this.focusReticle.style.setProperty("--marker-opacity", show ? ".92" : "0");
   }
 
   updateMarkerProjectionWebGL() {

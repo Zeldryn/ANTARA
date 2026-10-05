@@ -154,3 +154,47 @@
   .mars-focus-ring { animation: none; }
   .mars-exploration.is-switching h3, .mars-exploration.is-switching .mars-topic-subtitle, .mars-exploration.is-switching .mars-topic-summary, .mars-exploration.is-switching .mars-topic-facts, .mars-exploration.is-switching .mars-topic-source { animation: none; }
 }
+
+/* Mars marker now mirrors the Earth annotation system: label + contextual visual preview. */
+.mars-focus-label {
+  display: grid;
+  gap: 4px;
+  width: 190px;
+  white-space: normal;
+}
+.mars-focus-title { color: #dcc79f; font-size: 7px; letter-spacing: 1.4px; }
+.mars-focus-context { color: #8995a4; font-size: 5.5px; letter-spacing: 1.25px; }
+.mars-focus-reticle .exploration-marker-media {
+  left: 73px;
+  bottom: 30px;
+}
+.mars-focus-reticle.is-left .mars-focus-line { left: auto; right: 26px; background: linear-gradient(270deg, #edc57e8f, #edc57e12); }
+.mars-focus-reticle.is-left .mars-focus-label { left: auto; right: 73px; text-align: right; }
+.mars-focus-reticle.is-left .exploration-marker-media { left: auto; right: 73px; }
+.mars-focus-reticle.is-below .exploration-marker-media { top: 48px; bottom: auto; }
+.mars-focus-reticle.is-relocating .exploration-marker-media { opacity: 0; transition-delay: 0s; }
+@media (max-width: 700px) {
+  .mars-focus-line { left: 12px; top: auto; bottom: 29px; width: 1px; height: 24px; background: linear-gradient(0deg, #edc57e8f, #edc57e12); }
+  .mars-focus-label,
+  .mars-focus-reticle.is-left .mars-focus-label {
+    left: calc(12px + var(--marker-shift, 0px));
+    right: auto;
+    top: auto;
+    bottom: 60px;
+    width: min(200px, calc(100vw - 32px));
+    transform: translateX(-50%);
+    text-align: center;
+  }
+  .mars-focus-reticle .exploration-marker-media,
+  .mars-focus-reticle.is-left .exploration-marker-media {
+    left: calc(12px + var(--marker-shift, 0px));
+    right: auto;
+    bottom: 96px;
+    transform: translateX(-50%) translateY(7px) scale(.985);
+  }
+  .mars-focus-reticle.is-marker-visible .exploration-marker-media { transform: translateX(-50%); }
+  .mars-focus-reticle.is-below .exploration-marker-media { top: 42px; bottom: auto; }
+  .mars-focus-reticle.is-below .mars-focus-label { top: 74px; bottom: auto; }
+  .mars-focus-title { font-size: 6.5px; }
+  .mars-focus-context { font-size: 5px; }
+}

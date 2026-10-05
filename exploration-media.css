@@ -1,14 +1,100 @@
-/* Media lives inside the existing scroller; header, sources and controls stay fixed. */
-.exploration-media { margin: 0 0 18px; }
-.exploration-media[hidden], .exploration-media [hidden] { display: none; }
-.exploration-media-frame { position: relative; width: 100%; height: clamp(100px, 15vh, 140px); overflow: hidden; border: 1px solid #bca47738; border-radius: 3px; background: #030912; }
-.exploration-media-frame img { display: block; width: 100%; height: 100%; }
-.exploration-media-status { position: absolute; inset: 0; display: grid; place-content: center; padding: 20px; color: #b9bec6; font-size: 11px; line-height: 1.6; text-align: center; background: #030912; }
-.exploration-media figcaption { display: grid; gap: 4px; padding-top: 8px; color: #a9b1bb; font-size: 10px; line-height: 1.5; overflow-wrap: anywhere; }
-.exploration-media figcaption a { width: fit-content; color: #c4b08c; text-decoration: underline; text-decoration-color: #c4b08c50; text-underline-offset: 3px; }
-.exploration-media figcaption a:hover { color: #e2caa4; }
-.exploration-media figcaption a:focus-visible { outline: 1px solid #d2b382; outline-offset: 3px; }
-@media (max-width: 700px), (max-height: 700px) {
-  .exploration-media-frame { height: 100px; }
-  .exploration-media { margin-bottom: 14px; }
+/* Marker-side visual previews shared by Earth and Mars. */
+.exploration-marker-media {
+  position: absolute;
+  z-index: 3;
+  width: 214px;
+  display: grid;
+  gap: 5px;
+  opacity: 0;
+  transform: translateY(7px) scale(.985);
+  transition: opacity .42s ease .12s, transform .52s cubic-bezier(.2,.75,.2,1) .12s;
+  filter: drop-shadow(0 12px 24px #0008);
 }
+.exploration-marker-media[hidden], .exploration-marker-media [hidden] { display: none; }
+.exploration-marker-gallery { display: grid; grid-template-columns: 1fr; gap: 5px; }
+.exploration-marker-gallery.is-dual { grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); }
+.exploration-marker-frame {
+  position: relative;
+  display: block;
+  height: 72px;
+  overflow: hidden;
+  border: 1px solid #d4bc8e44;
+  border-radius: 2px;
+  background: #030912e8;
+  box-shadow: inset 0 0 0 1px #ffffff08;
+}
+.exploration-marker-frame.is-detail { height: 64px; align-self: end; }
+.exploration-marker-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, #05101c12, #02070ea8);
+}
+.exploration-marker-frame img { display: block; width: 100%; height: 100%; }
+.exploration-marker-frame.is-detail img { transform: scale(1.14); }
+.exploration-marker-status {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  color: #9fa9b6;
+  background: #030912;
+  font-size: 6px;
+  line-height: 1.4;
+  letter-spacing: .9px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.exploration-marker-meta {
+  justify-self: end;
+  max-width: 100%;
+  overflow: hidden;
+  color: #7f8996;
+  font-size: 5.5px;
+  line-height: 1.3;
+  letter-spacing: 1px;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px #030812;
+}
+
+.earth-location-dot:not(.is-relocating) .exploration-marker-media,
+.mars-focus-reticle.is-marker-visible .exploration-marker-media {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 700px), (max-height: 700px) {
+  .exploration-marker-media { width: 176px; gap: 4px; }
+  .exploration-marker-gallery { gap: 4px; }
+  .exploration-marker-frame { height: 58px; }
+  .exploration-marker-frame.is-detail { height: 52px; }
+  .exploration-marker-meta { font-size: 5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exploration-marker-media { transition-duration: .01ms !important; transition-delay: 0s !important; }
+}
+
+.exploration-photo-source {
+  display: inline-flex;
+  align-self: flex-start;
+  margin-top: 5px;
+  max-width: 100%;
+  overflow: hidden;
+  color: #657382;
+  font-size: 6px;
+  line-height: 1.45;
+  letter-spacing: .9px;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color .2s ease;
+}
+.exploration-photo-source:hover { color: #bda779; }
+.exploration-photo-source[hidden] { display: none; }

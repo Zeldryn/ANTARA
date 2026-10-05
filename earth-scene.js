@@ -399,6 +399,15 @@ window.EarthScene = class EarthScene {
     get("scroll").scrollTop = 0;
     get("source").href = stop.source;
     get("source").textContent = `Sumber: ${stop.sourceName} ↗`;
+    const photoSource = document.getElementById("earth-photo-source");
+    photoSource.hidden = !stop.imageSource;
+    if (stop.imageSource) {
+      photoSource.href = stop.imageSource;
+      photoSource.textContent = `Visual: ${stop.imageCredit || "sumber gambar"}${stop.imageLicense ? ` · ${stop.imageLicense}` : ""} ↗`;
+    } else {
+      photoSource.removeAttribute("href");
+      photoSource.textContent = "";
+    }
     get("current").textContent = String(this.topicIndex + 1).padStart(2, "0");
     get("total").textContent = String(EARTH_EXPLORATION_STOPS.length).padStart(2, "0");
     get("prev").disabled = this.topicIndex === 0;
@@ -449,7 +458,9 @@ window.EarthScene = class EarthScene {
     this.marker.style.left = `${x}px`;
     this.marker.style.top = `${y}px`;
     this.marker.classList.toggle("is-relocating", !visible);
-    this.marker.classList.toggle("is-left", !this.mobile && x + 250 > this.width - 20);
+    const placeLeft = !this.mobile && x + 250 > this.width - 20;
+    this.marker.classList.toggle("is-left", placeLeft);
+    this.marker.classList.toggle("is-below", y < (this.mobile ? 150 : 135));
     // Keep the narrow-screen label above the target and within the viewport.
     const labelWidth = Math.min(200, this.width - 32);
     const center = Math.max(16 + labelWidth/2, Math.min(this.width-16-labelWidth/2, x));

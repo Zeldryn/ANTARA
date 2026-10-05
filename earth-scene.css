@@ -164,3 +164,31 @@
   .earth-location-title { font-size: 8px; letter-spacing: 1px; }
   .earth-location-country { font-size: 7px; letter-spacing: 1.6px; }
 }
+
+/* Marker-linked visual preview: text stays in the board, imagery stays with the globe. */
+.earth-location-dot .exploration-marker-media {
+  left: 58px;
+  bottom: 34px;
+}
+.earth-location-dot.is-left .exploration-marker-media {
+  left: auto;
+  right: 58px;
+}
+.earth-location-dot.is-below .exploration-marker-media {
+  top: 34px;
+  bottom: auto;
+}
+@media (max-width: 700px) {
+  .earth-location-dot .exploration-marker-media,
+  .earth-location-dot.is-left .exploration-marker-media {
+    left: calc(3px + var(--label-shift, 0px));
+    right: auto;
+    bottom: 78px;
+    transform: translateX(-50%) translateY(7px) scale(.985);
+  }
+  .earth-location-dot:not(.is-relocating) .exploration-marker-media { transform: translateX(-50%); }
+  .earth-location-dot.is-below .exploration-marker-media {
+    top: 44px;
+    bottom: auto;
+  }
+}

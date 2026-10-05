@@ -1,3 +1,54 @@
+# Refinement marker visual Earth + Mars
+
+## Ringkasan terbaru
+Refinement ini memindahkan visual eksplorasi dari board kiri ke annotation marker untuk **dua planet sekaligus: Bumi dan Mars**. Rendering planet, tekstur, koordinat, animasi perjalanan antarplanet, dan identitas visual navy/emas yang sudah ada tidak diganti. Board kiri sekarang kembali menjadi area informasi yang dominan teks.
+
+### Berkas diubah
+- `index.html`
+- `exploration-media.js`
+- `exploration-media.css`
+- `earth-scene.js`
+- `earth-scene.css`
+- `mars-scene.js`
+- `mars-scene.css`
+- `tools/verify_media.cjs`
+- `IMPLEMENTATION.md`
+
+### Perilaku baru
+- Figure gambar besar di card Earth Seven Wonders dihapus.
+- Figure gambar besar di card Mars juga dihapus.
+- `#earth-marker-media` menempel pada marker landmark Bumi.
+- `#mars-marker-media` menempel pada reticle titik eksplorasi Mars.
+- Satu pilihan aktif menampilkan maksimal dua frame visual: foto utama dan foto pendukung. Data mendukung `secondaryImage` / `secondaryImageAlt`; bila belum tersedia, frame kedua memakai crop detail dari foto lokal yang sama sehingga tidak mengarang aset baru.
+- Pergantian topik merender ulang preview, lalu preview tetap tersembunyi selama planet bergerak dan muncul setelah marker mencapai posisi yang stabil.
+- Posisi preview membalik ke kiri saat ruang kanan sempit, berpindah ke bawah bila marker terlalu dekat bagian atas, dan pada layar sempit pusat cluster dikunci agar tetap berada di viewport.
+- Credit/lisensi gambar tetap tersedia sebagai teks kecil di board melalui `#earth-photo-source` dan `#mars-photo-source`.
+- Marker Mars sekarang menampilkan nama lokasi serta koordinat ringkas, lalu memakai sistem preview yang sama dengan Earth.
+
+### CSS penting
+Shared: `.exploration-marker-media`, `.exploration-marker-gallery`, `.exploration-marker-frame`, `.exploration-marker-status`, `.exploration-marker-meta`, `.exploration-photo-source`.
+
+Earth: `.earth-location-dot.is-left`, `.earth-location-dot.is-below`, dan aturan marker-media di dalam `.earth-location-dot`.
+
+Mars: `.mars-focus-title`, `.mars-focus-context`, `.mars-focus-reticle.is-marker-visible`, `.mars-focus-reticle.is-relocating`, `.mars-focus-reticle.is-left`, `.mars-focus-reticle.is-below`, dan aturan marker-media di dalam `.mars-focus-reticle`.
+
+### JavaScript penting
+- `ExplorationMedia.render(prefix, stop)` sekarang merender ke marker-side host, bukan ke card.
+- `EarthScene.positionMarker()` menambah adaptive left/below placement tanpa mengubah rumus koordinat atau rotasi Bumi.
+- `EarthScene.setExplorationStop()` menjaga link attribution gambar sebagai teks di card.
+- `MarsScene.setExplorationStop()` merender preview marker, mengisi koordinat context, dan menyembunyikan marker lama saat perpindahan.
+- `MarsScene.topicIsSettled()` menentukan kapan marker/preview baru boleh muncul.
+- `MarsScene.setReticleProjection()` menangani reveal setelah settle dan adaptive left/below/clamped placement.
+
+### Validasi build
+- `node --check` lulus untuk `exploration-media.js`, `earth-scene.js`, `mars-scene.js`, `script.js`, dan `tools/verify_media.cjs`.
+- `index.html` berhasil diparse.
+- `styles.css`, `exploration-media.css`, `earth-scene.css`, dan `mars-scene.css` berhasil diparse dengan `tinycss2` tanpa syntax error.
+- DOM lama `earth-topic-media` / `mars-topic-media` sudah tidak ada; host marker baru untuk Earth dan Mars tersedia.
+- Renderer/tekstur planet dan jalur navigasi antarplanet tidak diganti.
+
+---
+
 # Penambahan foto eksplorasi Bumi dan Mars
 
 ## Berkas
