@@ -1,39 +1,35 @@
-# ANTARA Intro / Rocket POV Repair Report
+# ANTARA Intro / Cockpit Character Rebuild Report
 
 ## Files modified
 - `index.html`
 - `styles.css`
 - `script.js`
+- `assets/characters/nara.png`
+- `assets/characters/sora.png`
+- related project notes (`README.md`, `IMPLEMENTATION.md`)
 
 Earth, Venus, Mars, exploration-media, planet data, texture, and planetary navigation implementation files were not modified.
 
 ## What changed
-1. The opening still starts directly inside the cockpit POV. The click begins the journey instead of revealing the cockpit.
-2. The large visual `Ayo Keliling Tata Surya!` heading was removed. A small `SELAMAT DATANG DI ANTARA` kicker remains so it cannot collide with the header.
-3. The START control now lives in a deliberate top-level interaction layer. The cockpit stage and every decorative descendant are explicitly non-interactive, while the launch button, brand link, and audio control keep pointer input.
-4. The opening stack was consolidated into a controlled order: environment, atmospheric layers, crew, cockpit frame/dashboard, speech UI, vignette, START UI, then global navigation.
-5. Both old crew SVG presentations were replaced with new female anime/manga-inspired rigs. Nara and Aksa use distinct hair, eyes, silhouettes, cel shading, and navy/gold ANTARA uniform details.
-6. The new crew rigs preserve blinking, breathing, head movement, mouth animation, launch/turbulence reaction, expression changes, and pointing/looking states from the existing timeline.
-7. Crew sizing is tied to viewport height and reduced across narrower/shorter desktop layouts so they do not cover the center flight path, START control, or cockpit instruments.
-8. The cockpit dashboard remains visible and sits in front of the lower crew bodies, which makes the characters feel seated inside the vehicle instead of pasted over the controls.
-9. The exterior departure environment gained deeper skyline layers, windows/lights, terrain depth, hangars, launch tower, beacons, terminal lighting, and road/ground cues.
-10. Existing layered cloud visuals and the city → sky → clouds → atmosphere → space timeline remain intact.
-11. Existing Earth handoff logic and all planet implementations remain intact.
-
-## Root cause of the START problem
-The project had accumulated multiple generations of opening CSS with competing stacking rules. The launch stage, intro layer, masthead, speech layer, cockpit frame, and character layers were being restacked by later override blocks. Even though the JavaScript click listener existed, this made the interaction layer fragile and dependent on CSS ordering.
-
-The repair removes that ambiguity by enforcing one final opening stack and by making every decorative cockpit layer `pointer-events: none`. The launch button is the only primary START target above the cockpit visuals.
+1. The previous inline SVG character implementation was removed from the HTML completely.
+2. Nara is now a clean transparent PNG anime illustration with dark hair and the navy/gold ANTARA visual language.
+3. The right-side guide is now Sora, a visibly different female anime character with silver hair, different facial design, different silhouette, and a matching ANTARA uniform direction.
+4. The old SVG face, body, hair, mouth, eye, arm, gesture, and mannequin styling rules were removed from the character implementation.
+5. Character wrappers retain the existing journey-state hooks and now animate the complete illustration subtly for idle, speaking, launch, excitement, and turbulence states.
+6. The main progression control was moved structurally into the cockpit stage and positioned at the lower center, directly above the cockpit dashboard.
+7. Decorative cockpit layers remain non-interactive. The launch button is explicitly restored as the only main interactive target inside the stage during the home state.
+8. The button disappears after the journey begins, preventing it from lingering over the launch animation.
+9. Dialogue still follows the active guide and moves between the left and right sides without blocking the centered progression control.
+10. The cockpit POV, ANTARA branding, exterior city/environment, dashboard, audio control, launch timeline, and Earth handoff remain intact.
 
 ## Validation performed
 - `node --check script.js` passed.
-- HTML parsed with no duplicate IDs.
-- Exactly one `launchButton.addEventListener("click", ...)` remains.
-- Planet-scene and exploration-media JS/CSS hashes match the supplied latest project.
-- Chromium headless flow test was run with all project HTML/CSS/JS inlined because the environment blocks localhost/file navigation.
-- Tested viewport sizes: `1920x1080`, `1600x900`, `1440x900`, `1366x768`.
-- At all four sizes: no horizontal overflow, the START button center resolves to `#launch-button`, no JavaScript console errors were recorded, and clicking START changed the state from `home` to `launch`.
-- A longer runtime check reached the `liftoff` phase with no JavaScript console errors.
-
-## Environment note
-The container blocks direct Chromium navigation to localhost and `file://`, so the browser validation used the complete document with local CSS/JS inlined into an `about:blank` page. This still exercised DOM layout, stacking, pointer hit testing, event listeners, state transition, and launch timing code.
+- HTML has no duplicate IDs.
+- Exactly two `.anime-character` assets are present.
+- No inline character SVG remains under `.companion`.
+- All local image/script/stylesheet references in `index.html` resolve to existing files.
+- Earth, Venus, Mars, and exploration-media JS/CSS hashes are identical to the supplied latest project.
+- Chromium/Playwright validation was performed with the full project document inlined because direct localhost navigation is blocked by the environment.
+- Tested desktop sizes: `1920x1080`, `1600x900`, `1440x900`, and `1366x768`.
+- At all four sizes: no horizontal overflow, the launch button is visible and its center hit-test resolves to `#launch-button`, both anime characters remain visible, no JavaScript page errors were recorded, and clicking the button changes the experience from `home` to `launch`.
+- After click, the launch button is hidden as intended.

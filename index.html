@@ -37,10 +37,6 @@
     <section class="intro" aria-labelledby="mission-title">
       <h1 id="mission-title" class="sr-only">ANTARA: Petualangan Tata Surya</h1>
       <div class="opening-kicker" aria-hidden="true"><span></span> SELAMAT DATANG DI ANTARA <span></span></div>
-      <button class="launch-button" id="launch-button" type="button">
-        <span>Yuk, Berangkat!</span>
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-      </button>
     </section>
 
     <footer class="mission-footer">
@@ -104,129 +100,18 @@
           <div class="dashboard-screen"><span id="flight-status">SIAP BERANGKAT • BUMI</span><b></b></div>
         </div>
       </div>
-
       <article class="companion companion-a" id="companion-a" data-state="idle" data-expression="bright" aria-label="Nara, navigator ANTARA">
-        <svg class="character-rig" viewBox="0 0 360 560" role="img" aria-label="Nara, navigator ANTARA bergaya ilustrasi anime dua dimensi">
-          <defs>
-            <linearGradient id="nara-skin" x1=".15" y1=".05" x2=".85" y2=".95"><stop offset="0" stop-color="#fff4eb"/><stop offset=".58" stop-color="#efc2aa"/><stop offset="1" stop-color="#d9957c"/></linearGradient>
-            <linearGradient id="nara-hair" x1=".12" y1="0" x2=".88" y2="1"><stop offset="0" stop-color="#273154"/><stop offset=".45" stop-color="#121a35"/><stop offset="1" stop-color="#060a18"/></linearGradient>
-            <linearGradient id="nara-uniform" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#183a59"/><stop offset=".55" stop-color="#0b223a"/><stop offset="1" stop-color="#061321"/></linearGradient>
-            <linearGradient id="nara-eye" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#a9e4f2"/><stop offset=".48" stop-color="#4c91b8"/><stop offset="1" stop-color="#1b466b"/></linearGradient>
-          </defs>
-          <ellipse class="character-shadow" cx="180" cy="535" rx="116" ry="15"/>
-          <g class="hair-back">
-            <path d="M93 191C84 110 113 57 178 46c70-12 112 39 103 131l-12 156c-19 31-52 50-90 50-39 0-73-20-92-52Z"/>
-            <path class="back-lock" d="M96 180c-13 73-9 151 10 216l30-83-9-153Z"/>
-            <path class="back-lock" d="M267 171c16 75 13 151-6 220l-30-85 8-150Z"/>
-            <path class="hair-highlight-shape" d="M124 80c38-26 83-26 119-5-37-7-72 0-101 24Z"/>
-          </g>
-          <g class="character-body">
-            <path class="neck" d="M154 239h51l8 56h-68Z"/>
-            <path class="uniform-base" d="M58 560 78 367c7-61 45-96 101-96 57 0 96 36 104 98l19 191Z"/>
-            <path class="uniform-side left" d="M58 560 78 371c5-42 22-72 51-88l25 58-20 219Z"/>
-            <path class="uniform-side right" d="m302 560-19-188c-5-42-23-72-52-89l-27 59 22 218Z"/>
-            <path class="undershirt" d="m149 280 30 43 31-43 19 47-50 50-49-50Z"/>
-            <path class="collar-panel left" d="m128 284 51 93-35 25-42-84Z"/>
-            <path class="collar-panel right" d="m232 284-53 93 36 25 43-84Z"/>
-            <path class="gold-trim" d="m113 311 66 71 69-72"/>
-            <path class="zip-line" d="M179 384v161"/>
-            <path class="seatbelt" d="M107 304 236 548"/>
-            <path class="jacket-fold" d="M103 384c18-24 39-37 58-42M255 384c-17-23-37-36-56-42M139 425l-10 105M221 425l11 105"/>
-            <g class="uniform-panel"><rect x="102" y="424" width="50" height="25" rx="5"/><path d="M113 434h28M113 441h17"/></g>
-            <g class="antara-patch" transform="translate(245 361)"><circle r="16"/><ellipse rx="24" ry="8" transform="rotate(-24)"/><circle class="patch-dot" cx="11" cy="-13" r="2.8"/></g>
-            <path class="arm arm-left" d="M87 391c-18 45-22 93-16 143"/><path class="arm arm-right" d="M273 392c18 44 22 92 16 142"/>
-          </g>
-          <g class="character-head">
-            <path class="ear left" d="M115 158c-11-1-17 10-14 25 3 15 10 22 20 20Z"/><path class="ear right" d="M246 157c11-1 16 10 14 25-3 15-10 22-20 20Z"/>
-            <path class="face" d="M122 116c7-38 31-59 64-60 34 0 57 25 60 63 4 43-8 81-34 106-13 13-26 20-38 20-13-2-25-11-36-25-21-26-27-65-16-104Z"/>
-            <path class="face-cel-shade" d="M216 70c20 18 28 52 21 86-6 28-20 52-39 68 14-27 18-56 14-85-3-23-4-47 4-69Z"/>
-            <path class="ear-detail left" d="M111 174c5-4 8-2 9 3"/><path class="ear-detail right" d="M250 174c-5-4-8-2-9 3"/>
-            <g class="eyes">
-              <path class="eye eye-left" d="M130 145c11-13 29-15 43-2-12 13-31 15-43 2Z"/><path class="eye eye-right" d="M186 142c16-15 38-13 51 3-14 15-39 14-51-3Z"/>
-              <ellipse class="pupil" cx="153" cy="146" rx="8.5" ry="12"/><ellipse class="pupil" cx="214" cy="146" rx="10.2" ry="13.8"/>
-              <ellipse class="iris-core" cx="153" cy="151" rx="4" ry="5.4"/><ellipse class="iris-core" cx="214" cy="152" rx="4.8" ry="6.4"/>
-              <circle class="eye-glint" cx="149" cy="141" r="3"/><circle class="eye-glint" cx="210" cy="140" r="3.5"/><circle class="eye-glint-small" cx="156" cy="147" r="1.3"/><circle class="eye-glint-small" cx="218" cy="148" r="1.5"/>
-              <path class="upper-lash" d="M128 142c14-16 33-17 47-1M184 140c17-18 41-16 55 3"/>
-              <path class="lower-lash" d="M134 152c10 6 24 6 34 0M192 153c12 6 29 5 39-1"/>
-            </g>
-            <path class="brow brow-left" d="M128 119c13-7 29-8 43-3"/><path class="brow brow-right" d="M189 116c14-5 29-3 42 4"/>
-            <path class="nose-shadow" d="M188 153c-3 9-1 18 6 21"/>
-            <path class="nose-dot" d="M193 177h3"/>
-            <ellipse class="cheek cheek-left" cx="134" cy="183" rx="20" ry="8"/><ellipse class="cheek cheek-right" cx="224" cy="183" rx="20" ry="8"/>
-            <g class="mouth-frames"><path class="mouth mouth-closed" d="M174 205c9 6 21 6 30-1"/><path class="mouth mouth-half" d="M174 205c9 12 21 12 30-1-8 6-20 7-30 1Z"/><ellipse class="mouth mouth-open" cx="190" cy="209" rx="12" ry="8.5"/></g>
-            <g class="hair-front">
-              <path d="M105 132c-2-51 27-87 73-89 49-2 80 31 79 79-24-25-50-34-78-26-26 8-45 24-74 36Z"/>
-              <path d="M118 88c18-27 43-40 69-41-13 10-22 23-28 39-8 20-19 33-38 45 6-15 6-29-3-43Z"/>
-              <path d="M158 53c14-7 31-10 47-7-8 8-13 17-16 28-5 18-15 32-31 43 5-20 5-42 0-64Z"/>
-              <path d="M202 49c21 5 39 17 51 34-15-3-28 0-41 8 4-13 1-28-10-42Z"/>
-              <path class="side-lock left" d="M110 111c-10 31-9 66 1 101l15-54-1-59Z"/><path class="side-lock right" d="M249 108c11 31 11 65 2 103l-16-55 0-57Z"/>
-              <path class="hair-highlight-shape" d="M133 69c20-12 42-17 64-13-20 6-36 15-49 29Z"/>
-            </g>
-            <path class="hair-line" d="M115 103c14-24 37-41 64-48M214 55c17 8 30 21 37 38"/>
-            <path class="hair-strand" d="M249 110c18 31 20 65 9 99"/>
-          </g>
-          <g class="gesture-arm gesture-point"><path d="M274 405c31-20 49-48 59-81"/><path class="glove" d="M333 322c3-9 13-12 21-6 7 6 5 17-3 22-10 5-21-5-18-16Z"/></g>
-        </svg>
+        <img class="anime-character" src="assets/characters/nara.png" alt="Nara, pemandu perempuan ANTARA bergaya anime dengan rambut gelap dan seragam navy emas" draggable="false">
       </article>
 
-      <article class="companion companion-b" id="companion-b" data-state="idle" data-expression="calm" aria-label="Aksa, ilmuwan penerbangan ANTARA">
-        <svg class="character-rig" viewBox="0 0 360 560" role="img" aria-label="Aksa, ilmuwan penerbangan ANTARA bergaya ilustrasi anime dua dimensi">
-          <defs>
-            <linearGradient id="aksa-skin" x1=".15" y1=".05" x2=".85" y2=".95"><stop offset="0" stop-color="#fff1e6"/><stop offset=".58" stop-color="#edbea6"/><stop offset="1" stop-color="#d38e76"/></linearGradient>
-            <linearGradient id="aksa-hair" x1=".1" y1="0" x2=".9" y2="1"><stop offset="0" stop-color="#4b3a57"/><stop offset=".48" stop-color="#261c34"/><stop offset="1" stop-color="#0d0b18"/></linearGradient>
-            <linearGradient id="aksa-uniform" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#203b53"/><stop offset=".55" stop-color="#10273a"/><stop offset="1" stop-color="#071522"/></linearGradient>
-            <linearGradient id="aksa-eye" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f2cd92"/><stop offset=".52" stop-color="#b97949"/><stop offset="1" stop-color="#5b3828"/></linearGradient>
-          </defs>
-          <ellipse class="character-shadow" cx="180" cy="535" rx="116" ry="15"/>
-          <g class="hair-back">
-            <path d="M96 183c-6-77 26-127 84-136 64-10 105 36 98 117l-9 119c-20 30-52 47-88 47-38 0-70-18-89-49Z"/>
-            <path class="bob-lock left" d="M97 155c-12 49-9 100 7 144l25-54-4-108Z"/><path class="bob-lock right" d="M266 148c14 49 12 99-4 147l-25-54 5-107Z"/>
-            <path class="hair-tail" d="M260 176c27 17 39 44 35 76-3 25-14 47-31 66l-13-82Z"/>
-            <path class="hair-highlight-shape" d="M132 77c32-23 72-26 106-8-33-5-64 2-89 23Z"/>
-          </g>
-          <g class="character-body">
-            <path class="neck" d="M154 240h51l8 55h-68Z"/>
-            <path class="uniform-base" d="M58 560 78 367c7-61 45-96 101-96 57 0 96 36 104 98l19 191Z"/>
-            <path class="uniform-side left" d="M58 560 78 372c5-41 21-71 49-88l29 59-21 217Z"/>
-            <path class="uniform-side right" d="m302 560-19-188c-5-42-22-72-50-89l-30 60 22 217Z"/>
-            <path class="undershirt" d="m148 280 31 42 32-42 20 47-52 51-50-51Z"/>
-            <path class="collar-panel left" d="m127 284 52 94-37 24-41-83Z"/><path class="collar-panel right" d="m233 284-54 94 37 24 43-83Z"/>
-            <path class="gold-trim" d="m111 312 68 72 71-73"/><path class="gold-trim collar-accent" d="m211 296 30 32"/>
-            <path class="zip-line" d="M179 386v159"/><path class="seatbelt" d="M245 302 119 548"/>
-            <path class="jacket-fold" d="M102 384c18-24 39-36 58-42M256 384c-17-24-37-36-56-42M138 426l-9 103M222 426l10 103"/>
-            <g class="uniform-panel right-panel"><rect x="208" y="424" width="50" height="25" rx="5"/><path d="M219 434h28M219 441h17"/></g>
-            <g class="antara-patch" transform="translate(116 361)"><circle r="16"/><ellipse rx="24" ry="8" transform="rotate(24)"/><circle class="patch-dot" cx="-11" cy="-13" r="2.8"/></g>
-            <path class="arm arm-left" d="M87 391c-18 45-22 93-16 143"/><path class="arm arm-right" d="M273 392c18 44 22 92 16 142"/>
-          </g>
-          <g class="character-head">
-            <path class="ear left" d="M115 159c-11-1-17 10-14 25 3 15 10 22 20 20Z"/><path class="ear right" d="M246 158c11-1 16 10 14 25-3 15-10 22-20 20Z"/>
-            <path class="face" d="M114 119c4-38 27-63 61-64 33-1 58 20 65 58 10 40 4 80-17 107-11 15-23 24-36 26-12 0-25-7-38-19-27-24-40-63-35-108Z"/>
-            <path class="face-cel-shade" d="M213 68c22 17 34 49 31 83-2 29-13 54-31 73 11-28 12-57 5-85-5-23-10-47-5-71Z"/>
-            <path class="ear-detail left" d="M111 175c5-4 8-2 9 3"/><path class="ear-detail right" d="M250 175c-5-4-8-2-9 3"/>
-            <g class="eyes">
-              <path class="eye eye-left" d="M122 144c14-15 37-16 52-1-13 15-38 16-52 1Z"/><path class="eye eye-right" d="M188 145c13-12 31-10 42 4-12 12-31 10-42-4Z"/>
-              <ellipse class="pupil" cx="149" cy="146" rx="10.2" ry="13.6"/><ellipse class="pupil" cx="211" cy="148" rx="8.5" ry="11.8"/>
-              <ellipse class="iris-core" cx="149" cy="152" rx="4.8" ry="6.3"/><ellipse class="iris-core" cx="211" cy="153" rx="4" ry="5.3"/>
-              <circle class="eye-glint" cx="145" cy="140" r="3.5"/><circle class="eye-glint" cx="208" cy="143" r="3"/>
-              <path class="upper-lash" d="M120 141c17-18 41-18 56 0M186 143c14-14 34-12 46 4"/><path class="lower-lash" d="M128 153c12 6 29 6 40-1M194 154c10 5 23 4 32-1"/>
-            </g>
-            <path class="brow brow-left" d="M128 121c14-6 29-6 43-1"/><path class="brow brow-right" d="M190 118c14-4 28-1 40 6"/>
-            <path class="nose-shadow" d="M173 154c2 9 1 17-6 21"/><path class="nose-dot" d="M164 178h3"/>
-            <ellipse class="cheek cheek-left" cx="134" cy="184" rx="20" ry="8"/><ellipse class="cheek cheek-right" cx="224" cy="184" rx="20" ry="8"/>
-            <g class="mouth-frames"><path class="mouth mouth-closed" d="M156 205c9 6 21 6 30-1"/><path class="mouth mouth-half" d="M156 205c9 12 21 12 30-1-8 6-20 7-30 1Z"/><ellipse class="mouth mouth-open" cx="172" cy="209" rx="12" ry="8.5"/></g>
-            <g class="hair-front">
-              <path d="M104 133c0-52 30-88 77-90 48-2 79 29 79 76-27-22-54-29-80-19-27 10-47 23-76 33Z"/>
-              <path d="M117 88c23-27 50-39 78-38-16 8-29 21-39 36-12 17-24 28-43 37 7-13 8-24 4-35Z"/>
-              <path d="M171 48c22-6 45-3 64 7-13 6-23 16-30 29-9 16-21 27-36 34 8-22 9-46 2-70Z"/>
-              <path d="M224 58c15 6 28 15 38 28-12-1-23 2-34 9 2-12 1-24-4-37Z"/>
-              <path class="side-lock left" d="M109 112c-9 31-8 65 2 100l15-54-1-58Z"/><path class="side-lock right" d="M250 109c11 28 12 61 4 98l-18-52 1-55Z"/>
-            </g>
-            <path class="hair-line" d="M116 103c17-25 40-40 69-48M219 59c16 8 28 19 36 33"/>
-            <path class="hair-strand" d="M109 112c-16 31-16 64-6 96"/>
-          </g>
-          <g class="gesture-arm gesture-point"><path d="M86 405c-31-20-49-48-59-81"/><path class="glove" d="M27 322c-3-9-13-12-21-6-7 6-5 17 3 22 10 5 21-5 18-16Z"/></g>
-        </svg>
+      <article class="companion companion-b" id="companion-b" data-state="idle" data-expression="calm" aria-label="Sora, pemandu sains ANTARA">
+        <img class="anime-character" src="assets/characters/sora.png" alt="Sora, pemandu perempuan ANTARA bergaya anime dengan rambut perak dan seragam navy emas" draggable="false">
       </article>
+
+      <button class="launch-button" id="launch-button" type="button" aria-label="Mulai perjalanan ANTARA">
+        <span class="launch-button-copy"><b>NEXT</b><small>Mulai perjalanan</small></span>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </button>
 
       <div class="speech-bubble speaker-a" id="speech-bubble" role="status" aria-live="polite">
         <strong id="speech-speaker">Nara</strong>

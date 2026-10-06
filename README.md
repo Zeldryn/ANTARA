@@ -16,7 +16,7 @@ Buka `http://localhost:8000`. XAMPP juga dapat dipakai dengan menyalin seluruh f
 - Nama lengkap: **Antariksa Nusantara**
 - CTA: **Yuk, Berangkat!**
 - POV peluncuran: first-person dari dalam kokpit
-- Companion: Nara dan Aksa
+- Companion: Nara dan Sora
 - Teknik karakter: layered inline SVG, bukan PNG karakter statis
 - Animasi karakter: breathing, head idle, hair motion, blink acak, mouth frames saat berbicara, launch reaction, turbulence, dan look/point toward Earth
 - Dialog: data-driven dan disinkronkan ke fase peluncuran

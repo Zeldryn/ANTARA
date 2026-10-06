@@ -690,53 +690,6 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 .companion { position:absolute; z-index:7; bottom:9.5%; width:clamp(180px,22vw,315px); height:auto; opacity:calc(1 - var(--handoff) * 1.35); filter:drop-shadow(0 20px 24px rgba(0,0,0,.34)); will-change:transform,opacity; }
 .companion-a { left:4.5%; transform:translate3d(var(--char-a-x),var(--char-a-y),0); }
 .companion-b { right:4.5%; transform:translate3d(var(--char-b-x),var(--char-b-y),0); }
-.character-rig { display:block; width:100%; overflow:visible; }
-.character-shadow ellipse { fill:rgba(0,0,0,.28); }
-.companion .hair-back,.companion .hair-front,.companion .hair-strand { fill:#121826; }
-.companion-b .hair-back,.companion-b .hair-front,.companion-b .hair-strand { fill:#20252e; }
-.companion .face,.companion .ears ellipse { fill:#d79b79; stroke:#f3bf98; stroke-width:1; }
-.companion-b .face,.companion-b .ears ellipse { fill:#c98b68; }
-.companion .eye { fill:#faf6ef; stroke:#2b2730; stroke-width:2; }
-.companion .pupil { fill:#284557; }
-.companion-b .pupil { fill:#4a382b; }
-.companion .brow,.companion .nose { fill:none; stroke:#593b35; stroke-width:2.1; stroke-linecap:round; }
-.companion .mouth { stroke:#6e3740; stroke-width:2.2; stroke-linecap:round; transform-origin:center; }
-.companion .mouth-open,.companion .mouth-half { fill:#8f4650; opacity:0; }
-.companion .mouth-closed { fill:none; opacity:1; }
-.companion .jacket { fill:#1c3350; stroke:#7092ad; stroke-opacity:.32; stroke-width:2; }
-.companion-b .jacket { fill:#3b4557; stroke:#c1a96f; stroke-opacity:.28; }
-.companion .shirt { fill:#d9d7ce; }
-.companion-b .shirt { fill:#c9d5dc; }
-.companion .collar { fill:#0d1c2c; }
-.companion-b .collar { fill:#182532; }
-.companion .arm,.companion .gesture-arm path { fill:none; stroke:#d79b79; stroke-width:20; stroke-linecap:round; }
-.companion-b .arm,.companion-b .gesture-arm path { stroke:#c98b68; }
-.companion .gesture-arm circle { fill:#d79b79; }
-.companion-b .gesture-arm circle { fill:#c98b68; }
-.companion .seatbelt { fill:none; stroke:#d1b36f; stroke-width:8; stroke-linecap:round; opacity:.76; }
-.companion-b .seatbelt { stroke:#79a8c9; }
-.antara-patch { fill:none; stroke:#efcf91; stroke-width:2.3; opacity:.8; }
-.character-body { transform-origin:50% 100%; animation:character-breathe 4.8s ease-in-out infinite; }
-.character-head { transform-origin:50% 72%; animation:head-idle 6.2s ease-in-out infinite; }
-.hair-strand { transform-origin:50% 0%; animation:hair-idle 4s ease-in-out infinite; }
-.companion-b .character-body { animation-delay:-1.9s; }
-.companion-b .character-head { animation-delay:-2.6s; }
-.companion-b .hair-strand { animation-delay:-1.2s; }
-.companion .eyes { transform-box:fill-box; transform-origin:center; transition:transform 70ms linear; }
-.companion.is-blinking .eyes { transform:scaleY(.06); }
-.companion.is-talking .mouth-closed { animation:mouth-closed-cycle .34s steps(1,end) infinite; }
-.companion.is-talking .mouth-half { animation:mouth-half-cycle .34s steps(1,end) infinite; }
-.companion.is-talking .mouth-open { animation:mouth-open-cycle .34s steps(1,end) infinite; }
-.companion.is-talking .character-head { animation:head-talk 1.15s ease-in-out infinite alternate; }
-.gesture-point { opacity:0; transform-box:fill-box; transform-origin:50% 100%; transition:opacity .24s ease,transform .5s cubic-bezier(.2,.8,.2,1); transform:rotate(8deg) translateY(10px); }
-.companion[data-state="pointing"] .gesture-point,.companion[data-state="looking-earth"] .gesture-point { opacity:1; transform:rotate(0) translateY(0); }
-.companion[data-state="excited"] .character-head { animation:head-excited .7s ease-in-out infinite alternate; }
-.companion[data-state="launching"] .character-body { animation:launch-body .42s ease-in-out infinite alternate; }
-.companion[data-state="launching"] .hair-strand,.companion[data-state="turbulence"] .hair-strand { animation:hair-launch .33s ease-in-out infinite alternate; }
-.companion[data-state="turbulence"] .character-head { animation:turbulence-head .23s ease-in-out infinite alternate; }
-.companion[data-state="looking-earth"] .character-head { transform:rotate(var(--look-rotation,0deg)); animation:none; }
-.companion-a[data-state="looking-earth"] { --look-rotation:5deg; }
-.companion-b[data-state="looking-earth"] { --look-rotation:-7deg; }
 .companion-name { position:absolute; bottom:13%; left:50%; transform:translateX(-50%); padding:5px 8px; border:1px solid rgba(229,201,148,.17); background:rgba(3,10,18,.55); color:#d8c59e; font-size:5.5px; letter-spacing:1.7px; border-radius:999px; opacity:.72; }
 
 .speech-bubble { position:absolute; z-index:9; width:min(290px,30vw); padding:13px 16px 14px; border:1px solid rgba(224,202,161,.34); border-radius:12px; background:linear-gradient(145deg,rgba(9,20,32,.94),rgba(5,13,23,.88)); color:#eef3f7; box-shadow:0 14px 34px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.06); backdrop-filter:blur(10px); opacity:1; transform:translateY(0) scale(1); transition:left .45s ease,right .45s ease,opacity .22s ease,transform .22s ease; }
@@ -760,17 +713,6 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 
 @keyframes cockpit-star-drift { to { background-position:13px 93px; } }
 @keyframes dashboard-blink { 0%,72%,100%{opacity:.25} 79%,88%{opacity:1} }
-@keyframes character-breathe { 0%,100%{transform:translateY(0) scaleY(1)} 50%{transform:translateY(-2px) scaleY(1.009)} }
-@keyframes head-idle { 0%,100%{transform:translate(0,0) rotate(0)} 35%{transform:translate(1px,-1px) rotate(.6deg)} 70%{transform:translate(-1px,0) rotate(-.5deg)} }
-@keyframes hair-idle { 0%,100%{transform:rotate(-2deg)} 50%{transform:rotate(3deg)} }
-@keyframes head-talk { from{transform:translateY(0) rotate(-.4deg)} to{transform:translateY(-1.5px) rotate(.8deg)} }
-@keyframes head-excited { from{transform:translateY(0) rotate(-1deg)} to{transform:translateY(-3px) rotate(1.3deg)} }
-@keyframes launch-body { from{transform:translateY(1px) scaleY(.998)} to{transform:translateY(5px) scaleY(1.008)} }
-@keyframes hair-launch { from{transform:rotate(-8deg) translateY(0)} to{transform:rotate(9deg) translateY(2px)} }
-@keyframes turbulence-head { from{transform:translate(-1.5px,1px) rotate(-1deg)} to{transform:translate(1.5px,-1px) rotate(1deg)} }
-@keyframes mouth-closed-cycle { 0%,24%,75%,100%{opacity:1} 25%,74%{opacity:0} }
-@keyframes mouth-half-cycle { 0%,24%,50%,75%,100%{opacity:0} 25%,49%,76%,99%{opacity:1} }
-@keyframes mouth-open-cycle { 0%,49%,76%,100%{opacity:0} 50%,75%{opacity:1} }
 
 @media (max-width: 900px) {
   .companion { width:clamp(155px,27vw,230px); bottom:10%; }
@@ -810,8 +752,7 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 }
 @media (prefers-reduced-motion: reduce) {
   .cockpit-world,.cockpit-camera,.companion { transform:none !important; }
-  .character-body,.character-head,.hair-strand,.launch-sky::before,.launch-sky::after { animation:none !important; }
-  .companion.is-talking .mouth-closed,.companion.is-talking .mouth-half,.companion.is-talking .mouth-open { animation-duration:.7s !important; }
+  .launch-sky::before,.launch-sky::after { animation:none !important; }
 }
 .is-preparing .launch-stage { z-index: 12; }
 .companion .brow,.companion .pupil,.companion .eye { transform-box:fill-box; transform-origin:center; transition:transform .25s ease,opacity .25s ease; }
@@ -925,21 +866,6 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 .telemetry-bars{position:absolute;left:9%;right:9%;top:19%;display:flex;gap:6px;align-items:flex-end;height:44%}.telemetry-bars i{flex:1;height:40%;background:linear-gradient(180deg,#6c9db6,#233f50);opacity:.72;animation:telemetry-pulse 2.8s ease-in-out infinite alternate}.telemetry-bars i:nth-child(2){height:72%;animation-delay:-.8s}.telemetry-bars i:nth-child(3){height:55%;animation-delay:-1.6s}.telemetry-bars i:nth-child(4){height:86%;animation-delay:-2.2s}
 .cockpit-brand{top:22%;z-index:3}.dashboard-lights{left:8.2%;top:22%;z-index:3}.dashboard-screen{right:8.2%;top:20%;z-index:3;min-width:132px}
 
-/* Completely rebuilt crew art. Natural proportions, line art, cel shading, navy/gold ANTARA uniforms. */
-.companion{bottom:9%;width:clamp(190px,29vh,292px);height:auto;filter:drop-shadow(0 26px 38px rgba(0,0,0,.44));opacity:calc(1 - var(--handoff) * 1.35);will-change:transform,opacity}
-.companion-a{left:2.2%;transform:translate3d(var(--char-a-x),var(--char-a-y),0)}.companion-b{right:2.2%;transform:translate3d(var(--char-b-x),var(--char-b-y),0)}
-.character-rig{display:block;width:100%;height:auto;overflow:visible}
-.character-shadow{fill:rgba(0,0,0,.28);filter:blur(5px)}
-.companion .hair-back,.companion .hair-front,.companion .side-lock,.companion .hair-tail,.companion .hair-strand{fill:url(#nara-hair);stroke:#050814;stroke-width:2.2;stroke-linejoin:round}.companion-b .hair-back,.companion-b .hair-front,.companion-b .side-lock,.companion-b .hair-tail,.companion-b .hair-strand{fill:url(#aksa-hair)}
-.companion .hair-gloss{fill:url(#nara-hair-light);stroke:none;opacity:.7}.companion-b .hair-gloss{fill:rgba(153,125,177,.18);stroke:none}
-.companion .face,.companion .ear,.companion .neck{fill:url(#nara-skin);stroke:#a66e61;stroke-width:1.35}.companion-b .face,.companion-b .ear,.companion-b .neck{fill:url(#aksa-skin)}
-.companion .face-shade{fill:rgba(152,76,68,.08);stroke:none}.companion .nose-shadow{fill:none;stroke:rgba(118,73,68,.66);stroke-width:1.5;stroke-linecap:round}.companion .cheek{fill:rgba(229,119,128,.10);filter:blur(2px)}
-.companion .eye{fill:#fffaf8;stroke:#252334;stroke-width:1.8}.companion .pupil{fill:url(#nara-eye);stroke:#193c58;stroke-width:.7}.companion-b .pupil{fill:url(#aksa-eye);stroke:#4f3327}.companion .iris-core{fill:#112c45}.companion-b .iris-core{fill:#3d291f}.companion .eye-glint,.companion .eye-glint-small{fill:#fff}.companion .upper-lash{fill:none;stroke:#1e1d2a;stroke-width:2.8;stroke-linecap:round}.companion .brow{fill:none;stroke:#5b4242;stroke-width:2.2;stroke-linecap:round}
-.companion .mouth{stroke:#8d4c59;stroke-width:1.8;stroke-linecap:round}.companion .mouth-closed{fill:none;opacity:1}.companion .mouth-half,.companion .mouth-open{fill:#a75d68;opacity:0}
-.companion .uniform-base,.companion .uniform-side{fill:url(#nara-uniform);stroke:#091322;stroke-width:2}.companion-b .uniform-base,.companion-b .uniform-side{fill:url(#aksa-uniform)}.companion .uniform-side{opacity:.88}.companion .inner-suit{fill:#cbd6dc;stroke:#6a8291;stroke-width:1}.companion-b .inner-suit{fill:#d3d9dd}.companion .gold-trim,.companion .zip-line,.companion .shoulder-seam{fill:none;stroke:#d7b56d;stroke-width:2.2;stroke-linecap:round;opacity:.78}.companion .collar-accent{stroke-width:4}.companion .seatbelt{fill:none;stroke:#b79b61;stroke-width:8;stroke-linecap:round;opacity:.58}.companion-b .seatbelt{stroke:#7897ab}.companion .arm,.companion .gesture-arm>path:first-child{fill:none;stroke:#e5b39d;stroke-width:23;stroke-linecap:round}.companion-b .arm,.companion-b .gesture-arm>path:first-child{stroke:#e2aa93}.companion .glove{fill:#152d43;stroke:#d7b56d;stroke-width:2}.companion .uniform-panel rect{fill:rgba(3,13,22,.45);stroke:rgba(133,181,207,.32)}.companion .uniform-panel path{fill:none;stroke:rgba(154,198,220,.46);stroke-width:1.2}.companion .antara-patch circle{fill:#0b2134;stroke:#d7b56d;stroke-width:1.5}.companion .antara-patch ellipse{fill:none;stroke:#d7b56d;stroke-width:1.5}.companion .patch-dot{fill:#d7b56d!important;stroke:none!important}
-.companion .character-body{transform-origin:50% 92%;animation:character-breathe 4.2s ease-in-out infinite}.companion .character-head{transform-origin:50% 78%;animation:head-idle 5.2s ease-in-out infinite}.companion-b .character-body{animation-delay:-1.9s}.companion-b .character-head{animation-delay:-2.6s}.companion .hair-strand,.companion .hair-tail{transform-origin:50% 15%;animation:hair-idle 4.5s ease-in-out infinite}.companion-b .hair-strand,.companion-b .hair-tail{animation-delay:-1.2s}.companion .eyes{transform-box:fill-box;transform-origin:center;transition:transform 70ms linear}.companion.is-blinking .eyes{transform:scaleY(.055)}.companion.is-talking .mouth-closed{animation:mouth-closed-cycle .34s steps(1,end) infinite}.companion.is-talking .mouth-half{animation:mouth-half-cycle .34s steps(1,end) infinite}.companion.is-talking .mouth-open{animation:mouth-open-cycle .34s steps(1,end) infinite}.companion.is-talking .character-head{animation:head-talk 1.15s ease-in-out infinite alternate}.gesture-point{opacity:0;transform-box:fill-box;transform-origin:50% 100%;transition:opacity .24s ease,transform .5s cubic-bezier(.2,.8,.2,1);transform:rotate(8deg) translateY(10px)}.companion[data-state="pointing"] .gesture-point,.companion[data-state="looking-earth"] .gesture-point{opacity:1;transform:rotate(0) translateY(0)}.companion[data-state="excited"] .character-head{animation:head-excited .7s ease-in-out infinite alternate}.companion[data-state="launching"] .character-body{animation:launch-body .42s ease-in-out infinite alternate}.companion[data-state="launching"] .hair-strand,.companion[data-state="launching"] .hair-tail,.companion[data-state="turbulence"] .hair-strand,.companion[data-state="turbulence"] .hair-tail{animation:hair-launch .33s ease-in-out infinite alternate}.companion[data-state="turbulence"] .character-head{animation:turbulence-head .23s ease-in-out infinite alternate}.companion[data-state="looking-earth"] .character-head{transform:rotate(var(--look-rotation,0deg));animation:none}.companion-a[data-state="looking-earth"]{--look-rotation:5deg}.companion-b[data-state="looking-earth"]{--look-rotation:-7deg}
-.companion .brow,.companion .pupil,.companion .eye{transform-box:fill-box;transform-origin:center;transition:transform .25s ease,opacity .25s ease}.companion[data-expression="bright"] .brow{transform:translateY(-1.8px)}.companion[data-expression="bright"] .pupil{transform:translateY(-.8px)}.companion[data-expression="focused"] .brow-left{transform:translateY(1px) rotate(7deg)}.companion[data-expression="focused"] .brow-right{transform:translateY(1px) rotate(-7deg)}.companion[data-expression="soft"] .brow{transform:translateY(1px);opacity:.86}.companion[data-expression="soft"] .pupil{transform:translateY(1px)}
-
 /* Dialogue hugs the side crew and never sits above the start button. */
 .speech-bubble{width:min(248px,22vw);padding:11px 14px 12px;border-radius:14px;border-color:rgba(193,214,229,.24);background:linear-gradient(145deg,rgba(6,16,27,.94),rgba(7,18,29,.86));box-shadow:0 16px 42px rgba(0,0,0,.26),inset 0 1px rgba(255,255,255,.05);opacity:calc(1 - var(--handoff));pointer-events:none!important}.speech-bubble strong{color:#e9c98f;font-size:7.5px}.speech-bubble span{font-size:clamp(10.5px,.9vw,13px)}.speech-bubble.speaker-a{left:15.5%;right:auto;bottom:55%}.speech-bubble.speaker-b{right:15.5%;left:auto;bottom:55%}.speech-bubble::after{background:#07131f;border-color:rgba(193,214,229,.22)}.speech-bubble.is-changing{opacity:0}
 
@@ -961,14 +887,7 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 @media (max-width:1100px){.opening-kicker{top:13.8%}.companion{width:clamp(162px,25vh,220px);bottom:10%}.companion-a{left:-1%}.companion-b{right:-1%}.speech-bubble{width:min(205px,25vw)}.speech-bubble.speaker-a{left:8%;bottom:54%}.speech-bubble.speaker-b{right:8%;bottom:54%}.console-left{left:4%;width:26%}.console-right{right:4%;width:26%}.console-center{left:34%;width:32%}.instrument-ring{transform:scale(.86);transform-origin:left top}.mini-readout{left:39%}}
 @media (max-width:800px){.mission-index{display:none}.opening-kicker{top:12.8%;font-size:6px}.launch-button{bottom:24%;min-height:50px}.cockpit-dashboard{height:22%}.console-center{display:none}.console-left{left:8%;width:38%}.console-right{right:8%;width:38%}.dashboard-screen{right:9%;top:17%;min-width:104px}.cockpit-brand{left:28%;top:20%}.launch-complex{width:86vw}.companion{bottom:11%;width:clamp(150px,23vh,188px)}.companion-a{left:-5%}.companion-b{right:-5%}.speech-bubble{width:min(186px,45vw)}.speech-bubble.speaker-a{left:2.5%;bottom:55%}.speech-bubble.speaker-b{right:2.5%;bottom:55%}}
 @media (max-height:760px) and (min-width:801px){.opening-kicker{top:12.5%}.launch-button{bottom:24.5%;min-height:50px}.companion{width:clamp(165px,27vh,212px);bottom:10%}.speech-bubble{bottom:53%!important}}
-@media (prefers-reduced-motion:reduce){.mission[data-experience="home"] .cockpit-world,.mission[data-experience="home"] .cockpit-camera,.mission[data-experience="home"] .ground-world,.city-light-field,.beacon,.instrument-ring i,.nav-display i,.telemetry-bars i,.character-body,.character-head,.hair-strand,.hair-tail{animation:none!important}}
-
-/* V4 crew illustration detail pass */
-.companion .hair-highlight-shape{fill:rgba(116,143,205,.18);stroke:none}.companion-b .hair-highlight-shape{fill:rgba(164,126,183,.16)}
-.companion .hair-line{fill:none;stroke:rgba(139,158,211,.20);stroke-width:1.4;stroke-linecap:round}.companion-b .hair-line{stroke:rgba(182,142,194,.18)}
-.companion .face-cel-shade{fill:rgba(136,73,65,.075);stroke:none}.companion .ear-detail,.companion .nose-dot{fill:none;stroke:rgba(113,69,64,.58);stroke-width:1.25;stroke-linecap:round}
-.companion .lower-lash{fill:none;stroke:rgba(65,54,67,.52);stroke-width:1;stroke-linecap:round}.companion .cheek{fill:rgba(230,122,132,.085);filter:blur(1.6px)}
-.companion .undershirt{fill:#162635;stroke:#7c93a1;stroke-width:1}.companion .collar-panel{fill:#d6dde0;stroke:#6f8795;stroke-width:1}.companion-b .collar-panel{fill:#cbd4da}.companion .gold-trim{stroke:#d9b96f;stroke-width:2.1}.companion .jacket-fold{fill:none;stroke:rgba(115,157,181,.25);stroke-width:1.25;stroke-linecap:round}.companion .uniform-panel rect{fill:rgba(3,13,22,.55)}
+@media (prefers-reduced-motion:reduce){.mission[data-experience="home"] .cockpit-world,.mission[data-experience="home"] .cockpit-camera,.mission[data-experience="home"] .ground-world,.city-light-field,.beacon,.instrument-ring i,.nav-display i,.telemetry-bars i{animation:none!important}}
 
 /* V4 exterior depth pass: city silhouettes stay behind the launch complex. */
 .terrain-far{position:absolute;left:-6%;right:-6%;bottom:17%;height:30%;background:linear-gradient(180deg,rgba(45,76,96,.34),rgba(12,29,42,.78));clip-path:polygon(0 82%,8% 58%,14% 70%,23% 38%,31% 67%,40% 47%,50% 72%,61% 44%,69% 67%,78% 35%,88% 62%,100% 48%,100% 100%,0 100%);opacity:calc(.82 - var(--ground-progress,0) * .58);filter:blur(.4px)}
@@ -977,3 +896,147 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 .city-far{bottom:18%;height:18%;background:linear-gradient(180deg,rgba(20,43,57,.83),rgba(7,20,30,.94));clip-path:polygon(0 100%,0 66%,2% 66%,2% 38%,4% 38%,4% 72%,7% 72%,7% 48%,9% 48%,9% 79%,12% 79%,12% 31%,15% 31%,15% 69%,18% 69%,18% 44%,21% 44%,21% 74%,24% 74%,24% 54%,27% 54%,27% 80%,30% 80%,30% 37%,34% 37%,34% 70%,37% 70%,37% 45%,40% 45%,40% 75%,44% 75%,44% 28%,48% 28%,48% 68%,52% 68%,52% 42%,55% 42%,55% 78%,59% 78%,59% 34%,63% 34%,63% 71%,66% 71%,66% 49%,70% 49%,70% 77%,74% 77%,74% 39%,78% 39%,78% 69%,82% 69%,82% 50%,85% 50%,85% 78%,89% 78%,89% 32%,93% 32%,93% 70%,96% 70%,96% 47%,100% 47%,100% 100%);filter:blur(.6px);opacity:.56}
 .city-mid{bottom:7%;height:24%;background:linear-gradient(180deg,#132b39,#071722 82%);clip-path:polygon(0 100%,0 72%,3% 72%,3% 48%,5% 48%,5% 78%,8% 78%,8% 30%,11% 30%,11% 70%,14% 70%,14% 55%,17% 55%,17% 82%,21% 82%,21% 42%,24% 42%,24% 73%,28% 73%,28% 35%,31% 35%,31% 78%,35% 78%,35% 51%,39% 51%,39% 83%,43% 83%,43% 38%,47% 38%,47% 72%,51% 72%,51% 29%,55% 29%,55% 76%,59% 76%,59% 47%,63% 47%,63% 80%,67% 80%,67% 34%,71% 34%,71% 72%,75% 72%,75% 52%,79% 52%,79% 81%,83% 81%,83% 40%,87% 40%,87% 73%,91% 73%,91% 31%,95% 31%,95% 69%,98% 69%,98% 51%,100% 51%,100% 100%);opacity:.7}
 .city-mid::after{content:"";position:absolute;left:0;right:0;bottom:0;height:62%;background:radial-gradient(circle,rgba(121,190,222,.58) 0 1px,transparent 1.5px),radial-gradient(circle,rgba(245,198,120,.8) 0 1px,transparent 1.6px);background-size:51px 23px,79px 31px;background-position:7px 5px,31px 13px;mask-image:linear-gradient(180deg,transparent,#000 24%);opacity:.5}
+
+
+/* ==============================================================
+   OPENING EXPERIENCE V5 — anime image crew + lower-center CTA
+   The former inline SVG mannequin system has been removed.
+   ============================================================== */
+
+/* The CTA now lives inside the cockpit stage. Decorative descendants remain
+   inert, but this one intentional control is explicitly interactive. */
+.mission[data-experience="home"] .launch-stage #launch-button{
+  pointer-events:auto!important;
+  visibility:visible;
+  opacity:1;
+}
+.mission[data-experience="launch"] .launch-stage #launch-button,
+.mission[data-experience="planet"] .launch-stage #launch-button{
+  display:none!important;
+  pointer-events:none!important;
+  visibility:hidden;
+  opacity:0;
+}
+
+.launch-button{
+  position:absolute;
+  left:50%;
+  bottom:22.8%;
+  z-index:50;
+  transform:translateX(-50%);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  min-width:clamp(190px,15vw,245px);
+  min-height:58px;
+  padding:8px 23px 8px 27px;
+  border-radius:12px;
+  border:1px solid rgba(255,226,166,.88);
+  background:linear-gradient(180deg,rgba(31,31,38,.94),rgba(15,20,29,.96));
+  color:#f4d8a3;
+  box-shadow:0 18px 44px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.04),0 0 28px rgba(224,183,104,.12);
+  backdrop-filter:blur(14px);
+  isolation:isolate;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,opacity .2s ease;
+}
+.launch-button::before,.launch-button::after{width:34px;opacity:.62}
+.launch-button-copy{display:grid;gap:2px;text-align:left;line-height:1}
+.launch-button-copy b{font-size:13px;letter-spacing:2.5px;font-weight:750}
+.launch-button-copy small{font-size:6px;letter-spacing:1.45px;text-transform:uppercase;color:#aeb7c4;font-weight:600}
+.launch-button svg{width:18px;height:18px;stroke:#f4d8a3;stroke-width:1.6}
+.launch-button:hover{transform:translateX(-50%) translateY(-2px);border-color:#ffe2aa;box-shadow:0 22px 52px rgba(0,0,0,.5),0 0 34px rgba(224,183,104,.2)}
+.launch-button:active{transform:translateX(-50%) scale(.985)}
+
+/* New crew implementation uses clean transparent anime illustrations, not
+   geometric SVG puppets. The wrapper only handles placement and timeline motion. */
+.companion{
+  z-index:18;
+  bottom:8.6%;
+  width:clamp(170px,24vh,270px);
+  height:auto;
+  opacity:calc(1 - var(--handoff) * 1.35);
+  filter:none;
+  pointer-events:none!important;
+  will-change:transform,opacity;
+}
+.companion-a{left:1.5%;transform:translate3d(var(--char-a-x),var(--char-a-y),0)}
+.companion-b{right:1.5%;transform:translate3d(var(--char-b-x),var(--char-b-y),0)}
+.anime-character{
+  display:block;
+  width:100%;
+  height:auto;
+  user-select:none;
+  -webkit-user-drag:none;
+  transform-origin:50% 92%;
+  filter:drop-shadow(0 24px 28px rgba(0,0,0,.44)) drop-shadow(0 0 18px rgba(110,143,177,.08));
+  animation:anime-crew-idle 5.6s ease-in-out infinite;
+  will-change:transform,filter;
+}
+.companion-b .anime-character{animation-delay:-2.3s}
+.companion.is-talking .anime-character{animation:anime-crew-talk 1.05s ease-in-out infinite alternate}
+.companion[data-state="excited"] .anime-character{animation:anime-crew-excited .8s ease-in-out infinite alternate}
+.companion[data-state="launching"] .anime-character{animation:anime-crew-launch .42s ease-in-out infinite alternate}
+.companion[data-state="turbulence"] .anime-character{animation:anime-crew-turbulence .22s ease-in-out infinite alternate}
+.companion-a[data-state="looking-earth"] .anime-character{transform:rotate(1.4deg)}
+.companion-b[data-state="looking-earth"] .anime-character{transform:rotate(-1.6deg)}
+
+/* Dialogue stays beside the active guide and above the lower-center CTA. */
+.speech-bubble{z-index:40;width:min(245px,21vw)}
+.speech-bubble.speaker-a{left:15.5%;right:auto;bottom:52%}
+.speech-bubble.speaker-b{right:15.5%;left:auto;bottom:52%}
+
+@keyframes anime-crew-idle{
+  0%,100%{transform:translateY(0) rotate(0deg) scale(1)}
+  45%{transform:translateY(-3px) rotate(.25deg) scale(1.003)}
+  72%{transform:translateY(-1px) rotate(-.2deg) scale(1.001)}
+}
+@keyframes anime-crew-talk{
+  from{transform:translateY(0) rotate(-.25deg)}
+  to{transform:translateY(-3px) rotate(.45deg)}
+}
+@keyframes anime-crew-excited{
+  from{transform:translateY(0) rotate(-.45deg)}
+  to{transform:translateY(-5px) rotate(.65deg)}
+}
+@keyframes anime-crew-launch{
+  from{transform:translateY(1px) rotate(-.35deg)}
+  to{transform:translateY(5px) rotate(.35deg)}
+}
+@keyframes anime-crew-turbulence{
+  from{transform:translate(-1.6px,1px) rotate(-.55deg)}
+  to{transform:translate(1.6px,-1px) rotate(.55deg)}
+}
+
+@media (max-width:1600px){
+  .companion{width:clamp(168px,23vh,246px)}
+  .speech-bubble{width:min(226px,21vw)}
+}
+@media (max-width:1400px){
+  .companion{width:clamp(158px,22.5vh,222px);bottom:9%}
+  .companion-a{left:.5%}.companion-b{right:.5%}
+  .launch-button{bottom:23.5%;min-height:54px}
+  .speech-bubble{width:min(210px,21vw)}
+  .speech-bubble.speaker-a{left:12.5%}.speech-bubble.speaker-b{right:12.5%}
+}
+@media (max-width:1100px){
+  .companion{width:clamp(150px,21vh,198px);bottom:9.5%}
+  .companion-a{left:-1.5%}.companion-b{right:-1.5%}
+  .speech-bubble{width:min(196px,24vw)}
+  .speech-bubble.speaker-a{left:8%;bottom:51%}.speech-bubble.speaker-b{right:8%;bottom:51%}
+}
+@media (max-width:800px){
+  .companion{width:clamp(132px,19vh,170px);bottom:10.5%}
+  .companion-a{left:-4.5%}.companion-b{right:-4.5%}
+  .launch-button{bottom:23.5%;min-width:180px;min-height:50px}
+  .speech-bubble{width:min(176px,43vw)}
+  .speech-bubble.speaker-a{left:2.5%;bottom:50%}.speech-bubble.speaker-b{right:2.5%;bottom:50%}
+}
+@media (max-height:760px) and (min-width:801px){
+  .companion{width:clamp(146px,21vh,184px);bottom:9.5%}
+  .launch-button{bottom:24.2%;min-height:50px}
+  .speech-bubble{bottom:50.5%!important}
+}
+@media (prefers-reduced-motion:reduce){
+  .anime-character{animation:none!important}
+}

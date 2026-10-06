@@ -484,23 +484,6 @@ class CockpitCompanions {
     this.speaker = document.getElementById("speech-speaker");
     this.text = document.getElementById("speech-text");
     this.talkTimer = 0;
-    this.blinkTimers = [];
-    this.scheduleBlink(this.a, 0);
-    this.scheduleBlink(this.b, 700);
-  }
-
-  scheduleBlink(character, extraDelay = 0) {
-    const delay = extraDelay + 2000 + Math.random() * 4000;
-    const timer = setTimeout(() => {
-      character.classList.add("is-blinking");
-      setTimeout(() => character.classList.remove("is-blinking"), 115 + Math.random() * 55);
-      if (Math.random() < .18) setTimeout(() => {
-        character.classList.add("is-blinking");
-        setTimeout(() => character.classList.remove("is-blinking"), 95);
-      }, 180);
-      this.scheduleBlink(character);
-    }, delay);
-    this.blinkTimers.push(timer);
   }
 
   setJourneyPhase(phase) {
@@ -528,7 +511,7 @@ class CockpitCompanions {
     const speakerEl = entry.speaker === "A" ? this.a : this.b;
     const otherEl = entry.speaker === "A" ? this.b : this.a;
     const apply = () => {
-      this.speaker.textContent = entry.speaker === "A" ? "Nara" : "Aksa";
+      this.speaker.textContent = entry.speaker === "A" ? "Nara" : "Sora";
       this.text.textContent = entry.text;
       this.bubble.classList.toggle("speaker-a", entry.speaker === "A");
       this.bubble.classList.toggle("speaker-b", entry.speaker === "B");
@@ -675,7 +658,7 @@ function advancePreparation(timestamp) {
     activeDialogue = dialogue;
     const cue = DIALOGUE_TIMELINE[dialogue];
     companions.setDialogue(cue);
-    announcement.textContent = `${cue.speaker === "A" ? "Nara" : "Aksa"}: ${cue.text}`;
+    announcement.textContent = `${cue.speaker === "A" ? "Nara" : "Sora"}: ${cue.text}`;
   }
 
   // Start the real Earth renderer behind the cockpit before the cockpit fades.
