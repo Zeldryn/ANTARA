@@ -279,6 +279,7 @@ class LaunchVisual {
     this.stage = document.getElementById("launch-stage");
     this.vehicle = document.getElementById("launch-vehicle");
     this.bloom = document.getElementById("launch-bloom");
+    this.arrivalEarth = document.getElementById("arrival-earth");
     this.sky = this.stage.querySelector(".launch-sky");
     this.canvas = document.getElementById("launch-particles");
     try { this.ctx = this.canvas.getContext("2d", { alpha: true }); } catch { this.ctx = null; }
@@ -301,18 +302,24 @@ class LaunchVisual {
 
   start() {
     this.stage.hidden = false;
+    this.stage.style.transition = "none";
     this.resize();
     this.render(0);
   }
 
   reset() {
     this.stage.hidden = true;
+    this.stage.style.transition = "none";
     this.stage.style.opacity = "0";
     this.stage.dataset.phase = "idle";
+    this.stage.style.setProperty("--space-mix", "0");
+    this.stage.style.setProperty("--grid-opacity", "0");
     this.vehicle.style.transform = "";
     this.vehicle.style.opacity = "0";
     this.vehicle.style.setProperty("--engine-power", "0");
     this.bloom.style.opacity = "0";
+    this.arrivalEarth.style.opacity = "0";
+    this.arrivalEarth.style.transform = "translate(-50%, -50%) scale(.08)";
     this.ctx?.clearRect(0, 0, this.width || 0, this.height || 0);
   }
 
@@ -320,23 +327,43 @@ class LaunchVisual {
     const clamp = value => Math.min(1, Math.max(0, value));
     const smooth = value => { const v = clamp(value); return v * v * (3 - 2 * v); };
     const cue = LAUNCH_TIMING;
-    const rise = clamp((t - cue.appearance) / (cue.settle - cue.appearance));
     const ignition = smooth((t - cue.ignition) / (cue.liftoff - cue.ignition));
-    const ascent = clamp((t - cue.liftoff) / (cue.exit - cue.liftoff));
-    const coast = smooth((t - cue.exit) / 1.5);
-    const engine = (0.10 + ignition * 0.9) * smooth((t - cue.ignition) / 0.4);
-    let y = (this.height - this.anchor + 70) * Math.pow(1 - rise, 3);
-    if (t >= cue.settle) y = -ignition * 4;
-    if (t >= cue.liftoff) y = -4 - (this.anchor + this.vehicleHeight * 1.8 + 100) * Math.pow(ascent, 2.35);
-    const shake = t >= cue.ignition && t < cue.liftoff + 0.6 ? Math.sin(t * 53) * ignition * 0.65 : 0;
-    this.stage.dataset.phase = t < cue.settle ? "appearance" : t < cue.liftoff ? "ignition" : t < cue.exit ? "ascent" : "coast";
-    this.stage.style.opacity = String(smooth(t / 0.9));
-    this.vehicle.style.opacity = String(reducedMotion.matches ? smooth((t - 0.4) / 0.8) * (1 - smooth(ascent)) : 1);
-    this.vehicle.style.transform = reducedMotion.matches ? "translate3d(-50%, 0, 0)" : `translate3d(calc(-50% + ${shake}px), ${y}px, 0)`;
+    const ascent = smooth((t - cue.liftoff) / (cue.exit - cue.liftoff));
+    const coast = smooth((t - cue.exit) / (cue.finish - cue.exit));
+    const earthReveal = smooth((t - (cue.exit - 0.55)) / (cue.finish - cue.exit + 0.55));
+    const spaceMix = smooth((t - (cue.ignition + 0.25)) / (cue.exit - cue.ignition));
+    const engine = smooth((t - cue.ignition) / 0.7) * (1 - coast * 0.45);
+
+    // The cinematic vehicle begins exactly where the landing-page craft sits.
+    // That removes the old "rocket appears from below" discontinuity.
+    let y = 0;
+    if (t >= cue.liftoff) y = -(this.anchor + this.vehicleHeight * 1.45 + 95) * Math.pow(ascent, 1.72);
+    const anticipation = smooth((t - (cue.ignition - 0.45)) / 0.8);
+    const shakeStrength = t < cue.liftoff ? anticipation * (0.9 + ignition * 1.8) : (1 - ascent) * 1.2;
+    const shakeX = reducedMotion.matches ? 0 : Math.sin(t * 61) * shakeStrength;
+    const shakeY = reducedMotion.matches ? 0 : Math.cos(t * 47) * shakeStrength * 0.42;
+
+    this.stage.dataset.phase = t < cue.ignition ? "standby" : t < cue.liftoff ? "ignition" : t < cue.exit ? "ascent" : "approach";
+    this.stage.style.opacity = String(smooth((t - 0.08) / 0.45));
+    this.stage.style.setProperty("--space-mix", String(spaceMix));
+    this.stage.style.setProperty("--grid-opacity", String(ascent * (1 - coast) * 0.48));
+
+    const vehicleFade = 1 - smooth((t - (cue.exit - 0.25)) / 0.95);
+    this.vehicle.style.opacity = String(reducedMotion.matches ? Math.min(1, vehicleFade) : vehicleFade);
+    this.vehicle.style.transform = reducedMotion.matches
+      ? "translate3d(-50%, 0, 0)"
+      : `translate3d(calc(-50% + ${shakeX}px), ${y + shakeY}px, 0) scale(${1 + ascent * 0.045})`;
     this.vehicle.style.setProperty("--engine-power", String(engine));
-    this.vehicle.style.setProperty("--plume-length", String(0.12 + ignition * 0.62 + Math.min(ascent * 4, 1) * 0.6 + Math.sin(t * 31) * engine * 0.025));
-    this.bloom.style.opacity = String(engine * (1 - coast) * (reducedMotion.matches ? 0.35 : 0.75));
-    this.sky.style.transform = reducedMotion.matches ? "none" : `translate3d(${shake * -0.6}px, ${shake * 0.4 + ascent * 12}px, 0)`;
+    this.vehicle.style.setProperty("--plume-length", String(0.08 + ignition * 0.58 + ascent * 0.85 + Math.sin(t * 29) * engine * 0.025));
+    this.bloom.style.opacity = String(engine * (1 - coast) * (reducedMotion.matches ? 0.25 : 0.68));
+    this.sky.style.transform = reducedMotion.matches ? "none" : `translate3d(${shakeX * -0.25}px, ${ascent * 14}px, 0) scale(${1 + ascent * 0.025})`;
+
+    this.arrivalEarth.style.opacity = String(earthReveal);
+    const earthScale = 0.08 + earthReveal * (reducedMotion.matches ? 0.72 : 0.94);
+    const earthY = 48 + (1 - earthReveal) * 8;
+    this.arrivalEarth.style.transform = `translate(-50%, -${earthY}%) scale(${earthScale}) rotate(${earthReveal * -3}deg)`;
+    this.arrivalEarth.style.backgroundPosition = `${50 + Math.sin(t * 0.22) * 3}% center`;
+
     if (this.ctx && !reducedMotion.matches) this.drawAtmosphere(t, y, engine, ascent, coast);
   }
 
@@ -420,7 +447,7 @@ const sound = new MissionAudio(() => {
   audioToggle.setAttribute("aria-pressed", String(sound.muted));
   audioToggle.setAttribute("aria-label", sound.muted ? "Aktifkan audio" : "Bisukan audio");
   audioLabel.textContent = sound.unavailable ? "AUDIO TIDAK TERSEDIA" : sound.muted ? "SUARA MATI" : sound.failedAssets.size ? "AUDIO TERBATAS" : sound.started && phase !== "idle" ? "SUARA AKTIF" : "AUDIO SIAP";
-  audioToggle.title = sound.unavailable ? "Audio tidak tersedia. Misi tetap dapat dilanjutkan." : !sound.started || phase === "idle" ? "Audio dimulai setelah Siap Meluncur? ditekan" : sound.muted ? "Aktifkan audio" : "Bisukan audio";
+  audioToggle.title = sound.unavailable ? "Audio tidak tersedia. Misi tetap dapat dilanjutkan." : !sound.started || phase === "idle" ? "Audio dimulai setelah Ayo Berangkat! ditekan" : sound.muted ? "Aktifkan audio" : "Bisukan audio";
   if (!sound.unavailable && sound.failedAssets.size) audioToggle.title = "Sebagian audio tidak dapat dimuat. Misi tetap dapat dilanjutkan.";
 });
 sound.onStateChange();
@@ -437,10 +464,10 @@ if ("requestIdleCallback" in window) requestIdleCallback(() => sound.preload(), 
 else setTimeout(() => sound.preload(), 800);
 
 const preparationSteps = [
-  { time: 0, text: "Nusantara memasuki jalur peluncuran." },
-  { time: LAUNCH_TIMING.ignition, text: "Mesin aktif. Bersiap menggapai semesta." },
-  { time: LAUNCH_TIMING.liftoff, text: "Lepas landas. Dari Indonesia, untuk semesta." },
-  { time: LAUNCH_TIMING.exit, text: "Perjalanan kita baru saja dimulai." }
+  { time: 0, text: "Semua siap. Nusantara 01 menunggu hitungan terakhir." },
+  { time: LAUNCH_TIMING.ignition, text: "Mesin menyala. Rasakan getarannya!" },
+  { time: LAUNCH_TIMING.liftoff, text: "Kita terbang! Arah pertama: Bumi dari luar angkasa." },
+  { time: LAUNCH_TIMING.exit, text: "Lihat di depan. Rumah kita mulai terlihat." }
 ];
 
 function advancePreparation(timestamp) {
@@ -466,8 +493,11 @@ function advancePreparation(timestamp) {
     mission.classList.add("is-earth");
     if (flightStatus) flightStatus.textContent = "MEMASUKI ORBIT BUMI";
     locationDetail.textContent = "PLANET ASAL • BUMI";
-    announcement.textContent = "Memasuki luar angkasa. Bumi terlihat di hadapan kita.";
+    announcement.textContent = "Sampai! Bumi, rumah kita, sekarang terlihat dari luar angkasa.";
     earth.start();
+    flight.stage.style.transition = reducedMotion.matches ? "opacity .01s linear" : "opacity .9s ease";
+    requestAnimationFrame(() => { flight.stage.style.opacity = "0"; });
+    setTimeout(() => flight.reset(), reducedMotion.matches ? 40 : 950);
     return;
   }
   animationFrame = requestAnimationFrame(advancePreparation);
@@ -487,7 +517,7 @@ launchButton.addEventListener("click", () => {
   mars.prepare();
   venus.prepare().then(() => earth.setVenusTravelSurface(venus.surface)).catch(() => {});
   mission.classList.add("is-preparing");
-  if (flightStatus) flightStatus.textContent = "PERSIAPAN MISI BERLANGSUNG";
+  if (flightStatus) flightStatus.textContent = "NUSANTARA 01 • MESIN BERSIAP";
   previousFrame = performance.now();
   animationFrame = requestAnimationFrame(advancePreparation);
 });

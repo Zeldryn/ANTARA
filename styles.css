@@ -287,3 +287,319 @@ h1 span { color: #f3d29a; }
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+/* ================================================================
+   OPENING EXPERIENCE V2
+   Hand-built vector scene + staged launch. The planet systems below
+   remain untouched; this layer only owns the pre-Earth experience.
+   ================================================================ */
+.mission:not(.is-earth):not(.is-venus):not(.is-mars) .scene { z-index: 0; }
+.scene { background: #030914; }
+.scene-art {
+  background:
+    radial-gradient(circle at 50% 29%, rgba(79, 128, 169, .24), transparent 34%),
+    radial-gradient(ellipse at 18% 48%, rgba(49, 80, 115, .18), transparent 34%),
+    radial-gradient(ellipse at 84% 36%, rgba(157, 119, 73, .10), transparent 28%),
+    linear-gradient(180deg, #071321 0%, #06101c 46%, #030914 100%);
+  transform: scale(1.035) translate(var(--parallax-x, 0px), var(--parallax-y, 0px));
+  transition: transform 1.6s cubic-bezier(.2,.7,.2,1), filter 3s ease, opacity 1s ease;
+}
+.scene-art::before,
+.scene-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.scene-art::before {
+  background-image:
+    radial-gradient(circle, rgba(219,235,255,.72) 0 1px, transparent 1.35px),
+    radial-gradient(circle, rgba(237,197,126,.65) 0 .8px, transparent 1.2px);
+  background-size: 98px 98px, 157px 157px;
+  background-position: 8px 12px, 41px 64px;
+  opacity: .32;
+  animation: sky-drift 34s linear infinite;
+}
+.scene-art::after {
+  background:
+    radial-gradient(ellipse at 50% 26%, transparent 0 28%, rgba(2,7,15,.18) 66%, rgba(2,7,15,.58) 100%),
+    linear-gradient(180deg, rgba(3,9,20,.12), rgba(3,9,20,.02) 48%, rgba(3,9,20,.42) 100%);
+}
+.cosmic-ribbon {
+  position: absolute;
+  width: 72vw;
+  height: 16vw;
+  min-height: 110px;
+  border-radius: 50%;
+  filter: blur(28px);
+  opacity: .12;
+  mix-blend-mode: screen;
+  transform: rotate(-13deg);
+  animation: ribbon-breathe 11s ease-in-out infinite alternate;
+}
+.cosmic-ribbon-one { top: 3%; left: -7%; background: linear-gradient(90deg, transparent, #6b9fc7, #b3d0e3, transparent); }
+.cosmic-ribbon-two { top: 23%; right: -28%; background: linear-gradient(90deg, transparent, #b78d61, #557b9c, transparent); animation-delay: -5s; }
+.opening-world {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: translate(calc(var(--parallax-x, 0px) * .35), calc(var(--parallax-y, 0px) * .35));
+  transition: transform 1.7s cubic-bezier(.2,.7,.2,1), opacity 1s ease, filter 2s ease;
+}
+.world-distant { transform-origin: 50% 55%; animation: horizon-breathe 12s ease-in-out infinite alternate; }
+.launch-facility { transform-origin: 50% 70%; }
+.observatory { transform-origin: 50% 100%; animation: observatory-idle 9s ease-in-out infinite alternate; }
+.deck-lights circle { animation: deck-light 4.6s ease-in-out infinite; }
+.deck-lights circle:nth-child(2), .deck-lights circle:nth-child(5) { animation-delay: -1.7s; }
+.deck-lights circle:nth-child(3), .deck-lights circle:nth-child(6) { animation-delay: -3.1s; }
+.crew { transform-box: fill-box; transform-origin: 50% 100%; animation: crew-breathe 5.4s ease-in-out infinite; }
+.crew-b { animation-delay: -1.9s; }
+.crew-c { animation-delay: -3.2s; }
+.crew-pointing-arm { transform-box: fill-box; transform-origin: 0% 100%; animation: pointing-gesture 4.8s ease-in-out infinite; }
+.crew-ponytail { transform-box: fill-box; transform-origin: 10% 10%; animation: ponytail-sway 4.6s ease-in-out infinite; }
+.crew-tablet { filter: drop-shadow(0 0 5px rgba(112, 198, 239, .28)); animation: tablet-pulse 3.8s ease-in-out infinite; }
+
+.hero-craft-wrap {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 9.5%;
+  width: clamp(102px, 8.7vw, 142px);
+  aspect-ratio: 1 / 3;
+  transform: translate3d(-50%, 0, 0);
+  transform-origin: 50% 84%;
+  transition: opacity .4s ease, filter .8s ease;
+  filter: drop-shadow(0 22px 38px rgba(0,0,0,.34));
+}
+.hero-craft { position: relative; z-index: 2; display: block; width: 100%; height: 100%; }
+.hero-craft-halo {
+  position: absolute;
+  z-index: 0;
+  left: -90%;
+  top: 26%;
+  width: 280%;
+  height: 66%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(119,181,222,.12), rgba(237,197,126,.05) 40%, transparent 69%);
+  filter: blur(10px);
+  animation: craft-halo 5s ease-in-out infinite alternate;
+}
+.hero-craft-engine {
+  position: absolute;
+  z-index: 1;
+  left: 31%;
+  top: 90%;
+  width: 38%;
+  height: 25%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255,244,207,.5), rgba(242,168,82,.2) 35%, transparent 72%);
+  opacity: .18;
+  filter: blur(5px);
+  transform-origin: 50% 0;
+  animation: engine-idle 2.7s ease-in-out infinite;
+}
+.hero-craft-label {
+  position: absolute;
+  left: 50%;
+  top: 65%;
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  transform: translateX(calc(-50% + 92px));
+  padding: 7px 9px;
+  border: 1px solid rgba(214, 193, 151, .25);
+  background: rgba(5, 13, 23, .64);
+  backdrop-filter: blur(8px);
+  color: rgba(232, 222, 199, .74);
+  font-size: 6px;
+  letter-spacing: 1.8px;
+  white-space: nowrap;
+}
+.hero-craft-label i { width: 5px; height: 5px; border-radius: 50%; background: #9bc7ae; box-shadow: 0 0 8px rgba(155,199,174,.5); animation: status-pulse 2.6s ease-in-out infinite; }
+
+.scene-shade {
+  z-index: 3;
+  background:
+    linear-gradient(90deg, rgba(2,7,15,.36), transparent 28%, transparent 72%, rgba(2,7,15,.28)),
+    linear-gradient(180deg, rgba(3,9,20,.48) 0%, transparent 17%, transparent 55%, rgba(3,9,20,.23) 67%, rgba(3,9,20,.83) 91%, rgba(3,9,20,.96) 100%);
+}
+.navigation-orbits { z-index: 4; opacity: .32; }
+.foreground-motes, .stars { z-index: 4; }
+.stars i { box-shadow: 0 0 8px rgba(207,230,255,.5); }
+.vapor { z-index: 2; left: 40%; top: 56%; width: 20%; height: 9%; opacity: .55; }
+.vapor-two { left: 48%; top: 59%; }
+.beacon { z-index: 3; left: calc(50% - 92px); top: 19%; }
+
+.masthead { z-index: 10; }
+.intro {
+  z-index: 8;
+  bottom: 8.4%;
+  text-shadow: 0 2px 24px rgba(0,0,0,.36);
+}
+.intro .eyebrow { color: #ead4aa; }
+h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 30px #01050d, 0 2px 7px #01050d; }
+.launch-button {
+  min-height: 57px;
+  border-radius: 999px;
+  padding: 0 24px 0 30px;
+  gap: 36px;
+  box-shadow: 0 0 0 5px rgba(233,197,126,.07), 0 12px 40px rgba(220,167,76,.20), inset 0 1px rgba(255,255,255,.55);
+}
+.launch-button::before, .launch-button::after { width: 42px; }
+.launch-caption { color: rgba(199,210,224,.82); letter-spacing: 2.2px; }
+.mission-footer { z-index: 10; }
+
+/* The visible hero craft and the cinematic craft share the exact same silhouette and screen anchor. */
+.launch-stage { z-index: 12; background: transparent; }
+.launch-sky {
+  inset: -4%;
+  opacity: var(--space-mix, 0);
+  background:
+    radial-gradient(circle at 50% 44%, rgba(30,78,120,.20), transparent 28%),
+    radial-gradient(ellipse at 50% 70%, #132840 0%, #071422 45%, #020712 82%);
+  transition: none;
+}
+.launch-horizon {
+  width: 160%;
+  height: 34%;
+  left: -30%;
+  bottom: -24%;
+  opacity: calc(1 - var(--space-mix, 0));
+  border-color: rgba(237,197,126,.30);
+  box-shadow: 0 -12px 80px rgba(171,198,228,.07), 0 -1px 20px rgba(237,197,126,.10);
+}
+.launch-bloom { top: 48%; width: min(82vw, 790px); height: 83%; }
+.launch-vehicle {
+  top: 9.5%;
+  width: clamp(102px, 8.7vw, 142px);
+  transform: translate3d(-50%, 0, 0);
+  filter: drop-shadow(0 22px 38px rgba(0,0,0,.34));
+}
+.launch-vignette {
+  background:
+    radial-gradient(circle at 50% 48%, transparent 0 30%, rgba(2,7,15,.05) 56%, rgba(2,7,15,.34) 100%),
+    linear-gradient(0deg, rgba(2,7,15,.88), transparent 24%, transparent 80%, rgba(2,7,15,.38));
+}
+.flight-grid {
+  position: absolute;
+  inset: 0;
+  opacity: var(--grid-opacity, 0);
+  perspective: 600px;
+  overflow: hidden;
+}
+.flight-grid::before,
+.flight-grid::after,
+.flight-grid i {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 72vh;
+  transform-origin: 50% 0;
+  background: linear-gradient(180deg, rgba(152,199,232,.48), transparent);
+  filter: blur(.3px);
+}
+.flight-grid::before { transform: translate(-50%, -3%) rotate(22deg); }
+.flight-grid::after { transform: translate(-50%, -3%) rotate(-22deg); }
+.flight-grid i:nth-child(1) { transform: translate(-50%, -3%) rotate(42deg); }
+.flight-grid i:nth-child(2) { transform: translate(-50%, -3%) rotate(-42deg); }
+.flight-grid i:nth-child(3) { transform: translate(-50%, -3%) rotate(70deg); opacity: .45; }
+.arrival-earth {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 48%;
+  width: min(48vh, 42vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.08);
+  background: #0d3152 url("assets/textures/earth-blue-marble-4k.jpg") center / auto 100%;
+  box-shadow:
+    inset -6.5vw -1.5vw 8vw rgba(0,4,12,.88),
+    inset 1vw .8vw 2vw rgba(191,226,255,.12),
+    0 0 2px rgba(188,226,255,.8),
+    0 0 35px rgba(76,151,213,.28),
+    0 0 110px rgba(41,111,174,.13);
+  filter: saturate(.88) contrast(1.05);
+  will-change: transform, opacity;
+}
+.arrival-earth::after {
+  content: "";
+  position: absolute;
+  inset: -1.7%;
+  border-radius: 50%;
+  border: 1px solid rgba(147,205,245,.40);
+  box-shadow: 0 0 13px rgba(101,184,235,.28);
+}
+.arrival-earth-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 27% 22%, rgba(255,255,255,.12), transparent 23%);
+  mix-blend-mode: screen;
+}
+
+.is-preparing .scene-art { transform: scale(1.055) translate(var(--parallax-x, 0px), var(--parallax-y, 0px)); filter: saturate(.82) brightness(.72); }
+.is-preparing .opening-world { filter: brightness(.72) saturate(.78); }
+.is-preparing .hero-craft-wrap { opacity: 0; transition-delay: .16s; }
+.is-preparing .crew-a { animation: crew-react-left .85s cubic-bezier(.2,.8,.2,1) both; }
+.is-preparing .crew-b { animation: crew-react-center .9s cubic-bezier(.2,.8,.2,1) both; }
+.is-preparing .crew-c { animation: crew-react-right .9s cubic-bezier(.2,.8,.2,1) both; }
+.is-preparing .preparation { z-index: 14; bottom: 7.8%; }
+.is-preparing .masthead { z-index: 15; opacity: .7; }
+
+@keyframes sky-drift { to { background-position: 106px 34px, 190px 86px; } }
+@keyframes ribbon-breathe { from { transform: rotate(-13deg) translate3d(-1%, 0, 0) scale(.96); opacity: .07; } to { transform: rotate(-10deg) translate3d(2%, -1%, 0) scale(1.05); opacity: .15; } }
+@keyframes horizon-breathe { from { opacity: .86; } to { opacity: 1; } }
+@keyframes observatory-idle { from { transform: translateY(0); } to { transform: translateY(-2px); } }
+@keyframes deck-light { 0%,70%,100% { opacity: .3; } 78%,86% { opacity: 1; filter: drop-shadow(0 0 5px rgba(237,197,126,.7)); } }
+@keyframes crew-breathe { 0%,100% { transform: translateY(0) scaleY(1); } 50% { transform: translateY(-1px) scaleY(1.006); } }
+@keyframes pointing-gesture { 0%,100% { transform: rotate(0deg); } 48% { transform: rotate(-3deg); } }
+@keyframes ponytail-sway { 0%,100% { transform: rotate(-1deg); } 50% { transform: rotate(4deg); } }
+@keyframes tablet-pulse { 0%,100% { opacity: .78; } 50% { opacity: 1; } }
+@keyframes craft-halo { from { opacity: .48; transform: scale(.96); } to { opacity: .9; transform: scale(1.04); } }
+@keyframes engine-idle { 0%,100% { opacity: .09; transform: scaleY(.82); } 50% { opacity: .22; transform: scaleY(1.08); } }
+@keyframes status-pulse { 0%,100% { opacity: .45; } 45%,60% { opacity: 1; } }
+@keyframes crew-react-left { to { transform: translateY(2px) rotate(-1deg); } }
+@keyframes crew-react-center { to { transform: translateY(3px) rotate(1.2deg); } }
+@keyframes crew-react-right { to { transform: translateY(2px) rotate(-1.1deg); } }
+
+@media (max-aspect-ratio: 4/3) and (min-width: 701px) {
+  .hero-craft-wrap, .launch-vehicle { top: 12%; width: clamp(96px, 11vw, 128px); }
+  .intro { bottom: 9.5%; }
+}
+
+@media (max-width: 700px) {
+  .scene-art { background: radial-gradient(circle at 50% 28%, rgba(76,124,165,.28), transparent 38%), linear-gradient(180deg, #071321 0%, #06101c 45%, #030914 100%); }
+  .opening-world { width: 177.8vh; left: 50%; right: auto; transform: translateX(-50%); }
+  .hero-craft-wrap, .launch-vehicle { top: 12.5%; width: clamp(82px, 22vw, 108px); }
+  .hero-craft-label { top: 64%; transform: translateX(calc(-50% + 64px)); padding: 5px 7px; font-size: 5px; letter-spacing: 1.1px; }
+  .scene-shade { background: linear-gradient(180deg, rgba(3,9,20,.38) 0%, transparent 16%, transparent 48%, rgba(3,9,20,.30) 64%, rgba(3,9,20,.94) 89%, #030914 100%); }
+  .navigation-orbits { opacity: .18; }
+  .intro { bottom: 8.2%; left: 6%; right: 6%; }
+  .intro .eyebrow { font-size: 5.7px; letter-spacing: 2.2px; }
+  h1 { font-size: clamp(39px, 11vw, 58px); margin: 10px 0 18px; }
+  h1 span { font-size: 1.08em; }
+  .launch-button { min-height: 52px; padding: 0 19px 0 24px; gap: 27px; }
+  .launch-caption { max-width: 290px; margin-inline: auto; line-height: 1.5; }
+  .is-preparing .preparation { bottom: 9.5%; }
+  .arrival-earth { width: min(55vh, 82vw); }
+  .flight-grid i:nth-child(3) { display: none; }
+}
+
+@media (max-height: 700px) and (min-width: 701px) {
+  .hero-craft-wrap, .launch-vehicle { top: 8%; width: 92px; }
+  .intro { bottom: 7%; }
+  .launch-caption { display: none; }
+  .opening-world { transform: translateY(-3%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opening-world, .hero-craft-wrap { transform: none; }
+  .hero-craft-wrap { left: 50%; transform: translateX(-50%); }
+  .cosmic-ribbon, .crew, .crew-pointing-arm, .crew-ponytail, .deck-lights circle { animation: none !important; }
+}

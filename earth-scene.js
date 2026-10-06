@@ -7,8 +7,8 @@ const MARS_TRAVEL_TEXTURE = "assets/textures/mars-surface-2k.jpg";
 const EARTH_EXPLORATION_STOPS = [
   {
     "title": "Rumah Kita",
-    "subtitle": "Planet ketiga dari Matahari",
-    "summary": "Bumi adalah dunia berbatu dengan lautan luas, atmosfer pelindung, dan satu-satunya tempat yang sejauh ini diketahui memiliki kehidupan.",
+    "subtitle": "Dunia Biru yang Jadi Rumah Kita",
+    "summary": "Inilah rumah kita di luar angkasa: dunia berbatu dengan lautan luas, udara pelindung, dan satu-satunya tempat yang sejauh ini kita tahu memiliki kehidupan.",
     "facts": [
       "Sekitar 71% permukaannya tertutup air.",
       "Atmosfer dekat permukaan terutama terdiri dari nitrogen dan oksigen.",
@@ -20,8 +20,8 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     "title": "Laut & Daratan",
-    "subtitle": "Si Planet Biru",
-    "summary": "Lautan mendominasi permukaan Bumi. Daratan membentuk benua dan pulau yang menjadi rumah bagi beragam ekosistem.",
+    "subtitle": "Dunia Biru yang Penuh Lautan",
+    "summary": "Kalau Bumi dilihat dari jauh, warna birunya langsung mencuri perhatian. Lautan menutupi sebagian besar permukaan, sementara daratan membentuk benua dan pulau tempat beragam ekosistem hidup.",
     "facts": [
       "Sekitar 29% permukaan Bumi berupa daratan.",
       "Air cair di permukaan membedakan Bumi dari planet lain yang telah kita amati."
@@ -32,8 +32,8 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     "title": "Atmosfer",
-    "subtitle": "Selimut tipis kehidupan",
-    "summary": "Lapisan gas di sekitar Bumi membantu menjaga suhu dan melindungi permukaan dari banyak meteoroid.",
+    "subtitle": "Selimut Udara yang Menjaga Rumah Kita",
+    "summary": "Bumi punya selimut udara yang tampak tipis dari luar angkasa, tetapi perannya besar: membantu menjaga suhu dan melindungi permukaan dari banyak meteoroid.",
     "facts": [
       "Udara dekat permukaan mengandung sekitar 78% nitrogen dan 21% oksigen.",
       "Sekitar 1% sisanya berupa gas lain; jumlah uap air bervariasi."
@@ -44,8 +44,8 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     "title": "Kehidupan",
-    "subtitle": "Satu rumah bersama",
-    "summary": "Sejauh pengetahuan kita, Bumi adalah satu-satunya planet yang memiliki kehidupan. Air cair dan kondisi lingkungan yang mendukung membuatnya istimewa.",
+    "subtitle": "Satu-satunya Rumah yang Kita Kenal",
+    "summary": "Sejauh yang kita ketahui, belum ada dunia lain yang terbukti memiliki kehidupan seperti Bumi. Air cair dan kondisi lingkungannya membuat rumah kita benar-benar istimewa.",
     "facts": [
       "Belum ada kehidupan di luar Bumi yang terkonfirmasi.",
       "Lanjutkan perjalanan untuk mengenal tujuh karya manusia pilihan New7Wonders tahun 2007."

@@ -56,10 +56,10 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
         fit: "cover"
       }
     ],
-    title: "Planet Terpanas",
+    title: "Dunia Paling Panas",
     kicker: "SUHU EKSTREM",
-    subtitle: "Efek rumah kaca yang ekstrem",
-    summary: "Venus adalah planet terpanas di Tata Surya. Atmosfer karbon dioksida yang sangat tebal memerangkap panas begitu kuat sehingga suhu permukaannya tetap ekstrem siang maupun malam.",
+    subtitle: "Panasnya bahkan mengalahkan Merkurius",
+    summary: "Dari jauh Venus tampak tenang, tetapi permukaannya luar biasa panas. Atmosfer karbon dioksida yang sangat tebal memerangkap panas begitu kuat sehingga siang dan malam sama-sama ekstrem.",
     facts: [
       "Suhu rata-rata permukaannya sekitar 464 °C.",
       "Venus lebih panas daripada Merkurius walaupun letaknya lebih jauh dari Matahari.",
@@ -93,10 +93,10 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
         fit: "cover"
       }
     ],
-    title: "Atmosfer Venus",
+    title: "Awan Tebal Venus",
     kicker: "ATMOSFER VENUS",
-    subtitle: "Selimut karbon dioksida yang sangat padat",
-    summary: "Atmosfer Venus didominasi karbon dioksida dan jauh lebih rapat daripada atmosfer Bumi. Di atasnya terdapat lapisan awan tebal yang mengandung tetesan asam sulfat.",
+    subtitle: "Selimut udara superpadat di dunia Venus",
+    summary: "Venus diselimuti atmosfer yang jauh lebih rapat daripada Bumi. Sebagian besarnya karbon dioksida, lalu di atasnya terbentang awan tebal yang mengandung tetesan asam sulfat.",
     facts: [
       "Karbon dioksida merupakan komponen utama atmosfer Venus.",
       "Tekanan di permukaan sekitar 93 kali tekanan udara di permukaan Bumi.",
@@ -109,10 +109,10 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
   },
   {
     images: [],
-    title: "Rotasi Aneh",
+    title: "Putarannya Bikin Heran",
     kicker: "ROTASI ANEH",
-    subtitle: "Hari sidereal yang lebih panjang dari tahunnya",
-    summary: "Venus berputar sangat lambat dan arahnya berlawanan dengan kebanyakan planet. Satu putaran terhadap bintang-bintang memerlukan waktu lebih lama daripada satu orbit Venus mengelilingi Matahari.",
+    subtitle: "Sehari di Venus lebih lama daripada setahunnya",
+    summary: "Venus punya cara berputar yang tidak biasa. Ia berputar sangat lambat dan berlawanan arah dengan kebanyakan dunia lain, sampai satu putarannya lebih lama daripada satu kali mengelilingi Matahari.",
     facts: [
       "Periode rotasi sidereal Venus sekitar 243 hari Bumi.",
       "Venus mengorbit Matahari dalam sekitar 225 hari Bumi.",
@@ -148,8 +148,8 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
     ],
     title: "Maat Mons",
     kicker: "DUNIA VULKANIK",
-    subtitle: "Gunung api besar di permukaan Venus",
-    summary: "Maat Mons adalah salah satu gunung api besar Venus. Data radar Magellan memungkinkan ilmuwan memetakan bentuknya di balik awan, dan perubahan pada sebuah ventilasi di wilayah ini menjadi bukti kuat aktivitas vulkanik modern Venus.",
+    subtitle: "Raksasa vulkanik yang bersembunyi di balik awan",
+    summary: "Di balik awan Venus ada Maat Mons, salah satu gunung api raksasanya. Radar Magellan membantu kita melihat bentuknya, bahkan memberi petunjuk kuat bahwa aktivitas vulkanik modern pernah terjadi di wilayah ini.",
     facts: [
       "Pusat fitur Maat Mons tercatat sekitar 0,5° LU dan 194,6° BT pada basis data IAU/USGS.",
       "Puncak Maat Mons mencapai sekitar 8 km di atas permukaan rata-rata Venus.",
@@ -184,8 +184,8 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
     ],
     title: "Maxwell Montes",
     kicker: "PEGUNUNGAN TERTINGGI",
-    subtitle: "Puncak tertinggi yang dikenal di Venus",
-    summary: "Maxwell Montes berada di Ishtar Terra, dekat kutub utara Venus. Pegunungan ini merupakan wilayah tertinggi di planet tersebut dan memperlihatkan struktur yang berkaitan dengan gaya kompresi pada kerak Venus.",
+    subtitle: "Atap tertinggi yang kita kenal di dunia Venus",
+    summary: "Dekat kutub utara Venus berdiri Maxwell Montes, wilayah tertinggi yang kita kenal di dunia ini. Bentuk pegunungannya juga memberi ilmuwan petunjuk tentang bagaimana kerak Venus pernah terdorong dan terlipat.",
     facts: [
       "Pusat Maxwell Montes tercatat sekitar 65,2° LU dan 3,3° BT pada basis data IAU/USGS.",
       "Pegunungan ini menjulang sekitar 11 km di atas radius rata-rata Venus.",
@@ -220,8 +220,8 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
     ],
     title: "Awan & Eksplorasi",
     kicker: "MELIHAT DI BALIK AWAN",
-    subtitle: "Radar membuka pandangan ke permukaan Venus",
-    summary: "Awan tebal membuat permukaan Venus sulit diamati dalam cahaya tampak. Radar menembus lapisan awan itu, sehingga misi seperti Magellan dapat memetakan sebagian besar permukaan dan mengungkap gunung, dataran, serta struktur vulkanik.",
+    subtitle: "Radar membantu kita mengintip dunia di balik awan",
+    summary: "Awan Venus terlalu tebal untuk melihat permukaannya dengan cahaya biasa. Karena itu ilmuwan memakai radar seperti pada misi Magellan untuk mengintip menembus awan dan menemukan gunung, dataran, serta jejak vulkanik.",
     facts: [
       "Magellan menggunakan radar untuk menghasilkan pemetaan global beresolusi tinggi terhadap permukaan Venus.",
       "Misi DAVINCI dirancang untuk mempelajari atmosfer Venus secara langsung, sedangkan VERITAS dirancang untuk menyelidiki permukaan dan sejarah geologinya.",

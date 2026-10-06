@@ -57,8 +57,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
   {
     title: "MARS",
     kicker: "DASAR PLANET",
-    subtitle: "Mengenal Si Planet Merah",
-    summary: "Mars adalah planet berbatu keempat dari Matahari. Dunia ini lebih kecil dan lebih dingin daripada Bumi, dengan atmosfer sangat tipis serta permukaan yang menyimpan jejak sejarah air purba.",
+    subtitle: "Kenalan dengan Dunia Merah",
+    summary: "Mars adalah dunia berbatu keempat dari Matahari. Ia lebih kecil dan lebih dingin daripada Bumi, tetapi permukaannya menyimpan banyak jejak yang membuat ilmuwan bertanya: seperti apa Mars miliaran tahun lalu?",
     facts: [
       "Radius Mars sekitar 3.390 km, kira-kira setengah radius Bumi.",
       "Mars memiliki dua bulan kecil bernama Phobos dan Deimos.",
@@ -72,8 +72,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
   {
     title: "UKURAN & GRAVITASI",
     kicker: "SKALA PLANET",
-    subtitle: "Dunia yang Lebih Kecil dari Bumi",
-    summary: "Mars memiliki ukuran dan massa yang jauh lebih kecil daripada Bumi. Akibatnya, tarikan gravitasinya juga lebih lemah sehingga benda dengan massa yang sama akan terasa jauh lebih ringan di permukaannya.",
+    subtitle: "Dunia Kecil dengan Tarikan Lebih Ringan",
+    summary: "Mars jauh lebih kecil daripada Bumi, jadi gravitasinya juga lebih lemah. Massamu tidak berubah, tetapi beratmu di permukaan Mars akan terasa jauh lebih ringan.",
     facts: [
       "Diameter rata-rata Mars sekitar 6.780 km, sekitar 53% diameter Bumi.",
       "Gravitasi permukaannya sekitar 3,7 m/s², atau kira-kira 38% gravitasi Bumi.",
@@ -87,8 +87,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
   {
     title: "HARI & TAHUN MARS",
     kicker: "ROTASI & ORBIT",
-    subtitle: "Waktu Berjalan Berbeda",
-    summary: "Panjang satu hari Mars hampir mirip dengan Bumi, tetapi satu tahunnya jauh lebih lama. Kemiringan sumbu Mars juga membuat planet ini mengalami musim.",
+    subtitle: "Seharinya Mirip Bumi, Tahunnya Jauh Lebih Lama",
+    summary: "Satu hari di Mars hampir terasa familiar, hanya sedikit lebih panjang dari hari di Bumi. Tapi kalau menunggu ulang tahun Mars, kamu harus sabar lebih lama karena satu tahunnya hampir dua kali tahun Bumi.",
     facts: [
       "Satu hari Mars disebut sol dan berlangsung sekitar 24,6 jam.",
       "Satu tahun Mars berlangsung 669,6 sol, setara sekitar 687 hari Bumi.",
@@ -102,8 +102,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
   {
     title: "ATMOSFER & SUHU",
     kicker: "LINGKUNGAN MARS",
-    subtitle: "Dunia Dingin dengan Udara Tipis",
-    summary: "Atmosfer Mars sangat tipis dan didominasi karbon dioksida. Karena udara tipis sulit menahan panas, suhu permukaan dapat berubah besar antara kondisi hangat lokal dan malam atau wilayah kutub yang sangat dingin.",
+    subtitle: "Dingin, Berdebu, dan Berudara Tipis",
+    summary: "Udara Mars sangat tipis dan kebanyakan berisi karbon dioksida. Karena panas mudah lepas, dunia ini bisa berubah dari cukup hangat di lokasi tertentu menjadi sangat dingin pada malam hari atau di daerah kutub.",
     facts: [
       "Atmosfer Mars terutama terdiri dari karbon dioksida, dengan nitrogen dan argon sebagai komponen penting lainnya.",
       "Tekanan atmosfer di permukaan Mars kurang dari 1% tekanan rata-rata di permukaan Bumi.",
@@ -117,8 +117,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
   {
     title: "KENAPA MARS BERWARNA MERAH?",
     kicker: "WARNA PERMUKAAN",
-    subtitle: "Jejak Besi di Permukaan",
-    summary: "Warna merah Mars berasal dari mineral yang mengandung besi di batuan, regolit, dan debu. Ketika besi mengalami oksidasi, terbentuk material mirip karat yang memberi warna kemerahan pada permukaan.",
+    subtitle: "Ternyata “karat” yang membuatnya merah",
+    summary: "Rahasia warna merah Mars ada pada besi di batuan dan debunya. Saat besi itu teroksidasi, terbentuk oksida besi yang mirip karat dan memberi warna merah-jingga pada permukaan.",
     facts: [
       "Mineral yang mengandung besi tersebar luas pada material permukaan Mars.",
       "Oksidasi menghasilkan oksida besi yang memberi warna merah, cokelat, dan jingga.",
@@ -154,8 +154,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     ],
     title: "Olympus Mons",
     kicker: "GUNUNG API RAKSASA",
-    subtitle: "Gunung api terbesar yang dikenal di Tata Surya",
-    summary: "Olympus Mons adalah gunung api perisai raksasa yang mendominasi wilayah vulkanik Mars. Ukurannya menunjukkan betapa lama aktivitas vulkanik dapat membangun bentang alam di Planet Merah.",
+    subtitle: "Gunung api raksasa yang menjulang di dunia Mars",
+    summary: "Olympus Mons bukan sekadar gunung besar. Ini adalah gunung api perisai raksasa yang tumbuh sangat lama dan menjadi salah satu pemandangan paling ekstrem di dunia Mars.",
     facts: [
       "Tingginya sekitar 27 km di atas dataran sekitarnya.",
       "Lebar dasarnya lebih dari 600 km.",
@@ -190,8 +190,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     ],
     title: "Valles Marineris",
     kicker: "NGARAI PLANET",
-    subtitle: "Sistem ngarai terbesar di Tata Surya",
-    summary: "Valles Marineris membelah wilayah dekat ekuator Mars. Sistem ngarai ini kemungkinan berawal dari retakan besar pada kerak Mars, lalu diperlebar oleh proses geologi dan erosi.",
+    subtitle: "Ngarai raksasa yang membelah permukaan Mars",
+    summary: "Valles Marineris membentang sangat panjang di dekat ekuator Mars. Kemungkinan besar kisahnya dimulai dari retakan besar pada kerak, lalu proses geologi dan erosi membuatnya makin lebar dan dalam.",
     facts: [
       "Panjangnya sekitar 3.870 km.",
       "Lebarnya mencapai sekitar 600 km di bagian terlebar.",
@@ -226,8 +226,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     ],
     title: "Kawah Jezero",
     kicker: "JEJAK AIR PURBA",
-    subtitle: "Laboratorium alam bagi Perseverance",
-    summary: "Jezero dipilih karena bukti menunjukkan kawah ini pernah menampung danau serta delta sungai purba. Daerah seperti ini dapat menyimpan petunjuk tentang kondisi Mars miliaran tahun lalu.",
+    subtitle: "Bekas danau purba yang dijelajahi Perseverance",
+    summary: "Kawah Jezero pernah menjadi rumah bagi danau dan delta sungai purba. Itulah sebabnya Perseverance menjelajahinya: tempat seperti ini bisa menyimpan petunjuk tentang seperti apa Mars miliaran tahun lalu.",
     facts: [
       "Diameter kawahnya sekitar 45 km.",
       "Lebih dari 3,5 miliar tahun lalu, air pernah mengalir masuk dan membentuk danau serta delta.",
@@ -262,8 +262,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     ],
     title: "Tudung Es Kutub",
     kicker: "ES YANG BERUBAH MUSIM",
-    subtitle: "Air beku dan karbon dioksida beku",
-    summary: "Kutub Mars berubah mengikuti musim. Lapisan es karbon dioksida tumbuh saat musim dingin dan menyusut ketika wilayah kutub kembali menerima lebih banyak sinar Matahari.",
+    subtitle: "Es yang tumbuh dan menyusut mengikuti musim",
+    summary: "Kutub Mars tidak selalu terlihat sama. Saat musim dingin datang, es karbon dioksida ikut menumpuk; ketika sinar Matahari kembali kuat, sebagian lapisan itu menyusut lagi.",
     facts: [
       "Lapisan es musiman mengandung karbon dioksida beku atau dry ice.",
       "Pada musim panas utara, tudung yang tersisa terutama berupa es air.",
@@ -300,8 +300,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     ],
     title: "Atmosfer Mars",
     kicker: "UDARA YANG SANGAT TIPIS",
-    subtitle: "Didominasi karbon dioksida",
-    summary: "Mars memiliki atmosfer yang jauh lebih tipis daripada Bumi. Udara tipis ini sulit menahan panas, sementara debu halus yang tersuspensi membuat langit Mars tampak berkabut kemerahan.",
+    subtitle: "Udara supertipis di dunia merah",
+    summary: "Mars punya atmosfer, tetapi sangat tipis dibandingkan Bumi. Udara ini sulit menyimpan panas, sementara debu halus yang melayang membuat langit dunia merah tampak berkabut kemerahan.",
     facts: [
       "Pengukuran Curiosity di Gale Crater menunjukkan sekitar 95,9% atmosfer berupa karbon dioksida.",
       "Tekanan atmosfer permukaan Mars kurang dari 1% tekanan atmosfer Bumi.",
@@ -338,8 +338,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     ],
     title: "Badai Debu & Musim",
     kicker: "CUACA PLANET MERAH",
-    subtitle: "Debu dapat menyelimuti hampir seluruh planet",
-    summary: "Mars memiliki empat musim seperti Bumi, tetapi tahun Mars jauh lebih panjang. Perubahan musim membantu menggerakkan atmosfer tipisnya dan dapat memicu badai debu raksasa.",
+    subtitle: "Saat debu bisa menyelimuti hampir seluruh dunia Mars",
+    summary: "Mars juga punya empat musim, tetapi semuanya berjalan dalam tahun yang jauh lebih panjang. Perubahan musim menggerakkan atmosfer tipisnya dan kadang memicu badai debu yang tumbuh menjadi raksasa.",
     facts: [
       "Satu tahun Mars berlangsung sekitar 687 hari Bumi, sehingga musimnya lebih panjang.",
       "Badai debu besar paling aktif pada musim semi dan musim panas di belahan selatan.",
