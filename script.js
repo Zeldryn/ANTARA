@@ -492,53 +492,206 @@ launchButton.addEventListener("click", () => {
   animationFrame = requestAnimationFrame(advancePreparation);
 });
 
-function animatePlanetSwap(fromScene, toScene, { transitionPhase, finalPhase, fromClass, toClass, status, location, announcementText, arrivalStatus, arrivalLocation } = {}) {
-  if (!fromScene?.active || fromScene.exploring) return;
+const PLANET_ORDER = Object.freeze({ venus: 2, earth: 3, mars: 4 });
+let panoramaTransition = null;
+let panoramaTransitionSerial = 0;
+
+function smoothTravel(value) {
+  const v = Math.max(0, Math.min(1, value));
+  return v * v * v * (v * (v * 6 - 15) + 10);
+}
+
+function planetDirection(fromPlanet, toPlanet) {
+  const delta = (PLANET_ORDER[toPlanet] ?? 0) - (PLANET_ORDER[fromPlanet] ?? 0);
+  return delta === 0 ? 0 : Math.sign(delta);
+}
+
+function cancelSceneAnimations(scene) {
+  if (!scene?.element) return;
+  // The stale bug came from a root-level element.animate() effect. Cancel only
+  // animations attached to the scene root so normal child CSS transitions remain intact.
+  scene.element.getAnimations?.().forEach(animation => animation.cancel());
+}
+
+function resetTransitionStyles(scene) {
+  if (!scene?.element) return;
+  scene.element.classList.remove('planet-transition-source', 'planet-transition-target', 'planet-transition-layer');
+  scene.element.style.zIndex = '';
+  const viewport = scene.viewport || scene.element.querySelector('[class$="-viewport"]');
+  if (viewport) {
+    viewport.style.transform = '';
+    viewport.style.opacity = '';
+    viewport.style.transformOrigin = '';
+    viewport.style.willChange = '';
+  }
+}
+
+function cancelPanoramaTransition() {
+  if (!panoramaTransition) return;
+  cancelAnimationFrame(panoramaTransition.frame);
+  resetTransitionStyles(panoramaTransition.fromScene);
+  resetTransitionStyles(panoramaTransition.toScene);
+  panoramaTransition.fromScene.element.inert = false;
+  panoramaTransition.toScene.element.inert = false;
+  mission.classList.remove('is-planet-transitioning');
+  panoramaTransition = null;
+}
+
+function transitionPanorama(fromName, toName, fromScene, toScene, {
+  transitionPhase,
+  finalPhase,
+  fromClass,
+  toClass,
+  status,
+  location,
+  announcementText,
+  arrivalStatus,
+  arrivalLocation
+} = {}) {
+  if (panoramaTransition || !fromScene?.active || fromScene.exploring) return;
+
+  const direction = planetDirection(fromName, toName);
+  if (!direction) return;
+
+  const token = ++panoramaTransitionSerial;
+  const duration = reducedMotion.matches ? 420 : 6200;
+  const fromViewport = fromScene.viewport || fromScene.element.querySelector('[class$="-viewport"]');
+  const toViewport = toScene.viewport || toScene.element.querySelector('[class$="-viewport"]');
+  if (!fromViewport || !toViewport) return;
+
+  // Remove stale Web Animations first. The old Venus swap used fill:"forwards",
+  // which could keep Earth visually pinned at opacity:0 even after Earth restarted.
+  cancelSceneAnimations(fromScene);
+  cancelSceneAnimations(toScene);
+  resetTransitionStyles(fromScene);
+  resetTransitionStyles(toScene);
+
   phase = transitionPhase;
   if (flightStatus) flightStatus.textContent = status;
   locationDetail.textContent = location;
   announcement.textContent = announcementText;
-  const duration = reducedMotion.matches ? 0 : 720;
-  sound.travel(reducedMotion.matches ? 0.35 : 1.45);
+  sound.travel(reducedMotion.matches ? 0.4 : 6.2);
+  mission.classList.add('is-planet-transitioning');
 
-  const completeSwap = () => {
-    if (phase !== transitionPhase) return;
+  // Start the destination in its correct panorama state immediately, but keep its
+  // interaction/UI suppressed until the cinematic travel is almost settled.
+  toScene.element.inert = true;
+  fromScene.element.inert = true;
+  toScene.start({ settled: true });
+  toScene.element.hidden = false;
+  toScene.element.style.opacity = '1';
+
+  fromScene.element.classList.add('planet-transition-source');
+  toScene.element.classList.add('planet-transition-target', 'planet-transition-layer');
+  fromScene.element.style.zIndex = '6';
+  toScene.element.style.zIndex = '7';
+  fromViewport.style.transformOrigin = '50% 50%';
+  toViewport.style.transformOrigin = '50% 50%';
+  fromViewport.style.willChange = 'transform, opacity';
+  toViewport.style.willChange = 'transform, opacity';
+
+  const startedAt = performance.now();
+  const state = {
+    token,
+    frame: null,
+    fromScene,
+    toScene,
+    uiReleased: false,
+    direction,
+    fromName,
+    toName
+  };
+  panoramaTransition = state;
+
+  const finish = () => {
+    if (!panoramaTransition || panoramaTransition.token !== token) return;
+
+    // Stop the old panorama first, then explicitly normalize every temporary value.
     fromScene.stop();
+    resetTransitionStyles(fromScene);
+    resetTransitionStyles(toScene);
+    cancelSceneAnimations(fromScene);
+    cancelSceneAnimations(toScene);
+
     mission.classList.remove(fromClass);
     mission.classList.add(toClass);
-    toScene.start({ settled: true });
+    mission.classList.remove('is-planet-transitioning');
+
+    toScene.element.hidden = false;
+    toScene.element.style.opacity = '1';
+    toScene.element.inert = false;
+    fromScene.element.inert = false;
+
     phase = finalPhase;
     if (flightStatus) flightStatus.textContent = arrivalStatus;
     locationDetail.textContent = arrivalLocation;
-    announcement.textContent = finalPhase === "venus" ? "Tiba di Venus." : "Kembali di Bumi.";
-    if (duration && typeof toScene.element.animate === "function") {
-      toScene.element.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 720, easing: "cubic-bezier(.2,.75,.2,1)", fill: "none" });
-    }
+    announcement.textContent = finalPhase === 'venus' ? 'Tiba di Venus.' : 'Kembali di Bumi.';
+    panoramaTransition = null;
   };
 
-  if (!duration || typeof fromScene.element.animate !== "function") { completeSwap(); return; }
-  const fade = fromScene.element.animate([{ opacity: 1 }, { opacity: 0 }], { duration, easing: "ease-in", fill: "forwards" });
-  fade.finished.then(completeSwap, completeSwap);
+  const tickTransition = now => {
+    if (!panoramaTransition || panoramaTransition.token !== token || phase !== transitionPhase) return;
+    const elapsed = now - startedAt;
+    const raw = Math.max(0, Math.min(1, elapsed / duration));
+    const progress = smoothTravel(raw);
+
+    // These are the same conceptual phases used by EarthScene.renderTravel():
+    // early pullback, mid-flight pan, then late approach to the destination.
+    const pullback = smoothTravel(progress / 0.31);
+    const pan = smoothTravel((progress - 0.23) / 0.39);
+    const approach = smoothTravel((progress - 0.58) / 0.42);
+
+    const sourceScale = 1 - 0.38 * pullback;
+    const sourceX = -direction * 34 * pan;
+    const sourceY = -2.5 * pullback * (1 - approach);
+    const sourceOpacity = 1 - smoothTravel((progress - 0.72) / 0.24);
+
+    const targetStartX = direction * 72;
+    const targetX = targetStartX * (1 - pan);
+    const targetScale = 0.58 + 0.42 * approach;
+    const targetOpacity = smoothTravel((progress - 0.27) / 0.22);
+
+    if (reducedMotion.matches) {
+      fromViewport.style.transform = `translate3d(${-direction * 8 * pan}vw,0,0) scale(${1 - 0.08 * pullback})`;
+      toViewport.style.transform = `translate3d(${direction * 12 * (1 - pan)}vw,0,0) scale(${0.92 + 0.08 * approach})`;
+    } else {
+      fromViewport.style.transform = `translate3d(${sourceX}vw,${sourceY}vh,0) scale(${sourceScale})`;
+      toViewport.style.transform = `translate3d(${targetX}vw,0,0) scale(${targetScale})`;
+    }
+    fromViewport.style.opacity = String(Math.max(0, sourceOpacity));
+    toViewport.style.opacity = String(Math.max(0, targetOpacity));
+
+    // UI arrives only once the target planet is nearly in its final frame.
+    if (!state.uiReleased && progress >= 0.88) {
+      state.uiReleased = true;
+      toScene.element.classList.remove('planet-transition-target');
+    }
+
+    if (raw >= 1) { finish(); return; }
+    state.frame = requestAnimationFrame(tickTransition);
+  };
+
+  state.frame = requestAnimationFrame(tickTransition);
 }
 
 function travelToVenus() {
   if (phase !== "earth" || earth.exploring) return;
-  animatePlanetSwap(earth, venus, {
+  transitionPanorama('earth', 'venus', earth, venus, {
     transitionPhase: "venus-transition", finalPhase: "venus",
     fromClass: "is-earth", toClass: "is-venus",
     status: "PERJALANAN MENUJU VENUS", location: "TUJUAN SEBELUMNYA • VENUS",
-    announcementText: "Meninggalkan Bumi. Kamera beralih menuju Venus.",
+    announcementText: "Meninggalkan Bumi. Bergerak ke kiri menuju Venus.",
     arrivalStatus: "TIBA DI ORBIT VENUS", arrivalLocation: "PLANET KE-2 • VENUS"
   });
 }
 
 function travelVenusToEarth() {
   if (phase !== "venus" || venus.exploring) return;
-  animatePlanetSwap(venus, earth, {
+  transitionPanorama('venus', 'earth', venus, earth, {
     transitionPhase: "venus-earth-transition", finalPhase: "earth",
     fromClass: "is-venus", toClass: "is-earth",
     status: "PERJALANAN MENUJU BUMI", location: "TUJUAN BERIKUTNYA • BUMI",
-    announcementText: "Meninggalkan Venus. Menuju Bumi.",
+    announcementText: "Meninggalkan Venus. Bergerak ke kanan menuju Bumi.",
     arrivalStatus: "TIBA DI ORBIT BUMI", arrivalLocation: "PLANET ASAL • BUMI"
   });
 }
@@ -593,6 +746,7 @@ function travelToEarth() {
 }
 
 function resetMission() {
+  cancelPanoramaTransition();
   cancelAnimationFrame(animationFrame);
   sound.stop(1.1);
   phase = "idle";
@@ -601,7 +755,7 @@ function resetMission() {
   mars.stop();
   venus.stop();
   preparationProgress.style.transform = "scaleX(0)";
-  mission.classList.remove("is-earth", "is-mars", "is-venus", "is-preparing");
+  mission.classList.remove("is-earth", "is-mars", "is-venus", "is-preparing", "is-planet-transitioning");
   locationDetail.textContent = originalLocation;
   preparation.style.opacity = "";
   document.querySelector(".intro").inert = false;

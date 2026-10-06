@@ -268,3 +268,22 @@ h1 span { color: #f3d29a; }
 @media (max-width: 700px) { .launch-vehicle { top: 18%; width: clamp(108px, 27vw, 140px); } .launch-bloom { top: 53%; width: 130vw; } }
 @media (max-height: 700px) and (min-width: 701px) { .launch-vehicle { width: 118px; top: 12%; } }
 @media (prefers-reduced-motion: reduce) { .launch-vehicle { will-change: auto; } .launch-particles { display: none; } }
+
+/* Directional Venus ↔ Earth travel. Planet rendering stays inside each scene;
+   these temporary classes only coordinate the cinematic panorama handoff. */
+.is-planet-transitioning .earth-scene,
+.is-planet-transitioning .venus-scene { pointer-events: none; }
+.planet-transition-layer { background: transparent !important; }
+.planet-transition-layer .earth-space-haze,
+.planet-transition-layer .earth-edge-shade,
+.planet-transition-layer .venus-space-haze,
+.planet-transition-layer .venus-edge-shade { opacity: 0 !important; }
+.planet-transition-source .earth-information,
+.planet-transition-target .earth-information,
+.planet-transition-source .venus-caption,
+.planet-transition-target .venus-caption,
+.planet-transition-source .venus-credit,
+.planet-transition-target .venus-credit {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
