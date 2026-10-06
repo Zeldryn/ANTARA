@@ -1567,93 +1567,97 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .character-sprite { animation: none !important; }
 }
 
-
 /* ==============================================================
-   CHARACTER INTEGRATION FIX — targeted layout/layering only
-   Keeps the existing artwork and sprite-state system unchanged.
+   CHARACTER INTEGRATION FIX V2 — strict correction
+   Only vertical placement, crop, sprite transparency integration,
+   and lower foreground occlusion are adjusted here.
    ============================================================== */
 
-/*
- * The cockpit is the physical foreground.  Previously the entire
- * cockpit-camera stacking context sat below the companions, so the
- * dashboard could never occlude their lower bodies.  Put the cockpit
- * frame in front of the character layer while keeping dialogue/CTA above.
- */
+/* Keep the cockpit as one local depth stack. Companions now live inside
+   .cockpit-camera in the DOM: window/roof/pillars < characters < dashboard. */
 .cockpit-camera {
-  z-index: 18;
+  z-index: 12;
+  pointer-events: none;
 }
 
-/*
- * Lower the companions into the cockpit and give the source images enough
- * vertical room to extend behind the dashboard instead of ending visibly
- * at the viewport edge.  The sprite keeps its native aspect ratio.
- */
-.companion {
-  z-index: 16;
-  bottom: -1.25%;
-  width: clamp(300px, 30vw, 500px);
-  height: min(88vh, 840px);
-  overflow: visible;
+/* Only the LOWER cockpit is allowed to occlude the characters. */
+.cockpit-dashboard {
+  z-index: 10;
+  height: 27.5%;
+  bottom: -6.2%;
 }
+
+/* Move both characters UP from the previous broken version.
+   Full head, face, hair, shoulders, torso and pose stay visible. */
+.companion {
+  z-index: 8;
+  bottom: 8.4%;
+  width: clamp(300px, 29vw, 480px);
+  height: min(79vh, 790px);
+  overflow: visible;
+  filter: drop-shadow(0 28px 34px rgba(0,0,0,.42));
+}
+.companion-a { left: -1.5%; }
+.companion-b { right: -1.5%; }
 
 .character-sprite-frame {
-  overflow: visible;
+  inset: 0;
+  display: flex;
   align-items: flex-end;
+  justify-content: center;
+  overflow: visible;
 }
-
 .character-sprite {
-  width: auto;
+  display: block;
+  width: 100%;
   height: 100%;
-  max-width: none;
+  max-width: 100%;
   object-fit: contain;
   object-position: center bottom;
 }
 
-/* Keep the two characters balanced while letting the cockpit pillars
-   naturally overlap their outer edges. */
-.companion-a { left: -1.2%; }
-.companion-b { right: -1.2%; }
-
-/* Character labels should stay with the visible upper-body composition. */
-.character-identity { top: 25%; }
-
-/* Dialogue remains in front of the physical cockpit foreground. */
+/* Dialogue and interactive UI remain in front. */
 .speech-bubble { z-index: 22; }
+.launch-button { z-index: 32; }
 
 @media (max-width: 1100px) {
   .companion {
-    bottom: -1.5%;
-    width: clamp(275px, 31vw, 420px);
-    height: min(86vh, 760px);
+    bottom: 8.8%;
+    width: clamp(270px, 30vw, 390px);
+    height: min(77vh, 740px);
   }
   .companion-a { left: -3.5%; }
   .companion-b { right: -3.5%; }
+  .cockpit-dashboard { height: 27%; }
 }
 
 @media (max-width: 900px) {
   .companion {
-    bottom: -2%;
-    width: clamp(245px, 35vw, 360px);
-    height: min(84vh, 700px);
+    bottom: 9.6%;
+    width: clamp(235px, 33vw, 330px);
+    height: min(73vh, 680px);
   }
-  .companion-a { left: -6.5%; }
-  .companion-b { right: -6.5%; }
+  .companion-a { left: -6%; }
+  .companion-b { right: -6%; }
+  .cockpit-dashboard { height: 26%; bottom: -5.5%; }
 }
 
 @media (max-width: 700px) {
   .companion {
-    bottom: -2.5%;
-    width: clamp(205px, 48vw, 285px);
-    height: min(72vh, 610px);
+    bottom: 11.8%;
+    width: clamp(185px, 45vw, 260px);
+    height: 60vh;
   }
-  .companion-a { left: -14%; }
-  .companion-b { right: -14%; }
+  .companion-a { left: -15%; }
+  .companion-b { right: -15%; }
+  .cockpit-dashboard { height: 25%; bottom: -5%; }
 }
 
 @media (max-height: 700px) and (min-width: 701px) {
   .companion {
-    bottom: -2.25%;
-    width: clamp(245px, 29vw, 355px);
-    height: min(86vh, 620px);
+    bottom: 9.2%;
+    width: clamp(235px, 27vw, 330px);
+    height: 68vh;
   }
+  .cockpit-dashboard { height: 26%; bottom: -5.5%; }
 }
