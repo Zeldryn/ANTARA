@@ -823,3 +823,291 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 .companion[data-expression="soft"] .pupil { transform:translateY(1px); }
 .speech-bubble { opacity: calc(1 - var(--handoff)); }
 .speech-bubble.is-changing { opacity: 0; }
+
+/* ==============================================================
+   OPENING QUALITY PASS — scene isolation + believable ascent
+   This block intentionally wins over earlier experimental opening
+   rules without changing Earth / Venus / Mars scene implementations.
+   ============================================================== */
+
+/* One experience state at a time. Home artwork can never leak into planets. */
+.mission[data-experience="home"] .launch-stage { visibility: hidden; opacity: 0; }
+.mission[data-experience="launch"] .intro,
+.mission[data-experience="launch"] .scene,
+.mission[data-experience="launch"] .location {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.mission[data-experience="launch"] .mission-index { opacity: .28; }
+.mission[data-experience="launch"] .launch-stage { visibility: visible; }
+.mission[data-experience="planet"] .intro,
+.mission[data-experience="planet"] .scene,
+.mission[data-experience="planet"] .launch-stage,
+.mission[data-experience="planet"] .location,
+.mission[data-experience="planet"] .mission-index {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.mission[data-experience="planet"] .mission-footer { pointer-events: none; }
+.mission[data-experience="planet"] .audio-control { margin-left: auto; pointer-events: auto; }
+.mission[data-experience="planet"] .masthead { pointer-events: none; }
+.mission[data-experience="planet"] .brand { pointer-events: auto; }
+
+/* No opening loader or technical-location clutter. */
+.preparation,
+.location-detail,
+.companion-name { display: none !important; }
+
+/* Cockpit view: keep the center window open and the frame restrained. */
+.cockpit-world { background: #061426; }
+.launch-sky {
+  z-index: 0;
+  inset: -5%;
+  opacity: 1;
+  background:
+    radial-gradient(ellipse at 50% 93%, rgba(255,193,128,.48) 0%, rgba(223,151,99,.16) 20%, transparent 45%),
+    linear-gradient(180deg, #103b64 0%, #245f86 42%, #6f98af 74%, #c4aa97 100%);
+}
+.launch-sky::before,
+.launch-sky::after { display: none; }
+.launch-space-layer {
+  position: absolute;
+  z-index: 1;
+  inset: -4%;
+  opacity: var(--space-mix);
+  background:
+    radial-gradient(circle at 51% 46%, rgba(31,73,118,.18), transparent 31%),
+    radial-gradient(circle at 17% 23%, rgba(124,164,207,.08), transparent 18%),
+    linear-gradient(180deg, #071427 0%, #020814 52%, #01050d 100%);
+  transition: none;
+}
+.launch-space-layer::before,
+.launch-space-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: var(--star-opacity);
+  background-image: radial-gradient(circle, rgba(232,244,255,.95) 0 1px, transparent 1.3px);
+  background-size: 86px 86px;
+  background-position: 9px 21px;
+  animation: cockpit-star-drift 58s linear infinite;
+}
+.launch-space-layer::after {
+  background-size: 137px 137px;
+  background-position: 44px 8px;
+  opacity: calc(var(--star-opacity) * .55);
+  animation-duration: 81s;
+}
+
+/* Ground actually recedes as the craft climbs. */
+.ground-world {
+  position: absolute;
+  z-index: 2;
+  left: -8%;
+  right: -8%;
+  bottom: -4%;
+  height: 57%;
+  opacity: var(--ground-opacity);
+  transform-origin: 50% 100%;
+  transform: translate3d(0, calc(var(--ground-progress) * 34vh), 0) scale(calc(1 - var(--ground-progress) * .29));
+  will-change: transform, opacity;
+}
+.terrain-far {
+  position: absolute;
+  inset: 18% 0 19%;
+  background: linear-gradient(180deg, #1b3547 0%, #102533 64%, #0a1823 100%);
+  clip-path: polygon(0 70%, 7% 54%, 14% 63%, 22% 43%, 31% 67%, 40% 47%, 48% 61%, 57% 39%, 67% 64%, 76% 46%, 87% 62%, 94% 48%, 100% 66%, 100% 100%, 0 100%);
+  filter: saturate(.72);
+}
+.city-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12%;
+  height: 31%;
+  opacity: .92;
+  background:
+    linear-gradient(90deg,
+      transparent 0 3%, #101f2b 3% 5.2%, transparent 5.2% 7%, #142735 7% 10.4%, transparent 10.4% 13%,
+      #0e1c28 13% 15%, transparent 15% 18%, #162b39 18% 22%, transparent 22% 25%, #0c1b26 25% 27%,
+      transparent 27% 30%, #132634 30% 35%, transparent 35% 38%, #0e1e2b 38% 41%, transparent 41% 44%,
+      #142937 44% 47%, transparent 47% 51%, #0c1c28 51% 54%, transparent 54% 58%, #152b39 58% 63%,
+      transparent 63% 66%, #0f202d 66% 70%, transparent 70% 74%, #132735 74% 78%, transparent 78% 81%,
+      #0b1a25 81% 84%, transparent 84% 88%, #152936 88% 93%, transparent 93% 96%, #0d1c28 96% 100%);
+  clip-path: polygon(0 100%,0 58%,3% 58%,3% 42%,5% 42%,5% 65%,7% 65%,7% 35%,10% 35%,10% 62%,13% 62%,13% 47%,15% 47%,15% 70%,18% 70%,18% 31%,22% 31%,22% 61%,25% 61%,25% 50%,27% 50%,27% 72%,30% 72%,30% 36%,35% 36%,35% 62%,38% 62%,38% 41%,41% 41%,41% 68%,44% 68%,44% 34%,47% 34%,47% 60%,51% 60%,51% 45%,54% 45%,54% 71%,58% 71%,58% 30%,63% 30%,63% 59%,66% 59%,66% 42%,70% 42%,70% 70%,74% 70%,74% 37%,78% 37%,78% 61%,81% 61%,81% 45%,84% 45%,84% 69%,88% 69%,88% 32%,93% 32%,93% 63%,96% 63%,96% 43%,100% 43%,100% 100%);
+}
+.city-far { bottom: 24%; transform: scale(.82); opacity: .48; filter: blur(.7px); }
+.city-mid { bottom: 8%; transform: scale(1.03); }
+.city-light-field {
+  position: absolute;
+  left: 4%; right: 4%; bottom: 10%; height: 25%;
+  opacity: calc(.88 - var(--ground-progress) * .55);
+  background-image:
+    radial-gradient(circle, rgba(255,213,147,.8) 0 1px, transparent 1.7px),
+    radial-gradient(circle, rgba(132,199,235,.5) 0 1px, transparent 1.6px);
+  background-size: 51px 27px, 83px 39px;
+  background-position: 7px 4px, 29px 16px;
+  mask-image: linear-gradient(180deg, transparent, #000 42%, #000 100%);
+}
+.launch-base-view {
+  position: absolute;
+  left: 14%; right: 14%; bottom: 0; height: 18%;
+  border-top: 1px solid rgba(205,220,231,.18);
+  background:
+    linear-gradient(90deg, transparent 0 16%, rgba(118,160,188,.15) 16% 16.3%, transparent 16.3% 49.8%, rgba(118,160,188,.15) 49.8% 50.2%, transparent 50.2% 83.7%, rgba(118,160,188,.15) 83.7% 84%, transparent 84%),
+    linear-gradient(180deg, rgba(16,33,45,.96), rgba(5,15,24,.99));
+  box-shadow: 0 -14px 45px rgba(244,179,103,.08);
+}
+
+.launch-horizon {
+  z-index: 2;
+  left: -10%; right: -10%; bottom: 29%; width: auto; height: 26%;
+  border: 0; border-radius: 0; box-shadow: none;
+  background: linear-gradient(180deg, transparent, rgba(87,134,165,.16) 36%, rgba(25,54,73,.42) 72%, transparent);
+  clip-path: none;
+  opacity: calc(var(--ground-opacity) * .76);
+  transform: translateY(calc(var(--ground-progress) * 22vh));
+}
+.atmosphere-glow {
+  z-index: 3;
+  left: 50%; bottom: 21%; width: 126%; height: 31%;
+  background: radial-gradient(ellipse, rgba(255,213,156,.32), rgba(131,184,216,.13) 34%, transparent 68%);
+  filter: blur(18px);
+  opacity: calc((1 - var(--space-mix)) * .82);
+}
+
+/* Volumetric cloud bands: translucent, layered and never an all-white sheet. */
+.cloud-layer {
+  z-index: 4;
+  left: -22%;
+  width: 144%;
+  height: 52%;
+  border-radius: 45%;
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+.cloud-layer::before,
+.cloud-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 48%;
+  background:
+    radial-gradient(ellipse at 10% 61%, rgba(231,240,246,.72) 0 9%, transparent 21%),
+    radial-gradient(ellipse at 27% 42%, rgba(205,222,233,.66) 0 12%, transparent 25%),
+    radial-gradient(ellipse at 47% 63%, rgba(239,245,248,.73) 0 11%, transparent 25%),
+    radial-gradient(ellipse at 66% 40%, rgba(206,224,236,.64) 0 12%, transparent 27%),
+    radial-gradient(ellipse at 86% 58%, rgba(235,243,247,.72) 0 11%, transparent 25%);
+}
+.cloud-layer::after {
+  transform: translate3d(6%, 10%, 0) scale(.88);
+  filter: blur(9px);
+  opacity: .7;
+}
+.cloud-far { bottom: -3%; filter: blur(19px); transform: translate3d(0,var(--cloud-far-y,0px),0) scale(1.05); opacity: var(--cloud-far-opacity,0); }
+.cloud-mid { bottom: -13%; filter: blur(12px); transform: translate3d(var(--cloud-mid-x,0px),var(--cloud-mid-y,0px),0) scale(1.18); opacity: var(--cloud-mid-opacity,0); }
+.cloud-near { bottom: -26%; filter: blur(7px); transform: translate3d(var(--cloud-near-x,0px),var(--cloud-near-y,0px),0) scale(1.4); opacity: var(--cloud-near-opacity,0); }
+.cloud-far::after { box-shadow: 0 -28px 75px rgba(220,236,245,.17); }
+
+.launch-particles { z-index: 5; opacity: 1; }
+.arrival-earth { z-index: 3; }
+
+/* Cleaner cockpit frame, more window, less UI junk. */
+.cockpit-roof { height: 14%; background: linear-gradient(180deg,#050b13 0%,#132331 64%,rgba(8,16,24,.96)); }
+.cockpit-pillar { width: 7.2%; opacity: .94; }
+.cockpit-dashboard { height: 20.5%; bottom: -5%; }
+.cockpit-brand { left: 50%; top: 31%; opacity: .72; }
+.cockpit-brand strong { font-size: 9px; letter-spacing: 2.6px; }
+.cockpit-brand small { font-size: 4.5px; letter-spacing: 1.4px; }
+.dashboard-lights { left: 10%; top: 44%; opacity: .76; }
+.dashboard-screen { right: 9%; top: 34%; min-width: 128px; padding: 7px 9px; border-color: rgba(127,173,207,.16); background: rgba(3,11,20,.43); color: #b8d2e4; }
+
+/* Refined donghua-influenced vector rig: fair skin, softer rendering, elegant silhouettes. */
+.companion {
+  bottom: 6.4%;
+  width: clamp(170px,18.5vw,270px);
+  filter: drop-shadow(0 24px 34px rgba(0,0,0,.38));
+}
+.companion-a { left: 1.8%; }
+.companion-b { right: 1.8%; }
+.companion-a .hair-back,.companion-a .hair-front,.companion-a .hair-strand { fill: url(#hair-a); }
+.companion-b .hair-back,.companion-b .hair-front,.companion-b .hair-strand { fill: url(#hair-b); }
+.companion-a .face,.companion-a .ears ellipse { fill: url(#skin-a); stroke: rgba(255,231,219,.68); stroke-width: .9; }
+.companion-b .face,.companion-b .ears ellipse { fill: url(#skin-b); stroke: rgba(255,231,219,.62); stroke-width: .9; }
+.companion .face-highlight { fill: rgba(255,255,255,.11); filter: blur(4px); pointer-events: none; }
+.companion .eye { fill: #fffaf7; stroke: #30323d; stroke-width: 1.65; }
+.companion-a .pupil { fill: #315f78; }
+.companion-b .pupil { fill: #5c4938; }
+.companion .eye-glint { fill: rgba(255,255,255,.92); }
+.companion .brow,.companion .nose { stroke: #765951; stroke-width: 1.8; }
+.companion .mouth { stroke: #9b5963; stroke-width: 1.8; }
+.companion .mouth-open,.companion .mouth-half { fill: #a95e69; }
+.companion-a .jacket { fill: url(#jacket-a); stroke: rgba(129,177,211,.42); }
+.companion-b .jacket { fill: url(#jacket-b); stroke: rgba(196,183,148,.36); }
+.companion .shirt { fill: #e8e8e3; }
+.companion-b .shirt { fill: #dbe5e8; }
+.companion-a .arm,.companion-a .gesture-arm path { stroke: #f0cbb9; }
+.companion-b .arm,.companion-b .gesture-arm path { stroke: #edcdbb; }
+.companion-a .gesture-arm circle { fill: #f0cbb9; }
+.companion-b .gesture-arm circle { fill: #edcdbb; }
+.companion .seatbelt { stroke-width: 7; opacity: .68; }
+.companion .antara-patch { opacity: .58; }
+
+/* Bubbles hug the speakers and leave the center window clear. */
+.speech-bubble {
+  width: min(255px,24vw);
+  padding: 11px 14px 12px;
+  border-radius: 14px;
+  border-color: rgba(193,214,229,.22);
+  background: linear-gradient(145deg,rgba(6,16,27,.91),rgba(7,18,29,.80));
+  box-shadow: 0 16px 42px rgba(0,0,0,.25), inset 0 1px rgba(255,255,255,.05);
+}
+.speech-bubble strong { color: #e9c98f; font-size: 7.5px; }
+.speech-bubble span { font-size: clamp(11px,.92vw,13px); }
+.speech-bubble.speaker-a { left: 13.5%; bottom: 47%; }
+.speech-bubble.speaker-b { right: 13.5%; bottom: 47%; }
+.speech-bubble::after { background: #07131f; border-color: rgba(193,214,229,.22); }
+
+/* Phase-specific lighting tells the ascent story instead of relying on fog. */
+.launch-stage[data-phase="ignition"] .launch-sky { filter: brightness(1.03) saturate(1.04); }
+.launch-stage[data-phase="liftoff"] .ground-world,
+.launch-stage[data-phase="climb"] .ground-world { filter: saturate(.86) brightness(.9); }
+.launch-stage[data-phase="cloud-approach"] .launch-sky { filter: saturate(.9) brightness(.96); }
+.launch-stage[data-phase="clouds"] .launch-sky { filter: saturate(.78) brightness(.9); }
+.launch-stage[data-phase="clouds"] .cockpit-camera { filter: brightness(.95); }
+.launch-stage[data-phase="above-clouds"] .launch-sky { filter: saturate(.86) brightness(1.06); }
+.launch-stage[data-phase="upper-atmosphere"] .launch-sky { filter: saturate(.62) brightness(.72); }
+.launch-stage[data-phase="space"] .launch-sky,
+.launch-stage[data-phase="earth-reveal"] .launch-sky,
+.launch-stage[data-phase="approach"] .launch-sky { filter: brightness(.36) saturate(.48); }
+
+@media (max-width: 900px) {
+  .companion { width: clamp(155px,22vw,215px); bottom: 7%; }
+  .companion-a { left: -.5%; }
+  .companion-b { right: -.5%; }
+  .speech-bubble { width: min(230px,31vw); }
+  .speech-bubble.speaker-a { left: 7%; }
+  .speech-bubble.speaker-b { right: 7%; }
+}
+
+@media (max-width: 700px) {
+  .mission[data-experience="launch"] .masthead { opacity: .62; }
+  .companion { width: clamp(135px,39vw,178px); bottom: 8%; }
+  .companion-a { left: -9%; }
+  .companion-b { right: -9%; }
+  .speech-bubble { width: min(196px,54vw); padding: 9px 11px 10px; }
+  .speech-bubble.speaker-a { left: 3%; bottom: 50%; }
+  .speech-bubble.speaker-b { right: 3%; bottom: 50%; }
+  .cockpit-pillar { width: 10%; }
+  .cockpit-dashboard { height: 19%; }
+  .cockpit-brand { left: 24%; }
+  .dashboard-screen { right: 5%; min-width: 108px; }
+  .ground-world { height: 52%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ground-world { transform: translateY(calc(var(--ground-progress) * 22vh)) scale(calc(1 - var(--ground-progress) * .18)); }
+  .launch-space-layer::before,.launch-space-layer::after { animation: none !important; }
+}

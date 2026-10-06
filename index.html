@@ -42,11 +42,10 @@
         <span>Yuk, Berangkat!</span>
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
       </button>
-      <div class="launch-caption">ANTARA • TUJUAN PERTAMA: BUMI</div>
     </section>
 
     <footer class="mission-footer">
-      <div class="location"><span class="indonesia-flag" aria-hidden="true"></span><span>BERANGKAT DARI INDONESIA<span class="location-detail">KOKPIT ANTARA • BUMI</span></span></div>
+      <div class="location"><span class="indonesia-flag" aria-hidden="true"></span><span>BERANGKAT DARI INDONESIA</span></div>
       <button class="audio-control" id="audio-toggle" type="button" aria-label="Bisukan audio" aria-pressed="false" title="Audio dimulai setelah Yuk, Berangkat! ditekan">
         <svg class="speaker-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-slash" d="m16 9 6 6m0-6-6 6"/></svg>
         <span id="audio-label">AUDIO SIAP</span>
@@ -56,6 +55,14 @@
     <div class="launch-stage" id="launch-stage" data-phase="idle" aria-label="Kokpit pesawat ANTARA dengan dua teman perjalanan">
       <div class="cockpit-world" aria-hidden="true">
         <div class="launch-sky"></div>
+        <div class="launch-space-layer"></div>
+        <div class="ground-world">
+          <div class="terrain-far"></div>
+          <div class="city-layer city-far"></div>
+          <div class="city-layer city-mid"></div>
+          <div class="launch-base-view"></div>
+          <div class="city-light-field"></div>
+        </div>
         <div class="launch-horizon"></div>
         <div class="atmosphere-glow"></div>
         <div class="cloud-layer cloud-far"></div>
@@ -78,6 +85,11 @@
 
       <article class="companion companion-a" id="companion-a" data-state="idle" data-expression="bright" aria-label="Nara, teman perjalanan ANTARA">
         <svg class="character-rig" viewBox="0 0 260 430" role="img" aria-label="Nara, teman perjalanan yang penuh semangat">
+          <defs>
+            <linearGradient id="skin-a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0e8"/><stop offset=".55" stop-color="#f3d0bf"/><stop offset="1" stop-color="#dca98f"/></linearGradient>
+            <linearGradient id="hair-a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#20273a"/><stop offset=".48" stop-color="#111829"/><stop offset="1" stop-color="#080d18"/></linearGradient>
+            <linearGradient id="jacket-a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#31567c"/><stop offset=".5" stop-color="#1f3a59"/><stop offset="1" stop-color="#102237"/></linearGradient>
+          </defs>
           <g class="character-shadow"><ellipse cx="130" cy="408" rx="78" ry="14"/></g>
           <g class="hair-back"><path d="M75 117c3-59 34-88 78-82 47 6 62 41 54 96l-7 98H77Z"/></g>
           <g class="character-body">
@@ -89,12 +101,12 @@
             <path class="seatbelt" d="M93 203 174 371"/>
           </g>
           <g class="character-head">
-            <ellipse class="face" cx="132" cy="127" rx="58" ry="65"/>
+            <ellipse class="face" cx="132" cy="127" rx="55" ry="67"/><ellipse class="face-highlight" cx="113" cy="107" rx="22" ry="28"/>
             <g class="ears"><ellipse cx="75" cy="135" rx="10" ry="15"/><ellipse cx="189" cy="135" rx="10" ry="15"/></g>
             <g class="eyes">
               <path class="eye eye-left" d="M96 128q14-10 27 0q-14 12-27 0Z"/>
               <path class="eye eye-right" d="M143 128q14-10 27 0q-14 12-27 0Z"/>
-              <circle class="pupil" cx="111" cy="128" r="4"/><circle class="pupil" cx="158" cy="128" r="4"/>
+              <circle class="pupil" cx="111" cy="128" r="4.2"/><circle class="eye-glint" cx="109.5" cy="126.5" r="1.2"/><circle class="pupil" cx="158" cy="128" r="4.2"/><circle class="eye-glint" cx="156.5" cy="126.5" r="1.2"/>
             </g>
             <path class="brow brow-left" d="M96 112q13-9 27-2"/><path class="brow brow-right" d="M143 110q14-7 27 2"/>
             <path class="nose" d="M133 132q-5 12 2 15"/>
@@ -109,11 +121,15 @@
           <g class="hair-strand"><path d="M186 95q33 38 9 81"/></g>
           <g class="antara-patch"><circle cx="74" cy="264" r="13"/><ellipse cx="74" cy="264" rx="19" ry="7" transform="rotate(-28 74 264)"/></g>
         </svg>
-        <span class="companion-name">NARA</span>
       </article>
 
       <article class="companion companion-b" id="companion-b" data-state="idle" data-expression="calm" aria-label="Aksa, teman perjalanan ANTARA">
         <svg class="character-rig" viewBox="0 0 260 430" role="img" aria-label="Aksa, teman perjalanan yang suka sains">
+          <defs>
+            <linearGradient id="skin-b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff1e9"/><stop offset=".58" stop-color="#efd0bf"/><stop offset="1" stop-color="#d9aa91"/></linearGradient>
+            <linearGradient id="hair-b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#343a49"/><stop offset=".52" stop-color="#1f2531"/><stop offset="1" stop-color="#0d1119"/></linearGradient>
+            <linearGradient id="jacket-b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#66758a"/><stop offset=".5" stop-color="#465669"/><stop offset="1" stop-color="#263443"/></linearGradient>
+          </defs>
           <g class="character-shadow"><ellipse cx="130" cy="408" rx="78" ry="14"/></g>
           <g class="hair-back"><path d="M74 111c7-55 38-79 82-73 40 6 59 38 51 91l-8 82H76Z"/></g>
           <g class="character-body">
@@ -125,9 +141,9 @@
             <path class="seatbelt" d="M174 202 91 371"/>
           </g>
           <g class="character-head">
-            <ellipse class="face" cx="132" cy="127" rx="58" ry="65"/>
+            <ellipse class="face" cx="132" cy="127" rx="55" ry="67"/><ellipse class="face-highlight" cx="113" cy="107" rx="22" ry="28"/>
             <g class="ears"><ellipse cx="75" cy="135" rx="10" ry="15"/><ellipse cx="189" cy="135" rx="10" ry="15"/></g>
-            <g class="eyes"><path class="eye eye-left" d="M96 128q14-9 27 0q-14 11-27 0Z"/><path class="eye eye-right" d="M143 128q14-9 27 0q-14 11-27 0Z"/><circle class="pupil" cx="111" cy="128" r="4"/><circle class="pupil" cx="158" cy="128" r="4"/></g>
+            <g class="eyes"><path class="eye eye-left" d="M96 128q14-9 27 0q-14 11-27 0Z"/><path class="eye eye-right" d="M143 128q14-9 27 0q-14 11-27 0Z"/><circle class="pupil" cx="111" cy="128" r="4.2"/><circle class="eye-glint" cx="109.5" cy="126.5" r="1.2"/><circle class="pupil" cx="158" cy="128" r="4.2"/><circle class="eye-glint" cx="156.5" cy="126.5" r="1.2"/></g>
             <path class="brow brow-left" d="M96 111q13-6 27-1"/><path class="brow brow-right" d="M143 110q14-5 27 1"/>
             <path class="nose" d="M133 132q-4 12 2 15"/>
             <g class="mouth-frames"><path class="mouth mouth-closed" d="M118 159q14 8 29 0"/><path class="mouth mouth-half" d="M118 159q14 15 29 0q-14 7-29 0Z"/><ellipse class="mouth mouth-open" cx="132" cy="164" rx="13" ry="9"/></g>
@@ -137,7 +153,6 @@
           <g class="hair-strand"><path d="M82 91q-28 34-10 78"/></g>
           <g class="antara-patch"><circle cx="187" cy="264" r="13"/><ellipse cx="187" cy="264" rx="19" ry="7" transform="rotate(28 187 264)"/></g>
         </svg>
-        <span class="companion-name">AKSA</span>
       </article>
 
       <div class="speech-bubble speaker-a" id="speech-bubble" role="status" aria-live="polite">
@@ -147,11 +162,6 @@
       <div class="launch-vignette"></div>
     </div>
 
-    <div class="preparation" id="preparation" aria-hidden="true">
-      <span class="preparation-label">ANTARA • SEKUENS PELUNCURAN</span>
-      <span id="preparation-step">Kokpit siap. Tinggal tekan tombol berangkat.</span>
-      <div class="preparation-track"><span></span></div>
-    </div>
     <section class="earth-scene" id="earth-scene" aria-labelledby="earth-title" hidden>
       <div class="earth-space-haze" aria-hidden="true"></div>
       <div class="earth-viewport" id="earth-viewport" role="img" aria-label="Bumi, planet biru tempat kita tinggal, berputar perlahan di luar angkasa."></div>

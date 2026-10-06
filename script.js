@@ -14,16 +14,19 @@ const AUDIO_ASSETS = {
 // Seconds from the click. Visual staging and sound cues use this same schedule.
 const LAUNCH_TIMING = Object.freeze({
   appearance: 0,
-  settle: 1.2,
-  ignition: 2.2,
-  liftoff: 4.0,
-  clouds: 5.15,
-  aboveClouds: 7.0,
-  space: 8.45,
-  exit: 8.45,
-  earthReveal: 9.35,
-  approach: 11.0,
-  finish: 13.0
+  settle: 1.4,
+  ignition: 3.0,
+  liftoff: 5.0,
+  climb: 7.6,
+  cloudApproach: 9.4,
+  clouds: 11.4,
+  aboveClouds: 14.8,
+  upperAtmosphere: 17.4,
+  space: 19.5,
+  exit: 19.5,
+  earthReveal: 20.7,
+  approach: 22.8,
+  finish: 25.2
 });
 
 class MissionAudio {
@@ -41,7 +44,7 @@ class MissionAudio {
     this.lastHover = 0;
     this.lastClick = 0;
     this.suspendTimer = null;
-    try { this.muted = localStorage.getItem("antariksa-muted") === "true"; } catch { /* Storage is optional. */ }
+    try { this.muted = (localStorage.getItem("antara-muted") ?? localStorage.getItem("antariksa-muted")) === "true"; } catch { /* Storage is optional. */ }
   }
 
   // This is called from a real click, never on page load or hover.
@@ -109,7 +112,7 @@ class MissionAudio {
 
   setMuted(value) {
     this.muted = value;
-    try { localStorage.setItem("antariksa-muted", String(value)); } catch { /* Optional preference. */ }
+    try { localStorage.setItem("antara-muted", String(value)); } catch { /* Optional preference. */ }
     if (this.master) this.ramp(this.master.gain, value || document.hidden ? 0 : 0.48);
     // Before launch the speaker only changes the preference, without unlocking audio.
     if (!value && this.started && this.context && !document.hidden) {
@@ -291,6 +294,8 @@ class LaunchVisual {
     this.stage = document.getElementById("launch-stage");
     this.camera = document.getElementById("cockpit-camera");
     this.sky = this.stage.querySelector(".launch-sky");
+    this.spaceLayer = this.stage.querySelector(".launch-space-layer");
+    this.ground = this.stage.querySelector(".ground-world");
     this.arrivalEarth = document.getElementById("arrival-earth");
     this.canvas = document.getElementById("launch-particles");
     this.cloudFar = this.stage.querySelector(".cloud-far");
@@ -298,10 +303,13 @@ class LaunchVisual {
     this.cloudNear = this.stage.querySelector(".cloud-near");
     try { this.ctx = this.canvas.getContext("2d", { alpha: true }); } catch { this.ctx = null; }
     const random = n => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
-    this.stars = Array.from({ length: 90 }, (_, i) => ({ x: random(i), y: random(i + 100), size: 0.35 + random(i + 200) * 1.2 }));
+    this.stars = Array.from({ length: 115 }, (_, i) => ({
+      x: random(i), y: random(i + 100), size: 0.35 + random(i + 200) * 1.25, drift: .3 + random(i + 300) * .9
+    }));
     this.lastPhase = "idle";
     this.resize();
     this.renderIdle();
+    this.stage.hidden = true;
   }
 
   resize() {
@@ -322,18 +330,25 @@ class LaunchVisual {
   }
 
   renderIdle() {
+    const vars = {
+      "--space-mix": 0,
+      "--star-opacity": 0,
+      "--ground-progress": 0,
+      "--ground-opacity": 1,
+      "--cloud-deck-opacity": 0,
+      "--earth-reveal": 0,
+      "--handoff": 0,
+      "--engine-power": 0,
+      "--cam-x": "0px",
+      "--cam-y": "0px",
+      "--cam-tilt": "0deg",
+      "--char-a-x": "0px",
+      "--char-a-y": "0px",
+      "--char-b-x": "0px",
+      "--char-b-y": "0px"
+    };
+    for (const [name, value] of Object.entries(vars)) this.stage.style.setProperty(name, String(value));
     this.stage.dataset.phase = "idle";
-    this.stage.style.setProperty("--space-mix", "0");
-    this.stage.style.setProperty("--earth-reveal", "0");
-    this.stage.style.setProperty("--handoff", "0");
-    this.stage.style.setProperty("--engine-power", "0");
-    this.stage.style.setProperty("--cam-x", "0px");
-    this.stage.style.setProperty("--cam-y", "0px");
-    this.stage.style.setProperty("--cam-tilt", "0deg");
-    this.stage.style.setProperty("--char-a-x", "0px");
-    this.stage.style.setProperty("--char-a-y", "0px");
-    this.stage.style.setProperty("--char-b-x", "0px");
-    this.stage.style.setProperty("--char-b-y", "0px");
     this.cloudFar.style.setProperty("--cloud-far-opacity", "0");
     this.cloudMid.style.setProperty("--cloud-mid-opacity", "0");
     this.cloudNear.style.setProperty("--cloud-near-opacity", "0");
@@ -343,6 +358,7 @@ class LaunchVisual {
     this.stage.hidden = true;
     this.stage.style.transition = "none";
     this.stage.style.opacity = "0";
+    this.renderIdle();
     this.ctx?.clearRect(0, 0, this.width || 0, this.height || 0);
   }
 
@@ -350,9 +366,12 @@ class LaunchVisual {
     const c = LAUNCH_TIMING;
     if (t < c.ignition) return "prelaunch";
     if (t < c.liftoff) return "ignition";
-    if (t < c.clouds) return "liftoff";
+    if (t < c.climb) return "liftoff";
+    if (t < c.cloudApproach) return "climb";
+    if (t < c.clouds) return "cloud-approach";
     if (t < c.aboveClouds) return "clouds";
-    if (t < c.space) return "above-clouds";
+    if (t < c.upperAtmosphere) return "above-clouds";
+    if (t < c.space) return "upper-atmosphere";
     if (t < c.earthReveal) return "space";
     if (t < c.approach) return "earth-reveal";
     return "approach";
@@ -365,77 +384,96 @@ class LaunchVisual {
     const phase = this.phaseAt(t);
     const ignition = smooth((t - c.ignition) / Math.max(.01, c.liftoff - c.ignition));
     const ascent = smooth((t - c.liftoff) / Math.max(.01, c.space - c.liftoff));
-    const cloudEntry = smooth((t - c.clouds) / Math.max(.01, c.aboveClouds - c.clouds));
-    const cloudExit = smooth((t - c.aboveClouds) / Math.max(.01, c.space - c.aboveClouds));
-    const spaceMix = smooth((t - (c.aboveClouds - .55)) / Math.max(.01, c.space - c.aboveClouds + .55));
+    const groundProgress = smooth((t - c.liftoff) / Math.max(.01, c.clouds - c.liftoff));
+    const groundFade = 1 - smooth((t - c.cloudApproach) / Math.max(.01, c.aboveClouds - c.cloudApproach));
+    const cloudApproach = smooth((t - c.cloudApproach) / Math.max(.01, c.clouds - c.cloudApproach));
+    const cloudPass = smooth((t - c.clouds) / Math.max(.01, c.aboveClouds - c.clouds));
+    const cloudExit = smooth((t - c.aboveClouds) / Math.max(.01, c.upperAtmosphere - c.aboveClouds));
+    const upperAtmosphere = smooth((t - c.upperAtmosphere) / Math.max(.01, c.space - c.upperAtmosphere));
+    const spaceMix = smooth((t - c.aboveClouds) / Math.max(.01, c.space - c.aboveClouds));
+    const starOpacity = smooth((t - (c.upperAtmosphere - .7)) / Math.max(.01, c.space - c.upperAtmosphere + .7));
     const earthReveal = smooth((t - c.earthReveal) / Math.max(.01, c.approach - c.earthReveal + .35));
     const handoff = smooth((t - c.approach) / Math.max(.01, c.finish - c.approach));
-    const engine = smooth((t - c.ignition) / .7) * (1 - handoff * .75);
+    const engine = smooth((t - c.ignition) / .8) * (1 - handoff * .82);
 
     let shake = 0;
-    if (phase === "ignition") shake = 1.35 + ignition * 1.2;
-    else if (phase === "liftoff") shake = 3.3 - ascent * .7;
-    else if (phase === "clouds") shake = 4.0;
-    else if (phase === "above-clouds") shake = 1.6 * (1 - cloudExit);
-    else if (phase === "space") shake = .28;
+    if (phase === "ignition") shake = 1.15 + ignition * 1.25;
+    else if (phase === "liftoff") shake = 2.8 - ascent * .4;
+    else if (phase === "climb") shake = 1.35;
+    else if (phase === "cloud-approach") shake = 1.1;
+    else if (phase === "clouds") shake = 3.25;
+    else if (phase === "above-clouds") shake = .95 * (1 - cloudExit * .55);
+    else if (phase === "upper-atmosphere") shake = .42 * (1 - upperAtmosphere * .6);
+    else if (phase === "space") shake = .14;
     if (reducedMotion.matches) shake = 0;
 
-    const camX = Math.sin(t * 39) * shake;
-    const camY = Math.cos(t * 31) * shake * .62 - ascent * (reducedMotion.matches ? 0 : 2.6);
-    const camTilt = reducedMotion.matches ? 0 : Math.sin(t * 17) * shake * .05;
-    const charLag = phase === "liftoff" ? 3.8 : phase === "clouds" ? 2.4 : phase === "ignition" ? 1.2 : .45;
+    const camX = Math.sin(t * 31) * shake + Math.sin(t * 4.2) * shake * .24;
+    const camY = Math.cos(t * 27) * shake * .58 - ascent * (reducedMotion.matches ? 0 : 2.2);
+    const camTilt = reducedMotion.matches ? 0 : Math.sin(t * 13) * shake * .045;
+    const charLag = phase === "liftoff" ? 3.0 : phase === "clouds" ? 2.5 : phase === "ignition" ? 1.1 : phase === "climb" ? .75 : .35;
 
     this.stage.dataset.phase = phase;
     this.stage.style.setProperty("--space-mix", String(spaceMix));
+    this.stage.style.setProperty("--star-opacity", String(starOpacity));
+    this.stage.style.setProperty("--ground-progress", String(groundProgress));
+    this.stage.style.setProperty("--ground-opacity", String(Math.max(0, groundFade)));
+    this.stage.style.setProperty("--cloud-deck-opacity", String(Math.max(0, (1 - cloudExit) * (phase === "above-clouds" ? .9 : 0))));
     this.stage.style.setProperty("--earth-reveal", String(earthReveal));
     this.stage.style.setProperty("--handoff", String(handoff));
     this.stage.style.setProperty("--engine-power", String(engine));
     this.stage.style.setProperty("--cam-x", `${camX}px`);
     this.stage.style.setProperty("--cam-y", `${camY}px`);
     this.stage.style.setProperty("--cam-tilt", `${camTilt}deg`);
-    this.stage.style.setProperty("--char-a-x", `${camX * .46 - Math.sin(t * 7.1) * charLag}px`);
-    this.stage.style.setProperty("--char-a-y", `${camY * .42 + charLag}px`);
-    this.stage.style.setProperty("--char-b-x", `${camX * .43 + Math.sin(t * 6.4) * charLag * .8}px`);
-    this.stage.style.setProperty("--char-b-y", `${camY * .40 + charLag * .88}px`);
+    this.stage.style.setProperty("--char-a-x", `${camX * .43 - Math.sin(t * 6.1) * charLag}px`);
+    this.stage.style.setProperty("--char-a-y", `${camY * .38 + charLag}px`);
+    this.stage.style.setProperty("--char-b-x", `${camX * .40 + Math.sin(t * 5.6) * charLag * .78}px`);
+    this.stage.style.setProperty("--char-b-y", `${camY * .36 + charLag * .84}px`);
 
-    const cloudPulse = phase === "clouds" ? 1 : phase === "liftoff" ? smooth((t - c.liftoff) / (c.clouds - c.liftoff)) * .36 : phase === "above-clouds" ? 1 - cloudExit : 0;
-    const cloudTravel = Math.max(0, t - c.liftoff);
-    this.cloudFar.style.setProperty("--cloud-far-y", `${-cloudTravel * 34}px`);
-    this.cloudFar.style.setProperty("--cloud-far-opacity", String(cloudPulse * .48));
-    this.cloudMid.style.setProperty("--cloud-mid-y", `${-cloudTravel * 64}px`);
-    this.cloudMid.style.setProperty("--cloud-mid-x", `${Math.sin(t * .9) * 28}px`);
-    this.cloudMid.style.setProperty("--cloud-mid-opacity", String(cloudPulse * .75));
-    this.cloudNear.style.setProperty("--cloud-near-y", `${-cloudTravel * 108}px`);
-    this.cloudNear.style.setProperty("--cloud-near-x", `${Math.cos(t * 1.15) * 44}px`);
-    this.cloudNear.style.setProperty("--cloud-near-opacity", String(cloudPulse * .92));
-    this.arrivalEarth.style.backgroundPosition = `${50 + Math.sin(t * .18) * 2.6}% center`;
+    const approachFar = cloudApproach * .42;
+    const passDensity = phase === "clouds" ? .58 + Math.sin(t * 1.7) * .08 : 0;
+    const deckDensity = phase === "above-clouds" ? (1 - cloudExit) * .52 : 0;
+    const cloudTravel = Math.max(0, t - c.cloudApproach);
+    this.cloudFar.style.setProperty("--cloud-far-y", `${30 - cloudTravel * 42}px`);
+    this.cloudFar.style.setProperty("--cloud-far-opacity", String(Math.min(.66, approachFar + passDensity * .45 + deckDensity)));
+    this.cloudMid.style.setProperty("--cloud-mid-y", `${85 - cloudTravel * 76}px`);
+    this.cloudMid.style.setProperty("--cloud-mid-x", `${Math.sin(t * .74) * 34}px`);
+    this.cloudMid.style.setProperty("--cloud-mid-opacity", String(Math.min(.82, cloudApproach * .18 + passDensity * .84 + deckDensity * .7)));
+    this.cloudNear.style.setProperty("--cloud-near-y", `${160 - cloudTravel * 118}px`);
+    this.cloudNear.style.setProperty("--cloud-near-x", `${Math.cos(t * .96) * 48}px`);
+    this.cloudNear.style.setProperty("--cloud-near-opacity", String(Math.min(.78, passDensity + deckDensity * .35)));
+    this.arrivalEarth.style.backgroundPosition = `${50 + Math.sin(t * .16) * 2.4}% center`;
 
-    if (this.ctx) this.drawParticles(t, ascent, spaceMix, phase);
+    if (this.ctx) this.drawParticles(t, ascent, starOpacity, phase);
     this.lastPhase = phase;
     return phase;
   }
 
-  drawParticles(t, ascent, spaceMix, phase) {
+  drawParticles(t, ascent, starOpacity, phase) {
     const ctx = this.ctx;
     const w = this.width;
     const h = this.height;
     ctx.clearRect(0, 0, w, h);
-    if (reducedMotion.matches) return;
-    const speed = phase === "clouds" ? 82 : phase === "liftoff" ? 48 : 10 + spaceMix * 28;
+    if (reducedMotion.matches || starOpacity < .025) return;
+    const speed = phase === "upper-atmosphere" ? 8 : 5 + starOpacity * 18;
     for (const star of this.stars) {
-      const x = (star.x * w + Math.sin(t * .23 + star.y * 8) * 5) % w;
-      const y = (star.y * h + t * speed * (0.35 + star.size * .45)) % h;
-      const alpha = .05 + spaceMix * .26 + (phase === "clouds" ? .05 : 0);
-      ctx.strokeStyle = `rgba(210,232,248,${alpha})`;
-      ctx.lineWidth = star.size * .6;
+      const x = (star.x * w + Math.sin(t * .19 + star.y * 8) * 3) % w;
+      const y = (star.y * h + t * speed * star.drift) % h;
+      const alpha = starOpacity * (.18 + star.size * .16);
+      ctx.fillStyle = `rgba(220,238,252,${alpha})`;
       ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x, y + 1 + ascent * star.size * 20);
-      ctx.stroke();
+      ctx.arc(x, y, Math.max(.35, star.size * .58), 0, Math.PI * 2);
+      ctx.fill();
+      if (phase === "space" && star.size > 1.05) {
+        ctx.strokeStyle = `rgba(186,218,244,${alpha * .42})`;
+        ctx.lineWidth = .45;
+        ctx.beginPath();
+        ctx.moveTo(x, y - 3 - ascent * 2);
+        ctx.lineTo(x, y + 3 + ascent * 2);
+        ctx.stroke();
+      }
     }
   }
 }
-
 class CockpitCompanions {
   constructor() {
     this.a = document.getElementById("companion-a");
@@ -469,8 +507,11 @@ class CockpitCompanions {
       prelaunch: ["idle", "idle"],
       ignition: ["excited", "excited"],
       liftoff: ["launching", "launching"],
+      climb: ["excited", "idle"],
+      "cloud-approach": ["excited", "idle"],
       clouds: ["turbulence", "turbulence"],
       "above-clouds": ["excited", "idle"],
+      "upper-atmosphere": ["idle", "idle"],
       space: ["idle", "idle"],
       "earth-reveal": ["looking-earth", "pointing"],
       approach: ["looking-earth", "looking-earth"]
@@ -508,17 +549,19 @@ class CockpitCompanions {
 }
 
 const DIALOGUE_TIMELINE = Object.freeze([
-  { at: 0.00, phase: "prelaunch", speaker: "A", text: "Ayo, kita jelajah bersama!", expression: "bright", duration: 2200 },
-  { at: 1.15, phase: "prelaunch", speaker: "B", text: "Tujuan pertama kita dekat banget. Bumi!", expression: "calm", duration: 2300 },
-  { at: LAUNCH_TIMING.ignition + .08, phase: "ignition", speaker: "A", text: "Wah, mesinnya mulai nyala!", expression: "bright", duration: 1700 },
-  { at: LAUNCH_TIMING.liftoff - .52, phase: "ignition", speaker: "B", text: "Pegangan, ya. Kita segera berangkat!", expression: "focused", duration: 1900 },
-  { at: LAUNCH_TIMING.liftoff + .10, phase: "liftoff", speaker: "A", text: "Kita terbang!", expression: "bright", duration: 1500 },
-  { at: LAUNCH_TIMING.clouds + .10, phase: "clouds", speaker: "B", text: "Lihat awannya!", expression: "focused", duration: 1500 },
-  { at: LAUNCH_TIMING.clouds + .78, phase: "clouds", speaker: "A", text: "Wah, putih semua!", expression: "bright", duration: 1600 },
-  { at: LAUNCH_TIMING.aboveClouds + .14, phase: "above-clouds", speaker: "B", text: "Kita sudah makin tinggi!", expression: "calm", duration: 1750 },
-  { at: LAUNCH_TIMING.space + .12, phase: "space", speaker: "A", text: "Eh, lihat di depan!", expression: "bright", duration: 1700 },
-  { at: LAUNCH_TIMING.earthReveal + .18, phase: "earth-reveal", speaker: "B", text: "Itu Bumi! Rumah kita.", expression: "soft", duration: 2200 },
-  { at: LAUNCH_TIMING.approach + .22, phase: "approach", speaker: "A", text: "Yuk, kita lihat lebih dekat!", expression: "bright", duration: 2100 }
+  { at: 0.00, phase: "prelaunch", speaker: "A", text: "Ayo, kita jelajah bersama!", expression: "bright", duration: 2300 },
+  { at: 1.45, phase: "prelaunch", speaker: "B", text: "Kita mulai dari rumah kita dulu: Bumi.", expression: "calm", duration: 2500 },
+  { at: LAUNCH_TIMING.ignition + .10, phase: "ignition", speaker: "A", text: "Mesinnya hidup. Siap?", expression: "bright", duration: 1750 },
+  { at: LAUNCH_TIMING.liftoff - .62, phase: "ignition", speaker: "B", text: "Pegangan ya, kita mulai terbang!", expression: "focused", duration: 2100 },
+  { at: LAUNCH_TIMING.liftoff + .22, phase: "liftoff", speaker: "A", text: "Kita naik! Kota di bawah mulai mengecil.", expression: "bright", duration: 2400 },
+  { at: LAUNCH_TIMING.climb + .22, phase: "climb", speaker: "B", text: "Lihat, langitnya makin luas.", expression: "calm", duration: 2100 },
+  { at: LAUNCH_TIMING.cloudApproach + .18, phase: "cloud-approach", speaker: "A", text: "Awan mulai kelihatan di depan.", expression: "bright", duration: 2200 },
+  { at: LAUNCH_TIMING.clouds + .32, phase: "clouds", speaker: "B", text: "Sedikit berguncang. Kita sedang melewati awan.", expression: "focused", duration: 2600 },
+  { at: LAUNCH_TIMING.aboveClouds + .20, phase: "above-clouds", speaker: "A", text: "Keren... kita sudah di atas awan.", expression: "soft", duration: 2250 },
+  { at: LAUNCH_TIMING.upperAtmosphere + .22, phase: "upper-atmosphere", speaker: "B", text: "Langitnya makin gelap. Atmosfer mulai menipis.", expression: "calm", duration: 2650 },
+  { at: LAUNCH_TIMING.space + .18, phase: "space", speaker: "A", text: "Sekarang tenang banget...", expression: "soft", duration: 1900 },
+  { at: LAUNCH_TIMING.earthReveal + .22, phase: "earth-reveal", speaker: "B", text: "Itu Bumi! Rumah kita.", expression: "soft", duration: 2250 },
+  { at: LAUNCH_TIMING.approach + .24, phase: "approach", speaker: "A", text: "Yuk, kita lihat lebih dekat!", expression: "bright", duration: 2200 }
 ]);
 
 const mission = document.getElementById("mission");
@@ -528,8 +571,6 @@ const marsPreviousButton = document.getElementById("mars-prev-planet");
 const venusNextButton = document.getElementById("venus-next-planet");
 const audioToggle = document.getElementById("audio-toggle");
 const audioLabel = document.getElementById("audio-label");
-const preparation = document.getElementById("preparation");
-const preparationStep = document.getElementById("preparation-step");
 const announcement = document.getElementById("announcement");
 const flightStatus = document.getElementById("flight-status");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -540,17 +581,26 @@ companions.setDialogue(DIALOGUE_TIMELINE[0], true);
 const earth = new EarthScene({ onNext: travelToMars });
 const mars = new MarsScene();
 const venus = new VenusScene();
-const locationDetail = document.querySelector(".location-detail");
-const originalLocation = locationDetail.textContent;
-const preparationProgress = document.querySelector(".preparation-track span");
 let phase = "idle";
 let elapsed = 0;
 let previousFrame = 0;
 let animationFrame = null;
-let activeStep = -1;
+let activeStatus = -1;
 let activeDialogue = -1;
 let activeFlightPhase = "idle";
 let earthHandoffStarted = false;
+const introPanel = document.querySelector(".intro");
+
+function setExperienceState(state) {
+  mission.dataset.experience = state;
+  const home = state === "home";
+  const launch = state === "launch";
+  introPanel.inert = !home;
+  introPanel.setAttribute("aria-hidden", String(!home));
+  flight.stage.setAttribute("aria-hidden", String(!launch));
+}
+
+setExperienceState("home");
 
 const sound = new MissionAudio(() => {
   audioToggle.classList.toggle("is-muted", sound.muted || sound.unavailable);
@@ -573,15 +623,17 @@ window.AntariksaUIAudio = Object.freeze({
 if ("requestIdleCallback" in window) requestIdleCallback(() => sound.preload(), { timeout: 2000 });
 else setTimeout(() => sound.preload(), 800);
 
-const preparationSteps = [
-  { time: 0, text: "Kokpit ANTARA siap. Semua sistem terhubung." },
-  { time: LAUNCH_TIMING.ignition, text: "Mesin menyala. Getaran mulai terasa." },
-  { time: LAUNCH_TIMING.liftoff, text: "Lepas landas. Kita mulai naik." },
-  { time: LAUNCH_TIMING.clouds, text: "Menembus lapisan awan." },
-  { time: LAUNCH_TIMING.aboveClouds, text: "Di atas awan. Getaran mulai turun." },
-  { time: LAUNCH_TIMING.space, text: "Ruang angkasa. Kabin kembali tenang." },
-  { time: LAUNCH_TIMING.earthReveal, text: "Bumi terlihat di depan." },
-  { time: LAUNCH_TIMING.approach, text: "Mendekati Bumi. Bersiap untuk melihat lebih dekat." }
+const FLIGHT_STATUS_TIMELINE = [
+  { time: 0, text: "SIAP • BUMI" },
+  { time: LAUNCH_TIMING.ignition, text: "MESIN MENYALA" },
+  { time: LAUNCH_TIMING.liftoff, text: "NAIK • KOTA MENJAUH" },
+  { time: LAUNCH_TIMING.cloudApproach, text: "MENDEKATI AWAN" },
+  { time: LAUNCH_TIMING.clouds, text: "MELEWATI AWAN" },
+  { time: LAUNCH_TIMING.aboveClouds, text: "DI ATAS AWAN" },
+  { time: LAUNCH_TIMING.upperAtmosphere, text: "ATMOSFER MENIPIS" },
+  { time: LAUNCH_TIMING.space, text: "RUANG ANGKASA" },
+  { time: LAUNCH_TIMING.earthReveal, text: "BUMI DI DEPAN" },
+  { time: LAUNCH_TIMING.approach, text: "MENDEKATI BUMI" }
 ];
 
 function advancePreparation(timestamp) {
@@ -598,11 +650,10 @@ function advancePreparation(timestamp) {
     companions.setJourneyPhase(visualPhase);
   }
 
-  preparationProgress.style.transform = `scaleX(${Math.min(1, elapsed / LAUNCH_TIMING.finish)})`;
-  const step = preparationSteps.findLastIndex(item => elapsed >= item.time);
-  if (step !== activeStep && step >= 0) {
-    activeStep = step;
-    preparationStep.textContent = preparationSteps[step].text;
+  const status = FLIGHT_STATUS_TIMELINE.findLastIndex(item => elapsed >= item.time);
+  if (status !== activeStatus && status >= 0) {
+    activeStatus = status;
+    if (flightStatus) flightStatus.textContent = FLIGHT_STATUS_TIMELINE[status].text;
   }
 
   const dialogue = DIALOGUE_TIMELINE.findLastIndex(item => elapsed >= item.at);
@@ -623,16 +674,16 @@ function advancePreparation(timestamp) {
 
   if (elapsed >= LAUNCH_TIMING.finish) {
     phase = "earth";
-    preparation.setAttribute("aria-hidden", "true");
-    preparation.style.opacity = "0";
     mission.classList.remove("is-preparing");
     if (flightStatus) flightStatus.textContent = "TIBA DI BUMI";
-    locationDetail.textContent = "PLANET ASAL • BUMI";
     announcement.textContent = "Sampai. Bumi, rumah kita, sekarang ada di depan.";
     if (!earthHandoffStarted) earth.start();
     flight.stage.style.transition = reducedMotion.matches ? "opacity .01s linear" : "opacity .72s ease";
     requestAnimationFrame(() => { flight.stage.style.opacity = "0"; });
-    setTimeout(() => flight.reset(), reducedMotion.matches ? 40 : 760);
+    setTimeout(() => {
+      flight.reset();
+      setExperienceState("planet");
+    }, reducedMotion.matches ? 40 : 760);
     return;
   }
   animationFrame = requestAnimationFrame(advancePreparation);
@@ -642,13 +693,12 @@ launchButton.addEventListener("click", () => {
   if (phase !== "idle") return;
   phase = "preparing";
   elapsed = 0;
-  activeStep = -1;
+  activeStatus = -1;
   activeDialogue = -1;
   activeFlightPhase = "prelaunch";
   earthHandoffStarted = false;
   launchButton.disabled = true;
-  document.querySelector(".intro").inert = true;
-  preparation.setAttribute("aria-hidden", "false");
+  setExperienceState("launch");
   sound.startMission();
   flight.start();
   companions.setJourneyPhase("prelaunch");
@@ -657,7 +707,7 @@ launchButton.addEventListener("click", () => {
   mars.prepare();
   venus.prepare().then(() => earth.setVenusTravelSurface(venus.surface)).catch(() => {});
   mission.classList.add("is-preparing");
-  if (flightStatus) flightStatus.textContent = "ANTARA • MESIN BERSIAP";
+  if (flightStatus) flightStatus.textContent = "SIAP BERANGKAT";
   announcement.textContent = "Nara: Ayo, kita jelajah bersama!";
   previousFrame = performance.now();
   animationFrame = requestAnimationFrame(advancePreparation);
@@ -665,9 +715,9 @@ launchButton.addEventListener("click", () => {
 
 function travelToVenus() {
   if (phase !== "earth" || earth.exploring) return;
+  setExperienceState("planet");
   phase = "venus-transition";
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU VENUS";
-  locationDetail.textContent = "TUJUAN SEBELUMNYA • VENUS";
   announcement.textContent = "Meninggalkan Bumi. Kamera beralih ke kiri menuju Venus.";
 
   // Reuse VenusScene's fully resolved surface before the existing travel timeline
@@ -688,7 +738,6 @@ function travelToVenus() {
         mission.classList.add("is-venus");
         phase = "venus";
         if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT VENUS";
-        locationDetail.textContent = "PLANET KE-2 • VENUS";
         announcement.textContent = "Tiba di Venus.";
       }
     });
@@ -697,9 +746,9 @@ function travelToVenus() {
 
 function travelVenusToEarth() {
   if (phase !== "venus" || venus.exploring) return;
+  setExperienceState("planet");
   phase = "venus-earth-transition";
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU BUMI";
-  locationDetail.textContent = "TUJUAN BERIKUTNYA • BUMI";
   announcement.textContent = "Meninggalkan Venus. Kembali menuju Bumi.";
   earth.setVenusTravelSurface(venus.surface);
   sound.travel(reducedMotion.matches ? 0.4 : 6.2);
@@ -714,7 +763,6 @@ function travelVenusToEarth() {
       mission.classList.add("is-earth");
       phase = "earth";
       if (flightStatus) flightStatus.textContent = "KEMBALI DI ORBIT BUMI";
-      locationDetail.textContent = "PLANET ASAL • BUMI";
       announcement.textContent = "Kembali di Bumi.";
     }
   });
@@ -722,9 +770,9 @@ function travelVenusToEarth() {
 
 function travelToMars() {
   if (phase !== "earth") return;
+  setExperienceState("planet");
   phase = "mars-transition";
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU PLANET MERAH";
-  locationDetail.textContent = "TUJUAN BERIKUTNYA • MARS";
   announcement.textContent = "Meninggalkan Bumi. Kamera beralih menuju Mars.";
   sound.travel(reducedMotion.matches ? 0.4 : 6.2);
   earth.beginTravelToMars({
@@ -739,7 +787,6 @@ function travelToMars() {
       mission.classList.add("is-mars");
       phase = "mars";
       if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT MARS";
-      locationDetail.textContent = "PLANET KE-4 • MARS";
       announcement.textContent = "Tiba di Mars.";
     }
   });
@@ -747,9 +794,9 @@ function travelToMars() {
 
 function travelToEarth() {
   if (phase !== "mars" || mars.exploring) return;
+  setExperienceState("planet");
   phase = "earth-transition";
   if (flightStatus) flightStatus.textContent = "PERJALANAN KEMBALI KE BUMI";
-  locationDetail.textContent = "TUJUAN SEBELUMNYA • BUMI";
   announcement.textContent = "Meninggalkan Mars. Kembali menuju Bumi.";
   sound.travel(reducedMotion.matches ? 0.4 : 6.2);
   earth.beginTravelFromMars({
@@ -763,7 +810,6 @@ function travelToEarth() {
       mission.classList.add("is-earth");
       phase = "earth";
       if (flightStatus) flightStatus.textContent = "KEMBALI DI ORBIT BUMI";
-      locationDetail.textContent = "PLANET ASAL • BUMI";
       announcement.textContent = "Kembali di Bumi.";
     }
   });
@@ -774,25 +820,19 @@ function resetMission() {
   sound.stop(1.1);
   phase = "idle";
   flight.reset();
-  flight.stage.hidden = false;
-  flight.stage.style.opacity = "1";
-  flight.renderIdle();
   companions.setJourneyPhase("idle");
   companions.setDialogue(DIALOGUE_TIMELINE[0], true);
+  activeStatus = -1;
   activeDialogue = -1;
   activeFlightPhase = "idle";
   earthHandoffStarted = false;
   earth.stop();
   mars.stop();
   venus.stop();
-  preparationProgress.style.transform = "scaleX(0)";
   mission.classList.remove("is-earth", "is-mars", "is-venus", "is-preparing", "is-planet-transitioning");
-  locationDetail.textContent = originalLocation;
-  preparation.style.opacity = "";
-  preparation.setAttribute("aria-hidden", "true");
-  document.querySelector(".intro").inert = false;
+  setExperienceState("home");
   launchButton.disabled = false;
-  if (flightStatus) flightStatus.textContent = "SIAP BERANGKAT • BUMI";
+  if (flightStatus) flightStatus.textContent = "SIAP • BUMI";
   sound.onStateChange();
   launchButton.focus({ preventScroll: true });
 }
@@ -862,8 +902,10 @@ for (const button of [launchButton, earth.nextButton, earthPreviousButton, venus
 document.addEventListener("visibilitychange", () => {
   mission.classList.toggle("is-backgrounded", document.hidden);
   const orbits = document.querySelector(".navigation-orbits");
-  if (document.hidden || reducedMotion.matches) orbits.pauseAnimations();
-  else orbits.unpauseAnimations();
+  if (orbits) {
+    if (document.hidden || reducedMotion.matches) orbits.pauseAnimations?.();
+    else orbits.unpauseAnimations?.();
+  }
   sound.setBackground(document.hidden);
   previousFrame = performance.now();
 });
@@ -895,8 +937,9 @@ mission.addEventListener("pointerleave", () => {
 
 function updateOrbitMotion() {
   const orbits = document.querySelector(".navigation-orbits");
-  if (reducedMotion.matches || document.hidden) orbits.pauseAnimations();
-  else orbits.unpauseAnimations();
+  if (!orbits) return;
+  if (reducedMotion.matches || document.hidden) orbits.pauseAnimations?.();
+  else orbits.unpauseAnimations?.();
 }
 reducedMotion.addEventListener("change", updateOrbitMotion);
 updateOrbitMotion();
