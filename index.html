@@ -35,8 +35,13 @@
     </header>
 
     <section class="intro" aria-labelledby="mission-title">
-      <h1 id="mission-title" class="sr-only">ANTARA: Petualangan Tata Surya</h1>
-      <div class="opening-kicker" aria-hidden="true"><span></span> SELAMAT DATANG DI ANTARA <span></span></div>
+      <div class="eyebrow"><span></span> PENDIDIKAN ANTARIKSA • UNTUK GENERASI MASA DEPAN <span></span></div>
+      <h1 id="mission-title">ANTARA</h1>
+      <p class="intro-copy">Langit bukan batas, tapi awal dari cerita baru.</p>
+      <button class="launch-button" id="launch-button" type="button">
+        <span>START</span>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </button>
     </section>
 
     <footer class="mission-footer">
@@ -100,18 +105,28 @@
           <div class="dashboard-screen"><span id="flight-status">SIAP BERANGKAT • BUMI</span><b></b></div>
         </div>
       </div>
-      <article class="companion companion-a" id="companion-a" data-state="idle" data-expression="bright" aria-label="Nara, navigator ANTARA">
-        <img class="anime-character" src="assets/characters/nara.png" alt="Nara, pemandu perempuan ANTARA bergaya anime dengan rambut gelap dan seragam navy emas" draggable="false">
+
+      <article class="companion companion-a" id="companion-a" data-state="idle" data-emotion="happy" data-sprite="happy" aria-label="Nara, teman perjalanan ANTARA">
+        <div class="sprite-stack" aria-hidden="true">
+          <img class="character-sprite sprite-slot-a is-active" src="assets/characters/nara/happy.webp" alt="">
+          <img class="character-sprite sprite-slot-b" src="assets/characters/nara/idle.webp" alt="">
+        </div>
+        <div class="crew-identity crew-identity-left" aria-hidden="true">
+          <strong>NARA</strong>
+          <span>Berani bertanya. Selalu siap menemukan hal baru.</span>
+        </div>
       </article>
 
-      <article class="companion companion-b" id="companion-b" data-state="idle" data-expression="calm" aria-label="Sora, pemandu sains ANTARA">
-        <img class="anime-character" src="assets/characters/sora.png" alt="Sora, pemandu perempuan ANTARA bergaya anime dengan rambut perak dan seragam navy emas" draggable="false">
+      <article class="companion companion-b" id="companion-b" data-state="idle" data-emotion="idle" data-sprite="idle" aria-label="Sora, teman perjalanan ANTARA">
+        <div class="sprite-stack" aria-hidden="true">
+          <img class="character-sprite sprite-slot-a is-active" src="assets/characters/sora/idle.webp" alt="">
+          <img class="character-sprite sprite-slot-b" src="assets/characters/sora/smile.webp" alt="">
+        </div>
+        <div class="crew-identity crew-identity-right" aria-hidden="true">
+          <strong>SORA</strong>
+          <span>Melihat lebih jauh. Memahami lebih dalam.</span>
+        </div>
       </article>
-
-      <button class="launch-button" id="launch-button" type="button" aria-label="Mulai perjalanan ANTARA">
-        <span class="launch-button-copy"><b>NEXT</b><small>Mulai perjalanan</small></span>
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-      </button>
 
       <div class="speech-bubble speaker-a" id="speech-bubble" role="status" aria-live="polite">
         <strong id="speech-speaker">Nara</strong>

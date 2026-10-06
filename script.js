@@ -476,6 +476,37 @@ class LaunchVisual {
     }
   }
 }
+const CHARACTER_SPRITES = Object.freeze({
+  Nara: Object.freeze({
+    idle: "assets/characters/nara/idle.webp",
+    happy: "assets/characters/nara/happy.webp",
+    talking: "assets/characters/nara/talking.webp",
+    excited: "assets/characters/nara/excited.webp",
+    pointing: "assets/characters/nara/pointing.webp",
+    thinking: "assets/characters/nara/thinking.webp",
+    surprised: "assets/characters/nara/surprised.webp",
+    confident: "assets/characters/nara/confident.webp"
+  }),
+  Sora: Object.freeze({
+    idle: "assets/characters/sora/idle.webp",
+    smile: "assets/characters/sora/smile.webp",
+    talking: "assets/characters/sora/talking.webp",
+    curious: "assets/characters/sora/curious.webp",
+    supportive: "assets/characters/sora/supportive.webp",
+    thinking: "assets/characters/sora/thinking.webp",
+    surprised: "assets/characters/sora/surprised.webp",
+    confident: "assets/characters/sora/confident.webp"
+  })
+});
+
+for (const set of Object.values(CHARACTER_SPRITES)) {
+  for (const src of Object.values(set)) {
+    const image = new Image();
+    image.decoding = "async";
+    image.src = src;
+  }
+}
+
 class CockpitCompanions {
   constructor() {
     this.a = document.getElementById("companion-a");
@@ -484,6 +515,42 @@ class CockpitCompanions {
     this.speaker = document.getElementById("speech-speaker");
     this.text = document.getElementById("speech-text");
     this.talkTimer = 0;
+    this.spriteState = {
+      A: { element: this.a, name: "Nara", active: 0, key: "happy" },
+      B: { element: this.b, name: "Sora", active: 0, key: "idle" }
+    };
+  }
+
+  setSprite(characterKey, spriteKey, immediate = false) {
+    const state = this.spriteState[characterKey];
+    if (!state) return;
+    const src = CHARACTER_SPRITES[state.name]?.[spriteKey];
+    if (!src || state.key === spriteKey) return;
+
+    const slots = state.element.querySelectorAll(".character-sprite");
+    if (slots.length < 2) return;
+    const nextIndex = state.active === 0 ? 1 : 0;
+    const next = slots[nextIndex];
+    const current = slots[state.active];
+
+    const commit = () => {
+      next.classList.add("is-active");
+      current.classList.remove("is-active");
+      state.active = nextIndex;
+      state.key = spriteKey;
+      state.element.dataset.sprite = spriteKey;
+    };
+
+    next.src = src;
+    if (immediate) {
+      next.classList.add("no-transition");
+      commit();
+      requestAnimationFrame(() => next.classList.remove("no-transition"));
+      return;
+    }
+
+    if (next.complete) commit();
+    else next.addEventListener("load", commit, { once: true });
   }
 
   setJourneyPhase(phase) {
@@ -498,7 +565,7 @@ class CockpitCompanions {
       "above-clouds": ["excited", "idle"],
       "upper-atmosphere": ["idle", "idle"],
       space: ["idle", "idle"],
-      "earth-reveal": ["looking-earth", "pointing"],
+      "earth-reveal": ["looking-earth", "looking-earth"],
       approach: ["looking-earth", "looking-earth"]
     };
     const [aState, bState] = stateMap[phase] || stateMap.idle;
@@ -510,43 +577,51 @@ class CockpitCompanions {
     if (!entry) return;
     const speakerEl = entry.speaker === "A" ? this.a : this.b;
     const otherEl = entry.speaker === "A" ? this.b : this.a;
+    const otherKey = entry.speaker === "A" ? "B" : "A";
+
     const apply = () => {
-      this.speaker.textContent = entry.speaker === "A" ? "Nara" : "Sora";
+      const speakerName = entry.speaker === "A" ? "Nara" : "Sora";
+      this.speaker.textContent = speakerName;
       this.text.textContent = entry.text;
       this.bubble.classList.toggle("speaker-a", entry.speaker === "A");
       this.bubble.classList.toggle("speaker-b", entry.speaker === "B");
       this.bubble.classList.remove("is-changing");
+
+      this.setSprite(entry.speaker, entry.sprite, immediate);
+      if (entry.otherSprite) this.setSprite(otherKey, entry.otherSprite, immediate);
+      speakerEl.dataset.emotion = entry.emotion || "neutral";
+      otherEl.dataset.emotion = entry.otherEmotion || "neutral";
+
       clearTimeout(this.talkTimer);
       this.a.classList.remove("is-talking");
       this.b.classList.remove("is-talking");
       speakerEl.classList.add("is-talking");
-      speakerEl.dataset.expression = entry.expression || "bright";
-      otherEl.dataset.expression = entry.otherExpression || (entry.speaker === "A" ? "calm" : "bright");
       const duration = entry.duration || Math.min(3200, Math.max(1600, 1050 + entry.text.length * 32));
       this.talkTimer = setTimeout(() => speakerEl.classList.remove("is-talking"), duration);
     };
+
     if (immediate) apply();
     else {
       this.bubble.classList.add("is-changing");
-      requestAnimationFrame(() => requestAnimationFrame(apply));
+      window.setTimeout(apply, 115);
     }
   }
 }
 
 const DIALOGUE_TIMELINE = Object.freeze([
-  { at: 0.00, phase: "prelaunch", speaker: "A", text: "Ayo, kita jelajah bersama!", expression: "bright", duration: 2300 },
-  { at: 1.45, phase: "prelaunch", speaker: "B", text: "Kita mulai dari rumah kita dulu: Bumi.", expression: "calm", duration: 2500 },
-  { at: LAUNCH_TIMING.ignition + .10, phase: "ignition", speaker: "A", text: "Mesinnya hidup. Siap?", expression: "bright", duration: 1750 },
-  { at: LAUNCH_TIMING.liftoff - .62, phase: "ignition", speaker: "B", text: "Pegangan ya, kita mulai terbang!", expression: "focused", duration: 2100 },
-  { at: LAUNCH_TIMING.liftoff + .22, phase: "liftoff", speaker: "A", text: "Kita naik! Kota di bawah mulai mengecil.", expression: "bright", duration: 2400 },
-  { at: LAUNCH_TIMING.climb + .22, phase: "climb", speaker: "B", text: "Lihat, langitnya makin luas.", expression: "calm", duration: 2100 },
-  { at: LAUNCH_TIMING.cloudApproach + .18, phase: "cloud-approach", speaker: "A", text: "Awan mulai kelihatan di depan.", expression: "bright", duration: 2200 },
-  { at: LAUNCH_TIMING.clouds + .32, phase: "clouds", speaker: "B", text: "Sedikit berguncang. Kita sedang melewati awan.", expression: "focused", duration: 2600 },
-  { at: LAUNCH_TIMING.aboveClouds + .20, phase: "above-clouds", speaker: "A", text: "Keren... kita sudah di atas awan.", expression: "soft", duration: 2250 },
-  { at: LAUNCH_TIMING.upperAtmosphere + .22, phase: "upper-atmosphere", speaker: "B", text: "Langitnya makin gelap. Atmosfer mulai menipis.", expression: "calm", duration: 2650 },
-  { at: LAUNCH_TIMING.space + .18, phase: "space", speaker: "A", text: "Sekarang tenang banget...", expression: "soft", duration: 1900 },
-  { at: LAUNCH_TIMING.earthReveal + .22, phase: "earth-reveal", speaker: "B", text: "Itu Bumi! Rumah kita.", expression: "soft", duration: 2250 },
-  { at: LAUNCH_TIMING.approach + .24, phase: "approach", speaker: "A", text: "Yuk, kita lihat lebih dekat!", expression: "bright", duration: 2200 }
+  { at: 0.00, phase: "prelaunch", speaker: "A", text: "Ayo, kita jelajah bersama!", emotion: "welcoming", sprite: "happy", otherSprite: "smile", duration: 2300 },
+  { at: 1.45, phase: "prelaunch", speaker: "B", text: "Kita mulai dari rumah kita dulu: Bumi.", emotion: "explaining", sprite: "talking", otherSprite: "confident", duration: 2500 },
+  { at: LAUNCH_TIMING.ignition + .10, phase: "ignition", speaker: "A", text: "Mesinnya hidup. Siap?", emotion: "excited", sprite: "excited", otherSprite: "surprised", duration: 1750 },
+  { at: LAUNCH_TIMING.liftoff - .62, phase: "ignition", speaker: "B", text: "Pegangan ya, kita mulai terbang!", emotion: "encouraging", sprite: "supportive", otherSprite: "excited", duration: 2100 },
+  { at: LAUNCH_TIMING.liftoff + .22, phase: "liftoff", speaker: "A", text: "Kita naik! Kota di bawah mulai mengecil.", emotion: "excited", sprite: "excited", otherSprite: "surprised", duration: 2400 },
+  { at: LAUNCH_TIMING.climb + .22, phase: "climb", speaker: "B", text: "Lihat, langitnya makin luas.", emotion: "curious", sprite: "curious", otherSprite: "confident", duration: 2100 },
+  { at: LAUNCH_TIMING.cloudApproach + .18, phase: "cloud-approach", speaker: "A", text: "Awan mulai kelihatan di depan.", emotion: "discovery", sprite: "pointing", otherSprite: "curious", duration: 2200 },
+  { at: LAUNCH_TIMING.clouds + .32, phase: "clouds", speaker: "B", text: "Sedikit berguncang. Kita sedang melewati awan.", emotion: "reaction", sprite: "surprised", otherSprite: "surprised", duration: 2600 },
+  { at: LAUNCH_TIMING.aboveClouds + .20, phase: "above-clouds", speaker: "A", text: "Keren... kita sudah di atas awan.", emotion: "excited", sprite: "happy", otherSprite: "smile", duration: 2250 },
+  { at: LAUNCH_TIMING.upperAtmosphere + .22, phase: "upper-atmosphere", speaker: "B", text: "Langitnya makin gelap. Atmosfer mulai menipis.", emotion: "explaining", sprite: "talking", otherSprite: "thinking", duration: 2650 },
+  { at: LAUNCH_TIMING.space + .18, phase: "space", speaker: "A", text: "Sekarang tenang banget...", emotion: "reflective", sprite: "thinking", otherSprite: "idle", duration: 1900 },
+  { at: LAUNCH_TIMING.earthReveal + .22, phase: "earth-reveal", speaker: "B", text: "Itu Bumi! Rumah kita.", emotion: "discovery", sprite: "surprised", otherSprite: "pointing", duration: 2250 },
+  { at: LAUNCH_TIMING.approach + .24, phase: "approach", speaker: "A", text: "Yuk, kita lihat lebih dekat!", emotion: "encouraging", sprite: "pointing", otherSprite: "supportive", duration: 2200 }
 ]);
 
 const mission = document.getElementById("mission");
@@ -594,10 +669,6 @@ function setExperienceState(state) {
 }
 
 setExperienceState("home");
-// The launch control is the only primary input above the decorative cockpit stack.
-// Reset it explicitly in case the browser restores a disabled form-control state.
-launchButton.disabled = false;
-launchButton.removeAttribute("aria-disabled");
 
 const sound = new MissionAudio(() => {
   audioToggle.classList.toggle("is-muted", sound.muted || sound.unavailable);
