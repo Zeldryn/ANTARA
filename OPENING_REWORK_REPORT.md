@@ -83,3 +83,11 @@ Static validation completed:
 Unrelated scene implementation hashes were checked and remain unchanged for Earth, Venus, Mars, and exploration media files.
 
 A Chromium screenshot run was attempted in the container, but the installed Chromium process does not terminate correctly in this environment because of its headless/DBus runtime. Runtime visual acceptance should therefore still be checked locally in the target browser at 1920x1080, 1600x900, 1440x900, and 1366x768.
+
+## Strict crop / side-structure correction
+- Character PNG/WebP canvases were trimmed to their real visible alpha bounds so transparent top padding no longer pushes the visible artwork downward.
+- Detached Nara residue was removed without changing Nara's artwork.
+- Sora's contaminated alpha was rebuilt against the same Sora artwork so cockpit/window fragments are no longer part of the sprite; missing top hair/hat pixels from the old crop were restored from the matching character source while keeping the existing character identity.
+- Character containers now use intrinsic image height instead of forcing every sprite into a tall fixed box.
+- Dashboard occlusion was reduced to the lower-body zone only.
+- Side cockpit pieces were reshaped into angled structural supports behind the characters; central branding/button/planet systems were not redesigned.
