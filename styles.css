@@ -1566,3 +1566,94 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 @media (prefers-reduced-motion: reduce) {
   .character-sprite { animation: none !important; }
 }
+
+
+/* ==============================================================
+   CHARACTER INTEGRATION FIX — targeted layout/layering only
+   Keeps the existing artwork and sprite-state system unchanged.
+   ============================================================== */
+
+/*
+ * The cockpit is the physical foreground.  Previously the entire
+ * cockpit-camera stacking context sat below the companions, so the
+ * dashboard could never occlude their lower bodies.  Put the cockpit
+ * frame in front of the character layer while keeping dialogue/CTA above.
+ */
+.cockpit-camera {
+  z-index: 18;
+}
+
+/*
+ * Lower the companions into the cockpit and give the source images enough
+ * vertical room to extend behind the dashboard instead of ending visibly
+ * at the viewport edge.  The sprite keeps its native aspect ratio.
+ */
+.companion {
+  z-index: 16;
+  bottom: -1.25%;
+  width: clamp(300px, 30vw, 500px);
+  height: min(88vh, 840px);
+  overflow: visible;
+}
+
+.character-sprite-frame {
+  overflow: visible;
+  align-items: flex-end;
+}
+
+.character-sprite {
+  width: auto;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+/* Keep the two characters balanced while letting the cockpit pillars
+   naturally overlap their outer edges. */
+.companion-a { left: -1.2%; }
+.companion-b { right: -1.2%; }
+
+/* Character labels should stay with the visible upper-body composition. */
+.character-identity { top: 25%; }
+
+/* Dialogue remains in front of the physical cockpit foreground. */
+.speech-bubble { z-index: 22; }
+
+@media (max-width: 1100px) {
+  .companion {
+    bottom: -1.5%;
+    width: clamp(275px, 31vw, 420px);
+    height: min(86vh, 760px);
+  }
+  .companion-a { left: -3.5%; }
+  .companion-b { right: -3.5%; }
+}
+
+@media (max-width: 900px) {
+  .companion {
+    bottom: -2%;
+    width: clamp(245px, 35vw, 360px);
+    height: min(84vh, 700px);
+  }
+  .companion-a { left: -6.5%; }
+  .companion-b { right: -6.5%; }
+}
+
+@media (max-width: 700px) {
+  .companion {
+    bottom: -2.5%;
+    width: clamp(205px, 48vw, 285px);
+    height: min(72vh, 610px);
+  }
+  .companion-a { left: -14%; }
+  .companion-b { right: -14%; }
+}
+
+@media (max-height: 700px) and (min-width: 701px) {
+  .companion {
+    bottom: -2.25%;
+    width: clamp(245px, 29vw, 355px);
+    height: min(86vh, 620px);
+  }
+}
