@@ -372,6 +372,8 @@ window.EarthScene = class EarthScene {
     this.travelCoveredFired = false;
     this.travelCompleteFired = false;
     this.travelCallbacks = {};
+    this.travelTarget = "mars";
+    this.travelTargetStartRotation = 0.9024;
     this.pointer = { x: 0, y: 0 };
     this.cameraOffset = { x: 0, y: 0 };
     this.tick = this.tick.bind(this);
@@ -557,8 +559,31 @@ window.EarthScene = class EarthScene {
     });
   }
 
+  makeVenusTravelSurface() {
+    // Same deterministic procedural fallback used by VenusScene when the NASA
+    // Magellan texture is unavailable. Keeping this local means the cinematic
+    // bridge never depends on a network request before navigation can start.
+    const canvas = document.createElement("canvas");
+    canvas.width = 512; canvas.height = 256;
+    const ctx = canvas.getContext("2d");
+    const pixels = ctx.createImageData(512, 256);
+    for (let y = 0; y < 256; y++) for (let x = 0; x < 512; x++) {
+      const longitude = x / 512 * Math.PI * 2;
+      const latitude = y / 256 * Math.PI;
+      const large = Math.sin(longitude * 3 + Math.sin(latitude * 6)) * Math.cos(latitude * 5 + Math.sin(longitude * 2));
+      const fine = Math.sin(longitude * 51 + Math.cos(latitude * 27)) * Math.sin(latitude * 43) * 8;
+      const dust = 26 * large + fine;
+      const polar = Math.pow(Math.abs(Math.cos(latitude)), 38) * 65;
+      const i = (y * 512 + x) * 4;
+      pixels.data.set([177 + dust + polar * 0.45, 125 + dust * 0.72 + polar * 0.38, 68 + dust * 0.42 + polar * 0.22, 255], i);
+    }
+    ctx.putImageData(pixels, 0, 0);
+    return canvas;
+  }
+
   prepare() {
     if (this.loading) return this.loading;
+    if (!this.venusSurface) this.venusSurface = this.makeVenusTravelSurface();
     this.loading = Promise.all([
       this.loadImage(EARTH_SURFACE_TEXTURE),
       this.loadImage(MARS_TRAVEL_TEXTURE),
@@ -664,6 +689,23 @@ window.EarthScene = class EarthScene {
     this.travelMarsGroup.visible = false;
     this.scene.add(this.travelMarsGroup);
 
+    const venusTexture = this.createTexture(THREE, this.venusSurface, 8);
+    this.travelVenusMaterial = new THREE.MeshStandardMaterial({
+      map: venusTexture,
+      roughness: 0.98,
+      metalness: 0,
+      transparent: true,
+      opacity: 0
+    });
+    this.travelVenus = new THREE.Mesh(sphere.clone(), this.travelVenusMaterial);
+    this.travelVenusGroup = new THREE.Group();
+    this.travelVenusGroup.add(this.travelVenus);
+    this.travelVenusAtmosphere = this.makeAtmosphere(THREE, 0xd5a05e, 0.12, 1.018);
+    this.travelVenusAtmosphere.material.opacity = 0;
+    this.travelVenusGroup.add(this.travelVenusAtmosphere);
+    this.travelVenusGroup.visible = false;
+    this.scene.add(this.travelVenusGroup);
+
     const sun = new THREE.DirectionalLight(0xffefd7, 3.35);
     sun.position.set(-4.8, 2.9, 4.6);
     this.scene.add(sun);
@@ -760,10 +802,11 @@ window.EarthScene = class EarthScene {
     this.tick(this.previous);
   }
 
-  beginTravelToMars({ onReveal, onComplete } = {}) {
-    if (!this.active || this.travelMode) return;
+  beginTravelToPlanet(target, { onReveal, onComplete } = {}) {
+    if (!this.active || this.travelMode || !["mars", "venus"].includes(target)) return;
     this.exitExploration(false);
-    this.travelMode = "to-mars";
+    this.travelTarget = target;
+    this.travelMode = `to-${target}`;
     this.travelStartedAt = this.time;
     this.travelDuration = this.motion.matches ? 0.4 : 6.2;
     this.travelRevealFired = false;
@@ -775,18 +818,27 @@ window.EarthScene = class EarthScene {
     if (!this.frame) { this.previous = performance.now(); this.tick(this.previous); }
   }
 
-  beginTravelFromMars({ onCovered, onComplete, marsRotation = 0.9024 } = {}) {
-    if (this.active && this.travelMode) return;
+  beginTravelToMars(callbacks = {}) {
+    this.beginTravelToPlanet("mars", callbacks);
+  }
+
+  beginTravelToVenus(callbacks = {}) {
+    this.beginTravelToPlanet("venus", callbacks);
+  }
+
+  beginTravelFromPlanet(target, { onCovered, onComplete, targetRotation } = {}) {
+    if ((this.active && this.travelMode) || !["mars", "venus"].includes(target)) return;
     this.exitExploration(false);
     this.active = true;
     this.time = 0;
-    this.travelMode = "to-earth";
+    this.travelTarget = target;
+    this.travelMode = `to-earth-from-${target}`;
     this.travelStartedAt = 0;
     this.travelDuration = this.motion.matches ? 0.4 : 6.2;
     this.travelCoveredFired = false;
     this.travelCompleteFired = false;
     this.travelCallbacks = { onCovered, onComplete };
-    this.travelMarsStartRotation = marsRotation;
+    this.travelTargetStartRotation = targetRotation ?? (target === "venus" ? 0.3984 : 0.9024);
     this.element.hidden = false;
     this.element.style.opacity = "0";
     this.element.classList.add("is-leaving");
@@ -798,6 +850,14 @@ window.EarthScene = class EarthScene {
     cancelAnimationFrame(this.frame);
     this.previous = performance.now();
     this.tick(this.previous);
+  }
+
+  beginTravelFromMars({ onCovered, onComplete, marsRotation = 0.9024 } = {}) {
+    this.beginTravelFromPlanet("mars", { onCovered, onComplete, targetRotation: marsRotation });
+  }
+
+  beginTravelFromVenus({ onCovered, onComplete, venusRotation = 0.3984 } = {}) {
+    this.beginTravelFromPlanet("venus", { onCovered, onComplete, targetRotation: venusRotation });
   }
 
   stop() {
@@ -874,6 +934,7 @@ window.EarthScene = class EarthScene {
     if (this.mode === "webgl") {
       const layout = this.normalLayout();
       this.travelMarsGroup.visible = false;
+      this.travelVenusGroup.visible = false;
       this.planetGroup.visible = true;
       this.planetGroup.position.set(layout.x * framing, layout.y * framing + drift, 0);
       this.applyEarthPose();
@@ -912,22 +973,31 @@ window.EarthScene = class EarthScene {
   }
 
   renderTravel() {
+    // This is the original Earth → Mars travel timeline generalized only by
+    // target planet and horizontal direction. Mars remains direction +1; Venus
+    // uses direction -1. All phase timings, depth, easing and reveal thresholds
+    // are intentionally shared 1:1.
     const state = this.travelState();
-    const reverse = this.travelMode === "to-earth";
+    const reverse = this.travelMode.startsWith("to-earth");
+    const target = this.travelTarget === "venus" ? "venus" : "mars";
+    const direction = target === "venus" ? -1 : 1;
     const layout = this.normalLayout();
     const aspect = this.camera?.aspect || this.width / this.height;
-    const separation = layout.halfHeight * aspect * (this.mobile ? 3.9 : 3.25);
-    const marsDestinationX = layout.halfHeight * aspect * (this.mobile ? 0 : 0.28);
-    const marsDestinationY = layout.halfHeight * (this.mobile ? 0.28 : 0.10);
-    const destinationCameraX = separation + layout.x - marsDestinationX;
+    const separationMagnitude = layout.halfHeight * aspect * (this.mobile ? 3.9 : 3.25);
+    const separation = separationMagnitude * direction;
+    const destinationX = layout.halfHeight * aspect * (this.mobile ? 0 : 0.28);
+    const destinationY = layout.halfHeight * (this.mobile ? 0.28 : 0.10);
+    const destinationCameraX = separation + layout.x - destinationX;
     const cameraX = destinationCameraX * (reverse ? 1 - state.pan : state.pan);
     const cameraZ = this.finalDistance * (1 + 1.55 * state.pullback * (1 - state.approach));
     const earthOpacity = reverse ? this.smooth((state.progress - 0.27) / 0.19) : 1;
-    const marsOpacity = reverse ? 1 : this.smooth((state.progress - 0.28) / 0.20);
+    const targetOpacity = reverse ? 1 : this.smooth((state.progress - 0.28) / 0.20);
     const earthRotation = 4.72 + this.time * 0.024;
-    const marsRotation = reverse
-      ? (this.travelMarsStartRotation ?? 0.9024) + state.progress * 0.08
-      : 0.62 + state.progress * (0.9024 - 0.62);
+    const targetFinalRotation = target === "venus" ? 0.3984 : 0.9024;
+    const targetStartRotation = 0.62;
+    const targetRotation = reverse
+      ? (this.travelTargetStartRotation ?? targetFinalRotation) + state.progress * 0.08
+      : targetStartRotation + state.progress * (targetFinalRotation - targetStartRotation);
     const overlayOpacity = reverse ? this.smooth(state.progress / 0.075) : 1;
     this.element.style.opacity = String(overlayOpacity);
 
@@ -941,30 +1011,37 @@ window.EarthScene = class EarthScene {
     }
 
     if (this.mode === "webgl") {
+      const targetGroup = target === "venus" ? this.travelVenusGroup : this.travelMarsGroup;
+      const otherGroup = target === "venus" ? this.travelMarsGroup : this.travelVenusGroup;
+      const targetMesh = target === "venus" ? this.travelVenus : this.travelMars;
+      const targetMaterial = target === "venus" ? this.travelVenusMaterial : this.travelMarsMaterial;
+      const targetAtmosphere = target === "venus" ? this.travelVenusAtmosphere : this.travelMarsAtmosphere;
+      const atmosphereStrength = target === "venus" ? 0.12 : 0.095;
+      otherGroup.visible = false;
       this.planetGroup.visible = earthOpacity > 0.002;
-      this.travelMarsGroup.visible = marsOpacity > 0.002;
+      targetGroup.visible = targetOpacity > 0.002;
       this.planetGroup.position.set(layout.x, layout.y, 0);
-      this.travelMarsGroup.position.set(layout.x + separation, marsDestinationY, 0);
+      targetGroup.position.set(layout.x + separation, destinationY, 0);
       this.applyEarthPose();
-      this.travelMars.rotation.set(0.09, marsRotation, -0.07);
+      targetMesh.rotation.set(0.09, targetRotation, target === "venus" ? 0.12 : -0.07);
       this.planet.material.opacity = earthOpacity;
       this.atmosphere.material.uniforms.glowStrength.value = 0.25 * earthOpacity;
-      this.travelMarsMaterial.opacity = marsOpacity;
-      this.travelMarsAtmosphere.material.uniforms.glowStrength.value = 0.095 * marsOpacity;
+      targetMaterial.opacity = targetOpacity;
+      targetAtmosphere.material.uniforms.glowStrength.value = atmosphereStrength * targetOpacity;
 
       this.camera.position.set(cameraX, 0, cameraZ);
-      const lookOffset = Math.sin(state.pan * Math.PI) * separation * 0.055 * (reverse ? -1 : 1);
+      const lookOffset = Math.sin(state.pan * Math.PI) * separationMagnitude * 0.055 * direction * (reverse ? -1 : 1);
       this.camera.lookAt(cameraX + lookOffset, 0, 0);
       this.renderer.render(this.scene, this.camera);
     } else if (this.mode === "canvas") {
-      this.drawCanvasTravel(state, reverse, earthOpacity, marsOpacity);
+      this.drawCanvasTravel(state, reverse, earthOpacity, targetOpacity, target, direction);
     } else if (this.mode === "css") {
       const planet = this.viewport.firstElementChild;
       if (planet) {
         const radius = this.finalRadius * this.finalDistance / cameraZ;
         const screenPan = reverse ? 1 - state.pan : state.pan;
         planet.style.width = planet.style.height = `${radius * 2}px`;
-        planet.style.left = `${64 - screenPan * 95}%`;
+        planet.style.left = `${64 - direction * screenPan * 95}%`;
         planet.style.top = "47%";
         planet.style.opacity = String(earthOpacity);
       }
@@ -1079,7 +1156,7 @@ window.EarthScene = class EarthScene {
     } else this.marker.style.opacity = "0";
   }
 
-  drawCanvasTravel(state, reverse, earthOpacity, marsOpacity) {
+  drawCanvasTravel(state, reverse, earthOpacity, targetOpacity, target = "mars", direction = 1) {
     const ctx = this.ctx;
     const w = this.width;
     const h = this.height;
@@ -1088,10 +1165,14 @@ window.EarthScene = class EarthScene {
     const cameraScale = 1 + 1.55 * state.pullback * (1 - state.approach);
     const radius = this.finalRadius / cameraScale;
     const pan = reverse ? 1 - state.pan : state.pan;
-    const earthX = w * (this.mobile ? 0.5 : 0.64) - pan * w * 1.08;
-    const marsX = earthX + w * 1.08;
+    const earthX = w * (this.mobile ? 0.5 : 0.64) - direction * pan * w * 1.08;
+    const targetX = earthX + direction * w * 1.08;
     const cy = h * (this.mobile ? 0.36 : 0.47);
+    const targetSurface = target === "venus" ? this.venusSurface : this.marsSurface;
+    const targetRotation = target === "venus" ? 0.62 + this.time * -0.012 : 0.62 + this.time * 0.021;
+    const targetAtmosphere = target === "venus" ? "rgba(214,166,98,.34)" : "rgba(212,117,76,.30)";
     this.drawTexturedDisc(this.surface, earthX, cy, radius, 4.72 + this.time * 0.024, earthOpacity, "rgba(80,160,255,.45)");
-    this.drawTexturedDisc(this.marsSurface, marsX, cy, radius, 0.62 + this.time * 0.021, marsOpacity, "rgba(212,117,76,.30)");
+    this.drawTexturedDisc(targetSurface, targetX, cy, radius, targetRotation, targetOpacity, targetAtmosphere);
   }
+
 };
