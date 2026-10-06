@@ -581,6 +581,23 @@ window.EarthScene = class EarthScene {
     return canvas;
   }
 
+  setVenusTravelSurface(surface) {
+    if (!surface) return;
+    // The travel bridge must render the exact surface that VenusScene resolved.
+    // This prevents a detailed Magellan Venus from being replaced by the 512×256
+    // procedural bridge texture during the slide animation.
+    this.venusSurface = surface;
+    if (this.travelVenusTexture) {
+      this.travelVenusTexture.image = surface;
+      this.travelVenusTexture.needsUpdate = true;
+    }
+    if (this.travelVenusRelief) {
+      this.travelVenusRelief.image = surface;
+      this.travelVenusRelief.needsUpdate = true;
+    }
+    if (this.active && this.travelMode && this.travelTarget === "venus") this.renderTravel();
+  }
+
   prepare() {
     if (this.loading) return this.loading;
     if (!this.venusSurface) this.venusSurface = this.makeVenusTravelSurface();
@@ -689,9 +706,14 @@ window.EarthScene = class EarthScene {
     this.travelMarsGroup.visible = false;
     this.scene.add(this.travelMarsGroup);
 
-    const venusTexture = this.createTexture(THREE, this.venusSurface, 8);
+    this.travelVenusTexture = this.createTexture(THREE, this.venusSurface, 8);
+    this.travelVenusRelief = this.travelVenusTexture.clone();
+    this.travelVenusRelief.colorSpace = THREE.NoColorSpace;
+    this.travelVenusRelief.needsUpdate = true;
     this.travelVenusMaterial = new THREE.MeshStandardMaterial({
-      map: venusTexture,
+      map: this.travelVenusTexture,
+      bumpMap: this.travelVenusRelief,
+      bumpScale: 0.018,
       roughness: 0.98,
       metalness: 0,
       transparent: true,

@@ -485,7 +485,7 @@ launchButton.addEventListener("click", () => {
   // Warm up local assets and shaders while the existing launch plays unchanged.
   earth.prepare();
   mars.prepare();
-  venus.prepare();
+  venus.prepare().then(() => earth.setVenusTravelSurface(venus.surface)).catch(() => {});
   mission.classList.add("is-preparing");
   if (flightStatus) flightStatus.textContent = "PERSIAPAN MISI BERLANGSUNG";
   previousFrame = performance.now();
@@ -498,22 +498,29 @@ function travelToVenus() {
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU VENUS";
   locationDetail.textContent = "TUJUAN SEBELUMNYA • VENUS";
   announcement.textContent = "Meninggalkan Bumi. Kamera beralih ke kiri menuju Venus.";
-  sound.travel(reducedMotion.matches ? 0.4 : 6.2);
-  earth.beginTravelToVenus({
-    onReveal: () => {
-      if (phase !== "venus-transition") return;
-      venus.start({ settled: true });
-    },
-    onComplete: () => {
-      if (phase !== "venus-transition") return;
-      earth.stop();
-      mission.classList.remove("is-earth");
-      mission.classList.add("is-venus");
-      phase = "venus";
-      if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT VENUS";
-      locationDetail.textContent = "PLANET KE-2 • VENUS";
-      announcement.textContent = "Tiba di Venus.";
-    }
+
+  // Reuse VenusScene's fully resolved surface before the existing travel timeline
+  // begins. The movement, direction, camera pan, and duration stay unchanged.
+  venus.prepare().then(() => {
+    if (phase !== "venus-transition") return;
+    earth.setVenusTravelSurface(venus.surface);
+    sound.travel(reducedMotion.matches ? 0.4 : 6.2);
+    earth.beginTravelToVenus({
+      onReveal: () => {
+        if (phase !== "venus-transition") return;
+        venus.start({ settled: true });
+      },
+      onComplete: () => {
+        if (phase !== "venus-transition") return;
+        earth.stop();
+        mission.classList.remove("is-earth");
+        mission.classList.add("is-venus");
+        phase = "venus";
+        if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT VENUS";
+        locationDetail.textContent = "PLANET KE-2 • VENUS";
+        announcement.textContent = "Tiba di Venus.";
+      }
+    });
   });
 }
 
@@ -523,6 +530,7 @@ function travelVenusToEarth() {
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU BUMI";
   locationDetail.textContent = "TUJUAN BERIKUTNYA • BUMI";
   announcement.textContent = "Meninggalkan Venus. Kembali menuju Bumi.";
+  earth.setVenusTravelSurface(venus.surface);
   sound.travel(reducedMotion.matches ? 0.4 : 6.2);
   earth.beginTravelFromVenus({
     venusRotation: venus.renderedRotation,

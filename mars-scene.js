@@ -43,7 +43,92 @@ const marsSurfacePoint = (location, radius = 1) => {
   };
 };
 
+const marsStopOrientation = (stop, index) => {
+  if (stop.location) return marsLocationOrientation(stop.location);
+  const view = stop.view || {};
+  return {
+    yaw: Number.isFinite(view.yaw) ? view.yaw : 0.6 + index * 0.16,
+    pitch: Number.isFinite(view.pitch) ? view.pitch : 0.09,
+    roll: Number.isFinite(view.roll) ? view.roll : MARS_EXPLORATION_ROLL
+  };
+};
+
 const MARS_EXPLORATION_STOPS = Object.freeze([
+  {
+    title: "MARS",
+    kicker: "DASAR PLANET",
+    subtitle: "Mengenal Si Planet Merah",
+    summary: "Mars adalah planet berbatu keempat dari Matahari. Dunia ini lebih kecil dan lebih dingin daripada Bumi, dengan atmosfer sangat tipis serta permukaan yang menyimpan jejak sejarah air purba.",
+    facts: [
+      "Radius Mars sekitar 3.390 km, kira-kira setengah radius Bumi.",
+      "Mars memiliki dua bulan kecil bernama Phobos dan Deimos.",
+      "Mars termasuk dunia yang paling banyak dieksplorasi robot, dan rover telah menjelajahi langsung permukaannya."
+    ],
+    source: "https://science.nasa.gov/mars/facts/",
+    sourceName: "NASA Science",
+    view: { yaw: 0.60, pitch: 0.09, roll: MARS_EXPLORATION_ROLL },
+    shift: { x: 0, y: 0 }
+  },
+  {
+    title: "UKURAN & GRAVITASI",
+    kicker: "SKALA PLANET",
+    subtitle: "Dunia yang Lebih Kecil dari Bumi",
+    summary: "Mars memiliki ukuran dan massa yang jauh lebih kecil daripada Bumi. Akibatnya, tarikan gravitasinya juga lebih lemah sehingga benda dengan massa yang sama akan terasa jauh lebih ringan di permukaannya.",
+    facts: [
+      "Diameter rata-rata Mars sekitar 6.780 km, sekitar 53% diameter Bumi.",
+      "Gravitasi permukaannya sekitar 3,7 m/s², atau kira-kira 38% gravitasi Bumi.",
+      "Benda yang berbobot 100 N di Bumi akan berbobot sekitar 38 N di Mars, walaupun massanya tetap sama."
+    ],
+    source: "https://www.jpl.nasa.gov/news/press_kits/insight/landing/facts/mars-at-a-glance/",
+    sourceName: "NASA/JPL",
+    view: { yaw: 0.78, pitch: 0.06, roll: MARS_EXPLORATION_ROLL },
+    shift: { x: 0, y: 0 }
+  },
+  {
+    title: "HARI & TAHUN MARS",
+    kicker: "ROTASI & ORBIT",
+    subtitle: "Waktu Berjalan Berbeda",
+    summary: "Panjang satu hari Mars hampir mirip dengan Bumi, tetapi satu tahunnya jauh lebih lama. Kemiringan sumbu Mars juga membuat planet ini mengalami musim.",
+    facts: [
+      "Satu hari Mars disebut sol dan berlangsung sekitar 24,6 jam.",
+      "Satu tahun Mars berlangsung 669,6 sol, setara sekitar 687 hari Bumi.",
+      "Sumbu Mars miring sekitar 25°, sehingga Mars memiliki musim; orbitnya yang lebih elips membuat panjang tiap musim tidak sama."
+    ],
+    source: "https://science.nasa.gov/mars/facts/",
+    sourceName: "NASA Science",
+    view: { yaw: 0.96, pitch: 0.11, roll: MARS_EXPLORATION_ROLL },
+    shift: { x: 0, y: 0 }
+  },
+  {
+    title: "ATMOSFER & SUHU",
+    kicker: "LINGKUNGAN MARS",
+    subtitle: "Dunia Dingin dengan Udara Tipis",
+    summary: "Atmosfer Mars sangat tipis dan didominasi karbon dioksida. Karena udara tipis sulit menahan panas, suhu permukaan dapat berubah besar antara kondisi hangat lokal dan malam atau wilayah kutub yang sangat dingin.",
+    facts: [
+      "Atmosfer Mars terutama terdiri dari karbon dioksida, dengan nitrogen dan argon sebagai komponen penting lainnya.",
+      "Tekanan atmosfer di permukaan Mars kurang dari 1% tekanan rata-rata di permukaan Bumi.",
+      "Suhu permukaan dapat mencapai sekitar 20°C pada kondisi hangat lokal dan turun hingga sekitar −153°C pada kondisi sangat dingin."
+    ],
+    source: "https://science.nasa.gov/mars/facts/",
+    sourceName: "NASA Science",
+    view: { yaw: 1.14, pitch: 0.05, roll: MARS_EXPLORATION_ROLL },
+    shift: { x: 0, y: 0 }
+  },
+  {
+    title: "KENAPA MARS BERWARNA MERAH?",
+    kicker: "WARNA PERMUKAAN",
+    subtitle: "Jejak Besi di Permukaan",
+    summary: "Warna merah Mars berasal dari mineral yang mengandung besi di batuan, regolit, dan debu. Ketika besi mengalami oksidasi, terbentuk material mirip karat yang memberi warna kemerahan pada permukaan.",
+    facts: [
+      "Mineral yang mengandung besi tersebar luas pada material permukaan Mars.",
+      "Oksidasi menghasilkan oksida besi yang memberi warna merah, cokelat, dan jingga.",
+      "Debu halus berwarna kemerahan terangkat ke atmosfer dan membuat Mars tampak merah dari kejauhan."
+    ],
+    source: "https://science.nasa.gov/mars/facts/",
+    sourceName: "NASA Science",
+    view: { yaw: 1.32, pitch: 0.10, roll: MARS_EXPLORATION_ROLL },
+    shift: { x: 0, y: 0 }
+  },
   {
     images: [
       {
@@ -314,7 +399,9 @@ window.MarsScene = class MarsScene {
     this.topicShift = { x: 0, y: 0 };
     this.topicShiftTarget = { x: 0, y: 0 };
     this.renderedRotation = 0.6;
-    this.markerLocalPoint = marsSurfacePoint(MARS_EXPLORATION_STOPS[0].location);
+    const firstGeographicStop = MARS_EXPLORATION_STOPS.find(stop => stop.location);
+    this.markerLocalPoint = marsSurfacePoint(firstGeographicStop.location);
+    this.topicHasLocation = Boolean(MARS_EXPLORATION_STOPS[0].location);
     this.caption.inert = true;
     this.exploration.inert = true;
     this.stars = Array.from({ length: 240 }, (_, n) => {
@@ -356,14 +443,18 @@ window.MarsScene = class MarsScene {
     window.ExplorationMedia.render("mars", stop);
     this.focusReticle.classList.remove("is-marker-visible");
     this.focusReticle.classList.add("is-relocating");
+    this.focusReticle.style.setProperty("--marker-opacity", "0");
     this.topicIndex = nextIndex;
-    const orientation = marsLocationOrientation(stop.location);
+    this.topicHasLocation = Boolean(stop.location);
+    const orientation = marsStopOrientation(stop, nextIndex);
     this.topicYawTarget = immediate ? orientation.yaw : unwrapMarsAngleNear(orientation.yaw, this.topicYaw);
     this.topicPitchTarget = orientation.pitch;
     this.topicRollTarget = orientation.roll;
-    this.topicShiftTarget = { ...stop.shift };
-    this.markerLocalPoint = marsSurfacePoint(stop.location);
-    if (this.markerAnchor) this.markerAnchor.position.set(this.markerLocalPoint.x, this.markerLocalPoint.y, this.markerLocalPoint.z);
+    this.topicShiftTarget = { ...(stop.shift || { x: 0, y: 0 }) };
+    if (stop.location) {
+      this.markerLocalPoint = marsSurfacePoint(stop.location);
+      if (this.markerAnchor) this.markerAnchor.position.set(this.markerLocalPoint.x, this.markerLocalPoint.y, this.markerLocalPoint.z);
+    }
     if (immediate || this.motion.matches) {
       this.topicYaw = this.topicYawTarget;
       this.topicPitch = this.topicPitchTarget;
@@ -384,6 +475,7 @@ window.MarsScene = class MarsScene {
     }));
     if (this.topicScroll) this.topicScroll.scrollTop = 0;
     this.topicSource.href = stop.source;
+    this.topicSource.textContent = `Sumber: ${stop.sourceName || "NASA Science"} ↗`;
     this.photoSource.hidden = true;
     this.photoSource.removeAttribute("href");
     this.photoSource.textContent = "";
@@ -391,10 +483,15 @@ window.MarsScene = class MarsScene {
     this.topicPrev.disabled = nextIndex === 0;
     this.topicNext.disabled = nextIndex === MARS_EXPLORATION_STOPS.length - 1;
     Array.from(this.topicProgress.children).forEach((bar, i) => bar.classList.toggle("is-active", i === nextIndex));
-    this.focusLabel.textContent = stop.location.label;
-    const latitudeHemisphere = stop.location.latitude >= 0 ? "N" : "S";
-    const longitude = ((stop.location.longitudeEast % 360) + 360) % 360;
-    this.focusContext.textContent = `MARS · ${Math.abs(stop.location.latitude).toFixed(2)}°${latitudeHemisphere} · ${longitude.toFixed(2)}°E`;
+    if (stop.location) {
+      this.focusLabel.textContent = stop.location.label;
+      const latitudeHemisphere = stop.location.latitude >= 0 ? "N" : "S";
+      const longitude = ((stop.location.longitudeEast % 360) + 360) % 360;
+      this.focusContext.textContent = `MARS · ${Math.abs(stop.location.latitude).toFixed(2)}°${latitudeHemisphere} · ${longitude.toFixed(2)}°E`;
+    } else {
+      this.focusLabel.textContent = "";
+      this.focusContext.textContent = "";
+    }
     if (!immediate && !this.motion.matches) this.exploration.classList.add("is-switching");
 
     if (this.active) {
@@ -407,11 +504,13 @@ window.MarsScene = class MarsScene {
   enterExploration() {
     if (!this.active || this.exploring) return;
     this.exploring = true;
-    // Start from the arrival pose, then converge on the selected geographic target.
+    // Start from the arrival pose, then converge on the selected topic pose.
     this.topicYaw = this.renderedRotation;
     this.topicPitch = 0.09;
     this.topicRoll = MARS_EXPLORATION_ROLL;
-    const orientation = marsLocationOrientation(MARS_EXPLORATION_STOPS[this.topicIndex].location);
+    const selectedStop = MARS_EXPLORATION_STOPS[this.topicIndex];
+    this.topicHasLocation = Boolean(selectedStop.location);
+    const orientation = marsStopOrientation(selectedStop, this.topicIndex);
     this.topicYawTarget = unwrapMarsAngleNear(orientation.yaw, this.topicYaw);
     this.topicPitchTarget = orientation.pitch;
     this.topicRollTarget = orientation.roll;
@@ -720,6 +819,11 @@ window.MarsScene = class MarsScene {
   }
 
   updateMarkerProjectionWebGL() {
+    if (!this.topicHasLocation) {
+      this.focusReticle?.style.setProperty("--marker-opacity", "0");
+      this.focusReticle?.classList.remove("is-marker-visible");
+      return;
+    }
     if (!this.markerAnchor || !this.planet || !this.camera || !this.width || !this.height) return;
     this.markerAnchor.getWorldPosition(this.markerWorldPosition);
     this.planet.getWorldPosition(this.planetWorldPosition);
@@ -735,6 +839,11 @@ window.MarsScene = class MarsScene {
   }
 
   updateMarkerProjectionFallback(yaw, pitch, roll, cx, cy, radius) {
+    if (!this.topicHasLocation) {
+      this.focusReticle?.style.setProperty("--marker-opacity", "0");
+      this.focusReticle?.classList.remove("is-marker-visible");
+      return;
+    }
     const point = this.markerLocalPoint;
     const cosYaw = Math.cos(yaw), sinYaw = Math.sin(yaw);
     const cosPitch = Math.cos(pitch), sinPitch = Math.sin(pitch);
