@@ -611,6 +611,10 @@ function setExperienceState(state) {
 }
 
 setExperienceState("home");
+// The launch control is the only primary input above the decorative cockpit stack.
+// Reset it explicitly in case the browser restores a disabled form-control state.
+launchButton.disabled = false;
+launchButton.removeAttribute("aria-disabled");
 
 const sound = new MissionAudio(() => {
   audioToggle.classList.toggle("is-muted", sound.muted || sound.unavailable);

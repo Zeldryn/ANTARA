@@ -35,9 +35,8 @@
     </header>
 
     <section class="intro" aria-labelledby="mission-title">
-      <div class="eyebrow"><span></span> SELAMAT DATANG DI ANTARA <span></span></div>
-      <h1 id="mission-title">Ayo Keliling <span>Tata Surya!</span></h1>
-      <p class="intro-copy">Duduk di kokpit, kenalan dengan teman perjalananmu, lalu lihat Bumi dari arah yang belum pernah kamu lihat sebelumnya.</p>
+      <h1 id="mission-title" class="sr-only">ANTARA: Petualangan Tata Surya</h1>
+      <div class="opening-kicker" aria-hidden="true"><span></span> SELAMAT DATANG DI ANTARA <span></span></div>
       <button class="launch-button" id="launch-button" type="button">
         <span>Yuk, Berangkat!</span>
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
@@ -106,86 +105,126 @@
         </div>
       </div>
 
-      <article class="companion companion-a" id="companion-a" data-state="idle" data-expression="bright" aria-label="Nara, teman perjalanan ANTARA">
-        <svg class="character-rig" viewBox="0 0 300 470" role="img" aria-label="Nara, teman perjalanan yang penuh semangat">
+      <article class="companion companion-a" id="companion-a" data-state="idle" data-expression="bright" aria-label="Nara, navigator ANTARA">
+        <svg class="character-rig" viewBox="0 0 360 560" role="img" aria-label="Nara, navigator ANTARA bergaya ilustrasi anime dua dimensi">
           <defs>
-            <linearGradient id="skin-a" x1=".18" y1=".05" x2=".82" y2=".95"><stop offset="0" stop-color="#fff8f2"/><stop offset=".46" stop-color="#ffe4d7"/><stop offset="1" stop-color="#efbca7"/></linearGradient>
-            <linearGradient id="hair-a" x1=".2" y1="0" x2=".8" y2="1"><stop offset="0" stop-color="#26314b"/><stop offset=".45" stop-color="#151d34"/><stop offset="1" stop-color="#080d1c"/></linearGradient>
-            <linearGradient id="jacket-a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4677a0"/><stop offset=".52" stop-color="#294c70"/><stop offset="1" stop-color="#142b45"/></linearGradient>
-            <linearGradient id="iris-a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ec4df"/><stop offset="1" stop-color="#244e70"/></linearGradient>
-            <radialGradient id="cheek-a"><stop stop-color="#ef9aa5" stop-opacity=".38"/><stop offset="1" stop-color="#ef9aa5" stop-opacity="0"/></radialGradient>
+            <linearGradient id="nara-skin" x1=".15" y1=".05" x2=".85" y2=".95"><stop offset="0" stop-color="#fff4eb"/><stop offset=".58" stop-color="#efc2aa"/><stop offset="1" stop-color="#d9957c"/></linearGradient>
+            <linearGradient id="nara-hair" x1=".12" y1="0" x2=".88" y2="1"><stop offset="0" stop-color="#273154"/><stop offset=".45" stop-color="#121a35"/><stop offset="1" stop-color="#060a18"/></linearGradient>
+            <linearGradient id="nara-uniform" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#183a59"/><stop offset=".55" stop-color="#0b223a"/><stop offset="1" stop-color="#061321"/></linearGradient>
+            <linearGradient id="nara-eye" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#a9e4f2"/><stop offset=".48" stop-color="#4c91b8"/><stop offset="1" stop-color="#1b466b"/></linearGradient>
           </defs>
-          <g class="character-shadow"><ellipse cx="150" cy="448" rx="88" ry="13"/></g>
-          <g class="hair-back"><path d="M77 165C69 86 102 39 158 35c58-4 93 41 88 119l-12 118H78Z"/><path class="hair-highlight" d="M108 60c32-24 79-22 105 6-27-12-65-8-92 10Z"/></g>
+          <ellipse class="character-shadow" cx="180" cy="535" rx="116" ry="15"/>
+          <g class="hair-back">
+            <path d="M93 191C84 110 113 57 178 46c70-12 112 39 103 131l-12 156c-19 31-52 50-90 50-39 0-73-20-92-52Z"/>
+            <path class="back-lock" d="M96 180c-13 73-9 151 10 216l30-83-9-153Z"/>
+            <path class="back-lock" d="M267 171c16 75 13 151-6 220l-30-85 8-150Z"/>
+            <path class="hair-highlight-shape" d="M124 80c38-26 83-26 119-5-37-7-72 0-101 24Z"/>
+          </g>
           <g class="character-body">
-            <path class="neck" d="M128 194h48l8 49h-66Z"/>
-            <path class="jacket" d="M65 274c13-57 45-82 86-82 44 0 78 28 91 84l24 158H39Z"/>
-            <path class="jacket-panel" d="M93 242c19 21 38 31 58 31 22 0 43-11 61-32l12 193H79Z"/>
-            <path class="shirt" d="M119 211h63l20 66-98 1Z"/>
-            <path class="collar" d="m108 219 40 48 44-48 18 33-61 52-59-51Z"/>
-            <path class="arm arm-left" d="M78 290c-25 26-37 63-39 107"/>
-            <path class="arm arm-right" d="M226 290c25 29 35 63 37 108"/>
-            <path class="seatbelt" d="M103 239 203 424"/>
-            <g class="uniform-detail"><path d="M91 330h42"/><path d="M188 330h36"/><circle cx="85" cy="309" r="13"/></g>
+            <path class="neck" d="M154 239h51l8 56h-68Z"/>
+            <path class="uniform-base" d="M58 560 78 367c7-61 45-96 101-96 57 0 96 36 104 98l19 191Z"/>
+            <path class="uniform-side left" d="M58 560 78 371c5-42 22-72 51-88l25 58-20 219Z"/>
+            <path class="uniform-side right" d="m302 560-19-188c-5-42-23-72-52-89l-27 59 22 218Z"/>
+            <path class="undershirt" d="m149 280 30 43 31-43 19 47-50 50-49-50Z"/>
+            <path class="collar-panel left" d="m128 284 51 93-35 25-42-84Z"/>
+            <path class="collar-panel right" d="m232 284-53 93 36 25 43-84Z"/>
+            <path class="gold-trim" d="m113 311 66 71 69-72"/>
+            <path class="zip-line" d="M179 384v161"/>
+            <path class="seatbelt" d="M107 304 236 548"/>
+            <path class="jacket-fold" d="M103 384c18-24 39-37 58-42M255 384c-17-23-37-36-56-42M139 425l-10 105M221 425l11 105"/>
+            <g class="uniform-panel"><rect x="102" y="424" width="50" height="25" rx="5"/><path d="M113 434h28M113 441h17"/></g>
+            <g class="antara-patch" transform="translate(245 361)"><circle r="16"/><ellipse rx="24" ry="8" transform="rotate(-24)"/><circle class="patch-dot" cx="11" cy="-13" r="2.8"/></g>
+            <path class="arm arm-left" d="M87 391c-18 45-22 93-16 143"/><path class="arm arm-right" d="M273 392c18 44 22 92 16 142"/>
           </g>
           <g class="character-head">
-            <path class="face" d="M96 112c6-43 31-68 58-70 38-2 67 29 71 76 5 61-24 105-72 105-45 0-68-45-63-100 1-4 3-8 6-11Z"/>
-            <path class="face-shadow" d="M188 67c29 18 40 56 32 96-5 27-18 45-37 54 19-29 24-64 18-96-5-25-13-42-13-54Z"/>
-            <ellipse class="face-highlight" cx="124" cy="99" rx="25" ry="34"/>
-            <g class="ears"><ellipse cx="91" cy="141" rx="10" ry="17"/><ellipse cx="220" cy="141" rx="10" ry="17"/></g>
+            <path class="ear left" d="M115 158c-11-1-17 10-14 25 3 15 10 22 20 20Z"/><path class="ear right" d="M246 157c11-1 16 10 14 25-3 15-10 22-20 20Z"/>
+            <path class="face" d="M122 116c7-38 31-59 64-60 34 0 57 25 60 63 4 43-8 81-34 106-13 13-26 20-38 20-13-2-25-11-36-25-21-26-27-65-16-104Z"/>
+            <path class="face-cel-shade" d="M216 70c20 18 28 52 21 86-6 28-20 52-39 68 14-27 18-56 14-85-3-23-4-47 4-69Z"/>
+            <path class="ear-detail left" d="M111 174c5-4 8-2 9 3"/><path class="ear-detail right" d="M250 174c-5-4-8-2-9 3"/>
             <g class="eyes">
-              <path class="eye eye-left" d="M112 134q18-14 36 0q-18 15-36 0Z"/><path class="eye eye-right" d="M164 134q18-14 36 0q-18 15-36 0Z"/>
-              <ellipse class="pupil iris" cx="131" cy="134" rx="7.2" ry="8.4"/><ellipse class="pupil iris" cx="183" cy="134" rx="7.2" ry="8.4"/>
-              <circle class="eye-glint" cx="128.5" cy="130.5" r="2.3"/><circle class="eye-glint" cx="180.5" cy="130.5" r="2.3"/>
-              <path class="lash" d="M111 131q18-16 38 0"/><path class="lash" d="M163 131q18-16 38 0"/>
+              <path class="eye eye-left" d="M130 145c11-13 29-15 43-2-12 13-31 15-43 2Z"/><path class="eye eye-right" d="M186 142c16-15 38-13 51 3-14 15-39 14-51-3Z"/>
+              <ellipse class="pupil" cx="153" cy="146" rx="8.5" ry="12"/><ellipse class="pupil" cx="214" cy="146" rx="10.2" ry="13.8"/>
+              <ellipse class="iris-core" cx="153" cy="151" rx="4" ry="5.4"/><ellipse class="iris-core" cx="214" cy="152" rx="4.8" ry="6.4"/>
+              <circle class="eye-glint" cx="149" cy="141" r="3"/><circle class="eye-glint" cx="210" cy="140" r="3.5"/><circle class="eye-glint-small" cx="156" cy="147" r="1.3"/><circle class="eye-glint-small" cx="218" cy="148" r="1.5"/>
+              <path class="upper-lash" d="M128 142c14-16 33-17 47-1M184 140c17-18 41-16 55 3"/>
+              <path class="lower-lash" d="M134 152c10 6 24 6 34 0M192 153c12 6 29 5 39-1"/>
             </g>
-            <path class="brow brow-left" d="M112 112q17-10 35-3"/><path class="brow brow-right" d="M165 109q18-7 35 4"/>
-            <path class="nose" d="M157 139q-6 15 3 18"/>
-            <ellipse class="blush blush-left" cx="117" cy="157" rx="18" ry="10"/><ellipse class="blush blush-right" cx="197" cy="157" rx="18" ry="10"/>
-            <g class="mouth-frames"><path class="mouth mouth-closed" d="M138 178q18 12 37 0"/><path class="mouth mouth-half" d="M138 178q18 20 37 0q-18 10-37 0Z"/><ellipse class="mouth mouth-open" cx="157" cy="185" rx="16" ry="11"/></g>
-            <g class="hair-front"><path d="M91 119c-1-54 27-85 67-85 46 0 72 31 71 75-21-25-49-34-77-26-24 7-37 24-61 36Z"/><path d="M108 82c20-27 49-35 74-27-12 4-24 14-31 28-11 20-29 27-43 31 7-10 8-21 0-32Z"/><path d="M179 55c24 7 42 25 48 50-16-13-31-18-49-17 8-11 10-21 1-33Z"/></g>
+            <path class="brow brow-left" d="M128 119c13-7 29-8 43-3"/><path class="brow brow-right" d="M189 116c14-5 29-3 42 4"/>
+            <path class="nose-shadow" d="M188 153c-3 9-1 18 6 21"/>
+            <path class="nose-dot" d="M193 177h3"/>
+            <ellipse class="cheek cheek-left" cx="134" cy="183" rx="20" ry="8"/><ellipse class="cheek cheek-right" cx="224" cy="183" rx="20" ry="8"/>
+            <g class="mouth-frames"><path class="mouth mouth-closed" d="M174 205c9 6 21 6 30-1"/><path class="mouth mouth-half" d="M174 205c9 12 21 12 30-1-8 6-20 7-30 1Z"/><ellipse class="mouth mouth-open" cx="190" cy="209" rx="12" ry="8.5"/></g>
+            <g class="hair-front">
+              <path d="M105 132c-2-51 27-87 73-89 49-2 80 31 79 79-24-25-50-34-78-26-26 8-45 24-74 36Z"/>
+              <path d="M118 88c18-27 43-40 69-41-13 10-22 23-28 39-8 20-19 33-38 45 6-15 6-29-3-43Z"/>
+              <path d="M158 53c14-7 31-10 47-7-8 8-13 17-16 28-5 18-15 32-31 43 5-20 5-42 0-64Z"/>
+              <path d="M202 49c21 5 39 17 51 34-15-3-28 0-41 8 4-13 1-28-10-42Z"/>
+              <path class="side-lock left" d="M110 111c-10 31-9 66 1 101l15-54-1-59Z"/><path class="side-lock right" d="M249 108c11 31 11 65 2 103l-16-55 0-57Z"/>
+              <path class="hair-highlight-shape" d="M133 69c20-12 42-17 64-13-20 6-36 15-49 29Z"/>
+            </g>
+            <path class="hair-line" d="M115 103c14-24 37-41 64-48M214 55c17 8 30 21 37 38"/>
+            <path class="hair-strand" d="M249 110c18 31 20 65 9 99"/>
           </g>
-          <g class="gesture-arm gesture-point"><path d="M225 303q31-24 45-69"/><circle cx="272" cy="228" r="9"/></g>
-          <g class="hair-strand"><path d="M214 102q38 38 18 92"/></g>
-          <g class="antara-patch"><circle cx="84" cy="309" r="13"/><ellipse cx="84" cy="309" rx="19" ry="7" transform="rotate(-28 84 309)"/></g>
+          <g class="gesture-arm gesture-point"><path d="M274 405c31-20 49-48 59-81"/><path class="glove" d="M333 322c3-9 13-12 21-6 7 6 5 17-3 22-10 5-21-5-18-16Z"/></g>
         </svg>
       </article>
 
-      <article class="companion companion-b" id="companion-b" data-state="idle" data-expression="calm" aria-label="Aksa, teman perjalanan ANTARA">
-        <svg class="character-rig" viewBox="0 0 300 470" role="img" aria-label="Aksa, teman perjalanan yang suka sains">
+      <article class="companion companion-b" id="companion-b" data-state="idle" data-expression="calm" aria-label="Aksa, ilmuwan penerbangan ANTARA">
+        <svg class="character-rig" viewBox="0 0 360 560" role="img" aria-label="Aksa, ilmuwan penerbangan ANTARA bergaya ilustrasi anime dua dimensi">
           <defs>
-            <linearGradient id="skin-b" x1=".15" y1=".05" x2=".85" y2=".95"><stop offset="0" stop-color="#fff7f0"/><stop offset=".5" stop-color="#ffe0cf"/><stop offset="1" stop-color="#ebb59d"/></linearGradient>
-            <linearGradient id="hair-b" x1=".18" y1="0" x2=".82" y2="1"><stop offset="0" stop-color="#465064"/><stop offset=".46" stop-color="#252d40"/><stop offset="1" stop-color="#101522"/></linearGradient>
-            <linearGradient id="jacket-b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#778ba3"/><stop offset=".52" stop-color="#53697f"/><stop offset="1" stop-color="#304457"/></linearGradient>
-            <linearGradient id="iris-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c7a777"/><stop offset="1" stop-color="#624d37"/></linearGradient>
-            <radialGradient id="cheek-b"><stop stop-color="#e7949b" stop-opacity=".28"/><stop offset="1" stop-color="#e7949b" stop-opacity="0"/></radialGradient>
+            <linearGradient id="aksa-skin" x1=".15" y1=".05" x2=".85" y2=".95"><stop offset="0" stop-color="#fff1e6"/><stop offset=".58" stop-color="#edbea6"/><stop offset="1" stop-color="#d38e76"/></linearGradient>
+            <linearGradient id="aksa-hair" x1=".1" y1="0" x2=".9" y2="1"><stop offset="0" stop-color="#4b3a57"/><stop offset=".48" stop-color="#261c34"/><stop offset="1" stop-color="#0d0b18"/></linearGradient>
+            <linearGradient id="aksa-uniform" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#203b53"/><stop offset=".55" stop-color="#10273a"/><stop offset="1" stop-color="#071522"/></linearGradient>
+            <linearGradient id="aksa-eye" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f2cd92"/><stop offset=".52" stop-color="#b97949"/><stop offset="1" stop-color="#5b3828"/></linearGradient>
           </defs>
-          <g class="character-shadow"><ellipse cx="150" cy="448" rx="88" ry="13"/></g>
-          <g class="hair-back"><path d="M81 159c-4-70 28-114 79-119 55-5 91 37 86 112l-9 114H78Z"/><path class="hair-highlight" d="M119 57c30-18 67-18 94 1-29-7-58-3-83 10Z"/></g>
+          <ellipse class="character-shadow" cx="180" cy="535" rx="116" ry="15"/>
+          <g class="hair-back">
+            <path d="M96 183c-6-77 26-127 84-136 64-10 105 36 98 117l-9 119c-20 30-52 47-88 47-38 0-70-18-89-49Z"/>
+            <path class="bob-lock left" d="M97 155c-12 49-9 100 7 144l25-54-4-108Z"/><path class="bob-lock right" d="M266 148c14 49 12 99-4 147l-25-54 5-107Z"/>
+            <path class="hair-tail" d="M260 176c27 17 39 44 35 76-3 25-14 47-31 66l-13-82Z"/>
+            <path class="hair-highlight-shape" d="M132 77c32-23 72-26 106-8-33-5-64 2-89 23Z"/>
+          </g>
           <g class="character-body">
-            <path class="neck" d="M128 195h47l8 48h-64Z"/>
-            <path class="jacket" d="M61 275c13-56 45-82 89-82 45 0 78 28 91 84l24 157H38Z"/>
-            <path class="jacket-panel" d="M88 244c21 20 42 30 62 30 22 0 43-10 63-31l12 191H75Z"/>
-            <path class="shirt" d="M117 211h65l20 67-99 1Z"/>
-            <path class="collar" d="m106 220 42 47 45-48 18 34-62 51-61-51Z"/>
-            <path class="arm arm-left" d="M75 290c-23 28-33 65-34 108"/><path class="arm arm-right" d="M227 290c25 27 36 63 38 108"/>
-            <path class="seatbelt" d="M200 239 99 424"/>
-            <g class="uniform-detail"><path d="M77 331h39"/><path d="M184 331h39"/><circle cx="216" cy="309" r="13"/></g>
+            <path class="neck" d="M154 240h51l8 55h-68Z"/>
+            <path class="uniform-base" d="M58 560 78 367c7-61 45-96 101-96 57 0 96 36 104 98l19 191Z"/>
+            <path class="uniform-side left" d="M58 560 78 372c5-41 21-71 49-88l29 59-21 217Z"/>
+            <path class="uniform-side right" d="m302 560-19-188c-5-42-22-72-50-89l-30 60 22 217Z"/>
+            <path class="undershirt" d="m148 280 31 42 32-42 20 47-52 51-50-51Z"/>
+            <path class="collar-panel left" d="m127 284 52 94-37 24-41-83Z"/><path class="collar-panel right" d="m233 284-54 94 37 24 43-83Z"/>
+            <path class="gold-trim" d="m111 312 68 72 71-73"/><path class="gold-trim collar-accent" d="m211 296 30 32"/>
+            <path class="zip-line" d="M179 386v159"/><path class="seatbelt" d="M245 302 119 548"/>
+            <path class="jacket-fold" d="M102 384c18-24 39-36 58-42M256 384c-17-24-37-36-56-42M138 426l-9 103M222 426l10 103"/>
+            <g class="uniform-panel right-panel"><rect x="208" y="424" width="50" height="25" rx="5"/><path d="M219 434h28M219 441h17"/></g>
+            <g class="antara-patch" transform="translate(116 361)"><circle r="16"/><ellipse rx="24" ry="8" transform="rotate(24)"/><circle class="patch-dot" cx="-11" cy="-13" r="2.8"/></g>
+            <path class="arm arm-left" d="M87 391c-18 45-22 93-16 143"/><path class="arm arm-right" d="M273 392c18 44 22 92 16 142"/>
           </g>
           <g class="character-head">
-            <path class="face" d="M97 113c6-44 30-68 58-71 37-4 67 27 71 75 5 62-25 106-72 106-45 0-69-44-64-99 1-5 3-8 7-11Z"/>
-            <path class="face-shadow" d="M189 68c28 20 39 57 31 96-5 26-18 44-37 53 19-29 23-63 18-95-4-24-12-41-12-54Z"/>
-            <ellipse class="face-highlight" cx="124" cy="99" rx="24" ry="33"/>
-            <g class="ears"><ellipse cx="91" cy="141" rx="10" ry="17"/><ellipse cx="220" cy="141" rx="10" ry="17"/></g>
-            <g class="eyes"><path class="eye eye-left" d="M112 135q18-13 36 0q-18 14-36 0Z"/><path class="eye eye-right" d="M164 135q18-13 36 0q-18 14-36 0Z"/><ellipse class="pupil iris" cx="131" cy="135" rx="6.8" ry="8"/><ellipse class="pupil iris" cx="183" cy="135" rx="6.8" ry="8"/><circle class="eye-glint" cx="128.5" cy="131.5" r="2.1"/><circle class="eye-glint" cx="180.5" cy="131.5" r="2.1"/><path class="lash" d="M111 132q18-14 38 0"/><path class="lash" d="M163 132q18-14 38 0"/></g>
-            <path class="brow brow-left" d="M112 113q17-8 35-2"/><path class="brow brow-right" d="M165 111q18-6 35 3"/><path class="nose" d="M157 140q-5 14 3 18"/>
-            <ellipse class="blush blush-left" cx="117" cy="158" rx="18" ry="9"/><ellipse class="blush blush-right" cx="197" cy="158" rx="18" ry="9"/>
-            <g class="mouth-frames"><path class="mouth mouth-closed" d="M139 179q17 9 35 0"/><path class="mouth mouth-half" d="M139 179q17 17 35 0q-17 8-35 0Z"/><ellipse class="mouth mouth-open" cx="157" cy="185" rx="15" ry="10"/></g>
-            <g class="hair-front"><path d="M92 116c2-51 30-80 70-80 43 0 68 29 68 70-24-21-50-27-75-18-25 9-39 18-63 28Z"/><path d="M106 76c28-24 64-30 91-13-15 0-30 8-43 22-15 16-31 21-48 24 9-10 10-21 0-33Z"/></g>
+            <path class="ear left" d="M115 159c-11-1-17 10-14 25 3 15 10 22 20 20Z"/><path class="ear right" d="M246 158c11-1 16 10 14 25-3 15-10 22-20 20Z"/>
+            <path class="face" d="M114 119c4-38 27-63 61-64 33-1 58 20 65 58 10 40 4 80-17 107-11 15-23 24-36 26-12 0-25-7-38-19-27-24-40-63-35-108Z"/>
+            <path class="face-cel-shade" d="M213 68c22 17 34 49 31 83-2 29-13 54-31 73 11-28 12-57 5-85-5-23-10-47-5-71Z"/>
+            <path class="ear-detail left" d="M111 175c5-4 8-2 9 3"/><path class="ear-detail right" d="M250 175c-5-4-8-2-9 3"/>
+            <g class="eyes">
+              <path class="eye eye-left" d="M122 144c14-15 37-16 52-1-13 15-38 16-52 1Z"/><path class="eye eye-right" d="M188 145c13-12 31-10 42 4-12 12-31 10-42-4Z"/>
+              <ellipse class="pupil" cx="149" cy="146" rx="10.2" ry="13.6"/><ellipse class="pupil" cx="211" cy="148" rx="8.5" ry="11.8"/>
+              <ellipse class="iris-core" cx="149" cy="152" rx="4.8" ry="6.3"/><ellipse class="iris-core" cx="211" cy="153" rx="4" ry="5.3"/>
+              <circle class="eye-glint" cx="145" cy="140" r="3.5"/><circle class="eye-glint" cx="208" cy="143" r="3"/>
+              <path class="upper-lash" d="M120 141c17-18 41-18 56 0M186 143c14-14 34-12 46 4"/><path class="lower-lash" d="M128 153c12 6 29 6 40-1M194 154c10 5 23 4 32-1"/>
+            </g>
+            <path class="brow brow-left" d="M128 121c14-6 29-6 43-1"/><path class="brow brow-right" d="M190 118c14-4 28-1 40 6"/>
+            <path class="nose-shadow" d="M173 154c2 9 1 17-6 21"/><path class="nose-dot" d="M164 178h3"/>
+            <ellipse class="cheek cheek-left" cx="134" cy="184" rx="20" ry="8"/><ellipse class="cheek cheek-right" cx="224" cy="184" rx="20" ry="8"/>
+            <g class="mouth-frames"><path class="mouth mouth-closed" d="M156 205c9 6 21 6 30-1"/><path class="mouth mouth-half" d="M156 205c9 12 21 12 30-1-8 6-20 7-30 1Z"/><ellipse class="mouth mouth-open" cx="172" cy="209" rx="12" ry="8.5"/></g>
+            <g class="hair-front">
+              <path d="M104 133c0-52 30-88 77-90 48-2 79 29 79 76-27-22-54-29-80-19-27 10-47 23-76 33Z"/>
+              <path d="M117 88c23-27 50-39 78-38-16 8-29 21-39 36-12 17-24 28-43 37 7-13 8-24 4-35Z"/>
+              <path d="M171 48c22-6 45-3 64 7-13 6-23 16-30 29-9 16-21 27-36 34 8-22 9-46 2-70Z"/>
+              <path d="M224 58c15 6 28 15 38 28-12-1-23 2-34 9 2-12 1-24-4-37Z"/>
+              <path class="side-lock left" d="M109 112c-9 31-8 65 2 100l15-54-1-58Z"/><path class="side-lock right" d="M250 109c11 28 12 61 4 98l-18-52 1-55Z"/>
+            </g>
+            <path class="hair-line" d="M116 103c17-25 40-40 69-48M219 59c16 8 28 19 36 33"/>
+            <path class="hair-strand" d="M109 112c-16 31-16 64-6 96"/>
           </g>
-          <g class="gesture-arm gesture-point"><path d="M76 304q-33-23-46-65"/><circle cx="28" cy="233" r="9"/></g>
-          <g class="hair-strand"><path d="M92 101q-31 37-13 90"/></g>
-          <g class="antara-patch"><circle cx="216" cy="309" r="13"/><ellipse cx="216" cy="309" rx="19" ry="7" transform="rotate(28 216 309)"/></g>
+          <g class="gesture-arm gesture-point"><path d="M86 405c-31-20-49-48-59-81"/><path class="glove" d="M27 322c-3-9-13-12-21-6-7 6-5 17 3 22 10 5 21-5 18-16Z"/></g>
         </svg>
       </article>
 

@@ -1,33 +1,39 @@
-# ANTARA Opening / Launch Rework Report
+# ANTARA Intro / Rocket POV Repair Report
 
 ## Files modified
 - `index.html`
 - `styles.css`
 - `script.js`
 
-No Earth, Venus, Mars, exploration-media, texture, or audio implementation files were modified.
+Earth, Venus, Mars, exploration-media, planet data, texture, and planetary navigation implementation files were not modified.
 
 ## What changed
-1. The website now starts with the launch-stage cockpit visible immediately in the `home` state. The first click starts the journey timeline instead of revealing the cockpit concept.
-2. The lower-left `BERANGKAT DARI INDONESIA` location element was removed.
-3. The bottom cockpit was expanded into three instrument banks with altitude/navigation/telemetry displays, switches, indicator lights, and navigation controls while keeping the center window readable.
-4. Both previous character SVG rigs were rebuilt with new 2D anime-inspired vector artwork, fair skin rendering, richer hair/face/eye shading, uniform details, and cleaner silhouettes.
-5. Existing rig animation behavior remains connected to the new character art: blinking, breathing, head movement, talking mouth frames, launch reaction, turbulence reaction, and Earth-looking/pointing states.
-6. The departure environment now includes a road grid, city lighting, hangars, launch tower, beacons, runway/terminal lighting, terrain depth, and stronger parallax/recession cues.
-7. The ascent keeps the existing phase system but uses smoother camera vibration and less mechanical high-frequency shaking.
-8. Clouds were expanded with layered volume lobes, internal shadow layers, moving wisps, a visible cloud-top deck, and smoother approach/pass/exit motion rather than a white fog overlay.
-9. The city → sky → clouds → above clouds → upper atmosphere → space progression remains one continuous timeline, with phase-specific lighting and smoother cloud movement.
-10. The existing Earth handoff remains intact. The real Earth scene still starts behind the cockpit before the final cockpit fade.
+1. The opening still starts directly inside the cockpit POV. The click begins the journey instead of revealing the cockpit.
+2. The large visual `Ayo Keliling Tata Surya!` heading was removed. A small `SELAMAT DATANG DI ANTARA` kicker remains so it cannot collide with the header.
+3. The START control now lives in a deliberate top-level interaction layer. The cockpit stage and every decorative descendant are explicitly non-interactive, while the launch button, brand link, and audio control keep pointer input.
+4. The opening stack was consolidated into a controlled order: environment, atmospheric layers, crew, cockpit frame/dashboard, speech UI, vignette, START UI, then global navigation.
+5. Both old crew SVG presentations were replaced with new female anime/manga-inspired rigs. Nara and Aksa use distinct hair, eyes, silhouettes, cel shading, and navy/gold ANTARA uniform details.
+6. The new crew rigs preserve blinking, breathing, head movement, mouth animation, launch/turbulence reaction, expression changes, and pointing/looking states from the existing timeline.
+7. Crew sizing is tied to viewport height and reduced across narrower/shorter desktop layouts so they do not cover the center flight path, START control, or cockpit instruments.
+8. The cockpit dashboard remains visible and sits in front of the lower crew bodies, which makes the characters feel seated inside the vehicle instead of pasted over the controls.
+9. The exterior departure environment gained deeper skyline layers, windows/lights, terrain depth, hangars, launch tower, beacons, terminal lighting, and road/ground cues.
+10. Existing layered cloud visuals and the city → sky → clouds → atmosphere → space timeline remain intact.
+11. Existing Earth handoff logic and all planet implementations remain intact.
+
+## Root cause of the START problem
+The project had accumulated multiple generations of opening CSS with competing stacking rules. The launch stage, intro layer, masthead, speech layer, cockpit frame, and character layers were being restacked by later override blocks. Even though the JavaScript click listener existed, this made the interaction layer fragile and dependent on CSS ordering.
+
+The repair removes that ambiguity by enforcing one final opening stack and by making every decorative cockpit layer `pointer-events: none`. The launch button is the only primary START target above the cockpit visuals.
 
 ## Validation performed
-- JavaScript syntax checks passed for `script.js`, `earth-scene.js`, `venus-scene.js`, `mars-scene.js`, and `exploration-media.js`.
-- HTML parsed successfully with no duplicate IDs.
-- Every `getElementById()` target in `script.js` exists in `index.html`.
-- All locally referenced HTML/JS assets exist.
-- CSS brace balance passed.
-- Confirmed three cockpit control banks and two companion rigs exist.
-- Confirmed `BERANGKAT DARI INDONESIA` is absent.
-- Diff check confirmed only `index.html`, `styles.css`, and `script.js` changed relative to the supplied project.
+- `node --check script.js` passed.
+- HTML parsed with no duplicate IDs.
+- Exactly one `launchButton.addEventListener("click", ...)` remains.
+- Planet-scene and exploration-media JS/CSS hashes match the supplied latest project.
+- Chromium headless flow test was run with all project HTML/CSS/JS inlined because the environment blocks localhost/file navigation.
+- Tested viewport sizes: `1920x1080`, `1600x900`, `1440x900`, `1366x768`.
+- At all four sizes: no horizontal overflow, the START button center resolves to `#launch-button`, no JavaScript console errors were recorded, and clicking START changed the state from `home` to `launch`.
+- A longer runtime check reached the `liftoff` phase with no JavaScript console errors.
 
-## Browser-check limitation
-A graphical runtime check was attempted in the container, but the available Chromium installation failed to load local pages in this environment. Because of that environment limitation, no claim is made that a full visual browser run passed here. Static and structural checks above did pass, and the existing planet implementation files were left untouched.
+## Environment note
+The container blocks direct Chromium navigation to localhost and `file://`, so the browser validation used the complete document with local CSS/JS inlined into an `about:blank` page. This still exercised DOM layout, stacking, pointer hit testing, event listeners, state transition, and launch timing code.
