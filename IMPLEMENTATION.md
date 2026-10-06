@@ -1,3 +1,55 @@
+# ANTARA | branding + animated cockpit companions
+
+## Ringkasan terbaru
+Opening sekarang menggunakan identitas **ANTARA / Antariksa Nusantara** dan perjalanan peluncuran first-person dari dalam kokpit. Implementasi tidak memakai karakter PNG statis, video background, atau third-person rocket shot. Dua karakter companion adalah rig SVG berlapis yang dianimasikan per bagian dan berbicara melalui speech bubble yang mengikuti timeline perjalanan.
+
+### Branding
+- Primary logo text: `ANTARA`.
+- Expanded name: `Antariksa Nusantara`.
+- `<title>`: `ANTARA | Antariksa Nusantara`.
+- Metadata, aria label logo, homepage, kokpit, dan status peluncuran sudah konsisten.
+- API internal lama `window.AntariksaUIAudio` dipertahankan sebagai compatibility bridge karena bukan identitas visual dan dipakai shared media system.
+
+### Character animation technique
+- Layered inline SVG.
+- Layer terpisah: body, head, hair back/front/strand, eyes, pupils, three mouth frames, arms, pointing gesture, seatbelt, patch.
+- Idle: body breathing, independent head motion, hair sway.
+- Blink: timer acak sekitar 2–6 detik dengan peluang double blink ringan.
+- Talking: mouth closed/half/open berganti frame dan head talk motion.
+- Launch: body shifts dengan acceleration lag yang berbeda dari camera.
+- Clouds: turbulence state menggerakkan head/hair lebih kuat.
+- Earth reveal: character state berubah menjadi looking-earth / pointing.
+
+### Dialogue timeline
+1. Nara: “Ayo, kita jelajah bersama!”
+2. Aksa: “Tujuan pertama kita dekat banget. Bumi!”
+3. Nara: “Wah, mesinnya mulai nyala!”
+4. Aksa: “Pegangan, ya. Kita segera berangkat!”
+5. Nara: “Kita terbang!”
+6. Aksa: “Lihat awannya!”
+7. Nara: “Wah, putih semua!”
+8. Aksa: “Kita sudah makin tinggi!”
+9. Nara: “Eh, lihat di depan!”
+10. Aksa: “Itu Bumi! Rumah kita.”
+11. Nara: “Yuk, kita lihat lebih dekat!”
+
+Dialog berasal dari satu `DIALOGUE_TIMELINE` dan dipicu berdasarkan `LAUNCH_TIMING`, bukan timeout acak yang terpisah dari perjalanan.
+
+### First-person environment
+- Tidak ada external rocket shot di opening/launch.
+- Front-window world berisi horizon, multiple cloud layers, atmosfer, bintang, dan Earth reveal.
+- Cockpit frame/dashboard mempunyai transform sendiri.
+- Camera shake, character lag, dan cloud motion menggunakan amplitudo berbeda sehingga depth tidak terasa seperti satu gambar digeser bersama.
+- Saat `prefers-reduced-motion`, shake/parallax dikurangi tanpa menghilangkan dialog/progres.
+
+### Earth handoff
+Pada fase `approach`, Earth renderer existing dimulai di belakang cockpit. `--handoff` kemudian menurunkan prominence cockpit dan companion sementara Earth mendominasi view. Setelah timeline selesai, launch layer fade singkat lalu dilepas. Existing Earth scene tetap menjadi source of truth setelah handoff.
+
+### Planet systems
+Renderer Earth/Venus/Mars, lokasi/marker, exploration cards, image previews, lightbox, Venus travel surface fix, dan Mars content order tidak dibangun ulang. Perubahan utama berada di `index.html`, `styles.css`, dan `script.js`.
+
+---
+
 # Refinement marker visual Earth + Mars
 
 ## Ringkasan terbaru

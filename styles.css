@@ -603,3 +603,223 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .hero-craft-wrap { left: 50%; transform: translateX(-50%); }
   .cosmic-ribbon, .crew, .crew-pointing-arm, .crew-ponytail, .deck-lights circle { animation: none !important; }
 }
+
+/* =============================================================
+   ANTARA cockpit journey
+   Layered first-person launch experience. Planet scenes below are untouched.
+   ============================================================= */
+
+.brand-caption { display: block; margin-top: 4px; font-size: 5.5px; letter-spacing: 2.2px; color: rgba(225,217,201,.66); font-weight: 500; }
+.intro { bottom: 9%; z-index: 8; }
+.intro-copy { width: min(560px, 76vw); margin: -8px auto 20px; color: rgba(211,220,231,.84); font-size: clamp(11px, 1.05vw, 14px); line-height: 1.65; text-shadow: 0 2px 15px rgba(0,0,0,.55); }
+.scene-art { background: radial-gradient(circle at 50% 24%, rgba(39,82,128,.24), transparent 35%), linear-gradient(180deg,#061222 0%,#071627 48%,#030a14 100%); }
+.scene-shade { background: linear-gradient(180deg, rgba(2,7,15,.30), transparent 20%, transparent 66%, rgba(2,7,15,.72) 100%); }
+
+.launch-stage {
+  --space-mix: 0;
+  --earth-reveal: 0;
+  --handoff: 0;
+  --engine-power: 0;
+  --cam-x: 0px;
+  --cam-y: 0px;
+  --cam-tilt: 0deg;
+  --char-a-x: 0px;
+  --char-a-y: 0px;
+  --char-b-x: 0px;
+  --char-b-y: 0px;
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: block;
+  overflow: hidden;
+  opacity: 1;
+  pointer-events: none;
+  background: #061321;
+  transition: opacity .8s ease;
+}
+.launch-stage[hidden] { display: none; }
+.cockpit-world { position: absolute; inset: 0; overflow: hidden; transform: translate3d(calc(var(--cam-x) * -.2), calc(var(--cam-y) * -.2), 0) scale(1.018); transform-origin: 50% 50%; }
+.launch-sky {
+  position: absolute;
+  inset: -8%;
+  opacity: 1;
+  transform: scale(calc(1 + var(--space-mix) * .055));
+  background:
+    radial-gradient(circle at 78% 17%, rgba(216,232,248,.9) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 61% 13%, rgba(216,232,248,.7) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 32% 19%, rgba(216,232,248,.65) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 50% 24%, rgba(112,166,212,.20), transparent 24%),
+    linear-gradient(180deg,
+      color-mix(in srgb, #17395e calc((1 - var(--space-mix)) * 100%), #020713 calc(var(--space-mix) * 100%)) 0%,
+      color-mix(in srgb, #315d7d calc((1 - var(--space-mix)) * 100%), #050b18 calc(var(--space-mix) * 100%)) 48%,
+      color-mix(in srgb, #d7a774 calc((1 - var(--space-mix)) * 100%), #081324 calc(var(--space-mix) * 100%)) 100%);
+}
+.launch-sky::before,
+.launch-sky::after { content:""; position:absolute; inset:0; opacity: calc(.08 + var(--space-mix) * .92); background-image: radial-gradient(circle,#dfefff 0 1px,transparent 1.3px); background-size: 72px 72px; background-position: 13px 21px; animation: cockpit-star-drift 42s linear infinite; }
+.launch-sky::after { background-size: 113px 113px; background-position: 41px 8px; opacity: calc(.04 + var(--space-mix) * .55); animation-duration: 63s; }
+.launch-horizon { position:absolute; left:-10%; right:-10%; bottom:31%; height:32%; width:auto; border:0; border-radius:0; background: linear-gradient(180deg, transparent, rgba(73,111,139,.12) 30%, rgba(23,45,65,.72) 70%, rgba(6,16,27,.98)); clip-path: polygon(0 64%,8% 54%,18% 66%,29% 45%,40% 62%,53% 49%,65% 66%,78% 44%,88% 59%,100% 48%,100% 100%,0 100%); box-shadow:none; opacity: calc(1 - var(--space-mix)); transform: translateY(calc(var(--space-mix) * 20vh)); }
+.atmosphere-glow { position:absolute; left:50%; bottom:24%; width:115%; height:33%; transform:translateX(-50%); background:radial-gradient(ellipse, rgba(245,190,123,.28), rgba(113,164,204,.10) 36%, transparent 70%); filter:blur(14px); opacity:calc(1 - var(--space-mix) * .75); }
+
+.cloud-layer { position:absolute; left:-20%; width:140%; height:42%; border-radius:50%; filter:blur(17px); opacity:0; will-change:transform,opacity; }
+.cloud-layer::before,.cloud-layer::after { content:""; position:absolute; inset:0; border-radius:50%; background:radial-gradient(ellipse at 20% 50%,rgba(241,246,249,.88),transparent 24%),radial-gradient(ellipse at 47% 42%,rgba(216,229,238,.78),transparent 26%),radial-gradient(ellipse at 76% 55%,rgba(235,242,247,.86),transparent 25%); }
+.cloud-far { bottom:-8%; transform:translate3d(0,var(--cloud-far-y,0px),0) scale(1.1); opacity:var(--cloud-far-opacity,0); filter:blur(24px); }
+.cloud-mid { bottom:-15%; transform:translate3d(var(--cloud-mid-x,0px),var(--cloud-mid-y,0px),0) scale(1.22); opacity:var(--cloud-mid-opacity,0); }
+.cloud-near { bottom:-26%; transform:translate3d(var(--cloud-near-x,0px),var(--cloud-near-y,0px),0) scale(1.45); opacity:var(--cloud-near-opacity,0); filter:blur(11px); }
+.launch-particles { position:absolute; inset:0; width:100%; height:100%; opacity:calc(.12 + var(--space-mix) * .88); }
+
+.arrival-earth { z-index:2; left:50%; top:42%; width:min(49vh,44vw); opacity:var(--earth-reveal); transform:translate(-50%, -50%) scale(calc(.12 + var(--earth-reveal) * .9)); filter:saturate(.9) contrast(1.06); }
+
+.cockpit-camera { position:absolute; inset:0; z-index:5; transform:translate3d(var(--cam-x),var(--cam-y),0) rotate(var(--cam-tilt)); transform-origin:50% 84%; will-change:transform,opacity; opacity:calc(1 - var(--handoff) * .96); }
+.cockpit-roof { position:absolute; left:-5%; right:-5%; top:-3%; height:17%; background:linear-gradient(180deg,#07101c 0%,#111f2c 58%,rgba(10,19,28,.96)); clip-path:polygon(0 0,100% 0,96% 38%,70% 78%,30% 78%,4% 38%); border-bottom:1px solid rgba(230,199,141,.26); box-shadow:0 12px 35px rgba(0,0,0,.36); }
+.cockpit-roof span { position:absolute; top:67%; width:23%; height:2px; background:linear-gradient(90deg,transparent,rgba(137,191,227,.55),transparent); }
+.cockpit-roof span:first-child { left:15%; transform:rotate(6deg); }
+.cockpit-roof span:last-child { right:15%; transform:rotate(-6deg); }
+.cockpit-pillar { position:absolute; top:8%; bottom:18%; width:9%; background:linear-gradient(90deg,#050b13,#152434 54%,#070e17); box-shadow:inset 0 0 0 1px rgba(224,195,142,.13),0 0 30px rgba(0,0,0,.32); }
+.pillar-left { left:-2%; clip-path:polygon(0 0,78% 0,100% 100%,0 100%); }
+.pillar-right { right:-2%; clip-path:polygon(22% 0,100% 0,100% 100%,0 100%); }
+.cockpit-dashboard { position:absolute; left:-4%; right:-4%; bottom:-6%; height:25%; background:linear-gradient(180deg,#152536 0%,#0b1623 24%,#040a12 100%); clip-path:polygon(0 26%,13% 8%,34% 17%,50% 4%,66% 17%,87% 8%,100% 26%,100% 100%,0 100%); border-top:1px solid rgba(227,199,146,.23); box-shadow:0 -10px 42px rgba(0,0,0,.42); }
+.cockpit-brand { position:absolute; left:50%; top:28%; transform:translateX(-50%); display:grid; place-items:center; gap:3px; color:#f0d29a; letter-spacing:3px; text-shadow:0 0 16px rgba(237,197,126,.2); }
+.cockpit-brand strong { font-size:10px; font-weight:650; }
+.cockpit-brand small { color:#90a2b6; font-size:5px; letter-spacing:1.8px; }
+.dashboard-lights { position:absolute; left:12%; top:42%; display:flex; gap:8px; }
+.dashboard-lights i { width:4px; height:4px; border-radius:50%; background:#78b5d9; box-shadow:0 0 8px rgba(120,181,217,.55); animation:dashboard-blink 3.2s ease-in-out infinite; }
+.dashboard-lights i:nth-child(2n){ animation-delay:-1.2s; background:#d7bb79; }
+.dashboard-screen { position:absolute; right:10%; top:32%; min-width:150px; padding:8px 11px; border:1px solid rgba(127,173,207,.23); background:rgba(3,11,20,.58); color:#9fc1d9; font-size:6px; letter-spacing:1.4px; border-radius:3px; }
+.dashboard-screen b { display:block; width:100%; height:1px; margin-top:7px; background:linear-gradient(90deg,#6eb7e1,transparent); transform:scaleX(calc(.08 + var(--engine-power) * .92)); transform-origin:left; }
+
+.companion { position:absolute; z-index:7; bottom:9.5%; width:clamp(180px,22vw,315px); height:auto; opacity:calc(1 - var(--handoff) * 1.35); filter:drop-shadow(0 20px 24px rgba(0,0,0,.34)); will-change:transform,opacity; }
+.companion-a { left:4.5%; transform:translate3d(var(--char-a-x),var(--char-a-y),0); }
+.companion-b { right:4.5%; transform:translate3d(var(--char-b-x),var(--char-b-y),0); }
+.character-rig { display:block; width:100%; overflow:visible; }
+.character-shadow ellipse { fill:rgba(0,0,0,.28); }
+.companion .hair-back,.companion .hair-front,.companion .hair-strand { fill:#121826; }
+.companion-b .hair-back,.companion-b .hair-front,.companion-b .hair-strand { fill:#20252e; }
+.companion .face,.companion .ears ellipse { fill:#d79b79; stroke:#f3bf98; stroke-width:1; }
+.companion-b .face,.companion-b .ears ellipse { fill:#c98b68; }
+.companion .eye { fill:#faf6ef; stroke:#2b2730; stroke-width:2; }
+.companion .pupil { fill:#284557; }
+.companion-b .pupil { fill:#4a382b; }
+.companion .brow,.companion .nose { fill:none; stroke:#593b35; stroke-width:2.1; stroke-linecap:round; }
+.companion .mouth { stroke:#6e3740; stroke-width:2.2; stroke-linecap:round; transform-origin:center; }
+.companion .mouth-open,.companion .mouth-half { fill:#8f4650; opacity:0; }
+.companion .mouth-closed { fill:none; opacity:1; }
+.companion .jacket { fill:#1c3350; stroke:#7092ad; stroke-opacity:.32; stroke-width:2; }
+.companion-b .jacket { fill:#3b4557; stroke:#c1a96f; stroke-opacity:.28; }
+.companion .shirt { fill:#d9d7ce; }
+.companion-b .shirt { fill:#c9d5dc; }
+.companion .collar { fill:#0d1c2c; }
+.companion-b .collar { fill:#182532; }
+.companion .arm,.companion .gesture-arm path { fill:none; stroke:#d79b79; stroke-width:20; stroke-linecap:round; }
+.companion-b .arm,.companion-b .gesture-arm path { stroke:#c98b68; }
+.companion .gesture-arm circle { fill:#d79b79; }
+.companion-b .gesture-arm circle { fill:#c98b68; }
+.companion .seatbelt { fill:none; stroke:#d1b36f; stroke-width:8; stroke-linecap:round; opacity:.76; }
+.companion-b .seatbelt { stroke:#79a8c9; }
+.antara-patch { fill:none; stroke:#efcf91; stroke-width:2.3; opacity:.8; }
+.character-body { transform-origin:50% 100%; animation:character-breathe 4.8s ease-in-out infinite; }
+.character-head { transform-origin:50% 72%; animation:head-idle 6.2s ease-in-out infinite; }
+.hair-strand { transform-origin:50% 0%; animation:hair-idle 4s ease-in-out infinite; }
+.companion-b .character-body { animation-delay:-1.9s; }
+.companion-b .character-head { animation-delay:-2.6s; }
+.companion-b .hair-strand { animation-delay:-1.2s; }
+.companion .eyes { transform-box:fill-box; transform-origin:center; transition:transform 70ms linear; }
+.companion.is-blinking .eyes { transform:scaleY(.06); }
+.companion.is-talking .mouth-closed { animation:mouth-closed-cycle .34s steps(1,end) infinite; }
+.companion.is-talking .mouth-half { animation:mouth-half-cycle .34s steps(1,end) infinite; }
+.companion.is-talking .mouth-open { animation:mouth-open-cycle .34s steps(1,end) infinite; }
+.companion.is-talking .character-head { animation:head-talk 1.15s ease-in-out infinite alternate; }
+.gesture-point { opacity:0; transform-box:fill-box; transform-origin:50% 100%; transition:opacity .24s ease,transform .5s cubic-bezier(.2,.8,.2,1); transform:rotate(8deg) translateY(10px); }
+.companion[data-state="pointing"] .gesture-point,.companion[data-state="looking-earth"] .gesture-point { opacity:1; transform:rotate(0) translateY(0); }
+.companion[data-state="excited"] .character-head { animation:head-excited .7s ease-in-out infinite alternate; }
+.companion[data-state="launching"] .character-body { animation:launch-body .42s ease-in-out infinite alternate; }
+.companion[data-state="launching"] .hair-strand,.companion[data-state="turbulence"] .hair-strand { animation:hair-launch .33s ease-in-out infinite alternate; }
+.companion[data-state="turbulence"] .character-head { animation:turbulence-head .23s ease-in-out infinite alternate; }
+.companion[data-state="looking-earth"] .character-head { transform:rotate(var(--look-rotation,0deg)); animation:none; }
+.companion-a[data-state="looking-earth"] { --look-rotation:5deg; }
+.companion-b[data-state="looking-earth"] { --look-rotation:-7deg; }
+.companion-name { position:absolute; bottom:13%; left:50%; transform:translateX(-50%); padding:5px 8px; border:1px solid rgba(229,201,148,.17); background:rgba(3,10,18,.55); color:#d8c59e; font-size:5.5px; letter-spacing:1.7px; border-radius:999px; opacity:.72; }
+
+.speech-bubble { position:absolute; z-index:9; width:min(290px,30vw); padding:13px 16px 14px; border:1px solid rgba(224,202,161,.34); border-radius:12px; background:linear-gradient(145deg,rgba(9,20,32,.94),rgba(5,13,23,.88)); color:#eef3f7; box-shadow:0 14px 34px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.06); backdrop-filter:blur(10px); opacity:1; transform:translateY(0) scale(1); transition:left .45s ease,right .45s ease,opacity .22s ease,transform .22s ease; }
+.speech-bubble strong { display:block; margin-bottom:5px; color:#efcb8a; font-size:8px; letter-spacing:1.8px; text-transform:uppercase; }
+.speech-bubble span { display:block; font-size:clamp(11px,1vw,13px); line-height:1.45; }
+.speech-bubble::after { content:""; position:absolute; bottom:-9px; width:16px; height:16px; background:#07111d; border-right:1px solid rgba(224,202,161,.34); border-bottom:1px solid rgba(224,202,161,.34); transform:rotate(45deg); }
+.speech-bubble.speaker-a { left:19%; right:auto; bottom:49%; }
+.speech-bubble.speaker-a::after { left:24%; }
+.speech-bubble.speaker-b { right:19%; left:auto; bottom:49%; }
+.speech-bubble.speaker-b::after { right:24%; }
+.speech-bubble.is-changing { opacity:0; transform:translateY(8px) scale(.96); }
+
+.launch-vignette { z-index:10; pointer-events:none; background:radial-gradient(ellipse at 50% 45%,transparent 0 34%,rgba(2,7,14,.09) 62%,rgba(2,7,14,.46) 100%),linear-gradient(180deg,rgba(2,7,14,.32),transparent 16%,transparent 76%,rgba(2,7,14,.45)); }
+.preparation { z-index:14; bottom:5.7%; width:min(390px,64vw); text-shadow:0 2px 10px #000; }
+.is-preparing .preparation { opacity:1; }
+.is-preparing .masthead { opacity:.72; }
+.is-preparing .mission-footer { opacity:.72; }
+.is-preparing .scene-art { transform:none; filter:none; }
+.is-preparing .intro { opacity:0; transform:translateY(-12px); }
+.mission.is-earth .masthead,.mission.is-earth .mission-footer { transition:opacity .6s ease; }
+
+@keyframes cockpit-star-drift { to { background-position:13px 93px; } }
+@keyframes dashboard-blink { 0%,72%,100%{opacity:.25} 79%,88%{opacity:1} }
+@keyframes character-breathe { 0%,100%{transform:translateY(0) scaleY(1)} 50%{transform:translateY(-2px) scaleY(1.009)} }
+@keyframes head-idle { 0%,100%{transform:translate(0,0) rotate(0)} 35%{transform:translate(1px,-1px) rotate(.6deg)} 70%{transform:translate(-1px,0) rotate(-.5deg)} }
+@keyframes hair-idle { 0%,100%{transform:rotate(-2deg)} 50%{transform:rotate(3deg)} }
+@keyframes head-talk { from{transform:translateY(0) rotate(-.4deg)} to{transform:translateY(-1.5px) rotate(.8deg)} }
+@keyframes head-excited { from{transform:translateY(0) rotate(-1deg)} to{transform:translateY(-3px) rotate(1.3deg)} }
+@keyframes launch-body { from{transform:translateY(1px) scaleY(.998)} to{transform:translateY(5px) scaleY(1.008)} }
+@keyframes hair-launch { from{transform:rotate(-8deg) translateY(0)} to{transform:rotate(9deg) translateY(2px)} }
+@keyframes turbulence-head { from{transform:translate(-1.5px,1px) rotate(-1deg)} to{transform:translate(1.5px,-1px) rotate(1deg)} }
+@keyframes mouth-closed-cycle { 0%,24%,75%,100%{opacity:1} 25%,74%{opacity:0} }
+@keyframes mouth-half-cycle { 0%,24%,50%,75%,100%{opacity:0} 25%,49%,76%,99%{opacity:1} }
+@keyframes mouth-open-cycle { 0%,49%,76%,100%{opacity:0} 50%,75%{opacity:1} }
+
+@media (max-width: 900px) {
+  .companion { width:clamp(155px,27vw,230px); bottom:10%; }
+  .companion-a { left:1%; }
+  .companion-b { right:1%; }
+  .speech-bubble { width:min(245px,36vw); }
+  .speech-bubble.speaker-a { left:11%; bottom:51%; }
+  .speech-bubble.speaker-b { right:11%; bottom:51%; }
+}
+@media (max-width: 700px) {
+  .brand-caption { display:block; font-size:4.7px; letter-spacing:1.5px; }
+  .mission-index { display:none; }
+  .intro { bottom:13%; left:5%; right:5%; }
+  .intro-copy { width:min(420px,86vw); font-size:10.5px; margin-top:-6px; margin-bottom:16px; }
+  .launch-caption { display:none; }
+  .companion { width:clamp(145px,43vw,190px); bottom:11%; }
+  .companion-a { left:-7%; }
+  .companion-b { right:-7%; }
+  .companion-name { display:none; }
+  .speech-bubble { width:min(210px,58vw); padding:10px 12px 11px; }
+  .speech-bubble.speaker-a { left:5%; bottom:52%; }
+  .speech-bubble.speaker-b { right:5%; bottom:52%; }
+  .cockpit-pillar { width:13%; }
+  .cockpit-dashboard { height:24%; }
+  .dashboard-screen { right:7%; min-width:116px; font-size:5px; }
+  .cockpit-brand { left:24%; }
+  .cockpit-brand small { display:none; }
+  .preparation { bottom:7.5%; width:70vw; }
+  .arrival-earth { width:min(51vh,78vw); }
+}
+@media (max-height: 700px) and (min-width: 701px) {
+  .companion { width:clamp(160px,18vw,220px); bottom:7%; }
+  .speech-bubble { bottom:47% !important; }
+  .intro { bottom:7%; }
+  .intro-copy { display:none; }
+  .preparation { bottom:4.5%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cockpit-world,.cockpit-camera,.companion { transform:none !important; }
+  .character-body,.character-head,.hair-strand,.launch-sky::before,.launch-sky::after { animation:none !important; }
+  .companion.is-talking .mouth-closed,.companion.is-talking .mouth-half,.companion.is-talking .mouth-open { animation-duration:.7s !important; }
+}
+.is-preparing .launch-stage { z-index: 12; }
+.companion .brow,.companion .pupil,.companion .eye { transform-box:fill-box; transform-origin:center; transition:transform .25s ease,opacity .25s ease; }
+.companion[data-expression="bright"] .brow { transform:translateY(-1.8px); }
+.companion[data-expression="bright"] .pupil { transform:translateY(-.8px); }
+.companion[data-expression="focused"] .brow-left { transform:translateY(1px) rotate(7deg); }
+.companion[data-expression="focused"] .brow-right { transform:translateY(1px) rotate(-7deg); }
+.companion[data-expression="soft"] .brow { transform:translateY(1px); opacity:.86; }
+.companion[data-expression="soft"] .pupil { transform:translateY(1px); }
+.speech-bubble { opacity: calc(1 - var(--handoff)); }
+.speech-bubble.is-changing { opacity: 0; }

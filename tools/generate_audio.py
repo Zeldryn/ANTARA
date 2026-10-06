@@ -1,4 +1,4 @@
-"""Generate original, sample-free audio for Antariksa. Requires Python + NumPy.
+"""Generate original, sample-free audio for ANTARA (Antariksa Nusantara). Requires Python + NumPy.
 
 Run from any directory: python tools/generate_audio.py
 All notes, synthesis, and deterministic noise are created here; no recordings,

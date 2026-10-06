@@ -1,82 +1,40 @@
-# Antariksa
+# ANTARA | Antariksa Nusantara
 
-An Indonesian Solar System journey using HTML, CSS, vanilla JavaScript, and local
-Three.js assets. Launch from Earth, explore Earth facts and seven modern wonders,
-then continue to the existing Mars journey. No backend or build step is needed.
+ANTARA adalah pengalaman edukasi Tata Surya berbasis HTML, CSS, vanilla JavaScript, dan aset Three.js lokal. Pengguna memulai perjalanan dari kokpit first-person bersama dua companion animasi, lalu tiba di Bumi sebelum melanjutkan eksplorasi Venus dan Mars.
 
-Run locally from this folder:
+## Menjalankan proyek
 
 ```sh
 python -m http.server 8000
 ```
 
-Open http://localhost:8000. XAMPP also works when the complete folder is copied
-into htdocs. Keep all assets and scripts together. A local HTTP server enables
-ES modules, WebGL and audio reliably. Direct file opening may fall back to CSS; precise geographic rotation requires HTTP.
+Buka `http://localhost:8000`. XAMPP juga dapat dipakai dengan menyalin seluruh folder ini ke `htdocs`. Gunakan server HTTP agar ES modules, WebGL, audio, dan aset lokal bekerja konsisten.
 
-Press **Siap Meluncur?**, then **Jelajahi Bumi**. The first Earth view shows only
-**Bumi. / Si Planet Biru.** Exploration contains four science topics followed by
-seven modern wonders. Use the arrows or progress bars to select a topic. Selecting
-a wonder rotates the existing globe to its latitude and longitude. The gold dot
-appears once the globe settles. **Kembali ke panorama Bumi** returns to the intro,
-and **Mars** continues the existing camera journey. Venus remains unavailable.
-Arrow keys change Earth topics during exploration; Escape exits Earth exploration.
-Outside that mode, the existing Escape shortcut returns to the opening.
-See `IMPLEMENTATION.md` for coordinates, implementation details and test results.
+## Opening ANTARA
 
-The speaker button sets or changes mute, including before the first mission.
+- Brand utama: **ANTARA**
+- Nama lengkap: **Antariksa Nusantara**
+- CTA: **Yuk, Berangkat!**
+- POV peluncuran: first-person dari dalam kokpit
+- Companion: Nara dan Aksa
+- Teknik karakter: layered inline SVG, bukan PNG karakter statis
+- Animasi karakter: breathing, head idle, hair motion, blink acak, mouth frames saat berbicara, launch reaction, turbulence, dan look/point toward Earth
+- Dialog: data-driven dan disinkronkan ke fase peluncuran
+- Environment: horizon, cloud layers berparalaks, perubahan atmosfer ke ruang angkasa, cockpit shake berlapis, dan Earth reveal
+- Handoff: renderer Bumi mulai di belakang kokpit saat fase approach, kemudian kokpit/karakter perlahan menghilang sehingga tidak terjadi hard cut
 
-The scene supports keyboard navigation, a remembered mute preference, reduced
-motion, small screens, tab suspension, and silent operation when audio fails.
+Tidak ada video background atau poster karakter statis yang dipakai untuk menyamarkan animasi. Aset hero statis lama sudah tidak digunakan dalam build ini.
 
-## Assets
+## Planet exploration
 
-- `assets/mission-key-art.png` and `assets/mission-key-art-portrait.png`: the
-  existing illustrated opening scene, with separate desktop/mobile compositions.
-- `assets/nusantara-rocket.svg`: original scalable flight vehicle, with metallic
-  panels, auxiliary boosters, gold details, and a prominent Indonesian flag.
-- `assets/audio/`: original synthesized score and effects, plus replacement
-  instructions. Regenerate with `python tools/generate_audio.py` (NumPy needed
-  only for asset generation, not for running the site).
-- `assets/orbit.svg`: project-native orbit mark.
-- `assets/textures/mars-surface-2k.jpg`: Solar System Scope Mars map, CC BY 4.0;
-  attribution and license links are in `assets/textures/README.md` and the scene.
-- `assets/vendor/three/`: Three.js 0.180.0, unmodified local ES modules, MIT license.
+Sistem eksplorasi Bumi, Venus, dan Mars tetap memakai renderer, marker, image preview, lightbox, internal scrolling, audio, dan navigasi planet yang sudah ada. Fix kualitas transisi Venus dan struktur materi umum Mars dari revisi sebelumnya tetap dipertahankan.
 
-Edit launch timing in `script.js`, appearance in `styles.css`, and copy in
-`index.html`. Audio is always optional; it is never required for progression.
+## Audio
 
-`LAUNCH_TIMING` in `script.js` is the shared schedule for the rocket, particles,
-status text, and audio. The flight canvas runs only during the launch; it uses a
-capped pixel density. Reduced motion replaces flight/vibration with gentle
-stationary fades. The speaker remains accessible throughout the sequence.
+Audio lokal tetap opsional. Tombol speaker menyimpan preferensi mute dan perjalanan tetap dapat berjalan ketika Web Audio atau salah satu aset audio gagal dimuat.
 
-## Mars scene
+## Reduced motion
 
-`mars-scene.js` owns scene two, `mars-scene.css` its presentation. The initial page
-and launch styles are preserved. Three.js is dynamically imported on launch;
-the Mars renderer runs only while scene two is visible. The scene uses a real
-96 × 64 sphere, a perspective camera that moves closer, a textured rough
-material, shallow artistic bump shading, warm directional light, a shadowed
-terminator, and subtle limb scattering. Rotation is intentionally cinematic,
-not real-time astronomical speed. Pointer parallax and gentle drift are bounded.
+`prefers-reduced-motion` mengurangi camera shake, parallax agresif, dan idle motion besar, tetapi dialog, blink, mouth state, progres perjalanan, serta handoff ke Bumi tetap terbaca dan berfungsi.
 
-WebGL2 is preferred. If unsupported, module loading fails, or the GPU context is
-lost, a software sphere renderer maps the same texture using spherical UVs and
-sunlight shading. A procedural surface handles a failed texture load. There is
-also a minimal CSS fallback for devices unable to allocate any canvas. Reduced
-motion uses a stationary, softly revealed planet. Hidden tabs pause scene time,
-audio, and rendering; returning or replaying does not accumulate animation loops.
-
-All dependencies are local; serve over HTTP for ES modules and audio. No runtime
-CDN requests or API keys are required.
-
-Browser verification (Python standard library, installed Chromium browser):
-
-```sh
-python tools/verify_browser.py --browser "path/to/chromium-browser"
-```
-
-
-## Foto eksplorasi
-Seven Wonders dan keenam topik Mars sekarang memakai gambar lokal WebP. Kredit/lisensi muncul pada kartu; metadata tersedia dalam `assets/exploration/sources.json`. Laporan perubahan dan hasil pengecekan: `IMPLEMENTATION.md`. Jalankan situs melalui server lokal seperti petunjuk di atas.
+Laporan implementasi terbaru ada di `IMPLEMENTATION.md`.

@@ -4,10 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#091322">
-  <meta name="description" content="Ayo naik Nusantara 01 dan jelajahi dunia-dunia menakjubkan di Tata Surya, dimulai dari rumah kita: Bumi.">
-  <title>Antariksa — Petualangan Tata Surya</title>
+  <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Bumi, Venus, Mars, dan keajaiban Tata Surya.">
+  <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/orbit.svg" type="image/svg+xml">
-  <link rel="preload" href="assets/nusantara-rocket.svg" as="image">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="exploration-media.css">
   <link rel="stylesheet" href="earth-scene.css">
@@ -23,145 +22,134 @@
   <main class="mission" id="mission">
     <div class="scene" aria-hidden="true">
       <div class="scene-art"></div>
-      <div class="cosmic-ribbon cosmic-ribbon-one"></div>
-      <div class="cosmic-ribbon cosmic-ribbon-two"></div>
-      <svg class="opening-world" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <defs>
-          <linearGradient id="mountainFar" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#132a42"/><stop offset="1" stop-color="#081524"/></linearGradient>
-          <linearGradient id="mountainNear" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0c1b2d"/><stop offset="1" stop-color="#040b14"/></linearGradient>
-          <linearGradient id="deck" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#152233"/><stop offset=".42" stop-color="#09111e"/><stop offset="1" stop-color="#030812"/></linearGradient>
-          <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8bc5ec" stop-opacity=".28"/><stop offset=".5" stop-color="#203f5c" stop-opacity=".13"/><stop offset="1" stop-color="#d4b77d" stop-opacity=".18"/></linearGradient>
-          <linearGradient id="crewJacket" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#31445c"/><stop offset="1" stop-color="#101a2a"/></linearGradient>
-          <linearGradient id="crewWarm" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d5b675"/><stop offset="1" stop-color="#665238"/></linearGradient>
-          <filter id="softGlow"><feGaussianBlur stdDeviation="7"/></filter>
-        </defs>
-        <g class="world-distant">
-          <circle cx="1325" cy="142" r="52" fill="#cad8e7" opacity=".10"/>
-          <circle cx="1305" cy="126" r="8" fill="#0b1828" opacity=".18"/>
-          <path d="M0 575 150 486 250 535 386 415 500 522 632 447 735 536 875 438 992 528 1106 462 1228 535 1370 426 1510 538 1600 500V670H0Z" fill="url(#mountainFar)" opacity=".78"/>
-          <path d="M0 610 145 535 270 585 420 500 565 600 700 525 845 602 1000 530 1140 590 1305 505 1450 582 1600 548V700H0Z" fill="url(#mountainNear)"/>
-          <path d="M0 618C330 595 470 624 720 602c264-24 507 12 880-12v72H0Z" fill="#071320"/>
-          <path d="M0 614c255-12 460 12 742-7 294-20 548 18 858-7" fill="none" stroke="#7eb1ce" stroke-opacity=".16" stroke-width="2"/>
-        </g>
-        <g class="launch-facility" opacity=".92">
-          <path d="M707 582V175M895 582V215" stroke="#263950" stroke-width="14"/>
-          <path d="M706 198h190M706 250h190M706 304h190M706 358h190M706 412h190M706 466h190M706 520h190" stroke="#576579" stroke-opacity=".32" stroke-width="5"/>
-          <path d="M707 180 895 582M895 218 707 582" stroke="#4b5c70" stroke-opacity=".22" stroke-width="4"/>
-          <g fill="#efbd70"><circle cx="707" cy="235" r="4"/><circle cx="895" cy="288" r="4"/><circle cx="707" cy="412" r="4"/><circle cx="895" cy="520" r="4"/></g>
-        </g>
-        <g class="observatory" transform="translate(1230 446)">
-          <path d="M0 135h260v100H0z" fill="#07111d" stroke="#677890" stroke-opacity=".25"/>
-          <path d="M36 133a94 94 0 0 1 188 0Z" fill="url(#glass)" stroke="#8eb8d1" stroke-opacity=".34" stroke-width="3"/>
-          <path d="M130 40v92M58 94h145" stroke="#d3bc8e" stroke-opacity=".22" stroke-width="2"/>
-          <path d="M115 65 160 18l17 10-44 47Z" fill="#24384d" stroke="#c3aa7e" stroke-opacity=".55"/>
-          <circle cx="169" cy="22" r="11" fill="#07121f" stroke="#d8bc87" stroke-opacity=".65"/>
-        </g>
-        <path class="deck-plane" d="M0 650 440 608h735l425 42v250H0Z" fill="url(#deck)"/>
-        <path d="M0 694h1600M0 784h1600M800 614v286M405 625 300 900M1195 625l105 275" stroke="#d2bb8b" stroke-opacity=".11" stroke-width="2"/>
-        <ellipse cx="801" cy="620" rx="238" ry="44" fill="#d8b473" opacity=".06" filter="url(#softGlow)"/>
-        <ellipse cx="801" cy="619" rx="196" ry="27" fill="none" stroke="#d9bd86" stroke-opacity=".33" stroke-width="2"/>
-        <ellipse cx="801" cy="620" rx="128" ry="18" fill="none" stroke="#8fc7e7" stroke-opacity=".20" stroke-width="2" stroke-dasharray="7 12"/>
-        <g class="deck-lights" fill="#eac684">
-          <circle cx="145" cy="689" r="3"/><circle cx="306" cy="661" r="3"/><circle cx="495" cy="640" r="3"/><circle cx="1107" cy="638" r="3"/><circle cx="1304" cy="660" r="3"/><circle cx="1460" cy="690" r="3"/>
-        </g>
-        <g class="crew crew-a" transform="translate(430 670)">
-          <ellipse cx="0" cy="184" rx="75" ry="14" fill="#000" opacity=".25"/>
-          <circle cx="0" cy="18" r="25" fill="#b77959"/>
-          <path class="crew-hair" d="M-25 20c0-31 48-42 55-8-12-8-22-8-34-5-9 3-13 8-21 13Z" fill="#11151d"/>
-          <g class="crew-face" fill="none" stroke="#5e3b2f" stroke-linecap="round"><path d="M-9 17h3M7 17h3" stroke-width="2.2"/><path d="M-5 27q5 4 10 0" stroke-width="1.8"/></g>
-          <path d="M-35 58Q0 38 35 58l15 78H-48Z" fill="url(#crewJacket)" stroke="#7388a0" stroke-opacity=".28"/>
-          <path d="M-30 65-59 116M29 64l34 28" fill="none" stroke="#c58a68" stroke-width="15" stroke-linecap="round"/>
-          <path class="crew-pointing-arm" d="M62 92 96 42" fill="none" stroke="#c58a68" stroke-width="15" stroke-linecap="round"/>
-          <circle cx="101" cy="34" r="8" fill="#c58a68"/>
-          <path d="M-25 134-35 184M25 134l34 50" fill="none" stroke="#121c2b" stroke-width="22" stroke-linecap="round"/>
-          <path d="M-48 70q-21 35 2 66" fill="none" stroke="#c4a56d" stroke-width="6" opacity=".85"/>
-        </g>
-        <g class="crew crew-b" transform="translate(610 704)">
-          <ellipse cx="0" cy="154" rx="65" ry="12" fill="#000" opacity=".24"/>
-          <circle cx="0" cy="18" r="23" fill="#a96f52"/>
-          <path d="M-25 14q8-31 31-23 23 8 20 33-15-15-51-10Z" fill="#16151c"/>
-          <g class="crew-face" fill="none" stroke="#58372c" stroke-linecap="round"><path d="M-8 18h3M7 18h3" stroke-width="2.1"/><path d="M-4 27q4 3 8 0" stroke-width="1.7"/></g>
-          <path d="M-37 54Q0 38 37 55l9 65h-91Z" fill="#263d54"/>
-          <path d="M-31 62-57 111M30 62l48 38" fill="none" stroke="#b97958" stroke-width="14" stroke-linecap="round"/>
-          <path d="M-26 120-32 156M25 120l30 36" fill="none" stroke="#0e1724" stroke-width="21" stroke-linecap="round"/>
-          <path d="M-42 59q-18 14-18 54" fill="none" stroke="#b7935e" stroke-width="7"/>
-          <rect x="48" y="80" width="43" height="30" rx="4" fill="#0d1724" stroke="#d2b77f" stroke-opacity=".8"/>
-          <path d="M57 91h25M57 98h17" stroke="#8fd0f2" stroke-opacity=".7"/>
-        </g>
-        <g class="crew crew-c" transform="translate(1120 684)">
-          <ellipse cx="0" cy="177" rx="73" ry="13" fill="#000" opacity=".25"/>
-          <circle cx="0" cy="18" r="24" fill="#bd8060"/>
-          <path d="M-25 14q1-29 23-31c20-1 29 12 29 33-18-9-34-10-52-2Z" fill="#161520"/>
-          <path class="crew-ponytail" d="M21 3q29 12 19 45-9 18-27 12 17-17 8-57Z" fill="#171620"/>
-          <g class="crew-face" fill="none" stroke="#633d31" stroke-linecap="round"><path d="M-8 18h3M7 18h3" stroke-width="2.1"/><path d="M-5 27q5 3 10 0" stroke-width="1.7"/></g>
-          <path d="M-34 56Q0 38 35 56l18 76h-104Z" fill="url(#crewWarm)" stroke="#e3c993" stroke-opacity=".24"/>
-          <path d="M-30 65-55 116M31 64l38 49" fill="none" stroke="#c48767" stroke-width="15" stroke-linecap="round"/>
-          <path d="M-28 131-38 179M26 131l37 46" fill="none" stroke="#131b28" stroke-width="22" stroke-linecap="round"/>
-          <rect class="crew-tablet" x="49" y="92" width="49" height="36" rx="5" fill="#091321" stroke="#d7c08c" stroke-opacity=".85"/>
-          <circle cx="87" cy="102" r="4" fill="#8bd4f6" opacity=".8"/>
-        </g>
-      </svg>
-      <div class="hero-craft-wrap" id="hero-craft-wrap">
-        <div class="hero-craft-halo"></div>
-        <div class="hero-craft-engine"></div>
-        <img class="hero-craft" src="assets/nusantara-rocket.svg" width="180" height="540" alt="" decoding="async">
-        <span class="hero-craft-label"><i></i>NUSANTARA 01</span>
-      </div>
       <div class="scene-shade"></div>
-      <svg class="navigation-orbits" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
-        <path class="orbit-path" d="M-100 270 C300 910 1060 1060 1680 430"/>
-        <path class="orbit-secondary" d="M-60 810 C440 410 1220 460 1680 900"/>
-        <circle class="navigation-point" r="3"><animateMotion dur="32s" repeatCount="indefinite" path="M-100 270 C300 910 1060 1060 1680 430"/></circle>
-      </svg>
-      <div class="foreground-motes"><i></i><i></i><i></i><i></i></div>
       <div class="stars"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="vapor vapor-one"></div><div class="vapor vapor-two"></div>
-      <div class="beacon"></div>
     </div>
+
     <header class="masthead">
-      <a class="brand" href="./" aria-label="Antariksa, halaman awal">
+      <a class="brand" href="./" aria-label="ANTARA, Antariksa Nusantara, halaman awal">
         <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="10"/><ellipse cx="20" cy="20" rx="19" ry="7" transform="rotate(-35 20 20)"/><circle class="orbit-dot" cx="29" cy="8" r="2.5"/></svg>
-        <span>ANTARIKSA<span class="brand-caption">SEBUAH PERJALANAN PENGETAHUAN</span></span>
+        <span>ANTARA<span class="brand-caption">ANTARIKSA NUSANTARA</span></span>
       </a>
       <div class="mission-index"><span class="index-line"></span> PETUALANGAN TATA SURYA <span class="edition">/ 001</span></div>
     </header>
 
     <section class="intro" aria-labelledby="mission-title">
-      <div class="eyebrow"><span></span> PETUALANGAN DIMULAI DARI SINI <span></span></div>
+      <div class="eyebrow"><span></span> SELAMAT DATANG DI ANTARA <span></span></div>
       <h1 id="mission-title">Ayo Keliling <span>Tata Surya!</span></h1>
+      <p class="intro-copy">Duduk di kokpit, kenalan dengan teman perjalananmu, lalu lihat Bumi dari arah yang belum pernah kamu lihat sebelumnya.</p>
       <button class="launch-button" id="launch-button" type="button">
-        <span>Ayo Berangkat!</span>
+        <span>Yuk, Berangkat!</span>
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
       </button>
-      <div class="launch-caption">NAIK NUSANTARA 01 • TUJUAN PERTAMA: BUMI</div>
+      <div class="launch-caption">ANTARA • TUJUAN PERTAMA: BUMI</div>
     </section>
 
     <footer class="mission-footer">
-      <div class="location"><span class="indonesia-flag" aria-hidden="true"></span><span>BERANGKAT DARI INDONESIA<span class="location-detail">PUSAT PELUNCURAN • BUMI</span></span></div>
-      <button class="audio-control" id="audio-toggle" type="button" aria-label="Bisukan audio" aria-pressed="false" title="Audio dimulai setelah Ayo Berangkat! ditekan">
+      <div class="location"><span class="indonesia-flag" aria-hidden="true"></span><span>BERANGKAT DARI INDONESIA<span class="location-detail">KOKPIT ANTARA • BUMI</span></span></div>
+      <button class="audio-control" id="audio-toggle" type="button" aria-label="Bisukan audio" aria-pressed="false" title="Audio dimulai setelah Yuk, Berangkat! ditekan">
         <svg class="speaker-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-slash" d="m16 9 6 6m0-6-6 6"/></svg>
         <span id="audio-label">AUDIO SIAP</span>
       </button>
     </footer>
 
-    <!-- Independent flight layer: the opening artwork and typography stay intact. -->
-    <div class="launch-stage" id="launch-stage" aria-hidden="true" hidden>
-      <div class="launch-sky"></div>
-      <div class="launch-horizon"></div>
-      <div class="launch-bloom" id="launch-bloom"></div>
-      <canvas class="launch-particles" id="launch-particles"></canvas>
-      <div class="arrival-earth" id="arrival-earth"><span class="arrival-earth-shine"></span></div>
-      <div class="flight-grid" aria-hidden="true"><i></i><i></i><i></i></div>
-      <div class="launch-vehicle" id="launch-vehicle">
-        <div class="engine-aura"></div>
-        <div class="exhaust-plume"><div class="exhaust-core"></div></div>
-        <img class="rocket-body" src="assets/nusantara-rocket.svg" width="180" height="540" alt="" decoding="sync">
+    <div class="launch-stage" id="launch-stage" data-phase="idle" aria-label="Kokpit pesawat ANTARA dengan dua teman perjalanan">
+      <div class="cockpit-world" aria-hidden="true">
+        <div class="launch-sky"></div>
+        <div class="launch-horizon"></div>
+        <div class="atmosphere-glow"></div>
+        <div class="cloud-layer cloud-far"></div>
+        <div class="cloud-layer cloud-mid"></div>
+        <div class="cloud-layer cloud-near"></div>
+        <canvas class="launch-particles" id="launch-particles"></canvas>
+        <div class="arrival-earth" id="arrival-earth"><span class="arrival-earth-shine"></span></div>
+      </div>
+
+      <div class="cockpit-camera" id="cockpit-camera" aria-hidden="true">
+        <div class="cockpit-roof"><span></span><span></span></div>
+        <div class="cockpit-pillar pillar-left"></div>
+        <div class="cockpit-pillar pillar-right"></div>
+        <div class="cockpit-dashboard">
+          <div class="cockpit-brand"><strong>ANTARA</strong><small>ANTARIKSA NUSANTARA</small></div>
+          <div class="dashboard-lights"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="dashboard-screen"><span id="flight-status">SIAP BERANGKAT • BUMI</span><b></b></div>
+        </div>
+      </div>
+
+      <article class="companion companion-a" id="companion-a" data-state="idle" data-expression="bright" aria-label="Nara, teman perjalanan ANTARA">
+        <svg class="character-rig" viewBox="0 0 260 430" role="img" aria-label="Nara, teman perjalanan yang penuh semangat">
+          <g class="character-shadow"><ellipse cx="130" cy="408" rx="78" ry="14"/></g>
+          <g class="hair-back"><path d="M75 117c3-59 34-88 78-82 47 6 62 41 54 96l-7 98H77Z"/></g>
+          <g class="character-body">
+            <path class="jacket" d="M65 228c13-43 39-61 66-61s57 19 68 61l21 160H43Z"/>
+            <path class="shirt" d="M111 182h42l13 48-58 1Z"/>
+            <path class="collar" d="m104 184 25 31 29-31 12 26-41 33-39-33Z"/>
+            <path class="arm arm-left" d="M79 238c-21 20-33 51-36 91"/>
+            <path class="arm arm-right" d="M185 239c21 26 28 55 30 91"/>
+            <path class="seatbelt" d="M93 203 174 371"/>
+          </g>
+          <g class="character-head">
+            <ellipse class="face" cx="132" cy="127" rx="58" ry="65"/>
+            <g class="ears"><ellipse cx="75" cy="135" rx="10" ry="15"/><ellipse cx="189" cy="135" rx="10" ry="15"/></g>
+            <g class="eyes">
+              <path class="eye eye-left" d="M96 128q14-10 27 0q-14 12-27 0Z"/>
+              <path class="eye eye-right" d="M143 128q14-10 27 0q-14 12-27 0Z"/>
+              <circle class="pupil" cx="111" cy="128" r="4"/><circle class="pupil" cx="158" cy="128" r="4"/>
+            </g>
+            <path class="brow brow-left" d="M96 112q13-9 27-2"/><path class="brow brow-right" d="M143 110q14-7 27 2"/>
+            <path class="nose" d="M133 132q-5 12 2 15"/>
+            <g class="mouth-frames">
+              <path class="mouth mouth-closed" d="M117 158q15 10 31 0"/>
+              <path class="mouth mouth-half" d="M117 158q15 17 31 0q-15 8-31 0Z"/>
+              <ellipse class="mouth mouth-open" cx="133" cy="164" rx="14" ry="10"/>
+            </g>
+            <g class="hair-front"><path d="M79 112c-1-48 28-78 70-75 35 2 58 27 59 62-20-18-43-22-65-18-26 4-38 22-64 31Z"/><path d="M111 71q17 28 48 13-8-29-48-13Z"/></g>
+          </g>
+          <g class="gesture-arm gesture-point"><path d="M183 245q28-26 37-65"/><circle cx="221" cy="174" r="8"/></g>
+          <g class="hair-strand"><path d="M186 95q33 38 9 81"/></g>
+          <g class="antara-patch"><circle cx="74" cy="264" r="13"/><ellipse cx="74" cy="264" rx="19" ry="7" transform="rotate(-28 74 264)"/></g>
+        </svg>
+        <span class="companion-name">NARA</span>
+      </article>
+
+      <article class="companion companion-b" id="companion-b" data-state="idle" data-expression="calm" aria-label="Aksa, teman perjalanan ANTARA">
+        <svg class="character-rig" viewBox="0 0 260 430" role="img" aria-label="Aksa, teman perjalanan yang suka sains">
+          <g class="character-shadow"><ellipse cx="130" cy="408" rx="78" ry="14"/></g>
+          <g class="hair-back"><path d="M74 111c7-55 38-79 82-73 40 6 59 38 51 91l-8 82H76Z"/></g>
+          <g class="character-body">
+            <path class="jacket" d="M61 227c13-42 39-60 69-60 31 0 57 19 69 61l18 160H44Z"/>
+            <path class="shirt" d="M109 183h45l14 47-61 1Z"/>
+            <path class="collar" d="m102 185 27 29 30-30 13 27-43 33-40-34Z"/>
+            <path class="arm arm-left" d="M76 238c-17 22-25 54-25 91"/>
+            <path class="arm arm-right" d="M187 238c22 24 33 54 34 91"/>
+            <path class="seatbelt" d="M174 202 91 371"/>
+          </g>
+          <g class="character-head">
+            <ellipse class="face" cx="132" cy="127" rx="58" ry="65"/>
+            <g class="ears"><ellipse cx="75" cy="135" rx="10" ry="15"/><ellipse cx="189" cy="135" rx="10" ry="15"/></g>
+            <g class="eyes"><path class="eye eye-left" d="M96 128q14-9 27 0q-14 11-27 0Z"/><path class="eye eye-right" d="M143 128q14-9 27 0q-14 11-27 0Z"/><circle class="pupil" cx="111" cy="128" r="4"/><circle class="pupil" cx="158" cy="128" r="4"/></g>
+            <path class="brow brow-left" d="M96 111q13-6 27-1"/><path class="brow brow-right" d="M143 110q14-5 27 1"/>
+            <path class="nose" d="M133 132q-4 12 2 15"/>
+            <g class="mouth-frames"><path class="mouth mouth-closed" d="M118 159q14 8 29 0"/><path class="mouth mouth-half" d="M118 159q14 15 29 0q-14 7-29 0Z"/><ellipse class="mouth mouth-open" cx="132" cy="164" rx="13" ry="9"/></g>
+            <g class="hair-front"><path d="M78 109c3-48 33-76 76-71 31 4 53 27 55 61-22-17-44-20-66-14-25 7-39 17-65 24Z"/><path d="M98 77q27 16 55-1-19-19-55 1Z"/></g>
+          </g>
+          <g class="gesture-arm gesture-point"><path d="M77 247q-33-22-45-58"/><circle cx="30" cy="183" r="8"/></g>
+          <g class="hair-strand"><path d="M82 91q-28 34-10 78"/></g>
+          <g class="antara-patch"><circle cx="187" cy="264" r="13"/><ellipse cx="187" cy="264" rx="19" ry="7" transform="rotate(28 187 264)"/></g>
+        </svg>
+        <span class="companion-name">AKSA</span>
+      </article>
+
+      <div class="speech-bubble speaker-a" id="speech-bubble" role="status" aria-live="polite">
+        <strong id="speech-speaker">Nara</strong>
+        <span id="speech-text">Ayo, kita jelajah bersama!</span>
       </div>
       <div class="launch-vignette"></div>
     </div>
+
     <div class="preparation" id="preparation" aria-hidden="true">
-      <span class="preparation-label">NUSANTARA 01 • SEKUENS PELUNCURAN</span>
-      <span id="preparation-step">Semua siap. Mesin sedang dibangunkan…</span>
+      <span class="preparation-label">ANTARA • SEKUENS PELUNCURAN</span>
+      <span id="preparation-step">Kokpit siap. Tinggal tekan tombol berangkat.</span>
       <div class="preparation-track"><span></span></div>
     </div>
     <section class="earth-scene" id="earth-scene" aria-labelledby="earth-title" hidden>
