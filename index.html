@@ -35,13 +35,17 @@
     </header>
 
     <section class="intro" aria-labelledby="mission-title">
-      <div class="eyebrow"><span></span> PENDIDIKAN ANTARIKSA • UNTUK GENERASI MASA DEPAN <span></span></div>
+      <div class="intro-brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 84 84"><path d="M42 8 19 61h13l10-23 10 23h13L42 8Z"/><path d="M15 50c15-10 39-10 54 0"/><circle cx="66" cy="47" r="3"/></svg>
+      </div>
+      <p class="intro-kicker">PENDIDIKAN ANTARIKSA UNTUK GENERASI MASA DEPAN</p>
       <h1 id="mission-title">ANTARA</h1>
-      <p class="intro-copy">Langit bukan batas, tapi awal dari cerita baru.</p>
+      <p class="intro-copy">Langit bukan batas,<br>tapi awal dari cerita baru.</p>
       <button class="launch-button" id="launch-button" type="button">
         <span>START</span>
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
       </button>
+      <p class="intro-motto">DIFFERENT CURIOSITIES<br>A BRIGHTER TOMORROW</p>
     </section>
 
     <footer class="mission-footer">
@@ -83,6 +87,14 @@
       </div>
 
       <div class="cockpit-camera" id="cockpit-camera" aria-hidden="true">
+        <div class="cockpit-window-depth">
+          <span class="window-depth-top"></span>
+          <span class="window-depth-left"></span>
+          <span class="window-depth-right"></span>
+          <span class="window-depth-bottom"></span>
+        </div>
+        <div class="cockpit-side-module side-module-left"><i></i><i></i><i></i></div>
+        <div class="cockpit-side-module side-module-right"><i></i><i></i><i></i></div>
         <div class="cockpit-roof"><span></span><span></span></div>
         <div class="cockpit-pillar pillar-left"></div>
         <div class="cockpit-pillar pillar-right"></div>
@@ -106,25 +118,23 @@
         </div>
       </div>
 
-      <article class="companion companion-a" id="companion-a" data-state="idle" data-emotion="happy" data-sprite="happy" aria-label="Nara, teman perjalanan ANTARA">
-        <div class="sprite-stack" aria-hidden="true">
-          <img class="character-sprite sprite-slot-a is-active" src="assets/characters/nara/happy.webp" alt="">
-          <img class="character-sprite sprite-slot-b" src="assets/characters/nara/idle.webp" alt="">
+      <article class="companion companion-a" id="companion-a" data-state="happy" data-expression="happy" aria-label="Nara, teman perjalanan ANTARA">
+        <div class="character-sprite-frame">
+          <img class="character-sprite" id="nara-sprite" src="assets/characters/nara/happy.webp" alt="Nara, pemandu ANTARA" draggable="false">
         </div>
-        <div class="crew-identity crew-identity-left" aria-hidden="true">
+        <div class="character-identity identity-left" aria-hidden="true">
           <strong>NARA</strong>
-          <span>Berani bertanya. Selalu siap menemukan hal baru.</span>
+          <span>Berani Bertanya,<br>Lebih Dekat<br>ke Semesta.</span>
         </div>
       </article>
 
-      <article class="companion companion-b" id="companion-b" data-state="idle" data-emotion="idle" data-sprite="idle" aria-label="Sora, teman perjalanan ANTARA">
-        <div class="sprite-stack" aria-hidden="true">
-          <img class="character-sprite sprite-slot-a is-active" src="assets/characters/sora/idle.webp" alt="">
-          <img class="character-sprite sprite-slot-b" src="assets/characters/sora/smile.webp" alt="">
+      <article class="companion companion-b" id="companion-b" data-state="idle" data-expression="calm" aria-label="Sora, teman perjalanan ANTARA">
+        <div class="character-sprite-frame">
+          <img class="character-sprite" id="sora-sprite" src="assets/characters/sora/idle.webp" alt="Sora, pemandu ANTARA" draggable="false">
         </div>
-        <div class="crew-identity crew-identity-right" aria-hidden="true">
+        <div class="character-identity identity-right" aria-hidden="true">
           <strong>SORA</strong>
-          <span>Melihat lebih jauh. Memahami lebih dalam.</span>
+          <span>Melihat Lebih Jauh,<br>Memahami Lebih Dalam.</span>
         </div>
       </article>
 

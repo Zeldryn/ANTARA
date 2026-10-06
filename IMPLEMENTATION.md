@@ -22,15 +22,15 @@ Opening sekarang menggunakan identitas **ANTARA / Antariksa Nusantara** dan perj
 
 ### Dialogue timeline
 1. Nara: “Ayo, kita jelajah bersama!”
-2. Sora: “Tujuan pertama kita dekat banget. Bumi!”
+2. Aksa: “Tujuan pertama kita dekat banget. Bumi!”
 3. Nara: “Wah, mesinnya mulai nyala!”
-4. Sora: “Pegangan, ya. Kita segera berangkat!”
+4. Aksa: “Pegangan, ya. Kita segera berangkat!”
 5. Nara: “Kita terbang!”
-6. Sora: “Lihat awannya!”
+6. Aksa: “Lihat awannya!”
 7. Nara: “Wah, putih semua!”
-8. Sora: “Kita sudah makin tinggi!”
+8. Aksa: “Kita sudah makin tinggi!”
 9. Nara: “Eh, lihat di depan!”
-10. Sora: “Itu Bumi! Rumah kita.”
+10. Aksa: “Itu Bumi! Rumah kita.”
 11. Nara: “Yuk, kita lihat lebih dekat!”
 
 Dialog berasal dari satu `DIALOGUE_TIMELINE` dan dipicu berdasarkan `LAUNCH_TIMING`, bukan timeout acak yang terpisah dari perjalanan.

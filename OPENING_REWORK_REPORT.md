@@ -1,38 +1,85 @@
-# ANTARA Opening / Cockpit V4
+# ANTARA Intro Cockpit Rework
 
-## Files modified
-- `index.html`
-- `styles.css`
-- `script.js`
-- `README.md`
-- `IMPLEMENTATION.md`
-- New character assets under `assets/characters/nara/` and `assets/characters/sora/`
+## Scope
 
-## Cockpit
-The opening remains active from the first frame and now uses a deeper physical cockpit composition: layered front-window rim, thicker side pillars, upper frame, gold edge lighting, and a larger three-bank lower dashboard. The START button stays centered above the dashboard.
+This update is limited to the opening cockpit experience, its companion character system, and the supporting intro UI. Earth, Venus, Mars, Seven Wonders, exploration media, and planet rendering files were not modified.
+
+## Intro composition
+
+- The opening remains a real layered HTML/CSS/JavaScript interface.
+- The cockpit is visible from the first frame.
+- The normal top website navigation shown in the visual reference was not added.
+- On home and launch states, the existing masthead is hidden so there is no Beranda, Program, Jelajah Antariksa, Sumber Belajar, Komunitas, Masuk, search, or globe toolbar.
+- ANTARA branding is centered inside the forward window.
+- The START button remains centered above the lower dashboard and is still the existing functional launch control.
+
+## Cockpit depth
+
+The cockpit received additional structural layers for:
+
+- top and bottom window depth rails
+- left and right window depth frames
+- side cockpit modules
+- thicker lower dashboard framing
+- larger left, center, and right display banks
+- stronger shadows and layered foreground depth
+- restrained navy, gold, and blue instrument lighting
+
+The cockpit is still composed from DOM/CSS elements. No full-screen generated image is used as the website UI.
 
 ## Character sprite system
-The old inline SVG character rigs were removed from `index.html`. Nara and Sora now use actual WebP image assets with transparent backgrounds. Each character has eight distinct sprite files. Two image slots are stacked per character so state changes crossfade instead of hard-cutting.
 
-### Nara sprites
-`idle`, `happy`, `talking`, `excited`, `pointing`, `thinking`, `surprised`, `confident`
+The old inline SVG character rigs were removed from `index.html`.
 
-### Sora sprites
-`idle`, `smile`, `talking`, `curious`, `supportive`, `thinking`, `surprised`, `confident`
+Character assets are organized under:
 
-## Dialogue-driven state
-Every launch dialogue cue now contains `speaker`, `text`, `emotion`, `sprite`, and `otherSprite`. Sprite selection is deterministic and matched to the meaning of each line. Animation is secondary: subtle breathing, launch reaction, turbulence, and talking motion remain on the sprite container.
+- `assets/characters/nara/`
+- `assets/characters/sora/`
 
-## Scope protection
-Earth, Venus, Mars, exploration media, and their dedicated JS/CSS files were not modified in this pass.
+Both character folders contain eight WebP state files. The renderer now selects sprite files from structured character state maps instead of changing primitive SVG facial parts.
 
-## Validation performed
-- `node --check` passed for `script.js`, `earth-scene.js`, `venus-scene.js`, and `mars-scene.js`.
-- No duplicate HTML IDs.
-- All HTML asset references resolve.
-- All 16 character sprite references resolve.
-- All `getElementById()` targets used by `script.js` exist.
-- CSS opening and closing brace counts match.
-- Checksums confirm Earth/Venus/Mars and exploration-media implementation files are unchanged from the previous project ZIP.
+### Nara states
 
-A full browser screenshot test could not be completed in this environment because Chromium navigation to both localhost and file URLs is blocked by administrator policy.
+- idle
+- happy
+- talking
+- excited
+- thinking
+- surprised
+- confident
+- supportive
+
+### Sora states
+
+- idle
+- smile
+- talking
+- curious
+- supportive
+- thinking
+- surprised
+- confident
+
+## Dialogue driven state selection
+
+Every launch dialogue cue now carries an explicit emotion and sprite state. Character changes are deterministic, not randomized. Dialogue meaning controls the selected state, for example greeting uses happy, explanation uses talking, discovery uses excited, and reaction uses surprised.
+
+Sprite swaps use a short fade and translate transition. Small breathing/talking motion remains secondary to the actual image changes.
+
+## Validation
+
+Static validation completed:
+
+- JavaScript syntax passes `node --check`.
+- no duplicate HTML IDs
+- all `getElementById()` targets exist
+- all HTML local asset references exist
+- all 16 character WebP files decode successfully
+- one launch button click handler is present
+- old `character-rig` SVG markup is absent from the intro
+- requested top-navigation labels are absent from the page source
+- CSS opening and closing brace counts match
+
+Unrelated scene implementation hashes were checked and remain unchanged for Earth, Venus, Mars, and exploration media files.
+
+A Chromium screenshot run was attempted in the container, but the installed Chromium process does not terminate correctly in this environment because of its headless/DBus runtime. Runtime visual acceptance should therefore still be checked locally in the target browser at 1920x1080, 1600x900, 1440x900, and 1366x768.
