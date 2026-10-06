@@ -309,7 +309,7 @@ class LaunchVisual {
     this.lastPhase = "idle";
     this.resize();
     this.renderIdle();
-    this.stage.hidden = true;
+    this.stage.hidden = false;
   }
 
   resize() {
@@ -407,9 +407,10 @@ class LaunchVisual {
     else if (phase === "space") shake = .14;
     if (reducedMotion.matches) shake = 0;
 
-    const camX = Math.sin(t * 31) * shake + Math.sin(t * 4.2) * shake * .24;
-    const camY = Math.cos(t * 27) * shake * .58 - ascent * (reducedMotion.matches ? 0 : 2.2);
-    const camTilt = reducedMotion.matches ? 0 : Math.sin(t * 13) * shake * .045;
+    const micro = Math.sin(t * 18.7) * .54 + Math.sin(t * 7.3 + .8) * .31;
+    const camX = micro * shake + Math.sin(t * 1.55) * shake * .28;
+    const camY = (Math.cos(t * 16.2) * .34 + Math.cos(t * 2.2) * .22) * shake - ascent * (reducedMotion.matches ? 0 : 2.6);
+    const camTilt = reducedMotion.matches ? 0 : (Math.sin(t * 5.1) * .028 + Math.sin(t * 1.1) * .018) * shake;
     const charLag = phase === "liftoff" ? 3.0 : phase === "clouds" ? 2.5 : phase === "ignition" ? 1.1 : phase === "climb" ? .75 : .35;
 
     this.stage.dataset.phase = phase;
@@ -429,18 +430,19 @@ class LaunchVisual {
     this.stage.style.setProperty("--char-b-x", `${camX * .40 + Math.sin(t * 5.6) * charLag * .78}px`);
     this.stage.style.setProperty("--char-b-y", `${camY * .36 + charLag * .84}px`);
 
-    const approachFar = cloudApproach * .42;
-    const passDensity = phase === "clouds" ? .58 + Math.sin(t * 1.7) * .08 : 0;
-    const deckDensity = phase === "above-clouds" ? (1 - cloudExit) * .52 : 0;
+    const approachFar = cloudApproach * .5;
+    const passDensity = phase === "clouds" ? .50 + Math.sin(t * 1.25) * .07 + Math.sin(t * .53) * .04 : 0;
+    const deckDensity = phase === "above-clouds" ? (1 - cloudExit) * .62 : 0;
     const cloudTravel = Math.max(0, t - c.cloudApproach);
-    this.cloudFar.style.setProperty("--cloud-far-y", `${30 - cloudTravel * 42}px`);
-    this.cloudFar.style.setProperty("--cloud-far-opacity", String(Math.min(.66, approachFar + passDensity * .45 + deckDensity)));
-    this.cloudMid.style.setProperty("--cloud-mid-y", `${85 - cloudTravel * 76}px`);
-    this.cloudMid.style.setProperty("--cloud-mid-x", `${Math.sin(t * .74) * 34}px`);
-    this.cloudMid.style.setProperty("--cloud-mid-opacity", String(Math.min(.82, cloudApproach * .18 + passDensity * .84 + deckDensity * .7)));
-    this.cloudNear.style.setProperty("--cloud-near-y", `${160 - cloudTravel * 118}px`);
-    this.cloudNear.style.setProperty("--cloud-near-x", `${Math.cos(t * .96) * 48}px`);
-    this.cloudNear.style.setProperty("--cloud-near-opacity", String(Math.min(.78, passDensity + deckDensity * .35)));
+    this.cloudFar.style.setProperty("--cloud-far-y", `${42 - cloudTravel * 36}px`);
+    this.cloudFar.style.setProperty("--cloud-far-x", `${Math.sin(t * .23) * 22}px`);
+    this.cloudFar.style.setProperty("--cloud-far-opacity", String(Math.min(.72, approachFar + passDensity * .34 + deckDensity)));
+    this.cloudMid.style.setProperty("--cloud-mid-y", `${108 - cloudTravel * 69}px`);
+    this.cloudMid.style.setProperty("--cloud-mid-x", `${Math.sin(t * .48) * 40}px`);
+    this.cloudMid.style.setProperty("--cloud-mid-opacity", String(Math.min(.83, cloudApproach * .22 + passDensity * .76 + deckDensity * .66)));
+    this.cloudNear.style.setProperty("--cloud-near-y", `${190 - cloudTravel * 108}px`);
+    this.cloudNear.style.setProperty("--cloud-near-x", `${Math.cos(t * .61) * 55}px`);
+    this.cloudNear.style.setProperty("--cloud-near-opacity", String(Math.min(.74, passDensity * .9 + deckDensity * .28)));
     this.arrivalEarth.style.backgroundPosition = `${50 + Math.sin(t * .16) * 2.4}% center`;
 
     if (this.ctx) this.drawParticles(t, ascent, starOpacity, phase);
@@ -595,9 +597,17 @@ function setExperienceState(state) {
   mission.dataset.experience = state;
   const home = state === "home";
   const launch = state === "launch";
+  const openingVisible = home || launch;
   introPanel.inert = !home;
   introPanel.setAttribute("aria-hidden", String(!home));
-  flight.stage.setAttribute("aria-hidden", String(!launch));
+  flight.stage.setAttribute("aria-hidden", String(!openingVisible));
+  if (home) {
+    flight.stage.hidden = false;
+    flight.stage.style.transition = "none";
+    flight.stage.style.opacity = "1";
+    flight.renderIdle();
+    companions.setJourneyPhase("idle");
+  }
 }
 
 setExperienceState("home");

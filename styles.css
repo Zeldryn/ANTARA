@@ -1111,3 +1111,136 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .ground-world { transform: translateY(calc(var(--ground-progress) * 22vh)) scale(calc(1 - var(--ground-progress) * .18)); }
   .launch-space-layer::before,.launch-space-layer::after { animation: none !important; }
 }
+
+
+/* ==============================================================
+   OPENING EXPERIENCE V3 — live cockpit from the first frame
+   ============================================================== */
+.mission[data-experience="home"] .scene { display:none !important; }
+.mission[data-experience="home"] .launch-stage {
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:none;
+}
+.mission[data-experience="home"] .masthead { z-index:18; }
+.mission[data-experience="home"] .mission-index { opacity:.52; }
+.mission[data-experience="home"] .mission-footer { justify-content:flex-end; }
+.mission[data-experience="home"] .cockpit-world { animation:cockpit-idle-view 10s ease-in-out infinite alternate; }
+.mission[data-experience="home"] .cockpit-camera { animation:cockpit-idle-frame 8s ease-in-out infinite alternate; }
+.mission[data-experience="home"] .ground-world { animation:ground-heat-breathe 7s ease-in-out infinite alternate; }
+.mission[data-experience="launch"] .launch-stage { visibility:visible !important; opacity:1 !important; }
+.location { display:none !important; }
+
+/* Briefing typography floats inside the live window instead of replacing it. */
+.intro { inset:0; bottom:auto; z-index:16; pointer-events:none; text-align:center; }
+.intro .eyebrow { position:absolute; top:14.2%; left:50%; transform:translateX(-50%); margin:0; white-space:nowrap; opacity:.8; }
+.intro h1 { position:absolute; top:17.2%; left:50%; width:min(760px,75vw); transform:translateX(-50%); margin:0; font-size:clamp(32px,4.6vw,68px); text-shadow:0 4px 28px rgba(0,0,0,.48); }
+.intro-copy { position:absolute; top:29%; left:50%; transform:translateX(-50%); width:min(520px,60vw); margin:0; font-size:clamp(10px,.9vw,13px); color:rgba(231,237,243,.79); }
+.launch-button { position:absolute; left:50%; bottom:18.4%; transform:translateX(-50%); pointer-events:auto; backdrop-filter:blur(12px); background:linear-gradient(180deg,rgba(236,206,151,.98),rgba(218,178,104,.94)); box-shadow:0 12px 40px rgba(0,0,0,.28),0 0 0 1px rgba(255,240,205,.32) inset,0 0 34px rgba(223,184,111,.15); }
+.launch-button:hover { transform:translateX(-50%) translateY(-2px); }
+
+/* Detailed departure city with roads, launch complex and depth cues. */
+.city-road-grid { position:absolute; left:-4%; right:-4%; bottom:1%; height:35%; opacity:calc(.8 - var(--ground-progress) * .58); transform:perspective(460px) rotateX(58deg); transform-origin:50% 100%; background:linear-gradient(90deg,transparent 49.7%,rgba(122,180,209,.14) 49.8% 50.2%,transparent 50.3%),linear-gradient(0deg,transparent 49.65%,rgba(232,183,111,.10) 49.8% 50.2%,transparent 50.35%); background-size:82px 82px,82px 82px; mask-image:linear-gradient(180deg,transparent,#000 30%,#000 100%); }
+.launch-complex { position:absolute; left:50%; bottom:7%; width:min(520px,58vw); height:25%; transform:translateX(-50%); opacity:calc(.94 - var(--ground-progress) * .72); filter:drop-shadow(0 10px 18px rgba(0,0,0,.35)); }
+.launch-tower { position:absolute; left:48%; bottom:20%; width:15px; height:72%; border:1px solid rgba(117,155,178,.45); background:repeating-linear-gradient(0deg,rgba(31,55,70,.96) 0 8px,rgba(102,138,159,.26) 8px 10px),linear-gradient(90deg,#101f2a,#263d4b,#0c1922); clip-path:polygon(35% 0,65% 0,100% 100%,0 100%); }
+.launch-tower::before { content:""; position:absolute; left:50%; top:-15%; width:1px; height:16%; background:#9cc4d7; box-shadow:0 0 8px rgba(182,224,240,.5); }
+.hangar { position:absolute; bottom:12%; width:24%; height:30%; background:linear-gradient(180deg,#213948,#0c1923); border:1px solid rgba(126,164,185,.22); box-shadow:inset 0 12px 18px rgba(118,173,205,.05); }
+.hangar::after { content:""; position:absolute; inset:18% 10% 0; background:repeating-linear-gradient(90deg,rgba(108,156,182,.12) 0 1px,transparent 1px 18px); }
+.hangar-a { left:7%; clip-path:polygon(8% 0,92% 0,100% 100%,0 100%); }
+.hangar-b { right:7%; clip-path:polygon(8% 0,92% 0,100% 100%,0 100%); }
+.terminal-strip { position:absolute; left:24%; right:24%; bottom:7%; height:8%; background:linear-gradient(90deg,transparent,rgba(119,169,195,.27),rgba(236,192,119,.35),rgba(119,169,195,.27),transparent); border-top:1px solid rgba(189,211,222,.17); }
+.beacon { position:absolute; bottom:43%; width:4px; height:4px; border-radius:50%; background:#f2cb7f; box-shadow:0 0 10px #f2cb7f; animation:city-beacon 2.8s steps(1) infinite; }
+.beacon-a { left:29%; }.beacon-b { right:28%; animation-delay:-1.4s; }
+.city-light-field { animation:city-light-shimmer 5.8s ease-in-out infinite alternate; }
+.launch-base-view::after { content:""; position:absolute; left:14%; right:14%; top:16%; height:2px; background:repeating-linear-gradient(90deg,rgba(245,204,126,.72) 0 3px,transparent 3px 27px); box-shadow:0 0 9px rgba(236,192,115,.18); }
+
+/* Deep cloud volume: multiple lobes, shadows, wisps and a visible cloud deck. */
+.cloud-layer { mix-blend-mode:normal; overflow:visible; }
+.cloud-layer::before { background:radial-gradient(ellipse at 8% 64%,rgba(247,250,252,.90) 0 8%,rgba(214,228,238,.44) 15%,transparent 27%),radial-gradient(ellipse at 24% 42%,rgba(240,247,251,.84) 0 11%,rgba(192,214,229,.34) 20%,transparent 30%),radial-gradient(ellipse at 44% 66%,rgba(251,252,252,.92) 0 10%,rgba(207,224,235,.38) 18%,transparent 29%),radial-gradient(ellipse at 63% 38%,rgba(235,245,250,.87) 0 12%,rgba(179,205,223,.30) 21%,transparent 31%),radial-gradient(ellipse at 84% 61%,rgba(248,251,252,.90) 0 10%,rgba(202,221,233,.37) 19%,transparent 30%); }
+.cloud-layer::after { background:radial-gradient(ellipse at 18% 58%,rgba(116,151,176,.24) 0 12%,transparent 30%),radial-gradient(ellipse at 52% 70%,rgba(104,142,169,.22) 0 15%,transparent 34%),radial-gradient(ellipse at 77% 48%,rgba(122,158,181,.19) 0 14%,transparent 31%); filter:blur(13px); opacity:.7; }
+.cloud-far { transform:translate3d(var(--cloud-far-x,0px),var(--cloud-far-y,0px),0) scale(1.06); }
+.cloud-deck { position:absolute; z-index:3; left:-10%; right:-10%; bottom:-10%; height:48%; opacity:var(--cloud-deck-opacity); transform:translateY(calc(var(--space-mix) * 15vh)); background:radial-gradient(ellipse at 10% 35%,rgba(240,247,250,.92) 0 10%,transparent 22%),radial-gradient(ellipse at 27% 52%,rgba(225,238,246,.92) 0 13%,transparent 26%),radial-gradient(ellipse at 48% 35%,rgba(248,251,252,.95) 0 12%,transparent 25%),radial-gradient(ellipse at 70% 50%,rgba(219,235,244,.94) 0 14%,transparent 28%),radial-gradient(ellipse at 91% 36%,rgba(242,248,251,.92) 0 11%,transparent 23%),linear-gradient(180deg,transparent 5%,rgba(219,235,244,.50) 55%,rgba(170,201,220,.30)); filter:blur(7px); box-shadow:0 -30px 90px rgba(238,248,255,.10); }
+.cloud-wisps { position:absolute; z-index:5; inset:0; pointer-events:none; opacity:0; }
+.cloud-wisps i { position:absolute; width:44vw; height:11vw; min-height:55px; border-radius:50%; background:radial-gradient(ellipse,rgba(244,250,252,.38),rgba(201,220,233,.13) 44%,transparent 73%); filter:blur(18px); }
+.cloud-wisps i:nth-child(1){left:-12%;top:30%;}.cloud-wisps i:nth-child(2){right:-14%;top:45%;}.cloud-wisps i:nth-child(3){left:20%;top:61%;}.cloud-wisps i:nth-child(4){right:18%;top:22%;}
+.launch-stage[data-phase="cloud-approach"] .cloud-wisps { opacity:.22; animation:wisp-drift 5s ease-in-out infinite alternate; }
+.launch-stage[data-phase="clouds"] .cloud-wisps { opacity:.62; animation:wisp-drift 2.8s ease-in-out infinite alternate; }
+.launch-stage[data-phase="above-clouds"] .cloud-wisps { opacity:.16; transition:opacity .8s ease; }
+
+/* Cockpit frame and readable vehicle controls. */
+.cockpit-roof { height:13.5%; border-bottom-color:rgba(231,203,151,.20); }
+.cockpit-roof::after { content:""; position:absolute; left:33%; right:33%; bottom:18%; height:8px; border:1px solid rgba(115,167,199,.18); border-radius:3px; background:linear-gradient(90deg,transparent,rgba(116,181,215,.12),transparent); box-shadow:0 0 18px rgba(89,157,194,.07) inset; }
+.cockpit-pillar { width:7%; }
+.cockpit-dashboard { height:23%; bottom:-5.5%; overflow:hidden; background:linear-gradient(180deg,#1a2e3d 0%,#0c1825 25%,#040a12 100%); }
+.cockpit-dashboard::before { content:""; position:absolute; inset:0; opacity:.16; background:linear-gradient(90deg,transparent 0 49.8%,rgba(145,191,218,.14) 50%,transparent 50.2%),repeating-linear-gradient(0deg,transparent 0 13px,rgba(142,181,202,.035) 13px 14px); }
+.console-bank { position:absolute; top:29%; height:54%; border:1px solid rgba(116,165,195,.13); border-radius:6px; background:linear-gradient(180deg,rgba(8,21,33,.62),rgba(2,9,16,.48)); box-shadow:inset 0 1px rgba(255,255,255,.025); }
+.console-left { left:7.3%; width:23%; }.console-center { left:36%; width:28%; }.console-right { right:7.3%; width:23%; }
+.instrument-ring { position:absolute; left:8%; top:17%; width:44px; height:44px; border:1px solid rgba(111,181,217,.32); border-radius:50%; box-shadow:inset 0 0 0 7px rgba(62,112,141,.06),0 0 14px rgba(79,151,189,.08); }
+.instrument-ring::before,.instrument-ring::after { content:""; position:absolute; left:50%; top:50%; background:rgba(128,192,223,.35); transform-origin:0 50%; }
+.instrument-ring::before { width:16px;height:1px;transform:rotate(-42deg); }.instrument-ring::after { width:12px;height:1px;transform:rotate(32deg); }
+.instrument-ring i { position:absolute; inset:5px; border-radius:50%; border:1px dashed rgba(137,184,207,.16); animation:instrument-spin 18s linear infinite; }
+.instrument-ring span { position:absolute; left:50%; bottom:-13px; transform:translateX(-50%); font-size:5px; letter-spacing:1.4px; color:#7f9eb0; }
+.mini-readout { position:absolute; left:32%; top:26%; display:flex; align-items:baseline; gap:4px; color:#9ec8dd; }.mini-readout b{font:500 10px/1 monospace;}.mini-readout small{font-size:5px;color:#6f8da0;}
+.toggle-row { position:absolute; left:8%; right:8%; bottom:13%; display:flex; gap:8px; align-items:center; }
+.toggle-row i { width:16px; height:5px; border-radius:99px; background:#172d3b; border:1px solid rgba(130,174,197,.13); position:relative; }
+.toggle-row i::after { content:""; position:absolute; top:1px; left:1px; width:3px; height:3px; border-radius:50%; background:#79b6d3; box-shadow:0 0 5px rgba(121,182,211,.6); }
+.toggle-row i:nth-child(2n)::after { left:auto; right:1px; background:#d8b96e; box-shadow:0 0 5px rgba(216,185,110,.5); }
+.nav-display { position:absolute; left:9%; right:9%; top:13%; height:45%; border:1px solid rgba(103,171,207,.16); border-radius:4px; background:radial-gradient(circle,rgba(57,110,139,.13),rgba(2,9,16,.28) 68%); overflow:hidden; }
+.nav-display::before { content:""; position:absolute; inset:10%; border:1px solid rgba(111,172,203,.14); border-radius:50%; }
+.nav-display i { position:absolute; width:42%; height:42%; left:29%; top:29%; border:1px solid rgba(223,190,124,.25); border-radius:50%; animation:instrument-spin 12s linear infinite reverse; }
+.nav-display b { position:absolute; right:7px; bottom:5px; font-size:4.8px; font-weight:500; letter-spacing:1.3px; color:#6f91a4; }
+.nav-crosshair::before,.nav-crosshair::after { content:""; position:absolute; left:50%; top:50%; background:rgba(112,182,216,.22); transform:translate(-50%,-50%); }.nav-crosshair::before{width:58%;height:1px}.nav-crosshair::after{width:1px;height:70%}
+.console-buttons { position:absolute; left:13%; right:13%; bottom:12%; display:flex; justify-content:space-between; }.console-buttons i{width:7px;height:7px;border-radius:2px;background:#1b3444;border:1px solid rgba(126,179,207,.15);box-shadow:0 0 8px rgba(77,151,188,.05)}.console-buttons i:nth-child(3){background:#735c35;box-shadow:0 0 7px rgba(223,186,111,.16)}
+.telemetry-bars { position:absolute; left:9%; right:9%; top:19%; display:flex; gap:6px; align-items:flex-end; height:44%; }.telemetry-bars i{flex:1; height:40%; background:linear-gradient(180deg,#6c9db6,#233f50); opacity:.72; animation:telemetry-pulse 2.8s ease-in-out infinite alternate;}.telemetry-bars i:nth-child(2){height:72%;animation-delay:-.8s}.telemetry-bars i:nth-child(3){height:55%;animation-delay:-1.6s}.telemetry-bars i:nth-child(4){height:86%;animation-delay:-2.2s}
+.cockpit-brand { top:22%; z-index:3; }.dashboard-lights { left:8.2%; top:22%; z-index:3; }.dashboard-screen { right:8.2%; top:20%; z-index:3; min-width:132px; }
+
+/* Rebuilt 2D crew art: cleaner anime-inspired faces and richer line/shading detail. */
+.companion { bottom:5.8%; width:clamp(178px,19vw,286px); filter:drop-shadow(0 26px 38px rgba(0,0,0,.42)); }
+.companion-a { left:1.3%; }.companion-b { right:1.3%; }
+.companion .hair-highlight { fill:rgba(153,179,219,.10); }
+.companion .neck { fill:url(#skin-a); }.companion-b .neck { fill:url(#skin-b); }
+.companion .face-shadow { fill:rgba(178,102,88,.07); }
+.companion .blush { fill:url(#cheek-a); }.companion-b .blush { fill:url(#cheek-b); }
+.companion .lash { fill:none; stroke:#292936; stroke-width:2.2; stroke-linecap:round; }
+.companion-a .iris { fill:url(#iris-a); }.companion-b .iris { fill:url(#iris-b); }
+.companion .jacket-panel { fill:rgba(5,17,30,.18); stroke:rgba(199,222,236,.12); stroke-width:1; }
+.companion .uniform-detail path { fill:none; stroke:rgba(206,225,236,.18); stroke-width:1.4; }.companion .uniform-detail circle{fill:none;stroke:rgba(234,203,144,.5);stroke-width:1.5}
+.companion .character-head { transform-origin:50% 78%; }
+.companion[data-state="pointing"] .gesture-point,.companion[data-state="looking-earth"] .gesture-point { opacity:1; }
+.companion .gesture-point { opacity:0; transition:opacity .35s ease; }
+.companion.is-talking .character-head { animation-duration:.38s; }
+
+/* Speech remains beside the crew and never covers the forward flight path. */
+.speech-bubble { z-index:15; width:min(248px,23vw); border-color:rgba(177,210,229,.23); background:linear-gradient(145deg,rgba(6,17,28,.91),rgba(8,21,33,.78)); }
+.speech-bubble.speaker-a { left:12.5%; bottom:48%; }.speech-bubble.speaker-b { right:12.5%; bottom:48%; }
+
+/* More intentional phase lighting. */
+.launch-stage[data-phase="ignition"] .cockpit-dashboard { box-shadow:0 -10px 46px rgba(0,0,0,.42),0 -4px 28px rgba(94,160,195,.08); }
+.launch-stage[data-phase="liftoff"] .city-light-field { filter:blur(.4px); }
+.launch-stage[data-phase="clouds"] .cockpit-camera { filter:brightness(.93) contrast(1.02); }
+.launch-stage[data-phase="above-clouds"] .launch-sky { background:linear-gradient(180deg,#236398 0%,#67a5ca 46%,#d8edf7 100%); }
+.launch-stage[data-phase="upper-atmosphere"] .launch-sky { background:linear-gradient(180deg,#071a35 0%,#16385c 50%,#6f9ab2 100%); }
+
+@keyframes cockpit-idle-view { from{transform:translate3d(-1px,1px,0) scale(1.018)} to{transform:translate3d(2px,-1px,0) scale(1.022)} }
+@keyframes cockpit-idle-frame { from{transform:translate3d(-.5px,0,0) rotate(-.025deg)} to{transform:translate3d(.7px,.5px,0) rotate(.025deg)} }
+@keyframes ground-heat-breathe { from{filter:brightness(.98) saturate(.98)} to{filter:brightness(1.035) saturate(1.03)} }
+@keyframes city-beacon { 0%,72%,100%{opacity:.18} 76%,86%{opacity:1} }
+@keyframes city-light-shimmer { from{filter:brightness(.9)} to{filter:brightness(1.12)} }
+@keyframes wisp-drift { from{transform:translate3d(-2%,2%,0) scale(1)} to{transform:translate3d(3%,-3%,0) scale(1.06)} }
+@keyframes instrument-spin { to{transform:rotate(360deg)} }
+@keyframes telemetry-pulse { from{opacity:.35;transform:scaleY(.85)} to{opacity:.85;transform:scaleY(1)} }
+
+@media (max-width:900px){
+  .intro h1{top:18%;font-size:clamp(30px,6vw,50px)} .intro-copy{top:28.5%;width:68vw}.launch-button{bottom:19.5%}
+  .console-left{left:4%;width:26%}.console-right{right:4%;width:26%}.console-center{left:34%;width:32%}.instrument-ring{transform:scale(.86);transform-origin:left top}.mini-readout{left:39%}
+  .companion{width:clamp(155px,22vw,220px)}
+}
+@media (max-width:700px){
+  .intro .eyebrow{top:12.8%;font-size:6px}.intro h1{top:16%;width:88vw;font-size:clamp(28px,9vw,42px)}.intro-copy{top:26.5%;width:78vw;font-size:10px}.launch-button{bottom:20.8%}
+  .cockpit-dashboard{height:22%}.console-center{display:none}.console-left{left:8%;width:38%}.console-right{right:8%;width:38%}.dashboard-screen{right:9%;top:17%;min-width:104px}.cockpit-brand{left:28%;top:20%}
+  .launch-complex{width:86vw}.companion{bottom:7%;width:clamp(138px,39vw,182px)}.companion-a{left:-10%}.companion-b{right:-10%}.speech-bubble{width:min(190px,52vw)}.speech-bubble.speaker-a{left:2.5%;bottom:50%}.speech-bubble.speaker-b{right:2.5%;bottom:50%}
+}
+@media (max-height:700px) and (min-width:701px){ .intro h1{top:14.5%;font-size:clamp(28px,4vw,48px)}.intro .eyebrow{top:11.5%}.intro-copy{display:none}.launch-button{bottom:20%}.companion{bottom:6%;width:clamp(160px,18vw,215px)} }
+@media (prefers-reduced-motion:reduce){
+  .mission[data-experience="home"] .cockpit-world,.mission[data-experience="home"] .cockpit-camera,.mission[data-experience="home"] .ground-world,.city-light-field,.beacon,.instrument-ring i,.nav-display i,.telemetry-bars i{animation:none !important}
+}
