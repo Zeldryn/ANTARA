@@ -639,23 +639,10 @@ class CockpitCompanions {
   }
 
   setJourneyPhase(phase) {
-    const stateMap = {
-      idle: ["happy", "idle"],
-      prelaunch: ["happy", "smile"],
-      ignition: ["excited", "supportive"],
-      liftoff: ["excited", "surprised"],
-      climb: ["confident", "explaining"],
-      "cloud-approach": ["pointing", "curious"],
-      clouds: ["surprised", "surprised"],
-      "above-clouds": ["excited", "smile"],
-      "upper-atmosphere": ["thinking", "explaining"],
-      space: ["thinking", "curious"],
-      "earth-reveal": ["pointing", "surprised"],
-      approach: ["confident", "supportive"]
-    };
-    const [aState, bState] = stateMap[phase] || stateMap.idle;
-    this.swapSprite("A", aState);
-    this.swapSprite("B", bState);
+    // Flight phase may change physical cockpit motion, but it must never overwrite
+    // the sprite/expression selected by the current 3-second dialogue cue.
+    if (this.a) this.a.dataset.flightPhase = phase;
+    if (this.b) this.b.dataset.flightPhase = phase;
   }
 
   setDialogue(entry, immediate = false) {
@@ -672,14 +659,15 @@ class CockpitCompanions {
       this.bubble.classList.toggle("speaker-b", speakerSide === "B");
       this.bubble.classList.remove("is-changing");
       clearTimeout(this.talkTimer);
-      this.a.classList.remove("is-talking");
-      this.b.classList.remove("is-talking");
-      speakerEl.classList.add("is-talking");
+      this.a.classList.remove("is-talking", "is-focused", "is-listening");
+      this.b.classList.remove("is-talking", "is-focused", "is-listening");
+      speakerEl.classList.add("is-talking", "is-focused");
+      otherEl.classList.add("is-listening");
       speakerEl.dataset.expression = entry.emotion || entry.sprite || "neutral";
       otherEl.dataset.expression = entry.otherEmotion || "neutral";
       this.swapSprite(speakerSide, entry.sprite || "talking", immediate);
       if (entry.otherSprite) this.swapSprite(otherSide, entry.otherSprite, immediate);
-      const duration = entry.duration || Math.min(3200, Math.max(1600, 1050 + entry.text.length * 32));
+      const duration = Math.max(3000, entry.duration || Math.min(3400, Math.max(3000, 1050 + entry.text.length * 32)));
       this.talkTimer = setTimeout(() => speakerEl.classList.remove("is-talking"), duration);
     };
     if (immediate) apply();
@@ -691,19 +679,16 @@ class CockpitCompanions {
 }
 
 const DIALOGUE_TIMELINE = Object.freeze([
-  { at: 0.00, phase: "prelaunch", speaker: "A", text: "Hai! Sudah Siap menjelajah Tata Surya Kita?", emotion: "happy", sprite: "happy", otherSprite: "idle", duration: 3200 },
-  { at: 3.35, phase: "prelaunch", speaker: "B", text: "Kita mulai dari rumah kita dulu: Bumi.", emotion: "explaining", sprite: "talking", otherSprite: "confident", duration: 2500 },
-  { at: LAUNCH_TIMING.ignition + .10, phase: "ignition", speaker: "A", text: "Mesinnya hidup. Siap?", emotion: "excited", sprite: "excited", otherSprite: "supportive", duration: 1750 },
-  { at: LAUNCH_TIMING.liftoff - .62, phase: "ignition", speaker: "B", text: "Pegangan ya, kita mulai terbang!", emotion: "supportive", sprite: "supportive", otherSprite: "excited", duration: 2100 },
-  { at: LAUNCH_TIMING.liftoff + .22, phase: "liftoff", speaker: "A", text: "Kita naik! Kota di bawah mulai mengecil.", emotion: "excited", sprite: "excited", otherSprite: "surprised", duration: 2400 },
-  { at: LAUNCH_TIMING.climb + .22, phase: "climb", speaker: "B", text: "Lihat, langitnya makin luas.", emotion: "explaining", sprite: "talking", otherSprite: "confident", duration: 2100 },
-  { at: LAUNCH_TIMING.cloudApproach + .18, phase: "cloud-approach", speaker: "A", text: "Awan mulai kelihatan di depan.", emotion: "explaining", sprite: "pointing", otherSprite: "curious", duration: 2200 },
-  { at: LAUNCH_TIMING.clouds + .32, phase: "clouds", speaker: "B", text: "Sedikit berguncang. Kita sedang melewati awan.", emotion: "surprised", sprite: "surprised", otherSprite: "surprised", duration: 2600 },
-  { at: LAUNCH_TIMING.aboveClouds + .20, phase: "above-clouds", speaker: "A", text: "Keren... kita sudah di atas awan.", emotion: "excited", sprite: "excited", otherSprite: "smile", duration: 2250 },
-  { at: LAUNCH_TIMING.upperAtmosphere + .22, phase: "upper-atmosphere", speaker: "B", text: "Langitnya makin gelap. Atmosfer mulai menipis.", emotion: "explaining", sprite: "talking", otherSprite: "thinking", duration: 2650 },
-  { at: LAUNCH_TIMING.space + .18, phase: "space", speaker: "A", text: "Sekarang tenang banget...", emotion: "thinking", sprite: "thinking", otherSprite: "curious", duration: 1900 },
-  { at: LAUNCH_TIMING.earthReveal + .22, phase: "earth-reveal", speaker: "B", text: "Itu Bumi! Rumah kita.", emotion: "surprised", sprite: "surprised", otherSprite: "pointing", duration: 2250 },
-  { at: LAUNCH_TIMING.approach + .24, phase: "approach", speaker: "A", text: "Yuk, kita lihat lebih dekat!", emotion: "confident", sprite: "confident", otherSprite: "supportive", duration: 2200 }
+  { at: 0.00, phase: "prelaunch", speaker: "A", text: "Hai! Sudah Siap menjelajah Tata Surya Kita?", emotion: "happy", sprite: "happy", otherSprite: "idle", duration: 3000 },
+  { at: 3.20, phase: "prelaunch", speaker: "B", text: "Kita mulai dari rumah kita dulu: Bumi.", emotion: "explaining", sprite: "talking", otherSprite: "confident", duration: 3000 },
+  { at: 6.30, phase: "ignition", speaker: "A", text: "Mesinnya hidup. Siap?", emotion: "excited", sprite: "excited", otherSprite: "supportive", duration: 3000 },
+  { at: 9.40, phase: "climb", speaker: "B", text: "Lihat, langitnya makin luas.", emotion: "explaining", sprite: "talking", otherSprite: "confident", duration: 3000 },
+  { at: 12.50, phase: "cloud-approach", speaker: "A", text: "Awan mulai kelihatan di depan.", emotion: "explaining", sprite: "pointing", otherSprite: "curious", duration: 3000 },
+  { at: 15.60, phase: "clouds", speaker: "B", text: "Sedikit berguncang. Kita sedang melewati awan.", emotion: "surprised", sprite: "surprised", otherSprite: "surprised", duration: 3000 },
+  { at: 18.70, phase: "above-clouds", speaker: "A", text: "Keren... kita sudah di atas awan.", emotion: "excited", sprite: "excited", otherSprite: "smile", duration: 3000 },
+  { at: 21.80, phase: "upper-atmosphere", speaker: "B", text: "Langitnya makin gelap. Atmosfer mulai menipis.", emotion: "explaining", sprite: "talking", otherSprite: "thinking", duration: 3000 },
+  { at: 24.90, phase: "space", speaker: "A", text: "Sekarang tenang banget...", emotion: "thinking", sprite: "thinking", otherSprite: "curious", duration: 3000 },
+  { at: 28.05, phase: "approach", speaker: "B", text: "Itu Bumi! Rumah kita.", emotion: "surprised", sprite: "surprised", otherSprite: "pointing", duration: 3000 }
 ]);
 
 const mission = document.getElementById("mission");

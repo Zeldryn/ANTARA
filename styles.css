@@ -913,6 +913,19 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   transform-origin: 50% 100%;
   transform: translate3d(0, calc(var(--ground-progress) * 34vh), 0) scale(calc(1 - var(--ground-progress) * .29));
   will-change: transform, opacity;
+  overflow: hidden;
+}
+.ground-world::before {
+  content: "";
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  top: -14%;
+  height: 30%;
+  z-index: 5;
+  background: linear-gradient(180deg, rgba(214,234,246,.36), rgba(184,220,240,.16) 38%, rgba(236,194,150,.08) 68%, transparent 100%);
+  filter: blur(10px);
+  pointer-events: none;
 }
 .terrain-far {
   position: absolute;
@@ -2084,7 +2097,65 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   50% { opacity:.82; transform:scaleX(1); }
 }
 
-/* STEP 3 — dedicated 2D anime-style urban environment replaces the block skyline. */
+/* STEP 1 — strengthen the previously empty top area with subtle canopy structure and living cockpit detail. */
+.cockpit-window-depth::before {
+  content: "";
+  position: absolute;
+  left: 9%;
+  right: 9%;
+  top: 2.8%;
+  height: 8.5%;
+  border-top: 1px solid rgba(210,228,241,.12);
+  border-left: 1px solid rgba(114,164,193,.08);
+  border-right: 1px solid rgba(114,164,193,.08);
+  border-radius: 22px 22px 110px 110px / 18px 18px 90px 90px;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(91,139,168,.02) 48%, transparent 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 24px rgba(0,0,0,.12);
+  opacity: .78;
+  pointer-events: none;
+}
+.cockpit-window-depth::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  top: 5.8%;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent 0%, rgba(119,175,205,.10) 12%, rgba(244,206,131,.32) 50%, rgba(119,175,205,.10) 88%, transparent 100%);
+  animation: cockpit-top-glint 5.8s ease-in-out infinite;
+  pointer-events: none;
+}
+.cockpit-roof::before {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 9%;
+  height: 26%;
+  border-top: 1px solid rgba(134,188,217,.12);
+  border-bottom: 1px solid rgba(222,187,122,.06);
+  background:
+    radial-gradient(circle at 12% 55%, rgba(115,191,224,.22) 0 2px, transparent 2.6px),
+    radial-gradient(circle at 21% 55%, rgba(222,187,122,.24) 0 2px, transparent 2.6px),
+    radial-gradient(circle at 79% 55%, rgba(222,187,122,.24) 0 2px, transparent 2.6px),
+    radial-gradient(circle at 88% 55%, rgba(115,191,224,.22) 0 2px, transparent 2.6px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.045) 0 1px, transparent 1px 16px);
+  border-radius: 999px;
+  opacity: .9;
+  animation: cockpit-top-pulse 4.6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes cockpit-top-glint {
+  0%,100% { opacity: .2; transform: scaleX(.92); }
+  50% { opacity: .85; transform: scaleX(1); }
+}
+@keyframes cockpit-top-pulse {
+  0%,100% { opacity: .58; }
+  48%,60% { opacity: .9; }
+}
+
+/* STEP 2 — dedicated 2D anime-style launch-center environment replaces the generic street/city view. */
 .ground-world { background: transparent; }
 .anime-city-backdrop {
   position: absolute;
@@ -2093,29 +2164,31 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   right: -4%;
   top: -62%;
   bottom: -4%;
-  background: url("assets/environment/anime-city-early.svg") center bottom / cover no-repeat;
+  background: url("assets/environment/launch-center-early.svg") center bottom / cover no-repeat;
   filter: saturate(.96) contrast(1.025) brightness(.94);
   transform: translate3d(0,0,0) scale(1.02);
   transform-origin: 50% 100%;
   will-change: transform, filter;
   animation: anime-city-breathe 9s ease-in-out infinite alternate;
+  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 16%, rgba(0,0,0,1) 32%, rgba(0,0,0,1) 100%);
+  mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 16%, rgba(0,0,0,1) 32%, rgba(0,0,0,1) 100%);
 }
 .anime-city-backdrop::after {
   content:"";
   position:absolute;
   inset:0;
   background:
-    linear-gradient(180deg, rgba(85,144,186,.06), transparent 32%, rgba(236,171,103,.08) 63%, rgba(4,13,21,.16) 100%),
-    radial-gradient(ellipse at 50% 55%, transparent 0 38%, rgba(4,13,21,.10) 78%, rgba(3,9,15,.24) 100%);
+    linear-gradient(180deg, rgba(214,235,247,.22) 0%, rgba(140,188,217,.16) 18%, transparent 34%, rgba(236,171,103,.08) 64%, rgba(4,13,21,.14) 100%),
+    radial-gradient(ellipse at 50% 55%, transparent 0 38%, rgba(4,13,21,.08) 78%, rgba(3,9,15,.18) 100%);
   pointer-events:none;
 }
 .anime-city-atmosphere {
   position: absolute;
   z-index: 2;
-  left: -8%; right: -8%; top: -28%; height: 78%;
+  left: -10%; right: -10%; top: -34%; height: 88%;
   background:
     radial-gradient(ellipse at 50% 78%, rgba(255,218,172,.20), transparent 50%),
-    linear-gradient(180deg, rgba(226,239,246,.04), rgba(236,194,150,.10) 72%, transparent);
+    linear-gradient(180deg, rgba(226,239,246,.14), rgba(188,223,242,.11) 24%, rgba(236,194,150,.12) 70%, transparent 100%);
   filter: blur(8px);
   pointer-events: none;
   animation: anime-city-haze 7.5s ease-in-out infinite alternate;
@@ -2125,8 +2198,8 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   to { transform: translate3d(.35%,-.2%,0) scale(1.024); filter:saturate(1) contrast(1.03) brightness(.97); }
 }
 @keyframes anime-city-haze {
-  from { opacity:.64; transform:translateX(-.7%); }
-  to { opacity:.86; transform:translateX(.7%); }
+  from { opacity:.70; transform:translateX(-.7%) translateY(0); }
+  to { opacity:.92; transform:translateX(.7%) translateY(-.4%); }
 }
 .launch-stage[data-phase="liftoff"] .anime-city-backdrop,
 .launch-stage[data-phase="climb"] .anime-city-backdrop { filter:saturate(.88) contrast(1.02) brightness(.88); }
@@ -2151,7 +2224,7 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 @media (max-width: 900px) {
   .launch-brand-lockup { top: 1.1%; transform: translateX(-50%) translate3d(var(--cam-x),var(--cam-y),0) rotate(var(--cam-tilt)) scale(.9); }
   .roof-sensor-strip { left:31%; right:31%; }
-  .anime-city-backdrop { left:-13%; right:-13%; top:-55%; }
+  .anime-city-backdrop { left:-14%; right:-14%; top:-57%; }
   .mission-progress-panel .rocket-marker { width:clamp(33px,4.4vw,45px); }
 }
 @media (max-width: 700px) {
@@ -2159,11 +2232,191 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .roof-instrumentation { inset:20% 6% 20%; }
   .roof-status-bank { gap:4px; }
   .roof-sensor-strip { left:34%; right:34%; padding:0 5%; }
-  .anime-city-backdrop { left:-32%; right:-32%; top:-40%; background-position:50% 100%; }
+  .anime-city-backdrop { left:-30%; right:-30%; top:-42%; background-position:50% 100%; }
   .mission-progress-panel { display:block !important; }
   .mission-progress-panel .mission-track { left:5%; right:5%; height:34px; }
   .mission-progress-panel .rocket-marker { width:34px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .roof-status-bank i,.roof-sensor-strip b,.cockpit-roof::after,.anime-city-backdrop,.anime-city-atmosphere,.rocket-flame-icon { animation:none !important; }
+}
+
+
+/* ==============================================================
+   STRICT TARGETED SYNC / ENVIRONMENT FIX
+   Only the requested ground scene, its motion, dialogue-character sync,
+   and upper cockpit detail are overridden below.
+   ============================================================== */
+
+/* STEP 1 + 2: richer illustrated launch-city environment, with independent
+   parallax/light/haze layers so the scene never reads as a static card. */
+.anime-city-backdrop {
+  background-image: url("assets/environment/anime-launch-city-v2.svg");
+  background-position: 50% 100%;
+  background-size: cover;
+  left: -7%;
+  right: -7%;
+  top: -66%;
+  bottom: -6%;
+  filter: saturate(1.06) contrast(1.035) brightness(.98);
+  animation: launch-city-parallax 8.5s ease-in-out infinite alternate;
+  -webkit-mask-image: linear-gradient(180deg,transparent 0%,rgba(0,0,0,.18) 9%,rgba(0,0,0,.72) 22%,#000 37%,#000 100%);
+  mask-image: linear-gradient(180deg,transparent 0%,rgba(0,0,0,.18) 9%,rgba(0,0,0,.72) 22%,#000 37%,#000 100%);
+}
+.anime-city-backdrop::after {
+  background:
+    linear-gradient(180deg,rgba(176,216,239,.12) 0%,rgba(191,224,241,.10) 18%,transparent 34%,rgba(235,189,140,.08) 64%,rgba(4,13,21,.12) 100%),
+    radial-gradient(ellipse at 50% 58%,rgba(255,220,170,.06),transparent 45%,rgba(4,13,21,.06) 76%,rgba(3,9,15,.15) 100%);
+}
+.anime-city-lights {
+  position:absolute;
+  z-index:2;
+  left:-8%; right:-8%; bottom:8%; height:34%;
+  opacity:calc(.72 - var(--ground-progress) * .48);
+  background:
+    radial-gradient(circle at 7% 68%,rgba(246,202,112,.9) 0 2px,transparent 3px),
+    radial-gradient(circle at 16% 57%,rgba(109,185,219,.72) 0 2px,transparent 3px),
+    radial-gradient(circle at 29% 72%,rgba(246,202,112,.78) 0 2px,transparent 3px),
+    radial-gradient(circle at 71% 66%,rgba(246,202,112,.82) 0 2px,transparent 3px),
+    radial-gradient(circle at 83% 53%,rgba(109,185,219,.68) 0 2px,transparent 3px),
+    radial-gradient(circle at 94% 70%,rgba(246,202,112,.86) 0 2px,transparent 3px);
+  background-size:280px 96px,310px 110px,340px 124px,300px 100px,330px 112px,360px 128px;
+  filter:drop-shadow(0 0 7px rgba(234,190,103,.35));
+  animation: launch-city-lights-drift 6.6s linear infinite;
+  pointer-events:none;
+}
+.anime-city-cloud-band {
+  position:absolute;
+  z-index:3;
+  left:-12%; right:-12%; top:-8%; height:46%;
+  opacity:calc(.72 - var(--ground-progress) * .52);
+  pointer-events:none;
+  filter:blur(2px);
+  overflow:hidden;
+}
+.anime-city-cloud-band i {
+  position:absolute;
+  width:28%; height:18%;
+  border-radius:50%;
+  background:radial-gradient(ellipse at center,rgba(240,248,252,.30),rgba(210,232,244,.12) 54%,transparent 72%);
+  animation: launch-cloud-drift 13s ease-in-out infinite alternate;
+}
+.anime-city-cloud-band i:nth-child(1){left:2%;top:22%;transform:scale(1.2);}
+.anime-city-cloud-band i:nth-child(2){left:39%;top:7%;width:34%;animation-delay:-4s;}
+.anime-city-cloud-band i:nth-child(3){right:1%;top:30%;width:31%;animation-delay:-8s;}
+.anime-city-atmosphere {
+  top:-42%;
+  height:102%;
+  opacity:.82;
+  background:
+    radial-gradient(ellipse at 50% 72%,rgba(255,220,176,.19),transparent 49%),
+    linear-gradient(180deg,rgba(217,237,248,.17),rgba(178,218,239,.11) 28%,rgba(236,194,150,.11) 72%,transparent 100%);
+  animation: launch-haze-shift 7.8s ease-in-out infinite alternate;
+}
+@keyframes launch-city-parallax {
+  from { transform:translate3d(-.7%,.35%,0) scale(1.025); filter:saturate(1.03) contrast(1.03) brightness(.96); }
+  to { transform:translate3d(.7%,-.45%,0) scale(1.035); filter:saturate(1.10) contrast(1.04) brightness(1); }
+}
+@keyframes launch-city-lights-drift {
+  from { background-position:0 0,0 0,0 0,0 0,0 0,0 0; }
+  to { background-position:44px -7px,-36px 4px,28px -5px,-42px 6px,34px -4px,-30px 7px; }
+}
+@keyframes launch-cloud-drift {
+  from { translate:-3% 0; opacity:.48; }
+  to { translate:4% -5%; opacity:.76; }
+}
+@keyframes launch-haze-shift {
+  from { transform:translate3d(-.8%,.3%,0) scale(1.01); filter:blur(8px); }
+  to { transform:translate3d(.8%,-.7%,0) scale(1.025); filter:blur(10px); }
+}
+
+/* STEP 3: visual state belongs to the current dialogue cue. Flight phases no
+   longer replace sprites. Only the current speaker receives talk motion while
+   the listener remains intentionally calmer until the next ~3-second cue. */
+.character-sprite { animation:none !important; }
+.companion.is-focused { opacity:1; }
+.companion.is-focused .character-sprite { filter:brightness(1.02) saturate(1.025); }
+.companion.is-talking .character-sprite { animation:sprite-dialogue-active .72s ease-in-out infinite alternate !important; }
+.companion.is-listening .character-sprite { animation:sprite-dialogue-listen 3s ease-in-out infinite !important; opacity:.97; }
+@keyframes sprite-dialogue-active {
+  from { transform:translateY(0) scale(1); }
+  to { transform:translateY(-2px) scale(1.004); }
+}
+@keyframes sprite-dialogue-listen {
+  0%,100% { transform:translateY(0) scale(1); }
+  50% { transform:translateY(-1px) scale(1.0015); }
+}
+
+/* STEP 4: denser but restrained upper cockpit instrumentation. */
+.roof-micro-panel {
+  position:absolute;
+  top:6%;
+  width:19%;
+  height:25%;
+  display:grid;
+  grid-template-columns:auto 1fr 1fr 1fr;
+  align-items:center;
+  gap:5px;
+  padding:0 8px;
+  border:1px solid rgba(111,173,204,.10);
+  border-radius:4px;
+  background:linear-gradient(180deg,rgba(10,25,37,.62),rgba(3,10,17,.40));
+  box-shadow:inset 0 0 14px rgba(86,151,181,.05);
+  opacity:.78;
+}
+.roof-micro-left { left:8%; }
+.roof-micro-right { right:8%; }
+.roof-micro-panel span {
+  font-size:clamp(3.5px,.33vw,5px);
+  letter-spacing:.16em;
+  color:rgba(196,217,230,.56);
+}
+.roof-micro-panel b {
+  display:block;
+  height:2px;
+  border-radius:999px;
+  background:rgba(111,184,217,.28);
+  animation:roof-data-bar 2.8s ease-in-out infinite;
+}
+.roof-micro-panel b:nth-of-type(2){background:rgba(226,188,111,.38);animation-delay:-.7s;}
+.roof-micro-panel b:nth-of-type(3){animation-delay:-1.4s;}
+.roof-center-scan {
+  position:absolute;
+  left:38%; right:38%; bottom:3%;
+  height:20%;
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  padding:0 8%;
+  border-bottom:1px solid rgba(105,174,206,.13);
+}
+.roof-center-scan i {
+  width:7%;
+  height:28%;
+  border-radius:2px 2px 0 0;
+  background:linear-gradient(180deg,rgba(121,194,226,.75),rgba(121,194,226,.16));
+  box-shadow:0 0 5px rgba(104,183,218,.15);
+  animation:roof-scan-meter 1.9s ease-in-out infinite alternate;
+}
+.roof-center-scan i:nth-child(2){height:48%;animation-delay:-.3s;}
+.roof-center-scan i:nth-child(3){height:68%;animation-delay:-.6s;background:linear-gradient(180deg,rgba(232,194,119,.76),rgba(232,194,119,.15));}
+.roof-center-scan i:nth-child(4){height:52%;animation-delay:-.9s;}
+.roof-center-scan i:nth-child(5){height:74%;animation-delay:-1.2s;background:linear-gradient(180deg,rgba(232,194,119,.74),rgba(232,194,119,.14));}
+.roof-center-scan i:nth-child(6){height:38%;animation-delay:-1.5s;}
+@keyframes roof-data-bar { 0%,100%{opacity:.28;transform:scaleX(.65)} 50%{opacity:.9;transform:scaleX(1)} }
+@keyframes roof-scan-meter { from{opacity:.34;transform:scaleY(.62)} to{opacity:.88;transform:scaleY(1)} }
+
+@media (max-width:900px){
+  .anime-city-backdrop{left:-16%;right:-16%;top:-60%;}
+  .roof-micro-panel{width:22%;padding:0 5px;gap:3px;}
+  .roof-center-scan{left:40%;right:40%;}
+}
+@media (max-width:700px){
+  .anime-city-backdrop{left:-34%;right:-34%;top:-46%;}
+  .roof-micro-panel span{display:none;}
+  .roof-micro-panel{grid-template-columns:1fr 1fr 1fr;width:20%;}
+  .roof-center-scan{left:42%;right:42%;}
+}
+@media (prefers-reduced-motion:reduce){
+  .anime-city-lights,.anime-city-cloud-band i,.roof-micro-panel b,.roof-center-scan i{animation:none !important;}
 }

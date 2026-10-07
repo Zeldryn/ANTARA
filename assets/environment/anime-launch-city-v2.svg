@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d9edf8" stop-opacity="0"/>
+      <stop offset=".36" stop-color="#c8e3f3" stop-opacity=".28"/>
+      <stop offset=".72" stop-color="#e8c69b" stop-opacity=".36"/>
+      <stop offset="1" stop-color="#c89a70" stop-opacity=".18"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b9e2f2" stop-opacity=".76"/>
+      <stop offset=".45" stop-color="#5f8eaa" stop-opacity=".52"/>
+      <stop offset="1" stop-color="#29485e" stop-opacity=".78"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#718397"/>
+      <stop offset=".55" stop-color="#445465"/>
+      <stop offset="1" stop-color="#27333f"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#405160"/>
+      <stop offset="1" stop-color="#1e2a35"/>
+    </linearGradient>
+    <linearGradient id="runway" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#697785"/>
+      <stop offset="1" stop-color="#29333e"/>
+    </linearGradient>
+    <filter id="blur8" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="8"/></filter>
+    <filter id="blur16" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="16"/></filter>
+    <pattern id="windows" width="24" height="24" patternUnits="userSpaceOnUse">
+      <rect x="4" y="5" width="5" height="3" rx="1" fill="#c8e8f5" fill-opacity=".28"/>
+      <rect x="15" y="5" width="5" height="3" rx="1" fill="#f3cf82" fill-opacity=".52"/>
+      <rect x="4" y="15" width="5" height="3" rx="1" fill="#8cc3dc" fill-opacity=".26"/>
+      <rect x="15" y="15" width="5" height="3" rx="1" fill="#dceaf0" fill-opacity=".18"/>
+    </pattern>
+  </defs>
+
+  <!-- atmospheric horizon, intentionally transparent toward top -->
+  <rect x="0" y="170" width="1600" height="500" fill="url(#haze)"/>
+  <ellipse cx="800" cy="420" rx="620" ry="150" fill="#ffdca8" fill-opacity=".14" filter="url(#blur16)"/>
+  <path d="M0 425C170 392 310 398 470 428c190 36 400 38 588 4 191-35 352-44 542-8v178H0Z" fill="#b9d4e4" fill-opacity=".17"/>
+  <path d="M0 474c190-26 356-18 532 10 210 34 404 32 604 0 176-28 308-34 464-10v134H0Z" fill="#e7d4bd" fill-opacity=".14"/>
+
+  <!-- distant city and aerospace campus -->
+  <g opacity=".88">
+    <path d="M0 555h1600v164H0z" fill="#344654"/>
+    <g fill="#526778">
+      <path d="M22 438h132v117H22z"/><path d="M166 472h84v83h-84z"/><path d="M265 420h146v135H265z"/>
+      <path d="M430 460h120v95H430z"/><path d="M1070 448h152v107h-152z"/><path d="M1237 420h138v135h-138z"/>
+      <path d="M1391 468h92v87h-92z"/><path d="M1494 439h82v116h-82z"/>
+    </g>
+    <g fill="url(#windows)" opacity=".72">
+      <path d="M22 438h132v117H22z"/><path d="M265 420h146v135H265z"/><path d="M1070 448h152v107h-152z"/><path d="M1237 420h138v135h-138z"/>
+    </g>
+  </g>
+
+  <!-- launch tower and gantry -->
+  <g transform="translate(585 150)">
+    <path d="M92 402 128 76h86l36 326Z" fill="url(#steel)"/>
+    <path d="M111 353h121M118 288h106M124 224h94M131 162h80M136 108h69" stroke="#91a9ba" stroke-width="5" opacity=".55"/>
+    <path d="M128 76h86l-9-42h-68Z" fill="#71869b"/>
+    <path d="M152 34V0h38v34" fill="#849caf"/>
+    <path d="M170 0v-43" stroke="#adc6d6" stroke-width="6"/><circle cx="170" cy="-47" r="6" fill="#f3c874"/>
+    <path d="M222 118h96v26h-96zM216 197h116v24H216zM208 276h138v24H208z" fill="#63778a"/>
+    <path d="M315 130 264 156M328 209 268 233M342 288 275 313" stroke="#8099ac" stroke-width="8" opacity=".7"/>
+    <rect x="317" y="107" width="21" height="205" rx="5" fill="#394a5a"/>
+  </g>
+
+  <!-- secondary support tower -->
+  <g transform="translate(916 212) scale(.82)">
+    <path d="M54 420 82 120h68l29 300Z" fill="url(#steel)"/>
+    <path d="M73 362h87M78 298h77M84 236h67M90 174h54" stroke="#94adbd" stroke-width="5" opacity=".55"/>
+    <path d="M82 120h68l-8-37H91Z" fill="#72879a"/>
+    <path d="M109 83V35" stroke="#aac2d3" stroke-width="6"/><circle cx="109" cy="30" r="6" fill="#f2c674"/>
+  </g>
+
+  <!-- launch platform -->
+  <g>
+    <path d="M548 565h508l70 64H474Z" fill="#263541"/>
+    <path d="M603 540h397l35 34H568Z" fill="#647586"/>
+    <rect x="628" y="522" width="345" height="22" rx="5" fill="#75889a"/>
+    <rect x="654" y="510" width="294" height="12" rx="4" fill="#b1c4d0" fill-opacity=".25"/>
+    <g fill="#edc878" opacity=".82"><circle cx="590" cy="573" r="4"/><circle cx="650" cy="561" r="4"/><circle cx="950" cy="561" r="4"/><circle cx="1010" cy="573" r="4"/></g>
+  </g>
+
+  <!-- control center / hangars -->
+  <g>
+    <path d="M258 522h226l34 33H228Z" fill="#647586"/>
+    <rect x="275" y="458" width="192" height="65" rx="8" fill="#526879"/>
+    <path d="M298 476h146v34H298z" fill="url(#glass)"/>
+    <path d="M1115 514h247l36 41h-318Z" fill="#647586"/>
+    <rect x="1137" y="448" width="204" height="68" rx="8" fill="#526879"/>
+    <path d="M1163 467h151v34h-151z" fill="url(#glass)"/>
+  </g>
+
+  <!-- elevated service line -->
+  <g opacity=".88">
+    <path d="M0 600 1600 570v26L0 626Z" fill="#263743"/>
+    <path d="M0 600 1600 570" stroke="#a2b5c2" stroke-width="4" opacity=".45"/>
+    <g stroke="#536775" stroke-width="8"><path d="M180 604v70M430 598v74M1190 584v82M1435 578v82"/></g>
+  </g>
+
+  <!-- foreground runway and taxi lanes -->
+  <path d="M0 615c250-10 425 16 600 42 160 24 250 24 410-2 182-30 357-48 590-37v282H0Z" fill="url(#ground)"/>
+  <path d="M698 900 760 612h80l62 288Z" fill="url(#runway)"/>
+  <path d="M764 900 790 612h20l26 288Z" fill="#1e2a34"/>
+  <path d="M799 630v244" stroke="#e8cc83" stroke-width="8" stroke-dasharray="18 28" opacity=".78"/>
+  <path d="M408 900 676 624" stroke="#7d8a96" stroke-width="4" opacity=".22"/>
+  <path d="M1192 900 924 624" stroke="#7d8a96" stroke-width="4" opacity=".22"/>
+
+  <!-- perimeter lights -->
+  <g fill="#f1c676" opacity=".9">
+    <circle cx="548" cy="688" r="4"/><circle cx="506" cy="733" r="4"/><circle cx="460" cy="782" r="4"/><circle cx="418" cy="830" r="4"/>
+    <circle cx="1052" cy="688" r="4"/><circle cx="1094" cy="733" r="4"/><circle cx="1140" cy="782" r="4"/><circle cx="1182" cy="830" r="4"/>
+  </g>
+  <g fill="#75b9d9" opacity=".58"><circle cx="560" cy="704" r="3"/><circle cx="1040" cy="704" r="3"/><circle cx="472" cy="798" r="3"/><circle cx="1128" cy="798" r="3"/></g>
+
+  <!-- anime-style atmospheric wisps -->
+  <g fill="#f4fbff" fill-opacity=".13" filter="url(#blur8)">
+    <ellipse cx="326" cy="374" rx="164" ry="34"/><ellipse cx="1280" cy="390" rx="194" ry="40"/><ellipse cx="800" cy="448" rx="285" ry="44"/>
+  </g>
+</svg>
