@@ -937,7 +937,7 @@ function travelToMars() {
 }
 
 function travelToEarth() {
-  if (phase !== "mars" || mars.exploring) return;
+  if (phase !== "mars" || mars.exploring || mars.fullExplorationActive) return;
   setExperienceState("planet");
   phase = "earth-transition";
   if (flightStatus) flightStatus.textContent = "PERJALANAN KEMBALI KE BUMI";
@@ -984,6 +984,10 @@ earthPreviousButton.addEventListener("click", travelToVenus);
 venusNextButton.addEventListener("click", travelVenusToEarth);
 marsPreviousButton.addEventListener("click", travelToEarth);
 document.addEventListener("keydown", event => {
+  if (phase === "mars" && mars.fullExplorationActive) {
+    if (event.key === "Escape") { event.preventDefault(); mars.fullExploration?.exit(); }
+    return;
+  }
   if (phase === "earth" && earth.exploring) {
     if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
       event.preventDefault();
@@ -1003,7 +1007,7 @@ document.addEventListener("keydown", event => {
   if (event.key === "ArrowRight" && phase === "earth") travelToMars();
   if (event.key === "ArrowLeft" && phase === "earth") travelToVenus();
   if (event.key === "ArrowRight" && phase === "venus" && !venus.exploring) travelVenusToEarth();
-  if (event.key === "ArrowLeft" && phase === "mars" && !mars.exploring) travelToEarth();
+  if (event.key === "ArrowLeft" && phase === "mars" && !mars.exploring && !mars.fullExplorationActive) travelToEarth();
   if (event.key === "Escape" && phase !== "idle") resetMission();
 });
 window.addEventListener("resize", () => flight.resize());
@@ -1039,7 +1043,7 @@ document.addEventListener("click", event => {
   sound.uiClick();
 }, true);
 
-for (const button of [launchButton, earth.nextButton, earthPreviousButton, venusNextButton, venus.exploreButton, marsPreviousButton, mars.exploreButton, audioToggle]) {
+for (const button of [launchButton, earth.nextButton, earthPreviousButton, venusNextButton, venus.exploreButton, marsPreviousButton, mars.exploreButton, mars.fullExploration?.entryButton, audioToggle].filter(Boolean)) {
   button.addEventListener("pointerenter", event => { if (event.pointerType === "mouse") sound.hover(); });
   button.addEventListener("focus", () => sound.hover());
 }

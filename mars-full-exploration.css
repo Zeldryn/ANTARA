@@ -1,0 +1,391 @@
+/* Mars Full Exploration is isolated from the normal Mars information explorer. */
+.mars-explore-stack {
+  display: grid;
+  gap: 8px;
+  min-width: 218px;
+}
+
+.mars-caption .mars-full-explore-button {
+  min-height: 34px;
+  padding: 0 13px;
+  border: 1px solid #d9c18b66;
+  border-radius: 2px;
+  background: #07101aaa;
+  color: #d9c9aa;
+  font-size: 6.5px;
+  font-weight: 650;
+  letter-spacing: 1.15px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background .24s ease, border-color .24s ease, color .24s ease, transform .24s ease;
+}
+.mars-caption .mars-full-explore-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: #e5c987aa;
+  background: #101b27e8;
+  color: #f1d99f;
+}
+.mars-caption .mars-full-explore-button:disabled { opacity: .5; cursor: wait; }
+
+.mars-full-exploration {
+  --surface-opacity: 0;
+  --entry-progress: 0;
+  position: absolute;
+  inset: 0;
+  z-index: 24;
+  overflow: hidden;
+  background: transparent;
+  color: #f8eee1;
+  opacity: 1;
+  visibility: visible;
+  isolation: isolate;
+}
+.mars-full-exploration[hidden] { display: none; }
+.mars-full-exploration::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--surface-opacity);
+  background:
+    linear-gradient(180deg, #4e251933 0%, transparent 39%, #cb86652c 55%, #24100ee8 100%),
+    radial-gradient(ellipse at 50% 62%, transparent 0 28%, #8e4d3840 55%, #1f0e0cbb 100%);
+}
+.mars-full-exploration::after {
+  content: "";
+  position: absolute;
+  left: -15%; right: -15%; top: 45%; height: 28%;
+  z-index: 3;
+  pointer-events: none;
+  opacity: var(--surface-opacity);
+  background: linear-gradient(180deg, #dc9b7442, #b76b4d16 40%, transparent 88%);
+  filter: blur(18px);
+  transform: translateY(calc((1 - var(--entry-progress)) * 18px));
+}
+
+.mars-full-viewport {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  opacity: var(--surface-opacity);
+  background:
+    radial-gradient(circle at 72% 30%, #d8916745, transparent 35%),
+    linear-gradient(180deg, #52291f 0%, #a55f45 37%, #bd7554 55%, #7c3d2d 100%);
+  transition: opacity .15s linear;
+}
+.mars-full-exploration.is-active .mars-full-viewport,
+.mars-full-exploration.is-entering .mars-full-viewport,
+.mars-full-exploration.is-exiting .mars-full-viewport { touch-action: none; }
+.mars-full-canvas { display: block; width: 100%; height: 100%; }
+
+.mars-full-horizon {
+  position: absolute;
+  z-index: 4;
+  left: -8%; right: -8%; top: 40%; height: 24%;
+  pointer-events: none;
+  opacity: calc(var(--surface-opacity) * .7);
+  background: radial-gradient(ellipse at center, #e3a37b24 0%, #b96d4f14 48%, transparent 73%);
+  filter: blur(16px);
+}
+
+.mars-full-hud,
+.mars-full-actions,
+.mars-mobile-controls,
+.mars-control-hints,
+.mars-full-tutorial,
+.mars-landmark-card,
+.mars-orientation-hint {
+  position: absolute;
+  z-index: 12;
+}
+
+.mars-full-hud {
+  left: clamp(18px, 3.5vw, 52px);
+  top: clamp(22px, 5vh, 58px);
+  width: min(330px, 42vw);
+  padding: 17px 18px 16px;
+  border: 1px solid #f2d39a29;
+  border-left-color: #e7c47b8a;
+  background: linear-gradient(145deg, #130d0bcf, #27130f8f);
+  box-shadow: 0 18px 60px #1b09083d;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: var(--surface-opacity);
+  transform: translateY(calc((1 - var(--surface-opacity)) * -8px));
+  pointer-events: none;
+}
+.mars-hud-kicker { display: flex; align-items: center; gap: 8px; color: #d8bd90; font-size: 7px; letter-spacing: 2.5px; }
+.mars-hud-kicker::before { content: ""; width: 24px; height: 1px; background: #e8c98499; }
+.mars-full-hud h3 { margin: 8px 0 1px; font: 400 clamp(25px, 3vw, 39px)/1 Georgia, "Times New Roman", serif; letter-spacing: -.8px; }
+.mars-hud-mode { color: #a77c62; font-size: 6.5px; letter-spacing: 1.8px; text-transform: uppercase; }
+.mars-hud-location { margin: 14px 0 4px; color: #efd5a6; font-size: 8px; letter-spacing: 1.35px; text-transform: uppercase; }
+.mars-hud-coordinates { color: #c3b6aa; font-size: 8px; letter-spacing: 1.1px; font-variant-numeric: tabular-nums; }
+.mars-hud-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 12px; }
+.mars-hud-metric { padding-top: 8px; border-top: 1px solid #e0c18b20; }
+.mars-hud-metric small { display: block; color: #876f63; font-size: 5.5px; letter-spacing: 1.35px; text-transform: uppercase; }
+.mars-hud-metric strong { display: block; margin-top: 4px; color: #f1dfc5; font-size: 9px; font-weight: 550; letter-spacing: .7px; font-variant-numeric: tabular-nums; }
+.mars-hud-data { margin-top: 10px; color: #765f55; font-size: 5.5px; letter-spacing: .8px; text-transform: uppercase; }
+
+.mars-full-exploration:not(.is-active) .mars-full-actions,
+.mars-full-exploration:not(.is-active) .mars-mobile-controls { pointer-events: none; }
+
+.mars-full-actions {
+  right: clamp(18px, 3.5vw, 52px);
+  top: clamp(22px, 5vh, 58px);
+  display: flex;
+  gap: 7px;
+  opacity: var(--surface-opacity);
+}
+.mars-full-actions button,
+.mars-location-menu button {
+  border: 1px solid #eed4a336;
+  background: #160e0bba;
+  color: #d8c6ad;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.mars-full-actions > button {
+  min-height: 37px;
+  padding: 0 12px;
+  font-size: 6px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.mars-full-actions > button:hover { border-color: #e9cb8d8c; color: #f2d9a6; background: #2a1611da; }
+.mars-full-exit { color: #f0d19a !important; border-color: #ddb87375 !important; }
+.mars-location-wrap { position: relative; }
+.mars-location-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 260px;
+  display: grid;
+  gap: 5px;
+  padding: 7px;
+  border: 1px solid #e5c78d33;
+  background: #130c0be8;
+  box-shadow: 0 20px 60px #16060470;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity .22s ease, transform .22s ease, visibility 0s linear .22s;
+}
+.mars-location-menu.is-open { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.mars-location-menu button { display: grid; gap: 3px; padding: 10px 11px; text-align: left; }
+.mars-location-menu button span { color: #ebd6b4; font-size: 7px; letter-spacing: 1px; text-transform: uppercase; }
+.mars-location-menu button small { color: #7f6a60; font-size: 5.5px; letter-spacing: .65px; }
+.mars-location-menu button:hover { background: #3a1e17cc; border-color: #d7b77969; }
+
+.mars-control-hints {
+  left: 50%;
+  bottom: 28px;
+  display: flex;
+  gap: 18px;
+  transform: translateX(-50%);
+  color: #bba99a;
+  font-size: 6px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: calc(var(--surface-opacity) * .72);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.mars-control-hints b { color: #e8cb96; font-weight: 650; }
+
+.mars-mobile-controls { display: none; inset: 0; pointer-events: none; opacity: var(--surface-opacity); }
+.mars-mobile-dpad { position: absolute; left: 22px; bottom: 24px; width: 150px; height: 150px; pointer-events: none; }
+.mars-mobile-dpad button,
+.mars-mobile-altitude button {
+  position: absolute;
+  width: 48px; height: 48px;
+  border: 1px solid #f1d4a23d;
+  border-radius: 50%;
+  background: #150d0ba6;
+  color: #e8d4b6;
+  font-size: 16px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+.mars-mobile-dpad button.is-held,
+.mars-mobile-altitude button.is-held { background: #d1a969c9; color: #23130e; transform: scale(.94); }
+.mars-mobile-dpad [data-mars-control="forward"] { left: 51px; top: 0; }
+.mars-mobile-dpad [data-mars-control="left"] { left: 0; top: 51px; }
+.mars-mobile-dpad [data-mars-control="right"] { right: 0; top: 51px; }
+.mars-mobile-dpad [data-mars-control="backward"] { left: 51px; bottom: 0; }
+.mars-dpad-core { position: absolute; left: 65px; top: 65px; width: 20px; height: 20px; border: 1px solid #d9bf9452; border-radius: 50%; background: #1e110e99; }
+.mars-mobile-altitude { position: absolute; right: 24px; bottom: 31px; width: 54px; height: 124px; pointer-events: none; }
+.mars-mobile-altitude button { left: 3px; }
+.mars-mobile-altitude [data-mars-control="up"] { top: 0; }
+.mars-mobile-altitude [data-mars-control="down"] { bottom: 0; }
+.mars-mobile-altitude-label { position: absolute; top: 55px; width: 100%; text-align: center; color: #b79b7a; font-size: 5.5px; letter-spacing: 1.3px; }
+
+.mars-full-loading,
+.mars-full-error {
+  position: absolute;
+  z-index: 30;
+  left: 50%; top: 50%;
+  width: min(430px, calc(100vw - 42px));
+  transform: translate(-50%, -50%);
+  padding: 28px 30px;
+  border: 1px solid #e3c78e3b;
+  background: #100b0ae8;
+  box-shadow: 0 28px 100px #1606058a;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  text-align: center;
+}
+.mars-full-loading[hidden], .mars-full-error[hidden] { display: none; }
+.mars-full-loading-kicker { color: #9a755e; font-size: 6px; letter-spacing: 2.2px; }
+.mars-full-loading h3, .mars-full-error h3 { margin: 10px 0 8px; font: 400 27px/1.1 Georgia, "Times New Roman", serif; color: #f3dfbd; }
+.mars-full-loading-status, .mars-full-error p { color: #a99789; font-size: 9px; line-height: 1.6; letter-spacing: .25px; }
+.mars-loading-track { height: 1px; margin-top: 18px; overflow: hidden; background: #d9be8c24; }
+.mars-loading-progress { width: 100%; height: 100%; transform: scaleX(0); transform-origin: left; background: #e5c47d; box-shadow: 0 0 12px #e2b75f8c; transition: transform .18s linear; }
+.mars-full-error button { margin-top: 18px; padding: 10px 16px; border: 1px solid #dfc18170; background: transparent; color: #e9ce98; font-size: 7px; letter-spacing: 1.2px; text-transform: uppercase; }
+
+.mars-full-tutorial {
+  left: 50%; top: 50%;
+  width: min(560px, calc(100vw - 44px));
+  transform: translate(-50%, -46%);
+  padding: 22px 24px 20px;
+  border: 1px solid #efd39c32;
+  background: #160e0bdc;
+  box-shadow: 0 24px 90px #17070673;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .28s ease, transform .35s ease, visibility 0s linear .35s;
+}
+.mars-full-tutorial.is-visible { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, -50%); transition-delay: 0s; }
+.mars-full-tutorial-header { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+.mars-full-tutorial-header span { color: #d8bb87; font-size: 6.5px; letter-spacing: 2px; text-transform: uppercase; }
+.mars-full-tutorial-header button { width: 28px; height: 28px; border: 1px solid #dcc58d36; background: transparent; color: #c7b39a; }
+.mars-tutorial-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 18px; }
+.mars-tutorial-item { padding-top: 11px; border-top: 1px solid #d6bf932a; }
+.mars-tutorial-item b { display: block; color: #f0d59f; font-size: 8px; letter-spacing: 1px; }
+.mars-tutorial-item span { display: block; margin-top: 4px; color: #9c8879; font-size: 6px; letter-spacing: .65px; text-transform: uppercase; }
+.mars-tutorial-mobile { display: none; }
+
+.mars-travel-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at center, #b56a4c1a, #3217119a 78%);
+  backdrop-filter: blur(0);
+  transition: opacity .4s ease, backdrop-filter .45s ease;
+}
+.mars-travel-veil.is-visible { opacity: 1; }
+.mars-travel-veil.is-covered { backdrop-filter: blur(20px); background: #3f211bd6; }
+.mars-travel-label { color: #e7c991; font-size: 7px; letter-spacing: 2.4px; text-transform: uppercase; }
+
+.mars-landmark-card {
+  right: clamp(18px, 3.5vw, 52px);
+  bottom: 72px;
+  width: min(300px, 38vw);
+  padding: 16px 17px;
+  border: 1px solid #e4c68f30;
+  border-right-color: #e2bf7a78;
+  background: #140c0abf;
+  box-shadow: 0 16px 55px #1d08074a;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity .35s ease, transform .4s ease, visibility 0s linear .4s;
+}
+.mars-landmark-card.is-visible { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.mars-landmark-card small { color: #8d725f; font-size: 5.5px; letter-spacing: 1.4px; text-transform: uppercase; }
+.mars-landmark-card h4 { margin: 6px 0 5px; color: #f0dab2; font: 400 21px/1.05 Georgia, "Times New Roman", serif; }
+.mars-landmark-type { margin: 0; color: #aa9383; font-size: 7px; line-height: 1.45; }
+.mars-landmark-coords { margin: 9px 0 0; color: #c1a981; font-size: 6px; letter-spacing: .8px; }
+.mars-landmark-source { display: inline-block; margin-top: 10px; color: #806e62; font-size: 5.5px; letter-spacing: .7px; text-decoration: none; text-transform: uppercase; }
+.mars-landmark-source:hover { color: #d8bd8b; }
+
+.mars-orientation-hint { display: none; }
+
+.mission.is-mars-full .masthead,
+.mission.is-mars-full .mission-footer { opacity: 0 !important; pointer-events: none !important; transition: opacity .35s ease; }
+.mars-scene.is-full-diving .mars-caption,
+.mars-scene.is-full-diving .mars-credit { pointer-events: none !important; }
+
+@media (max-width: 900px) {
+  .mars-explore-stack { min-width: 190px; }
+  .mars-caption .mars-full-explore-button { white-space: normal; line-height: 1.25; min-height: 38px; }
+  .mars-full-hud { width: min(300px, 44vw); }
+  .mars-full-actions > button { padding: 0 9px; }
+}
+
+@media (pointer: coarse), (max-width: 760px) {
+  .mars-control-hints { display: none; }
+  .mars-mobile-controls { display: block; }
+  .mars-full-hud { left: 14px; top: 14px; width: min(258px, 52vw); padding: 12px 13px; }
+  .mars-full-hud h3 { font-size: 26px; }
+  .mars-hud-location { margin-top: 9px; }
+  .mars-hud-metrics { margin-top: 8px; }
+  .mars-full-actions { right: 14px; top: 14px; max-width: 42vw; flex-wrap: wrap; justify-content: flex-end; }
+  .mars-full-actions > button { min-height: 34px; font-size: 5.4px; }
+  .mars-location-menu { width: min(250px, 72vw); }
+  .mars-landmark-card { right: 14px; bottom: 22px; width: min(260px, 46vw); }
+  .mars-tutorial-desktop { display: none; }
+  .mars-tutorial-mobile { display: block; }
+  .mars-tutorial-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 700px) {
+  .mars-arrival-actions { grid-template-columns: minmax(0, 1fr) minmax(155px, auto) minmax(0, 1fr); }
+  .mars-explore-stack { min-width: 155px; gap: 6px; }
+  .mars-caption .mars-full-explore-button { padding: 0 8px; font-size: 5.4px; letter-spacing: .75px; }
+}
+
+@media (orientation: portrait) and (pointer: coarse) {
+  .mars-orientation-hint {
+    display: block;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    padding: 8px 11px;
+    border: 1px solid #e4c68d2e;
+    background: #160e0ba8;
+    color: #bca88a;
+    font-size: 5.5px;
+    letter-spacing: .9px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .mars-mobile-dpad { bottom: 55px; }
+  .mars-mobile-altitude { bottom: 62px; }
+}
+
+@media (max-height: 560px) and (pointer: coarse) {
+  .mars-full-hud { top: 8px; padding: 9px 11px; }
+  .mars-full-hud h3 { font-size: 21px; margin-top: 5px; }
+  .mars-hud-mode, .mars-hud-data { display: none; }
+  .mars-hud-location { margin-top: 6px; }
+  .mars-hud-metrics { margin-top: 6px; }
+  .mars-full-actions { top: 8px; }
+  .mars-mobile-dpad { width: 132px; height: 132px; left: 15px; bottom: 12px; }
+  .mars-mobile-dpad button { width: 42px; height: 42px; }
+  .mars-mobile-dpad [data-mars-control="forward"] { left: 45px; }
+  .mars-mobile-dpad [data-mars-control="left"] { top: 45px; }
+  .mars-mobile-dpad [data-mars-control="right"] { top: 45px; }
+  .mars-mobile-dpad [data-mars-control="backward"] { left: 45px; }
+  .mars-dpad-core { left: 57px; top: 57px; }
+  .mars-mobile-altitude { right: 15px; bottom: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mars-full-exploration *, .mars-full-exploration *::before, .mars-full-exploration *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
