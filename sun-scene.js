@@ -162,9 +162,11 @@ window.SunScene = class SunScene {
     this.travelCoveredFired = false;
     this.travelCompleteFired = false;
     this.travelMercuryStartRotation = 0.62;
-    this.solarEvent = { state: "cooldown", stateAt: 0, nextAt: 5.8, strength: 0, serial: 0, region: 0 };
+    this.solarEvent = { state: "cooldown", stateAt: 0, nextAt: 6.8, strength: 0, serial: 0, region: 0 };
+    this.regionActivity = [.48, .66, .39, .57];
     this.particleCursor = 0;
     this.lastParticleSpawn = 0;
+    this.lastAmbientParticleSpawn = 0;
 
     this.caption.inert = true;
     this.exploration.inert = true;
@@ -270,81 +272,104 @@ window.SunScene = class SunScene {
     this.camera.position.set(0, 0, 6.1);
 
     this.solarActiveDirections = [
-      new THREE.Vector3(-.48, .30, .82).normalize(),
-      new THREE.Vector3(.42, -.26, .86).normalize(),
-      new THREE.Vector3(.10, .55, .82).normalize()
+      new THREE.Vector3(-.49, .29, .82).normalize(),
+      new THREE.Vector3(.43, -.27, .86).normalize(),
+      new THREE.Vector3(.08, .57, .82).normalize(),
+      new THREE.Vector3(.58, .24, .78).normalize()
     ];
 
     const photosphereMaterial = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
         uFlare: { value: 0 },
-        uActivity: { value: 0.35 },
+        uActivity: { value: 0.52 },
+        uRegionStrengths: { value: new THREE.Vector4(...this.regionActivity) },
         uFlareDirection: { value: this.solarActiveDirections[0].clone() }
       },
       toneMapped: false,
       vertexShader: `varying vec3 vWorldNormal; varying vec3 vWorld; varying vec2 vUv;
         void main(){ vWorldNormal=normalize(mat3(modelMatrix)*normal); vUv=uv; vec4 world=modelMatrix*vec4(position,1.0); vWorld=world.xyz; gl_Position=projectionMatrix*viewMatrix*world; }`,
-      fragmentShader: `precision highp float; varying vec3 vWorldNormal; varying vec3 vWorld; varying vec2 vUv; uniform float uTime; uniform float uFlare; uniform float uActivity; uniform vec3 uFlareDirection;
+      fragmentShader: `precision highp float; varying vec3 vWorldNormal; varying vec3 vWorld; varying vec2 vUv; uniform float uTime; uniform float uFlare; uniform float uActivity; uniform vec4 uRegionStrengths; uniform vec3 uFlareDirection;
         float hash(vec3 p){ p=fract(p*.3183099+.1); p*=17.; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
         float noise(vec3 p){ vec3 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(mix(hash(i+vec3(0,0,0)),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z); }
-        float fbm(vec3 p){ float v=0.; float a=.5; for(int i=0;i<5;i++){v+=a*noise(p); p=p*2.03+vec3(3.1,7.3,1.9); a*=.5;} return v; }
-        vec2 hash22(vec2 p){ vec3 p3=fract(vec3(p.xyx)*vec3(.1031,.1030,.0973)); p3+=dot(p3,p3.yzx+33.33); return fract((p3.xx+p3.yz)*p3.zy); }
-        float cellular(vec2 p,float t){ vec2 i=floor(p),f=fract(p); float d=9.; for(int y=-1;y<=1;y++){ for(int x=-1;x<=1;x++){ vec2 g=vec2(float(x),float(y)); vec2 o=hash22(i+g); o=.5+.37*sin(6.2831853*o+vec2(t*.018,-t*.014)); vec2 r=g+o-f; d=min(d,dot(r,r)); }} return sqrt(d); }
-        float triCells(vec3 p,vec3 n,float t){ vec3 w=pow(abs(n),vec3(4.0)); w/=max(w.x+w.y+w.z,.0001); return cellular(p.yz,t)*w.x+cellular(p.xz,t+13.7)*w.y+cellular(p.xy,t+27.1)*w.z; }
-        float maskSpot(vec3 n,vec3 d,float inner,float wobble,float t){ float irregular=(fbm(n*19.0+vec3(t*.006,-t*.004,t*.003))-.5)*wobble; return smoothstep(inner,inner+.035,dot(n,normalize(d))+irregular); }
+        float fbm4(vec3 p){ float v=0.; float a=.53; for(int i=0;i<4;i++){v+=a*noise(p); p=p*2.07+vec3(3.7,1.9,5.3); a*=.48;} return v; }
+        mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
+        vec3 driftDirection(vec3 d,float yaw,float pitch){d.xz=rot(yaw)*d.xz;d.yz=rot(pitch)*d.yz;return normalize(d);}
+        float regionMask(vec3 n,vec3 d,float edge,float wobble,float phase){float irregular=(fbm4(n*11.0+vec3(phase,-phase*.63,phase*.37))-.48)*wobble;return smoothstep(edge,edge+.055,dot(n,d)+irregular);}
         void main(){
           vec3 n=normalize(vWorldNormal); float t=uTime;
-          float warpA=fbm(n*4.6+vec3(t*.007,-t*.004,t*.003));
-          float warpB=fbm(n*9.5+vec3(-t*.010,t*.007,-t*.005)+warpA*1.7);
-          vec3 flow=normalize(n+vec3(.050*sin(t*.042+n.y*6.3),.038*sin(t*.036+n.z*5.1),.030*sin(t*.029+n.x*7.4))+(warpA-.5)*.070+(warpB-.5)*.035);
 
-          float macro=fbm(flow*4.2+vec3(t*.006,-t*.004,t*.002));
-          float meso=fbm(flow*12.5+vec3(-t*.011,t*.008,t*.004));
-          float cells=triCells(flow*22.0+vec3(macro*1.9+meso*.6),n,t);
-          float granule=1.0-smoothstep(.17,.52,cells);
-          float lanes=smoothstep(.47,.73,cells);
-          float micro=fbm(flow*61.0+vec3(-t*.017,t*.012,t*.010));
-          float boil=clamp(granule*.60+micro*.18+meso*.26+macro*.15,0.0,1.0);
+          float slowA=fbm4(n*3.1+vec3(t*.0048,-t*.0031,t*.0023));
+          float slowB=fbm4(n*6.4+vec3(-t*.0062,t*.0047,-t*.0036)+slowA*1.45);
+          vec3 flowVec=vec3(
+            fbm4(n*5.2+vec3(7.1,t*.003,-3.4)),
+            fbm4(n*5.2+vec3(-2.8,5.7,-t*.0037)),
+            fbm4(n*5.2+vec3(t*.0024,-6.3,2.1))
+          )-.5;
+          vec3 flow=normalize(n+flowVec*.105+(slowA-.5)*.050+(slowB-.5)*.028);
 
-          float umbra1=maskSpot(n,vec3(-.48,.30,.82),.962,.040,t);
-          float umbra2=maskSpot(n,vec3(.42,-.26,.86),.971,.038,t+4.0);
-          float umbra3=maskSpot(n,vec3(.10,.55,.82),.981,.032,t+8.0);
-          float pen1=maskSpot(n,vec3(-.48,.30,.82),.914,.055,t);
-          float pen2=maskSpot(n,vec3(.42,-.26,.86),.932,.050,t+4.0);
-          float pen3=maskSpot(n,vec3(.10,.55,.82),.950,.046,t+8.0);
-          float umbra=clamp(umbra1+.82*umbra2+.52*umbra3,0.0,1.0);
-          float penumbra=clamp(pen1+.78*pen2+.48*pen3-umbra*.62,0.0,1.0);
-          float activeRegion=clamp((pen1*.75+pen2*.68+pen3*.36)*(1.0-umbra),0.0,1.0);
+          vec3 q=flow*17.5+flowVec*2.35;
+          float convectA=fbm4(q+vec3(t*.017,-t*.011,t*.008));
+          float convectB=fbm4(q*1.82+vec3(-t*.024,t*.017,-t*.012)+slowA*1.7);
+          float convectC=fbm4(q*3.65+vec3(t*.032,-t*.026,t*.019));
+          float convection=clamp(convectA*.49+convectB*.34+convectC*.17,0.0,1.0);
 
-          vec3 deepGold=vec3(1.00,.46,.030);
-          vec3 solarGold=vec3(1.00,.68,.070);
-          vec3 solarYellow=vec3(1.00,.86,.24);
-          vec3 hotCream=vec3(1.00,.98,.70);
-          vec3 col=mix(deepGold,solarGold,.52+.28*macro);
-          col=mix(col,solarYellow,.22+.56*boil);
-          col=mix(col,hotCream,smoothstep(.70,1.0,boil)*.34);
-          col=mix(col,deepGold,lanes*.13);
-          col*=.90+.10*macro+.13*meso+.04*micro;
+          float edgeProbe=fbm4(q+vec3(.12,-.09,.07));
+          float localGradient=clamp(abs(convectA-edgeProbe)*5.0,0.0,1.0);
+          float folded=1.0-abs(convectB*2.0-1.0);
+          float microFold=1.0-abs(convectC*2.0-1.0);
+          float filament=smoothstep(.40,.88,folded)*(.51+.49*convectC);
+          float cellCore=smoothstep(.46,.82,microFold)*(.64+.36*convectB);
+          float lanes=clamp(localGradient*.62+(1.0-filament)*.24+(1.0-cellCore)*.08,0.0,1.0);
+          float granulation=clamp(convection*.65+filament*.25+cellCore*.20-lanes*.18,0.0,1.0);
 
-          vec3 penColor=vec3(.58,.20,.030);
-          vec3 umbraColor=vec3(.24,.055,.010);
-          col=mix(col,penColor,penumbra*.42);
-          col=mix(col,umbraColor,umbra*.58);
+          vec3 d0=driftDirection(vec3(-.49,.29,.82),.035*sin(t*.021),.022*sin(t*.016+1.1));
+          vec3 d1=driftDirection(vec3(.43,-.27,.86),.030*sin(t*.018+2.4),.026*sin(t*.014+.7));
+          vec3 d2=driftDirection(vec3(.08,.57,.82),.038*sin(t*.015+4.1),.020*sin(t*.019+2.2));
+          vec3 d3=driftDirection(vec3(.58,.24,.78),.032*sin(t*.017+5.0),.024*sin(t*.013+3.5));
+
+          float ar0=regionMask(n,d0,.895,.060,t*.004);
+          float ar1=regionMask(n,d1,.910,.058,t*.004+2.3);
+          float ar2=regionMask(n,d2,.925,.053,t*.004+4.7);
+          float ar3=regionMask(n,d3,.918,.056,t*.004+7.1);
+          float activeField=clamp(ar0*uRegionStrengths.x+ar1*uRegionStrengths.y+ar2*uRegionStrengths.z+ar3*uRegionStrengths.w,0.0,1.35);
+
+          float spotTexture0=smoothstep(.49,.70,fbm4(n*31.0+vec3(t*.003,-t*.002,t*.001)));
+          float spotTexture1=smoothstep(.51,.72,fbm4(n*34.0+vec3(-t*.002,t*.0025,-t*.0015)+4.3));
+          float pen0=regionMask(n,d0,.930,.047,t*.003+.6)*(.66+.34*spotTexture0)*(.35+.65*uRegionStrengths.x);
+          float pen1=regionMask(n,d1,.944,.044,t*.003+3.1)*(.68+.32*spotTexture1)*(.35+.65*uRegionStrengths.y);
+          float pen2=regionMask(n,d2,.957,.038,t*.003+5.8)*(.72+.28*spotTexture0)*(.28+.55*uRegionStrengths.z);
+          float umbra0=regionMask(n,d0,.966,.030,t*.002+.8)*spotTexture0*(.40+.60*uRegionStrengths.x);
+          float umbra1=regionMask(n,d1,.973,.028,t*.002+3.7)*spotTexture1*(.42+.58*uRegionStrengths.y);
+          float umbra=clamp(umbra0+.80*umbra1,0.0,1.0);
+          float penumbra=clamp(pen0+.78*pen1+.38*pen2-umbra*.55,0.0,1.0);
+
+          vec3 deepGold=vec3(1.00,.38,.015);
+          vec3 amber=vec3(1.00,.57,.035);
+          vec3 solarYellow=vec3(1.00,.79,.13);
+          vec3 hotCream=vec3(1.00,.955,.54);
+          vec3 col=mix(deepGold,amber,.44+.28*slowA);
+          col=mix(col,solarYellow,.18+.53*granulation);
+          col=mix(col,hotCream,smoothstep(.70,.96,granulation)*(.13+.11*convectC));
+          col=mix(col,vec3(1.00,.31,.010),lanes*.155);
+          col+=vec3(1.00,.77,.16)*cellCore*.055;
+          col*=.88+.09*slowB+.105*convection;
+
+          col=mix(col,vec3(.43,.105,.014),penumbra*.50);
+          col=mix(col,vec3(.105,.014,.0025),umbra*.76);
 
           float facing=max(dot(n,normalize(cameraPosition-vWorld)),0.0);
-          float limb=.84+.18*pow(facing,.38);
+          float limb=.85+.17*pow(facing,.42);
           col*=limb;
-          col=mix(col,vec3(1.00,.58,.055),(1.0-facing)*.075);
+          col=mix(col,vec3(1.00,.55,.045),(1.0-facing)*.072);
 
-          float faculaNoise=smoothstep(.57,.82,fbm(flow*18.0+vec3(t*.015,-t*.010,t*.007)));
-          float facula=faculaNoise*pow(1.0-facing,.62)*(1.0-umbra);
-          col+=vec3(1.00,.88,.36)*facula*(.055+.050*uActivity);
-          col+=vec3(1.00,.83,.24)*activeRegion*(.075+.090*uActivity);
+          float faculae=smoothstep(.56,.79,fbm4(flow*19.0+vec3(t*.014,-t*.011,t*.008)))*pow(1.0-facing,.58)*(1.0-umbra);
+          col+=vec3(1.00,.89,.40)*faculae*(.045+.055*uActivity);
+          col+=vec3(1.00,.91,.48)*activeField*(.048+.085*uActivity)*(1.0-umbra*.65);
 
-          float flareCore=smoothstep(.965,.997,dot(n,normalize(uFlareDirection))+(fbm(n*28.0+vec3(t*.016))-.5)*.025);
-          float flareHalo=smoothstep(.900,.982,dot(n,normalize(uFlareDirection))+(fbm(n*11.0-vec3(t*.008))-.5)*.035);
-          col+=vec3(1.00,.98,.72)*(flareCore*.72+flareHalo*.20)*uFlare;
+          float flareCore=smoothstep(.968,.997,dot(n,normalize(uFlareDirection))+(fbm4(n*26.0+vec3(t*.015))-.48)*.024);
+          float flareHalo=smoothstep(.905,.982,dot(n,normalize(uFlareDirection))+(fbm4(n*10.0-vec3(t*.007))-.48)*.034);
+          col+=vec3(1.00,.985,.76)*(flareCore*.76+flareHalo*.19)*uFlare;
 
           col=clamp(col,vec3(0.0),vec3(1.0));
           gl_FragColor=vec4(col,1.0);
@@ -396,16 +421,18 @@ window.SunScene = class SunScene {
       transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending, toneMapped: false,
       vertexShader: `varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
       fragmentShader: `precision highp float; varying vec2 vUv; uniform float uTime; uniform float uOpacity; uniform float uSeed; uniform float uFlare;
-        float h(float x){return fract(sin(x*127.1+uSeed*91.7)*43758.5453);} void main(){vec2 p=vUv-.5; float r=length(p)*2.; float a=atan(p.y,p.x); if(r<.405||r>1.) discard; float wave=sin(a*5.+uSeed*2.1+uTime*.055)*.5+.5; float wave2=sin(a*11.-uTime*.034+uSeed*4.7)*.5+.5; float streams=pow(.22+.78*wave,3.)*.68+pow(.18+.82*wave2,5.)*.32; float asym=.58+.42*sin(a*2.3+uSeed+uTime*.016); float fall=pow(1.-smoothstep(.40,1.,r),1.65); float inner=smoothstep(.40,.48,r); float alpha=inner*fall*(.20+.80*streams)*(.62+.38*asym)*uOpacity; alpha*=1.+uFlare*.18; float radial=clamp((r-.4)*1.7,0.,1.); vec3 col=mix(vec3(1.,.94,.62),vec3(1.,.43,.035),radial); gl_FragColor=vec4(col,alpha);\n#include <colorspace_fragment>\n}`
+        float h(float x){return fract(sin(x*127.1+uSeed*91.7)*43758.5453);} void main(){vec2 p=vUv-.5; float r=length(p)*2.; float a=atan(p.y,p.x); if(r<.405||r>1.) discard; float bend=.18*sin(a*2.0-uTime*.012+uSeed)+.07*sin(a*7.0+uTime*.019); float wave=sin(a*5.0+bend+uSeed*2.1+uTime*.041)*.5+.5; float wave2=sin(a*9.0-bend*1.4-uTime*.027+uSeed*4.7)*.5+.5; float wave3=sin(a*14.0+uTime*.018+uSeed*7.3)*.5+.5; float streams=pow(.18+.82*wave,3.4)*.49+pow(.16+.84*wave2,4.5)*.34+pow(.22+.78*wave3,5.2)*.17; float asym=.62+.22*sin(a*2.1+uSeed+uTime*.013)+.16*sin(a*3.7-uTime*.009+uSeed*.7); float radialRipple=1.0+.028*sin(a*6.0-uTime*.021+uSeed*3.0); float fall=pow(1.-smoothstep(.40,1.,r/radialRipple),1.72); float inner=smoothstep(.40,.485,r); float alpha=inner*fall*(.16+.84*streams)*clamp(asym,.34,1.0)*uOpacity; alpha*=1.+uFlare*.16; float radial=clamp((r-.4)*1.72,0.,1.); vec3 col=mix(vec3(1.,.95,.67),vec3(1.,.42,.03),radial); gl_FragColor=vec4(col,alpha);\n#include <colorspace_fragment>\n}`
     });
     return new THREE.Mesh(geometry, material);
   }
 
   createProminences(THREE) {
     const specs = [
-      { a: -2.12, span: .58, h: .30, z: .035, width: .020, phase: .4 },
-      { a: .57, span: .46, h: .23, z: .050, width: .016, phase: 2.2 },
-      { a: 2.33, span: .35, h: .17, z: -.015, width: .013, phase: 4.1 }
+      { a: -2.18, span: .54, h: .28, z: .035, width: .022, phase: .4, region: 0 },
+      { a: -.82, span: .31, h: .15, z: -.025, width: .013, phase: 5.3, region: 2 },
+      { a: .56, span: .45, h: .22, z: .050, width: .018, phase: 2.2, region: 1 },
+      { a: 1.72, span: .27, h: .13, z: .018, width: .012, phase: 7.0, region: 3 },
+      { a: 2.42, span: .34, h: .17, z: -.015, width: .014, phase: 4.1, region: 2 }
     ];
     this.prominences = specs.map((spec, index) => this.createProminenceRibbon(THREE, spec, index));
   }
@@ -457,22 +484,32 @@ window.SunScene = class SunScene {
       uniforms: { uTime: { value: 0 }, uPhase: { value: spec.phase }, uStrength: { value: .72 + index * .04 } },
       transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, toneMapped: false,
       vertexShader: `attribute float aAlong; varying vec2 vUv; varying float vAlong; uniform float uTime; uniform float uPhase; void main(){vUv=uv;vAlong=aAlong;vec3 p=position;float arch=sin(3.14159265*aAlong);float wobble=(sin(aAlong*19.0+uTime*.24+uPhase)*.005+sin(aAlong*37.0-uTime*.17+uPhase)*.0025)*arch;p.xy+=normalize(p.xy)*wobble;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}`,
-      fragmentShader: `precision highp float; varying vec2 vUv; varying float vAlong; uniform float uTime; uniform float uPhase; uniform float uStrength; void main(){float edge=1.0-abs(vUv.y*2.0-1.0);edge=smoothstep(0.0,.78,edge);float taper=pow(max(sin(3.14159265*vAlong),0.0),.58);float pulse=.82+.18*sin(vAlong*15.0-uTime*.21+uPhase);float strands=.72+.28*sin(vAlong*43.0+uTime*.12+uPhase*2.0);float attach=1.0-smoothstep(0.0,.23,min(vAlong,1.0-vAlong));float alpha=edge*taper*pulse*strands*uStrength;vec3 col=mix(vec3(1.0,.22,.018),vec3(1.0,.76,.20),.30+.42*edge+.22*attach);gl_FragColor=vec4(col,alpha*.48);\n#include <colorspace_fragment>\n}`
+      fragmentShader: `precision highp float; varying vec2 vUv; varying float vAlong; uniform float uTime; uniform float uPhase; uniform float uStrength; void main(){float edge=1.0-abs(vUv.y*2.0-1.0);edge=smoothstep(0.0,.78,edge);float taper=pow(max(sin(3.14159265*vAlong),0.0),.58);float pulse=.82+.18*sin(vAlong*15.0-uTime*.21+uPhase);float strands=.72+.28*sin(vAlong*43.0+uTime*.12+uPhase*2.0);float attach=1.0-smoothstep(0.0,.23,min(vAlong,1.0-vAlong));float alpha=edge*taper*pulse*strands*uStrength;vec3 col=mix(vec3(1.0,.22,.018),vec3(1.0,.76,.20),.30+.42*edge+.22*attach);gl_FragColor=vec4(col,alpha*.64);\n#include <colorspace_fragment>\n}`
     });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.renderOrder = 3;
+    mesh.userData.prominence = { region: spec.region ?? (index % 4), baseAngle: spec.a, phase: spec.phase, index };
     this.prominenceGroup.add(mesh);
     return mesh;
   }
 
   updateProminences(blend = 0, flareStrength = 0) {
     if (!this.prominences) return;
-    this.prominenceGroup.rotation.z = this.time * .0018;
+    this.prominenceGroup.rotation.z = this.time * .0011;
     this.prominences.forEach((mesh, i) => {
+      const meta = mesh.userData.prominence || { region: i % 4, phase: i * 1.7 };
+      const localActivity = this.regionActivity?.[meta.region] ?? .5;
+      const slowCycle = .5 + .5 * Math.sin(this.time * (.074 + i * .0055) + meta.phase * 1.37);
+      const secondCycle = .5 + .5 * Math.sin(this.time * (.033 + i * .0038) + meta.phase * 2.11 + 1.2);
+      const envelope = Math.pow(Math.max(0, slowCycle * .72 + secondCycle * .28), 1.35);
+      const eventBoost = this.solarEvent.region === meta.region ? flareStrength * .20 : 0;
+      const strength = (.12 + .66 * envelope * (.48 + .52 * localActivity) + eventBoost) * (1 - .14 * blend);
       mesh.material.uniforms.uTime.value = this.time;
-      mesh.material.uniforms.uStrength.value = (.64 + .09 * Math.sin(this.time * (.10 + i * .018) + i * 1.6) + flareStrength * .07) * (1 - .14 * blend);
-      const pulse = 1 + .008 * Math.sin(this.time * .13 + i * 1.3);
-      mesh.scale.setScalar(pulse);
+      mesh.material.uniforms.uStrength.value = strength;
+      mesh.rotation.z = .018 * Math.sin(this.time * (.018 + i * .002) + meta.phase);
+      const radialBreath = 1 + .018 * Math.sin(this.time * (.072 + i * .006) + meta.phase * 1.8) * (.35 + .65 * envelope);
+      mesh.scale.set(radialBreath, radialBreath, 1);
+      mesh.visible = strength > .07;
     });
   }
 
@@ -500,10 +537,19 @@ window.SunScene = class SunScene {
   updateSolarMaterial(flareScale = 1, activityScale = 1) {
     if (!this.photosphereMaterial) return;
     const uniforms = this.photosphereMaterial.uniforms;
+    const regionActivity = this.regionActivity || (this.regionActivity = [.48, .66, .39, .57]);
+    for (let i = 0; i < regionActivity.length; i++) {
+      const waveA = .5 + .5 * Math.sin(this.time * (.082 + i * .009) + i * 1.73);
+      const waveB = .5 + .5 * Math.sin(this.time * (.034 + i * .005) + i * 2.91 + 1.2);
+      let value = .18 + .43 * waveA + .27 * waveB;
+      if (this.solarEvent.region === i) value += this.solarEvent.strength * .34 * activityScale;
+      regionActivity[i] = this.clamp(value);
+    }
     uniforms.uTime.value = this.time;
     uniforms.uFlare.value = this.solarEvent.strength * flareScale;
-    uniforms.uActivity.value = .35 + .25 * this.solarEvent.strength * activityScale;
-    const direction = this.solarActiveDirections?.[this.solarEvent.region % this.solarActiveDirections.length];
+    uniforms.uActivity.value = .38 + .20 * regionActivity.reduce((a,b)=>a+b,0) / regionActivity.length + .10 * this.solarEvent.strength * activityScale;
+    if (uniforms.uRegionStrengths?.value?.set) uniforms.uRegionStrengths.value.set(regionActivity[0], regionActivity[1], regionActivity[2], regionActivity[3]);
+    const direction = this.solarActiveDirections?.[this.solarEvent.region % (this.solarActiveDirections?.length||1)];
     if (direction && uniforms.uFlareDirection?.value?.copy) uniforms.uFlareDirection.value.copy(direction);
   }
 
@@ -583,24 +629,31 @@ window.SunScene = class SunScene {
   updateSolarEvent(delta) {
     const e=this.solarEvent;
     if(this.motion.matches){ e.strength=0; return; }
-    if(e.state==="cooldown"&&this.time>=e.nextAt){ e.state="prepare"; e.stateAt=this.time; e.region=e.serial%2; }
+    if(e.state==="cooldown"&&this.time>=e.nextAt){ e.state="prepare"; e.stateAt=this.time; e.region=(e.serial*3+1)%(this.solarActiveDirections?.length||4); }
     if(e.state==="prepare"){
-      e.strength=this.smooth((this.time-e.stateAt)/1.5)*.35;
-      if(this.time-e.stateAt>=1.5){ e.state="flare"; e.stateAt=this.time; this.spawnBurst(e.region, e.serial%4===3?34:18); }
+      e.strength=this.smooth((this.time-e.stateAt)/1.8)*.30;
+      if(this.time-e.stateAt>=1.8){ e.state="flare"; e.stateAt=this.time; this.spawnBurst(e.region, e.serial%4===3?30:16); }
     } else if(e.state==="flare"){
-      const p=this.clamp((this.time-e.stateAt)/1.1); e.strength=.35+.65*Math.sin(p*Math.PI);
-      if(this.time-this.lastParticleSpawn>.18){ this.lastParticleSpawn=this.time; this.spawnBurst(e.region,3); }
+      const p=this.clamp((this.time-e.stateAt)/1.25); e.strength=.30+.70*Math.sin(p*Math.PI);
+      if(this.time-this.lastParticleSpawn>.20){ this.lastParticleSpawn=this.time; this.spawnBurst(e.region,2+(e.serial%2)); }
       if(p>=1){ e.state="decay"; e.stateAt=this.time; }
     } else if(e.state==="decay"){
-      e.strength=(1-this.smooth((this.time-e.stateAt)/2.2))*.32;
-      if(this.time-e.stateAt>=2.2){ e.state="cooldown"; e.stateAt=this.time; e.strength=0; e.serial++; e.nextAt=this.time+13+(e.serial%3)*4.5; }
+      e.strength=(1-this.smooth((this.time-e.stateAt)/2.6))*.28;
+      if(this.time-e.stateAt>=2.6){ e.state="cooldown"; e.stateAt=this.time; e.strength=0; e.serial++; e.nextAt=this.time+12.5+(e.serial%4)*3.7; }
+    }
+    if(e.state==="cooldown" && this.time-this.lastAmbientParticleSpawn>1.55){
+      const idx=Math.floor(this.time/1.55)%(this.solarActiveDirections?.length||4);
+      const activity=this.regionActivity?.[idx] ?? .4;
+      if(activity>.54) this.spawnBurst(idx, activity>.76?2:1);
+      this.lastAmbientParticleSpawn=this.time;
     }
     this.updateParticles(delta);
   }
 
   spawnBurst(region=0,count=8){
     if(!this.particleGeometry||!this.THREE)return; const positions=this.particleGeometry.attributes.position.array, life=this.particleGeometry.attributes.aLife.array, size=this.particleGeometry.attributes.aSize.array;
-    const base=region===0?new this.THREE.Vector3(-.49,.31,.815):new this.THREE.Vector3(.43,-.27,.86); base.normalize();
+    const source=this.solarActiveDirections?.[region%(this.solarActiveDirections?.length||1)];
+    const base=source?source.clone():new this.THREE.Vector3(-.49,.31,.815).normalize();
     for(let n=0;n<count;n++){
       const i=this.particleCursor++%this.particleCount; const seed=(i+1)*(this.solarEvent.serial+3)*12.9898+n*7.31; const r=Math.sin(seed)*43758.5453, r2=Math.sin(seed*1.73)*19171.17; const j1=r-Math.floor(r)-.5, j2=r2-Math.floor(r2)-.5;
       const tangent=new this.THREE.Vector3(-base.y,base.x,.18*j1).normalize(); const p=base.clone().multiplyScalar(1.02).addScaledVector(tangent,j1*.08);
@@ -736,23 +789,38 @@ window.SunScene = class SunScene {
     ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.clip();
 
     ctx.globalCompositeOperation="soft-light";
-    for(let i=0;i<280;i++){
-      const a0=Math.sin((i+1)*12.9898)*43758.5453, b0=Math.sin((i+1)*78.233)*19642.349;
+    for(let i=0;i<78;i++){
+      const a0=Math.sin((i+5)*12.9898)*43758.5453, b0=Math.sin((i+11)*78.233)*19642.349;
       const fa=a0-Math.floor(a0), fb=b0-Math.floor(b0);
-      const drift=.010*Math.sin(this.time*.075+i*.73);
-      const ang=fa*Math.PI*2+drift, rad=Math.sqrt(fb)*r*.955*(.992+.008*Math.sin(this.time*.055+i*.31));
-      const cx=x+Math.cos(ang)*rad, cy=y+Math.sin(ang)*rad;
-      const cell=(1.8+(i%9)*.48)*(r/320), stretch=.95+.38*((i%5)/4);
-      ctx.globalAlpha=.075+(i%7)*.012;
-      ctx.fillStyle=i%6===0?"#ff9419":i%3===0?"#fff7ad":"#ffd84d";
-      ctx.beginPath();ctx.ellipse(cx,cy,cell*1.8*stretch,cell,ang+(i%11)*.21,0,Math.PI*2);ctx.fill();
+      const baseAng=fa*Math.PI*2+Math.sin(this.time*.021+i*.37)*.045;
+      const baseRad=Math.sqrt(fb)*r*.86;
+      const length=r*(.055+(i%9)*.0065);
+      const bend=.34*Math.sin(i*1.91+this.time*.037);
+      const sx=x+Math.cos(baseAng)*baseRad, sy=y+Math.sin(baseAng)*baseRad;
+      ctx.beginPath();ctx.moveTo(sx,sy);
+      const tang=baseAng+Math.PI*.5+bend;
+      const mx=sx+Math.cos(tang)*length*.58+Math.cos(baseAng)*length*.11;
+      const my=sy+Math.sin(tang)*length*.58+Math.sin(baseAng)*length*.11;
+      const ex=sx+Math.cos(tang)*length+Math.cos(baseAng)*length*.05;
+      const ey=sy+Math.sin(tang)*length+Math.sin(baseAng)*length*.05;
+      ctx.quadraticCurveTo(mx,my,ex,ey);
+      ctx.globalAlpha=.045+(i%6)*.012;
+      ctx.strokeStyle=i%5===0?"#ff8a14":i%3===0?"#fff080":"#ffd548";
+      ctx.lineWidth=Math.max(.7,r*(.0021+(i%4)*.00055));ctx.stroke();
     }
     ctx.globalCompositeOperation="overlay";
-    for(let i=0;i<62;i++){
-      const a0=Math.sin((i+31)*41.17)*27182.817, b0=Math.sin((i+7)*19.73)*31415.926;
-      const fa=a0-Math.floor(a0), fb=b0-Math.floor(b0); const ang=fa*Math.PI*2; const rad=Math.sqrt(fb)*r*.90;
-      const cx=x+Math.cos(ang)*rad, cy=y+Math.sin(ang)*rad, cell=r*(.010+(i%6)*.0017);
-      ctx.globalAlpha=.035+(i%4)*.012;ctx.fillStyle=i%2?"#fffbd0":"#ff7e12";ctx.beginPath();ctx.ellipse(cx,cy,cell*2.1,cell,ang,0,Math.PI*2);ctx.fill();
+    for(let i=0;i<28;i++){
+      const a0=Math.sin((i+41)*41.17)*27182.817, b0=Math.sin((i+17)*19.73)*31415.926;
+      const fa=a0-Math.floor(a0), fb=b0-Math.floor(b0), ang=fa*Math.PI*2+this.time*.002*(i%2?1:-1);
+      const rad=Math.sqrt(fb)*r*.78, span=.20+(i%7)*.027;
+      ctx.beginPath();
+      for(let j=0;j<=16;j++){
+        const u=j/16-.5, aa=ang+u*span, wave=Math.sin(u*10+i*.71+this.time*.044)*r*.007;
+        const rr=rad+wave+r*.018*Math.sin((u+.5)*Math.PI);
+        const px=x+Math.cos(aa)*rr, py=y+Math.sin(aa)*rr;
+        if(j===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+      }
+      ctx.globalAlpha=.035+(i%4)*.010;ctx.strokeStyle=i%2?"#fff5a8":"#ff7f12";ctx.lineWidth=Math.max(1,r*.0042);ctx.stroke();
     }
 
     ctx.globalCompositeOperation="source-over";
