@@ -452,3 +452,147 @@ window.JupiterScene = class JupiterScene {
   drawCanvasStars(ctx,w,h){ctx.fillStyle="#030812";ctx.fillRect(0,0,w,h);ctx.fillStyle="#c6d4e7";for(let i=0;i<120;i++){const x=(i*83%997)/997*w,y=(i*47%613)/613*h;ctx.globalAlpha=.18+(i%5)*.09;ctx.fillRect(x,y,1,1);}ctx.globalAlpha=1;}
   drawCanvasTravel(p,reverse,marsP,jupiterP,beltP){const ctx=this.ctx,w=this.width,h=this.height;this.drawCanvasStars(ctx,w,h);if(beltP>.02){ctx.globalAlpha=beltP*.7;ctx.fillStyle="#75695b";for(let i=0;i<40;i++){let x=((i*137+p*1200)%1300)/1300*w,y=((i*79)%700)/700*h;const s=1+(i%4);ctx.beginPath();ctx.arc(x,y,s,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;}if(jupiterP>.01){const r=Math.min(w,h)*(.07+.27*jupiterP),x=w*(reverse?.54:.88-(.34*jupiterP));this.drawCanvasRing(ctx,x,h*.48,r,false);ctx.save();ctx.beginPath();ctx.arc(x,h*.48,r,0,Math.PI*2);ctx.clip();ctx.globalAlpha=jupiterP;ctx.drawImage(this.surface,x-r,h*.48-r,r*2,r*2);ctx.restore();ctx.globalAlpha=1;this.drawCanvasRing(ctx,x,h*.48,r,true);}if(marsP>.01){const r=Math.min(w,h)*(.07+.21*marsP),x=w*(reverse?.82-(.32*marsP):.5-.32*p);ctx.save();ctx.beginPath();ctx.arc(x,h*.5,r,0,Math.PI*2);ctx.clip();ctx.globalAlpha=marsP;if(this.marsSurface)ctx.drawImage(this.marsSurface,x-r,h*.5-r,r*2,r*2);else{ctx.fillStyle="#a65d42";ctx.fill();}ctx.restore();ctx.globalAlpha=1;}}
 };
+
+/* ===== ANTARA QUALITY CONSISTENCY PASS: feature-aware Jupiter exploration ===== */
+(() => {
+  const P = window.JupiterScene?.prototype;
+  if (!P || P.__featureAwareV2) return;
+  P.__featureAwareV2 = true;
+  const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
+  const near = (a, ref) => ref + wrap(a - ref);
+  const DEG = Math.PI / 180;
+  const VIEWS = [
+    { yaw: 2.58, pitch: 0.00, cameraZ: 6.40, label: "JUPITER", context: "PANORAMA ATMOSFER", marker: null, semantic: "" },
+    { yaw: 1.18, pitch: 0.015, cameraZ: 6.16, label: "PITA AWAN JUPITER", context: "ZONA & SABUK EKUATORIAL", marker: null, semantic: "bands" },
+    { yaw: 0.56, pitch: -0.10, cameraZ: 5.82, label: "GREAT RED SPOT", context: "SEKITAR 22° LS · BADAI ATMOSFER", marker: "grs", semantic: "" },
+    { yaw: 2.18, pitch: 0.02, cameraZ: 6.28, label: "ROTASI CEPAT", context: "HARI JUPITER ~10 JAM", marker: null, semantic: "rotation" },
+    { yaw: 2.86, pitch: -0.20, cameraZ: 6.48, label: "MAGNETOSFER JUPITER", context: "MEDAN MAGNET & AURORA", marker: null, semantic: "magnetosphere" },
+    { yaw: 1.62, pitch: 0.055, cameraZ: 6.68, label: "SISTEM JUPITER", context: "BULAN GALILEA & CINCIN DEBU", marker: null, semantic: "moons" },
+    { yaw: 2.42, pitch: 0.01, cameraZ: 6.36, label: "EKSPLORASI JUPITER", context: "PIONEER · VOYAGER · GALILEO · JUNO", marker: null, semantic: "" }
+  ];
+
+  P._ensureFeatureState = function() {
+    if (this._featureStateReady) return;
+    this._featureStateReady = true;
+    this.focusState = "IDLE_ROTATION";
+    this.focusYaw = this.renderedRotation || 2.58;
+    this.focusYawTarget = this.focusYaw;
+    this.focusPitch = 0; this.focusPitchTarget = 0;
+    this.focusCameraZ = 6.4; this.focusCameraZTarget = 6.4;
+    this.focusSettledAt = 0;
+    this.focusReticle = document.getElementById("jupiter-focus-reticle");
+    this.focusLabel = document.getElementById("jupiter-focus-label");
+    this.focusContext = document.getElementById("jupiter-focus-context");
+    this.semanticOverlay = document.getElementById("jupiter-semantic-overlay");
+    this.semanticLabel = document.getElementById("jupiter-semantic-label");
+  };
+
+  const originalCreate = P.createThreeScene;
+  P.createThreeScene = function(THREE) {
+    originalCreate.call(this, THREE);
+    this._ensureFeatureState();
+    // A second, very faint cloud shell reuses the existing scientific texture instead
+    // of replacing it with procedural noise. Its slightly different drift adds depth.
+    this.cloudLayer = new THREE.Mesh(
+      new THREE.SphereGeometry(1.008, 144, 96),
+      new THREE.MeshStandardMaterial({ map: this.jupiterTexture, transparent: true, opacity: .115, depthWrite: false, roughness: .92, metalness: 0, color: 0xfff4e5 })
+    );
+    this.planetGroup.add(this.cloudLayer);
+
+    const lat = -22 * DEG, lon = -122 * DEG, c = Math.cos(lat);
+    this.grsAnchor = new THREE.Object3D();
+    this.grsAnchor.position.set(c * Math.cos(lon), Math.sin(lat), -c * Math.sin(lon));
+    this.planet.add(this.grsAnchor);
+    this._markerWorld = new THREE.Vector3(); this._planetWorld = new THREE.Vector3(); this._projected = new THREE.Vector3();
+    this._surfaceNormal = new THREE.Vector3(); this._toCamera = new THREE.Vector3();
+
+    this.moonGroup = new THREE.Group();
+    const moonDefs = [
+      [-1.75,.18,.16,.085,0xd7b878],[-1.35,-.24,.08,.072,0xc7d5df],[1.48,.15,-.02,.095,0xb7a889],[1.88,-.19,.12,.082,0x8f8072]
+    ];
+    moonDefs.forEach(([x,y,z,r,col]) => { const m = new THREE.Mesh(new THREE.SphereGeometry(r,24,16), new THREE.MeshStandardMaterial({color:col,roughness:.92,metalness:0})); m.position.set(x,y,z); this.moonGroup.add(m); });
+    this.moonGroup.visible = false; this.planetGroup.add(this.moonGroup);
+  };
+
+  const originalStart = P.start;
+  P.start = function(opts={}) { this._ensureFeatureState(); originalStart.call(this, opts); this.focusYaw=this.renderedRotation||2.58; this.focusYawTarget=this.focusYaw; this.focusPitch=this.focusPitchTarget=0; this.focusCameraZ=this.focusCameraZTarget=6.4; };
+
+  P._applyTopicView = function(index, immediate=false) {
+    this._ensureFeatureState();
+    const view = VIEWS[index] || VIEWS[0];
+    this.focusYawTarget = near(view.yaw, this.focusYaw);
+    this.focusPitchTarget = view.pitch;
+    this.focusCameraZTarget = view.cameraZ;
+    this.focusState = immediate ? "FOCUSED_IDLE" : "FOCUS_TRANSITION";
+    if (immediate || this.motion.matches) { this.focusYaw=this.focusYawTarget; this.focusPitch=this.focusPitchTarget; this.focusCameraZ=this.focusCameraZTarget; this.focusState="FOCUSED_IDLE"; }
+    if (this.focusLabel) this.focusLabel.textContent = view.marker ? view.label : "";
+    if (this.focusContext) this.focusContext.textContent = view.marker ? view.context : "";
+    this._activeMarker = view.marker;
+    if (this.semanticOverlay) {
+      this.semanticOverlay.className = "jupiter-semantic-overlay" + (view.semantic ? ` is-visible is-${view.semantic}` : "");
+      if (this.semanticLabel) this.semanticLabel.textContent = view.semantic === "magnetosphere" ? "MEDAN MAGNET · AURORA POLAR" : view.semantic === "bands" ? "ZONA EKUATORIAL · SABUK UTARA & SELATAN" : view.semantic === "moons" ? "IO · EUROPA · GANYMEDE · CALLISTO" : "";
+    }
+    if (this.moonGroup) this.moonGroup.visible = view.semantic === "moons";
+  };
+
+  P.setExplorationStop = function(index,{immediate=false,announce=true}={}) {
+    this._ensureFeatureState();
+    const previous = this.topicIndex ?? 0;
+    const next=Math.max(0,Math.min(JUPITER_EXPLORATION_STOPS.length-1,index)); const stop=JUPITER_EXPLORATION_STOPS[next]; this.topicIndex=next;
+    if (!immediate) {
+      this.exploration.classList.remove("is-switching-next","is-switching-prev"); void this.exploration.offsetWidth;
+      this.exploration.classList.add(next >= previous ? "is-switching-next" : "is-switching-prev");
+      clearTimeout(this._switchTimer); this._switchTimer=setTimeout(()=>this.exploration.classList.remove("is-switching-next","is-switching-prev"),560);
+    }
+    this.topicKicker.textContent=stop.kicker;this.topicTitle.textContent=stop.title;this.topicSubtitle.textContent=stop.subtitle;this.topicSummary.textContent=stop.summary;this.topicFacts.replaceChildren(...stop.facts.map(f=>{const li=document.createElement("li");li.textContent=f;return li;}));
+    this.topicSource.href=stop.source;this.topicCurrent.textContent=String(next+1).padStart(2,"0");this.topicPrev.disabled=next===0;this.topicNext.disabled=next===JUPITER_EXPLORATION_STOPS.length-1;Array.from(this.topicProgress.children).forEach((bar,i)=>bar.classList.toggle("is-active",i===next));
+    window.ExplorationMedia?.render?.("jupiter",stop,this.contextMedia); this._applyTopicView(next, immediate || !this.exploring);
+    if(this.active){ if(!this.frame){this.previous=performance.now();this.tick(this.previous);} else this.render(); }
+    if(announce&&this.exploring)document.getElementById("announcement").textContent=`Eksplorasi Jupiter ${next+1} dari ${JUPITER_EXPLORATION_STOPS.length}: ${stop.title}.`;
+  };
+
+  const originalEnter = P.enterExploration;
+  P.enterExploration = function(){ this._ensureFeatureState(); originalEnter.call(this); if(this.exploring)this._applyTopicView(this.topicIndex,false); };
+  const originalExit = P.exitExploration;
+  P.exitExploration = function(){ originalExit.call(this); this.focusState="IDLE_ROTATION"; this._activeMarker=null; this.focusReticle?.classList.remove("is-marker-visible"); this.semanticOverlay && (this.semanticOverlay.className="jupiter-semantic-overlay"); if(this.moonGroup)this.moonGroup.visible=false; };
+
+  P._updateFeatureMotion = function(delta) {
+    this._ensureFeatureState();
+    if (!this.exploring) return;
+    const k = this.motion.matches ? 1 : 1-Math.exp(-delta*2.5);
+    this.focusYaw += wrap(this.focusYawTarget-this.focusYaw)*k;
+    this.focusPitch += (this.focusPitchTarget-this.focusPitch)*k;
+    this.focusCameraZ += (this.focusCameraZTarget-this.focusCameraZ)*k;
+    if (Math.abs(wrap(this.focusYawTarget-this.focusYaw))<.008 && Math.abs(this.focusPitchTarget-this.focusPitch)<.005) this.focusState="FOCUSED_IDLE";
+  };
+
+  P.tick = function(now) {
+    this.frame=null; if(!this.active||document.hidden)return; const delta=Math.min((now-this.previous)/1000,.12); this.previous=now; this.time+=delta;
+    const damp=1-Math.exp(-delta*2.1); this.cameraOffset.x+=(this.pointer.x-this.cameraOffset.x)*damp; this.cameraOffset.y+=(this.pointer.y-this.cameraOffset.y)*damp;
+    const ed=this.motion.matches?1:1-Math.exp(-delta*3); this.explorationBlend+=(this.explorationBlendTarget-this.explorationBlend)*ed; this._updateFeatureMotion(delta); this.render();
+    if(this.active && (!this.motion.matches || this.travelMode || Math.abs(this.explorationBlend-this.explorationBlendTarget)>.002 || this.focusState==="FOCUS_TRANSITION")) this.frame=requestAnimationFrame(t=>this.tick(t));
+  };
+
+  P._updateFocusMarker = function() {
+    if(!this.focusReticle || !this.exploring || this._activeMarker!=="grs" || !this.grsAnchor || this.mode!=="webgl") { this.focusReticle?.classList.remove("is-marker-visible"); return; }
+    this.grsAnchor.getWorldPosition(this._markerWorld); this.planet.getWorldPosition(this._planetWorld);
+    this._surfaceNormal.copy(this._markerWorld).sub(this._planetWorld).normalize(); this._toCamera.copy(this.camera.position).sub(this._markerWorld).normalize();
+    const facing=this._surfaceNormal.dot(this._toCamera); this._projected.copy(this._markerWorld).project(this.camera);
+    const visible=facing>.02&&this._projected.z<1&&Math.abs(this._projected.x)<1.05&&Math.abs(this._projected.y)<1.05;
+    if(!visible){this.focusReticle.classList.remove("is-marker-visible");return;}
+    const x=(this._projected.x*.5+.5)*this.width,y=(-this._projected.y*.5+.5)*this.height; this.focusReticle.style.left=`${x}px`;this.focusReticle.style.top=`${y}px`;this.focusReticle.style.setProperty("--marker-opacity",".94"); this.focusReticle.classList.add("is-marker-visible"); this.focusReticle.classList.toggle("is-left",x+240>this.width);
+  };
+
+  P.renderJupiter = function() {
+    this._ensureFeatureState(); const blend=this.explorationBlend; const x=this.mobile?0:(.82+blend*.15), y=this.mobile?(.13-blend*.23):(.02+blend*.01), scale=this.mobile?.98:1.13;
+    const idle=2.58+this.time*.030; const subtle=this.exploring&&this.focusState==="FOCUSED_IDLE"?Math.sin(this.time*.16)*.018:0; this.renderedRotation=this.exploring?this.focusYaw+subtle:idle;
+    if(this.mode==="webgl"){
+      this.travelMarsGroup.visible=false;if(this.asteroidGroup)this.asteroidGroup.visible=false;this.planetGroup.visible=true;this.planetGroup.position.set(x,y,0);this.planetGroup.scale.setScalar(scale);
+      this.planetGroup.rotation.x=this.exploring?this.focusPitch:0; this.planetGroup.rotation.z=this.exploring?-.018:0;
+      this.planet.rotation.y=this.renderedRotation; if(this.cloudLayer)this.cloudLayer.rotation.y=this.renderedRotation+this.time*.0045;
+      this.ring.rotation.z=.015+Math.sin(this.time*.14)*.008;
+      const z=this.exploring?this.focusCameraZ:6.4; this.camera.position.set(this.motion.matches?0:this.cameraOffset.x*.13,this.motion.matches?0:-this.cameraOffset.y*.09,z);this.camera.lookAt(0,0,0);this.renderer.render(this.scene,this.camera); this._updateFocusMarker();
+    } else { this.drawCanvasJupiter(x,y,scale); this.focusReticle?.classList.remove("is-marker-visible"); }
+    if(this.time>1.1&&!this.travelMode){this.caption.classList.add("is-visible");this.caption.inert=this.exploring;this.credit.style.opacity=this.exploring?"0":".9";}
+  };
+})();
