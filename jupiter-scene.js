@@ -256,6 +256,8 @@ window.JupiterScene = class JupiterScene {
 
     const ringTexture=this.makeRingTexture(THREE);
     const ringMat=new THREE.MeshBasicMaterial({map:ringTexture,color:0xb4a58c,transparent:true,opacity:.44,depthTest:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.NormalBlending});
+    ringMat.userData.antaraBaseOpacity=.44;
+    ringMat.userData.antaraTravelMaxOpacity=.56;
     this.ring=new THREE.Mesh(new THREE.RingGeometry(1.30,1.88,256,3),ringMat);
     this.ring.rotation.x=Math.PI/2-.14; this.ring.rotation.z=.028; this.planetGroup.add(this.ring);
 
@@ -276,12 +278,26 @@ window.JupiterScene = class JupiterScene {
 
   makeRingTexture(THREE) {
     const c=document.createElement("canvas");c.width=c.height=1024;const ctx=c.getContext("2d");const im=ctx.createImageData(1024,1024);const d=im.data;
+    // RingGeometry UVs only sample roughly r=0.69..1.0. Keep the dusty halo,
+    // main ring and outer gossamer structure inside that actually sampled range
+    // so the faint system survives minification during a distant approach.
     for(let y=0;y<1024;y++)for(let x=0;x<1024;x++){
       const nx=(x-512)/512,ny=(y-512)/512,r=Math.sqrt(nx*nx+ny*ny);let a=0;
-      if(r>.50&&r<.99){const main=Math.exp(-Math.pow((r-.68)/.055,2));const halo=.20*Math.exp(-Math.pow((r-.55)/.10,2));const goss=.13*Math.exp(-Math.pow((r-.84)/.12,2));const grain=.78+.22*Math.sin(x*.41+y*.17+Math.sin(y*.033)*4);a=(main*.34+halo*.20+goss*.18)*grain;}
+      if(r>.69&&r<.995){
+        const halo=.11*Math.exp(-Math.pow((r-.76)/.10,2));
+        const main=.21*Math.exp(-Math.pow((r-.88)/.038,2));
+        const goss=.055*Math.exp(-Math.pow((r-.955)/.05,2));
+        const radial=.92+.08*Math.sin(r*620.+Math.sin(r*83.)*1.7);
+        const grain=.84+.16*Math.sin(x*.37+y*.13+Math.sin(y*.029)*3.2);
+        a=(halo+main+goss)*radial*grain;
+      }
       const i=(y*1024+x)*4;d[i]=190;d[i+1]=178;d[i+2]=155;d[i+3]=Math.round(255*this.clamp(a));
     }
-    ctx.putImageData(im,0,0);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.needsUpdate=true;return t;
+    ctx.putImageData(im,0,0);
+    const t=new THREE.CanvasTexture(c);
+    t.colorSpace=THREE.SRGBColorSpace;t.generateMipmaps=true;t.minFilter=THREE.LinearMipmapLinearFilter;t.magFilter=THREE.LinearFilter;
+    if(this.renderer?.capabilities?.getMaxAnisotropy)t.anisotropy=Math.min(12,this.renderer.capabilities.getMaxAnisotropy());
+    t.needsUpdate=true;return t;
   }
 
   createMarsTravelObject(THREE) {
@@ -590,6 +606,7 @@ window.JupiterScene = class JupiterScene {
       this.travelMarsGroup.visible=false;if(this.asteroidGroup)this.asteroidGroup.visible=false;this.planetGroup.visible=true;this.planetGroup.position.set(x,y,0);this.planetGroup.scale.setScalar(scale);
       this.planetGroup.rotation.x=this.exploring?this.focusPitch:0; this.planetGroup.rotation.z=this.exploring?-.018:0;
       this.planet.rotation.y=this.renderedRotation; if(this.cloudLayer)this.cloudLayer.rotation.y=this.renderedRotation+this.time*.0045;
+      if(this.ring?.material)this.ring.material.opacity=this.ring.material.userData?.antaraBaseOpacity ?? .44;
       this.ring.rotation.z=.015+Math.sin(this.time*.14)*.008;
       const z=this.exploring?this.focusCameraZ:6.4; this.camera.position.set(this.motion.matches?0:this.cameraOffset.x*.13,this.motion.matches?0:-this.cameraOffset.y*.09,z);this.camera.lookAt(0,0,0);this.renderer.render(this.scene,this.camera); this._updateFocusMarker();
     } else { this.drawCanvasJupiter(x,y,scale); this.focusReticle?.classList.remove("is-marker-visible"); }

@@ -348,7 +348,9 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     this.travelJupiter=new THREE.Mesh(new THREE.SphereGeometry(1,120,80),this.travelJupiterMaterial);
     this.travelJupiterGroup=new THREE.Group(); this.travelJupiterGroup.add(this.travelJupiter);
     const ringTex=this.makeRingTexture(THREE);
-    this.travelRingMaterial=new THREE.MeshBasicMaterial({map:ringTex,color:0xa99b84,transparent:true,opacity:.38,depthTest:true,depthWrite:false,side:THREE.DoubleSide});
+    this.travelRingMaterial=new THREE.MeshBasicMaterial({map:ringTex,color:0xb4a58c,transparent:true,opacity:.44,depthTest:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.NormalBlending});
+    this.travelRingMaterial.userData.antaraBaseOpacity=.44;
+    this.travelRingMaterial.userData.antaraTravelMaxOpacity=.56;
     this.travelRing=new THREE.Mesh(new THREE.RingGeometry(1.30,1.88,220,3),this.travelRingMaterial); this.travelRing.rotation.x=Math.PI/2-.14; this.travelRing.rotation.z=.028; this.travelJupiterGroup.add(this.travelRing);
     this.scene.add(this.travelJupiterGroup); this.travelJupiterGroup.visible=false;
   }
@@ -360,8 +362,24 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
   }
 
   makeRingTexture(THREE) {
-    const c=document.createElement("canvas"); c.width=1024;c.height=32;const x=c.getContext("2d");const image=x.createImageData(c.width,c.height);
-    for(let px=0;px<c.width;px++){const u=px/(c.width-1);let a=0;a+=Math.exp(-Math.pow((u-.31)/.085,2))*.27;a+=Math.exp(-Math.pow((u-.58)/.12,2))*.18;a+=Math.exp(-Math.pow((u-.80)/.07,2))*.09;a*=.76+.18*Math.sin(px*.091)+.06*Math.sin(px*.37);for(let py=0;py<c.height;py++){const i=(py*c.width+px)*4;image.data[i]=180;image.data[i+1]=166;image.data[i+2]=143;image.data[i+3]=Math.max(0,Math.min(255,Math.floor(a*255)));}}x.putImageData(image,0,0);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.needsUpdate=true;return t;
+    // Fallback/legacy travel ring uses the same radial visual language as the
+    // final Jupiter ring, so a slow asset decode never creates a ringless Jupiter.
+    const c=document.createElement("canvas");c.width=c.height=1024;const ctx=c.getContext("2d");const image=ctx.createImageData(1024,1024);
+    for(let py=0;py<1024;py++)for(let px=0;px<1024;px++){
+      const nx=(px-512)/512,ny=(py-512)/512,r=Math.sqrt(nx*nx+ny*ny);let a=0;
+      if(r>.69&&r<.995){
+        const halo=.11*Math.exp(-Math.pow((r-.76)/.10,2));
+        const main=.21*Math.exp(-Math.pow((r-.88)/.038,2));
+        const goss=.055*Math.exp(-Math.pow((r-.955)/.05,2));
+        const radial=.92+.08*Math.sin(r*620.+Math.sin(r*83.)*1.7);
+        const grain=.84+.16*Math.sin(px*.37+py*.13+Math.sin(py*.029)*3.2);
+        a=(halo+main+goss)*radial*grain;
+      }
+      const i=(py*1024+px)*4;image.data[i]=190;image.data[i+1]=178;image.data[i+2]=155;image.data[i+3]=Math.max(0,Math.min(255,Math.round(a*255)));
+    }
+    ctx.putImageData(image,0,0);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.generateMipmaps=true;t.minFilter=THREE.LinearMipmapLinearFilter;t.magFilter=THREE.LinearFilter;
+    if(this.renderer?.capabilities?.getMaxAnisotropy)t.anisotropy=Math.min(12,this.renderer.capabilities.getMaxAnisotropy());
+    t.needsUpdate=true;return t;
   }
 
   createCanvasFallback() {
@@ -616,6 +634,9 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     this.scene.add(owner.planetGroup);
     this.travelJupiterGroup=owner.planetGroup; this.travelJupiter=owner.planet;
     this.travelJupiterMaterial=owner.jupiterMaterial; this.travelRing=owner.ring; this.travelRingMaterial=owner.ring?.material;
+    this._jupiterRingBaseOpacity=this.travelRingMaterial?.userData?.antaraBaseOpacity ?? this.travelRingMaterial?.opacity ?? .44;
+    this._jupiterRingMaxTravelOpacity=this.travelRingMaterial?.userData?.antaraTravelMaxOpacity ?? Math.max(this._jupiterRingBaseOpacity,.56);
+    if(this.travelRingMaterial)this.travelRingMaterial.opacity=this._jupiterRingBaseOpacity;
     this._borrowedJupiter=true;
     this._jupiterVisualTimeStart=Number.isFinite(jupiterTime)?jupiterTime:(Number.isFinite(owner.time)?owner.time:8.5);
     this._jupiterRotationStart=Number.isFinite(jupiterRotation)?jupiterRotation:(Number.isFinite(owner.renderedRotation)?owner.renderedRotation:2.58);
@@ -629,6 +650,7 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     const owner=this._jupiterVisualOwner;
     this._jupiterVisualEndRotation=this.travelJupiter?.rotation.y ?? this._jupiterRotationStart;
     this._jupiterVisualEndTime=this._jupiterVisualTimeCurrent ?? this._jupiterVisualTimeStart;
+    if(owner?.ring?.material)owner.ring.material.opacity=owner.ring.material.userData?.antaraBaseOpacity ?? this._jupiterRingBaseOpacity ?? .44;
     if(owner?.scene&&owner?.planetGroup){owner.scene.add(owner.planetGroup);owner.time=this._jupiterVisualEndTime;owner.renderedRotation=this._jupiterVisualEndRotation;owner.rotationBase=this._jupiterVisualEndRotation-owner.time*.030;owner.planet.rotation.y=this._jupiterVisualEndRotation;}
     this.travelJupiterGroup=this._legacyTravelJupiterGroup;this.travelJupiter=this._legacyTravelJupiter;this.travelJupiterMaterial=this._legacyTravelJupiterMaterial;this.travelRing=this._legacyTravelRing;this.travelRingMaterial=this._legacyTravelRingMaterial;
     this._borrowedJupiter=false; this._restoreBaseLighting();
@@ -639,12 +661,19 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
 
   const originalBegin=P.beginTravel;
   P.beginTravel=function(mode,options={}){
-    if(mode.includes("jupiter"))this._borrowJupiterVisual(options);
+    if(mode.includes("jupiter")){this._pendingJupiterVisualOptions=options;this._borrowJupiterVisual(options);}
     return originalBegin.call(this,mode,options);
   };
 
   const originalRenderTravel=P.renderTravel;
   P.renderTravel=function(){
+    if(this.travelMode?.includes("jupiter") && !this._borrowedJupiter && this.renderer && this._jupiterVisualOwner?.planetGroup){
+      const early=this.travelState();
+      // Swap to the real Jupiter only while the destination lane is still off-screen.
+      // From Jupiter the owner is already prepared, so this mainly closes a slow-decode
+      // race on Asteroid Belt -> Jupiter without creating a visible representation swap.
+      if(this.travelMode==="from-jupiter" || early.progress<.28)this._borrowJupiterVisual(this._pendingJupiterVisualOptions||{});
+    }
     if(!this.travelMode?.includes("jupiter") || !this._borrowedJupiter || !this.renderer) return originalRenderTravel.call(this);
     const state=this.travelState();
     const raw=this.clamp((this.time-this.travelStartedAt)/this.travelDuration),mode=this.travelMode,direction=this.travelDirection>=0?1:-1;
@@ -666,7 +695,15 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     const elapsed=Math.max(0,this.time-this.travelStartedAt),visualTime=this._jupiterVisualTimeStart+elapsed,rotation=this._jupiterRotationStart+elapsed*.030;
     this._jupiterVisualTimeCurrent=visualTime;this.travelJupiter.rotation.y=rotation;
     if(owner?.cloudLayer)owner.cloudLayer.rotation.y=rotation+visualTime*.0045;
-    if(owner?.ring)owner.ring.rotation.z=.015+Math.sin(visualTime*.14)*.008;
+    if(owner?.ring){
+      owner.ring.rotation.z=.015+Math.sin(visualTime*.14)*.008;
+      const mat=owner.ring.material,base=mat?.userData?.antaraBaseOpacity ?? this._jupiterRingBaseOpacity ?? .44;
+      const maxTravel=mat?.userData?.antaraTravelMaxOpacity ?? this._jupiterRingMaxTravelOpacity ?? .56;
+      // At maximum pullback the same thin ring receives a small alpha compensation.
+      // It returns continuously to the exact hero opacity as approach reaches settle.
+      const far=this.clamp((cameraZ-8.4)/(8.4*1.45));
+      if(mat)mat.opacity=base+(maxTravel-base)*this.travelSmooth(far);
+    }
     if(owner?.atmosphere)owner.atmosphere.visible=true;
 
     const jAmount=sourceIsJupiter?sourceAlpha:destinationAlpha; this._mixJupiterLighting(jAmount);

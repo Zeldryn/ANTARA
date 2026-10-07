@@ -1156,8 +1156,7 @@ function travelMarsToAsteroid() {
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU SABUK ASTEROID";
   announcement.textContent = "Meninggalkan Mars. Memasuki wilayah sabuk asteroid utama.";
-  asteroid.prepare();
-  jupiter.prepare();
+  prepareSharedJupiterVisuals({ includeSaturn:true });
   sound.travel(reducedMotion.matches ? 0.5 : 7.0);
   asteroid.beginTravelFromMars({
     direction: getCelestialDirection("mars", "asteroid"),
