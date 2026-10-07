@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="venus-scene.css">
   <link rel="stylesheet" href="asteroid-scene.css">
   <link rel="stylesheet" href="jupiter-scene.css">
+  <link rel="stylesheet" href="saturn-scene.css">
   <script src="exploration-media.js" defer></script>
   <script src="earth-scene.js" defer></script>
   <script src="mars-scene.js" defer></script>
@@ -26,6 +27,7 @@
   <script src="venus-scene.js" defer></script>
   <script src="asteroid-scene.js" defer></script>
   <script src="jupiter-scene.js" defer></script>
+  <script src="saturn-scene.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -688,8 +690,8 @@
             <span>Jelajahi Jupiter</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
-          <button class="jupiter-planet-nav jupiter-planet-next" id="jupiter-next-planet" type="button" disabled aria-label="Saturnus belum tersedia">
-            <span><small>Berikutnya</small><strong>Saturnus · Segera</strong></span>
+          <button class="jupiter-planet-nav jupiter-planet-next" id="jupiter-next-planet" type="button" aria-label="Planet selanjutnya: Saturnus">
+            <span><small>Planet selanjutnya</small><strong>Saturnus</strong></span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
         </div>
@@ -722,6 +724,60 @@
       </aside>
 
       <a class="jupiter-credit" href="https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/" target="_blank" rel="noopener noreferrer">Visual: ANTARA · referensi atmosfer NASA/Hubble</a>
+    </section>
+
+    <section class="saturn-scene" id="saturn-scene" aria-labelledby="saturn-title" hidden>
+      <div class="saturn-space-haze" aria-hidden="true"></div>
+      <div class="saturn-viewport" id="saturn-viewport" role="img" aria-label="Saturnus, raksasa gas berwarna pucat dengan sistem cincin luas, Cassini Division, dan bayangan cincin yang memperkuat kedalaman tiga dimensi."></div>
+      <div class="saturn-edge-shade" aria-hidden="true"></div>
+
+      <div class="saturn-caption">
+        <p class="eyebrow" aria-hidden="true"><span></span> RAKSASA GAS · PLANET KEENAM</p>
+        <h2 id="saturn-title" tabindex="-1">Saturnus<span>.</span></h2>
+        <p class="saturn-whisper">Raksasa Pucat dengan Cincin yang Membelah Cahaya.</p>
+        <div class="saturn-arrival-actions" role="group" aria-label="Navigasi planet">
+          <button class="saturn-planet-nav saturn-planet-prev" id="saturn-prev-planet" type="button" aria-label="Planet sebelumnya: Jupiter">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+            <span><small>Planet sebelumnya</small><strong>Jupiter</strong></span>
+          </button>
+          <button class="saturn-explore-button" id="saturn-explore-button" type="button">
+            <span>Jelajahi Saturnus</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+          <button class="saturn-planet-nav saturn-planet-next" id="saturn-next-planet" type="button" disabled aria-label="Uranus belum tersedia">
+            <span><small>Berikutnya</small><strong>Uranus · Segera</strong></span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="exploration-marker-media saturn-context-media" id="saturn-context-media" hidden></div>
+
+      <aside class="saturn-exploration" id="saturn-exploration" aria-labelledby="saturn-topic-title" aria-live="polite" inert>
+        <div class="saturn-exploration-topline">
+          <span class="saturn-topic-kicker" id="saturn-topic-kicker">IDENTITAS SATURNUS</span>
+          <span class="saturn-topic-count"><span id="saturn-topic-current">01</span> / <span id="saturn-topic-total">07</span></span>
+        </div>
+        <h3 id="saturn-topic-title" tabindex="-1">Raksasa Bercincin</h3>
+        <p class="saturn-topic-subtitle" id="saturn-topic-subtitle"></p>
+        <div class="saturn-topic-scroll">
+          <p class="saturn-topic-summary" id="saturn-topic-summary"></p>
+          <ul class="saturn-topic-facts" id="saturn-topic-facts"></ul>
+        </div>
+        <a class="saturn-topic-source" id="saturn-topic-source" href="https://science.nasa.gov/saturn/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science ↗</a>
+        <div class="saturn-exploration-controls">
+          <button class="saturn-topic-nav" id="saturn-topic-prev" type="button" aria-label="Topik Saturnus sebelumnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+          </button>
+          <div class="saturn-topic-progress" id="saturn-topic-progress" aria-hidden="true"></div>
+          <button class="saturn-topic-nav" id="saturn-topic-next" type="button" aria-label="Topik Saturnus berikutnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+        <button class="saturn-exploration-close return-panorama-button" id="saturn-exploration-close" type="button">Kembali ke panorama Saturnus</button>
+      </aside>
+
+      <a class="saturn-credit" href="https://science.nasa.gov/saturn/facts/" target="_blank" rel="noopener noreferrer">Visual: ANTARA · referensi NASA Science / Cassini</a>
     </section>
     <p class="sr-only" id="announcement" role="status" aria-live="polite"></p>
     <noscript><p class="noscript-note">Aktifkan JavaScript untuk memulai persiapan misi dan audio.</p></noscript>
