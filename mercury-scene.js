@@ -1084,10 +1084,17 @@ window.MercuryScene = class MercuryScene {
         this.caption.inert = false;
         this.caption.style.opacity = "1";
         this.credit.style.opacity = ".9";
-        this.planet.material.opacity = 1;
-        this.planet.material.transparent = false;
-        this.planet.material.depthWrite = true;
-        this.travelVenusGroup.visible = false;
+        // WebGL owns these render objects. Canvas/CSS fallbacks intentionally do not,
+        // so transition finalization must not dereference them before the shared
+        // onComplete callback can promote the global phase to "mercury".
+        if (this.mode === "webgl") {
+          if (this.planet?.material) {
+            this.planet.material.opacity = 1;
+            this.planet.material.transparent = false;
+            this.planet.material.depthWrite = true;
+          }
+          if (this.travelVenusGroup) this.travelVenusGroup.visible = false;
+        }
         document.getElementById("announcement").textContent = "Tiba di orbit Merkurius.";
       }
       callback?.();
