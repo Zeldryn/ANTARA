@@ -2675,3 +2675,160 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   opacity: calc(1 - var(--handoff) * .94);
   transition: opacity .08s linear;
 }
+
+/* ========================================================================
+   STRICT CEILING-ONLY CORRECTION
+   The upper cockpit roof is the only target here. The large blue viewport is
+   intentionally left untouched and receives no ceiling overlay or tint.
+   ======================================================================== */
+
+/* Remove the previous top treatment that was attached to the viewport layer.
+   This keeps the main front glass visually clean and independent from the roof. */
+.cockpit-window-depth::before,
+.cockpit-window-depth::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Keep every added detail physically clipped to the ceiling container. */
+.cockpit-roof {
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    linear-gradient(90deg, rgba(91,142,171,.07), transparent 15%, transparent 85%, rgba(91,142,171,.07)),
+    repeating-linear-gradient(90deg, transparent 0 11.5%, rgba(151,188,209,.035) 11.5% 11.65%, transparent 11.65% 23%),
+    linear-gradient(180deg, #04080e 0%, #0d1b28 50%, #09131d 78%, #050b12 100%);
+  border-bottom: 1px solid rgba(226,191,126,.18);
+  box-shadow:
+    0 16px 34px rgba(0,0,0,.43),
+    inset 0 -1px rgba(235,200,134,.10),
+    inset 0 -12px 24px rgba(52,101,128,.05);
+}
+
+/* Static mechanical framing and panel seams, entirely inside .cockpit-roof. */
+.roof-structure-detail {
+  position: absolute;
+  inset: 7% 6% 9%;
+  z-index: 1;
+  pointer-events: none;
+  border-top: 1px solid rgba(158,196,217,.08);
+  border-bottom: 1px solid rgba(225,190,124,.06);
+  background:
+    linear-gradient(112deg, transparent 0 19%, rgba(126,171,196,.055) 19.2% 19.45%, transparent 19.7% 80%, rgba(126,171,196,.055) 80.3% 80.55%, transparent 80.8%),
+    linear-gradient(90deg, transparent 0 49.92%, rgba(222,188,126,.055) 50%, transparent 50.08% 100%);
+  clip-path: polygon(1% 0,99% 0,96% 100%,4% 100%);
+}
+
+.roof-rib {
+  position: absolute;
+  top: -5%;
+  bottom: -8%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(138,183,207,.20) 24%, rgba(223,189,127,.12) 62%, transparent);
+  box-shadow: 1px 0 rgba(255,255,255,.018);
+  opacity: .82;
+}
+.roof-rib-left { left: 28%; transform: rotate(7deg); transform-origin: 50% 100%; }
+.roof-rib-center { left: 50%; opacity: .48; }
+.roof-rib-right { right: 28%; transform: rotate(-7deg); transform-origin: 50% 100%; }
+
+/* Thin roof-mounted light rails, not viewport overlays. */
+.roof-light-rail {
+  position: absolute;
+  top: 17%;
+  width: 17%;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(119,188,219,.58) 18%, rgba(238,200,128,.72) 52%, rgba(119,188,219,.45) 82%, transparent);
+  box-shadow: 0 0 7px rgba(109,181,214,.12), 0 0 12px rgba(230,191,118,.07);
+  opacity: .62;
+  animation: roof-light-breathe 4.8s ease-in-out infinite;
+}
+.roof-light-left { left: 11%; transform: rotate(1.5deg); }
+.roof-light-right { right: 11%; transform: rotate(-1.5deg); animation-delay: -2.4s; }
+
+/* Tiny service/status nodes embedded in the roof frame. */
+.roof-service-node {
+  position: absolute;
+  bottom: 16%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #72b9da;
+  box-shadow: 0 0 6px rgba(114,185,218,.45);
+  opacity: .32;
+  animation: roof-node-blink 3.6s steps(1,end) infinite;
+}
+.node-left { left: 18%; }
+.node-right { right: 18%; background: #dfb870; box-shadow: 0 0 6px rgba(223,184,112,.42); animation-delay: -1.8s; }
+
+/* Roof-only reflection sweep. It is clipped by .cockpit-roof and never enters
+   the main glass area. */
+.cockpit-roof::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 18%;
+  right: 18%;
+  top: 14%;
+  bottom: 13%;
+  border-top: 1px solid rgba(164,204,224,.07);
+  border-bottom: 1px solid rgba(229,194,127,.055);
+  background: linear-gradient(105deg, transparent 0 42%, rgba(106,176,208,.06) 47%, rgba(236,198,124,.12) 50%, rgba(106,176,208,.06) 53%, transparent 58% 100%);
+  transform: translateX(-32%);
+  opacity: .24;
+  animation: roof-reflection-sweep 7.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Refine the existing dedicated roof instrumentation so it reads as active
+   cockpit hardware without becoming visual noise. */
+.roof-instrumentation {
+  inset: 16% 8% 18%;
+  z-index: 3;
+}
+.roof-status-bank { top: 46%; }
+.roof-status-bank i { opacity: .38; }
+.roof-sensor-strip {
+  top: 43%;
+  border-color: rgba(121,181,211,.14);
+  background: rgba(2,8,14,.50);
+}
+.roof-micro-panel {
+  top: 2%;
+  height: 31%;
+  border-color: rgba(120,180,210,.13);
+  background: linear-gradient(180deg,rgba(11,27,40,.70),rgba(3,10,17,.48));
+  box-shadow: inset 0 0 13px rgba(86,151,181,.06), 0 3px 8px rgba(0,0,0,.13);
+}
+.roof-center-scan { bottom: 1%; height: 23%; }
+
+@keyframes roof-light-breathe {
+  0%,100% { opacity:.40; filter:brightness(.82); }
+  50% { opacity:.78; filter:brightness(1.12); }
+}
+@keyframes roof-node-blink {
+  0%,64%,100% { opacity:.22; transform:scale(.82); }
+  68%,74% { opacity:.92; transform:scale(1); }
+  78%,86% { opacity:.35; transform:scale(.9); }
+  90%,94% { opacity:.72; transform:scale(1); }
+}
+@keyframes roof-reflection-sweep {
+  0%,12% { transform:translateX(-32%); opacity:.08; }
+  48%,58% { opacity:.40; }
+  88%,100% { transform:translateX(32%); opacity:.07; }
+}
+
+@media (max-width:700px) {
+  .roof-structure-detail { inset:8% 4% 10%; }
+  .roof-light-rail { width:14%; }
+  .roof-rib-left { left:24%; }
+  .roof-rib-right { right:24%; }
+  .roof-service-node { width:3px; height:3px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .roof-light-rail,
+  .roof-service-node,
+  .cockpit-roof::after { animation:none !important; }
+}
