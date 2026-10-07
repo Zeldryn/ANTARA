@@ -704,12 +704,15 @@ const mission = document.getElementById("mission");
 const launchButton = document.getElementById("launch-button");
 const earthPreviousButton = document.getElementById("earth-prev-planet");
 const marsPreviousButton = document.getElementById("mars-prev-planet");
+const marsNextButton = document.getElementById("mars-next-planet");
 const venusPreviousButton = document.getElementById("venus-prev-planet");
 const venusNextButton = document.getElementById("venus-next-planet");
 const mercuryPreviousButton = document.getElementById("mercury-prev-planet");
 const mercuryNextButton = document.getElementById("mercury-next-planet");
 const sunPreviousButton = document.getElementById("sun-prev-object");
 const sunNextButton = document.getElementById("sun-next-object");
+const jupiterPreviousButton = document.getElementById("jupiter-prev-planet");
+const jupiterNextButton = document.getElementById("jupiter-next-planet");
 const audioToggle = document.getElementById("audio-toggle");
 const audioLabel = document.getElementById("audio-label");
 const announcement = document.getElementById("announcement");
@@ -724,6 +727,7 @@ const mars = new MarsScene();
 const mercury = new MercuryScene();
 const sun = new SunScene();
 const venus = new VenusScene();
+const jupiter = new JupiterScene();
 let phase = "idle";
 let elapsed = 0;
 let previousFrame = 0;
@@ -732,6 +736,34 @@ let activeStatus = -1;
 let activeDialogue = -1;
 let activeFlightPhase = "idle";
 let earthHandoffStarted = false;
+let planetTransitionLocked = false;
+let activePlanetNavButton = null;
+
+function beginPlanetTransition(expectedPhase, transitionPhase, triggerButton = null) {
+  if (planetTransitionLocked || phase !== expectedPhase) return false;
+  planetTransitionLocked = true;
+  phase = transitionPhase;
+  mission.classList.add("is-planet-transitioning");
+  activePlanetNavButton = triggerButton;
+  if (triggerButton) {
+    triggerButton.classList.add("is-nav-pressed");
+    triggerButton.setAttribute("aria-busy", "true");
+    requestAnimationFrame(() => requestAnimationFrame(() => triggerButton.classList.remove("is-nav-pressed")));
+  }
+  return true;
+}
+
+function finishPlanetTransition(nextPhase) {
+  phase = nextPhase;
+  planetTransitionLocked = false;
+  mission.classList.remove("is-planet-transitioning");
+  if (activePlanetNavButton) activePlanetNavButton.removeAttribute("aria-busy");
+  activePlanetNavButton = null;
+}
+
+function abortPlanetTransition(fallbackPhase) {
+  finishPlanetTransition(fallbackPhase);
+}
 const introPanel = document.querySelector(".intro");
 
 function setExperienceState(state) {
@@ -869,14 +901,14 @@ launchButton.addEventListener("click", () => {
 });
 
 function travelToVenus() {
-  if (phase !== "earth" || earth.exploring) return;
+  if (earth.exploring || !beginPlanetTransition("earth", "venus-transition", document.getElementById("earth-prev-planet"))) return;
   setExperienceState("planet");
-  phase = "venus-transition";
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU VENUS";
   announcement.textContent = "Meninggalkan Bumi. Kamera beralih ke kiri menuju Venus.";
 
-  // Reuse VenusScene's fully resolved surface before the existing travel timeline
-  // begins. The movement, direction, camera pan, and duration stay unchanged.
+  // Neighbor preloading happens before the next click path, so Venus -> Mercury
+  // never has to build Mercury synchronously after input.
+  mercury.prepare();
   venus.prepare().then(() => {
     if (phase !== "venus-transition") return;
     earth.setVenusTravelSurface(venus.surface);
@@ -885,135 +917,123 @@ function travelToVenus() {
       onReveal: () => {
         if (phase !== "venus-transition") return;
         venus.start({ settled: true });
+        mercury.prepare();
       },
       onComplete: () => {
         if (phase !== "venus-transition") return;
         earth.stop();
         mission.classList.remove("is-earth");
         mission.classList.add("is-venus");
-        phase = "venus";
+        finishPlanetTransition("venus");
         if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT VENUS";
         announcement.textContent = "Tiba di Venus.";
       }
     });
-  });
+  }).catch(() => abortPlanetTransition("earth"));
 }
 
 function travelVenusToMercury() {
-  if (phase !== "venus" || venus.exploring) return;
+  if (venus.exploring || !beginPlanetTransition("venus", "venus-mercury-transition", venusPreviousButton)) return;
   setExperienceState("planet");
-  phase = "venus-mercury-transition";
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU MERKURIUS";
   announcement.textContent = "Meninggalkan Venus. Kamera bergeser menuju Merkurius.";
 
-  mercury.prepare().then(() => {
-    if (phase !== "venus-mercury-transition") return;
-    mercury.setVenusTravelSurface(venus.surface);
-    sound.travel(reducedMotion.matches ? 0.4 : 6.2);
-    mercury.beginTravelFromVenus({
-      venusRotation: venus.renderedRotation,
-      onCovered: () => {
-        if (phase === "venus-mercury-transition") venus.stop();
-      },
-      onComplete: () => {
-        if (phase !== "venus-mercury-transition") return;
-        mission.classList.remove("is-venus");
-        mission.classList.add("is-mercury");
-        phase = "mercury";
-        if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT MERKURIUS";
-        announcement.textContent = "Tiba di Merkurius, planet terkecil dan terdekat dari Matahari.";
-      }
-    });
+  // Mercury is precompiled during launch and again while Venus is active.
+  // The click path therefore starts the cinematic immediately.
+  mercury.setVenusTravelSurface(venus.surface);
+  sound.travel(reducedMotion.matches ? 0.4 : 6.2);
+  mercury.beginTravelFromVenus({
+    venusRotation: venus.renderedRotation,
+    onCovered: () => {
+      if (phase === "venus-mercury-transition") venus.stop();
+    },
+    onComplete: () => {
+      if (phase !== "venus-mercury-transition") return;
+      mission.classList.remove("is-venus");
+      mission.classList.add("is-mercury");
+      finishPlanetTransition("mercury");
+      sun.prepare();
+      if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT MERKURIUS";
+      announcement.textContent = "Tiba di Merkurius, planet terkecil dan terdekat dari Matahari.";
+    }
   });
 }
 
 function travelMercuryToSun() {
-  if (phase !== "mercury" || mercury.exploring) return;
+  if (mercury.exploring || !beginPlanetTransition("mercury", "mercury-sun-transition", mercuryPreviousButton)) return;
   setExperienceState("planet");
-  phase = "mercury-sun-transition";
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU MATAHARI";
   announcement.textContent = "Meninggalkan Merkurius. Cahaya Matahari semakin kuat di depan.";
 
-  sun.prepare().then(() => {
-    if (phase !== "mercury-sun-transition") return;
-    sun.setMercuryTravelSurface(mercury.surface);
-    sound.travel(reducedMotion.matches ? 0.4 : 6.4);
-    sun.beginTravelFromMercury({
-      mercuryRotation: mercury.renderedRotation,
-      onCovered: () => {
-        if (phase === "mercury-sun-transition") mercury.stop();
-      },
-      onComplete: () => {
-        if (phase !== "mercury-sun-transition") return;
-        mission.classList.remove("is-mercury");
-        mission.classList.add("is-sun");
-        phase = "sun";
-        if (flightStatus) flightStatus.textContent = "TIBA DI DEKAT MATAHARI";
-        announcement.textContent = "Tiba di Matahari, bintang pusat Tata Surya.";
-      }
-    });
+  // Sun is already prepared while the mission is running; do not await it here.
+  sun.setMercuryTravelSurface(mercury.surface);
+  sound.travel(reducedMotion.matches ? 0.4 : 6.4);
+  sun.beginTravelFromMercury({
+    mercuryRotation: mercury.renderedRotation,
+    onCovered: () => {
+      if (phase === "mercury-sun-transition") mercury.stop();
+    },
+    onComplete: () => {
+      if (phase !== "mercury-sun-transition") return;
+      mission.classList.remove("is-mercury");
+      mission.classList.add("is-sun");
+      finishPlanetTransition("sun");
+      if (flightStatus) flightStatus.textContent = "TIBA DI DEKAT MATAHARI";
+      announcement.textContent = "Tiba di Matahari, bintang pusat Tata Surya.";
+    }
   });
 }
 
 function travelSunToMercury() {
-  if (phase !== "sun" || sun.exploring) return;
+  if (sun.exploring || !beginPlanetTransition("sun", "sun-mercury-transition", sunNextButton)) return;
   setExperienceState("planet");
-  phase = "sun-mercury-transition";
   if (flightStatus) flightStatus.textContent = "MENJAUH DARI MATAHARI";
   announcement.textContent = "Meninggalkan Matahari. Merkurius mulai terlihat di kejauhan.";
 
-  mercury.prepare().then(() => {
-    if (phase !== "sun-mercury-transition") return;
-    sun.setMercuryTravelSurface(mercury.surface);
-    sound.travel(reducedMotion.matches ? 0.4 : 6.4);
-    sun.beginTravelToMercury({
-      onComplete: () => {
-        if (phase !== "sun-mercury-transition") return;
-        mercury.start({ settled: true });
-        sun.stop();
-        mission.classList.remove("is-sun");
-        mission.classList.add("is-mercury");
-        phase = "mercury";
-        if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT MERKURIUS";
-        announcement.textContent = "Tiba di Merkurius.";
-      }
-    });
+  sun.setMercuryTravelSurface(mercury.surface);
+  sound.travel(reducedMotion.matches ? 0.4 : 6.4);
+  sun.beginTravelToMercury({
+    onComplete: () => {
+      if (phase !== "sun-mercury-transition") return;
+      mercury.start({ settled: true });
+      sun.stop();
+      mission.classList.remove("is-sun");
+      mission.classList.add("is-mercury");
+      finishPlanetTransition("mercury");
+      if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT MERKURIUS";
+      announcement.textContent = "Tiba di Merkurius.";
+    }
   });
 }
 
 function travelMercuryToVenus() {
-  if (phase !== "mercury" || mercury.exploring) return;
+  if (mercury.exploring || !beginPlanetTransition("mercury", "mercury-venus-transition", mercuryNextButton)) return;
   setExperienceState("planet");
-  phase = "mercury-venus-transition";
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU VENUS";
   announcement.textContent = "Meninggalkan Merkurius. Kamera bergeser menuju Venus.";
 
-  venus.prepare().then(() => {
-    if (phase !== "mercury-venus-transition") return;
-    mercury.setVenusTravelSurface(venus.surface);
-    sound.travel(reducedMotion.matches ? 0.4 : 6.2);
-    mercury.beginTravelToVenus({
-      onReveal: () => {
-        if (phase !== "mercury-venus-transition") return;
-        venus.start({ settled: true });
-      },
-      onComplete: () => {
-        if (phase !== "mercury-venus-transition") return;
-        mercury.stop();
-        mission.classList.remove("is-mercury");
-        mission.classList.add("is-venus");
-        phase = "venus";
-        if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT VENUS";
-        announcement.textContent = "Tiba di Venus.";
-      }
-    });
+  mercury.setVenusTravelSurface(venus.surface);
+  sound.travel(reducedMotion.matches ? 0.4 : 6.2);
+  mercury.beginTravelToVenus({
+    onReveal: () => {
+      if (phase !== "mercury-venus-transition") return;
+      venus.start({ settled: true });
+    },
+    onComplete: () => {
+      if (phase !== "mercury-venus-transition") return;
+      mercury.stop();
+      mission.classList.remove("is-mercury");
+      mission.classList.add("is-venus");
+      finishPlanetTransition("venus");
+      if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT VENUS";
+      announcement.textContent = "Tiba di Venus.";
+    }
   });
 }
 
 function travelVenusToEarth() {
-  if (phase !== "venus" || venus.exploring) return;
+  if (venus.exploring || !beginPlanetTransition("venus", "venus-earth-transition", venusNextButton)) return;
   setExperienceState("planet");
-  phase = "venus-earth-transition";
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU BUMI";
   announcement.textContent = "Meninggalkan Venus. Kembali menuju Bumi.";
   earth.setVenusTravelSurface(venus.surface);
@@ -1027,7 +1047,7 @@ function travelVenusToEarth() {
       if (phase !== "venus-earth-transition") return;
       mission.classList.remove("is-venus");
       mission.classList.add("is-earth");
-      phase = "earth";
+      finishPlanetTransition("earth");
       if (flightStatus) flightStatus.textContent = "KEMBALI DI ORBIT BUMI";
       announcement.textContent = "Kembali di Bumi.";
     }
@@ -1035,23 +1055,26 @@ function travelVenusToEarth() {
 }
 
 function travelToMars() {
-  if (phase !== "earth") return;
+  if (!beginPlanetTransition("earth", "mars-transition", document.getElementById("earth-next"))) return;
   setExperienceState("planet");
-  phase = "mars-transition";
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU PLANET MERAH";
   announcement.textContent = "Meninggalkan Bumi. Kamera beralih menuju Mars.";
+  // Jupiter is the next neighbor after Mars. Prepare it during this six-second
+  // journey instead of making the Mars -> Jupiter button pay the setup cost.
+  jupiter.prepare();
   sound.travel(reducedMotion.matches ? 0.4 : 6.2);
   earth.beginTravelToMars({
     onReveal: () => {
       if (phase !== "mars-transition") return;
       mars.start({ settled: true });
+      jupiter.prepare();
     },
     onComplete: () => {
       if (phase !== "mars-transition") return;
       earth.stop();
       mission.classList.remove("is-earth");
       mission.classList.add("is-mars");
-      phase = "mars";
+      finishPlanetTransition("mars");
       if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT MARS";
       announcement.textContent = "Tiba di Mars.";
     }
@@ -1059,9 +1082,8 @@ function travelToMars() {
 }
 
 function travelToEarth() {
-  if (phase !== "mars" || mars.exploring || mars.fullExplorationActive) return;
+  if (mars.exploring || mars.fullExplorationActive || !beginPlanetTransition("mars", "earth-transition", marsPreviousButton)) return;
   setExperienceState("planet");
-  phase = "earth-transition";
   if (flightStatus) flightStatus.textContent = "PERJALANAN KEMBALI KE BUMI";
   announcement.textContent = "Meninggalkan Mars. Kembali menuju Bumi.";
   sound.travel(reducedMotion.matches ? 0.4 : 6.2);
@@ -1074,9 +1096,52 @@ function travelToEarth() {
       if (phase !== "earth-transition") return;
       mission.classList.remove("is-mars");
       mission.classList.add("is-earth");
-      phase = "earth";
+      finishPlanetTransition("earth");
       if (flightStatus) flightStatus.textContent = "KEMBALI DI ORBIT BUMI";
       announcement.textContent = "Kembali di Bumi.";
+    }
+  });
+}
+
+function travelMarsToJupiter() {
+  if (mars.exploring || mars.fullExplorationActive || !beginPlanetTransition("mars", "mars-jupiter-transition", marsNextButton)) return;
+  setExperienceState("planet");
+  if (flightStatus) flightStatus.textContent = "MELINTASI SABUK ASTEROID";
+  announcement.textContent = "Meninggalkan Mars. Jalur menuju Jupiter melewati wilayah sabuk asteroid.";
+  sound.travel(reducedMotion.matches ? 0.5 : 8.2);
+  jupiter.beginTravelFromMars({
+    marsRotation: mars.renderedRotation,
+    onCovered: () => {
+      if (phase === "mars-jupiter-transition") mars.stop();
+    },
+    onComplete: () => {
+      if (phase !== "mars-jupiter-transition") return;
+      mission.classList.remove("is-mars");
+      mission.classList.add("is-jupiter");
+      finishPlanetTransition("jupiter");
+      if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT JUPITER";
+      announcement.textContent = "Tiba di Jupiter. Cincin debunya yang redup ikut mengorbit planet raksasa ini.";
+    }
+  });
+}
+
+function travelJupiterToMars() {
+  if (jupiter.exploring || !beginPlanetTransition("jupiter", "jupiter-mars-transition", jupiterPreviousButton)) return;
+  setExperienceState("planet");
+  if (flightStatus) flightStatus.textContent = "KEMBALI MELINTASI SABUK ASTEROID";
+  announcement.textContent = "Jupiter menjauh. Kembali menuju Mars melalui sabuk asteroid.";
+  sound.travel(reducedMotion.matches ? 0.5 : 8.2);
+  jupiter.beginTravelToMars({
+    onCovered: () => {},
+    onComplete: () => {
+      if (phase !== "jupiter-mars-transition") return;
+      mars.start({ settled: true });
+      jupiter.stop();
+      mission.classList.remove("is-jupiter");
+      mission.classList.add("is-mars");
+      finishPlanetTransition("mars");
+      if (flightStatus) flightStatus.textContent = "KEMBALI DI ORBIT MARS";
+      announcement.textContent = "Kembali di Mars.";
     }
   });
 }
@@ -1097,7 +1162,10 @@ function resetMission() {
   mercury.stop();
   sun.stop();
   venus.stop();
-  mission.classList.remove("is-earth", "is-mars", "is-venus", "is-mercury", "is-sun", "is-preparing", "is-planet-transitioning");
+  jupiter.stop();
+  planetTransitionLocked = false;
+  activePlanetNavButton = null;
+  mission.classList.remove("is-earth", "is-mars", "is-venus", "is-mercury", "is-sun", "is-jupiter", "is-preparing", "is-planet-transitioning");
   setExperienceState("home");
   launchButton.disabled = false;
   if (flightStatus) flightStatus.textContent = "SIAP • BUMI";
@@ -1111,6 +1179,8 @@ mercuryPreviousButton.addEventListener("click", travelMercuryToSun);
 mercuryNextButton.addEventListener("click", travelMercuryToVenus);
 sunNextButton.addEventListener("click", travelSunToMercury);
 marsPreviousButton.addEventListener("click", travelToEarth);
+marsNextButton.addEventListener("click", travelMarsToJupiter);
+jupiterPreviousButton.addEventListener("click", travelJupiterToMars);
 document.addEventListener("keydown", event => {
   if (phase === "mars" && mars.fullExplorationActive) {
     if (event.key === "Escape") { event.preventDefault(); mars.fullExploration?.exit(); }
@@ -1148,6 +1218,14 @@ document.addEventListener("keydown", event => {
     if (event.key === "Escape") { event.preventDefault(); venus.exitExploration(); }
     return;
   }
+  if (phase === "jupiter" && jupiter.exploring) {
+    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      jupiter.setExplorationStop(jupiter.topicIndex + (event.key === "ArrowRight" ? 1 : -1));
+    }
+    if (event.key === "Escape") { event.preventDefault(); jupiter.exitExploration(); }
+    return;
+  }
   if (event.key === "ArrowRight" && phase === "earth") travelToMars();
   if (event.key === "ArrowLeft" && phase === "earth") travelToVenus();
   if (event.key === "ArrowLeft" && phase === "venus" && !venus.exploring) travelVenusToMercury();
@@ -1156,6 +1234,8 @@ document.addEventListener("keydown", event => {
   if (event.key === "ArrowRight" && phase === "mercury" && !mercury.exploring) travelMercuryToVenus();
   if (event.key === "ArrowRight" && phase === "sun" && !sun.exploring) travelSunToMercury();
   if (event.key === "ArrowLeft" && phase === "mars" && !mars.exploring && !mars.fullExplorationActive) travelToEarth();
+  if (event.key === "ArrowRight" && phase === "mars" && !mars.exploring && !mars.fullExplorationActive) travelMarsToJupiter();
+  if (event.key === "ArrowLeft" && phase === "jupiter" && !jupiter.exploring) travelJupiterToMars();
   if (event.key === "Escape" && phase !== "idle") resetMission();
 });
 window.addEventListener("resize", () => flight.resize());
@@ -1186,12 +1266,12 @@ document.addEventListener("click", event => {
   if (control.dataset.uiSound === "manual") return;
 
   // These actions already have their own intentional audio and must not double-fire.
-  if (control === launchButton || control === earth.nextButton || control === earthPreviousButton || control === venusPreviousButton || control === venusNextButton || control === mercuryPreviousButton || control === mercuryNextButton || control === sunNextButton || control === marsPreviousButton || control === audioToggle) return;
+  if (control === launchButton || control === earth.nextButton || control === earthPreviousButton || control === venusPreviousButton || control === venusNextButton || control === mercuryPreviousButton || control === mercuryNextButton || control === sunNextButton || control === marsPreviousButton || control === marsNextButton || control === jupiterPreviousButton || control === audioToggle) return;
 
   sound.uiClick();
 }, true);
 
-for (const button of [launchButton, earth.nextButton, earthPreviousButton, venusPreviousButton, venusNextButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, mars.exploreButton, mars.fullExploration?.entryButton, audioToggle].filter(Boolean)) {
+for (const button of [launchButton, earth.nextButton, earthPreviousButton, venusPreviousButton, venusNextButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, marsNextButton, mars.exploreButton, mars.fullExploration?.entryButton, jupiterPreviousButton, jupiter.exploreButton, audioToggle].filter(Boolean)) {
   button.addEventListener("pointerenter", event => { if (event.pointerType === "mouse") sound.hover(); });
   button.addEventListener("focus", () => sound.hover());
 }

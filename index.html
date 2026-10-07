@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#091322">
-  <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, dan keajaiban Tata Surya.">
+  <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, Jupiter, dan keajaiban Tata Surya.">
   <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/orbit.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="mercury-scene.css">
   <link rel="stylesheet" href="sun-scene.css">
   <link rel="stylesheet" href="venus-scene.css">
+  <link rel="stylesheet" href="jupiter-scene.css">
   <script src="exploration-media.js" defer></script>
   <script src="earth-scene.js" defer></script>
   <script src="mars-scene.js" defer></script>
@@ -22,6 +23,7 @@
   <script src="mercury-scene.js" defer></script>
   <script src="sun-scene.js" defer></script>
   <script src="venus-scene.js" defer></script>
+  <script src="jupiter-scene.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -466,8 +468,8 @@
             </button>
             <button class="mars-full-explore-button" id="mars-full-explore-button" type="button">Eksplorasi Pengalaman Penuh</button>
           </div>
-          <button class="mars-planet-nav mars-planet-next" id="mars-next-planet" type="button" disabled aria-label="Planet selanjutnya belum tersedia">
-            <span><small>Berikutnya</small><strong>Planet selanjutnya</strong></span>
+          <button class="mars-planet-nav mars-planet-next" id="mars-next-planet" type="button" aria-label="Planet selanjutnya: Jupiter">
+            <span><small>Planet selanjutnya</small><strong>Jupiter</strong></span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
         </div>
@@ -600,6 +602,68 @@
       </section>
 
       <a class="mars-credit" href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Tekstur: Solar System Scope · CC BY 4.0</a>
+    </section>
+    <section class="jupiter-scene" id="jupiter-scene" aria-labelledby="jupiter-title" hidden>
+      <div class="jupiter-space-haze" aria-hidden="true"></div>
+      <div class="jupiter-viewport" id="jupiter-viewport" role="img" aria-label="Jupiter, planet terbesar di Tata Surya dengan pita awan, Bintik Merah Besar, dan cincin debu yang redup."></div>
+      <div class="jupiter-edge-shade" aria-hidden="true"></div>
+
+      <div class="jupiter-belt-label" id="jupiter-belt-label" aria-hidden="true">
+        <strong>SABUK ASTEROID</strong>
+        <span>Wilayah berbatu yang luas di antara orbit Mars dan Jupiter</span>
+      </div>
+      <div class="jupiter-ceres-label" id="jupiter-ceres-label" aria-hidden="true">
+        <strong>CERES · PLANET KATAI</strong>
+        <span>Objek terbesar di sabuk asteroid</span>
+      </div>
+
+      <div class="jupiter-caption">
+        <p class="eyebrow" aria-hidden="true"><span></span> RAKSASA GAS · PLANET KELIMA</p>
+        <h2 id="jupiter-title" tabindex="-1">Jupiter<span>.</span></h2>
+        <p class="jupiter-whisper">Raksasa Berpita dengan Badai yang Tak Pernah Benar-Benar Diam.</p>
+        <div class="jupiter-arrival-actions" role="group" aria-label="Navigasi planet">
+          <button class="jupiter-planet-nav jupiter-planet-prev" id="jupiter-prev-planet" type="button" aria-label="Planet sebelumnya: Mars">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+            <span><small>Planet sebelumnya</small><strong>Mars</strong></span>
+          </button>
+          <button class="jupiter-explore-button" id="jupiter-explore-button" type="button">
+            <span>Jelajahi Jupiter</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+          <button class="jupiter-planet-nav jupiter-planet-next" id="jupiter-next-planet" type="button" disabled aria-label="Saturnus belum tersedia">
+            <span><small>Berikutnya</small><strong>Saturnus · Segera</strong></span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="exploration-marker-media jupiter-context-media" id="jupiter-context-media" hidden></div>
+
+      <aside class="jupiter-exploration" id="jupiter-exploration" aria-labelledby="jupiter-topic-title" aria-live="polite" inert>
+        <div class="jupiter-exploration-topline">
+          <span class="jupiter-topic-kicker" id="jupiter-topic-kicker">IDENTITAS JUPITER</span>
+          <span class="jupiter-topic-count"><span id="jupiter-topic-current">01</span> / <span id="jupiter-topic-total">07</span></span>
+        </div>
+        <h3 id="jupiter-topic-title" tabindex="-1">Raksasa Tata Surya</h3>
+        <p class="jupiter-topic-subtitle" id="jupiter-topic-subtitle"></p>
+        <div class="jupiter-topic-scroll">
+          <p class="jupiter-topic-summary" id="jupiter-topic-summary"></p>
+          <ul class="jupiter-topic-facts" id="jupiter-topic-facts"></ul>
+        </div>
+        <a class="jupiter-topic-source" id="jupiter-topic-source" href="https://science.nasa.gov/jupiter/jupiter-facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science ↗</a>
+        <div class="jupiter-exploration-controls">
+          <button class="jupiter-topic-nav" id="jupiter-topic-prev" type="button" aria-label="Topik Jupiter sebelumnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+          </button>
+          <div class="jupiter-topic-progress" id="jupiter-topic-progress" aria-hidden="true"></div>
+          <button class="jupiter-topic-nav" id="jupiter-topic-next" type="button" aria-label="Topik Jupiter berikutnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+        <button class="jupiter-exploration-close return-panorama-button" id="jupiter-exploration-close" type="button">Kembali ke panorama Jupiter</button>
+      </aside>
+
+      <a class="jupiter-credit" href="https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/" target="_blank" rel="noopener noreferrer">Visual: ANTARA · referensi atmosfer NASA/Hubble</a>
     </section>
     <p class="sr-only" id="announcement" role="status" aria-live="polite"></p>
     <noscript><p class="noscript-note">Aktifkan JavaScript untuk memulai persiapan misi dan audio.</p></noscript>
