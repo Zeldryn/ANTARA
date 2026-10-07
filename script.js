@@ -744,12 +744,29 @@ let activeFlightPhase = "idle";
 let earthHandoffStarted = false;
 let planetTransitionLocked = false;
 let activePlanetNavButton = null;
+const CELESTIAL_NAV_ORDER = Object.freeze(["sun", "mercury", "venus", "earth", "mars", "asteroid", "jupiter", "saturn"]);
 
-function beginPlanetTransition(expectedPhase, transitionPhase, triggerButton = null) {
+function getCelestialDirection(from, to) {
+  const fromIndex = CELESTIAL_NAV_ORDER.indexOf(from);
+  const toIndex = CELESTIAL_NAV_ORDER.indexOf(to);
+  if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) throw new Error(`Invalid celestial transition: ${from} -> ${to}`);
+  return toIndex > fromIndex ? 1 : -1;
+}
+
+window.AntaraNavigation = Object.freeze({
+  order: CELESTIAL_NAV_ORDER,
+  direction: getCelestialDirection
+});
+
+function beginPlanetTransition(expectedPhase, transitionPhase, triggerButton = null, destinationPhase = null) {
   if (planetTransitionLocked || phase !== expectedPhase) return false;
   planetTransitionLocked = true;
   phase = transitionPhase;
   mission.classList.add("is-planet-transitioning");
+  if (destinationPhase) {
+    const direction = getCelestialDirection(expectedPhase, destinationPhase);
+    mission.dataset.transitionDirection = direction > 0 ? "next" : "previous";
+  }
   activePlanetNavButton = triggerButton;
   if (triggerButton) {
     triggerButton.classList.add("is-nav-pressed");
@@ -763,6 +780,7 @@ function finishPlanetTransition(nextPhase) {
   phase = nextPhase;
   planetTransitionLocked = false;
   mission.classList.remove("is-planet-transitioning");
+  delete mission.dataset.transitionDirection;
   if (activePlanetNavButton) activePlanetNavButton.removeAttribute("aria-busy");
   activePlanetNavButton = null;
 
@@ -919,7 +937,7 @@ launchButton.addEventListener("click", () => {
 });
 
 function travelToVenus() {
-  if (earth.exploring || !beginPlanetTransition("earth", "venus-transition", document.getElementById("earth-prev-planet"))) return;
+  if (earth.exploring || !beginPlanetTransition("earth", "venus-transition", document.getElementById("earth-prev-planet"), "venus")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU VENUS";
   announcement.textContent = "Meninggalkan Bumi. Kamera beralih ke kiri menuju Venus.";
@@ -951,7 +969,7 @@ function travelToVenus() {
 }
 
 function travelVenusToMercury() {
-  if (venus.exploring || !beginPlanetTransition("venus", "venus-mercury-transition", venusPreviousButton)) return;
+  if (venus.exploring || !beginPlanetTransition("venus", "venus-mercury-transition", venusPreviousButton, "mercury")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU MERKURIUS";
   announcement.textContent = "Meninggalkan Venus. Kamera bergeser menuju Merkurius.";
@@ -978,7 +996,7 @@ function travelVenusToMercury() {
 }
 
 function travelMercuryToSun() {
-  if (mercury.exploring || !beginPlanetTransition("mercury", "mercury-sun-transition", mercuryPreviousButton)) return;
+  if (mercury.exploring || !beginPlanetTransition("mercury", "mercury-sun-transition", mercuryPreviousButton, "sun")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU MATAHARI";
   announcement.textContent = "Meninggalkan Merkurius. Cahaya Matahari semakin kuat di depan.";
@@ -1003,7 +1021,7 @@ function travelMercuryToSun() {
 }
 
 function travelSunToMercury() {
-  if (sun.exploring || !beginPlanetTransition("sun", "sun-mercury-transition", sunNextButton)) return;
+  if (sun.exploring || !beginPlanetTransition("sun", "sun-mercury-transition", sunNextButton, "mercury")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "MENJAUH DARI MATAHARI";
   announcement.textContent = "Meninggalkan Matahari. Merkurius mulai terlihat di kejauhan.";
@@ -1025,7 +1043,7 @@ function travelSunToMercury() {
 }
 
 function travelMercuryToVenus() {
-  if (mercury.exploring || !beginPlanetTransition("mercury", "mercury-venus-transition", mercuryNextButton)) return;
+  if (mercury.exploring || !beginPlanetTransition("mercury", "mercury-venus-transition", mercuryNextButton, "venus")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU VENUS";
   announcement.textContent = "Meninggalkan Merkurius. Kamera bergeser menuju Venus.";
@@ -1050,7 +1068,7 @@ function travelMercuryToVenus() {
 }
 
 function travelVenusToEarth() {
-  if (venus.exploring || !beginPlanetTransition("venus", "venus-earth-transition", venusNextButton)) return;
+  if (venus.exploring || !beginPlanetTransition("venus", "venus-earth-transition", venusNextButton, "earth")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU BUMI";
   announcement.textContent = "Meninggalkan Venus. Kembali menuju Bumi.";
@@ -1073,7 +1091,7 @@ function travelVenusToEarth() {
 }
 
 function travelToMars() {
-  if (!beginPlanetTransition("earth", "mars-transition", document.getElementById("earth-next"))) return;
+  if (!beginPlanetTransition("earth", "mars-transition", document.getElementById("earth-next"), "mars")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU PLANET MERAH";
   announcement.textContent = "Meninggalkan Bumi. Kamera beralih menuju Mars.";
@@ -1102,7 +1120,7 @@ function travelToMars() {
 }
 
 function travelToEarth() {
-  if (mars.exploring || mars.fullExplorationActive || !beginPlanetTransition("mars", "earth-transition", marsPreviousButton)) return;
+  if (mars.exploring || mars.fullExplorationActive || !beginPlanetTransition("mars", "earth-transition", marsPreviousButton, "earth")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN KEMBALI KE BUMI";
   announcement.textContent = "Meninggalkan Mars. Kembali menuju Bumi.";
@@ -1124,7 +1142,7 @@ function travelToEarth() {
 }
 
 function travelMarsToAsteroid() {
-  if (mars.exploring || mars.fullExplorationActive || !beginPlanetTransition("mars", "mars-asteroid-transition", marsNextButton)) return;
+  if (mars.exploring || mars.fullExplorationActive || !beginPlanetTransition("mars", "mars-asteroid-transition", marsNextButton, "asteroid")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU SABUK ASTEROID";
   announcement.textContent = "Meninggalkan Mars. Memasuki wilayah sabuk asteroid utama.";
@@ -1132,6 +1150,7 @@ function travelMarsToAsteroid() {
   jupiter.prepare();
   sound.travel(reducedMotion.matches ? 0.5 : 7.0);
   asteroid.beginTravelFromMars({
+    direction: getCelestialDirection("mars", "asteroid"),
     marsRotation: mars.renderedRotation,
     onCovered: () => {
       if (phase === "mars-asteroid-transition") mars.stop();
@@ -1148,12 +1167,13 @@ function travelMarsToAsteroid() {
 }
 
 function travelAsteroidToMars() {
-  if (asteroid.exploring || !beginPlanetTransition("asteroid", "asteroid-mars-transition", asteroidPreviousButton)) return;
+  if (asteroid.exploring || !beginPlanetTransition("asteroid", "asteroid-mars-transition", asteroidPreviousButton, "mars")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "KEMBALI MENUJU MARS";
   announcement.textContent = "Meninggalkan Sabuk Asteroid. Mars mulai terlihat di bagian dalam Tata Surya.";
   sound.travel(reducedMotion.matches ? 0.5 : 7.0);
   asteroid.beginTravelToMars({
+    direction: getCelestialDirection("asteroid", "mars"),
     onComplete: () => {
       if (phase !== "asteroid-mars-transition") return;
       mars.start({ settled: true });
@@ -1168,7 +1188,7 @@ function travelAsteroidToMars() {
 }
 
 function travelAsteroidToJupiter() {
-  if (asteroid.exploring || !beginPlanetTransition("asteroid", "asteroid-jupiter-transition", asteroidNextButton)) return;
+  if (asteroid.exploring || !beginPlanetTransition("asteroid", "asteroid-jupiter-transition", asteroidNextButton, "jupiter")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "MENINGGALKAN SABUK ASTEROID";
   announcement.textContent = "Benda-benda berbatu mulai menipis. Jupiter muncul jauh di depan.";
@@ -1176,6 +1196,7 @@ function travelAsteroidToJupiter() {
   saturn.prepare();
   sound.travel(reducedMotion.matches ? 0.5 : 7.8);
   asteroid.beginTravelToJupiter({
+    direction: getCelestialDirection("asteroid", "jupiter"),
     onComplete: () => {
       if (phase !== "asteroid-jupiter-transition") return;
       jupiter.start({ settled: true });
@@ -1190,13 +1211,14 @@ function travelAsteroidToJupiter() {
 }
 
 function travelJupiterToAsteroid() {
-  if (jupiter.exploring || !beginPlanetTransition("jupiter", "jupiter-asteroid-transition", jupiterPreviousButton)) return;
+  if (jupiter.exploring || !beginPlanetTransition("jupiter", "jupiter-asteroid-transition", jupiterPreviousButton, "asteroid")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "MENUJU SABUK ASTEROID";
   announcement.textContent = "Jupiter menjauh. Memasuki kembali wilayah Sabuk Asteroid.";
   asteroid.prepare();
   sound.travel(reducedMotion.matches ? 0.5 : 7.8);
   asteroid.beginTravelFromJupiter({
+    direction: getCelestialDirection("jupiter", "asteroid"),
     onCovered: () => {
       if (phase === "jupiter-asteroid-transition") jupiter.stop();
     },
@@ -1212,13 +1234,14 @@ function travelJupiterToAsteroid() {
 }
 
 function travelJupiterToSaturn() {
-  if (jupiter.exploring || !beginPlanetTransition("jupiter", "jupiter-saturn-transition", jupiterNextButton)) return;
+  if (jupiter.exploring || !beginPlanetTransition("jupiter", "jupiter-saturn-transition", jupiterNextButton, "saturn")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU SATURNUS";
   announcement.textContent = "Meninggalkan Jupiter. Saturnus dan sistem cincinnya mulai muncul jauh di depan.";
   saturn.prepare();
   sound.travel(reducedMotion.matches ? 0.5 : 8.0);
   saturn.beginTravelFromJupiter({
+    direction: getCelestialDirection("jupiter", "saturn"),
     jupiterRotation: jupiter.renderedRotation,
     onCovered: () => { if (phase === "jupiter-saturn-transition") jupiter.stop(); },
     onComplete: () => {
@@ -1233,12 +1256,13 @@ function travelJupiterToSaturn() {
 }
 
 function travelSaturnToJupiter() {
-  if (saturn.exploring || !beginPlanetTransition("saturn", "saturn-jupiter-transition", saturnPreviousButton)) return;
+  if (saturn.exploring || !beginPlanetTransition("saturn", "saturn-jupiter-transition", saturnPreviousButton, "jupiter")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "KEMBALI MENUJU JUPITER";
   announcement.textContent = "Saturnus menjauh. Jupiter kembali muncul di bagian dalam Tata Surya.";
   sound.travel(reducedMotion.matches ? 0.5 : 8.0);
   saturn.beginTravelToJupiter({
+    direction: getCelestialDirection("saturn", "jupiter"),
     onComplete: () => {
       if (phase !== "saturn-jupiter-transition") return;
       jupiter.start({ settled: true });

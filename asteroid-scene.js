@@ -98,6 +98,16 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
   }
 ]);
 
+const ASTEROID_INFO_VIEWS = Object.freeze([
+  { x:0, y:0, z:8.4, lookX:0, lookY:0, marker:false },
+  { x:-.45, y:.05, z:9.15, lookX:0, lookY:0, marker:false },
+  { x:.55, y:-.12, z:8.75, lookX:.25, lookY:0, marker:false },
+  { x:2.85, y:1.05, z:7.15, lookX:2.75, lookY:.95, marker:true },
+  { x:-1.15, y:-.35, z:6.95, lookX:-.8, lookY:-.25, marker:false },
+  { x:.35, y:.18, z:8.7, lookX:.15, lookY:.1, marker:false },
+  { x:-.25, y:.05, z:8.25, lookX:0, lookY:0, marker:false }
+]);
+
 window.AsteroidBeltScene = class AsteroidBeltScene {
   constructor() {
     this.element = document.getElementById("asteroid-scene");
@@ -119,6 +129,7 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     this.topicProgress = document.getElementById("asteroid-topic-progress");
     this.contextMedia = document.getElementById("asteroid-context-media");
     this.ceresBadge = document.getElementById("asteroid-ceres-badge");
+    this.focusReticle = document.getElementById("asteroid-focus-reticle");
     this.motion = matchMedia("(prefers-reduced-motion: reduce)");
     this.loading = null;
     this.active = false;
@@ -131,6 +142,7 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     this.height = 1;
     this.mobile = false;
     this.travelMode = null;
+    this.travelDirection = 1;
     this.travelStartedAt = 0;
     this.travelDuration = 7.4;
     this.travelCallbacks = {};
@@ -138,6 +150,8 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     this.travelCompleteFired = false;
     this.pointer = { x: 0, y: 0 };
     this.cameraOffset = { x: 0, y: 0 };
+    this.focusCamera = { x:0, y:0, z:8.4, lookX:0, lookY:0 };
+    this.focusTarget = { ...this.focusCamera };
     this.seed = 0x41535452;
     this.caption.inert = true;
     this.exploration.inert = true;
@@ -164,6 +178,15 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
   clamp(v, a=0, b=1) { return Math.min(b, Math.max(a, v)); }
   smooth(a,b,v) { const t=this.clamp((v-a)/(b-a)); return t*t*(3-2*t); }
   ease(v) { return 1-Math.pow(1-this.clamp(v),3); }
+  travelSmooth(v) { const t=this.clamp(v); return t*t*t*(t*(t*6-15)+10); }
+  travelState() {
+    const elapsed=this.time-this.travelStartedAt;
+    const progress=this.travelSmooth(elapsed/this.travelDuration);
+    const pullback=this.travelSmooth(progress/.31);
+    const pan=this.travelSmooth((progress-.23)/.39);
+    const approach=this.travelSmooth((progress-.58)/.42);
+    return {elapsed,progress,pullback,pan,approach};
+  }
   rand() { this.seed = (1664525*this.seed + 1013904223) >>> 0; return this.seed / 4294967296; }
 
   loadImage(src) {
@@ -312,6 +335,8 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     const ceresRough=this.makeTexture(THREE,images.get(`${ASTEROID_TEXTURE_ROOT}ceres-roughness.png`));
     this.ceresMaterial=new THREE.MeshStandardMaterial({map:ceresMap,bumpMap:ceresBump,bumpScale:.055,roughnessMap:ceresRough,roughness:.94,metalness:0,transparent:true});
     this.ceres=new THREE.Mesh(new THREE.SphereGeometry(1,72,48),this.ceresMaterial); this.ceres.position.set(4.25,2.05,-2.8); this.ceres.scale.setScalar(.56); this.fieldGroup.add(this.ceres);
+    this.vesta=new THREE.Mesh(this.geometries[2],this.materials[2]);this.vesta.position.set(2.25,-1.42,-2.55);this.vesta.scale.setScalar(.43);this.vesta.rotation.set(.8,1.45,.25);this.fieldGroup.add(this.vesta);
+    this.ceresWorld=new THREE.Vector3();this.ceresProjected=new THREE.Vector3();
 
     const marsMap=this.makeTexture(THREE,images.get(ASTEROID_MARS_TEXTURE),{srgb:true});
     const marsMat=new THREE.MeshStandardMaterial({map:marsMap,roughness:.86,transparent:true,opacity:1});
@@ -366,6 +391,7 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     });
     this.featured.forEach((item,i)=>{item.mesh.rotation.x+=item.speed.x*delta;item.mesh.rotation.y+=item.speed.y*delta;item.mesh.rotation.z+=item.speed.z*delta;item.mesh.position.y+=Math.sin(this.time*.13+i)*.00045;});
     this.ceres.rotation.y+=delta*.055; this.ceres.rotation.x=.08+Math.sin(this.time*.07)*.015;
+    if(this.vesta){this.vesta.rotation.y+=delta*.041;this.vesta.rotation.x+=delta*.013;}
   }
 
   start({settled=false}={}) {
@@ -377,22 +403,30 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     this.active=false;this.exploring=false;this.travelMode=null;cancelAnimationFrame(this.frame);this.frame=null;this.element.classList.remove("is-leaving","is-exploring");this.caption.classList.remove("is-visible");this.caption.inert=true;this.exploration.inert=true;this.element.hidden=true;this.element.style.opacity="0";window.ExplorationMedia?.closeLightbox?.({restoreFocus:false});
   }
 
-  setExplorationStop(index,{announce=true}={}) {
+  setExplorationStop(index,{announce=true,immediate=false}={}) {
+    const previous=this.topicIndex;
     const next=Math.max(0,Math.min(ASTEROID_EXPLORATION_STOPS.length-1,index));const stop=ASTEROID_EXPLORATION_STOPS[next];this.topicIndex=next;
+    const view=ASTEROID_INFO_VIEWS[next]||ASTEROID_INFO_VIEWS[0];this.focusTarget={x:view.x,y:view.y,z:view.z,lookX:view.lookX,lookY:view.lookY};
+    if(immediate||this.motion.matches){this.focusCamera={...this.focusTarget};}
+    if(!immediate&&this.exploring){this.exploration.classList.remove("is-switching-next","is-switching-prev");void this.exploration.offsetWidth;this.exploration.classList.add(next>=previous?"is-switching-next":"is-switching-prev");clearTimeout(this._topicSwitchTimer);this._topicSwitchTimer=setTimeout(()=>this.exploration.classList.remove("is-switching-next","is-switching-prev"),560);}
+    this.focusReticle?.classList.remove("is-marker-visible");
     this.topicKicker.textContent=stop.kicker;this.topicTitle.textContent=stop.title;this.topicSubtitle.textContent=stop.subtitle;this.topicSummary.textContent=stop.summary;this.topicFacts.replaceChildren(...stop.facts.map(text=>{const li=document.createElement("li");li.textContent=text;return li;}));this.topicSource.href=stop.source;this.topicCurrent.textContent=String(next+1).padStart(2,"0");this.topicPrev.disabled=next===0;this.topicNext.disabled=next===ASTEROID_EXPLORATION_STOPS.length-1;Array.from(this.topicProgress.children).forEach((bar,i)=>bar.classList.toggle("is-active",i===next));window.ExplorationMedia?.render?.("asteroid",stop,this.contextMedia);
     if(announce&&this.exploring)document.getElementById("announcement").textContent=`Eksplorasi Sabuk Asteroid ${next+1} dari ${ASTEROID_EXPLORATION_STOPS.length}: ${stop.title}.`;
   }
 
   enterExploration() {
-    if(!this.active||this.exploring||this.travelMode)return;this.exploring=true;this.element.classList.add("is-exploring");this.caption.inert=true;this.exploration.inert=false;document.getElementById("announcement").textContent=`Mode eksplorasi Sabuk Asteroid dimulai. ${ASTEROID_EXPLORATION_STOPS[this.topicIndex].title}.`;requestAnimationFrame(()=>this.topicTitle.focus({preventScroll:true}));
+    if(!this.active||this.exploring||this.travelMode)return;this.exploring=true;this.element.classList.add("is-exploring");this.caption.inert=true;this.exploration.inert=false;const view=ASTEROID_INFO_VIEWS[this.topicIndex]||ASTEROID_INFO_VIEWS[0];this.focusTarget={x:view.x,y:view.y,z:view.z,lookX:view.lookX,lookY:view.lookY};if(!this.frame){this.previous=performance.now();this.tick(this.previous);}document.getElementById("announcement").textContent=`Mode eksplorasi Sabuk Asteroid dimulai. ${ASTEROID_EXPLORATION_STOPS[this.topicIndex].title}.`;requestAnimationFrame(()=>this.topicTitle.focus({preventScroll:true}));
   }
 
   exitExploration() {
-    if(!this.exploring)return;this.exploring=false;this.element.classList.remove("is-exploring");this.exploration.inert=true;this.caption.inert=false;window.ExplorationMedia?.closeLightbox?.({restoreFocus:false});document.getElementById("announcement").textContent="Kembali ke panorama Sabuk Asteroid.";requestAnimationFrame(()=>this.exploreButton.focus({preventScroll:true}));
+    if(!this.exploring)return;this.exploring=false;this.focusTarget={x:0,y:0,z:8.4,lookX:0,lookY:0};this.focusReticle?.classList.remove("is-marker-visible");this.element.classList.remove("is-exploring");this.exploration.inert=true;this.caption.inert=false;window.ExplorationMedia?.closeLightbox?.({restoreFocus:false});document.getElementById("announcement").textContent="Kembali ke panorama Sabuk Asteroid.";requestAnimationFrame(()=>this.exploreButton.focus({preventScroll:true}));
   }
 
-  beginTravel(mode,{onCovered,onComplete,marsRotation=.7}={}) {
-    if(this.travelMode)return;this.active=true;this.exploring=false;this.travelMode=mode;this.travelCallbacks={onCovered,onComplete};this.travelStartedAt=0;this.time=0;this.travelDuration=this.motion.matches?.6:(mode.includes("jupiter")?7.8:7.0);this.travelCoveredFired=false;this.travelCompleteFired=false;this.element.hidden=false;this.element.style.opacity="1";this.element.classList.add("is-leaving");this.element.classList.remove("is-exploring");this.caption.classList.remove("is-visible");this.caption.inert=true;this.exploration.inert=true;this.prepare();this.resize();if(this.travelMars)this.travelMars.rotation.y=marsRotation;cancelAnimationFrame(this.frame);this.previous=performance.now();this.tick(this.previous);
+  beginTravel(mode,{onCovered,onComplete,marsRotation=.7,direction=1}={}) {
+    if(this.travelMode)return;
+    this.active=true;this.exploring=false;this.travelMode=mode;this.travelDirection=direction>=0?1:-1;
+    this.travelCallbacks={onCovered,onComplete};this.travelStartedAt=0;this.time=0;this.travelDuration=this.motion.matches?.6:(mode.includes("jupiter")?7.8:7.0);
+    this.travelCoveredFired=false;this.travelCompleteFired=false;this.element.hidden=false;this.element.style.opacity="1";this.element.classList.add("is-leaving");this.element.classList.remove("is-exploring");this.caption.classList.remove("is-visible");this.caption.inert=true;this.exploration.inert=true;this.prepare();this.resize();if(this.travelMars)this.travelMars.rotation.y=marsRotation;cancelAnimationFrame(this.frame);this.previous=performance.now();this.tick(this.previous);
   }
   beginTravelFromMars(options={}){this.beginTravel("from-mars",options);}
   beginTravelToMars(options={}){this.beginTravel("to-mars",options);}
@@ -400,45 +434,112 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
   beginTravelFromJupiter(options={}){this.beginTravel("from-jupiter",options);}
 
   tick(now) {
-    this.frame=null;if(!this.active||document.hidden)return;const delta=Math.min((now-this.previous)/1000,.12);this.previous=now;this.time+=delta;const damp=1-Math.exp(-delta*2.15);this.cameraOffset.x+=(this.pointer.x-this.cameraOffset.x)*damp;this.cameraOffset.y+=(this.pointer.y-this.cameraOffset.y)*damp;this.updateAsteroids(delta,this.travelMode?this.currentBeltVisibility():1);this.render();this.frame=requestAnimationFrame(t=>this.tick(t));
+    this.frame=null;if(!this.active||document.hidden)return;const delta=Math.min((now-this.previous)/1000,.12);this.previous=now;this.time+=delta;const damp=1-Math.exp(-delta*2.15);this.cameraOffset.x+=(this.pointer.x-this.cameraOffset.x)*damp;this.cameraOffset.y+=(this.pointer.y-this.cameraOffset.y)*damp;const focusEase=this.motion.matches?1:1-Math.exp(-delta*2.1);for(const key of ["x","y","z","lookX","lookY"])this.focusCamera[key]+=(this.focusTarget[key]-this.focusCamera[key])*focusEase;this.updateAsteroids(delta,this.travelMode?this.currentBeltVisibility():1);this.render();this.frame=requestAnimationFrame(t=>this.tick(t));
   }
 
   currentBeltVisibility() {
-    if(!this.travelMode)return 1;const raw=this.clamp((this.time-this.travelStartedAt)/this.travelDuration);if(this.travelMode==="from-mars")return this.smooth(.14,.68,raw);if(this.travelMode==="to-mars")return 1-this.smooth(.28,.80,raw);if(this.travelMode==="to-jupiter")return 1-this.smooth(.34,.83,raw);if(this.travelMode==="from-jupiter")return this.smooth(.18,.72,raw);return 1;
+    if(!this.travelMode)return 1;
+    const state=this.travelState();
+    const fieldIsDestination=this.travelMode==="from-mars"||this.travelMode==="from-jupiter";
+    return fieldIsDestination ? this.travelSmooth((state.progress-.18)/.30) : 1-this.travelSmooth((state.progress-.70)/.25);
   }
 
   render() { if(this.travelMode)this.renderTravel(); else this.renderPanorama(); }
 
   renderPanorama() {
     if(!this.renderer&&!this.ctx)return;
-    const bx=this.mobile?0:this.cameraOffset.x*.28, by=this.mobile?0:-this.cameraOffset.y*.18;
-    if(this.renderer){this.travelMarsGroup.visible=false;this.travelJupiterGroup.visible=false;this.fieldGroup.visible=true;this.fieldGroup.position.set(Math.sin(this.time*.035)*.13,Math.cos(this.time*.028)*.07,0);this.fieldGroup.rotation.y=Math.sin(this.time*.018)*.012;this.camera.position.set(bx,by,8.4);this.camera.lookAt(0,0,-2.3);this.stars.rotation.y=this.time*.0009;this.renderer.render(this.scene,this.camera);}else this.drawCanvasPanorama();
+    const focus=this.exploring?this.focusCamera:{x:0,y:0,z:8.4,lookX:0,lookY:0};
+    const bx=this.mobile?focus.x:focus.x+this.cameraOffset.x*.28, by=this.mobile?focus.y:focus.y-this.cameraOffset.y*.18;
+    if(this.renderer){this.travelMarsGroup.visible=false;this.travelJupiterGroup.visible=false;this.fieldGroup.visible=true;this.fieldGroup.position.set(Math.sin(this.time*.035)*.13,Math.cos(this.time*.028)*.07,0);this.fieldGroup.rotation.y=Math.sin(this.time*.018)*.012;this.camera.position.set(bx,by,focus.z);this.camera.lookAt(focus.lookX,focus.lookY,-2.3);this.stars.position.x=0;this.stars.rotation.y=this.time*.0009;this.renderer.render(this.scene,this.camera);this.updateCeresFocusMarker();}else{this.drawCanvasPanorama();this.focusReticle?.classList.remove("is-marker-visible");}
     if(this.ceresBadge){const alpha=.62+.2*Math.sin(this.time*.32);this.ceresBadge.style.opacity=String(alpha);}
+  }
+
+  updateCeresFocusMarker(){
+    const view=ASTEROID_INFO_VIEWS[this.topicIndex]||ASTEROID_INFO_VIEWS[0];
+    if(!this.focusReticle||!this.exploring||!view.marker||!this.renderer||!this.ceres){this.focusReticle?.classList.remove("is-marker-visible");return;}
+    this.ceres.getWorldPosition(this.ceresWorld);this.ceresProjected.copy(this.ceresWorld).project(this.camera);
+    const visible=this.ceresProjected.z<1&&Math.abs(this.ceresProjected.x)<1.05&&Math.abs(this.ceresProjected.y)<1.05;
+    if(!visible){this.focusReticle.classList.remove("is-marker-visible");return;}
+    const x=(this.ceresProjected.x*.5+.5)*this.width,y=(-this.ceresProjected.y*.5+.5)*this.height;this.focusReticle.style.left=`${x}px`;this.focusReticle.style.top=`${y}px`;this.focusReticle.style.setProperty("--marker-opacity",".94");this.focusReticle.classList.add("is-marker-visible");this.focusReticle.classList.toggle("is-left",x+240>this.width);
   }
 
   renderTravel() {
     if(!this.renderer&&!this.ctx)return;
-    const raw=this.clamp((this.time-this.travelStartedAt)/this.travelDuration);const p=this.ease(raw);const mode=this.travelMode;const belt=this.currentBeltVisibility();
+    const state=this.travelState();
+    const raw=this.clamp((this.time-this.travelStartedAt)/this.travelDuration);
+    const mode=this.travelMode;
+    const direction=this.travelDirection>=0?1:-1;
+    const aspect=this.camera?.aspect||this.width/this.height;
+    const halfHeight=Math.tan((38*Math.PI/180)/2)*8.4;
+    const separationMagnitude=halfHeight*aspect*(this.mobile?3.9:3.25);
+    const separation=separationMagnitude*direction;
+    const cameraX=separation*state.pan;
+    const cameraZ=8.4*(1+1.45*state.pullback*(1-state.approach));
+    const sourceAlpha=1-this.travelSmooth((state.progress-.70)/.25);
+    const destinationAlpha=this.travelSmooth((state.progress-.20)/.28);
+    const fieldIsDestination=mode==="from-mars"||mode==="from-jupiter";
+    const belt=fieldIsDestination?destinationAlpha:sourceAlpha;
+    const sourceIsMars=mode==="from-mars";
+    const destinationIsMars=mode==="to-mars";
+    const sourceIsJupiter=mode==="from-jupiter";
+    const destinationIsJupiter=mode==="to-jupiter";
+
     if(this.renderer){
-      this.fieldGroup.visible=belt>.01;this.travelMarsGroup.visible=mode.includes("mars");this.travelJupiterGroup.visible=mode.includes("jupiter");
+      this.fieldGroup.visible=belt>.008;
+      this.travelMarsGroup.visible=sourceIsMars||destinationIsMars;
+      this.travelJupiterGroup.visible=sourceIsJupiter||destinationIsJupiter;
       this.materials.forEach(mat=>mat.opacity=belt);this.ceresMaterial.opacity=belt;
-      if(mode==="from-mars"){
-        const mp=1-this.smooth(.08,.55,p);this.travelMarsGroup.position.set(-.25-p*4.5,-.05,-p*7.5);this.travelMarsGroup.scale.setScalar(1.12-p*.82);this.travelMars.material.opacity=mp;this.fieldGroup.position.set((1-p)*3.2,0,(1-p)*-8);
-      } else if(mode==="to-mars"){
-        const mp=this.smooth(.45,.98,p);this.travelMarsGroup.position.set(4.7-(4.7)*mp,.02,-7.2*(1-mp));this.travelMarsGroup.scale.setScalar(.18+.94*mp);this.travelMars.material.opacity=mp;this.fieldGroup.position.set(-p*3.2,0,p*10);
-      } else if(mode==="to-jupiter"){
-        const jp=this.smooth(.43,.98,p);this.travelJupiterGroup.position.set(5.6-(5.6)*jp,.02,-7.4*(1-jp));this.travelJupiterGroup.scale.setScalar(.13+1.08*jp);this.travelJupiterMaterial.opacity=jp;this.travelRingMaterial.opacity=.38*jp;this.fieldGroup.position.set(-p*3.9,0,p*11);
-      } else if(mode==="from-jupiter"){
-        const jp=1-this.smooth(.06,.58,p);this.travelJupiterGroup.position.set(-p*4.4,.02,-p*7.4);this.travelJupiterGroup.scale.setScalar(1.21-p*.93);this.travelJupiterMaterial.opacity=jp;this.travelRingMaterial.opacity=.38*jp;this.fieldGroup.position.set((1-p)*4.2,0,(1-p)*-9);
+      const fieldX=fieldIsDestination?separation:0;
+      this.fieldGroup.position.set(fieldX,0,0);
+      this.fieldGroup.rotation.y=Math.sin(this.time*.018)*.012;
+
+      if(sourceIsMars||destinationIsMars){
+        const alpha=sourceIsMars?sourceAlpha:destinationAlpha;
+        this.travelMarsGroup.position.set(destinationIsMars?separation:0,-.03,0);
+        this.travelMarsGroup.scale.setScalar(1.08);
+        this.travelMars.material.opacity=alpha;
       }
-      this.travelMars.rotation.y+=.0022;this.travelJupiter.rotation.y+=.0046;this.travelRing.rotation.z=.015+Math.sin(this.time*.14)*.006;this.camera.position.set(0,0,8.4);this.camera.lookAt(0,0,-2);this.renderer.render(this.scene,this.camera);
-    } else this.drawCanvasTravel(p,mode,belt);
+      if(sourceIsJupiter||destinationIsJupiter){
+        const alpha=sourceIsJupiter?sourceAlpha:destinationAlpha;
+        this.travelJupiterGroup.position.set(destinationIsJupiter?separation:0,.02,0);
+        this.travelJupiterGroup.scale.setScalar(1.16);
+        this.travelJupiterMaterial.opacity=alpha;this.travelRingMaterial.opacity=.38*alpha;
+      }
+
+      this.travelMars.rotation.y+=.0022;this.travelJupiter.rotation.y+=.0046;this.travelRing.rotation.z=.015+Math.sin(this.time*.14)*.006;
+      this.stars.position.x=cameraX*.94;
+      this.stars.rotation.y=this.time*.0009;
+      this.camera.position.set(cameraX,0,cameraZ);
+      const lookOffset=Math.sin(state.pan*Math.PI)*separationMagnitude*.055*direction;
+      this.camera.lookAt(cameraX+lookOffset,0,-1.4);
+      this.renderer.render(this.scene,this.camera);
+    } else this.drawCanvasTravel(state,mode,belt,direction,sourceAlpha,destinationAlpha);
+
     if(!this.travelCoveredFired&&raw>.12){this.travelCoveredFired=true;this.travelCallbacks.onCovered?.();}
-    if(raw>=.999&&!this.travelCompleteFired){this.travelCompleteFired=true;const cb=this.travelCallbacks.onComplete;const arrivesBelt=mode==="from-mars"||mode==="from-jupiter";if(arrivesBelt){this.travelMode=null;this.travelCallbacks={};this.element.classList.remove("is-leaving");this.caption.classList.add("is-visible");this.caption.inert=false;this.materials?.forEach(mat=>mat.opacity=1);if(this.ceresMaterial)this.ceresMaterial.opacity=1;document.getElementById("announcement").textContent="Tiba di Sabuk Asteroid.";}cb?.();}
+    if(raw>=.999&&!this.travelCompleteFired){
+      this.travelCompleteFired=true;const cb=this.travelCallbacks.onComplete;const arrivesBelt=mode==="from-mars"||mode==="from-jupiter";
+      if(arrivesBelt){this.travelMode=null;this.travelCallbacks={};this.element.classList.remove("is-leaving");this.caption.classList.add("is-visible");this.caption.inert=false;this.materials?.forEach(mat=>mat.opacity=1);if(this.ceresMaterial)this.ceresMaterial.opacity=1;document.getElementById("announcement").textContent="Tiba di Sabuk Asteroid.";}
+      cb?.();
+    }
   }
 
   drawStars(ctx,w,h){ctx.fillStyle="#030811";ctx.fillRect(0,0,w,h);ctx.fillStyle="#b9c7d5";for(let i=0;i<120;i++){const x=(i*137.3)%w,y=(i*83.7)%h,s=i%11===0?1.2:.55;ctx.globalAlpha=.25+(i%7)*.07;ctx.fillRect(x,y,s,s);}ctx.globalAlpha=1;}
   drawRock(ctx,x,y,r,seed,alpha=1){ctx.save();ctx.globalAlpha=alpha;ctx.translate(x,y);ctx.rotate(seed*.41);ctx.beginPath();for(let i=0;i<12;i++){const a=i/12*Math.PI*2,rr=r*(.78+.22*Math.sin(seed*1.7+i*2.31));const px=Math.cos(a)*rr,py=Math.sin(a)*rr*(.72+.12*Math.sin(seed));i?ctx.lineTo(px,py):ctx.moveTo(px,py);}ctx.closePath();const g=ctx.createRadialGradient(-r*.35,-r*.35,r*.05,0,0,r*1.1);g.addColorStop(0,"#a5957e");g.addColorStop(.45,"#675d52");g.addColorStop(1,"#25231f");ctx.fillStyle=g;ctx.fill();ctx.fillStyle="#19181488";for(let c=0;c<4;c++){const cr=r*(.08+.05*((c+seed)%3));ctx.beginPath();ctx.ellipse(r*(.25*Math.sin(seed+c*3)),r*(.2*Math.cos(seed+c*2)),cr,cr*.65,c,0,Math.PI*2);ctx.fill();}ctx.restore();}
   drawCanvasPanorama(){const ctx=this.ctx,w=this.width,h=this.height;this.drawStars(ctx,w,h);for(let i=0;i<45;i++){const depth=(i%9)/9, x=((i*179+this.time*2.2)%1200)/1200*w,y=((i*97)%690)/690*h,r=2+depth*10;this.drawRock(ctx,x,y,r,i*.83,.36+.48*depth);}this.drawRock(ctx,w*.2,h*.36,44,2.4,.95);this.drawRock(ctx,w*.81,h*.64,58,5.7,.95);ctx.fillStyle="#d4d0c5";ctx.beginPath();ctx.arc(w*.72,h*.28,25,0,Math.PI*2);ctx.fill();}
-  drawCanvasTravel(p,mode,belt){this.drawCanvasPanorama();this.ctx.globalAlpha=1-belt;this.ctx.fillStyle="#02060d";this.ctx.fillRect(0,0,this.width,this.height);this.ctx.globalAlpha=1;const ctx=this.ctx;if(mode.includes("mars")){const v=mode==="from-mars"?1-p:p;const r=24+82*v, x=this.width*(mode==="from-mars"?.28-.18*p:.86-.36*v);ctx.fillStyle="#a45d46";ctx.beginPath();ctx.arc(x,this.height*.5,r,0,Math.PI*2);ctx.fill();}if(mode.includes("jupiter")){const v=mode==="from-jupiter"?1-p:p;const r=30+108*v,x=this.width*(mode==="from-jupiter"?.55-.22*p:.87-.35*v);ctx.strokeStyle="#8e816c88";ctx.lineWidth=6;ctx.beginPath();ctx.ellipse(x,this.height*.5,r*1.7,r*.32,-.08,0,Math.PI*2);ctx.stroke();ctx.fillStyle="#d0b18f";ctx.beginPath();ctx.arc(x,this.height*.5,r,0,Math.PI*2);ctx.fill();}}
+  drawCanvasTravel(state,mode,belt,direction,sourceAlpha,destinationAlpha){
+    const ctx=this.ctx,w=this.width,h=this.height;this.drawStars(ctx,w,h);
+    const pull=1+1.25*state.pullback*(1-state.approach);
+    const pan=state.pan*direction;
+    const toScreenX=world=>w*.5+(world-pan)*w*.34;
+    const fieldIsDestination=mode==="from-mars"||mode==="from-jupiter";
+    const fieldWorld=fieldIsDestination?direction:0;
+    if(belt>.01){
+      for(let i=0;i<38;i++){const depth=(i%9)/9,x=toScreenX(fieldWorld+((((i*179)%1200)/1200)-.5)*1.65),y=((i*97)%690)/690*h,r=(2+depth*9)/pull;this.drawRock(ctx,x,y,r,i*.83,belt*(.34+.5*depth));}
+      this.drawRock(ctx,toScreenX(fieldWorld-.48),h*.36,42/pull,2.4,.94*belt);
+      this.drawRock(ctx,toScreenX(fieldWorld+.50),h*.64,54/pull,5.7,.94*belt);
+    }
+    if(mode.includes("mars")){const isSource=mode==="from-mars",alpha=isSource?sourceAlpha:destinationAlpha,world=isSource?0:direction,r=92/pull,x=toScreenX(world);ctx.globalAlpha=alpha;ctx.fillStyle="#a45d46";ctx.beginPath();ctx.arc(x,h*.5,r,0,Math.PI*2);ctx.fill();}
+    if(mode.includes("jupiter")){const isSource=mode==="from-jupiter",alpha=isSource?sourceAlpha:destinationAlpha,world=isSource?0:direction,r=108/pull,x=toScreenX(world);ctx.globalAlpha=alpha;ctx.strokeStyle="#8e816c88";ctx.lineWidth=6/pull;ctx.beginPath();ctx.ellipse(x,h*.5,r*1.7,r*.32,-.08,0,Math.PI*2);ctx.stroke();ctx.fillStyle="#d0b18f";ctx.beginPath();ctx.arc(x,h*.5,r,0,Math.PI*2);ctx.fill();}
+    ctx.globalAlpha=1;
+  }
 };
