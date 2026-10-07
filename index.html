@@ -37,12 +37,10 @@
     <section class="intro" aria-labelledby="mission-title">
       <p class="intro-kicker">PENDIDIKAN ANTARIKSA UNTUK GENERASI MASA DEPAN</p>
       <h1 id="mission-title">Yuk Kita Menjelajah Tata Surya Kita!</h1>
-      <p class="intro-copy">Langit bukan batas,<br>tapi awal dari cerita baru.</p>
       <button class="launch-button" id="launch-button" type="button">
         <span>START</span>
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
       </button>
-      <p class="intro-motto">DIFFERENT CURIOSITIES<br>A BRIGHTER TOMORROW</p>
     </section>
 
     <footer class="mission-footer">
@@ -64,24 +62,8 @@
         <div class="atmosphere-bands"></div>
         <div class="horizon-cloud-bank"></div>
         <div class="ground-world">
-          <div class="urban-haze"></div>
-          <div class="terrain-far"></div>
-          <div class="skyline-detail skyline-back"></div>
-          <div class="city-layer city-far"></div>
-          <div class="skyline-detail skyline-front"></div>
-          <div class="city-layer city-mid"></div>
-          <div class="urban-depth-lights"></div>
-          <div class="city-road-grid"></div>
-          <div class="launch-complex">
-            <span class="launch-tower"></span>
-            <span class="hangar hangar-a"></span>
-            <span class="hangar hangar-b"></span>
-            <span class="terminal-strip"></span>
-            <span class="beacon beacon-a"></span>
-            <span class="beacon beacon-b"></span>
-          </div>
-          <div class="launch-base-view"></div>
-          <div class="city-light-field"></div>
+          <div class="anime-city-backdrop"></div>
+          <div class="anime-city-atmosphere"></div>
         </div>
         <div class="launch-horizon"></div>
         <div class="atmosphere-glow"></div>
@@ -103,7 +85,14 @@
         </div>
         <div class="cockpit-side-module side-module-left"><i></i><i></i><i></i></div>
         <div class="cockpit-side-module side-module-right"><i></i><i></i><i></i></div>
-        <div class="cockpit-roof"><span></span><span></span></div>
+        <div class="cockpit-roof">
+          <span></span><span></span>
+          <div class="roof-instrumentation" aria-hidden="true">
+            <div class="roof-status-bank roof-status-left"><i></i><i></i><i></i><i></i></div>
+            <div class="roof-sensor-strip"><b></b><b></b><b></b><b></b><b></b></div>
+            <div class="roof-status-bank roof-status-right"><i></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
         <div class="cockpit-pillar pillar-left"></div>
         <div class="cockpit-pillar pillar-right"></div>
         <article class="companion companion-a" id="companion-a" data-state="happy" data-expression="happy" aria-label="Nara, teman perjalanan ANTARA">
@@ -136,17 +125,18 @@
             </svg>
             <div class="climb-readout"><small>CLIMB</small><strong id="climb-value">+0.00 KM/S</strong></div>
           </div>
-          <div class="console-bank console-center mission-progress-panel">
-            <div class="panel-heading"><span>ASCENT ROUTE</span><b id="journey-percent">0%</b></div>
+          <div class="console-bank console-center mission-progress-panel" aria-label="Progress perjalanan pesawat menuju ruang angkasa">
             <div class="mission-track">
-              <span class="track-line"></span>
-              <small class="track-origin">EARTH</small>
-              <small class="track-destination">SPACE</small>
+              <span class="track-line" aria-hidden="true"></span>
               <span class="rocket-marker" id="rocket-progress" aria-hidden="true">
-                <svg viewBox="0 0 40 18"><path d="M4 9h12l7-6h6l-3 6 3 6h-6l-7-6H4Z"/><path d="M3 7 0 9l3 2"/></svg>
+                <svg viewBox="0 0 58 24" role="img" aria-label="Roket ANTARA">
+                  <path class="rocket-body-icon" d="M7 12h20l11-9h8l-5 9 5 9h-8l-11-9H7Z"/>
+                  <path class="rocket-wing-icon" d="M24 12 16 5h7l8 7-8 7h-7Z"/>
+                  <path class="rocket-flame-icon" d="M6 9 0 12l6 3 5-3Z"/>
+                  <circle class="rocket-window-icon" cx="36" cy="12" r="2.4"/>
+                </svg>
               </span>
             </div>
-            <div class="mission-stage-text" id="mission-stage-text">PRE-LAUNCH</div>
           </div>
           <div class="console-bank console-right flight-data-panel">
             <div class="panel-heading"><span>FLIGHT STATUS</span><b id="phase-readout">STANDBY</b></div>
