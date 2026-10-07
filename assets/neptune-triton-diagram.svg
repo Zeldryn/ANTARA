@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="Triton">
+<defs>
+  <radialGradient id="bg"><stop offset="0" stop-color="#0d2b55"/><stop offset="1" stop-color="#020711"/></radialGradient>
+  <linearGradient id="blue"><stop stop-color="#4b9fe8"/><stop offset=".52" stop-color="#175eaa"/><stop offset="1" stop-color="#0b3268"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="10"/></filter>
+</defs>
+<rect width="1200" height="720" fill="url(#bg)"/>
+<text x="60" y="72" fill="#9ed4ff" font-size="22" font-family="Arial" letter-spacing="5">TRITON</text>
+<text x="60" y="108" fill="#6686a7" font-size="14" font-family="Arial" letter-spacing="2">bulan terbesar · orbit retrograde</text>
+<circle cx="790" cy="360" r="175" fill="url(#blue)"/>
+<ellipse cx="790" cy="330" rx="155" ry="11" fill="#7bc1f0" opacity=".16"/>
+<ellipse cx="790" cy="396" rx="165" ry="8" fill="#8fd6ff" opacity=".14"/>
+<ellipse cx="855" cy="385" rx="60" ry="26" fill="#051f52" opacity=".62"/>
+<ellipse cx="820" cy="335" rx="96" ry="8" fill="#dff8ff" opacity=".42"/>
+<circle cx="790" cy="360" r="181" fill="none" stroke="#4fc5ff" stroke-opacity=".32" stroke-width="4"/>
+<circle cx="360" cy="370" r="78" fill="#c9c8bd"/><path d="M315 340c45-35 92-24 122 5" fill="none" stroke="#e7ddd3" stroke-width="10" opacity=".7"/><path d="M600 555C410 640 210 560 180 390C150 220 360 140 560 205" fill="none" stroke="#8aa5bc" stroke-width="3" stroke-dasharray="10 12"/>
+<path d="m183 390-12-28 29 8z" fill="#8aa5bc"/><text x="205" y="495" fill="#cfe4f2" font-size="18" font-family="Arial">ORBIT RETROGRADE</text>
+</svg>

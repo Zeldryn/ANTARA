@@ -719,6 +719,8 @@ const saturnPreviousButton = document.getElementById("saturn-prev-planet");
 const saturnNextButton = document.getElementById("saturn-next-planet");
 const uranusPreviousButton = document.getElementById("uranus-prev-planet");
 const uranusNextButton = document.getElementById("uranus-next-planet");
+const neptunePreviousButton = document.getElementById("neptune-prev-planet");
+const neptuneNextButton = document.getElementById("neptune-next-planet");
 const audioToggle = document.getElementById("audio-toggle");
 const audioLabel = document.getElementById("audio-label");
 const announcement = document.getElementById("announcement");
@@ -737,6 +739,7 @@ const asteroid = new AsteroidBeltScene();
 const jupiter = new JupiterScene();
 const saturn = new SaturnScene();
 const uranus = new UranusScene();
+const neptune = new NeptuneScene();
 
 function bindSharedJupiterVisualsIfReady() {
   asteroid.bindJupiterVisualSource?.(jupiter);
@@ -756,6 +759,14 @@ function prepareUranusConnection() {
   Promise.all(jobs).then(bindSharedSaturnVisualsIfReady).catch(()=>{});
   bindSharedSaturnVisualsIfReady();
 }
+function bindSharedUranusVisualsIfReady() {
+  neptune.bindUranusVisualSource?.(uranus);
+}
+function prepareNeptuneConnection() {
+  const jobs=[uranus.prepare(),neptune.prepare()];
+  Promise.all(jobs).then(bindSharedUranusVisualsIfReady).catch(()=>{});
+  bindSharedUranusVisualsIfReady();
+}
 
 let phase = "idle";
 let elapsed = 0;
@@ -767,7 +778,7 @@ let activeFlightPhase = "idle";
 let earthHandoffStarted = false;
 let planetTransitionLocked = false;
 let activePlanetNavButton = null;
-const CELESTIAL_NAV_ORDER = Object.freeze(["sun", "mercury", "venus", "earth", "mars", "asteroid", "jupiter", "saturn", "uranus"]);
+const CELESTIAL_NAV_ORDER = Object.freeze(["sun", "mercury", "venus", "earth", "mars", "asteroid", "jupiter", "saturn", "uranus", "neptune"]);
 
 function getCelestialDirection(from, to) {
   const fromIndex = CELESTIAL_NAV_ORDER.indexOf(from);
@@ -1310,6 +1321,7 @@ function travelSaturnToUranus() {
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU URANUS";
   announcement.textContent = "Saturnus menjauh. Uranus yang pucat dan miring mulai muncul di jalur berikutnya.";
   prepareUranusConnection();
+  neptune.prepare().then(bindSharedUranusVisualsIfReady).catch(()=>{});
   sound.travel(reducedMotion.matches ? 0.5 : 8.0);
   uranus.beginTravelFromSaturn({
     direction: getCelestialDirection("saturn", "uranus"),
@@ -1349,6 +1361,53 @@ function travelUranusToSaturn() {
   });
 }
 
+
+function travelUranusToNeptune() {
+  if (uranus.exploring || !beginPlanetTransition("uranus", "uranus-neptune-transition", uranusNextButton, "neptune")) return;
+  setExperienceState("planet");
+  if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU NEPTUNUS";
+  announcement.textContent = "Uranus menjauh. Dunia biru yang lebih gelap mulai muncul di jalur terluar.";
+  prepareNeptuneConnection();
+  sound.travel(reducedMotion.matches ? 0.5 : 8.0);
+  neptune.beginTravelFromUranus({
+    direction: getCelestialDirection("uranus", "neptune"),
+    uranusRotation: uranus.planet?.rotation?.y ?? uranus.renderedRotation,
+    uranusTime: uranus.time,
+    onCovered: () => { if (phase === "uranus-neptune-transition") uranus.stop(); },
+    onComplete: () => {
+      if (phase !== "uranus-neptune-transition") return;
+      mission.classList.remove("is-uranus");
+      mission.classList.add("is-neptune");
+      finishPlanetTransition("neptune");
+      if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT NEPTUNUS";
+      announcement.textContent = "Tiba di Neptunus, planet utama terjauh dengan atmosfer biru yang sangat aktif.";
+    }
+  });
+}
+
+function travelNeptuneToUranus() {
+  if (neptune.exploring || !beginPlanetTransition("neptune", "neptune-uranus-transition", neptunePreviousButton, "uranus")) return;
+  setExperienceState("planet");
+  if (flightStatus) flightStatus.textContent = "KEMBALI MENUJU URANUS";
+  announcement.textContent = "Neptunus menjauh. Uranus kembali muncul dari jalur bagian dalam.";
+  prepareNeptuneConnection();
+  sound.travel(reducedMotion.matches ? 0.5 : 8.0);
+  neptune.beginTravelToUranus({
+    direction: getCelestialDirection("neptune", "uranus"),
+    onComplete: () => {
+      if (phase !== "neptune-uranus-transition") return;
+      uranus.start({ settled:true, rotation:neptune.getUranusVisualRotation?.(), time:neptune.getUranusVisualTime?.() });
+      neptune.stop();
+      mission.classList.remove("is-neptune");
+      mission.classList.add("is-uranus");
+      finishPlanetTransition("uranus");
+      if (flightStatus) flightStatus.textContent = "KEMBALI DI ORBIT URANUS";
+      announcement.textContent = "Kembali di Uranus.";
+    }
+  });
+}
+
+
 function resetMission() {
   cancelAnimationFrame(animationFrame);
   sound.stop(1.1);
@@ -1368,9 +1427,10 @@ function resetMission() {
   jupiter.stop();
   saturn.stop();
   uranus.stop();
+  neptune.stop();
   planetTransitionLocked = false;
   activePlanetNavButton = null;
-  mission.classList.remove("is-earth", "is-mars", "is-venus", "is-mercury", "is-sun", "is-asteroid", "is-jupiter", "is-saturn", "is-uranus", "is-preparing", "is-planet-transitioning");
+  mission.classList.remove("is-earth", "is-mars", "is-venus", "is-mercury", "is-sun", "is-asteroid", "is-jupiter", "is-saturn", "is-uranus", "is-neptune", "is-preparing", "is-planet-transitioning");
   setExperienceState("home");
   launchButton.disabled = false;
   if (flightStatus) flightStatus.textContent = "SIAP • BUMI";
@@ -1392,6 +1452,8 @@ jupiterNextButton.addEventListener("click", travelJupiterToSaturn);
 saturnPreviousButton.addEventListener("click", travelSaturnToJupiter);
 saturnNextButton.addEventListener("click", travelSaturnToUranus);
 uranusPreviousButton.addEventListener("click", travelUranusToSaturn);
+uranusNextButton.addEventListener("click", travelUranusToNeptune);
+neptunePreviousButton.addEventListener("click", travelNeptuneToUranus);
 document.addEventListener("keydown", event => {
   if (phase === "mars" && mars.fullExplorationActive) {
     if (event.key === "Escape") { event.preventDefault(); mars.fullExploration?.exit(); }
@@ -1461,6 +1523,14 @@ document.addEventListener("keydown", event => {
     if (event.key === "Escape") { event.preventDefault(); uranus.exitExploration(); }
     return;
   }
+  if (phase === "neptune" && neptune.exploring) {
+    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      neptune.setExplorationStop(neptune.topicIndex + (event.key === "ArrowRight" ? 1 : -1));
+    }
+    if (event.key === "Escape") { event.preventDefault(); neptune.exitExploration(); }
+    return;
+  }
   if (event.key === "ArrowRight" && phase === "earth") travelToMars();
   if (event.key === "ArrowLeft" && phase === "earth") travelToVenus();
   if (event.key === "ArrowLeft" && phase === "venus" && !venus.exploring) travelVenusToMercury();
@@ -1477,6 +1547,8 @@ document.addEventListener("keydown", event => {
   if (event.key === "ArrowLeft" && phase === "saturn" && !saturn.exploring) travelSaturnToJupiter();
   if (event.key === "ArrowRight" && phase === "saturn" && !saturn.exploring) travelSaturnToUranus();
   if (event.key === "ArrowLeft" && phase === "uranus" && !uranus.exploring) travelUranusToSaturn();
+  if (event.key === "ArrowRight" && phase === "uranus" && !uranus.exploring) travelUranusToNeptune();
+  if (event.key === "ArrowLeft" && phase === "neptune" && !neptune.exploring) travelNeptuneToUranus();
   if (event.key === "Escape" && phase !== "idle") resetMission();
 });
 window.addEventListener("resize", () => flight.resize());
@@ -1507,12 +1579,12 @@ document.addEventListener("click", event => {
   if (control.dataset.uiSound === "manual") return;
 
   // These actions already have their own intentional audio and must not double-fire.
-  if (control === launchButton || control === earth.nextButton || control === earthPreviousButton || control === venusPreviousButton || control === venusNextButton || control === mercuryPreviousButton || control === mercuryNextButton || control === sunNextButton || control === marsPreviousButton || control === marsNextButton || control === asteroidPreviousButton || control === asteroidNextButton || control === jupiterPreviousButton || control === jupiterNextButton || control === saturnPreviousButton || control === audioToggle) return;
+  if (control === launchButton || control === earth.nextButton || control === earthPreviousButton || control === venusPreviousButton || control === venusNextButton || control === mercuryPreviousButton || control === mercuryNextButton || control === sunNextButton || control === marsPreviousButton || control === marsNextButton || control === asteroidPreviousButton || control === asteroidNextButton || control === jupiterPreviousButton || control === jupiterNextButton || control === saturnPreviousButton || control === saturnNextButton || control === uranusPreviousButton || control === uranusNextButton || control === neptunePreviousButton || control === audioToggle) return;
 
   sound.uiClick();
 }, true);
 
-for (const button of [launchButton, earth.nextButton, earthPreviousButton, venusPreviousButton, venusNextButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, marsNextButton, mars.exploreButton, mars.fullExploration?.entryButton, asteroidPreviousButton, asteroidNextButton, asteroid.exploreButton, jupiterPreviousButton, jupiterNextButton, jupiter.exploreButton, saturnPreviousButton, saturn.exploreButton, audioToggle].filter(Boolean)) {
+for (const button of [launchButton, earth.nextButton, earthPreviousButton, venusPreviousButton, venusNextButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, marsNextButton, mars.exploreButton, mars.fullExploration?.entryButton, asteroidPreviousButton, asteroidNextButton, asteroid.exploreButton, jupiterPreviousButton, jupiterNextButton, jupiter.exploreButton, saturnPreviousButton, saturnNextButton, saturn.exploreButton, uranusPreviousButton, uranusNextButton, uranus.exploreButton, neptunePreviousButton, neptune.exploreButton, audioToggle].filter(Boolean)) {
   button.addEventListener("pointerenter", event => { if (event.pointerType === "mouse") sound.hover(); });
   button.addEventListener("focus", () => sound.hover());
 }

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="Planet Terakhir">
+<defs>
+  <radialGradient id="bg"><stop offset="0" stop-color="#0d2b55"/><stop offset="1" stop-color="#020711"/></radialGradient>
+  <linearGradient id="blue"><stop stop-color="#4b9fe8"/><stop offset=".52" stop-color="#175eaa"/><stop offset="1" stop-color="#0b3268"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="10"/></filter>
+</defs>
+<rect width="1200" height="720" fill="url(#bg)"/>
+<text x="60" y="72" fill="#9ed4ff" font-size="22" font-family="Arial" letter-spacing="5">PLANET TERAKHIR</text>
+<text x="60" y="108" fill="#6686a7" font-size="14" font-family="Arial" letter-spacing="2">akhir urutan delapan planet, bukan akhir Tata Surya</text>
+<circle cx="790" cy="360" r="175" fill="url(#blue)"/>
+<ellipse cx="790" cy="330" rx="155" ry="11" fill="#7bc1f0" opacity=".16"/>
+<ellipse cx="790" cy="396" rx="165" ry="8" fill="#8fd6ff" opacity=".14"/>
+<ellipse cx="855" cy="385" rx="60" ry="26" fill="#051f52" opacity=".62"/>
+<ellipse cx="820" cy="335" rx="96" ry="8" fill="#dff8ff" opacity=".42"/>
+<circle cx="790" cy="360" r="181" fill="none" stroke="#4fc5ff" stroke-opacity=".32" stroke-width="4"/>
+<g fill="none" stroke="#42566b" stroke-width="2" opacity=".75">
+<ellipse cx="790" cy="360" rx="360" ry="170"/><ellipse cx="790" cy="360" rx="430" ry="210"/><ellipse cx="790" cy="360" rx="500" ry="250"/>
+</g>
+<text x="80" y="250" fill="#d8ecf8" font-size="34" font-family="Georgia">Urutan planet berakhir di sini</text>
+<text x="80" y="302" fill="#91acc0" font-size="18" font-family="Arial">Namun wilayah trans-Neptunus masih membentang jauh di luar orbitnya.</text>
+</svg>

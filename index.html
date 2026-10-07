@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#091322">
-  <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, Sabuk Asteroid, Jupiter, Saturnus, Uranus, dan keajaiban Tata Surya.">
+  <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, Sabuk Asteroid, Jupiter, Saturnus, Uranus, Neptunus, dan keajaiban Tata Surya.">
   <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/orbit.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="jupiter-scene.css">
   <link rel="stylesheet" href="saturn-scene.css">
   <link rel="stylesheet" href="uranus-scene.css">
+  <link rel="stylesheet" href="neptune-scene.css">
   <script src="exploration-media.js" defer></script>
   <script src="earth-scene.js" defer></script>
   <script src="mars-scene.js" defer></script>
@@ -30,6 +31,7 @@
   <script src="jupiter-scene.js" defer></script>
   <script src="saturn-scene.js" defer></script>
   <script src="uranus-scene.js" defer></script>
+  <script src="neptune-scene.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -841,8 +843,8 @@
             <span>Jelajahi Uranus</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
-          <button class="uranus-planet-nav uranus-planet-next" id="uranus-next-planet" type="button" disabled aria-label="Neptunus belum tersedia">
-            <span><small>Berikutnya</small><strong>Neptunus · Segera</strong></span>
+          <button class="uranus-planet-nav uranus-planet-next" id="uranus-next-planet" type="button" aria-label="Planet selanjutnya: Neptunus">
+            <span><small>Planet selanjutnya</small><strong>Neptunus</strong></span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
         </div>
@@ -885,6 +887,80 @@
       </aside>
 
       <a class="uranus-credit" href="https://science.nasa.gov/uranus/facts/" target="_blank" rel="noopener noreferrer">Visual: ANTARA · referensi NASA Science / Voyager 2</a>
+    </section>
+
+    <section class="neptune-scene" id="neptune-scene" aria-labelledby="neptune-title" hidden>
+      <div class="neptune-space-haze" aria-hidden="true"></div>
+      <div class="neptune-viewport" id="neptune-viewport" role="img" aria-label="Neptunus, raksasa es biru tua dengan pita atmosfer, badai gelap, awan terang, dan cincin sangat redup."></div>
+      <div class="neptune-edge-shade" aria-hidden="true"></div>
+
+      <div class="neptune-caption">
+        <p class="eyebrow" aria-hidden="true"><span></span> RAKSASA ES · PLANET KEDELAPAN</p>
+        <h2 id="neptune-title" tabindex="-1">Neptunus<span>.</span></h2>
+        <p class="neptune-whisper">Dunia Biru dengan Angin yang Mengamuk.</p>
+        <div class="neptune-arrival-actions" role="group" aria-label="Navigasi planet">
+          <button class="neptune-planet-nav neptune-planet-prev" id="neptune-prev-planet" type="button" aria-label="Planet sebelumnya: Uranus">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+            <span><small>Planet sebelumnya</small><strong>Uranus</strong></span>
+          </button>
+          <button class="neptune-explore-button" id="neptune-explore-button" type="button">
+            <span>Jelajahi Neptunus</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+          <button class="neptune-planet-nav neptune-planet-next" id="neptune-next-planet" type="button" disabled aria-label="Akhir perjalanan planet">
+            <span><small>Berikutnya</small><strong>Akhir Perjalanan Planet</strong></span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="neptune-flow-overlay" id="neptune-flow-overlay" aria-hidden="true" hidden>
+        <span class="neptune-flow-line"></span><span class="neptune-flow-line"></span><span class="neptune-flow-line"></span>
+      </div>
+
+      <div class="neptune-focus-reticle" id="neptune-focus-reticle" aria-hidden="true">
+        <span class="neptune-focus-ring"></span>
+        <span class="neptune-focus-dot"></span>
+        <span class="neptune-focus-line"></span>
+        <span class="neptune-focus-label">
+          <span class="neptune-focus-title" id="neptune-focus-label"></span>
+          <span class="neptune-focus-context" id="neptune-focus-context"></span>
+        </span>
+      </div>
+
+      <div class="neptune-ring-annotation" id="neptune-ring-annotation" aria-hidden="true" hidden>
+        <span class="ring-label adams">ADAMS RING</span>
+        <span class="ring-label leverrier">LE VERRIER</span>
+        <span class="ring-label arcs">RING ARCS</span>
+      </div>
+
+      <div class="exploration-marker-media neptune-context-media" id="neptune-context-media" hidden></div>
+
+      <aside class="neptune-exploration" id="neptune-exploration" aria-labelledby="neptune-topic-title" aria-live="polite" inert>
+        <div class="neptune-exploration-topline">
+          <span class="neptune-topic-kicker" id="neptune-topic-kicker">IDENTITAS NEPTUNUS</span>
+          <span class="neptune-topic-count"><span id="neptune-topic-current">01</span> / <span id="neptune-topic-total">11</span></span>
+        </div>
+        <h3 id="neptune-topic-title" tabindex="-1">Raksasa Biru di Batas Jauh</h3>
+        <p class="neptune-topic-subtitle" id="neptune-topic-subtitle"></p>
+        <div class="neptune-topic-scroll">
+          <p class="neptune-topic-summary" id="neptune-topic-summary"></p>
+          <ul class="neptune-topic-facts" id="neptune-topic-facts"></ul>
+        </div>
+        <a class="neptune-topic-source" id="neptune-topic-source" href="https://science.nasa.gov/neptune/neptune-facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science ↗</a>
+        <div class="neptune-exploration-controls">
+          <button class="neptune-topic-nav" id="neptune-topic-prev" type="button" aria-label="Topik Neptunus sebelumnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+          </button>
+          <div class="neptune-topic-progress" id="neptune-topic-progress" aria-hidden="true"></div>
+          <button class="neptune-topic-nav" id="neptune-topic-next" type="button" aria-label="Topik Neptunus berikutnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+        <button class="neptune-exploration-close return-panorama-button" id="neptune-exploration-close" type="button">Kembali ke panorama Neptunus</button>
+      </aside>
+
+      <a class="neptune-credit" href="https://science.nasa.gov/neptune/neptune-facts/" target="_blank" rel="noopener noreferrer">Visual: ANTARA · referensi NASA Science / Voyager 2</a>
     </section>
     <p class="sr-only" id="announcement" role="status" aria-live="polite"></p>
     <noscript><p class="noscript-note">Aktifkan JavaScript untuk memulai persiapan misi dan audio.</p></noscript>
