@@ -2248,48 +2248,60 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
    and upper cockpit detail are overridden below.
    ============================================================== */
 
-/* STEP 1 + 2: richer illustrated launch-city environment, with independent
-   parallax/light/haze layers so the scene never reads as a static card. */
+/* STEP 1 + 2: replace the weak ground view with a stronger illustrated anime
+   city / launch-area scene, then keep it alive with restrained layered motion. */
 .anime-city-backdrop {
-  background-image: url("assets/environment/anime-launch-city-v2.svg");
+  background-image: url("assets/environment/anime-launch-city-v3.png");
   background-position: 50% 100%;
   background-size: cover;
-  left: -7%;
-  right: -7%;
-  top: -66%;
-  bottom: -6%;
-  filter: saturate(1.06) contrast(1.035) brightness(.98);
-  animation: launch-city-parallax 8.5s ease-in-out infinite alternate;
-  -webkit-mask-image: linear-gradient(180deg,transparent 0%,rgba(0,0,0,.18) 9%,rgba(0,0,0,.72) 22%,#000 37%,#000 100%);
-  mask-image: linear-gradient(180deg,transparent 0%,rgba(0,0,0,.18) 9%,rgba(0,0,0,.72) 22%,#000 37%,#000 100%);
+  left: -8%;
+  right: -8%;
+  top: -68%;
+  bottom: -7%;
+  filter: saturate(1.07) contrast(1.04) brightness(.985);
+  animation: launch-city-parallax 11s ease-in-out infinite alternate;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.15) 8%, rgba(0,0,0,.72) 22%, #000 38%, #000 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.15) 8%, rgba(0,0,0,.72) 22%, #000 38%, #000 100%);
+}
+.anime-city-backdrop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 55%, rgba(248,229,196,.16), transparent 44%), linear-gradient(180deg, rgba(220,238,247,.13), rgba(171,211,233,.06) 36%, transparent 56%);
+  mix-blend-mode: screen;
+  opacity: .72;
+  animation: launch-city-horizon 8.8s ease-in-out infinite alternate;
+  pointer-events: none;
 }
 .anime-city-backdrop::after {
   background:
-    linear-gradient(180deg,rgba(176,216,239,.12) 0%,rgba(191,224,241,.10) 18%,transparent 34%,rgba(235,189,140,.08) 64%,rgba(4,13,21,.12) 100%),
-    radial-gradient(ellipse at 50% 58%,rgba(255,220,170,.06),transparent 45%,rgba(4,13,21,.06) 76%,rgba(3,9,15,.15) 100%);
+    linear-gradient(180deg, rgba(182,220,240,.16) 0%, rgba(199,227,241,.08) 19%, transparent 36%, rgba(235,189,140,.08) 66%, rgba(4,13,21,.10) 100%),
+    radial-gradient(ellipse at 50% 59%, rgba(255,223,176,.09), transparent 47%, rgba(4,13,21,.06) 76%, rgba(3,9,15,.15) 100%);
 }
 .anime-city-lights {
   position:absolute;
   z-index:2;
-  left:-8%; right:-8%; bottom:8%; height:34%;
-  opacity:calc(.72 - var(--ground-progress) * .48);
+  left:-9%; right:-9%; bottom:9%; height:36%;
+  opacity:calc(.76 - var(--ground-progress) * .5);
   background:
-    radial-gradient(circle at 7% 68%,rgba(246,202,112,.9) 0 2px,transparent 3px),
-    radial-gradient(circle at 16% 57%,rgba(109,185,219,.72) 0 2px,transparent 3px),
-    radial-gradient(circle at 29% 72%,rgba(246,202,112,.78) 0 2px,transparent 3px),
-    radial-gradient(circle at 71% 66%,rgba(246,202,112,.82) 0 2px,transparent 3px),
-    radial-gradient(circle at 83% 53%,rgba(109,185,219,.68) 0 2px,transparent 3px),
-    radial-gradient(circle at 94% 70%,rgba(246,202,112,.86) 0 2px,transparent 3px);
-  background-size:280px 96px,310px 110px,340px 124px,300px 100px,330px 112px,360px 128px;
-  filter:drop-shadow(0 0 7px rgba(234,190,103,.35));
-  animation: launch-city-lights-drift 6.6s linear infinite;
+    radial-gradient(circle at 8% 74%, rgba(246,202,112,.95) 0 2px, transparent 3px),
+    radial-gradient(circle at 15% 61%, rgba(109,185,219,.72) 0 2px, transparent 3px),
+    radial-gradient(circle at 27% 78%, rgba(246,202,112,.84) 0 2px, transparent 3px),
+    radial-gradient(circle at 38% 65%, rgba(109,185,219,.60) 0 2px, transparent 3px),
+    radial-gradient(circle at 63% 77%, rgba(246,202,112,.84) 0 2px, transparent 3px),
+    radial-gradient(circle at 74% 64%, rgba(109,185,219,.62) 0 2px, transparent 3px),
+    radial-gradient(circle at 87% 58%, rgba(246,202,112,.92) 0 2px, transparent 3px),
+    radial-gradient(circle at 95% 75%, rgba(246,202,112,.88) 0 2px, transparent 3px);
+  background-size: 250px 94px,300px 112px,320px 124px,270px 98px,340px 126px,310px 112px,300px 100px,360px 132px;
+  filter: drop-shadow(0 0 7px rgba(234,190,103,.35));
+  animation: launch-city-lights-drift 7.4s linear infinite;
   pointer-events:none;
 }
 .anime-city-cloud-band {
   position:absolute;
   z-index:3;
-  left:-12%; right:-12%; top:-8%; height:46%;
-  opacity:calc(.72 - var(--ground-progress) * .52);
+  left:-12%; right:-12%; top:-10%; height:47%;
+  opacity:calc(.74 - var(--ground-progress) * .54);
   pointer-events:none;
   filter:blur(2px);
   overflow:hidden;
@@ -2298,36 +2310,40 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   position:absolute;
   width:28%; height:18%;
   border-radius:50%;
-  background:radial-gradient(ellipse at center,rgba(240,248,252,.30),rgba(210,232,244,.12) 54%,transparent 72%);
-  animation: launch-cloud-drift 13s ease-in-out infinite alternate;
+  background:radial-gradient(ellipse at center, rgba(242,248,252,.36), rgba(210,232,244,.13) 56%, transparent 74%);
+  animation: launch-cloud-drift 15s ease-in-out infinite alternate;
 }
-.anime-city-cloud-band i:nth-child(1){left:2%;top:22%;transform:scale(1.2);}
-.anime-city-cloud-band i:nth-child(2){left:39%;top:7%;width:34%;animation-delay:-4s;}
-.anime-city-cloud-band i:nth-child(3){right:1%;top:30%;width:31%;animation-delay:-8s;}
+.anime-city-cloud-band i:nth-child(1){left:1%;top:20%;transform:scale(1.15);}
+.anime-city-cloud-band i:nth-child(2){left:37%;top:6%;width:35%;animation-delay:-5s;}
+.anime-city-cloud-band i:nth-child(3){right:0;top:28%;width:32%;animation-delay:-9s;}
 .anime-city-atmosphere {
-  top:-42%;
-  height:102%;
-  opacity:.82;
+  top:-44%;
+  height:104%;
+  opacity:.84;
   background:
-    radial-gradient(ellipse at 50% 72%,rgba(255,220,176,.19),transparent 49%),
-    linear-gradient(180deg,rgba(217,237,248,.17),rgba(178,218,239,.11) 28%,rgba(236,194,150,.11) 72%,transparent 100%);
-  animation: launch-haze-shift 7.8s ease-in-out infinite alternate;
+    radial-gradient(ellipse at 50% 73%, rgba(255,220,176,.20), transparent 48%),
+    linear-gradient(180deg, rgba(220,239,248,.16), rgba(181,218,238,.10) 30%, rgba(236,194,150,.12) 74%, transparent 100%);
+  animation: launch-haze-shift 9s ease-in-out infinite alternate;
 }
 @keyframes launch-city-parallax {
-  from { transform:translate3d(-.7%,.35%,0) scale(1.025); filter:saturate(1.03) contrast(1.03) brightness(.96); }
-  to { transform:translate3d(.7%,-.45%,0) scale(1.035); filter:saturate(1.10) contrast(1.04) brightness(1); }
+  from { transform:translate3d(-.9%, .45%, 0) scale(1.03); }
+  to { transform:translate3d(.9%, -.55%, 0) scale(1.04); }
+}
+@keyframes launch-city-horizon {
+  from { opacity:.55; transform:translate3d(-.8%, .25%, 0) scale(1.01); }
+  to { opacity:.82; transform:translate3d(.8%, -.45%, 0) scale(1.025); }
 }
 @keyframes launch-city-lights-drift {
-  from { background-position:0 0,0 0,0 0,0 0,0 0,0 0; }
-  to { background-position:44px -7px,-36px 4px,28px -5px,-42px 6px,34px -4px,-30px 7px; }
+  from { background-position:0 0,0 0,0 0,0 0,0 0,0 0,0 0,0 0; }
+  to { background-position:38px -6px,-32px 5px,24px -5px,-26px 5px,42px -7px,-28px 4px,30px -5px,-34px 8px; }
 }
 @keyframes launch-cloud-drift {
-  from { translate:-3% 0; opacity:.48; }
-  to { translate:4% -5%; opacity:.76; }
+  from { translate:-3% 0; opacity:.46; }
+  to { translate:4.5% -6%; opacity:.78; }
 }
 @keyframes launch-haze-shift {
-  from { transform:translate3d(-.8%,.3%,0) scale(1.01); filter:blur(8px); }
-  to { transform:translate3d(.8%,-.7%,0) scale(1.025); filter:blur(10px); }
+  from { transform:translate3d(-.7%, .3%, 0) scale(1.01); filter:blur(8px); }
+  to { transform:translate3d(.8%, -.8%, 0) scale(1.028); filter:blur(10px); }
 }
 
 /* STEP 3: visual state belongs to the current dialogue cue. Flight phases no
@@ -2405,18 +2421,257 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 .roof-center-scan i:nth-child(6){height:38%;animation-delay:-1.5s;}
 @keyframes roof-data-bar { 0%,100%{opacity:.28;transform:scaleX(.65)} 50%{opacity:.9;transform:scaleX(1)} }
 @keyframes roof-scan-meter { from{opacity:.34;transform:scaleY(.62)} to{opacity:.88;transform:scaleY(1)} }
+.roof-instrumentation::before {
+  content:"";
+  position:absolute;
+  left:18%; right:18%; top:-10%;
+  height:18%;
+  border-top:1px solid rgba(171,213,236,.12);
+  border-bottom:1px solid rgba(230,194,121,.06);
+  border-radius:999px;
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(126,180,209,.02) 50%, transparent 100%);
+  box-shadow: inset 0 0 12px rgba(110,170,201,.04);
+  opacity:.82;
+  pointer-events:none;
+}
+.roof-instrumentation::after {
+  content:"";
+  position:absolute;
+  left:26%; right:26%; top:5%;
+  height:4px;
+  border-radius:999px;
+  background:linear-gradient(90deg, transparent 0%, rgba(111,184,217,.10) 12%, rgba(226,188,111,.30) 50%, rgba(111,184,217,.10) 88%, transparent 100%);
+  animation: roof-status-sweep 5.4s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes roof-status-sweep {
+  0%,100% { opacity:.24; transform:scaleX(.92); }
+  50% { opacity:.82; transform:scaleX(1); }
+}
 
 @media (max-width:900px){
-  .anime-city-backdrop{left:-16%;right:-16%;top:-60%;}
+  .anime-city-backdrop{left:-18%;right:-18%;top:-62%;}
   .roof-micro-panel{width:22%;padding:0 5px;gap:3px;}
   .roof-center-scan{left:40%;right:40%;}
 }
 @media (max-width:700px){
-  .anime-city-backdrop{left:-34%;right:-34%;top:-46%;}
+  .anime-city-backdrop{left:-34%;right:-34%;top:-48%;}
   .roof-micro-panel span{display:none;}
   .roof-micro-panel{grid-template-columns:1fr 1fr 1fr;width:20%;}
   .roof-center-scan{left:42%;right:42%;}
 }
 @media (prefers-reduced-motion:reduce){
   .anime-city-lights,.anime-city-cloud-band i,.roof-micro-panel b,.roof-center-scan i{animation:none !important;}
+}
+
+
+/* ========================================================================
+   TARGETED REFINEMENT: window life, side cockpit activity, ascent-to-Earth continuity.
+   Existing layout/characters/dialogue/planet systems are intentionally untouched.
+   ======================================================================== */
+
+/* STEP 1 — Phase-aware detail in the large cockpit window. */
+.window-environment-detail {
+  position:absolute;
+  inset:0;
+  z-index:4;
+  overflow:hidden;
+  pointer-events:none;
+}
+.ground-beacon-field {
+  position:absolute;
+  left:4%; right:4%; bottom:16%; height:28%;
+  opacity:calc(var(--ground-opacity) * .82);
+  transform:translate3d(calc(var(--cam-x) * -.05), calc(var(--ground-progress) * 9vh), 0);
+  transition:opacity .3s linear;
+}
+.ground-beacon-field i {
+  position:absolute;
+  bottom:var(--y,12%);
+  left:var(--x,10%);
+  width:4px; height:4px;
+  border-radius:50%;
+  background:#efc875;
+  box-shadow:0 0 7px rgba(239,200,117,.72),0 0 16px rgba(239,200,117,.22);
+  animation:window-beacon-pulse 2.7s ease-in-out infinite;
+}
+.ground-beacon-field i::after {
+  content:"";
+  position:absolute;
+  left:50%; top:7px;
+  width:1px; height:clamp(14px,2.1vh,24px);
+  background:linear-gradient(180deg,rgba(238,198,113,.42),transparent);
+  transform:translateX(-50%);
+}
+.ground-beacon-field i:nth-child(1){--x:7%;--y:20%;animation-delay:-.2s}
+.ground-beacon-field i:nth-child(2){--x:19%;--y:8%;background:#75badb;box-shadow:0 0 8px rgba(117,186,219,.7);animation-delay:-1.1s}
+.ground-beacon-field i:nth-child(3){--x:31%;--y:27%;animation-delay:-1.9s}
+.ground-beacon-field i:nth-child(4){--x:43%;--y:12%;background:#75badb;box-shadow:0 0 8px rgba(117,186,219,.65);animation-delay:-.65s}
+.ground-beacon-field i:nth-child(5){--x:58%;--y:21%;animation-delay:-2.25s}
+.ground-beacon-field i:nth-child(6){--x:71%;--y:9%;background:#75badb;box-shadow:0 0 8px rgba(117,186,219,.65);animation-delay:-1.45s}
+.ground-beacon-field i:nth-child(7){--x:83%;--y:28%;animation-delay:-.9s}
+.ground-beacon-field i:nth-child(8){--x:94%;--y:16%;animation-delay:-2.55s}
+
+.distant-structure-lights {
+  position:absolute;
+  left:8%; right:8%; bottom:34%; height:13%;
+  opacity:calc(var(--ground-opacity) * .62);
+  background:
+    linear-gradient(90deg,transparent 0 8%,rgba(8,25,38,.30) 8% 8.5%,transparent 8.5% 22%,rgba(8,25,38,.26) 22% 22.6%,transparent 22.6% 42%,rgba(8,25,38,.33) 42% 42.5%,transparent 42.5% 68%,rgba(8,25,38,.28) 68% 68.6%,transparent 68.6% 88%,rgba(8,25,38,.25) 88% 88.5%,transparent 88.5% 100%);
+  transform:translateY(calc(var(--ground-progress) * 7vh));
+  filter:blur(.2px);
+}
+.distant-structure-lights i {
+  position:absolute;
+  bottom:15%;
+  left:var(--x,10%);
+  width:3px; height:3px;
+  border-radius:50%;
+  background:#eac16e;
+  box-shadow:0 0 8px rgba(234,193,110,.52);
+  animation:window-beacon-pulse 3.3s ease-in-out infinite;
+}
+.distant-structure-lights i:nth-child(1){--x:10%;animation-delay:-.4s}
+.distant-structure-lights i:nth-child(2){--x:26%;animation-delay:-1.7s}
+.distant-structure-lights i:nth-child(3){--x:51%;animation-delay:-2.6s}
+.distant-structure-lights i:nth-child(4){--x:72%;animation-delay:-.95s}
+.distant-structure-lights i:nth-child(5){--x:91%;animation-delay:-2.1s}
+
+.high-altitude-moon {
+  position:absolute;
+  right:12%; top:16%;
+  width:clamp(36px,5.2vw,78px); aspect-ratio:1;
+  border-radius:50%;
+  opacity:calc(var(--space-mix) * .34);
+  transform:translate3d(calc(var(--cam-x) * -.025),calc(var(--cam-y) * -.025),0) scale(calc(.78 + var(--space-mix) * .22));
+  background:
+    radial-gradient(circle at 34% 31%,rgba(244,248,250,.86),rgba(180,202,218,.58) 45%,rgba(76,102,124,.42) 74%,rgba(34,52,70,.18) 100%);
+  box-shadow:inset -10px -7px 18px rgba(13,29,45,.35),0 0 28px rgba(164,209,235,.10);
+  filter:saturate(.78);
+  transition:opacity .4s linear;
+}
+.high-altitude-moon::after {
+  content:"";
+  position:absolute;
+  width:20%;height:14%;left:25%;top:28%;border-radius:50%;
+  background:rgba(72,91,107,.15);
+  box-shadow:18px 12px 0 rgba(72,91,107,.10),9px 28px 0 -2px rgba(72,91,107,.12);
+}
+
+.orbital-glints {
+  position:absolute;
+  inset:8% 8% 30%;
+  opacity:calc(var(--star-opacity) * .78);
+  transition:opacity .35s linear;
+}
+.orbital-glints i {
+  position:absolute;
+  left:var(--x);top:var(--y);
+  width:2px;height:2px;border-radius:50%;
+  background:#dceeff;
+  box-shadow:0 0 7px rgba(205,233,251,.75);
+  animation:window-star-twinkle 3.9s ease-in-out infinite;
+}
+.orbital-glints i:nth-child(1){--x:18%;--y:24%;animation-delay:-.5s}
+.orbital-glints i:nth-child(2){--x:38%;--y:12%;animation-delay:-1.8s}
+.orbital-glints i:nth-child(3){--x:67%;--y:31%;animation-delay:-2.7s}
+.orbital-glints i:nth-child(4){--x:84%;--y:17%;animation-delay:-1.15s}
+.orbital-glints i::before,
+.orbital-glints i::after {content:"";position:absolute;left:50%;top:50%;background:rgba(210,235,251,.32);transform:translate(-50%,-50%)}
+.orbital-glints i::before{width:8px;height:1px}
+.orbital-glints i::after{width:1px;height:8px}
+@keyframes window-beacon-pulse {0%,100%{opacity:.28;transform:scale(.76)}44%,58%{opacity:1;transform:scale(1)}}
+@keyframes window-star-twinkle {0%,100%{opacity:.24;transform:scale(.72)}48%{opacity:.9;transform:scale(1.14)}}
+
+/* More depth in atmospheric layers, without changing the existing ascent timeline. */
+.atmosphere-bands { animation:window-atmosphere-drift 11s ease-in-out infinite alternate; }
+.horizon-cloud-bank { animation:window-horizon-drift 13s ease-in-out infinite alternate; }
+@keyframes window-atmosphere-drift {from{transform:translateX(-.45%)}to{transform:translateX(.45%)}}
+@keyframes window-horizon-drift {from{margin-left:-.4%}to{margin-left:.4%}}
+
+/* STEP 2 — left/right cockpit structures now behave like active ship systems. */
+.cockpit-side-module {
+  isolation:isolate;
+}
+.cockpit-side-module i {
+  animation:side-indicator-pulse 2.35s ease-in-out infinite;
+  transform-origin:center;
+}
+.cockpit-side-module i:nth-child(1){animation-delay:-.2s}
+.cockpit-side-module i:nth-child(2){animation-delay:-.95s}
+.cockpit-side-module i:nth-child(3){animation-delay:-1.7s}
+.side-module-right i:nth-child(1){animation-delay:-1.35s}
+.side-module-right i:nth-child(2){animation-delay:-.5s}
+.side-module-right i:nth-child(3){animation-delay:-2.05s}
+.cockpit-side-module::after {
+  animation:side-energy-sweep 3.8s ease-in-out infinite;
+  transform-origin:50% 50%;
+}
+.side-module-right::after { animation-delay:-1.9s; }
+.cockpit-pillar::before,
+.cockpit-pillar::after { animation:pillar-signal-pulse 4.2s ease-in-out infinite; }
+.pillar-right::before { animation-delay:-1.2s; }
+.pillar-right::after { animation-delay:-2.7s; }
+@keyframes side-indicator-pulse {
+  0%,100%{opacity:.24;box-shadow:0 0 3px rgba(102,180,216,.08);transform:scaleX(.72)}
+  45%,58%{opacity:.92;box-shadow:0 0 8px rgba(111,190,224,.38);transform:scaleX(1)}
+}
+@keyframes side-energy-sweep {
+  0%,100%{opacity:.28;filter:drop-shadow(0 0 2px rgba(222,175,94,.12)) brightness(.8)}
+  50%{opacity:.92;filter:drop-shadow(0 0 7px rgba(222,175,94,.34)) brightness(1.18)}
+}
+@keyframes pillar-signal-pulse {0%,100%{opacity:.28}52%{opacity:.72}}
+
+/* STEP 3 — Earth is not a tiny planet flying toward the cockpit. It appears as
+   the broad limb of the planet we have just climbed away from, then crossfades
+   into the existing Earth scene which begins on a similarly dominant scale. */
+.arrival-earth {
+  left:50%;
+  top:113%;
+  width:min(142vh,138vw);
+  max-width:none;
+  opacity:calc(var(--earth-reveal) * .94);
+  transform:translate(-50%,-50%) scale(calc(.78 + var(--earth-reveal) * .18));
+  transform-origin:50% 50%;
+  background-position:50% 34%;
+  box-shadow:
+    inset -12vw -5vw 16vw rgba(0,4,12,.80),
+    inset 3vw 1vw 5vw rgba(191,226,255,.12),
+    0 -2px 2px rgba(188,226,255,.74),
+    0 -18px 48px rgba(76,151,213,.24),
+    0 -64px 150px rgba(41,111,174,.12);
+  filter:saturate(.9) contrast(1.05) brightness(calc(.82 + var(--earth-reveal) * .18));
+}
+.arrival-earth::before {
+  content:"";
+  position:absolute;
+  inset:-2%;
+  border-radius:50%;
+  background:radial-gradient(ellipse at 50% 4%,rgba(137,202,244,.20),transparent 31%);
+  pointer-events:none;
+}
+.arrival-earth-shine { background:radial-gradient(circle at 42% 5%,rgba(255,255,255,.13),transparent 24%); }
+.launch-stage[data-phase="earth-reveal"] .arrival-earth,
+.launch-stage[data-phase="approach"] .arrival-earth { animation:earth-limb-breathe 5.4s ease-in-out infinite alternate; }
+@keyframes earth-limb-breathe {from{background-position:49.4% 34%}to{background-position:50.6% 34%}}
+
+/* During the handoff, the cockpit recedes while the planet limb remains the
+   spatial anchor. This removes the old distant-planet rush impression. */
+.launch-stage[data-phase="approach"] .cockpit-camera {
+  transform:translate3d(var(--cam-x),calc(var(--cam-y) - var(--handoff) * 3px),0) rotate(var(--cam-tilt));
+}
+
+@media (max-width:700px) {
+  .ground-beacon-field{left:1%;right:1%;bottom:18%}
+  .high-altitude-moon{right:8%;top:17%;width:clamp(34px,11vw,54px)}
+  .arrival-earth{width:min(138vh,190vw);top:116%}
+}
+@media (prefers-reduced-motion:reduce) {
+  .ground-beacon-field i,.distant-structure-lights i,.orbital-glints i,.cockpit-side-module i,.cockpit-side-module::after,.cockpit-pillar::before,.cockpit-pillar::after,.atmosphere-bands,.horizon-cloud-bank,.arrival-earth { animation:none !important; }
+}
+/* Final crossfade: once the Earth limb is established, fade the launch-world
+   layers themselves so the real Earth renderer underneath takes over smoothly. */
+.launch-stage[data-phase="approach"] .cockpit-world {
+  opacity: calc(1 - var(--handoff) * .94);
+  transition: opacity .08s linear;
 }

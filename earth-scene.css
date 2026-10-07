@@ -192,3 +192,7 @@
     bottom: auto;
   }
 }
+
+/* Launch-to-Earth continuity: Earth renderer fades in softly under the cockpit limb reveal. */
+.mission.is-preparing.is-earth .earth-scene { background:radial-gradient(ellipse at 50% 88%,#0b2948 0%,#061425 38%,#030812 72%); }
+.mission.is-preparing.is-earth .earth-space-haze { opacity:.82; transition:opacity 1.3s ease; }

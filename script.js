@@ -404,7 +404,9 @@ class LaunchVisual {
     const upperAtmosphere = smooth((t - c.upperAtmosphere) / Math.max(.01, c.space - c.upperAtmosphere));
     const spaceMix = smooth((t - c.aboveClouds) / Math.max(.01, c.space - c.aboveClouds));
     const starOpacity = smooth((t - (c.upperAtmosphere - .7)) / Math.max(.01, c.space - c.upperAtmosphere + .7));
-    const earthReveal = smooth((t - c.earthReveal) / Math.max(.01, c.approach - c.earthReveal + .35));
+    // Reveal the Earth limb gradually after the upper atmosphere. This is the
+    // planet we just left below us, not a distant target flying toward us.
+    const earthReveal = smooth((t - (c.space + .55)) / Math.max(.01, c.approach - c.space + .25));
     const handoff = smooth((t - c.approach) / Math.max(.01, c.finish - c.approach));
     const engine = smooth((t - c.ignition) / .8) * (1 - handoff * .82);
 
@@ -423,7 +425,7 @@ class LaunchVisual {
     const camX = micro * shake + Math.sin(t * 1.55) * shake * .28;
     const camY = (Math.cos(t * 16.2) * .34 + Math.cos(t * 2.2) * .22) * shake - ascent * (reducedMotion.matches ? 0 : 2.6);
     const camTilt = reducedMotion.matches ? 0 : (Math.sin(t * 5.1) * .028 + Math.sin(t * 1.1) * .018) * shake;
-    const charLag = phase === "liftoff" ? 3.0 : phase === "clouds" ? 2.5 : phase === "ignition" ? 1.1 : phase === "climb" ? .75 : .35;
+    const charLag = phase === "liftoff" ? 1.45 : phase === "clouds" ? 1.2 : phase === "ignition" ? .72 : phase === "climb" ? .46 : .2;
 
     this.stage.dataset.phase = phase;
     this.stage.style.setProperty("--space-mix", String(spaceMix));
@@ -437,10 +439,10 @@ class LaunchVisual {
     this.stage.style.setProperty("--cam-x", `${camX}px`);
     this.stage.style.setProperty("--cam-y", `${camY}px`);
     this.stage.style.setProperty("--cam-tilt", `${camTilt}deg`);
-    this.stage.style.setProperty("--char-a-x", `${camX * .43 - Math.sin(t * 6.1) * charLag}px`);
-    this.stage.style.setProperty("--char-a-y", `${camY * .38 + charLag}px`);
-    this.stage.style.setProperty("--char-b-x", `${camX * .40 + Math.sin(t * 5.6) * charLag * .78}px`);
-    this.stage.style.setProperty("--char-b-y", `${camY * .36 + charLag * .84}px`);
+    this.stage.style.setProperty("--char-a-x", `${camX * .36 - charLag * .18}px`);
+    this.stage.style.setProperty("--char-a-y", `${camY * .28 + charLag}px`);
+    this.stage.style.setProperty("--char-b-x", `${camX * .34 + charLag * .16}px`);
+    this.stage.style.setProperty("--char-b-y", `${camY * .27 + charLag * .84}px`);
 
     const approachFar = cloudApproach * .5;
     const passDensity = phase === "clouds" ? .50 + Math.sin(t * 1.25) * .07 + Math.sin(t * .53) * .04 : 0;
@@ -661,14 +663,21 @@ class CockpitCompanions {
       clearTimeout(this.talkTimer);
       this.a.classList.remove("is-talking", "is-focused", "is-listening");
       this.b.classList.remove("is-talking", "is-focused", "is-listening");
+      this.a.dataset.role = "idle";
+      this.b.dataset.role = "idle";
       speakerEl.classList.add("is-talking", "is-focused");
       otherEl.classList.add("is-listening");
+      speakerEl.dataset.role = "speaking";
+      otherEl.dataset.role = "listening";
       speakerEl.dataset.expression = entry.emotion || entry.sprite || "neutral";
       otherEl.dataset.expression = entry.otherEmotion || "neutral";
       this.swapSprite(speakerSide, entry.sprite || "talking", immediate);
       if (entry.otherSprite) this.swapSprite(otherSide, entry.otherSprite, immediate);
       const duration = Math.max(3000, entry.duration || Math.min(3400, Math.max(3000, 1050 + entry.text.length * 32)));
-      this.talkTimer = setTimeout(() => speakerEl.classList.remove("is-talking"), duration);
+      this.talkTimer = setTimeout(() => {
+        speakerEl.classList.remove("is-talking");
+        speakerEl.classList.add("is-focused");
+      }, duration);
     };
     if (immediate) apply();
     else {
@@ -801,7 +810,7 @@ function advancePreparation(timestamp) {
 
   // Start the real Earth renderer behind the cockpit before the cockpit fades.
   // This makes the last approach a layered handoff instead of a hard scene cut.
-  if (!earthHandoffStarted && elapsed >= LAUNCH_TIMING.approach) {
+  if (!earthHandoffStarted && elapsed >= LAUNCH_TIMING.earthReveal + 0.55) {
     earthHandoffStarted = true;
     mission.classList.add("is-earth");
     earth.start();

@@ -937,8 +937,8 @@ window.EarthScene = class EarthScene {
 
   renderEarth() {
     const t = this.time;
-    const reveal = this.motion.matches ? 1 : this.smooth(t / 1.25);
-    const framing = this.motion.matches ? 1 : this.smooth((t - 0.35) / 4.4);
+    const reveal = this.motion.matches ? 1 : this.smooth(t / 1.55);
+    const framing = this.motion.matches ? 1 : this.smooth((t - 0.15) / 4.9);
     const infoReveal = this.motion.matches ? 1 : this.smooth((t - 4.3) / 1.35);
     this.element.style.opacity = String(reveal);
 
@@ -951,7 +951,7 @@ window.EarthScene = class EarthScene {
 
     const drift = this.motion.matches ? 0 : Math.sin(t * 0.32) * 0.025;
     const rotation = 4.58 + (this.motion.matches ? 0 : t * 0.026);
-    const distance = this.finalDistance * (0.58 + framing * 0.42);
+    const distance = this.finalDistance * (0.52 + framing * 0.48);
 
     if (this.mode === "webgl") {
       const layout = this.normalLayout();
