@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#091322">
-  <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, Jupiter, dan keajaiban Tata Surya.">
+  <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, Sabuk Asteroid, Jupiter, Saturnus, Uranus, dan keajaiban Tata Surya.">
   <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/orbit.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="asteroid-scene.css">
   <link rel="stylesheet" href="jupiter-scene.css">
   <link rel="stylesheet" href="saturn-scene.css">
+  <link rel="stylesheet" href="uranus-scene.css">
   <script src="exploration-media.js" defer></script>
   <script src="earth-scene.js" defer></script>
   <script src="mars-scene.js" defer></script>
@@ -28,6 +29,7 @@
   <script src="asteroid-scene.js" defer></script>
   <script src="jupiter-scene.js" defer></script>
   <script src="saturn-scene.js" defer></script>
+  <script src="uranus-scene.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -769,8 +771,8 @@
             <span>Jelajahi Saturnus</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
-          <button class="saturn-planet-nav saturn-planet-next" id="saturn-next-planet" type="button" disabled aria-label="Uranus belum tersedia">
-            <span><small>Berikutnya</small><strong>Uranus · Segera</strong></span>
+          <button class="saturn-planet-nav saturn-planet-next" id="saturn-next-planet" type="button" aria-label="Planet selanjutnya: Uranus">
+            <span><small>Planet selanjutnya</small><strong>Uranus</strong></span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
         </div>
@@ -819,6 +821,70 @@
       </aside>
 
       <a class="saturn-credit" href="https://science.nasa.gov/saturn/facts/" target="_blank" rel="noopener noreferrer">Visual: ANTARA · referensi NASA Science / Cassini</a>
+    </section>
+
+    <section class="uranus-scene" id="uranus-scene" aria-labelledby="uranus-title" hidden>
+      <div class="uranus-space-haze" aria-hidden="true"></div>
+      <div class="uranus-viewport" id="uranus-viewport" role="img" aria-label="Uranus, raksasa es berwarna cyan pucat yang berputar hampir menyamping dengan sistem cincin gelap dan sempit mengikuti ekuatornya."></div>
+      <div class="uranus-edge-shade" aria-hidden="true"></div>
+
+      <div class="uranus-caption">
+        <p class="eyebrow" aria-hidden="true"><span></span> RAKSASA ES · PLANET KETUJUH</p>
+        <h2 id="uranus-title" tabindex="-1">Uranus<span>.</span></h2>
+        <p class="uranus-whisper">Raksasa Es yang Berputar Hampir Menyamping.</p>
+        <div class="uranus-arrival-actions" role="group" aria-label="Navigasi planet">
+          <button class="uranus-planet-nav uranus-planet-prev" id="uranus-prev-planet" type="button" aria-label="Planet sebelumnya: Saturnus">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+            <span><small>Planet sebelumnya</small><strong>Saturnus</strong></span>
+          </button>
+          <button class="uranus-explore-button" id="uranus-explore-button" type="button">
+            <span>Jelajahi Uranus</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+          <button class="uranus-planet-nav uranus-planet-next" id="uranus-next-planet" type="button" disabled aria-label="Neptunus belum tersedia">
+            <span><small>Berikutnya</small><strong>Neptunus · Segera</strong></span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="uranus-axis-overlay" id="uranus-axis-overlay" aria-hidden="true" hidden>
+        <span class="uranus-axis-line"></span><span class="uranus-axis-label"><b>97.77°</b><span>SUMBU ROTASI</span></span>
+      </div>
+      <div class="uranus-season-overlay" id="uranus-season-overlay" aria-hidden="true" hidden>
+        <span class="uranus-season-ray"></span><span class="uranus-season-sun"></span>
+      </div>
+      <div class="uranus-ring-annotation" id="uranus-ring-annotation" aria-hidden="true" hidden>
+        <span class="ring-label epsilon">EPSILON</span><span class="ring-label beta">BETA</span><span class="ring-label alpha">ALPHA</span>
+      </div>
+
+      <div class="exploration-marker-media uranus-context-media" id="uranus-context-media" hidden></div>
+
+      <aside class="uranus-exploration" id="uranus-exploration" aria-labelledby="uranus-topic-title" aria-live="polite" inert>
+        <div class="uranus-exploration-topline">
+          <span class="uranus-topic-kicker" id="uranus-topic-kicker">IDENTITAS URANUS</span>
+          <span class="uranus-topic-count"><span id="uranus-topic-current">01</span> / <span id="uranus-topic-total">11</span></span>
+        </div>
+        <h3 id="uranus-topic-title" tabindex="-1">Raksasa Es yang Menyamping</h3>
+        <p class="uranus-topic-subtitle" id="uranus-topic-subtitle"></p>
+        <div class="uranus-topic-scroll">
+          <p class="uranus-topic-summary" id="uranus-topic-summary"></p>
+          <ul class="uranus-topic-facts" id="uranus-topic-facts"></ul>
+        </div>
+        <a class="uranus-topic-source" id="uranus-topic-source" href="https://science.nasa.gov/uranus/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science ↗</a>
+        <div class="uranus-exploration-controls">
+          <button class="uranus-topic-nav" id="uranus-topic-prev" type="button" aria-label="Topik Uranus sebelumnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+          </button>
+          <div class="uranus-topic-progress" id="uranus-topic-progress" aria-hidden="true"></div>
+          <button class="uranus-topic-nav" id="uranus-topic-next" type="button" aria-label="Topik Uranus berikutnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+        <button class="uranus-exploration-close return-panorama-button" id="uranus-exploration-close" type="button">Kembali ke panorama Uranus</button>
+      </aside>
+
+      <a class="uranus-credit" href="https://science.nasa.gov/uranus/facts/" target="_blank" rel="noopener noreferrer">Visual: ANTARA · referensi NASA Science / Voyager 2</a>
     </section>
     <p class="sr-only" id="announcement" role="status" aria-live="polite"></p>
     <noscript><p class="noscript-note">Aktifkan JavaScript untuk memulai persiapan misi dan audio.</p></noscript>
