@@ -263,7 +263,7 @@ window.SunScene = class SunScene {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, cap));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.05;
+    this.renderer.toneMappingExposure = 1.12;
     this.viewport.replaceChildren(canvas);
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(35, 1, 0.1, 240);
@@ -275,31 +275,37 @@ window.SunScene = class SunScene {
         uFlare: { value: 0 },
         uActivity: { value: 0.35 }
       },
-      vertexShader: `varying vec3 vN; varying vec3 vWorld; varying vec2 vUv;
-        void main(){ vN=normalize(normalMatrix*normal); vUv=uv; vec4 world=modelMatrix*vec4(position,1.0); vWorld=world.xyz; gl_Position=projectionMatrix*viewMatrix*world; }`,
-      fragmentShader: `precision highp float; varying vec3 vN; varying vec3 vWorld; varying vec2 vUv; uniform float uTime; uniform float uFlare; uniform float uActivity;
+      vertexShader: `varying vec3 vWorldNormal; varying vec3 vWorld; varying vec2 vUv;
+        void main(){ vWorldNormal=normalize(mat3(modelMatrix)*normal); vUv=uv; vec4 world=modelMatrix*vec4(position,1.0); vWorld=world.xyz; gl_Position=projectionMatrix*viewMatrix*world; }`,
+      fragmentShader: `precision highp float; varying vec3 vWorldNormal; varying vec3 vWorld; varying vec2 vUv; uniform float uTime; uniform float uFlare; uniform float uActivity;
         float hash(vec3 p){ p=fract(p*.3183099+.1); p*=17.; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
         float noise(vec3 p){ vec3 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(mix(hash(i+vec3(0,0,0)),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z); }
         float fbm(vec3 p){ float v=0.; float a=.5; for(int i=0;i<5;i++){v+=a*noise(p); p=p*2.02+vec3(3.1,7.3,1.9); a*=.5;} return v; }
         float spot(vec3 n, vec3 d, float s){ float x=max(dot(normalize(n),normalize(d)),0.); return pow(x,s); }
         void main(){
-          vec3 n=normalize(vN); float t=uTime;
-          vec3 flow=normalize(vec3(n.x+.045*sin(t*.07+n.y*5.), n.y+.025*sin(t*.05+n.z*4.), n.z));
-          float macro=fbm(flow*5.2+vec3(t*.012,-t*.008,t*.006));
-          float cells=noise(flow*72.0+vec3(t*.10,-t*.06,t*.035));
-          float cells2=noise(flow*118.0+vec3(-t*.055,t*.08,-t*.04));
-          float gran=smoothstep(.28,.82,cells)*.62+smoothstep(.38,.78,cells2)*.38;
-          float spots=spot(n,vec3(-.48,.30,.82),38.)*.88 + spot(n,vec3(.42,-.26,.86),58.)*.72 + spot(n,vec3(.10,.55,.82),76.)*.50;
-          float penumbra=spot(n,vec3(-.48,.30,.82),22.)*.52 + spot(n,vec3(.42,-.26,.86),34.)*.42;
-          float active=spot(n,vec3(-.48,.30,.82),15.) + spot(n,vec3(.42,-.26,.86),18.);
-          vec3 dark=vec3(.72,.13,.025); vec3 orange=vec3(1.18,.37,.055); vec3 gold=vec3(1.45,.76,.20); vec3 warm=vec3(1.6,1.18,.58);
-          vec3 col=mix(orange,gold,clamp(.30+.74*gran+.26*macro,0.,1.));
-          col=mix(col,warm,smoothstep(.58,.96,gran)*.32);
-          col=mix(col,dark,clamp(penumbra*.55+spots*.80,0.,.92));
-          col+=vec3(1.0,.34,.08)*active*(.08+.20*uActivity);
-          col+=vec3(2.0,.66,.15)*active*uFlare*.62;
+          vec3 n=normalize(vWorldNormal); float t=uTime;
+          vec3 flow=normalize(vec3(n.x+.042*sin(t*.065+n.y*5.4), n.y+.030*sin(t*.052+n.z*4.7), n.z+.018*sin(t*.041+n.x*6.1)));
+          float macro=fbm(flow*5.4+vec3(t*.011,-t*.007,t*.005));
+          float cells=noise(flow*76.0+vec3(t*.085,-t*.052,t*.031));
+          float cells2=noise(flow*128.0+vec3(-t*.047,t*.071,-t*.036));
+          float gran=smoothstep(.24,.80,cells)*.60+smoothstep(.34,.78,cells2)*.40;
+          float spots=spot(n,vec3(-.48,.30,.82),40.)*.90 + spot(n,vec3(.42,-.26,.86),62.)*.74 + spot(n,vec3(.10,.55,.82),80.)*.46;
+          float penumbra=spot(n,vec3(-.48,.30,.82),21.)*.50 + spot(n,vec3(.42,-.26,.86),33.)*.40 + spot(n,vec3(.10,.55,.82),48.)*.24;
+          float active=spot(n,vec3(-.48,.30,.82),14.) + spot(n,vec3(.42,-.26,.86),17.);
+          vec3 spotDark=vec3(.24,.055,.012);
+          vec3 amber=vec3(1.00,.49,.045);
+          vec3 gold=vec3(1.00,.72,.13);
+          vec3 yellow=vec3(1.00,.89,.38);
+          vec3 cream=vec3(1.00,.97,.68);
+          float structure=clamp(.24+.64*gran+.25*macro,0.,1.);
+          vec3 col=mix(amber,gold,structure);
+          col=mix(col,yellow,smoothstep(.42,.88,gran)*.52);
+          col=mix(col,cream,smoothstep(.72,1.0,gran)*.24);
+          col=mix(col,spotDark,clamp(penumbra*.46+spots*.70,0.,.82));
+          col+=vec3(1.0,.48,.08)*active*(.06+.16*uActivity);
+          col+=vec3(1.0,.66,.16)*active*uFlare*.42;
           float facing=max(dot(n,normalize(cameraPosition-vWorld)),0.0);
-          float limb=.63+.37*pow(facing,.36);
+          float limb=.80+.20*pow(facing,.48);
           col*=limb;
           gl_FragColor=vec4(col,1.0);
         }`
@@ -313,8 +319,8 @@ window.SunScene = class SunScene {
 
     this.chromosphere = new THREE.Mesh(new THREE.SphereGeometry(1.018, 96, 64), new THREE.ShaderMaterial({
       uniforms: { uTime: { value: 0 }, uFlare: { value: 0 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-      vertexShader: `varying vec3 vN; varying vec3 vWorld; void main(){vN=normalize(normalMatrix*normal); vec4 w=modelMatrix*vec4(position,1.); vWorld=w.xyz; gl_Position=projectionMatrix*viewMatrix*w;}`,
-      fragmentShader: `varying vec3 vN; varying vec3 vWorld; uniform float uTime; uniform float uFlare; void main(){float rim=pow(1.-max(dot(normalize(vN),normalize(cameraPosition-vWorld)),0.),3.2); float pulse=.72+.18*sin(uTime*.38+vN.y*23.); gl_FragColor=vec4(1.0,.21,.035,rim*(.18+.10*pulse+.08*uFlare));}`
+      vertexShader: `varying vec3 vWorldNormal; varying vec3 vWorld; void main(){vWorldNormal=normalize(mat3(modelMatrix)*normal); vec4 w=modelMatrix*vec4(position,1.); vWorld=w.xyz; gl_Position=projectionMatrix*viewMatrix*w;}`,
+      fragmentShader: `varying vec3 vWorldNormal; varying vec3 vWorld; uniform float uTime; uniform float uFlare; void main(){float rim=pow(1.-max(dot(normalize(vWorldNormal),normalize(cameraPosition-vWorld)),0.),3.0); float pulse=.78+.12*sin(uTime*.32+vWorldNormal.y*21.); gl_FragColor=vec4(1.0,.47,.08,rim*(.13+.075*pulse+.055*uFlare));}`
     }));
     this.sunGroup.add(this.chromosphere);
 
@@ -349,30 +355,83 @@ window.SunScene = class SunScene {
       transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
       vertexShader: `varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
       fragmentShader: `precision highp float; varying vec2 vUv; uniform float uTime; uniform float uOpacity; uniform float uSeed; uniform float uFlare;
-        float h(float x){return fract(sin(x*127.1+uSeed*91.7)*43758.5453);} void main(){vec2 p=vUv-.5; float r=length(p)*2.; float a=atan(p.y,p.x); if(r<.405||r>1.) discard; float wave=sin(a*5.+uSeed*2.1+uTime*.055)*.5+.5; float wave2=sin(a*11.-uTime*.034+uSeed*4.7)*.5+.5; float streams=pow(.22+.78*wave,3.)*.68+pow(.18+.82*wave2,5.)*.32; float asym=.58+.42*sin(a*2.3+uSeed+uTime*.016); float fall=pow(1.-smoothstep(.40,1.,r),1.65); float inner=smoothstep(.40,.48,r); float alpha=inner*fall*(.20+.80*streams)*(.62+.38*asym)*uOpacity; alpha*=1.+uFlare*.22; vec3 col=mix(vec3(1.,.22,.035),vec3(1.,.79,.34),clamp((r-.4)*1.7,0.,1.)); gl_FragColor=vec4(col,alpha);}`
+        float h(float x){return fract(sin(x*127.1+uSeed*91.7)*43758.5453);} void main(){vec2 p=vUv-.5; float r=length(p)*2.; float a=atan(p.y,p.x); if(r<.405||r>1.) discard; float wave=sin(a*5.+uSeed*2.1+uTime*.055)*.5+.5; float wave2=sin(a*11.-uTime*.034+uSeed*4.7)*.5+.5; float streams=pow(.22+.78*wave,3.)*.68+pow(.18+.82*wave2,5.)*.32; float asym=.58+.42*sin(a*2.3+uSeed+uTime*.016); float fall=pow(1.-smoothstep(.40,1.,r),1.65); float inner=smoothstep(.40,.48,r); float alpha=inner*fall*(.20+.80*streams)*(.62+.38*asym)*uOpacity; alpha*=1.+uFlare*.18; vec3 col=mix(vec3(1.,.50,.075),vec3(1.,.88,.46),clamp((r-.4)*1.7,0.,1.)); gl_FragColor=vec4(col,alpha);}`
     });
     return new THREE.Mesh(geometry, material);
   }
 
   createProminences(THREE) {
     const specs = [
-      { a: -2.15, span: .52, h: .34, z: .035, color: 0xff6a30 },
-      { a: .55, span: .42, h: .26, z: .05, color: 0xffb14b },
-      { a: 2.35, span: .32, h: .20, z: -.02, color: 0xff5b38 }
+      { a: -2.12, span: .58, h: .30, z: .035, width: .020, phase: .4 },
+      { a: .57, span: .46, h: .23, z: .050, width: .016, phase: 2.2 },
+      { a: 2.33, span: .35, h: .17, z: -.015, width: .013, phase: 4.1 }
     ];
-    this.prominences = [];
-    specs.forEach((spec, index) => {
-      const a0 = spec.a - spec.span * .5, a1 = spec.a + spec.span * .5, am = (a0 + a1) * .5;
-      const p0 = new THREE.Vector3(Math.cos(a0)*1.005, Math.sin(a0)*1.005, spec.z);
-      const p1 = new THREE.Vector3(Math.cos(am)*(1.005+spec.h), Math.sin(am)*(1.005+spec.h), spec.z+.04);
-      const p2 = new THREE.Vector3(Math.cos(a1)*1.005, Math.sin(a1)*1.005, spec.z);
-      const curve = new THREE.QuadraticBezierCurve3(p0, p1, p2);
-      const geometry = new THREE.TubeGeometry(curve, 64, .012 + index*.002, 8, false);
-      const material = new THREE.MeshBasicMaterial({ color: spec.color, transparent: true, opacity: .48, blending: THREE.AdditiveBlending, depthWrite: false });
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.renderOrder = 3;
-      this.prominenceGroup.add(mesh);
-      this.prominences.push(mesh);
+    this.prominences = specs.map((spec, index) => this.createProminenceRibbon(THREE, spec, index));
+  }
+
+  createProminenceRibbon(THREE, spec, index) {
+    const segments = 112;
+    const positions = new Float32Array((segments + 1) * 2 * 3);
+    const uvs = new Float32Array((segments + 1) * 2 * 2);
+    const along = new Float32Array((segments + 1) * 2);
+    const indices = [];
+    const a0 = spec.a - spec.span * .5;
+    const a1 = spec.a + spec.span * .5;
+    for (let i = 0; i <= segments; i++) {
+      const t = i / segments;
+      const arch = Math.pow(Math.sin(Math.PI * t), 1.08);
+      const angle = a0 + (a1 - a0) * t;
+      const ripple = (Math.sin(t * 17.0 + spec.phase) * .010 + Math.sin(t * 31.0 + spec.phase * 1.7) * .004) * arch;
+      const radius = 1.007 + spec.h * arch + ripple;
+      const cx = Math.cos(angle) * radius;
+      const cy = Math.sin(angle) * radius;
+      const cz = spec.z + Math.sin(Math.PI * t) * .018 + Math.sin(t * 13.0 + spec.phase) * .004 * arch;
+      const radialX = Math.cos(angle);
+      const radialY = Math.sin(angle);
+      const taper = Math.pow(Math.sin(Math.PI * t), .62);
+      const irregular = .72 + .20 * Math.sin(t * 23.0 + spec.phase) + .08 * Math.sin(t * 47.0 + spec.phase * .6);
+      const halfWidth = spec.width * taper * Math.max(.48, irregular);
+      for (let side = 0; side < 2; side++) {
+        const sign = side ? 1 : -1;
+        const vi = (i * 2 + side) * 3;
+        positions[vi] = cx + radialX * halfWidth * sign;
+        positions[vi + 1] = cy + radialY * halfWidth * sign;
+        positions[vi + 2] = cz;
+        const ui = (i * 2 + side) * 2;
+        uvs[ui] = t;
+        uvs[ui + 1] = side;
+        along[i * 2 + side] = t;
+      }
+      if (i < segments) {
+        const a = i * 2, b = a + 1, c = a + 2, d = a + 3;
+        indices.push(a, c, b, b, c, d);
+      }
+    }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
+    geometry.setAttribute("aAlong", new THREE.BufferAttribute(along, 1));
+    geometry.setIndex(indices);
+    const material = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 }, uPhase: { value: spec.phase }, uStrength: { value: .72 + index * .04 } },
+      transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending,
+      vertexShader: `attribute float aAlong; varying vec2 vUv; varying float vAlong; uniform float uTime; uniform float uPhase; void main(){vUv=uv;vAlong=aAlong;vec3 p=position;float arch=sin(3.14159265*aAlong);float wobble=(sin(aAlong*19.0+uTime*.24+uPhase)*.005+sin(aAlong*37.0-uTime*.17+uPhase)*.0025)*arch;p.xy+=normalize(p.xy)*wobble;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}`,
+      fragmentShader: `precision highp float; varying vec2 vUv; varying float vAlong; uniform float uTime; uniform float uPhase; uniform float uStrength; void main(){float edge=1.0-abs(vUv.y*2.0-1.0);edge=smoothstep(0.0,.78,edge);float taper=pow(max(sin(3.14159265*vAlong),0.0),.58);float pulse=.84+.16*sin(vAlong*15.0-uTime*.21+uPhase);float strands=.78+.22*sin(vAlong*43.0+uTime*.12+uPhase*2.0);float alpha=edge*taper*pulse*strands*uStrength;vec3 col=mix(vec3(1.0,.25,.035),vec3(1.0,.74,.19),.35+.45*edge);gl_FragColor=vec4(col,alpha*.58);}`
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.renderOrder = 3;
+    this.prominenceGroup.add(mesh);
+    return mesh;
+  }
+
+  updateProminences(blend = 0, flareStrength = 0) {
+    if (!this.prominences) return;
+    this.prominenceGroup.rotation.z = this.time * .0018;
+    this.prominences.forEach((mesh, i) => {
+      mesh.material.uniforms.uTime.value = this.time;
+      mesh.material.uniforms.uStrength.value = (.64 + .09 * Math.sin(this.time * (.10 + i * .018) + i * 1.6) + flareStrength * .07) * (1 - .14 * blend);
+      const pulse = 1 + .008 * Math.sin(this.time * .13 + i * 1.3);
+      mesh.scale.setScalar(pulse);
     });
   }
 
@@ -507,19 +566,44 @@ window.SunScene = class SunScene {
   }
 
   enterExploration(){
-    if(!this.active||this.travelMode||this.exploring)return; this.exploring=true; this.element.classList.add("is-exploring"); this.caption.inert=true; this.exploration.inert=false; this.explorationBlendTarget=1; this.setExplorationStop(this.topicIndex,{immediate:true,announce:false}); if(!this.frame){this.previous=performance.now();this.tick(this.previous);} requestAnimationFrame(()=>this.topicTitle.focus({preventScroll:true}));
+    if(!this.active||this.travelMode||this.exploring)return;
+    this.exploring=true;
+    this.explorationBlendTarget=1;
+    this.element.classList.add("is-exploring");
+    this.caption.inert=true;
+    this.credit.tabIndex=-1;
+    this.exploration.inert=false;
+    this.setExplorationStop(this.topicIndex,{immediate:true,announce:false});
+    if(this.motion.matches){this.explorationBlend=1;this.render();}
+    else if(!this.frame){this.previous=performance.now();this.tick(this.previous);}
+    document.getElementById("announcement").textContent=`Mode eksplorasi Matahari dimulai. ${SUN_INFO_STOPS[this.topicIndex].title}.`;
+    requestAnimationFrame(()=>this.topicTitle.focus({preventScroll:true}));
   }
 
   exitExploration(){
-    if(!this.exploring)return; window.ExplorationMedia?.closeLightbox?.({restoreFocus:false}); this.exploring=false; this.element.classList.remove("is-exploring"); this.exploration.inert=true; this.caption.inert=false; this.explorationBlendTarget=0; this.contextMedia.hidden=true; this.contextMedia.replaceChildren(); if(!this.frame){this.previous=performance.now();this.tick(this.previous);} requestAnimationFrame(()=>this.exploreButton.focus({preventScroll:true}));
+    if(!this.exploring)return;
+    window.ExplorationMedia?.closeLightbox?.({restoreFocus:false});
+    this.exploring=false;
+    this.explorationBlendTarget=0;
+    this.element.classList.remove("is-exploring");
+    this.exploration.inert=true;
+    this.caption.inert=false;
+    this.credit.tabIndex=0;
+    this.contextMedia.hidden=true;
+    this.contextMedia.replaceChildren();
+    if(this.motion.matches){this.explorationBlend=0;this.render();}
+    else if(!this.frame){this.previous=performance.now();this.tick(this.previous);}
+    document.getElementById("announcement").textContent="Kembali ke panorama Matahari.";
+    requestAnimationFrame(()=>this.exploreButton.focus({preventScroll:true}));
   }
 
   setExplorationStop(index,{immediate=false,announce=true}={}){
-    const total=SUN_INFO_STOPS.length; this.topicIndex=(index%total+total)%total; const stop=SUN_INFO_STOPS[this.topicIndex];
+    const total=SUN_INFO_STOPS.length; this.topicIndex=Math.max(0,Math.min(total-1,index)); const stop=SUN_INFO_STOPS[this.topicIndex];
     const apply=()=>{
       this.topicKicker.textContent=stop.kicker; this.topicTitle.textContent=stop.title; this.topicSubtitle.textContent=stop.subtitle; this.topicSummary.textContent=stop.summary;
       this.topicFacts.replaceChildren(...stop.facts.map(text=>{const li=document.createElement("li");li.textContent=text;return li;}));
       this.topicSource.href=stop.source; this.topicCurrent.textContent=String(this.topicIndex+1).padStart(2,"0"); [...this.topicProgress.children].forEach((el,i)=>el.classList.toggle("is-active",i===this.topicIndex));
+      this.topicPrev.disabled=this.topicIndex===0; this.topicNext.disabled=this.topicIndex===total-1;
       if(this.exploring) window.ExplorationMedia?.render?.("sun",stop,this.contextMedia);
       if(announce) document.getElementById("announcement").textContent=`Topik Matahari: ${stop.title}.`;
       if(this.topicScroll) this.topicScroll.scrollTop=0;
@@ -542,18 +626,19 @@ window.SunScene = class SunScene {
   normalLayout(){ const dist=5.45; const half=Math.tan((35*Math.PI/180)/2)*dist; return {distance:dist,half,x:half*(this.width/this.height)*(this.mobile?0:.25),y:half*(this.mobile?.20:.08),scale:this.mobile?.86:1}; }
 
   renderSun(){
-    const layout=this.normalLayout(); const blend=this.explorationBlend; const groupX=layout.x + blend*layout.half*(this.mobile?0:-.42); const groupScale=layout.scale*(1-blend*(this.mobile?.12:.18)); const cameraX=this.cameraOffset.x*.12*(1-blend), cameraY=-this.cameraOffset.y*.08*(1-blend);
+    const layout=this.normalLayout(); const blend=this.explorationBlend; const groupX=layout.x + blend*layout.half*(this.mobile?0:.20); const groupY=layout.y + blend*layout.half*(this.mobile?.24:0); const groupScale=layout.scale*(1-blend*(this.mobile?.08:.06)); const cameraX=this.cameraOffset.x*.12*(1-blend), cameraY=-this.cameraOffset.y*.08*(1-blend);
     this.renderedRotation=.35+this.time*.008;
     if(this.mode==="webgl"){
-      this.sunGroup.visible=true; this.sunGroup.position.set(groupX,layout.y,0); this.sunGroup.scale.setScalar(groupScale); this.photosphere.rotation.y=this.renderedRotation; this.photosphereMaterial.uniforms.uTime.value=this.time; this.photosphereMaterial.uniforms.uFlare.value=this.solarEvent.strength; this.photosphereMaterial.uniforms.uActivity.value=.35+.25*this.solarEvent.strength;
+      this.renderer.toneMappingExposure=1.12;
+      this.sunGroup.visible=true; this.sunGroup.position.set(groupX,groupY,0); this.sunGroup.scale.setScalar(groupScale); this.photosphere.rotation.y=this.renderedRotation; this.photosphereMaterial.uniforms.uTime.value=this.time; this.photosphereMaterial.uniforms.uFlare.value=this.solarEvent.strength; this.photosphereMaterial.uniforms.uActivity.value=.35+.25*this.solarEvent.strength;
       this.chromosphere.material.uniforms.uTime.value=this.time; this.chromosphere.material.uniforms.uFlare.value=this.solarEvent.strength;
-      this.corona.material.uniforms.uTime.value=this.time; this.corona.material.uniforms.uFlare.value=this.solarEvent.strength; this.corona.position.x=groupX; this.corona.position.y=layout.y; this.corona.scale.setScalar(groupScale);
-      this.coronaOuter.material.uniforms.uTime.value=this.time*.78; this.coronaOuter.material.uniforms.uFlare.value=this.solarEvent.strength; this.coronaOuter.position.x=groupX; this.coronaOuter.position.y=layout.y; this.coronaOuter.scale.setScalar(groupScale);
-      this.prominenceGroup.rotation.z=this.time*.0055; this.prominences.forEach((mesh,i)=>{mesh.material.opacity=(.32+.13*Math.sin(this.time*(.13+i*.025)+i*1.7))*(1-.30*blend); mesh.scale.setScalar(1+.018*Math.sin(this.time*.17+i));});
+      this.corona.material.uniforms.uTime.value=this.time; this.corona.material.uniforms.uFlare.value=this.solarEvent.strength; this.corona.position.x=groupX; this.corona.position.y=groupY; this.corona.scale.setScalar(groupScale);
+      this.coronaOuter.material.uniforms.uTime.value=this.time*.78; this.coronaOuter.material.uniforms.uFlare.value=this.solarEvent.strength; this.coronaOuter.position.x=groupX; this.coronaOuter.position.y=groupY; this.coronaOuter.scale.setScalar(groupScale);
+      this.updateProminences(blend,this.solarEvent.strength);
       if(this.travelMercuryGroup)this.travelMercuryGroup.visible=false;
       this.camera.position.set(cameraX,cameraY,layout.distance); this.camera.lookAt(cameraX*.24,cameraY*.16,0); this.renderer.render(this.scene,this.camera);
     } else if(this.mode==="canvas") this.drawCanvasSun(layout,blend); else {
-      const sphere=this.viewport.querySelector(".sun-emergency-sphere"), corona=this.viewport.querySelector(".sun-emergency-corona"); const left=50+(this.mobile?0:7)-blend*(this.mobile?0:13); if(sphere){sphere.style.left=`${left}%`;sphere.style.transform=`translate(-50%,-50%) scale(${groupScale}) rotate(${this.renderedRotation*.18}rad)`;} if(corona){corona.style.left=`${left}%`;corona.style.transform=`translate(-50%,-50%) scale(${groupScale*(1+.03*Math.sin(this.time*.2))})`;}
+      const sphere=this.viewport.querySelector(".sun-emergency-sphere"), corona=this.viewport.querySelector(".sun-emergency-corona"); const left=50+(this.mobile?0:7)+blend*(this.mobile?0:6); const top=(this.mobile?38:49)-blend*(this.mobile?8:0); if(sphere){sphere.style.left=`${left}%`;sphere.style.top=`${top}%`;sphere.style.transform=`translate(-50%,-50%) scale(${groupScale}) rotate(${this.renderedRotation*.18}rad)`;} if(corona){corona.style.left=`${left}%`;corona.style.top=`${top}%`;corona.style.transform=`translate(-50%,-50%) scale(${groupScale*(1+.03*Math.sin(this.time*.2))})`;}
     }
   }
 
@@ -564,10 +649,10 @@ window.SunScene = class SunScene {
     if(!reverse&&s.progress>=.84&&!this.travelRevealFired){this.travelRevealFired=true;this.travelCallbacks.onReveal?.();}
     if(reverse&&s.progress>=.20&&!this.travelCoveredFired){this.travelCoveredFired=true;this.travelCallbacks.onCovered?.();}
     if(this.mode==="webgl"){
-      this.sunGroup.visible=sunP>.01; this.sunGroup.position.set(sunX,layout.y,0); this.sunGroup.scale.setScalar(sunScale); this.photosphere.rotation.y=.35+this.time*.008; this.photosphereMaterial.uniforms.uTime.value=this.time; this.photosphereMaterial.uniforms.uFlare.value=this.solarEvent.strength*.55;
-      this.chromosphere.material.uniforms.uTime.value=this.time; this.corona.position.set(sunX,layout.y,-.12); this.corona.scale.setScalar(sunScale); this.corona.material.uniforms.uTime.value=this.time; this.corona.material.uniforms.uOpacity.value=.29*(.45+.55*sunP); this.coronaOuter.position.set(sunX,layout.y,-.18); this.coronaOuter.scale.setScalar(sunScale); this.coronaOuter.material.uniforms.uTime.value=this.time*.78; this.coronaOuter.material.uniforms.uOpacity.value=.17*(.35+.65*sunP);
+      this.sunGroup.visible=sunP>.01; this.sunGroup.position.set(sunX,layout.y,0); this.sunGroup.scale.setScalar(sunScale); this.photosphere.rotation.y=.35+this.time*.008; this.photosphereMaterial.uniforms.uTime.value=this.time; this.photosphereMaterial.uniforms.uFlare.value=this.solarEvent.strength*.55; this.updateProminences(.08,this.solarEvent.strength*.55);
+      this.chromosphere.material.uniforms.uTime.value=this.time; this.chromosphere.material.uniforms.uFlare.value=this.solarEvent.strength*.55; this.corona.position.set(sunX,layout.y,-.12); this.corona.scale.setScalar(sunScale); this.corona.material.uniforms.uTime.value=this.time; this.corona.material.uniforms.uFlare.value=this.solarEvent.strength*.55; this.corona.material.uniforms.uOpacity.value=.29*(.45+.55*sunP); this.coronaOuter.position.set(sunX,layout.y,-.18); this.coronaOuter.scale.setScalar(sunScale); this.coronaOuter.material.uniforms.uTime.value=this.time*.78; this.coronaOuter.material.uniforms.uFlare.value=this.solarEvent.strength*.55; this.coronaOuter.material.uniforms.uOpacity.value=.17*(.35+.65*sunP);
       this.travelMercuryGroup.visible=mercuryP>.01; this.travelMercuryGroup.position.set(mercuryX,layout.y,0); this.travelMercuryGroup.scale.setScalar(mercuryScale); this.travelMercury.rotation.set(.09,(reverse?this.travelMercuryStartRotation:.62)+this.time*.014,.12); this.travelMercuryMaterial.opacity=this.clamp(mercuryP); this.travelMercuryMaterial.depthWrite=mercuryP>.98;
-      this.camera.position.set(0,0,layout.distance*(1+.42*Math.sin(s.cross*Math.PI))); this.camera.lookAt(0,0,0); this.renderer.toneMappingExposure=.92+.13*(reverse?s.arrive:1-s.depart*.3); this.renderer.render(this.scene,this.camera);
+      this.camera.position.set(0,0,layout.distance*(1+.42*Math.sin(s.cross*Math.PI))); this.camera.lookAt(0,0,0); this.renderer.toneMappingExposure=1.06+.08*(reverse?s.arrive:1-s.depart*.25); this.renderer.render(this.scene,this.camera);
     } else if(this.mode==="canvas") this.drawCanvasTravel(s,reverse,{sunX,sunScale,mercuryX,mercuryScale,sunP,mercuryP,layout});
     else if(this.mode==="css") {
       const sphere=this.viewport.querySelector(".sun-emergency-sphere"), corona=this.viewport.querySelector(".sun-emergency-corona"), mercury=this.viewport.querySelector(".sun-emergency-mercury");
@@ -576,21 +661,21 @@ window.SunScene = class SunScene {
       if(corona){corona.style.left=`${toPercent(sunX)}%`;corona.style.opacity=String(.7*sunP);corona.style.transform=`translate(-50%,-50%) scale(${sunScale})`;}
       if(mercury){mercury.style.display=mercuryP>.01?"block":"none";mercury.style.left=`${toPercent(mercuryX)}%`;mercury.style.opacity=String(mercuryP);mercury.style.transform=`translate(-50%,-50%) scale(${mercuryScale})`;}
     }
-    if(s.progress>=.999&&!this.travelCompleteFired){ this.travelCompleteFired=true; const callback=this.travelCallbacks.onComplete; if(reverse){ this.travelMode=null; this.travelCallbacks={}; this.element.classList.remove("is-leaving"); this.element.style.opacity="1"; this.caption.classList.add("is-visible"); this.caption.inert=false; this.caption.style.opacity="1"; this.credit.style.opacity=".9"; if(this.travelMercuryGroup)this.travelMercuryGroup.visible=false; if(this.renderer)this.renderer.toneMappingExposure=1.05; document.getElementById("announcement").textContent="Tiba di Matahari."; } callback?.(); }
+    if(s.progress>=.999&&!this.travelCompleteFired){ this.travelCompleteFired=true; const callback=this.travelCallbacks.onComplete; if(reverse){ this.travelMode=null; this.travelCallbacks={}; this.element.classList.remove("is-leaving"); this.element.style.opacity="1"; this.caption.classList.add("is-visible"); this.caption.inert=false; this.caption.style.opacity="1"; this.credit.style.opacity=".9"; if(this.travelMercuryGroup)this.travelMercuryGroup.visible=false; if(this.renderer)this.renderer.toneMappingExposure=1.12; document.getElementById("announcement").textContent="Tiba di Matahari."; } callback?.(); }
   }
 
   drawCanvasSun(layout,blend){
-    const ctx=this.ctx,w=this.width,h=this.height; ctx.clearRect(0,0,w,h); this.drawCanvasStars(ctx,w,h); const x=w*.5+(this.mobile?0:w*.07)-blend*(this.mobile?0:w*.13), y=h*(.49+layout.y*.02), r=Math.min(w,h)*(this.mobile?.29:.34)*(1-blend*(this.mobile?.12:.18)); this.drawSunDisc(ctx,x,y,r,1); if(this.solarEvent.strength>.12)this.drawCanvasEjecta(ctx,x,y,r,this.solarEvent.strength);
+    const ctx=this.ctx,w=this.width,h=this.height; ctx.clearRect(0,0,w,h); this.drawCanvasStars(ctx,w,h); const x=w*.5+(this.mobile?0:w*.07)+blend*(this.mobile?0:w*.06), y=h*(.49+layout.y*.02)-blend*(this.mobile?h*.08:0), r=Math.min(w,h)*(this.mobile?.29:.34)*(1-blend*(this.mobile?.08:.06)); this.drawSunDisc(ctx,x,y,r,1); if(this.solarEvent.strength>.12)this.drawCanvasEjecta(ctx,x,y,r,this.solarEvent.strength);
   }
 
   drawCanvasStars(ctx,w,h){ ctx.save(); for(let i=0;i<180;i++){const a=Math.sin((i+2)*91.17)*43758.5453,b=Math.sin((i+4)*17.53)*14375.921;const x=(a-Math.floor(a))*w,y=(b-Math.floor(b))*h;ctx.globalAlpha=.12+(i%7)*.035;ctx.fillStyle="#c9d7e6";ctx.fillRect(x,y,i%11===0?1.4:.8,i%11===0?1.4:.8);} ctx.restore(); }
 
   drawSunDisc(ctx,x,y,r,opacity=1){
     ctx.save(); ctx.globalAlpha=opacity; const corona=ctx.createRadialGradient(x,y,r*.82,x,y,r*1.6); corona.addColorStop(0,"rgba(255,160,54,0)");corona.addColorStop(.55,"rgba(255,116,38,.14)");corona.addColorStop(1,"rgba(255,92,28,0)");ctx.fillStyle=corona;ctx.beginPath();ctx.arc(x,y,r*1.65,0,Math.PI*2);ctx.fill();
-    const g=ctx.createRadialGradient(x-r*.28,y-r*.34,r*.08,x,y,r);g.addColorStop(0,"#fff1a8");g.addColorStop(.43,"#ffc34c");g.addColorStop(.78,"#e97825");g.addColorStop(1,"#8e2e17");ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.clip();
+    const g=ctx.createRadialGradient(x-r*.18,y-r*.22,r*.06,x,y,r);g.addColorStop(0,"#fff7bd");g.addColorStop(.34,"#ffe56b");g.addColorStop(.72,"#ffc43a");g.addColorStop(1,"#e99222");ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.clip();
     for(let i=0;i<190;i++){const s=i+this.time*.55;const a=(Math.sin(s*12.9898)*43758.5453)%1,b=(Math.sin(s*78.233)*19642.349)%1;const ang=(a-Math.floor(a))*Math.PI*2,rad=Math.sqrt(b-Math.floor(b))*r*.94,cx=x+Math.cos(ang)*rad,cy=y+Math.sin(ang)*rad,sz=2+(i%7)*.75;ctx.globalAlpha=.055+(i%5)*.018;ctx.fillStyle=i%3?"#fff3a8":"#9d381c";ctx.beginPath();ctx.ellipse(cx,cy,sz*1.8,sz,ang,0,Math.PI*2);ctx.fill();}
     ctx.globalAlpha=.72;ctx.fillStyle="#5b2619";ctx.beginPath();ctx.ellipse(x-r*.37,y-r*.18,r*.085,r*.042,-.25,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(x+r*.28,y+r*.23,r*.062,r*.032,.32,0,Math.PI*2);ctx.fill();ctx.restore();
-    ctx.save();ctx.globalAlpha=.55;ctx.strokeStyle="#ff7b3e";ctx.lineWidth=Math.max(1.5,r*.012);ctx.shadowColor="#ff6d30";ctx.shadowBlur=r*.05;for(let i=0;i<3;i++){const a=[-2.1,.58,2.32][i],span=[.55,.42,.32][i],hh=[.34,.26,.20][i];const x0=x+Math.cos(a-span/2)*r,y0=y+Math.sin(a-span/2)*r,x1=x+Math.cos(a)*r*(1+hh),y1=y+Math.sin(a)*r*(1+hh),x2=x+Math.cos(a+span/2)*r,y2=y+Math.sin(a+span/2)*r;ctx.beginPath();ctx.moveTo(x0,y0);ctx.quadraticCurveTo(x1,y1,x2,y2);ctx.stroke();}ctx.restore();
+    ctx.save();ctx.globalCompositeOperation="lighter";ctx.shadowColor="#ff9c42";ctx.shadowBlur=r*.025;const arcs=[[-2.12,.58,.30],[.57,.46,.23],[2.33,.35,.17]];for(let i=0;i<arcs.length;i++){const [a,span,hh]=arcs[i];for(let strand=0;strand<3;strand++){ctx.beginPath();const steps=54;for(let j=0;j<=steps;j++){const t=j/steps,arch=Math.pow(Math.sin(Math.PI*t),1.08),ang=a-span*.5+span*t;const ripple=(Math.sin(t*17+i*2.1+strand*.8)*.009+Math.sin(t*31+i)*.004)*arch;const rr=r*(1+hh*arch+ripple)+(strand-1)*r*.006*arch;const px=x+Math.cos(ang)*rr,py=y+Math.sin(ang)*rr;if(j===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}ctx.globalAlpha=.20+strand*.07;ctx.strokeStyle=strand===1?"#ffb03f":"#ff6f2d";ctx.lineWidth=Math.max(.7,r*(.0035+strand*.0015));ctx.stroke();}}ctx.restore();
   }
 
   drawCanvasEjecta(ctx,x,y,r,strength){ ctx.save();ctx.translate(x,y);ctx.rotate(-.72);ctx.strokeStyle=`rgba(255,158,70,${.12+.30*strength})`;ctx.lineWidth=2;for(let i=0;i<9;i++){ctx.beginPath();ctx.moveTo(r*.86,(i-4)*r*.015);ctx.quadraticCurveTo(r*(1.05+i*.025),-r*(.10+i*.018),r*(1.25+i*.06),-r*(.16+i*.025));ctx.stroke();}ctx.restore(); }
