@@ -319,3 +319,59 @@ window.SaturnScene = class SaturnScene {
   P._updateFocusMarker=function(){if(!this.focusReticle||!this.exploring||!this._activeMarker||this.mode!=="webgl"){this.focusReticle?.classList.remove("is-marker-visible");return;}const anchor=this._activeMarker==="hexagon"?this.hexAnchor:this._activeMarker==="ring"?this.ringAnchor:null;if(!anchor){this.focusReticle.classList.remove("is-marker-visible");return;}anchor.getWorldPosition(this._markerWorld);this.planet.getWorldPosition(this._planetWorld);let visible=true;if(this._activeMarker==="hexagon"){this._surfaceNormal.copy(this._markerWorld).sub(this._planetWorld).normalize();this._toCamera.copy(this.camera.position).sub(this._markerWorld).normalize();visible=this._surfaceNormal.dot(this._toCamera)>.01;}this._projected.copy(this._markerWorld).project(this.camera);visible=visible&&this._projected.z<1&&Math.abs(this._projected.x)<1.05&&Math.abs(this._projected.y)<1.05;if(!visible){this.focusReticle.classList.remove("is-marker-visible");return;}const x=(this._projected.x*.5+.5)*this.width,y=(-this._projected.y*.5+.5)*this.height;this.focusReticle.style.left=`${x}px`;this.focusReticle.style.top=`${y}px`;this.focusReticle.style.setProperty("--marker-opacity",".94");this.focusReticle.classList.add("is-marker-visible");this.focusReticle.classList.toggle("is-left",x+245>this.width);};
   P.renderSaturn=function(){this._ensureFeatureState();const blend=this.explorationBlend,x=this.mobile?0:(.66+blend*.1),y=this.mobile?(-.03-blend*.12):(.015+blend*.01),scale=this.mobile?.76:1.0;const idle=2.2+this.time*.026,subtle=this.exploring&&this.focusState==="FOCUSED_IDLE"?Math.sin(this.time*.13)*.014:0;this.renderedRotation=this.exploring?this.focusYaw+subtle:idle;if(this.mode==="webgl"){if(this.stars)this.stars.position.x=0;this.travelJupiterGroup.visible=false;this.planetGroup.visible=true;this.planetMaterial.transparent=false;this.planetMaterial.opacity=1;this.planetMaterial.depthWrite=true;this.atmosphere.visible=true;this.ringShadow.visible=true;if(this.cloudLayer)this.cloudLayer.material.opacity=.105;if(this.ring?.material?.uniforms?.uOpacity)this.ring.material.uniforms.uOpacity.value=1;this.planetGroup.position.set(x,y,0);this.planetGroup.scale.setScalar(scale);this.planetGroup.rotation.x=this.exploring?this.focusPitch:-.28;this.planetGroup.rotation.z=-.14;this.planet.rotation.y=this.renderedRotation;if(this.cloudLayer)this.cloudLayer.rotation.y=this.renderedRotation+this.time*.0035;this.ring.material.uniforms.uTime.value=this.time;const z=this.exploring?this.focusCameraZ:7.0;this.camera.position.set(this.motion.matches?0:this.cameraOffset.x*.11,this.motion.matches?0:-this.cameraOffset.y*.07,z);this.camera.lookAt(0,0,0);this.renderer.render(this.scene,this.camera);this._updateFocusMarker();}else{this.drawCanvasSaturn(x,y,scale);this.focusReticle?.classList.remove("is-marker-visible");}if(this.time>1.1&&!this.travelMode){this.caption.classList.add("is-visible");this.caption.inert=this.exploring;this.credit.style.opacity=this.exploring?"0":".9";}};
 })();
+
+
+/* ===== ANTARA VISUAL HANDOFF FIX: real Jupiter source + seamless Saturn handoff ===== */
+(() => {
+  const P=window.SaturnScene?.prototype;
+  if(!P||P.__visualHandoffV1)return; P.__visualHandoffV1=true;
+  const JUPITER_LIGHT={exposure:1.12,hemiSky:0xd8e4f3,hemiGround:0x1a0e0b,hemiIntensity:1.25,keyColor:0xffedcf,keyIntensity:3.0,keyPosition:[-4,3.2,5.5],fillColor:0xc9d9ef,fillIntensity:.55,fillPosition:[3,-1,2]};
+
+  P.bindJupiterVisualSource=function(jupiterScene){
+    if(!jupiterScene)return false;this._jupiterVisualOwner=jupiterScene;
+    if(!this.scene||!jupiterScene.scene||!jupiterScene.planetGroup||this.mode!=="webgl"||jupiterScene.mode!=="webgl")return false;
+    if(!this._legacyTravelJupiterGroup){this._legacyTravelJupiterGroup=this.travelJupiterGroup;this._legacyTravelJupiter=this.travelJupiter;this._legacyTravelJupiterMaterial=this.travelJupiterMaterial;}
+    return true;
+  };
+
+  P._snapshotSaturnLighting=function(){if(this._saturnBaseLighting||!this.scene)return;const hemi=this.scene.children.find(o=>o.isHemisphereLight),dirs=this.scene.children.filter(o=>o.isDirectionalLight);this._transitionHemi=hemi;this._transitionKey=dirs[0]||null;this._transitionFill=dirs[1]||null;const snap=l=>l?{color:l.color.clone(),intensity:l.intensity,position:l.position.clone()}:null;this._saturnBaseLighting={exposure:this.renderer?.toneMappingExposure??1.07,hemi:hemi?{color:hemi.color.clone(),groundColor:hemi.groundColor.clone(),intensity:hemi.intensity}:null,key:snap(this._transitionKey),fill:snap(this._transitionFill)};};
+  P._mixJupiterSaturnLighting=function(jupiterAmount){if(!this.renderer||!this.THREE)return;this._snapshotSaturnLighting();const a=this.clamp(jupiterAmount),THREE=this.THREE,b=this._saturnBaseLighting,mix=(target,from,to)=>target.copy(from).lerp(new THREE.Color(to),a);if(this._transitionHemi&&b.hemi){mix(this._transitionHemi.color,b.hemi.color,JUPITER_LIGHT.hemiSky);mix(this._transitionHemi.groundColor,b.hemi.groundColor,JUPITER_LIGHT.hemiGround);this._transitionHemi.intensity=b.hemi.intensity+(JUPITER_LIGHT.hemiIntensity-b.hemi.intensity)*a;}const apply=(l,x,c,i,p)=>{if(!l||!x)return;mix(l.color,x.color,c);l.intensity=x.intensity+(i-x.intensity)*a;l.position.copy(x.position).lerp(new THREE.Vector3(...p),a);};apply(this._transitionKey,b.key,JUPITER_LIGHT.keyColor,JUPITER_LIGHT.keyIntensity,JUPITER_LIGHT.keyPosition);apply(this._transitionFill,b.fill,JUPITER_LIGHT.fillColor,JUPITER_LIGHT.fillIntensity,JUPITER_LIGHT.fillPosition);this.renderer.toneMappingExposure=b.exposure+(JUPITER_LIGHT.exposure-b.exposure)*a;};
+  P._restoreSaturnLighting=function(){const b=this._saturnBaseLighting;if(!b||!this.renderer)return;if(this._transitionHemi&&b.hemi){this._transitionHemi.color.copy(b.hemi.color);this._transitionHemi.groundColor.copy(b.hemi.groundColor);this._transitionHemi.intensity=b.hemi.intensity;}const r=(l,x)=>{if(l&&x){l.color.copy(x.color);l.intensity=x.intensity;l.position.copy(x.position);}};r(this._transitionKey,b.key);r(this._transitionFill,b.fill);this.renderer.toneMappingExposure=b.exposure;};
+
+  P._borrowJupiterVisual=function({jupiterRotation,jupiterTime}={}){const owner=this._jupiterVisualOwner;if(!owner||!this.scene||!owner.planetGroup||this.mode!=="webgl"||owner.mode!=="webgl")return false;this.bindJupiterVisualSource(owner);if(this._legacyTravelJupiterGroup)this._legacyTravelJupiterGroup.visible=false;this.scene.add(owner.planetGroup);this.travelJupiterGroup=owner.planetGroup;this.travelJupiter=owner.planet;this.travelJupiterMaterial=owner.jupiterMaterial;this._borrowedJupiter=true;this._jupiterVisualTimeStart=Number.isFinite(jupiterTime)?jupiterTime:(owner.time??8.5);this._jupiterRotationStart=Number.isFinite(jupiterRotation)?jupiterRotation:(owner.renderedRotation??2.58);this.travelJupiter.rotation.y=this._jupiterRotationStart;if(owner.moonGroup)owner.moonGroup.visible=false;return true;};
+  P._releaseJupiterVisual=function(){if(!this._borrowedJupiter)return;const owner=this._jupiterVisualOwner;this._jupiterVisualEndRotation=this.travelJupiter?.rotation.y??this._jupiterRotationStart;this._jupiterVisualEndTime=this._jupiterVisualTimeCurrent??this._jupiterVisualTimeStart;if(owner?.scene&&owner?.planetGroup){owner.scene.add(owner.planetGroup);owner.time=this._jupiterVisualEndTime;owner.renderedRotation=this._jupiterVisualEndRotation;owner.rotationBase=this._jupiterVisualEndRotation-owner.time*.030;owner.planet.rotation.y=this._jupiterVisualEndRotation;}this.travelJupiterGroup=this._legacyTravelJupiterGroup;this.travelJupiter=this._legacyTravelJupiter;this.travelJupiterMaterial=this._legacyTravelJupiterMaterial;this._borrowedJupiter=false;this._restoreSaturnLighting();};
+  P.getJupiterVisualRotation=function(){return Number.isFinite(this._jupiterVisualEndRotation)?this._jupiterVisualEndRotation:(this._jupiterVisualOwner?.renderedRotation??2.58);};
+  P.getJupiterVisualTime=function(){return Number.isFinite(this._jupiterVisualEndTime)?this._jupiterVisualEndTime:(this._jupiterVisualOwner?.time??8.5);};
+
+  const originalFrom=P.beginTravelFromJupiter,originalTo=P.beginTravelToJupiter;
+  P.beginTravelFromJupiter=function(options={}){this._borrowJupiterVisual(options);return originalFrom.call(this,options);};
+  P.beginTravelToJupiter=function(options={}){this._borrowJupiterVisual(options);return originalTo.call(this,options);};
+
+  const _handoffOriginalRenderTravel=P.renderTravel;
+  P.renderTravel=function(){
+    if(this.mode!=="webgl"||!this._borrowedJupiter)return _handoffOriginalRenderTravel.call(this);
+    const state=this.travelState(),reverse=this.travelMode==="to-jupiter",raw=this.clamp((this.time-this.travelStartedAt)/this.travelDuration),direction=this.travelDirection>=0?1:-1;
+    const aspect=this.camera?.aspect||this.width/this.height,halfHeight=Math.tan((34*Math.PI/180)/2)*7.0,separationMagnitude=halfHeight*aspect*(this.mobile?4.05:3.35),separation=separationMagnitude*direction;
+    const cameraX=separation*state.pan,cameraZ=7.0*(1+1.5*state.pullback*(1-state.approach));
+    const saturnLane=reverse?0:separation,jupiterLane=reverse?separation:0;
+    const saturnHeroX=this.mobile?0:.66,saturnHeroY=this.mobile?-.03:.015,saturnHeroScale=this.mobile?.76:1.0;
+    const jHeroX=this.mobile?0:.82,jHeroY=this.mobile?.13:.02,jHeroScale=this.mobile?.98:1.13,jRatio=7.0/6.4;
+
+    if(this.mode==="webgl"){
+      this.planetGroup.visible=true;this.travelJupiterGroup.visible=true;
+      this.planetGroup.position.set(saturnLane+saturnHeroX,saturnHeroY,0);this.planetGroup.scale.setScalar(saturnHeroScale);this.planetGroup.rotation.x=-.28;this.planetGroup.rotation.z=-.14;
+      this.planetMaterial.transparent=false;this.planetMaterial.opacity=1;this.planetMaterial.depthWrite=true;this.atmosphere.visible=true;this.ringShadow.visible=true;if(this.cloudLayer)this.cloudLayer.material.opacity=.105;if(this.ring?.material?.uniforms?.uOpacity)this.ring.material.uniforms.uOpacity.value=1;
+      this.planet.rotation.y=2.2+this.time*.026;if(this.cloudLayer)this.cloudLayer.rotation.y=this.planet.rotation.y+this.time*.0035;this.ring.material.uniforms.uTime.value=this.time;
+
+      this.travelJupiterGroup.position.set(jupiterLane+jHeroX*jRatio,jHeroY*jRatio,0);this.travelJupiterGroup.scale.setScalar(jHeroScale*jRatio);this.travelJupiterGroup.rotation.x=0;this.travelJupiterGroup.rotation.z=0;
+      const elapsed=Math.max(0,this.time-this.travelStartedAt),visualTime=this._jupiterVisualTimeStart+elapsed,rotation=this._jupiterRotationStart+elapsed*.030;this._jupiterVisualTimeCurrent=visualTime;this.travelJupiter.rotation.y=rotation;
+      const owner=this._jupiterVisualOwner;if(owner?.cloudLayer)owner.cloudLayer.rotation.y=rotation+visualTime*.0045;if(owner?.ring)owner.ring.rotation.z=.015+Math.sin(visualTime*.14)*.008;if(owner?.atmosphere)owner.atmosphere.visible=true;
+
+      const jupiterAmount=reverse?state.progress:1-state.progress;this._mixJupiterSaturnLighting(jupiterAmount);
+      if(this.stars)this.stars.position.x=cameraX*.94;this.camera.position.set(cameraX,0,cameraZ);const lookOffset=Math.sin(state.pan*Math.PI)*separationMagnitude*.055*direction;this.camera.lookAt(cameraX+lookOffset,0,0);this.renderer.render(this.scene,this.camera);
+    }else this.drawCanvasTravel(state,reverse,reverse?state.progress:1-state.progress,reverse?1-state.progress:state.progress,direction);
+
+    if(!this.travelCoveredFired&&raw>=.11){this.travelCoveredFired=true;this.travelCallbacks.onCovered?.();}
+    if(raw>=.999&&!this.travelCompleteFired){this.travelCompleteFired=true;const cb=this.travelCallbacks.onComplete;this._releaseJupiterVisual();if(!reverse){this.travelMode=null;this.travelCallbacks={};this.element.classList.remove("is-leaving");this.caption.classList.add("is-visible");this.caption.inert=false;this.credit.style.opacity=".9";document.getElementById("announcement").textContent="Tiba di Saturnus.";}cb?.();}
+  };
+})();

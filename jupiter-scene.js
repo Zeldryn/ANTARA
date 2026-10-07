@@ -585,7 +585,7 @@ window.JupiterScene = class JupiterScene {
 
   P.renderJupiter = function() {
     this._ensureFeatureState(); const blend=this.explorationBlend; const x=this.mobile?0:(.82+blend*.15), y=this.mobile?(.13-blend*.23):(.02+blend*.01), scale=this.mobile?.98:1.13;
-    const idle=2.58+this.time*.030; const subtle=this.exploring&&this.focusState==="FOCUSED_IDLE"?Math.sin(this.time*.16)*.018:0; this.renderedRotation=this.exploring?this.focusYaw+subtle:idle;
+    const idle=(Number.isFinite(this.rotationBase)?this.rotationBase:2.58)+this.time*.030; const subtle=this.exploring&&this.focusState==="FOCUSED_IDLE"?Math.sin(this.time*.16)*.018:0; this.renderedRotation=this.exploring?this.focusYaw+subtle:idle;
     if(this.mode==="webgl"){
       this.travelMarsGroup.visible=false;if(this.asteroidGroup)this.asteroidGroup.visible=false;this.planetGroup.visible=true;this.planetGroup.position.set(x,y,0);this.planetGroup.scale.setScalar(scale);
       this.planetGroup.rotation.x=this.exploring?this.focusPitch:0; this.planetGroup.rotation.z=this.exploring?-.018:0;
@@ -594,5 +594,42 @@ window.JupiterScene = class JupiterScene {
       const z=this.exploring?this.focusCameraZ:6.4; this.camera.position.set(this.motion.matches?0:this.cameraOffset.x*.13,this.motion.matches?0:-this.cameraOffset.y*.09,z);this.camera.lookAt(0,0,0);this.renderer.render(this.scene,this.camera); this._updateFocusMarker();
     } else { this.drawCanvasJupiter(x,y,scale); this.focusReticle?.classList.remove("is-marker-visible"); }
     if(this.time>1.1&&!this.travelMode){this.caption.classList.add("is-visible");this.caption.inert=this.exploring;this.credit.style.opacity=this.exploring?"0":".9";}
+  };
+})();
+
+
+/* ===== ANTARA VISUAL HANDOFF FIX: one Jupiter visual source of truth ===== */
+(() => {
+  const P = window.JupiterScene?.prototype;
+  if (!P || P.__visualHandoffV1) return;
+  P.__visualHandoffV1 = true;
+
+  P.start = function({ settled=false, time=null, rotation=null }={}) {
+    this._ensureFeatureState?.();
+    this.active=true; this.travelMode=null; this.travelCallbacks={};
+    this.time=Number.isFinite(time)?time:(settled?8.5:0);
+    this.rotationBase=Number.isFinite(rotation)?rotation-this.time*.030:2.58;
+    this.renderedRotation=Number.isFinite(rotation)?rotation:this.rotationBase+this.time*.030;
+    this.exploring=false; this.explorationBlend=this.explorationBlendTarget=0;
+    this.element.hidden=false; this.element.style.opacity="1"; this.element.classList.remove("is-exploring","is-leaving");
+    this.caption.classList.remove("is-visible"); this.caption.inert=true; this.exploration.inert=true;
+    this.setExplorationStop(0,{immediate:true,announce:false});
+    this.pointer.x=this.pointer.y=this.cameraOffset.x=this.cameraOffset.y=0;
+    this.prepare(); this.resize(); cancelAnimationFrame(this.frame);
+    this.focusYaw=this.renderedRotation; this.focusYawTarget=this.focusYaw;
+    this.focusPitch=this.focusPitchTarget=0; this.focusCameraZ=this.focusCameraZTarget=6.4;
+    this.previous=performance.now(); this.tick(this.previous);
+  };
+
+  P.getHeroVisualState = function() {
+    return {
+      x: this.mobile ? 0 : .82,
+      y: this.mobile ? .13 : .02,
+      scale: this.mobile ? .98 : 1.13,
+      cameraZ: 6.4,
+      fov: 34,
+      rotation: this.renderedRotation,
+      time: this.time
+    };
   };
 })();

@@ -734,6 +734,18 @@ const venus = new VenusScene();
 const asteroid = new AsteroidBeltScene();
 const jupiter = new JupiterScene();
 const saturn = new SaturnScene();
+
+function bindSharedJupiterVisualsIfReady() {
+  asteroid.bindJupiterVisualSource?.(jupiter);
+  saturn.bindJupiterVisualSource?.(jupiter);
+}
+function prepareSharedJupiterVisuals({ includeSaturn=false }={}) {
+  const jobs=[jupiter.prepare(),asteroid.prepare()];
+  if(includeSaturn)jobs.push(saturn.prepare());
+  Promise.all(jobs).then(bindSharedJupiterVisualsIfReady).catch(()=>{});
+  bindSharedJupiterVisualsIfReady();
+}
+
 let phase = "idle";
 let elapsed = 0;
 let previousFrame = 0;
@@ -1097,15 +1109,13 @@ function travelToMars() {
   announcement.textContent = "Meninggalkan Bumi. Kamera beralih menuju Mars.";
   // The next two outward destinations are prepared during this existing journey,
   // never inside the Mars navigation click path.
-  asteroid.prepare();
-  jupiter.prepare();
+  prepareSharedJupiterVisuals();
   sound.travel(reducedMotion.matches ? 0.4 : 6.2);
   earth.beginTravelToMars({
     onReveal: () => {
       if (phase !== "mars-transition") return;
       mars.start({ settled: true });
-      asteroid.prepare();
-      jupiter.prepare();
+      prepareSharedJupiterVisuals();
     },
     onComplete: () => {
       if (phase !== "mars-transition") return;
@@ -1192,14 +1202,15 @@ function travelAsteroidToJupiter() {
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "MENINGGALKAN SABUK ASTEROID";
   announcement.textContent = "Benda-benda berbatu mulai menipis. Jupiter muncul jauh di depan.";
-  jupiter.prepare();
-  saturn.prepare();
+  prepareSharedJupiterVisuals({ includeSaturn:true });
   sound.travel(reducedMotion.matches ? 0.5 : 7.8);
   asteroid.beginTravelToJupiter({
     direction: getCelestialDirection("asteroid", "jupiter"),
+    jupiterRotation: jupiter.renderedRotation,
+    jupiterTime: jupiter.time,
     onComplete: () => {
       if (phase !== "asteroid-jupiter-transition") return;
-      jupiter.start({ settled: true });
+      jupiter.start({ settled:true, rotation:asteroid.getJupiterVisualRotation?.(), time:asteroid.getJupiterVisualTime?.() });
       asteroid.stop();
       mission.classList.remove("is-asteroid");
       mission.classList.add("is-jupiter");
@@ -1215,10 +1226,12 @@ function travelJupiterToAsteroid() {
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "MENUJU SABUK ASTEROID";
   announcement.textContent = "Jupiter menjauh. Memasuki kembali wilayah Sabuk Asteroid.";
-  asteroid.prepare();
+  prepareSharedJupiterVisuals();
   sound.travel(reducedMotion.matches ? 0.5 : 7.8);
   asteroid.beginTravelFromJupiter({
     direction: getCelestialDirection("jupiter", "asteroid"),
+    jupiterRotation: jupiter.renderedRotation,
+    jupiterTime: jupiter.time,
     onCovered: () => {
       if (phase === "jupiter-asteroid-transition") jupiter.stop();
     },
@@ -1238,11 +1251,12 @@ function travelJupiterToSaturn() {
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU SATURNUS";
   announcement.textContent = "Meninggalkan Jupiter. Saturnus dan sistem cincinnya mulai muncul jauh di depan.";
-  saturn.prepare();
+  prepareSharedJupiterVisuals({ includeSaturn:true });
   sound.travel(reducedMotion.matches ? 0.5 : 8.0);
   saturn.beginTravelFromJupiter({
     direction: getCelestialDirection("jupiter", "saturn"),
     jupiterRotation: jupiter.renderedRotation,
+    jupiterTime: jupiter.time,
     onCovered: () => { if (phase === "jupiter-saturn-transition") jupiter.stop(); },
     onComplete: () => {
       if (phase !== "jupiter-saturn-transition") return;
@@ -1260,12 +1274,15 @@ function travelSaturnToJupiter() {
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "KEMBALI MENUJU JUPITER";
   announcement.textContent = "Saturnus menjauh. Jupiter kembali muncul di bagian dalam Tata Surya.";
+  prepareSharedJupiterVisuals({ includeSaturn:true });
   sound.travel(reducedMotion.matches ? 0.5 : 8.0);
   saturn.beginTravelToJupiter({
     direction: getCelestialDirection("saturn", "jupiter"),
+    jupiterRotation: jupiter.renderedRotation,
+    jupiterTime: jupiter.time,
     onComplete: () => {
       if (phase !== "saturn-jupiter-transition") return;
-      jupiter.start({ settled: true });
+      jupiter.start({ settled:true, rotation:saturn.getJupiterVisualRotation?.(), time:saturn.getJupiterVisualTime?.() });
       saturn.stop();
       mission.classList.remove("is-saturn");
       mission.classList.add("is-jupiter");
