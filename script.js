@@ -762,6 +762,18 @@ function finishPlanetTransition(nextPhase) {
   mission.classList.remove("is-planet-transitioning");
   if (activePlanetNavButton) activePlanetNavButton.removeAttribute("aria-busy");
   activePlanetNavButton = null;
+
+  // Mars can be rendered behind the final part of the Earth -> Mars handoff before
+  // the shared transition lock is released. The caption is therefore allowed to be
+  // visible slightly before it is actually interactive. Normalize the completed
+  // panorama state here so a stale inert flag can never leave the visible Previous /
+  // Next controls dead after arrival or after returning from the Asteroid Belt.
+  if (nextPhase === "mars" && !mars.exploring && !mars.fullExplorationActive) {
+    mars.caption.inert = false;
+    mars.caption.classList.add("is-visible");
+    marsPreviousButton.disabled = false;
+    marsNextButton.disabled = false;
+  }
 }
 
 function abortPlanetTransition(fallbackPhase) {

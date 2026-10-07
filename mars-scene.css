@@ -2,10 +2,13 @@
 .mars-scene { position: absolute; inset: 0; overflow: hidden; z-index: 4; background: #030812; opacity: 0; }
 .mars-scene[hidden] { display: none; }
 .mars-space-haze { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 65% 40%, #15213255, transparent 58%), radial-gradient(ellipse at 55% 55%, #50271812, transparent 45%); }
-.mars-viewport { position: absolute; inset: 0; }
-.mars-viewport canvas { display: block; width: 100%; height: 100%; }
+.mars-viewport { position: absolute; inset: 0; z-index: 0; }
+/* The orbit canvas is visual-only. Mars pointer/parallax input is bound to the scene
+   container, while full exploration uses its own dedicated viewport. Keeping this
+   canvas out of hit-testing prevents it from ever stealing hero navigation clicks. */
+.mars-viewport canvas { display: block; width: 100%; height: 100%; pointer-events: none; }
 .mars-edge-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, #03081299, transparent 20%, transparent 82%, #03081233); }
-.mars-caption { position: absolute; left: 10%; bottom: 17%; opacity: 0; transform: translateY(12px); pointer-events: none; }
+.mars-caption { position: absolute; left: 10%; bottom: 17%; z-index: 7; opacity: 0; transform: translateY(12px); pointer-events: none; }
 .mars-caption.is-visible { pointer-events: auto; }
 .mars-caption .eyebrow { justify-content: flex-start; font-size: 8px; letter-spacing: 3.5px; gap: 12px; }
 .mars-caption .eyebrow span { width: 30px; height: 1px; background: #edc57e88; }
