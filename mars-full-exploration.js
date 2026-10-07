@@ -7,13 +7,16 @@
  * a second, lazy surface renderer and only becomes active after the user explicitly
  * enters Full Exploration.
  *
- * Height tiles are the Jaanga 128 px/degree Mars heightmap set derived from the
- * MGS MOLA MEGDR archive. Each PNG represents one geographic degree and encodes
- * the MOLA-derived height sample across the red and green channels.
+ * Elevation comes from the Jaanga 128 px/degree derivative of MGS MOLA MEGDR.
+ * Surface imagery is streamed as geographic LOD from NASA Trek: Viking MDIM 2.1
+ * color imagery for the global base plus THEMIS day IR as a real-data detail layer
+ * close to the terrain. The original 2K Mars texture remains only as an offline
+ * placeholder while scientific imagery tiles load.
  *
- * Deployments that self-host the same tile layout can override the base URL before
- * this file runs:
+ * Deployments can self-host compatible sources before this file runs:
  *   window.ANTARA_MARS_TERRAIN_BASE = "assets/mars-mola-128p/";
+ *   window.ANTARA_MARS_VIKING_TEMPLATE = ".../{z}/{row}/{col}.jpg";
+ *   window.ANTARA_MARS_THEMIS_TEMPLATE = ".../{z}/{row}/{col}.jpg";
  */
 
 (() => {
@@ -23,8 +26,15 @@
   const DEFAULT_TILE_BASE = "https://jaanga.github.io/mars-heightmaps-128p/";
   const TILE_BASE = String(window.ANTARA_MARS_TERRAIN_BASE || DEFAULT_TILE_BASE).replace(/\/?$/, "/");
   const TILE_SIZE = 128;
+  const IMAGERY_TILE_SIZE = 256;
+  const MAX_EXPLORATION_ALTITUDE_KM = 30;
+  const ALTITUDE_LIMIT_WARNING_KM = 29.75;
   const MIN_DATA_LAT = -87.999;
   const MAX_DATA_LAT = 87.999;
+  const DEFAULT_VIKING_TEMPLATE = "https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0/default/default028mm/{z}/{row}/{col}.jpg";
+  const DEFAULT_THEMIS_TEMPLATE = "https://trek.nasa.gov/tiles/Mars/EQ/Mars_MO_THEMIS-IR-Day_mosaic_global_100m_v12_clon0_ly/1.0.0/default/default028mm/{z}/{row}/{col}.jpg";
+  const VIKING_TEMPLATE = String(window.ANTARA_MARS_VIKING_TEMPLATE || DEFAULT_VIKING_TEMPLATE);
+  const THEMIS_TEMPLATE = String(window.ANTARA_MARS_THEMIS_TEMPLATE || DEFAULT_THEMIS_TEMPLATE);
 
   const STATES = Object.freeze({
     IDLE: "IDLE",
@@ -249,24 +259,291 @@
     }
   }
 
+  class MarsImageryProvider {
+    constructor(quality) {
+      this.quality = quality;
+      this.imageCache = new Map();
+      this.pendingImages = new Map();
+      this.patchCache = new Map();
+      this.pendingPatches = new Map();
+      this.generation = 0;
+      this.maxImageCache = quality.name === "HIGH" ? 220 : quality.name === "MEDIUM" ? 150 : 90;
+      this.maxPatchCache = quality.name === "HIGH" ? 96 : quality.name === "MEDIUM" ? 64 : 40;
+      this.sourceLabel = "MOLA elevation · NASA Trek Viking 232 m · THEMIS 100 m";
+      this.layers = {
+        viking: {
+          id: "viking",
+          template: VIKING_TEMPLATE,
+          minZoom: 0,
+          maxZoom: Math.min(7, quality.imageryMaxZ),
+          minLat: -90,
+          maxLat: 90
+        },
+        themis: {
+          id: "themis",
+          template: THEMIS_TEMPLATE,
+          minZoom: 0,
+          maxZoom: Math.min(9, quality.themisMaxZ),
+          minLat: -65,
+          maxLat: 65
+        }
+      };
+    }
+
+    profileForAltitude(altitudeKm, latitude) {
+      const altitude = clamp(altitudeKm, 0, MAX_EXPLORATION_ALTITUDE_KM);
+      let colorZoom = altitude > 22 ? 5 : altitude > 10 ? 6 : 7;
+      colorZoom = Math.min(colorZoom, this.layers.viking.maxZoom);
+
+      let detailZoom = null;
+      let detailStrength = 0;
+      if (latitude >= this.layers.themis.minLat && latitude <= this.layers.themis.maxLat && this.layers.themis.maxZoom >= 8 && altitude < 12) {
+        detailZoom = altitude <= 3.5 ? 9 : 8;
+        detailZoom = Math.min(detailZoom, this.layers.themis.maxZoom);
+        detailStrength = altitude <= 1.25 ? 0.58 : altitude <= 3.5 ? 0.48 : altitude <= 8 ? 0.36 : 0.26;
+      }
+
+      const baseTextureSize = colorZoom >= 7 ? 256 : colorZoom === 6 ? 192 : colorZoom === 5 ? 128 : 96;
+      const detailTextureSize = detailZoom === 9 ? 640 : detailZoom === 8 ? 384 : 0;
+      const textureSize = Math.min(this.quality.textureSize, Math.max(baseTextureSize, detailTextureSize));
+      return {
+        colorZoom,
+        detailZoom,
+        detailStrength,
+        textureSize,
+        key: `v${colorZoom}-t${detailZoom ?? 0}-s${textureSize}`
+      };
+    }
+
+    gridForZoom(zoom) {
+      return { columns: 2 ** (zoom + 1), rows: 2 ** zoom };
+    }
+
+    tileUrl(layer, zoom, row, col) {
+      return layer.template
+        .replace("{z}", String(zoom))
+        .replace("{row}", String(row))
+        .replace("{col}", String(col));
+    }
+
+    async loadImage(layer, zoom, row, col) {
+      const grid = this.gridForZoom(zoom);
+      if (row < 0 || row >= grid.rows) throw new Error("Imagery tile outside latitude range.");
+      const wrappedCol = ((col % grid.columns) + grid.columns) % grid.columns;
+      const key = `${layer.id}:${zoom}:${row}:${wrappedCol}`;
+      if (this.imageCache.has(key)) {
+        const cached = this.imageCache.get(key);
+        cached.lastUsed = performance.now();
+        return cached.image;
+      }
+      if (this.pendingImages.has(key)) return this.pendingImages.get(key);
+
+      const generation = this.generation;
+      const promise = new Promise((resolve, reject) => {
+        const image = new Image();
+        let settled = false;
+        const url = this.tileUrl(layer, zoom, row, wrappedCol);
+        const timeout = window.setTimeout(() => {
+          if (settled) return;
+          settled = true;
+          image.src = "";
+          reject(new Error(`Mars imagery timeout: ${url}`));
+        }, 7000);
+        image.crossOrigin = "anonymous";
+        image.decoding = "async";
+        image.onload = () => {
+          if (settled) return;
+          settled = true;
+          window.clearTimeout(timeout);
+          if (generation !== this.generation) return reject(new Error("Mars imagery request cancelled."));
+          this.imageCache.set(key, { image, lastUsed: performance.now() });
+          this.trimImageCache();
+          resolve(image);
+        };
+        image.onerror = () => {
+          if (settled) return;
+          settled = true;
+          window.clearTimeout(timeout);
+          reject(new Error(`Mars imagery unavailable: ${url}`));
+        };
+        image.src = url;
+      }).finally(() => this.pendingImages.delete(key));
+      this.pendingImages.set(key, promise);
+      return promise;
+    }
+
+    trimImageCache() {
+      if (this.imageCache.size <= this.maxImageCache) return;
+      const entries = [...this.imageCache.entries()].sort((a, b) => a[1].lastUsed - b[1].lastUsed);
+      while (entries.length && this.imageCache.size > this.maxImageCache) {
+        const [key] = entries.shift();
+        this.imageCache.delete(key);
+      }
+    }
+
+    trimPatchCache() {
+      if (this.patchCache.size <= this.maxPatchCache) return;
+      const entries = [...this.patchCache.entries()].sort((a, b) => a[1].lastUsed - b[1].lastUsed);
+      while (entries.length && this.patchCache.size > this.maxPatchCache) {
+        const [key] = entries.shift();
+        this.patchCache.delete(key);
+      }
+    }
+
+    async buildLayerPatch(layer, zoom, lonWest, latNorth, size) {
+      if (latNorth < layer.minLat || latNorth - 1 > layer.maxLat) return null;
+      const grid = this.gridForZoom(zoom);
+      const worldWidth = grid.columns * IMAGERY_TILE_SIZE;
+      const worldHeight = grid.rows * IMAGERY_TILE_SIZE;
+      const x0 = ((lonWest + 180) / 360) * worldWidth;
+      const x1 = ((lonWest + 181) / 360) * worldWidth;
+      const y0 = ((90 - latNorth) / 180) * worldHeight;
+      const y1 = ((91 - latNorth) / 180) * worldHeight;
+      const colStart = Math.floor(x0 / IMAGERY_TILE_SIZE);
+      const colEnd = Math.floor((x1 - 1e-6) / IMAGERY_TILE_SIZE);
+      const rowStart = Math.floor(y0 / IMAGERY_TILE_SIZE);
+      const rowEnd = Math.floor((y1 - 1e-6) / IMAGERY_TILE_SIZE);
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      const context = canvas.getContext("2d", { alpha: false });
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = "high";
+      let successfulTiles = 0;
+
+      const jobs = [];
+      for (let row = rowStart; row <= rowEnd; row += 1) {
+        for (let col = colStart; col <= colEnd; col += 1) {
+          jobs.push((async () => {
+            try {
+              const image = await this.loadImage(layer, zoom, row, col);
+              const tileX = col * IMAGERY_TILE_SIZE;
+              const tileY = row * IMAGERY_TILE_SIZE;
+              const dx = ((tileX - x0) / (x1 - x0)) * size;
+              const dy = ((tileY - y0) / (y1 - y0)) * size;
+              const dw = (IMAGERY_TILE_SIZE / (x1 - x0)) * size;
+              const dh = (IMAGERY_TILE_SIZE / (y1 - y0)) * size;
+              context.drawImage(image, dx, dy, dw, dh);
+              successfulTiles += 1;
+            } catch {}
+          })());
+        }
+      }
+      await Promise.all(jobs);
+      return successfulTiles === jobs.length ? canvas : null;
+    }
+
+    combineScientificDetail(baseCanvas, detailCanvas, strength) {
+      if (!detailCanvas || strength <= 0) return baseCanvas;
+      const size = baseCanvas.width;
+      const output = document.createElement("canvas");
+      output.width = size;
+      output.height = size;
+      const outputContext = output.getContext("2d", { willReadFrequently: true });
+      outputContext.drawImage(baseCanvas, 0, 0, size, size);
+
+      const detail = document.createElement("canvas");
+      detail.width = size;
+      detail.height = size;
+      const detailContext = detail.getContext("2d", { willReadFrequently: true });
+      detailContext.drawImage(detailCanvas, 0, 0, size, size);
+
+      const low = document.createElement("canvas");
+      const lowSize = Math.max(24, Math.round(size / 8));
+      low.width = lowSize;
+      low.height = lowSize;
+      const lowContext = low.getContext("2d");
+      lowContext.imageSmoothingEnabled = true;
+      lowContext.imageSmoothingQuality = "high";
+      lowContext.drawImage(detailCanvas, 0, 0, lowSize, lowSize);
+      const blurred = document.createElement("canvas");
+      blurred.width = size;
+      blurred.height = size;
+      const blurredContext = blurred.getContext("2d", { willReadFrequently: true });
+      blurredContext.imageSmoothingEnabled = true;
+      blurredContext.imageSmoothingQuality = "high";
+      blurredContext.drawImage(low, 0, 0, size, size);
+
+      try {
+        const basePixels = outputContext.getImageData(0, 0, size, size);
+        const detailPixels = detailContext.getImageData(0, 0, size, size).data;
+        const blurredPixels = blurredContext.getImageData(0, 0, size, size).data;
+        const pixels = basePixels.data;
+        for (let i = 0; i < pixels.length; i += 4) {
+          const detailLum = detailPixels[i] * 0.299 + detailPixels[i + 1] * 0.587 + detailPixels[i + 2] * 0.114;
+          const lowLum = blurredPixels[i] * 0.299 + blurredPixels[i + 1] * 0.587 + blurredPixels[i + 2] * 0.114;
+          const highPass = clamp((detailLum - lowLum) / 255, -0.24, 0.24);
+          const gain = clamp(1 + highPass * strength * 2.1, 0.82, 1.18);
+          pixels[i] = clamp(pixels[i] * gain, 0, 255);
+          pixels[i + 1] = clamp(pixels[i + 1] * gain, 0, 255);
+          pixels[i + 2] = clamp(pixels[i + 2] * gain, 0, 255);
+        }
+        outputContext.putImageData(basePixels, 0, 0);
+        return output;
+      } catch {
+        return baseCanvas;
+      }
+    }
+
+    async buildPatch(lonWest, latNorth, profile) {
+      const size = profile.textureSize;
+      const key = `${lonWest},${latNorth}:${profile.key}:${size}`;
+      if (this.patchCache.has(key)) {
+        const cached = this.patchCache.get(key);
+        cached.lastUsed = performance.now();
+        return cached.canvas;
+      }
+      if (this.pendingPatches.has(key)) return this.pendingPatches.get(key);
+      const generation = this.generation;
+      const promise = (async () => {
+        const base = await this.buildLayerPatch(this.layers.viking, profile.colorZoom, lonWest, latNorth, size);
+        if (!base || generation !== this.generation) return null;
+        let result = base;
+        if (profile.detailZoom !== null) {
+          const detail = await this.buildLayerPatch(this.layers.themis, profile.detailZoom, lonWest, latNorth, size);
+          if (generation !== this.generation) return null;
+          if (detail) result = this.combineScientificDetail(base, detail, profile.detailStrength);
+        }
+        this.patchCache.set(key, { canvas: result, lastUsed: performance.now() });
+        this.trimPatchCache();
+        return result;
+      })().finally(() => this.pendingPatches.delete(key));
+      this.pendingPatches.set(key, promise);
+      return promise;
+    }
+
+    prefetch(lonWest, latNorth, profile) {
+      this.buildPatch(lonWest, latNorth, profile).catch(() => {});
+    }
+
+    clear() {
+      this.generation += 1;
+      this.imageCache.clear();
+      this.pendingImages.clear();
+      this.patchCache.clear();
+      this.pendingPatches.clear();
+    }
+  }
+
   class TerrainManager {
-    constructor(THREE, scene, provider, surfaceImage, quality) {
+    constructor(THREE, scene, provider, imagery, surfaceImage, quality) {
       this.THREE = THREE;
       this.scene = scene;
       this.provider = provider;
+      this.imagery = imagery;
       this.quality = quality;
       this.meshes = new Map();
       this.requestGeneration = 0;
       this.origin = { latitude: 0, signedLongitude: 0 };
       this.lastCenterTile = "";
+      this.lastTextureProfile = "";
       this.group = new THREE.Group();
       this.scene.add(this.group);
 
-      // The orbit renderer only has a 2K global color map. On the surface that
-      // means roughly six source color texels per geographic degree, which is the
-      // main reason the previous build looked muddy up close. Cache that map once,
-      // then build per-tile albedo at MOLA resolution so real topographic changes
-      // can restore local contrast without inventing fake elevation.
+      // The orbit renderer only has a 2K global color map, so it is retained as
+      // a continuity placeholder only. Scientific surface color is upgraded per
+      // geographic tile from NASA Trek Viking imagery, with THEMIS IR contributing
+      // real higher-frequency detail close to the ground.
       this.sourceCanvas = document.createElement("canvas");
       this.sourceCanvas.width = surfaceImage.width || 2048;
       this.sourceCanvas.height = surfaceImage.height || 1024;
@@ -310,7 +587,7 @@
       return this.quality.farSegments;
     }
 
-    async ensureAround(latitude, signedLongitude, { requiredRadius = 1, onProgress = null } = {}) {
+    async ensureAround(latitude, signedLongitude, { requiredRadius = 1, onProgress = null, textureAltitude = MAX_EXPLORATION_ALTITUDE_KM } = {}) {
       const center = this.provider.tileForLocation(latitude, signedLongitude);
       const radius = this.desiredRadius();
       const generation = ++this.requestGeneration;
@@ -338,6 +615,9 @@
       const loadEntry = async entry => {
         if (generation !== this.requestGeneration) return;
         if (this.meshes.has(entry.key)) {
+          const existing = this.meshes.get(entry.key);
+          const ring = Math.max(Math.abs(entry.dx), Math.abs(entry.dy));
+          await this.upgradeEntryTexture(existing, textureAltitude, ring);
           completed += 1;
           onProgress?.(completed / total);
           return;
@@ -346,7 +626,10 @@
         if (generation !== this.requestGeneration) return;
         const mesh = this.createTileMesh(tile, entry.segments);
         this.group.add(mesh);
-        this.meshes.set(entry.key, { mesh, lonWest: entry.lonWest, latNorth: entry.latNorth, segments: entry.segments });
+        const record = { mesh, tile, lonWest: entry.lonWest, latNorth: entry.latNorth, segments: entry.segments, textureProfile: "fallback", textureLoading: "", textureToken: 0 };
+        this.meshes.set(entry.key, record);
+        const ring = Math.max(Math.abs(entry.dx), Math.abs(entry.dy));
+        await this.primeEntryTexture(record, textureAltitude, ring);
         completed += 1;
         onProgress?.(completed / total);
       };
@@ -363,81 +646,97 @@
         if (generation !== this.requestGeneration) return;
         const mesh = this.createTileMesh(tile, entry.segments);
         this.group.add(mesh);
-        this.meshes.set(entry.key, { mesh, lonWest: entry.lonWest, latNorth: entry.latNorth, segments: entry.segments });
+        const record = { mesh, tile, lonWest: entry.lonWest, latNorth: entry.latNorth, segments: entry.segments, textureProfile: "fallback", textureLoading: "", textureToken: 0 };
+        this.meshes.set(entry.key, record);
+        const ring = Math.max(Math.abs(entry.dx), Math.abs(entry.dy));
+        this.primeEntryTexture(record, textureAltitude, ring).catch(() => {});
       }));
     }
 
-    maybeStream(latitude, signedLongitude) {
+    maybeStream(latitude, signedLongitude, altitudeKm) {
       const center = this.provider.tileForLocation(latitude, signedLongitude);
       const key = this.provider.tileKey(center.lonWest, center.latNorth);
-      if (key === this.lastCenterTile) return;
-      this.ensureAround(latitude, signedLongitude, { requiredRadius: 0 }).catch(() => {});
+      const profileKey = this.imagery.profileForAltitude(altitudeKm, latitude).key;
+      if (key === this.lastCenterTile && profileKey === this.lastTextureProfile) return;
+      this.lastTextureProfile = profileKey;
+      if (key === this.lastCenterTile) {
+        this.refreshTextureLOD(altitudeKm, latitude, signedLongitude);
+        return;
+      }
+      this.ensureAround(latitude, signedLongitude, { requiredRadius: 0, textureAltitude: altitudeKm }).catch(() => {});
     }
 
-    createTileAlbedo(tile) {
+    createFallbackAlbedo(tile) {
       const THREE = this.THREE;
-      const size = TILE_SIZE;
+      const size = Math.min(192, this.quality.textureSize);
       const canvas = document.createElement("canvas");
       canvas.width = size;
       canvas.height = size;
       const context = canvas.getContext("2d");
-      const image = context.createImageData(size, size);
-      const output = image.data;
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = "high";
+
+      const sourceX = ((tile.lonWest + 180) / 360) * this.sourceWidth;
+      const sourceY = ((90 - tile.latNorth) / 180) * this.sourceHeight;
+      const sourceW = this.sourceWidth / 360;
+      const sourceH = this.sourceHeight / 180;
+      context.drawImage(this.sourceCanvas, sourceX, sourceY, sourceW, sourceH, 0, 0, size, size);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.wrapS = THREE.ClampToEdgeWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.generateMipmaps = true;
+      texture.anisotropy = Math.min(this.quality.anisotropy || 4, 8);
+      texture.needsUpdate = true;
+      return texture;
+    }
+
+    createMolaNormalMap(tile) {
+      const THREE = this.THREE;
+      const size = TILE_SIZE;
+      const data = new Uint8Array(size * size * 4);
       const heights = tile.heights;
-      const baseSample = new Float32Array(3);
-
-      const sampleSource = (latitude, signedLongitude) => {
-        const u = ((signedLongitude + 180) / 360 + 1) % 1;
-        const v = clamp((90 - latitude) / 180, 0, 0.999999);
-        const px = u * (this.sourceWidth - 1);
-        const py = v * (this.sourceHeight - 1);
-        const x0 = Math.floor(px);
-        const y0 = Math.floor(py);
-        const x1 = (x0 + 1) % this.sourceWidth;
-        const y1 = Math.min(this.sourceHeight - 1, y0 + 1);
-        const tx = px - x0;
-        const ty = py - y0;
-        const i00 = (y0 * this.sourceWidth + x0) * 4;
-        const i10 = (y0 * this.sourceWidth + x1) * 4;
-        const i01 = (y1 * this.sourceWidth + x0) * 4;
-        const i11 = (y1 * this.sourceWidth + x1) * 4;
-        for (let channel = 0; channel < 3; channel += 1) {
-          const top = lerp(this.sourcePixels[i00 + channel], this.sourcePixels[i10 + channel], tx);
-          const bottom = lerp(this.sourcePixels[i01 + channel], this.sourcePixels[i11 + channel], tx);
-          baseSample[channel] = lerp(top, bottom, ty);
-        }
-      };
-
+      const centerLat = tile.latNorth - 0.5;
+      const spacingX = Math.max(0.08, KM_PER_DEG_LAT * Math.cos(centerLat * DEG) / (size - 1));
+      const spacingZ = KM_PER_DEG_LAT / (size - 1);
+      let out = 0;
       for (let y = 0; y < size; y += 1) {
-        const fy = y / (size - 1);
-        const latitude = tile.latNorth - fy;
         for (let x = 0; x < size; x += 1) {
-          const fx = x / (size - 1);
-          const signedLongitude = wrapLongitude(tile.lonWest + fx);
-          sampleSource(latitude, signedLongitude);
-          const index = y * size + x;
           const left = heights[y * size + Math.max(0, x - 1)];
           const right = heights[y * size + Math.min(size - 1, x + 1)];
-          const up = heights[Math.max(0, y - 1) * size + x];
-          const down = heights[Math.min(size - 1, y + 1) * size + x];
-          const center = heights[index];
-          const localAverage = (left + right + up + down) * 0.25;
-          const curvature = center - localAverage;
-          const slope = Math.hypot(right - left, down - up);
-          const border = x === 0 || y === 0 || x === size - 1 || y === size - 1;
-          const altitudeTone = clamp(center / 12, -0.5, 0.5) * 0.08;
-          const reliefTone = border ? 0 : clamp(curvature * 0.72, -0.13, 0.13);
-          const roughTone = border ? 0 : clamp(slope * 0.10, 0, 0.065);
-          const gain = clamp(1 + altitudeTone + reliefTone - roughTone, 0.78, 1.20);
-          const out = index * 4;
-          output[out] = clamp(baseSample[0] * gain, 0, 255);
-          output[out + 1] = clamp(baseSample[1] * gain, 0, 255);
-          output[out + 2] = clamp(baseSample[2] * gain, 0, 255);
-          output[out + 3] = 255;
+          const north = heights[Math.max(0, y - 1) * size + x];
+          const south = heights[Math.min(size - 1, y + 1) * size + x];
+          const dx = (right - left) / Math.max(spacingX * 2, 0.001);
+          const dz = (south - north) / Math.max(spacingZ * 2, 0.001);
+          let nx = -dx * 0.58;
+          let ny = 1;
+          let nz = -dz * 0.58;
+          const length = Math.hypot(nx, ny, nz) || 1;
+          nx /= length;
+          ny /= length;
+          nz /= length;
+          data[out++] = Math.round((nx * 0.5 + 0.5) * 255);
+          data[out++] = Math.round((ny * 0.5 + 0.5) * 255);
+          data[out++] = Math.round((nz * 0.5 + 0.5) * 255);
+          data[out++] = 255;
         }
       }
+      const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
+      texture.wrapS = THREE.ClampToEdgeWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.generateMipmaps = true;
+      texture.anisotropy = Math.min(this.quality.anisotropy || 4, 8);
+      texture.needsUpdate = true;
+      return texture;
+    }
 
-      context.putImageData(image, 0, 0);
+    textureFromCanvas(canvas) {
+      const THREE = this.THREE;
       const texture = new THREE.CanvasTexture(canvas);
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.wrapS = THREE.ClampToEdgeWrapping;
@@ -450,13 +749,148 @@
       return texture;
     }
 
+    cancelTextureTransition(entry, disposeCandidate = true) {
+      const transition = entry?.textureTransition;
+      if (!transition) return;
+      transition.cancelled = true;
+      const overlay = transition.overlay;
+      if (overlay?.parent) overlay.parent.remove(overlay);
+      if (overlay?.material) {
+        overlay.material.map = null;
+        overlay.material.normalMap = null;
+        overlay.material.dispose?.();
+      }
+      if (disposeCandidate && transition.texture && transition.texture !== entry.mesh?.material?.map) {
+        transition.texture.dispose?.();
+      }
+      entry.textureTransition = null;
+    }
+
+    async crossfadeEntryTexture(entry, nextTexture, requestToken) {
+      if (!entry?.mesh?.parent || requestToken !== entry.textureToken) {
+        nextTexture.dispose?.();
+        return false;
+      }
+      this.cancelTextureTransition(entry);
+      const mesh = entry.mesh;
+      const THREE = this.THREE;
+      const overlayMaterial = new THREE.MeshStandardMaterial({
+        map: nextTexture,
+        normalMap: mesh.material.normalMap,
+        normalMapType: THREE.ObjectSpaceNormalMap,
+        roughness: mesh.material.roughness,
+        metalness: 0,
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        polygonOffset: true,
+        polygonOffsetFactor: -1,
+        polygonOffsetUnits: -1,
+        dithering: true
+      });
+      const overlay = new THREE.Mesh(mesh.geometry, overlayMaterial);
+      overlay.frustumCulled = mesh.frustumCulled;
+      overlay.renderOrder = 1;
+      mesh.add(overlay);
+      const transition = { overlay, texture: nextTexture, cancelled: false };
+      entry.textureTransition = transition;
+
+      const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+      const duration = reduced ? 0 : 240;
+      if (duration > 0) {
+        const start = performance.now();
+        await new Promise(resolve => {
+          const frame = now => {
+            if (transition.cancelled || requestToken !== entry.textureToken || !mesh.parent) return resolve();
+            const t = smoothstep((now - start) / duration);
+            overlayMaterial.opacity = t;
+            if (t < 1) requestAnimationFrame(frame);
+            else resolve();
+          };
+          requestAnimationFrame(frame);
+        });
+      }
+
+      if (transition.cancelled || requestToken !== entry.textureToken || !mesh.parent) {
+        if (entry.textureTransition === transition) this.cancelTextureTransition(entry);
+        else nextTexture.dispose?.();
+        return false;
+      }
+
+      const previous = mesh.material.map;
+      mesh.material.map = nextTexture;
+      mesh.material.needsUpdate = true;
+      if (overlay.parent) overlay.parent.remove(overlay);
+      overlayMaterial.map = null;
+      overlayMaterial.normalMap = null;
+      overlayMaterial.dispose();
+      entry.textureTransition = null;
+      if (previous && previous !== nextTexture) previous.dispose?.();
+      return true;
+    }
+
+    async upgradeEntryTexture(entry, altitudeKm, ring = 0) {
+      if (!entry?.mesh || !entry.tile || !this.imagery) return;
+      const latitude = entry.latNorth - 0.5;
+      const visualAltitude = clamp(altitudeKm + ring * 7, 0, MAX_EXPLORATION_ALTITUDE_KM);
+      const profile = this.imagery.profileForAltitude(visualAltitude, latitude);
+      if (entry.textureProfile === profile.key || entry.textureLoading === profile.key) return;
+      const requestToken = (entry.textureToken || 0) + 1;
+      entry.textureToken = requestToken;
+      entry.textureLoading = profile.key;
+      try {
+        const canvas = await this.imagery.buildPatch(entry.lonWest, entry.latNorth, profile);
+        if (!canvas || requestToken !== entry.textureToken || !entry.mesh.parent) return;
+        const nextTexture = this.textureFromCanvas(canvas);
+        const applied = await this.crossfadeEntryTexture(entry, nextTexture, requestToken);
+        if (applied && requestToken === entry.textureToken) entry.textureProfile = profile.key;
+      } catch {
+        // Keep the current lower LOD texture if the higher detail source is unavailable.
+      } finally {
+        if (entry.textureLoading === profile.key) entry.textureLoading = "";
+      }
+    }
+
+    async primeEntryTexture(entry, altitudeKm, ring = 0) {
+      if (!entry?.mesh) return;
+      const latitude = entry.latNorth - 0.5;
+      const desiredAltitude = clamp(altitudeKm + ring * 7, 0, MAX_EXPLORATION_ALTITUDE_KM);
+      const desiredProfile = this.imagery.profileForAltitude(desiredAltitude, latitude);
+      const coarseProfile = this.imagery.profileForAltitude(MAX_EXPLORATION_ALTITUDE_KM, latitude);
+      if (entry.textureProfile === "fallback" && coarseProfile.key !== desiredProfile.key) {
+        await this.upgradeEntryTexture(entry, MAX_EXPLORATION_ALTITUDE_KM, 0);
+      }
+      await this.upgradeEntryTexture(entry, altitudeKm, ring);
+    }
+
+    refreshTextureLOD(altitudeKm, latitude, signedLongitude) {
+      const center = this.provider.tileForLocation(latitude, signedLongitude);
+      for (const entry of this.meshes.values()) {
+        const dx = Math.abs(shortestLongitudeDelta(center.lonWest, entry.lonWest));
+        const dy = Math.abs(center.latNorth - entry.latNorth);
+        const ring = Math.max(dx, dy);
+        this.upgradeEntryTexture(entry, altitudeKm, ring).catch(() => {});
+      }
+    }
+
+    prefetchAhead(latitude, signedLongitude, altitudeKm) {
+      const address = this.provider.tileForLocation(latitude, signedLongitude);
+      this.provider.load(address.lonWest, address.latNorth).catch(() => {});
+      const profile = this.imagery.profileForAltitude(altitudeKm, latitude);
+      const coarse = this.imagery.profileForAltitude(MAX_EXPLORATION_ALTITUDE_KM, latitude);
+      this.imagery.prefetch(address.lonWest, address.latNorth, coarse);
+      if (profile.key !== coarse.key) this.imagery.prefetch(address.lonWest, address.latNorth, profile);
+    }
+
     createTileMesh(tile, segments) {
       const THREE = this.THREE;
       const verticesPerSide = segments + 1;
-      const vertexCount = verticesPerSide * verticesPerSide;
-      const positions = new Float32Array(vertexCount * 3);
-      const uvs = new Float32Array(vertexCount * 2);
-      const indices = new Uint32Array(segments * segments * 6);
+      const topVertexCount = verticesPerSide * verticesPerSide;
+      const skirtVertexCount = verticesPerSide * 8;
+      const positions = new Float32Array((topVertexCount + skirtVertexCount) * 3);
+      const uvs = new Float32Array((topVertexCount + skirtVertexCount) * 2);
+      const indices = [];
       let p = 0;
       let uv = 0;
 
@@ -471,41 +905,81 @@
           positions[p++] = world.x;
           positions[p++] = height;
           positions[p++] = world.z;
-
-          // Each terrain tile now receives its own MOLA-resolution albedo, so use
-          // local UVs instead of stretching the 2K global Mars texture directly.
           uvs[uv++] = fx;
           uvs[uv++] = 1 - fz;
         }
       }
 
-      let k = 0;
       for (let z = 0; z < segments; z += 1) {
         for (let x = 0; x < segments; x += 1) {
           const a = z * verticesPerSide + x;
           const b = a + 1;
           const c = a + verticesPerSide;
           const d = c + 1;
-          indices[k++] = a;
-          indices[k++] = c;
-          indices[k++] = b;
-          indices[k++] = b;
-          indices[k++] = c;
-          indices[k++] = d;
+          indices.push(a, c, b, b, c, d);
         }
       }
+
+      const skirtDepth = 0.09;
+      let skirtCursor = topVertexCount;
+      const addSkirt = edge => {
+        const skirtTop = [];
+        const skirtBottom = [];
+        for (const sourceIndex of edge) {
+          const sourceP = sourceIndex * 3;
+          const sourceUv = sourceIndex * 2;
+          const topIndex = skirtCursor++;
+          const bottomIndex = skirtCursor++;
+          for (const [targetIndex, yOffset] of [[topIndex, 0], [bottomIndex, -skirtDepth]]) {
+            const targetP = targetIndex * 3;
+            const targetUv = targetIndex * 2;
+            positions[targetP] = positions[sourceP];
+            positions[targetP + 1] = positions[sourceP + 1] + yOffset;
+            positions[targetP + 2] = positions[sourceP + 2];
+            uvs[targetUv] = uvs[sourceUv];
+            uvs[targetUv + 1] = uvs[sourceUv + 1];
+          }
+          skirtTop.push(topIndex);
+          skirtBottom.push(bottomIndex);
+        }
+        for (let i = 0; i < edge.length - 1; i += 1) {
+          const a = skirtTop[i];
+          const b = skirtTop[i + 1];
+          const sa = skirtBottom[i];
+          const sb = skirtBottom[i + 1];
+          indices.push(a, sa, b, b, sa, sb);
+        }
+      };
+
+      const north = [];
+      const south = [];
+      const west = [];
+      const east = [];
+      for (let i = 0; i <= segments; i += 1) {
+        north.push(i);
+        south.push(segments * verticesPerSide + i);
+        west.push(i * verticesPerSide);
+        east.push(i * verticesPerSide + segments);
+      }
+      addSkirt(north);
+      addSkirt(south);
+      addSkirt(west);
+      addSkirt(east);
 
       const geometry = new THREE.BufferGeometry();
       geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
       geometry.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
-      geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+      geometry.setIndex(indices);
       geometry.computeVertexNormals();
       geometry.computeBoundingSphere();
 
-      const tileTexture = this.createTileAlbedo(tile);
+      const tileTexture = this.createFallbackAlbedo(tile);
+      const normalTexture = this.createMolaNormalMap(tile);
       const material = new THREE.MeshStandardMaterial({
         map: tileTexture,
-        roughness: 0.94,
+        normalMap: normalTexture,
+        normalMapType: THREE.ObjectSpaceNormalMap,
+        roughness: 0.93,
         metalness: 0,
         color: 0xffffff,
         dithering: true
@@ -514,18 +988,29 @@
       mesh.frustumCulled = true;
       mesh.userData.molaTile = `${tile.lonWest},${tile.latNorth}`;
       mesh.userData.surfaceTexture = tileTexture;
+      mesh.userData.normalTexture = normalTexture;
       return mesh;
     }
 
     disposeMesh(mesh) {
+      for (const child of [...mesh.children]) {
+        if (!child?.material) continue;
+        if (child.material.map && child.material.map !== mesh.material?.map) child.material.map.dispose?.();
+        child.material.map = null;
+        child.material.normalMap = null;
+        child.material.dispose?.();
+        mesh.remove(child);
+      }
       mesh.geometry.dispose();
       mesh.material?.map?.dispose?.();
+      mesh.material?.normalMap?.dispose?.();
       mesh.material?.dispose?.();
     }
 
     prune(desired) {
       for (const [key, entry] of this.meshes) {
         if (desired.has(key)) continue;
+        this.cancelTextureTransition(entry);
         this.group.remove(entry.mesh);
         this.disposeMesh(entry.mesh);
         this.meshes.delete(key);
@@ -540,11 +1025,13 @@
     clearMeshes() {
       this.requestGeneration += 1;
       for (const entry of this.meshes.values()) {
+        this.cancelTextureTransition(entry);
         this.group.remove(entry.mesh);
         this.disposeMesh(entry.mesh);
       }
       this.meshes.clear();
       this.lastCenterTile = "";
+      this.lastTextureProfile = "";
     }
 
     dispose() {
@@ -759,6 +1246,7 @@
       this.infoSource = document.getElementById("mars-landmark-source");
       this.hudCoordinates = document.getElementById("mars-hud-coordinates");
       this.hudAltitude = document.getElementById("mars-hud-altitude");
+      this.hudAltitudeLimit = document.getElementById("mars-hud-altitude-limit");
       this.hudSpeed = document.getElementById("mars-hud-speed");
       this.hudLocation = document.getElementById("mars-hud-location");
       this.hudQuality = document.getElementById("mars-hud-quality");
@@ -811,12 +1299,12 @@
       // its theoretical pixel count large. Quality selection is capability based;
       // the render-pixel budget below controls the actual resolution separately.
       if (coarse || width <= 760 || cores <= 4 || memory <= 3) {
-        return { name: "LOW", radius: 1, nearSegments: 56, midSegments: 32, farSegments: 18, maxDpr: 1.25, minDpr: 0.85, supersample: 1, pixelBudget: 2200000, anisotropy: 4 };
+        return { name: "LOW", radius: 1, nearSegments: 72, midSegments: 40, farSegments: 22, maxDpr: 1.35, minDpr: 0.9, supersample: 1, pixelBudget: 2500000, anisotropy: 4, imageryMaxZ: 6, themisMaxZ: 8, textureSize: 256 };
       }
       if (cores >= 8 && memory >= 6) {
-        return { name: "HIGH", radius: 3, nearSegments: 128, midSegments: 64, farSegments: 32, maxDpr: 2, minDpr: 0.9, supersample: 1.18, pixelBudget: 6200000, anisotropy: 16 };
+        return { name: "HIGH", radius: 3, nearSegments: 128, midSegments: 96, farSegments: 48, maxDpr: 2, minDpr: 1, supersample: 1.24, pixelBudget: 8400000, anisotropy: 16, imageryMaxZ: 7, themisMaxZ: 9, textureSize: 640 };
       }
-      return { name: "MEDIUM", radius: 2, nearSegments: 96, midSegments: 48, farSegments: 24, maxDpr: 1.7, minDpr: 0.88, supersample: 1.08, pixelBudget: 4200000, anisotropy: 8 };
+      return { name: "MEDIUM", radius: 2, nearSegments: 112, midSegments: 64, farSegments: 32, maxDpr: 1.8, minDpr: 0.94, supersample: 1.12, pixelBudget: 5000000, anisotropy: 8, imageryMaxZ: 7, themisMaxZ: 8, textureSize: 384 };
     }
 
     calculateIdealDpr() {
@@ -912,7 +1400,8 @@
         this.setLoading(0.18, `MEMUAT PERMUKAAN ${landmark.name.toUpperCase()}`);
         await this.terrain.ensureAround(landmark.latitude, wrapLongitude(landmark.longitudeEast > 180 ? landmark.longitudeEast - 360 : landmark.longitudeEast), {
           requiredRadius: 1,
-          onProgress: progress => this.setLoading(0.18 + progress * 0.72, "MEMBACA ELEVASI MOLA")
+          textureAltitude: 2.8,
+          onProgress: progress => this.setLoading(0.18 + progress * 0.72, "MEMUAT TOPOGRAFI + IMAGERY HD")
         });
         if (token !== this.transitionToken || this.state !== STATES.PREPARING) return;
         this.setCameraAtLandmark(landmark, { altitude: 58 });
@@ -959,7 +1448,8 @@
         this.viewport.replaceChildren(canvas);
 
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0xa55f45, this.quality.name === "LOW" ? 0.0025 : 0.00175);
+        const fogDensity = this.quality.name === "LOW" ? 0.0018 : this.quality.name === "MEDIUM" ? 0.00125 : 0.0009;
+        this.scene.fog = new THREE.FogExp2(0xa55f45, fogDensity);
         this.camera = new THREE.PerspectiveCamera(this.mobileFov(), 1, 0.035, 850);
         this.camera.rotation.order = "YXZ";
 
@@ -978,9 +1468,11 @@
         this.moveIntent = new THREE.Vector3();
 
         this.provider = new MolaTileProvider();
-        this.terrain = new TerrainManager(THREE, this.scene, this.provider, this.mars.surface, this.quality);
+        this.provider.maxCache = this.quality.name === "HIGH" ? 112 : this.quality.name === "MEDIUM" ? 84 : 52;
+        this.imagery = new MarsImageryProvider(this.quality);
+        this.terrain = new TerrainManager(THREE, this.scene, this.provider, this.imagery, this.mars.surface, this.quality);
         this.hudQuality.textContent = this.quality.name;
-        this.hudData.textContent = this.provider.sourceLabel;
+        this.hudData.textContent = this.imagery.sourceLabel;
         this.resize();
         if (generation !== this.resourceGeneration) {
           this.renderer.dispose();
@@ -990,6 +1482,8 @@
           this.terrain = null;
           this.provider?.clear();
           this.provider = null;
+          this.imagery?.clear();
+          this.imagery = null;
           throw new Error("Mars exploration preparation cancelled.");
         }
         this.prepared = true;
@@ -1195,7 +1689,10 @@
       const targetX = this.moveIntent.x * targetSpeed;
       const targetZ = this.moveIntent.z * targetSpeed;
       const verticalSpeed = Math.max(0.22, Math.min(8, targetSpeed * 0.58));
-      const targetY = this.moveIntent.y * targetSpeed + axes.vertical * verticalSpeed;
+      const headroom = Math.max(0, MAX_EXPLORATION_ALTITUDE_KM - clearance);
+      const ascentFactor = smoothstep(headroom / 1.6);
+      const rawTargetY = this.moveIntent.y * targetSpeed + axes.vertical * verticalSpeed;
+      const targetY = rawTargetY > 0 ? rawTargetY * ascentFactor : rawTargetY;
       const moving = horizontalMagnitude > 0 || axes.vertical !== 0;
       const responseRate = moving ? 11.5 : 15.5;
       const response = 1 - Math.exp(-delta * responseRate);
@@ -1222,13 +1719,25 @@
         if (this.camera.position.y < minimumY) this.camera.position.y = minimumY;
         if (this.velocity.y < 0) this.velocity.y *= 0.12;
       }
+      const maximumY = this.lastGround + MAX_EXPLORATION_ALTITUDE_KM;
+      if (this.camera.position.y >= maximumY) {
+        this.camera.position.y = maximumY;
+        if (this.velocity.y > 0) this.velocity.y = 0;
+      }
 
       this.speed = Math.hypot(this.velocity.x, this.velocity.y, this.velocity.z);
       this.streamClock += delta;
       if (this.streamClock > 0.36) {
         this.streamClock = 0;
         const geo = this.terrain.geoFromWorld(this.camera.position.x, this.camera.position.z);
-        this.terrain.maybeStream(geo.latitude, geo.signedLongitude);
+        const altitude = clamp(this.camera.position.y - this.lastGround, 0, MAX_EXPLORATION_ALTITUDE_KM);
+        this.terrain.maybeStream(geo.latitude, geo.signedLongitude, altitude);
+        const lookAheadSeconds = clamp(1.4 + this.speed * 0.08, 1.4, 4.5);
+        const aheadGeo = this.terrain.geoFromWorld(
+          this.camera.position.x + this.velocity.x * lookAheadSeconds,
+          this.camera.position.z + this.velocity.z * lookAheadSeconds
+        );
+        this.terrain.prefetchAhead(aheadGeo.latitude, aheadGeo.signedLongitude, altitude);
       }
     }
 
@@ -1271,7 +1780,11 @@
       const altitude = Math.max(0, this.camera.position.y - this.lastGround);
       this.cameraAltitude = altitude;
       this.hudCoordinates.textContent = formatCoordinate(geo.latitude, geo.longitudeEast);
-      this.hudAltitude.textContent = formatAltitude(altitude);
+      const ceilingActive = this.state === STATES.EXPLORING || this.state === STATES.TRAVELLING;
+      const displayAltitude = ceilingActive ? Math.min(altitude, MAX_EXPLORATION_ALTITUDE_KM) : altitude;
+      this.hudAltitude.textContent = formatAltitude(displayAltitude);
+      this.hudAltitudeLimit.hidden = !ceilingActive || altitude < ALTITUDE_LIMIT_WARNING_KM;
+      this.hudAltitudeLimit.textContent = altitude >= MAX_EXPLORATION_ALTITUDE_KM - 0.02 ? "BATAS KETINGGIAN" : "MENDEKATI BATAS 30 KM";
       this.hudSpeed.textContent = formatSpeed(this.speed);
       this.hudLocation.textContent = this.nearestLocation(geo.latitude, geo.signedLongitude);
     }
@@ -1300,7 +1813,8 @@
       document.getElementById("announcement").textContent = `Terbang menuju ${landmark.name}.`;
 
       try {
-        await this.animateCameraAltitude(Math.max(this.cameraAltitude, 54), 1350, token);
+        const cruiseAltitude = Math.min(MAX_EXPLORATION_ALTITUDE_KM - 2, Math.max(this.cameraAltitude, 24));
+        await this.animateCameraAltitude(cruiseAltitude, 1350, token);
         if (token !== this.transitionToken || this.state !== STATES.TRAVELLING) return;
         this.travelVeil.classList.add("is-covered");
         await this.wait(360);
@@ -1309,15 +1823,14 @@
         this.terrain.clearMeshes();
         this.terrain.setOrigin(landmark.latitude, landmark.longitudeEast);
         this.currentLandmark = landmark;
-        this.camera.position.set(0, 60, 0);
         this.yaw = landmark.heading || 0;
         this.pitch = -0.34;
         this.syncLookTargets();
-        await this.terrain.ensureAround(landmark.latitude, wrapLongitude(landmark.longitudeEast > 180 ? landmark.longitudeEast - 360 : landmark.longitudeEast), { requiredRadius: 1 });
+        await this.terrain.ensureAround(landmark.latitude, wrapLongitude(landmark.longitudeEast > 180 ? landmark.longitudeEast - 360 : landmark.longitudeEast), { requiredRadius: 1, textureAltitude: 3.2 });
         if (token !== this.transitionToken) return;
         const ground = this.terrain.getHeightAtWorld(0, 0) ?? 0;
         this.lastGround = ground;
-        this.camera.position.y = ground + 54;
+        this.camera.position.set(0, ground + cruiseAltitude, 0);
         this.travelVeil.classList.remove("is-covered");
         await this.animateCameraAltitude(3.2, 1850, token);
         if (token !== this.transitionToken) return;
@@ -1333,6 +1846,8 @@
     }
 
     animateCameraAltitude(targetAltitude, duration, token) {
+      const ceilingApplies = this.state === STATES.EXPLORING || this.state === STATES.TRAVELLING;
+      if (ceilingApplies) targetAltitude = Math.min(targetAltitude, MAX_EXPLORATION_ALTITUDE_KM);
       const startAltitude = this.cameraAltitude;
       const start = performance.now();
       return new Promise(resolve => {
@@ -1467,6 +1982,8 @@
       }
       this.provider?.clear();
       this.provider = null;
+      this.imagery?.clear();
+      this.imagery = null;
       if (this.renderer) {
         this.renderer.dispose();
         this.renderer.domElement?.remove();

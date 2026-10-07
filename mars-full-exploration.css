@@ -60,7 +60,7 @@
   pointer-events: none;
   opacity: calc(var(--surface-opacity) * .48);
   background: linear-gradient(180deg, #dc9b742b, #b76b4d0f 40%, transparent 88%);
-  filter: blur(7px);
+  filter: blur(3px);
   transform: translateY(calc((1 - var(--entry-progress)) * 18px));
 }
 
@@ -89,7 +89,7 @@
   pointer-events: none;
   opacity: calc(var(--surface-opacity) * .38);
   background: radial-gradient(ellipse at center, #e3a37b1a 0%, #b96d4f0d 48%, transparent 73%);
-  filter: blur(8px);
+  filter: blur(4px);
 }
 
 .mars-full-hud,
@@ -391,3 +391,17 @@
 @media (prefers-reduced-motion: reduce) {
   .mars-full-exploration *, .mars-full-exploration *::before, .mars-full-exploration *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* Terrain-relative flight ceiling feedback. Kept compact so it reads like mission telemetry. */
+.mars-hud-altitude-metric { position: relative; }
+.mars-hud-altitude-limit {
+  display: block;
+  margin-top: 3px;
+  color: #e8c982;
+  font-size: 5.5px;
+  font-weight: 700;
+  letter-spacing: .7px;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+.mars-hud-altitude-limit[hidden] { display: none; }
