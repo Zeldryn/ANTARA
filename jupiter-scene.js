@@ -257,14 +257,18 @@ window.JupiterScene = class JupiterScene {
     const ringTexture=this.makeRingTexture(THREE);
     const ringMat=new THREE.MeshBasicMaterial({map:ringTexture,color:0xb4a58c,transparent:true,opacity:.44,depthTest:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.NormalBlending});
     this.ring=new THREE.Mesh(new THREE.RingGeometry(1.30,1.88,256,3),ringMat);
-    this.ring.rotation.x=Math.PI/2; this.ring.rotation.z=.015; this.planetGroup.add(this.ring);
+    this.ring.rotation.x=Math.PI/2-.14; this.ring.rotation.z=.028; this.planetGroup.add(this.ring);
 
     const ambient=new THREE.HemisphereLight(0xd8e4f3,0x1a0e0b,1.25); this.scene.add(ambient);
     const key=new THREE.DirectionalLight(0xffedcf,3.0); key.position.set(-4,3.2,5.5); this.scene.add(key);
     const fill=new THREE.DirectionalLight(0xc9d9ef,.55); fill.position.set(3,-1,2); this.scene.add(fill);
 
+    // Mars/Jupiter travel through the asteroid belt is now owned by the dedicated
+    // AsteroidBeltScene. Keep Jupiter focused on its own planet and faint rings.
     this.createMarsTravelObject(THREE);
-    this.createAsteroidBelt(THREE);
+    this.asteroidGroup = null;
+    this.asteroidMeshes = [];
+    this.asteroidMotion = [];
     this.createStars(THREE);
     canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();this.createCanvasFallback();this.resize();if(this.active)this.render();},{once:true});
     this.mode="webgl"; this.element.dataset.renderer=this.mode;
@@ -412,7 +416,7 @@ window.JupiterScene = class JupiterScene {
   renderJupiter() {
     const blend=this.explorationBlend;const x=this.mobile?0:(.82+blend*.15);const y=this.mobile?(.13-blend*.23):(.02+blend*.01);const scale=this.mobile?.98:1.13;this.renderedRotation=2.58+this.time*.030;
     if(this.mode==="webgl"){
-      this.travelMarsGroup.visible=false;this.asteroidGroup.visible=false;this.planetGroup.visible=true;this.planetGroup.position.set(x,y,0);this.planetGroup.scale.setScalar(scale);this.planet.rotation.y=this.renderedRotation;this.ring.rotation.z=.015+Math.sin(this.time*.14)*.008;this.camera.position.set(this.motion.matches?0:this.cameraOffset.x*.13,this.motion.matches?0:-this.cameraOffset.y*.09,6.4);this.camera.lookAt(0,0,0);this.renderer.render(this.scene,this.camera);
+      this.travelMarsGroup.visible=false;if(this.asteroidGroup)this.asteroidGroup.visible=false;this.planetGroup.visible=true;this.planetGroup.position.set(x,y,0);this.planetGroup.scale.setScalar(scale);this.planet.rotation.y=this.renderedRotation;this.ring.rotation.z=.015+Math.sin(this.time*.14)*.008;this.camera.position.set(this.motion.matches?0:this.cameraOffset.x*.13,this.motion.matches?0:-this.cameraOffset.y*.09,6.4);this.camera.lookAt(0,0,0);this.renderer.render(this.scene,this.camera);
     }else this.drawCanvasJupiter(x,y,scale);
     if(this.time>1.1&&!this.travelMode){this.caption.classList.add("is-visible");this.caption.inert=this.exploring;this.credit.style.opacity=this.exploring?"0":".9";}
   }
@@ -425,14 +429,14 @@ window.JupiterScene = class JupiterScene {
     const ceresP=this.smooth(.38,.44,p)*(1-this.smooth(.53,.59,p));
     this.beltLabel.style.opacity=String(this.clamp(beltP*1.35));this.ceresLabel.style.opacity=String(this.clamp(ceresP*1.5));
     if(this.mode==="webgl"){
-      this.planetGroup.visible=jupiterP>.005;this.travelMarsGroup.visible=marsP>.005;this.asteroidGroup.visible=beltP>.01;
+      this.planetGroup.visible=jupiterP>.005;this.travelMarsGroup.visible=marsP>.005;if(this.asteroidGroup)this.asteroidGroup.visible=beltP>.01;
       const jFinalX=this.mobile?0:.82;
       if(!reverse){
         this.travelMarsGroup.position.set(-p*4.8,0,-p*5.2);this.travelMarsGroup.scale.setScalar(.92*(1-p*.73));this.travelMarsMaterial.opacity=marsP;
         this.planetGroup.position.set(5.5-(5.5-jFinalX)*jupiterP,.03,-5.5*(1-jupiterP));this.planetGroup.scale.setScalar(.14+1.0*jupiterP);
-        this.asteroidGroup.position.z=(p-.18)*25;
+        if(this.asteroidGroup)this.asteroidGroup.position.z=(p-.18)*25;
       }else{
-        this.planetGroup.position.set(jFinalX-(jFinalX+4.9)*p,.03,-p*5.6);this.planetGroup.scale.setScalar(1.14-p*.86);this.travelMarsGroup.position.set(5.0-(5.0)*marsP,0,-5.4*(1-marsP));this.travelMarsGroup.scale.setScalar(.18+.74*marsP);this.travelMarsMaterial.opacity=marsP;this.asteroidGroup.position.z=(.82-p)*25;
+        this.planetGroup.position.set(jFinalX-(jFinalX+4.9)*p,.03,-p*5.6);this.planetGroup.scale.setScalar(1.14-p*.86);this.travelMarsGroup.position.set(5.0-(5.0)*marsP,0,-5.4*(1-marsP));this.travelMarsGroup.scale.setScalar(.18+.74*marsP);this.travelMarsMaterial.opacity=marsP;if(this.asteroidGroup)this.asteroidGroup.position.z=(.82-p)*25;
       }
       this.planet.rotation.y=2.58+this.time*.030;this.travelMars.rotation.y+=.0018;this.updateAsteroidMotion(beltP);
       this.camera.position.set(0,0,6.4);this.camera.lookAt(0,0,0);this.renderer.render(this.scene,this.camera);

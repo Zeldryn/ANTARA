@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="mercury-scene.css">
   <link rel="stylesheet" href="sun-scene.css">
   <link rel="stylesheet" href="venus-scene.css">
+  <link rel="stylesheet" href="asteroid-scene.css">
   <link rel="stylesheet" href="jupiter-scene.css">
   <script src="exploration-media.js" defer></script>
   <script src="earth-scene.js" defer></script>
@@ -23,6 +24,7 @@
   <script src="mercury-scene.js" defer></script>
   <script src="sun-scene.js" defer></script>
   <script src="venus-scene.js" defer></script>
+  <script src="asteroid-scene.js" defer></script>
   <script src="jupiter-scene.js" defer></script>
   <script src="script.js" defer></script>
 </head>
@@ -468,8 +470,8 @@
             </button>
             <button class="mars-full-explore-button" id="mars-full-explore-button" type="button">Eksplorasi Pengalaman Penuh</button>
           </div>
-          <button class="mars-planet-nav mars-planet-next" id="mars-next-planet" type="button" aria-label="Planet selanjutnya: Jupiter">
-            <span><small>Planet selanjutnya</small><strong>Jupiter</strong></span>
+          <button class="mars-planet-nav mars-planet-next" id="mars-next-planet" type="button" aria-label="Objek selanjutnya: Sabuk Asteroid">
+            <span><small>Objek selanjutnya</small><strong>Sabuk Asteroid</strong></span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
         </div>
@@ -603,6 +605,62 @@
 
       <a class="mars-credit" href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Tekstur: Solar System Scope · CC BY 4.0</a>
     </section>
+    <section class="asteroid-scene" id="asteroid-scene" aria-labelledby="asteroid-title" hidden>
+      <div class="asteroid-space-haze" aria-hidden="true"></div>
+      <div class="asteroid-viewport" id="asteroid-viewport" role="img" aria-label="Panorama Sabuk Asteroid dengan benda berbatu bertekstur pada berbagai jarak, ruang kosong yang luas, dan Ceres sebagai objek utama."></div>
+      <div class="asteroid-edge-shade" aria-hidden="true"></div>
+
+      <div class="asteroid-ceres-badge" id="asteroid-ceres-badge" aria-hidden="true">
+        <strong>CERES · PLANET KATAI</strong>
+        <span>Objek terbesar di sabuk asteroid utama</span>
+      </div>
+
+      <div class="asteroid-caption">
+        <p class="eyebrow" aria-hidden="true"><span></span> WILAYAH TATA SURYA · ANTARA MARS &amp; JUPITER</p>
+        <h2 id="asteroid-title" tabindex="-1">Sabuk Asteroid<span>.</span></h2>
+        <p class="asteroid-whisper">Jejak berbatu dari masa ketika Tata Surya masih dibentuk.</p>
+        <div class="asteroid-arrival-actions" role="group" aria-label="Navigasi objek Tata Surya">
+          <button class="asteroid-object-nav asteroid-object-prev" id="asteroid-prev-object" type="button" aria-label="Objek sebelumnya: Mars">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+            <span><small>Sebelumnya</small><strong>Mars</strong></span>
+          </button>
+          <button class="asteroid-explore-button" id="asteroid-explore-button" type="button">
+            <span>Jelajahi Sabuk</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+          <button class="asteroid-object-nav asteroid-object-next" id="asteroid-next-object" type="button" aria-label="Objek selanjutnya: Jupiter">
+            <span><small>Selanjutnya</small><strong>Jupiter</strong></span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="exploration-marker-media asteroid-context-media" id="asteroid-context-media" hidden></div>
+
+      <aside class="asteroid-exploration" id="asteroid-exploration" aria-labelledby="asteroid-topic-title" aria-live="polite" inert>
+        <div class="asteroid-exploration-topline">
+          <span class="asteroid-topic-kicker" id="asteroid-topic-kicker">IDENTITAS SABUK ASTEROID</span>
+          <span class="asteroid-topic-count"><span id="asteroid-topic-current">01</span> / <span id="asteroid-topic-total">07</span></span>
+        </div>
+        <h3 id="asteroid-topic-title" tabindex="-1">Bukan Lorong Batu</h3>
+        <p class="asteroid-topic-subtitle" id="asteroid-topic-subtitle"></p>
+        <div class="asteroid-topic-scroll">
+          <p class="asteroid-topic-summary" id="asteroid-topic-summary"></p>
+          <ul class="asteroid-topic-facts" id="asteroid-topic-facts"></ul>
+        </div>
+        <a class="asteroid-topic-source" id="asteroid-topic-source" href="https://science.nasa.gov/solar-system/asteroids/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science ↗</a>
+        <div class="asteroid-exploration-controls">
+          <button class="asteroid-topic-nav" id="asteroid-topic-prev" type="button" aria-label="Topik Sabuk Asteroid sebelumnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+          </button>
+          <div class="asteroid-topic-progress" id="asteroid-topic-progress" aria-hidden="true"></div>
+          <button class="asteroid-topic-nav" id="asteroid-topic-next" type="button" aria-label="Topik Sabuk Asteroid berikutnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+        <button class="asteroid-exploration-close return-panorama-button" id="asteroid-exploration-close" type="button">Kembali ke panorama Sabuk Asteroid</button>
+      </aside>
+    </section>
     <section class="jupiter-scene" id="jupiter-scene" aria-labelledby="jupiter-title" hidden>
       <div class="jupiter-space-haze" aria-hidden="true"></div>
       <div class="jupiter-viewport" id="jupiter-viewport" role="img" aria-label="Jupiter, planet terbesar di Tata Surya dengan pita awan, Bintik Merah Besar, dan cincin debu yang redup."></div>
@@ -622,9 +680,9 @@
         <h2 id="jupiter-title" tabindex="-1">Jupiter<span>.</span></h2>
         <p class="jupiter-whisper">Raksasa Berpita dengan Badai yang Tak Pernah Benar-Benar Diam.</p>
         <div class="jupiter-arrival-actions" role="group" aria-label="Navigasi planet">
-          <button class="jupiter-planet-nav jupiter-planet-prev" id="jupiter-prev-planet" type="button" aria-label="Planet sebelumnya: Mars">
+          <button class="jupiter-planet-nav jupiter-planet-prev" id="jupiter-prev-planet" type="button" aria-label="Objek sebelumnya: Sabuk Asteroid">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
-            <span><small>Planet sebelumnya</small><strong>Mars</strong></span>
+            <span><small>Objek sebelumnya</small><strong>Sabuk Asteroid</strong></span>
           </button>
           <button class="jupiter-explore-button" id="jupiter-explore-button" type="button">
             <span>Jelajahi Jupiter</span>

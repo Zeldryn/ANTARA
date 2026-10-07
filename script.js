@@ -711,6 +711,8 @@ const mercuryPreviousButton = document.getElementById("mercury-prev-planet");
 const mercuryNextButton = document.getElementById("mercury-next-planet");
 const sunPreviousButton = document.getElementById("sun-prev-object");
 const sunNextButton = document.getElementById("sun-next-object");
+const asteroidPreviousButton = document.getElementById("asteroid-prev-object");
+const asteroidNextButton = document.getElementById("asteroid-next-object");
 const jupiterPreviousButton = document.getElementById("jupiter-prev-planet");
 const jupiterNextButton = document.getElementById("jupiter-next-planet");
 const audioToggle = document.getElementById("audio-toggle");
@@ -727,6 +729,7 @@ const mars = new MarsScene();
 const mercury = new MercuryScene();
 const sun = new SunScene();
 const venus = new VenusScene();
+const asteroid = new AsteroidBeltScene();
 const jupiter = new JupiterScene();
 let phase = "idle";
 let elapsed = 0;
@@ -1059,14 +1062,16 @@ function travelToMars() {
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU PLANET MERAH";
   announcement.textContent = "Meninggalkan Bumi. Kamera beralih menuju Mars.";
-  // Jupiter is the next neighbor after Mars. Prepare it during this six-second
-  // journey instead of making the Mars -> Jupiter button pay the setup cost.
+  // The next two outward destinations are prepared during this existing journey,
+  // never inside the Mars navigation click path.
+  asteroid.prepare();
   jupiter.prepare();
   sound.travel(reducedMotion.matches ? 0.4 : 6.2);
   earth.beginTravelToMars({
     onReveal: () => {
       if (phase !== "mars-transition") return;
       mars.start({ settled: true });
+      asteroid.prepare();
       jupiter.prepare();
     },
     onComplete: () => {
@@ -1103,20 +1108,63 @@ function travelToEarth() {
   });
 }
 
-function travelMarsToJupiter() {
-  if (mars.exploring || mars.fullExplorationActive || !beginPlanetTransition("mars", "mars-jupiter-transition", marsNextButton)) return;
+function travelMarsToAsteroid() {
+  if (mars.exploring || mars.fullExplorationActive || !beginPlanetTransition("mars", "mars-asteroid-transition", marsNextButton)) return;
   setExperienceState("planet");
-  if (flightStatus) flightStatus.textContent = "MELINTASI SABUK ASTEROID";
-  announcement.textContent = "Meninggalkan Mars. Jalur menuju Jupiter melewati wilayah sabuk asteroid.";
-  sound.travel(reducedMotion.matches ? 0.5 : 8.2);
-  jupiter.beginTravelFromMars({
+  if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU SABUK ASTEROID";
+  announcement.textContent = "Meninggalkan Mars. Memasuki wilayah sabuk asteroid utama.";
+  asteroid.prepare();
+  jupiter.prepare();
+  sound.travel(reducedMotion.matches ? 0.5 : 7.0);
+  asteroid.beginTravelFromMars({
     marsRotation: mars.renderedRotation,
     onCovered: () => {
-      if (phase === "mars-jupiter-transition") mars.stop();
+      if (phase === "mars-asteroid-transition") mars.stop();
     },
     onComplete: () => {
-      if (phase !== "mars-jupiter-transition") return;
+      if (phase !== "mars-asteroid-transition") return;
       mission.classList.remove("is-mars");
+      mission.classList.add("is-asteroid");
+      finishPlanetTransition("asteroid");
+      if (flightStatus) flightStatus.textContent = "TIBA DI SABUK ASTEROID";
+      announcement.textContent = "Tiba di Sabuk Asteroid, wilayah berbatu luas antara Mars dan Jupiter.";
+    }
+  });
+}
+
+function travelAsteroidToMars() {
+  if (asteroid.exploring || !beginPlanetTransition("asteroid", "asteroid-mars-transition", asteroidPreviousButton)) return;
+  setExperienceState("planet");
+  if (flightStatus) flightStatus.textContent = "KEMBALI MENUJU MARS";
+  announcement.textContent = "Meninggalkan Sabuk Asteroid. Mars mulai terlihat di bagian dalam Tata Surya.";
+  sound.travel(reducedMotion.matches ? 0.5 : 7.0);
+  asteroid.beginTravelToMars({
+    onComplete: () => {
+      if (phase !== "asteroid-mars-transition") return;
+      mars.start({ settled: true });
+      asteroid.stop();
+      mission.classList.remove("is-asteroid");
+      mission.classList.add("is-mars");
+      finishPlanetTransition("mars");
+      if (flightStatus) flightStatus.textContent = "KEMBALI DI ORBIT MARS";
+      announcement.textContent = "Kembali di Mars.";
+    }
+  });
+}
+
+function travelAsteroidToJupiter() {
+  if (asteroid.exploring || !beginPlanetTransition("asteroid", "asteroid-jupiter-transition", asteroidNextButton)) return;
+  setExperienceState("planet");
+  if (flightStatus) flightStatus.textContent = "MENINGGALKAN SABUK ASTEROID";
+  announcement.textContent = "Benda-benda berbatu mulai menipis. Jupiter muncul jauh di depan.";
+  jupiter.prepare();
+  sound.travel(reducedMotion.matches ? 0.5 : 7.8);
+  asteroid.beginTravelToJupiter({
+    onComplete: () => {
+      if (phase !== "asteroid-jupiter-transition") return;
+      jupiter.start({ settled: true });
+      asteroid.stop();
+      mission.classList.remove("is-asteroid");
       mission.classList.add("is-jupiter");
       finishPlanetTransition("jupiter");
       if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT JUPITER";
@@ -1125,23 +1173,24 @@ function travelMarsToJupiter() {
   });
 }
 
-function travelJupiterToMars() {
-  if (jupiter.exploring || !beginPlanetTransition("jupiter", "jupiter-mars-transition", jupiterPreviousButton)) return;
+function travelJupiterToAsteroid() {
+  if (jupiter.exploring || !beginPlanetTransition("jupiter", "jupiter-asteroid-transition", jupiterPreviousButton)) return;
   setExperienceState("planet");
-  if (flightStatus) flightStatus.textContent = "KEMBALI MELINTASI SABUK ASTEROID";
-  announcement.textContent = "Jupiter menjauh. Kembali menuju Mars melalui sabuk asteroid.";
-  sound.travel(reducedMotion.matches ? 0.5 : 8.2);
-  jupiter.beginTravelToMars({
-    onCovered: () => {},
+  if (flightStatus) flightStatus.textContent = "MENUJU SABUK ASTEROID";
+  announcement.textContent = "Jupiter menjauh. Memasuki kembali wilayah Sabuk Asteroid.";
+  asteroid.prepare();
+  sound.travel(reducedMotion.matches ? 0.5 : 7.8);
+  asteroid.beginTravelFromJupiter({
+    onCovered: () => {
+      if (phase === "jupiter-asteroid-transition") jupiter.stop();
+    },
     onComplete: () => {
-      if (phase !== "jupiter-mars-transition") return;
-      mars.start({ settled: true });
-      jupiter.stop();
+      if (phase !== "jupiter-asteroid-transition") return;
       mission.classList.remove("is-jupiter");
-      mission.classList.add("is-mars");
-      finishPlanetTransition("mars");
-      if (flightStatus) flightStatus.textContent = "KEMBALI DI ORBIT MARS";
-      announcement.textContent = "Kembali di Mars.";
+      mission.classList.add("is-asteroid");
+      finishPlanetTransition("asteroid");
+      if (flightStatus) flightStatus.textContent = "TIBA DI SABUK ASTEROID";
+      announcement.textContent = "Kembali di Sabuk Asteroid.";
     }
   });
 }
@@ -1165,7 +1214,7 @@ function resetMission() {
   jupiter.stop();
   planetTransitionLocked = false;
   activePlanetNavButton = null;
-  mission.classList.remove("is-earth", "is-mars", "is-venus", "is-mercury", "is-sun", "is-jupiter", "is-preparing", "is-planet-transitioning");
+  mission.classList.remove("is-earth", "is-mars", "is-venus", "is-mercury", "is-sun", "is-asteroid", "is-jupiter", "is-preparing", "is-planet-transitioning");
   setExperienceState("home");
   launchButton.disabled = false;
   if (flightStatus) flightStatus.textContent = "SIAP • BUMI";
@@ -1179,8 +1228,10 @@ mercuryPreviousButton.addEventListener("click", travelMercuryToSun);
 mercuryNextButton.addEventListener("click", travelMercuryToVenus);
 sunNextButton.addEventListener("click", travelSunToMercury);
 marsPreviousButton.addEventListener("click", travelToEarth);
-marsNextButton.addEventListener("click", travelMarsToJupiter);
-jupiterPreviousButton.addEventListener("click", travelJupiterToMars);
+marsNextButton.addEventListener("click", travelMarsToAsteroid);
+asteroidPreviousButton.addEventListener("click", travelAsteroidToMars);
+asteroidNextButton.addEventListener("click", travelAsteroidToJupiter);
+jupiterPreviousButton.addEventListener("click", travelJupiterToAsteroid);
 document.addEventListener("keydown", event => {
   if (phase === "mars" && mars.fullExplorationActive) {
     if (event.key === "Escape") { event.preventDefault(); mars.fullExploration?.exit(); }
@@ -1218,6 +1269,14 @@ document.addEventListener("keydown", event => {
     if (event.key === "Escape") { event.preventDefault(); venus.exitExploration(); }
     return;
   }
+  if (phase === "asteroid" && asteroid.exploring) {
+    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      asteroid.setExplorationStop(asteroid.topicIndex + (event.key === "ArrowRight" ? 1 : -1));
+    }
+    if (event.key === "Escape") { event.preventDefault(); asteroid.exitExploration(); }
+    return;
+  }
   if (phase === "jupiter" && jupiter.exploring) {
     if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
       event.preventDefault();
@@ -1234,8 +1293,10 @@ document.addEventListener("keydown", event => {
   if (event.key === "ArrowRight" && phase === "mercury" && !mercury.exploring) travelMercuryToVenus();
   if (event.key === "ArrowRight" && phase === "sun" && !sun.exploring) travelSunToMercury();
   if (event.key === "ArrowLeft" && phase === "mars" && !mars.exploring && !mars.fullExplorationActive) travelToEarth();
-  if (event.key === "ArrowRight" && phase === "mars" && !mars.exploring && !mars.fullExplorationActive) travelMarsToJupiter();
-  if (event.key === "ArrowLeft" && phase === "jupiter" && !jupiter.exploring) travelJupiterToMars();
+  if (event.key === "ArrowRight" && phase === "mars" && !mars.exploring && !mars.fullExplorationActive) travelMarsToAsteroid();
+  if (event.key === "ArrowLeft" && phase === "asteroid" && !asteroid.exploring) travelAsteroidToMars();
+  if (event.key === "ArrowRight" && phase === "asteroid" && !asteroid.exploring) travelAsteroidToJupiter();
+  if (event.key === "ArrowLeft" && phase === "jupiter" && !jupiter.exploring) travelJupiterToAsteroid();
   if (event.key === "Escape" && phase !== "idle") resetMission();
 });
 window.addEventListener("resize", () => flight.resize());
@@ -1266,12 +1327,12 @@ document.addEventListener("click", event => {
   if (control.dataset.uiSound === "manual") return;
 
   // These actions already have their own intentional audio and must not double-fire.
-  if (control === launchButton || control === earth.nextButton || control === earthPreviousButton || control === venusPreviousButton || control === venusNextButton || control === mercuryPreviousButton || control === mercuryNextButton || control === sunNextButton || control === marsPreviousButton || control === marsNextButton || control === jupiterPreviousButton || control === audioToggle) return;
+  if (control === launchButton || control === earth.nextButton || control === earthPreviousButton || control === venusPreviousButton || control === venusNextButton || control === mercuryPreviousButton || control === mercuryNextButton || control === sunNextButton || control === marsPreviousButton || control === marsNextButton || control === asteroidPreviousButton || control === asteroidNextButton || control === jupiterPreviousButton || control === audioToggle) return;
 
   sound.uiClick();
 }, true);
 
-for (const button of [launchButton, earth.nextButton, earthPreviousButton, venusPreviousButton, venusNextButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, marsNextButton, mars.exploreButton, mars.fullExploration?.entryButton, jupiterPreviousButton, jupiter.exploreButton, audioToggle].filter(Boolean)) {
+for (const button of [launchButton, earth.nextButton, earthPreviousButton, venusPreviousButton, venusNextButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, marsNextButton, mars.exploreButton, mars.fullExploration?.entryButton, asteroidPreviousButton, asteroidNextButton, asteroid.exploreButton, jupiterPreviousButton, jupiter.exploreButton, audioToggle].filter(Boolean)) {
   button.addEventListener("pointerenter", event => { if (event.pointerType === "mouse") sound.hover(); });
   button.addEventListener("focus", () => sound.hover());
 }
