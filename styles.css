@@ -2832,3 +2832,280 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .roof-service-node,
   .cockpit-roof::after { animation:none !important; }
 }
+
+/* ========================================================================
+   STRICT EXTERIOR-SCENERY ENHANCEMENT
+   Only the world seen through the front windshield is enriched here.
+   Cockpit glass, roof, frame, characters, dashboard and runway geometry stay untouched.
+   ======================================================================== */
+
+/* This layer already lives inside .cockpit-world, below .cockpit-camera.
+   Clip only the added scenery so it cannot leak through cockpit structure. */
+.window-environment-detail {
+  clip-path: polygon(7.5% 8%, 92.5% 8%, 87.2% 77%, 12.8% 77%);
+  -webkit-clip-path: polygon(7.5% 8%, 92.5% 8%, 87.2% 77%, 12.8% 77%);
+  isolation: isolate;
+}
+
+/* Sparse atmospheric points, intentionally concentrated away from the title center. */
+.exterior-starfield {
+  position: absolute;
+  z-index: 0;
+  inset: 8% 8% 36%;
+  opacity: calc(.11 + var(--star-opacity) * .38);
+  pointer-events: none;
+  transition: opacity .45s linear;
+}
+.exterior-starfield i {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s, 1.5px);
+  height: var(--s, 1.5px);
+  border-radius: 50%;
+  background: rgba(226,241,250,.78);
+  box-shadow: 0 0 5px rgba(189,225,244,.34);
+  animation: exterior-star-soft-twinkle var(--d, 5.6s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+.exterior-starfield i:nth-child(1){--x:9%;--y:26%;--s:1px;--d:6.7s;--delay:-1.2s}
+.exterior-starfield i:nth-child(2){--x:17%;--y:45%;--s:1.4px;--d:5.2s;--delay:-3.1s}
+.exterior-starfield i:nth-child(3){--x:25%;--y:16%;--s:1px;--d:7.1s;--delay:-.7s}
+.exterior-starfield i:nth-child(4){--x:31%;--y:54%;--s:1.2px;--d:6.1s;--delay:-4.2s}
+.exterior-starfield i:nth-child(5){--x:69%;--y:49%;--s:1.1px;--d:7.4s;--delay:-2.4s}
+.exterior-starfield i:nth-child(6){--x:76%;--y:19%;--s:1.5px;--d:5.8s;--delay:-1.6s}
+.exterior-starfield i:nth-child(7){--x:84%;--y:39%;--s:1px;--d:6.9s;--delay:-4.8s}
+.exterior-starfield i:nth-child(8){--x:92%;--y:24%;--s:1.3px;--d:5.4s;--delay:-2.8s}
+.exterior-starfield i:nth-child(9){--x:12%;--y:66%;--s:1px;--d:8s;--delay:-5.2s}
+.exterior-starfield i:nth-child(10){--x:21%;--y:72%;--s:1.1px;--d:6.4s;--delay:-3.7s}
+.exterior-starfield i:nth-child(11){--x:80%;--y:69%;--s:1px;--d:7.2s;--delay:-1.9s}
+.exterior-starfield i:nth-child(12){--x:90%;--y:61%;--s:1.2px;--d:5.9s;--delay:-4.4s}
+
+/* Very soft cloud fragments give the blue atmosphere depth without becoming a cloud wall. */
+.exterior-cloud-haze {
+  position: absolute;
+  z-index: 1;
+  inset: 16% 3% 35%;
+  opacity: calc(.52 - var(--space-mix) * .38);
+  overflow: hidden;
+  pointer-events: none;
+}
+.exterior-cloud-haze i {
+  position: absolute;
+  width: 24%;
+  height: 16%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(238,247,251,.18), rgba(207,229,241,.08) 52%, transparent 74%);
+  filter: blur(4px);
+  animation: exterior-cloud-drift var(--cloud-duration, 28s) ease-in-out infinite alternate;
+}
+.exterior-cloud-haze i:nth-child(1){left:-3%;top:21%;--cloud-duration:31s}
+.exterior-cloud-haze i:nth-child(2){left:18%;top:58%;width:18%;--cloud-duration:35s;animation-delay:-11s}
+.exterior-cloud-haze i:nth-child(3){right:17%;top:49%;width:19%;--cloud-duration:33s;animation-delay:-17s}
+.exterior-cloud-haze i:nth-child(4){right:-4%;top:14%;width:25%;--cloud-duration:37s;animation-delay:-8s}
+
+/* Distant launch-city silhouette. The center stays deliberately low and quiet
+   so the main title remains the visual focus. */
+.spaceport-skyline {
+  position: absolute;
+  z-index: 2;
+  left: 7%;
+  right: 7%;
+  bottom: 34.2%;
+  height: 15.5%;
+  opacity: calc(var(--ground-opacity) * .82);
+  transform-origin: 50% 100%;
+  transform: translate3d(calc(var(--cam-x) * -.035), calc(var(--ground-progress) * 9vh), 0) scale(calc(1 - var(--ground-progress) * .12));
+  pointer-events: none;
+  transition: opacity .32s linear;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.10));
+}
+.spaceport-skyline::after {
+  content: "";
+  position: absolute;
+  left: 3%; right: 3%; bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(130,181,210,.26) 18%, rgba(224,186,111,.24) 50%, rgba(130,181,210,.24) 82%, transparent);
+  box-shadow: 0 0 11px rgba(127,187,219,.08);
+}
+.spaceport-cluster {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(4px,.48vw,8px);
+  height: 100%;
+}
+.spaceport-cluster-left { left: 0; width: 35%; justify-content: flex-start; }
+.spaceport-cluster-center { left: 42%; width: 16%; height: 43%; justify-content: center; opacity: .67; }
+.spaceport-cluster-right { right: 0; width: 35%; justify-content: flex-end; }
+.spaceport-cluster i {
+  position: relative;
+  display: block;
+  width: clamp(9px,1.12vw,18px);
+  height: var(--h, 42%);
+  min-height: 10px;
+  border: 1px solid rgba(105,151,179,.12);
+  border-bottom: 0;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 5px, rgba(126,184,216,.12) 5px 6px, transparent 6px 10px),
+    linear-gradient(180deg, rgba(30,59,76,.82), rgba(8,25,36,.94));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.018);
+}
+.spaceport-cluster i::after {
+  content: "";
+  position: absolute;
+  left: 22%; right: 22%; top: 22%;
+  height: 2px;
+  background: rgba(230,195,124,.38);
+  box-shadow: 0 12px 0 rgba(115,185,219,.26), 0 24px 0 rgba(230,195,124,.22);
+  opacity: .64;
+}
+.spaceport-cluster-left i:nth-child(1){--h:34%;width:clamp(13px,1.5vw,24px)}
+.spaceport-cluster-left i:nth-child(2){--h:57%;width:clamp(8px,.8vw,13px)}
+.spaceport-cluster-left i:nth-child(3){--h:43%;width:clamp(15px,1.7vw,26px)}
+.spaceport-cluster-left i:nth-child(4){--h:72%;width:clamp(8px,.78vw,12px)}
+.spaceport-cluster-left i:nth-child(5){--h:48%;width:clamp(12px,1.3vw,20px)}
+.spaceport-cluster-left i:nth-child(6){--h:36%;width:clamp(16px,1.9vw,29px)}
+.spaceport-cluster-left i:nth-child(7){--h:54%;width:clamp(9px,.92vw,14px)}
+.spaceport-cluster-center i:nth-child(1){--h:36%;width:22%}
+.spaceport-cluster-center i:nth-child(2){--h:54%;width:16%}
+.spaceport-cluster-center i:nth-child(3){--h:31%;width:28%}
+.spaceport-cluster-center i:nth-child(4){--h:42%;width:18%}
+.spaceport-cluster-right i:nth-child(1){--h:50%;width:clamp(9px,.95vw,14px)}
+.spaceport-cluster-right i:nth-child(2){--h:35%;width:clamp(16px,1.8vw,28px)}
+.spaceport-cluster-right i:nth-child(3){--h:62%;width:clamp(9px,.9vw,14px)}
+.spaceport-cluster-right i:nth-child(4){--h:44%;width:clamp(13px,1.45vw,22px)}
+.spaceport-cluster-right i:nth-child(5){--h:75%;width:clamp(8px,.78vw,12px)}
+.spaceport-cluster-right i:nth-child(6){--h:47%;width:clamp(15px,1.7vw,26px)}
+.spaceport-cluster-right i:nth-child(7){--h:32%;width:clamp(12px,1.35vw,21px)}
+
+.spaceport-control-tower,
+.spaceport-antenna {
+  position: absolute;
+  bottom: 0;
+  display: block;
+  background: linear-gradient(180deg, rgba(37,70,89,.88), rgba(8,25,36,.96));
+}
+.spaceport-control-tower { width: clamp(10px,.78vw,13px); height: 78%; }
+.spaceport-control-tower::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: -8%;
+  width: 190%; height: 12%;
+  transform: translateX(-50%);
+  border: 1px solid rgba(134,188,217,.20);
+  background: rgba(35,68,87,.86);
+}
+.spaceport-control-tower b,
+.spaceport-antenna b {
+  position: absolute;
+  left: 50%; top: -12%;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  transform: translate(-50%,-50%);
+  background: #e2b86b;
+  box-shadow: 0 0 7px rgba(226,184,107,.58);
+  animation: exterior-beacon-a 3.7s steps(1,end) infinite;
+}
+.tower-left { left: 24.5%; }
+.tower-right { right: 23.2%; height: 64%; }
+.tower-right b { animation-name: exterior-beacon-b; animation-duration: 4.9s; animation-delay: -1.3s; }
+.spaceport-antenna { width: 1px; height: 53%; background: rgba(97,148,177,.62); }
+.spaceport-antenna::before { content:""; position:absolute; left:-6px; top:22%; width:13px; height:1px; background:rgba(115,170,200,.40); }
+.spaceport-antenna b { top:-2%; width:2px; height:2px; background:#86c1de; box-shadow:0 0 6px rgba(134,193,222,.65); }
+.antenna-left { left: 13.5%; }
+.antenna-right { right: 10.5%; height: 46%; }
+.antenna-left b { animation-name: exterior-beacon-c; animation-duration: 5.6s; animation-delay:-2.2s; }
+.antenna-right b { animation-name: exterior-beacon-b; animation-duration: 6.2s; animation-delay:-4.1s; }
+
+.spaceport-horizon-lights {
+  position: absolute;
+  z-index: 3;
+  left: 9%; right: 9%; bottom: 32.8%; height: 2%;
+  opacity: calc(var(--ground-opacity) * .75);
+  transform: translateY(calc(var(--ground-progress) * 9vh));
+  pointer-events: none;
+}
+.spaceport-horizon-lights i {
+  position: absolute;
+  left: var(--x);
+  bottom: 0;
+  width: 2px; height: 2px;
+  border-radius: 50%;
+  background: var(--light, #e4bc70);
+  box-shadow: 0 0 7px color-mix(in srgb, var(--light, #e4bc70) 60%, transparent);
+  animation: exterior-horizon-pulse var(--d, 4.2s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+.spaceport-horizon-lights i:nth-child(1){--x:2%;--d:4.8s;--delay:-.6s}
+.spaceport-horizon-lights i:nth-child(2){--x:12%;--light:#7dbbd8;--d:5.4s;--delay:-2.7s}
+.spaceport-horizon-lights i:nth-child(3){--x:24%;--d:3.9s;--delay:-1.8s}
+.spaceport-horizon-lights i:nth-child(4){--x:36%;--light:#7dbbd8;--d:5.9s;--delay:-4.4s}
+.spaceport-horizon-lights i:nth-child(5){--x:46%;--d:4.4s;--delay:-3.1s}
+.spaceport-horizon-lights i:nth-child(6){--x:57%;--light:#7dbbd8;--d:5.1s;--delay:-1.2s}
+.spaceport-horizon-lights i:nth-child(7){--x:68%;--d:4.7s;--delay:-3.8s}
+.spaceport-horizon-lights i:nth-child(8){--x:78%;--light:#7dbbd8;--d:6.1s;--delay:-2.4s}
+.spaceport-horizon-lights i:nth-child(9){--x:88%;--d:4.1s;--delay:-.9s}
+.spaceport-horizon-lights i:nth-child(10){--x:98%;--light:#7dbbd8;--d:5.7s;--delay:-4.9s}
+
+/* The optional moon is now faintly visible in atmosphere instead of appearing only in space. */
+.high-altitude-moon {
+  right: 13.5%;
+  top: 17.5%;
+  width: clamp(28px,3.6vw,54px);
+  opacity: calc(.10 + var(--space-mix) * .18);
+  filter: saturate(.68) brightness(1.04);
+}
+
+/* Existing utility lights stay understated so the new skyline does not turn neon. */
+.ground-beacon-field { opacity: calc(var(--ground-opacity) * .58); }
+.distant-structure-lights { opacity: calc(var(--ground-opacity) * .42); }
+
+@keyframes exterior-star-soft-twinkle {
+  0%,100% { opacity:.28; transform:scale(.82); }
+  47% { opacity:.72; transform:scale(1.08); }
+}
+@keyframes exterior-cloud-drift {
+  from { transform:translate3d(-2.5%,0,0); opacity:.45; }
+  to { transform:translate3d(3.5%,-5%,0); opacity:.74; }
+}
+@keyframes exterior-beacon-a { 0%,72%,100%{opacity:.18} 76%,82%{opacity:1} 87%{opacity:.26} }
+@keyframes exterior-beacon-b { 0%,54%,100%{opacity:.20} 58%,66%{opacity:.92} 70%{opacity:.28} }
+@keyframes exterior-beacon-c { 0%,80%,100%{opacity:.16} 84%,89%{opacity:.86} 93%{opacity:.25} }
+@keyframes exterior-horizon-pulse { 0%,100%{opacity:.30;transform:scale(.85)} 48%{opacity:.88;transform:scale(1.06)} }
+
+@media (max-width: 900px) {
+  .window-environment-detail {
+    clip-path: polygon(9% 8%, 91% 8%, 88% 77%, 12% 77%);
+    -webkit-clip-path: polygon(9% 8%, 91% 8%, 88% 77%, 12% 77%);
+  }
+  .spaceport-skyline { left:5%; right:5%; bottom:34.5%; height:14%; }
+  .spaceport-cluster-center { opacity:.48; }
+  .spaceport-control-tower { transform:scale(.88); transform-origin:50% 100%; }
+}
+@media (max-width: 700px) {
+  .window-environment-detail {
+    clip-path: polygon(10% 8%, 90% 8%, 89% 76%, 11% 76%);
+    -webkit-clip-path: polygon(10% 8%, 90% 8%, 89% 76%, 11% 76%);
+  }
+  .exterior-starfield { inset:9% 6% 39%; }
+  .exterior-starfield i:nth-child(4),
+  .exterior-starfield i:nth-child(9),
+  .exterior-starfield i:nth-child(11) { display:none; }
+  .spaceport-skyline { left:3%; right:3%; bottom:35%; height:12.5%; }
+  .spaceport-cluster { gap:3px; }
+  .spaceport-cluster-center { display:none; }
+  .spaceport-control-tower { height:68%; }
+  .tower-left { left:27%; }
+  .tower-right { right:26%; height:55%; }
+  .spaceport-horizon-lights { left:7%; right:7%; bottom:33.8%; }
+  .high-altitude-moon { right:13%; top:18%; width:30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .exterior-starfield i,
+  .exterior-cloud-haze i,
+  .spaceport-control-tower b,
+  .spaceport-antenna b,
+  .spaceport-horizon-lights i { animation:none !important; }
+}
