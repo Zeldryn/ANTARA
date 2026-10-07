@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#091322">
-  <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Bumi, Venus, Mars, dan keajaiban Tata Surya.">
+  <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Merkurius, Venus, Bumi, Mars, dan keajaiban Tata Surya.">
   <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/orbit.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
@@ -12,11 +12,13 @@
   <link rel="stylesheet" href="earth-scene.css">
   <link rel="stylesheet" href="mars-scene.css">
   <link rel="stylesheet" href="mars-full-exploration.css">
+  <link rel="stylesheet" href="mercury-scene.css">
   <link rel="stylesheet" href="venus-scene.css">
   <script src="exploration-media.js" defer></script>
   <script src="earth-scene.js" defer></script>
   <script src="mars-scene.js" defer></script>
   <script src="mars-full-exploration.js" defer></script>
+  <script src="mercury-scene.js" defer></script>
   <script src="venus-scene.js" defer></script>
   <script src="script.js" defer></script>
 </head>
@@ -261,6 +263,70 @@
         <div class="exploration-marker-media" id="earth-marker-media" hidden></div>
       </div>
     </section>
+    <section class="mercury-scene" id="mercury-scene" aria-labelledby="mercury-title" hidden>
+      <div class="mercury-space-haze" aria-hidden="true"></div>
+      <div class="mercury-viewport" id="mercury-viewport" role="img" aria-label="Merkurius, planet batuan terkecil dan terdekat dari Matahari, berputar perlahan di ruang angkasa."></div>
+      <div class="mercury-edge-shade" aria-hidden="true"></div>
+      <div class="mercury-caption">
+        <p class="eyebrow" aria-hidden="true"><span></span></p>
+        <h2 id="mercury-title" tabindex="-1">Merkurius<span>.</span></h2>
+        <p class="mercury-whisper">Dunia Kecil di Dekat Matahari.</p>
+        <div class="mercury-arrival-actions" role="group" aria-label="Navigasi planet">
+          <button class="mercury-planet-nav mercury-planet-prev" id="mercury-prev-planet" type="button" disabled aria-label="Objek sebelumnya: Matahari, belum tersedia">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+            <span><small>Objek sebelumnya</small><strong>Matahari</strong></span>
+          </button>
+          <button class="mercury-explore-button" id="mercury-explore-button" type="button">
+            <span>Jelajahi Merkurius</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+          <button class="mercury-planet-nav mercury-planet-next" id="mercury-next-planet" type="button" aria-label="Planet selanjutnya: Venus">
+            <span><small>Planet selanjutnya</small><strong>Venus</strong></span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="mercury-focus-reticle" id="mercury-focus-reticle" aria-hidden="true">
+        <span class="mercury-focus-ring"></span>
+        <span class="mercury-focus-dot"></span>
+        <span class="mercury-focus-line"></span>
+        <span class="mercury-focus-label">
+          <span class="mercury-focus-title" id="mercury-focus-label"></span>
+          <span class="mercury-focus-context" id="mercury-focus-context"></span>
+        </span>
+        <div class="exploration-marker-media" id="mercury-marker-media" hidden></div>
+      </div>
+
+      <div class="exploration-marker-media mercury-context-media" id="mercury-context-media" hidden></div>
+
+      <aside class="mercury-exploration" id="mercury-exploration" aria-labelledby="mercury-topic-title" aria-live="polite" inert>
+        <div class="mercury-exploration-topline">
+          <span class="mercury-topic-kicker" id="mercury-topic-kicker">POSISI &amp; UKURAN</span>
+          <span class="mercury-topic-count"><span id="mercury-topic-current">01</span> / <span id="mercury-topic-total">07</span></span>
+        </div>
+        <h3 id="mercury-topic-title" tabindex="-1">Planet Terkecil</h3>
+        <p class="mercury-topic-subtitle" id="mercury-topic-subtitle"></p>
+        <div class="mercury-topic-scroll" id="mercury-topic-scroll">
+          <p class="mercury-topic-summary" id="mercury-topic-summary"></p>
+          <ul class="mercury-topic-facts" id="mercury-topic-facts"></ul>
+        </div>
+        <a class="mercury-topic-source" id="mercury-topic-source" href="https://science.nasa.gov/mercury/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
+        <a class="exploration-photo-source" id="mercury-photo-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
+        <div class="mercury-exploration-controls">
+          <button class="mercury-topic-nav mercury-topic-prev" id="mercury-topic-prev" type="button" aria-label="Topik Merkurius sebelumnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+          </button>
+          <div class="mercury-topic-progress" id="mercury-topic-progress" aria-hidden="true"></div>
+          <button class="mercury-topic-nav mercury-topic-next" id="mercury-topic-next" type="button" aria-label="Topik Merkurius berikutnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+        <button class="mercury-exploration-close return-panorama-button" id="mercury-exploration-close" type="button">Kembali ke panorama Merkurius</button>
+      </aside>
+
+      <a class="mercury-credit" href="https://astrogeology.usgs.gov/search/map/mercury_messenger_mdis_global_basemap_bdr_166m" target="_blank" rel="noopener noreferrer">Basemap MESSENGER MDIS · NASA/USGS</a>
+    </section>
     <section class="venus-scene" id="venus-scene" aria-labelledby="venus-title" hidden>
       <div class="venus-space-haze" aria-hidden="true"></div>
       <div class="venus-viewport" id="venus-viewport" role="img" aria-label="Venus, planet berbatu yang tertutup atmosfer tebal, berputar perlahan di luar angkasa."></div>
@@ -270,7 +336,7 @@
         <h2 id="venus-title" tabindex="-1">Venus<span>.</span></h2>
         <p class="venus-whisper">Dunia Panas yang Penuh Misteri.</p>
         <div class="venus-arrival-actions" role="group" aria-label="Navigasi planet">
-          <button class="venus-planet-nav venus-planet-prev" id="venus-prev-planet" type="button" disabled aria-label="Planet sebelumnya: Merkurius, belum tersedia">
+          <button class="venus-planet-nav venus-planet-prev" id="venus-prev-planet" type="button" aria-label="Planet sebelumnya: Merkurius">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
             <span><small>Planet sebelumnya</small><strong>Merkurius</strong></span>
           </button>
