@@ -1748,3 +1748,185 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .companion-b { width: clamp(285px, 34vw, 455px); }
   .cockpit-dashboard { height: 22%; bottom: -4.5%; }
 }
+\n\n/* ==============================================================
+   TARGETED ASCENT REFINEMENT — requested 2026-09-24
+   Only center copy, persistent branding, window detail, timing-linked
+   cockpit telemetry, and first-bubble presentation are affected.
+   ============================================================== */
+
+/* Persistent ANTARA lockup. It sits outside the moving cockpit camera, so
+   turbulence, camera translation and handoff cannot clip or move it away. */
+.launch-brand-lockup {
+  position: absolute;
+  z-index: 34;
+  top: 3.4%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: 150px;
+  color: #f4f6f8;
+  pointer-events: none;
+  opacity: 1;
+  filter: drop-shadow(0 5px 18px rgba(0,0,0,.42));
+}
+.launch-brand-lockup svg { width: 39px; height: 39px; overflow: visible; }
+.launch-brand-lockup svg path:first-child { fill: currentColor; }
+.launch-brand-lockup svg path:nth-child(2) { fill: none; stroke: #ddb36d; stroke-width: 2.2; stroke-linecap: round; }
+.launch-brand-lockup svg circle { fill: #ddb36d; }
+.launch-brand-lockup strong { font: 500 14px/1.1 Georgia,"Times New Roman",serif; letter-spacing: .28em; text-indent: .28em; }
+.launch-brand-lockup small { color: rgba(229,235,240,.62); font-size: 5px; letter-spacing: .22em; }
+.mission[data-experience="home"] .launch-brand-lockup,
+.mission[data-experience="launch"] .launch-brand-lockup { display: grid; visibility: visible; opacity: 1; }
+
+/* Exact requested center title, resized only so the longer copy fits cleanly. */
+.intro h1 {
+  top: 16.8%;
+  width: min(840px,76vw);
+  font-family: Georgia,"Times New Roman",serif;
+  font-size: clamp(27px,3.35vw,52px);
+  line-height: 1.08;
+  letter-spacing: .015em;
+  text-indent: 0;
+}
+.intro-kicker { top: 28.3%; }
+.intro-copy { top: 35.4%; }
+
+/* More specific early-stage depth through the window. These layers stay in
+   the existing 2D cockpit-world and fade/recede with the established ascent. */
+.atmosphere-bands {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  opacity: calc(.78 - var(--space-mix) * .68);
+  background:
+    linear-gradient(180deg,transparent 0 26%,rgba(124,181,215,.06) 37%,transparent 50%),
+    radial-gradient(ellipse at 50% 57%,rgba(235,194,139,.18),rgba(111,164,201,.07) 32%,transparent 64%);
+  pointer-events: none;
+}
+.horizon-cloud-bank {
+  position: absolute;
+  z-index: 3;
+  left: -12%; right: -12%; bottom: 31%; height: 23%;
+  opacity: calc(var(--ground-opacity) * .72);
+  transform: translate3d(calc(var(--cam-x) * -.06),calc(var(--ground-progress) * 12vh),0) scale(calc(1 + var(--ground-progress) * .12));
+  background:
+    radial-gradient(ellipse at 8% 72%,rgba(241,247,250,.74) 0 8%,rgba(190,214,228,.25) 15%,transparent 26%),
+    radial-gradient(ellipse at 27% 58%,rgba(247,250,252,.68) 0 10%,rgba(190,215,230,.23) 18%,transparent 29%),
+    radial-gradient(ellipse at 49% 70%,rgba(235,244,249,.72) 0 11%,rgba(175,205,223,.22) 20%,transparent 31%),
+    radial-gradient(ellipse at 71% 56%,rgba(246,250,252,.70) 0 10%,rgba(188,214,229,.22) 19%,transparent 30%),
+    radial-gradient(ellipse at 92% 68%,rgba(239,247,250,.72) 0 9%,rgba(181,208,225,.20) 18%,transparent 29%);
+  filter: blur(5px);
+  pointer-events: none;
+}
+.urban-haze {
+  position: absolute;
+  z-index: 0;
+  left: -4%; right: -4%; bottom: 23%; height: 40%;
+  background: linear-gradient(180deg,transparent,rgba(137,174,196,.12) 47%,rgba(220,174,112,.12) 75%,transparent);
+  filter: blur(10px);
+  opacity: calc(.78 - var(--ground-progress) * .58);
+}
+.skyline-detail {
+  position: absolute;
+  left: -2%; right: -2%;
+  transform-origin: 50% 100%;
+  background: repeating-linear-gradient(90deg,#0b1a25 0 8px,transparent 8px 13px,#142a38 13px 22px,transparent 22px 29px,#0d202c 29px 34px,transparent 34px 42px);
+  mask-image: linear-gradient(180deg,#000,#000 80%,transparent);
+}
+.skyline-back {
+  z-index: 1;
+  bottom: 29%; height: 16%; opacity: calc(.48 - var(--ground-progress) * .34);
+  transform: scale(.86) translateY(calc(var(--ground-progress) * 5vh));
+  filter: blur(.55px);
+  clip-path: polygon(0 100%,0 63%,4% 63%,4% 41%,7% 41%,7% 71%,11% 71%,11% 30%,14% 30%,14% 61%,18% 61%,18% 48%,22% 48%,22% 70%,26% 70%,26% 37%,30% 37%,30% 57%,34% 57%,34% 28%,38% 28%,38% 64%,43% 64%,43% 42%,47% 42%,47% 68%,51% 68%,51% 33%,56% 33%,56% 56%,61% 56%,61% 25%,65% 25%,65% 63%,70% 63%,70% 39%,74% 39%,74% 68%,79% 68%,79% 34%,84% 34%,84% 58%,89% 58%,89% 43%,94% 43%,94% 65%,100% 65%,100% 100%);
+}
+.skyline-front {
+  z-index: 3;
+  bottom: 12%; height: 24%; opacity: calc(.86 - var(--ground-progress) * .62);
+  transform: scale(1.04) translateY(calc(var(--ground-progress) * 8vh));
+  clip-path: polygon(0 100%,0 68%,3% 68%,3% 43%,6% 43%,6% 76%,9% 76%,9% 26%,13% 26%,13% 58%,16% 58%,16% 38%,20% 38%,20% 71%,24% 71%,24% 32%,28% 32%,28% 61%,31% 61%,31% 21%,35% 21%,35% 66%,39% 66%,39% 41%,43% 41%,43% 73%,47% 73%,47% 30%,51% 30%,51% 58%,55% 58%,55% 24%,59% 24%,59% 65%,63% 65%,63% 36%,67% 36%,67% 72%,71% 72%,71% 29%,75% 29%,75% 60%,79% 60%,79% 40%,83% 40%,83% 70%,87% 70%,87% 33%,91% 33%,91% 57%,95% 57%,95% 45%,100% 45%,100% 100%);
+}
+.urban-depth-lights {
+  position: absolute;
+  z-index: 4;
+  left: 2%; right: 2%; bottom: 9%; height: 29%;
+  opacity: calc(.9 - var(--ground-progress) * .66);
+  background-image:
+    radial-gradient(circle,rgba(255,214,147,.92) 0 1px,transparent 1.6px),
+    radial-gradient(circle,rgba(113,190,229,.66) 0 1px,transparent 1.6px),
+    linear-gradient(90deg,transparent 0 49.8%,rgba(238,191,116,.12) 49.9% 50.1%,transparent 50.2%);
+  background-size: 37px 21px,59px 33px,96px 100%;
+  background-position: 4px 7px,19px 14px,0 0;
+  mask-image: linear-gradient(180deg,transparent,#000 26%,#000 100%);
+}
+
+/* Functional lower cockpit telemetry. */
+.panel-heading {
+  position: absolute;
+  left: 7%; right: 7%; top: 8%;
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  color: #718fa2; font-size: 5.5px; letter-spacing: .16em;
+}
+.panel-heading b { color: #b7d4e5; font: 600 7.5px/1 monospace; letter-spacing: .05em; }
+.altitude-chart { position: absolute; left: 7%; right: 7%; top: 28%; width: 86%; height: 47%; overflow: visible; }
+.altitude-grid { fill: none; stroke: rgba(112,166,197,.10); stroke-width: .7; }
+#altitude-chart-line { fill: none; stroke: #82c2df; stroke-width: 1.9; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 3px rgba(112,193,229,.38)); }
+#altitude-chart-dot { fill: #ebc77f; filter: drop-shadow(0 0 3px rgba(235,199,127,.65)); }
+.climb-readout { position: absolute; left: 7%; right: 7%; bottom: 7%; display: flex; justify-content: space-between; align-items: baseline; }
+.climb-readout small { color: #607e91; font-size: 5px; letter-spacing: .16em; }
+.climb-readout strong { color: #d5b775; font: 600 6.8px/1 monospace; }
+
+.mission-track { position: absolute; left: 8%; right: 8%; top: 39%; height: 28px; }
+.track-line { position: absolute; left: 8%; right: 8%; top: 50%; height: 1px; background: linear-gradient(90deg,#6aa8c8,#d8b66f); box-shadow: 0 0 6px rgba(110,173,205,.22); }
+.track-line::before,.track-line::after { content:""; position:absolute; top:50%; width:5px; height:5px; transform:translateY(-50%); border:1px solid rgba(218,184,111,.65); border-radius:50%; background:#0b1a27; }
+.track-line::before { left:0; }.track-line::after { right:0; }
+.track-origin,.track-destination { position:absolute; top:21px; color:#5f7d8e; font-size:4.5px; letter-spacing:.12em; }
+.track-origin { left:5%; }.track-destination { right:4%; }
+.rocket-marker { position:absolute; left:8%; top:50%; width:23px; height:12px; transform:translate(-50%,-50%); transition:left .12s linear; filter:drop-shadow(0 0 5px rgba(230,191,114,.35)); }
+.rocket-marker svg { display:block; width:100%; height:100%; fill:#e5bd72; stroke:#f2d79d; stroke-width:.4; }
+.mission-stage-text { position:absolute; left:8%; right:8%; bottom:8%; text-align:center; color:#8fb6cd; font:500 5.5px/1 monospace; letter-spacing:.13em; }
+
+.flight-data-grid { position:absolute; left:8%; right:8%; top:30%; display:grid; grid-template-columns:auto 1fr; column-gap:10px; row-gap:8px; align-items:baseline; }
+.flight-data-grid span { color:#58788b; font-size:5px; letter-spacing:.13em; }
+.flight-data-grid strong { color:#9ec7db; font:600 6.6px/1 monospace; text-align:right; }
+.flight-data-grid strong:nth-of-type(2) { color:#d7b873; }
+
+/* Keep telemetry legible without changing the cockpit geometry. */
+.altitude-panel,.mission-progress-panel,.flight-data-panel { overflow:hidden; }
+
+@media (max-width:900px) {
+  .launch-brand-lockup { top:2.7%; transform:translateX(-50%) scale(.88); transform-origin:50% 0; }
+  .intro h1 { top:15.8%; width:82vw; font-size:clamp(25px,5.5vw,42px); }
+  .intro-kicker { top:27.2%; }
+  .intro-copy { top:34.5%; }
+  .panel-heading { font-size:4.8px; }
+  .panel-heading b { font-size:6.5px; }
+}
+@media (max-width:700px) {
+  .launch-brand-lockup { top:2%; transform:translateX(-50%) scale(.78); }
+  .intro h1 { top:14.5%; width:88vw; font-size:clamp(23px,7vw,34px); }
+  .intro-kicker { top:25.8%; }
+  .intro-copy { top:32.2%; }
+  .flight-data-grid { row-gap:6px; }
+}
+
+/* Keep all three required telemetry panels present on narrow layouts too. */
+@media (max-width:700px) {
+  .cockpit-dashboard { height:30%; }
+  .console-left,.console-center,.console-right { display:block; top:34%; width:29%; height:54%; }
+  .console-left { left:3%; }
+  .console-center { left:35.5%; }
+  .console-right { right:3%; }
+  .panel-heading { left:6%; right:6%; font-size:4.1px; letter-spacing:.09em; }
+  .panel-heading b { font-size:5.4px; }
+  .altitude-chart { left:6%; right:6%; width:88%; }
+  .climb-readout strong { font-size:5.3px; }
+  .track-origin,.track-destination { font-size:3.8px; }
+  .mission-stage-text { font-size:4.4px; }
+  .flight-data-grid { left:6%; right:6%; column-gap:4px; row-gap:5px; }
+  .flight-data-grid span { font-size:3.8px; }
+  .flight-data-grid strong { font-size:4.8px; }
+  .dashboard-screen { display:none; }
+}

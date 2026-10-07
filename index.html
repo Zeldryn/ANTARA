@@ -35,11 +35,8 @@
     </header>
 
     <section class="intro" aria-labelledby="mission-title">
-      <div class="intro-brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 84 84"><path d="M42 8 19 61h13l10-23 10 23h13L42 8Z"/><path d="M15 50c15-10 39-10 54 0"/><circle cx="66" cy="47" r="3"/></svg>
-      </div>
       <p class="intro-kicker">PENDIDIKAN ANTARIKSA UNTUK GENERASI MASA DEPAN</p>
-      <h1 id="mission-title">ANTARA</h1>
+      <h1 id="mission-title">Yuk Kita Menjelajah Tata Surya Kita!</h1>
       <p class="intro-copy">Langit bukan batas,<br>tapi awal dari cerita baru.</p>
       <button class="launch-button" id="launch-button" type="button">
         <span>START</span>
@@ -56,13 +53,24 @@
     </footer>
 
     <div class="launch-stage" id="launch-stage" data-phase="idle" aria-label="Kokpit pesawat ANTARA dengan dua teman perjalanan">
+      <div class="launch-brand-lockup" aria-label="ANTARA, Antariksa Nusantara">
+        <svg viewBox="0 0 84 84" aria-hidden="true"><path d="M42 8 19 61h13l10-23 10 23h13L42 8Z"/><path d="M15 50c15-10 39-10 54 0"/><circle cx="66" cy="47" r="3"/></svg>
+        <strong>ANTARA</strong>
+        <small>ANTARIKSA NUSANTARA</small>
+      </div>
       <div class="cockpit-world" aria-hidden="true">
         <div class="launch-sky"></div>
         <div class="launch-space-layer"></div>
+        <div class="atmosphere-bands"></div>
+        <div class="horizon-cloud-bank"></div>
         <div class="ground-world">
+          <div class="urban-haze"></div>
           <div class="terrain-far"></div>
+          <div class="skyline-detail skyline-back"></div>
           <div class="city-layer city-far"></div>
+          <div class="skyline-detail skyline-front"></div>
           <div class="city-layer city-mid"></div>
+          <div class="urban-depth-lights"></div>
           <div class="city-road-grid"></div>
           <div class="launch-complex">
             <span class="launch-tower"></span>
@@ -119,18 +127,34 @@
         </article>
 
         <div class="cockpit-dashboard">
-          <div class="console-bank console-left">
-            <div class="instrument-ring"><i></i><span>ALT</span></div>
-            <div class="mini-readout"><b>00.0</b><small>KM</small></div>
-            <div class="toggle-row"><i></i><i></i><i></i><i></i></div>
+          <div class="console-bank console-left altitude-panel">
+            <div class="panel-heading"><span>ALTITUDE</span><b id="altitude-value">0.0 KM</b></div>
+            <svg class="altitude-chart" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true">
+              <path class="altitude-grid" d="M0 15H100M0 30H100M0 45H100M25 0V60M50 0V60M75 0V60"/>
+              <polyline id="altitude-chart-line" points="0,56 1,56"/>
+              <circle id="altitude-chart-dot" cx="1" cy="56" r="2"/>
+            </svg>
+            <div class="climb-readout"><small>CLIMB</small><strong id="climb-value">+0.00 KM/S</strong></div>
           </div>
-          <div class="console-bank console-center">
-            <div class="nav-display"><span class="nav-crosshair"></span><i></i><b>ORBIT NAV</b></div>
-            <div class="console-buttons"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="console-bank console-center mission-progress-panel">
+            <div class="panel-heading"><span>ASCENT ROUTE</span><b id="journey-percent">0%</b></div>
+            <div class="mission-track">
+              <span class="track-line"></span>
+              <small class="track-origin">EARTH</small>
+              <small class="track-destination">SPACE</small>
+              <span class="rocket-marker" id="rocket-progress" aria-hidden="true">
+                <svg viewBox="0 0 40 18"><path d="M4 9h12l7-6h6l-3 6 3 6h-6l-7-6H4Z"/><path d="M3 7 0 9l3 2"/></svg>
+              </span>
+            </div>
+            <div class="mission-stage-text" id="mission-stage-text">PRE-LAUNCH</div>
           </div>
-          <div class="console-bank console-right">
-            <div class="telemetry-bars"><i></i><i></i><i></i><i></i></div>
-            <div class="toggle-row"><i></i><i></i><i></i></div>
+          <div class="console-bank console-right flight-data-panel">
+            <div class="panel-heading"><span>FLIGHT STATUS</span><b id="phase-readout">STANDBY</b></div>
+            <div class="flight-data-grid">
+              <span>MODE</span><strong id="mode-readout">GROUND</strong>
+              <span>COMMS</span><strong id="comm-readout">LINK READY</strong>
+              <span>GUIDANCE</span><strong id="guidance-readout">LOCKED</strong>
+            </div>
           </div>
           <div class="cockpit-brand"><strong>ANTARA</strong><small>ANTARIKSA NUSANTARA</small></div>
           <div class="dashboard-lights"><i></i><i></i><i></i><i></i><i></i></div>
@@ -140,7 +164,7 @@
 
       <div class="speech-bubble speaker-a" id="speech-bubble" role="status" aria-live="polite">
         <strong id="speech-speaker">Nara</strong>
-        <span id="speech-text">Ayo, kita jelajah bersama!</span>
+        <span id="speech-text">Hai! Sudah Siap menjelajah Tata Surya Kita?</span>
       </div>
       <div class="launch-vignette"></div>
     </div>

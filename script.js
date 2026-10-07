@@ -14,19 +14,19 @@ const AUDIO_ASSETS = {
 // Seconds from the click. Visual staging and sound cues use this same schedule.
 const LAUNCH_TIMING = Object.freeze({
   appearance: 0,
-  settle: 1.4,
-  ignition: 3.0,
-  liftoff: 5.0,
-  climb: 7.6,
-  cloudApproach: 9.4,
-  clouds: 11.4,
-  aboveClouds: 14.8,
-  upperAtmosphere: 17.4,
-  space: 19.5,
-  exit: 19.5,
-  earthReveal: 20.7,
-  approach: 22.8,
-  finish: 25.2
+  settle: 1.8,
+  ignition: 4.2,
+  liftoff: 6.5,
+  climb: 9.0,
+  cloudApproach: 12.0,
+  clouds: 14.5,
+  aboveClouds: 18.2,
+  upperAtmosphere: 21.5,
+  space: 24.0,
+  exit: 24.0,
+  earthReveal: 26.0,
+  approach: 28.2,
+  finish: 30.5
 });
 
 class MissionAudio {
@@ -301,6 +301,17 @@ class LaunchVisual {
     this.cloudFar = this.stage.querySelector(".cloud-far");
     this.cloudMid = this.stage.querySelector(".cloud-mid");
     this.cloudNear = this.stage.querySelector(".cloud-near");
+    this.altitudeValue = document.getElementById("altitude-value");
+    this.climbValue = document.getElementById("climb-value");
+    this.altitudeChartLine = document.getElementById("altitude-chart-line");
+    this.altitudeChartDot = document.getElementById("altitude-chart-dot");
+    this.rocketProgress = document.getElementById("rocket-progress");
+    this.journeyPercent = document.getElementById("journey-percent");
+    this.missionStageText = document.getElementById("mission-stage-text");
+    this.phaseReadout = document.getElementById("phase-readout");
+    this.modeReadout = document.getElementById("mode-readout");
+    this.commReadout = document.getElementById("comm-readout");
+    this.guidanceReadout = document.getElementById("guidance-readout");
     try { this.ctx = this.canvas.getContext("2d", { alpha: true }); } catch { this.ctx = null; }
     const random = n => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
     this.stars = Array.from({ length: 115 }, (_, i) => ({
@@ -352,6 +363,7 @@ class LaunchVisual {
     this.cloudFar.style.setProperty("--cloud-far-opacity", "0");
     this.cloudMid.style.setProperty("--cloud-mid-opacity", "0");
     this.cloudNear.style.setProperty("--cloud-near-opacity", "0");
+    this.updateTelemetry(0, "idle", 0);
   }
 
   reset() {
@@ -445,9 +457,63 @@ class LaunchVisual {
     this.cloudNear.style.setProperty("--cloud-near-opacity", String(Math.min(.74, passDensity * .9 + deckDensity * .28)));
     this.arrivalEarth.style.backgroundPosition = `${50 + Math.sin(t * .16) * 2.4}% center`;
 
+    this.updateTelemetry(t, phase, ascent);
     if (this.ctx) this.drawParticles(t, ascent, starOpacity, phase);
     this.lastPhase = phase;
     return phase;
+  }
+
+  updateTelemetry(t, phase, ascent) {
+    const clamp = value => Math.min(1, Math.max(0, value));
+    const c = LAUNCH_TIMING;
+    const journey = clamp((t - c.liftoff) / Math.max(.01, c.space - c.liftoff));
+    const altitudeProgress = phase === "idle" ? 0 : journey;
+    const altitude = 120 * Math.pow(altitudeProgress, 1.18);
+    const climbRate = altitudeProgress <= 0 ? 0 : .35 + 7.65 * Math.pow(altitudeProgress, .88);
+
+    if (this.altitudeValue) this.altitudeValue.textContent = `${altitude.toFixed(altitude < 10 ? 1 : 0)} KM`;
+    if (this.climbValue) this.climbValue.textContent = `+${climbRate.toFixed(2)} KM/S`;
+    if (this.journeyPercent) this.journeyPercent.textContent = `${Math.round(journey * 100)}%`;
+    if (this.rocketProgress) this.rocketProgress.style.left = `${8 + journey * 84}%`;
+
+    if (this.altitudeChartLine && this.altitudeChartDot) {
+      const count = Math.max(1, Math.round(journey * 22));
+      const points = [];
+      let endX = 1;
+      let endY = 56;
+      for (let i = 0; i <= count; i += 1) {
+        const local = i / Math.max(1, count);
+        const x = 2 + local * journey * 96;
+        const rise = Math.pow(local * journey, 1.22);
+        const y = 56 - rise * 48 - Math.sin((local * journey) * Math.PI * 3) * Math.min(1.8, journey * 2);
+        points.push(`${x.toFixed(2)},${y.toFixed(2)}`);
+        endX = x; endY = y;
+      }
+      this.altitudeChartLine.setAttribute("points", points.join(" "));
+      this.altitudeChartDot.setAttribute("cx", endX.toFixed(2));
+      this.altitudeChartDot.setAttribute("cy", endY.toFixed(2));
+    }
+
+    const labels = {
+      idle: ["STANDBY", "GROUND", "LINK READY", "LOCKED", "PRE-LAUNCH"],
+      prelaunch: ["PRE-LAUNCH", "GROUND", "LINK READY", "LOCKED", "SYSTEM CHECK"],
+      ignition: ["IGNITION", "POWER-UP", "COMMS OK", "LOCKED", "ENGINE START"],
+      liftoff: ["LIFTOFF", "ASCENT", "COMMS OK", "TRACKING", "CLEARING CITY"],
+      climb: ["CLIMB", "ASCENT", "COMMS OK", "TRACKING", "ATMOSPHERIC CLIMB"],
+      "cloud-approach": ["CLOUD DECK", "ASCENT", "COMMS OK", "TRACKING", "CLOUD APPROACH"],
+      clouds: ["IN CLOUDS", "TURBULENCE", "COMMS OK", "TRACKING", "CLOUD TRANSIT"],
+      "above-clouds": ["HIGH ALT", "ASCENT", "COMMS OK", "TRACKING", "ABOVE CLOUDS"],
+      "upper-atmosphere": ["UPPER ATM", "ASCENT", "COMMS OK", "TRACKING", "UPPER ATMOSPHERE"],
+      space: ["SPACE", "COAST", "COMMS OK", "ORBIT LOCK", "OUTER SPACE"],
+      "earth-reveal": ["EARTH VIEW", "COAST", "COMMS OK", "ORBIT LOCK", "EARTH ACQUIRED"],
+      approach: ["APPROACH", "ORBIT", "COMMS OK", "ORBIT LOCK", "EARTH HANDOFF"]
+    };
+    const data = labels[phase] || labels.idle;
+    if (this.phaseReadout) this.phaseReadout.textContent = data[0];
+    if (this.modeReadout) this.modeReadout.textContent = data[1];
+    if (this.commReadout) this.commReadout.textContent = data[2];
+    if (this.guidanceReadout) this.guidanceReadout.textContent = data[3];
+    if (this.missionStageText) this.missionStageText.textContent = data[4];
   }
 
   drawParticles(t, ascent, starOpacity, phase) {
@@ -625,8 +691,8 @@ class CockpitCompanions {
 }
 
 const DIALOGUE_TIMELINE = Object.freeze([
-  { at: 0.00, phase: "prelaunch", speaker: "A", text: "Ayo, kita jelajah bersama!", emotion: "happy", sprite: "happy", otherSprite: "idle", duration: 2300 },
-  { at: 1.45, phase: "prelaunch", speaker: "B", text: "Kita mulai dari rumah kita dulu: Bumi.", emotion: "explaining", sprite: "talking", otherSprite: "confident", duration: 2500 },
+  { at: 0.00, phase: "prelaunch", speaker: "A", text: "Hai! Sudah Siap menjelajah Tata Surya Kita?", emotion: "happy", sprite: "happy", otherSprite: "idle", duration: 3200 },
+  { at: 3.35, phase: "prelaunch", speaker: "B", text: "Kita mulai dari rumah kita dulu: Bumi.", emotion: "explaining", sprite: "talking", otherSprite: "confident", duration: 2500 },
   { at: LAUNCH_TIMING.ignition + .10, phase: "ignition", speaker: "A", text: "Mesinnya hidup. Siap?", emotion: "excited", sprite: "excited", otherSprite: "supportive", duration: 1750 },
   { at: LAUNCH_TIMING.liftoff - .62, phase: "ignition", speaker: "B", text: "Pegangan ya, kita mulai terbang!", emotion: "supportive", sprite: "supportive", otherSprite: "excited", duration: 2100 },
   { at: LAUNCH_TIMING.liftoff + .22, phase: "liftoff", speaker: "A", text: "Kita naik! Kota di bawah mulai mengecil.", emotion: "excited", sprite: "excited", otherSprite: "surprised", duration: 2400 },
@@ -792,7 +858,7 @@ launchButton.addEventListener("click", () => {
   venus.prepare().then(() => earth.setVenusTravelSurface(venus.surface)).catch(() => {});
   mission.classList.add("is-preparing");
   if (flightStatus) flightStatus.textContent = "SIAP BERANGKAT";
-  announcement.textContent = "Nara: Ayo, kita jelajah bersama!";
+  announcement.textContent = "Nara: Hai! Sudah Siap menjelajah Tata Surya Kita?";
   previousFrame = performance.now();
   animationFrame = requestAnimationFrame(advancePreparation);
 });
