@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#091322">
-  <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Merkurius, Venus, Bumi, Mars, dan keajaiban Tata Surya.">
+  <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, dan keajaiban Tata Surya.">
   <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/orbit.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
@@ -13,12 +13,14 @@
   <link rel="stylesheet" href="mars-scene.css">
   <link rel="stylesheet" href="mars-full-exploration.css">
   <link rel="stylesheet" href="mercury-scene.css">
+  <link rel="stylesheet" href="sun-scene.css">
   <link rel="stylesheet" href="venus-scene.css">
   <script src="exploration-media.js" defer></script>
   <script src="earth-scene.js" defer></script>
   <script src="mars-scene.js" defer></script>
   <script src="mars-full-exploration.js" defer></script>
   <script src="mercury-scene.js" defer></script>
+  <script src="sun-scene.js" defer></script>
   <script src="venus-scene.js" defer></script>
   <script src="script.js" defer></script>
 </head>
@@ -263,6 +265,59 @@
         <div class="exploration-marker-media" id="earth-marker-media" hidden></div>
       </div>
     </section>
+    <section class="sun-scene" id="sun-scene" aria-labelledby="sun-title" hidden>
+      <div class="sun-space-haze" aria-hidden="true"></div>
+      <div class="sun-viewport" id="sun-viewport" role="img" aria-label="Matahari, bintang plasma dinamis dengan granulasi, sunspot, corona, prominence, dan aktivitas magnetik."></div>
+      <div class="sun-edge-shade" aria-hidden="true"></div>
+      <div class="sun-caption">
+        <p class="eyebrow" aria-hidden="true"><span></span></p>
+        <h2 id="sun-title" tabindex="-1">Matahari<span>.</span></h2>
+        <p class="sun-whisper">Bintang yang Menghidupkan Tata Surya.</p>
+        <div class="sun-arrival-actions" role="group" aria-label="Navigasi objek Tata Surya">
+          <button class="sun-planet-nav sun-object-prev" id="sun-prev-object" type="button" disabled aria-label="Tidak ada objek sebelumnya dalam urutan saat ini">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+            <span><small>Objek sebelumnya</small><strong>Awal sistem</strong></span>
+          </button>
+          <button class="sun-explore-button" id="sun-explore-button" type="button">
+            <span>Jelajahi Matahari</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+          <button class="sun-planet-nav sun-object-next" id="sun-next-object" type="button" aria-label="Objek selanjutnya: Merkurius">
+            <span><small>Objek selanjutnya</small><strong>Merkurius</strong></span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="exploration-marker-media sun-context-media" id="sun-context-media" hidden></div>
+
+      <aside class="sun-exploration" id="sun-exploration" aria-labelledby="sun-topic-title" aria-live="polite" inert>
+        <div class="sun-exploration-topline">
+          <span class="sun-topic-kicker" id="sun-topic-kicker">IDENTITAS MATAHARI</span>
+          <span class="sun-topic-count"><span id="sun-topic-current">01</span> / <span id="sun-topic-total">07</span></span>
+        </div>
+        <h3 id="sun-topic-title" tabindex="-1">Bintang Kita</h3>
+        <p class="sun-topic-subtitle" id="sun-topic-subtitle"></p>
+        <div class="sun-topic-scroll" id="sun-topic-scroll">
+          <p class="sun-topic-summary" id="sun-topic-summary"></p>
+          <ul class="sun-topic-facts" id="sun-topic-facts"></ul>
+        </div>
+        <a class="sun-topic-source" id="sun-topic-source" href="https://science.nasa.gov/sun/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
+        <a class="exploration-photo-source" id="sun-photo-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
+        <div class="sun-exploration-controls">
+          <button class="sun-topic-nav sun-topic-prev" id="sun-topic-prev" type="button" aria-label="Topik Matahari sebelumnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
+          </button>
+          <div class="sun-topic-progress" id="sun-topic-progress" aria-hidden="true"></div>
+          <button class="sun-topic-nav sun-topic-next" id="sun-topic-next" type="button" aria-label="Topik Matahari berikutnya">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+        <button class="sun-exploration-close return-panorama-button" id="sun-exploration-close" type="button">Kembali ke panorama Matahari</button>
+      </aside>
+
+      <a class="sun-credit" href="https://science.nasa.gov/sun/" target="_blank" rel="noopener noreferrer">Visualisasi ANTARA · data edukasi NASA Heliophysics</a>
+    </section>
     <section class="mercury-scene" id="mercury-scene" aria-labelledby="mercury-title" hidden>
       <div class="mercury-space-haze" aria-hidden="true"></div>
       <div class="mercury-viewport" id="mercury-viewport" role="img" aria-label="Merkurius, planet batuan terkecil dan terdekat dari Matahari, berputar perlahan di ruang angkasa."></div>
@@ -272,7 +327,7 @@
         <h2 id="mercury-title" tabindex="-1">Merkurius<span>.</span></h2>
         <p class="mercury-whisper">Dunia Kecil di Dekat Matahari.</p>
         <div class="mercury-arrival-actions" role="group" aria-label="Navigasi planet">
-          <button class="mercury-planet-nav mercury-planet-prev" id="mercury-prev-planet" type="button" disabled aria-label="Objek sebelumnya: Matahari, belum tersedia">
+          <button class="mercury-planet-nav mercury-planet-prev" id="mercury-prev-planet" type="button" aria-label="Objek sebelumnya: Matahari">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
             <span><small>Objek sebelumnya</small><strong>Matahari</strong></span>
           </button>

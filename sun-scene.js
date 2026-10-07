@@ -1,0 +1,601 @@
+"use strict";
+
+const SUN_INFO_STOPS = Object.freeze([
+  {
+    title: "Bintang Kita",
+    kicker: "IDENTITAS MATAHARI",
+    subtitle: "Bintang G2 V yang menjadi pusat gravitasi dan sumber energi Tata Surya",
+    summary: "Matahari adalah bintang deret utama yang berusia sekitar 4,5 miliar tahun. Hampir seluruh massa Tata Surya berada di Matahari, sehingga gravitasinya mengikat planet, asteroid, komet, dan debu dalam satu sistem.",
+    facts: [
+      "Diameter Matahari sekitar 1,4 juta km dan radiusnya sekitar 700.000 km.",
+      "Jarak rata-rata Matahari ke Bumi sekitar 150 juta km atau 1 satuan astronomi.",
+      "Matahari mengandung sekitar 99,8% massa Tata Surya."
+    ],
+    source: "https://science.nasa.gov/sun/facts/",
+    images: [
+      { src: "./assets/sun-identity-diagram.svg", alt: "Diagram identitas dan skala Matahari", credit: "ANTARA · data NASA", source: "https://science.nasa.gov/sun/facts/", caption: "Identitas dan skala Matahari", fit: "contain" },
+      { src: "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003988/SDOHMIintensity_Jewelbox.01000.jpg", alt: "Fotosfer Matahari dalam cahaya tampak yang direkam Solar Dynamics Observatory", credit: "NASA/SDO/HMI", source: "https://svs.gsfc.nasa.gov/3988/", caption: "Fotosfer Matahari · SDO/HMI", fit: "contain" }
+    ]
+  },
+  {
+    title: "Mesin Fusi",
+    kicker: "ENERGI & FUSI NUKLIR",
+    subtitle: "Tekanan dan suhu ekstrem di inti mengubah hidrogen menjadi helium",
+    summary: "Energi Matahari berasal dari fusi nuklir di inti. Dalam rantai proton-proton, inti hidrogen bergabung menjadi helium dan sebagian massa berubah menjadi energi yang kemudian bergerak keluar melalui interior Matahari.",
+    facts: [
+      "Suhu inti Matahari sekitar 15 juta °C.",
+      "Fusi menghasilkan tekanan keluar yang membantu menahan keruntuhan gravitasi Matahari.",
+      "Energi dari inti membutuhkan perjalanan panjang sebelum akhirnya mencapai fotosfer dan dipancarkan ke ruang angkasa."
+    ],
+    source: "https://science.nasa.gov/sun/facts/",
+    images: [
+      { src: "./assets/sun-fusion-diagram.svg", alt: "Diagram sederhana fusi proton-proton di inti Matahari", credit: "ANTARA · data NASA", source: "https://science.nasa.gov/sun/facts/", caption: "Fusi hidrogen di inti Matahari", fit: "contain" }
+    ]
+  },
+  {
+    title: "Dari Inti ke Corona",
+    kicker: "STRUKTUR MATAHARI",
+    subtitle: "Lapisan internal dan atmosfer Matahari memiliki cara transport energi yang berbeda",
+    summary: "Matahari tersusun atas inti, zona radiatif, dan zona konveksi. Di atasnya terdapat fotosfer yang kita lihat, kromosfer yang tipis, zona transisi, lalu corona yang sangat renggang tetapi dapat mencapai suhu jutaan derajat.",
+    facts: [
+      "Energi bergerak lewat radiasi di zona radiatif dan lewat aliran plasma di zona konveksi.",
+      "Fotosfer memiliki suhu sekitar 5.500 °C.",
+      "Corona dapat mencapai sekitar 2 juta °C, jauh lebih panas daripada fotosfer."
+    ],
+    source: "https://science.nasa.gov/sun/facts/",
+    images: [
+      { src: "./assets/sun-structure-diagram.svg", alt: "Diagram lapisan Matahari dari inti hingga corona", credit: "ANTARA · data NASA", source: "https://science.nasa.gov/sun/facts/", caption: "Struktur internal dan atmosfer Matahari", fit: "contain" }
+    ]
+  },
+  {
+    title: "Permukaan yang Selalu Bergerak",
+    kicker: "FOTOSFER & GRANULASI",
+    subtitle: "Konveksi plasma membentuk granulasi, sementara medan magnet membentuk daerah aktif",
+    summary: "Fotosfer bukan permukaan padat. Pola granular muncul saat plasma panas naik, mendingin, lalu turun kembali. Daerah dengan medan magnet sangat kuat dapat menekan aliran panas dan tampak sebagai sunspot yang lebih gelap.",
+    facts: [
+      "Granulasi adalah jejak konveksi yang terlihat di fotosfer.",
+      "Sunspot lebih dingin daripada fotosfer di sekitarnya dan dapat bertahan dari hari hingga bulan.",
+      "Matahari berotasi secara diferensial: sekitar 25 hari di ekuator dan sekitar 36 hari di kutub."
+    ],
+    source: "https://science.nasa.gov/sun/sunspots/",
+    images: [
+      { src: "./assets/sun-surface-diagram.svg", alt: "Diagram granulasi, sunspot, dan daerah aktif Matahari", credit: "ANTARA · data NASA", source: "https://science.nasa.gov/sun/sunspots/", caption: "Granulasi dan sunspot", fit: "contain" },
+      { src: "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003933/HMI_IcChangingSpots.00300.jpg", alt: "Sunspot pada fotosfer Matahari yang diamati Solar Dynamics Observatory", credit: "NASA/SDO/HMI", source: "https://svs.gsfc.nasa.gov/3933/", caption: "Sunspot dalam cahaya tampak · SDO/HMI", fit: "contain" }
+    ]
+  },
+  {
+    title: "Medan Magnet & Letupan",
+    kicker: "AKTIVITAS SURYA",
+    subtitle: "Medan magnet yang kusut menyimpan energi untuk flare, prominence, dan CME",
+    summary: "Plasma bermuatan membawa dan membengkokkan medan magnet Matahari. Ketika konfigurasi magnetik berubah cepat, energi dapat dilepaskan sebagai flare. Struktur magnetik juga menopang prominence dan dapat melontarkan awan plasma besar sebagai coronal mass ejection.",
+    facts: [
+      "Flare adalah pelepasan energi lokal yang sangat kuat dari daerah aktif.",
+      "Prominence adalah lengkungan plasma yang mengikuti medan magnet dan dapat bertahan jauh lebih lama.",
+      "CME membawa plasma dan medan magnet ke ruang antarplanet dan merupakan salah satu pemicu utama cuaca antariksa."
+    ],
+    source: "https://science.nasa.gov/sun/solar-storms-and-flares/",
+    images: [
+      { src: "./assets/sun-magnetic-activity-diagram.svg", alt: "Diagram prominence, flare, dan coronal mass ejection", credit: "ANTARA · data NASA", source: "https://science.nasa.gov/sun/solar-storms-and-flares/", caption: "Aktivitas magnetik Matahari", fit: "contain" },
+      { src: "https://svs.gsfc.nasa.gov/vis/a010000/a014700/a014701/SDO_10-03-24_1219UTC_131-171_RedScreen_4k.jpg", alt: "Flare kuat yang direkam Solar Dynamics Observatory", credit: "NASA/SDO", source: "https://svs.gsfc.nasa.gov/14701/", caption: "Solar flare · SDO", fit: "contain" }
+    ]
+  },
+  {
+    title: "Angin Surya",
+    kicker: "CUACA ANTARIKSA",
+    subtitle: "Aliran plasma dari corona menghubungkan Matahari dengan seluruh Tata Surya",
+    summary: "Material yang lolos dari corona menjadi angin surya. Aliran partikel bermuatan ini membawa medan magnet Matahari dan membentuk heliosfer. Ketika kondisi angin surya dan letupan Matahari mencapai planet, keduanya dapat memicu aurora sekaligus mengganggu teknologi.",
+    facts: [
+      "Angin surya mengalir terus-menerus dari corona dan membentuk heliosfer.",
+      "Interaksi angin surya dengan magnetosfer Bumi dapat menghasilkan aurora.",
+      "Cuaca antariksa yang kuat dapat memengaruhi satelit, komunikasi, navigasi, dan jaringan listrik."
+    ],
+    source: "https://science.nasa.gov/sun/what-is-the-solar-wind/",
+    images: [
+      { src: "./assets/sun-solar-wind-diagram.svg", alt: "Diagram angin surya dari corona menuju magnetosfer Bumi", credit: "ANTARA · data NASA", source: "https://science.nasa.gov/sun/what-is-the-solar-wind/", caption: "Angin surya dan magnetosfer Bumi", fit: "contain" }
+    ]
+  },
+  {
+    title: "Mengamati Bintang Terdekat",
+    kicker: "MISI HELIOFISIKA",
+    subtitle: "Armada observatorium mempelajari Matahari dari fotosfer hingga corona",
+    summary: "Tidak ada satu wahana yang dapat menjawab semua pertanyaan tentang Matahari. SDO memantau aktivitas secara terus-menerus, SOHO mempelajari interior hingga angin surya, Solar Orbiter mengamati Matahari dari perspektif baru, dan Parker Solar Probe terbang langsung menembus corona.",
+    facts: [
+      "Solar Dynamics Observatory diluncurkan pada 2010 untuk mengamati Matahari dengan resolusi tinggi dan cadence cepat.",
+      "SOHO adalah misi ESA-NASA yang telah mengamati Matahari sejak 1995.",
+      "Parker Solar Probe menjadi wahana pertama yang terbang melalui corona pada 2021."
+    ],
+    source: "https://science.nasa.gov/mission/parker-solar-probe/",
+    images: [
+      { src: "./assets/sun-missions-diagram.svg", alt: "Diagram misi utama pengamatan Matahari", credit: "ANTARA · data NASA dan ESA", source: "https://science.nasa.gov/mission/parker-solar-probe/", caption: "Armada pengamat Matahari", fit: "contain" }
+    ]
+  }
+]);
+
+window.SunScene = class SunScene {
+  constructor() {
+    this.element = document.getElementById("sun-scene");
+    this.viewport = document.getElementById("sun-viewport");
+    this.caption = this.element.querySelector(".sun-caption");
+    this.credit = this.element.querySelector(".sun-credit");
+    this.exploreButton = document.getElementById("sun-explore-button");
+    this.nextButton = document.getElementById("sun-next-object");
+    this.exploration = document.getElementById("sun-exploration");
+    this.explorationClose = document.getElementById("sun-exploration-close");
+    this.topicTitle = document.getElementById("sun-topic-title");
+    this.topicKicker = document.getElementById("sun-topic-kicker");
+    this.topicSubtitle = document.getElementById("sun-topic-subtitle");
+    this.topicScroll = document.getElementById("sun-topic-scroll");
+    this.topicSummary = document.getElementById("sun-topic-summary");
+    this.topicFacts = document.getElementById("sun-topic-facts");
+    this.topicSource = document.getElementById("sun-topic-source");
+    this.photoSource = document.getElementById("sun-photo-source");
+    this.topicCurrent = document.getElementById("sun-topic-current");
+    this.topicTotal = document.getElementById("sun-topic-total");
+    this.topicProgress = document.getElementById("sun-topic-progress");
+    this.topicPrev = document.getElementById("sun-topic-prev");
+    this.topicNext = document.getElementById("sun-topic-next");
+    this.contextMedia = document.getElementById("sun-context-media");
+    this.motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    this.active = false;
+    this.mode = "pending";
+    this.loading = null;
+    this.time = 0;
+    this.previous = 0;
+    this.frame = null;
+    this.width = 1;
+    this.height = 1;
+    this.mobile = false;
+    this.pointer = { x: 0, y: 0 };
+    this.cameraOffset = { x: 0, y: 0 };
+    this.exploring = false;
+    this.explorationBlend = 0;
+    this.explorationBlendTarget = 0;
+    this.topicIndex = 0;
+    this.renderedRotation = 0.35;
+    this.mercurySurface = null;
+    this.travelMode = null;
+    this.travelStartedAt = 0;
+    this.travelDuration = 6.4;
+    this.travelCallbacks = {};
+    this.travelRevealFired = false;
+    this.travelCoveredFired = false;
+    this.travelCompleteFired = false;
+    this.travelMercuryStartRotation = 0.62;
+    this.solarEvent = { state: "cooldown", stateAt: 0, nextAt: 5.8, strength: 0, serial: 0, region: 0 };
+    this.particleCursor = 0;
+    this.lastParticleSpawn = 0;
+
+    this.caption.inert = true;
+    this.exploration.inert = true;
+    this.credit.tabIndex = -1;
+    this.tick = this.tick.bind(this);
+    this.topicTotal.textContent = String(SUN_INFO_STOPS.length).padStart(2, "0");
+    this.topicProgress.replaceChildren(...SUN_INFO_STOPS.map(() => document.createElement("span")));
+    this.setExplorationStop(0, { immediate: true, announce: false });
+
+    this.exploreButton.addEventListener("click", () => this.enterExploration());
+    this.explorationClose.addEventListener("click", () => this.exitExploration());
+    this.topicPrev.addEventListener("click", () => this.setExplorationStop(this.topicIndex - 1));
+    this.topicNext.addEventListener("click", () => this.setExplorationStop(this.topicIndex + 1));
+    window.addEventListener("resize", () => { if (this.active) { this.resize(); this.render(); } });
+    document.addEventListener("visibilitychange", () => {
+      if (!this.active) return;
+      cancelAnimationFrame(this.frame);
+      this.frame = null;
+      if (!document.hidden) { this.previous = performance.now(); this.tick(this.previous); }
+    });
+    this.element.addEventListener("pointermove", event => {
+      if (event.pointerType !== "mouse" || this.motion.matches || this.exploring) return;
+      const rect = this.element.getBoundingClientRect();
+      this.pointer.x = (event.clientX - rect.left) / Math.max(rect.width, 1) - 0.5;
+      this.pointer.y = (event.clientY - rect.top) / Math.max(rect.height, 1) - 0.5;
+    });
+    this.element.addEventListener("pointerleave", () => { this.pointer.x = this.pointer.y = 0; });
+  }
+
+  clamp(value) { return Math.max(0, Math.min(1, value)); }
+  smooth(value) { const v = this.clamp(value); return v * v * v * (v * (v * 6 - 15) + 10); }
+
+  setMercuryTravelSurface(surface) {
+    if (!surface) return;
+    this.mercurySurface = surface;
+    if (!this.THREE || !this.travelMercuryMaterial) return;
+    this.replaceMercuryTravelTexture(surface);
+  }
+
+  replaceMercuryTravelTexture(surface) {
+    const THREE = this.THREE;
+    const texture = new THREE.Texture(surface);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.generateMipmaps = true;
+    texture.anisotropy = Math.max(1, Math.min(12, this.renderer.capabilities.getMaxAnisotropy()));
+    texture.needsUpdate = true;
+    const old = this.travelMercuryMaterial.map;
+    this.travelMercuryMaterial.map = texture;
+    this.travelMercuryMaterial.needsUpdate = true;
+    old?.dispose?.();
+  }
+
+  makeMercuryFallbackSurface() {
+    const canvas = document.createElement("canvas"); canvas.width = 1024; canvas.height = 512;
+    const ctx = canvas.getContext("2d");
+    const g = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    g.addColorStop(0, "#8a8983"); g.addColorStop(.55, "#575650"); g.addColorStop(1, "#2e2f31");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    return canvas;
+  }
+
+  async prepare() {
+    if (this.loading) return this.loading;
+    this.loading = (async () => {
+      try {
+        const THREE = await import("./assets/vendor/three/three.module.min.js");
+        this.createThreeScene(THREE);
+        this.mode = "webgl";
+        this.element.dataset.renderer = this.mode;
+        this.resize();
+        if (this.renderer?.compileAsync) await this.renderer.compileAsync(this.scene, this.camera);
+      } catch (error) {
+        console.warn("Sun WebGL renderer unavailable; using Canvas fallback.", error);
+        this.createCanvasFallback();
+      }
+      if (this.active) this.render();
+    })().catch(error => {
+      console.error("Sun preparation failed", error);
+      this.createCssFallback();
+    });
+    return this.loading;
+  }
+
+  createThreeScene(THREE) {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("webgl2", { alpha: true, antialias: true, powerPreference: "high-performance" });
+    if (!context) throw new Error("WebGL2 unavailable");
+    this.THREE = THREE;
+    this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias: true });
+    this.renderer.setClearColor(0x020409, 0);
+    const cap = window.innerWidth <= 700 ? 1.45 : 2;
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, cap));
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.05;
+    this.viewport.replaceChildren(canvas);
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(35, 1, 0.1, 240);
+    this.camera.position.set(0, 0, 6.1);
+
+    const photosphereMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uFlare: { value: 0 },
+        uActivity: { value: 0.35 }
+      },
+      vertexShader: `varying vec3 vN; varying vec3 vWorld; varying vec2 vUv;
+        void main(){ vN=normalize(normalMatrix*normal); vUv=uv; vec4 world=modelMatrix*vec4(position,1.0); vWorld=world.xyz; gl_Position=projectionMatrix*viewMatrix*world; }`,
+      fragmentShader: `precision highp float; varying vec3 vN; varying vec3 vWorld; varying vec2 vUv; uniform float uTime; uniform float uFlare; uniform float uActivity;
+        float hash(vec3 p){ p=fract(p*.3183099+.1); p*=17.; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
+        float noise(vec3 p){ vec3 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(mix(hash(i+vec3(0,0,0)),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z); }
+        float fbm(vec3 p){ float v=0.; float a=.5; for(int i=0;i<5;i++){v+=a*noise(p); p=p*2.02+vec3(3.1,7.3,1.9); a*=.5;} return v; }
+        float spot(vec3 n, vec3 d, float s){ float x=max(dot(normalize(n),normalize(d)),0.); return pow(x,s); }
+        void main(){
+          vec3 n=normalize(vN); float t=uTime;
+          vec3 flow=normalize(vec3(n.x+.045*sin(t*.07+n.y*5.), n.y+.025*sin(t*.05+n.z*4.), n.z));
+          float macro=fbm(flow*5.2+vec3(t*.012,-t*.008,t*.006));
+          float cells=noise(flow*72.0+vec3(t*.10,-t*.06,t*.035));
+          float cells2=noise(flow*118.0+vec3(-t*.055,t*.08,-t*.04));
+          float gran=smoothstep(.28,.82,cells)*.62+smoothstep(.38,.78,cells2)*.38;
+          float spots=spot(n,vec3(-.48,.30,.82),38.)*.88 + spot(n,vec3(.42,-.26,.86),58.)*.72 + spot(n,vec3(.10,.55,.82),76.)*.50;
+          float penumbra=spot(n,vec3(-.48,.30,.82),22.)*.52 + spot(n,vec3(.42,-.26,.86),34.)*.42;
+          float active=spot(n,vec3(-.48,.30,.82),15.) + spot(n,vec3(.42,-.26,.86),18.);
+          vec3 dark=vec3(.72,.13,.025); vec3 orange=vec3(1.18,.37,.055); vec3 gold=vec3(1.45,.76,.20); vec3 warm=vec3(1.6,1.18,.58);
+          vec3 col=mix(orange,gold,clamp(.30+.74*gran+.26*macro,0.,1.));
+          col=mix(col,warm,smoothstep(.58,.96,gran)*.32);
+          col=mix(col,dark,clamp(penumbra*.55+spots*.80,0.,.92));
+          col+=vec3(1.0,.34,.08)*active*(.08+.20*uActivity);
+          col+=vec3(2.0,.66,.15)*active*uFlare*.62;
+          float facing=max(dot(n,normalize(cameraPosition-vWorld)),0.0);
+          float limb=.63+.37*pow(facing,.36);
+          col*=limb;
+          gl_FragColor=vec4(col,1.0);
+        }`
+    });
+    this.photosphereMaterial = photosphereMaterial;
+    this.photosphere = new THREE.Mesh(new THREE.SphereGeometry(1, 144, 104), photosphereMaterial);
+    this.photosphere.rotation.set(0.07, 0.35, -0.04);
+    this.sunGroup = new THREE.Group();
+    this.sunGroup.add(this.photosphere);
+    this.scene.add(this.sunGroup);
+
+    this.chromosphere = new THREE.Mesh(new THREE.SphereGeometry(1.018, 96, 64), new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 }, uFlare: { value: 0 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader: `varying vec3 vN; varying vec3 vWorld; void main(){vN=normalize(normalMatrix*normal); vec4 w=modelMatrix*vec4(position,1.); vWorld=w.xyz; gl_Position=projectionMatrix*viewMatrix*w;}`,
+      fragmentShader: `varying vec3 vN; varying vec3 vWorld; uniform float uTime; uniform float uFlare; void main(){float rim=pow(1.-max(dot(normalize(vN),normalize(cameraPosition-vWorld)),0.),3.2); float pulse=.72+.18*sin(uTime*.38+vN.y*23.); gl_FragColor=vec4(1.0,.21,.035,rim*(.18+.10*pulse+.08*uFlare));}`
+    }));
+    this.sunGroup.add(this.chromosphere);
+
+    this.corona = this.createCoronaMesh(THREE, 4.8, 0.29, 1.0);
+    this.corona.position.z = -0.12;
+    this.corona.renderOrder = -2;
+    this.scene.add(this.corona);
+    this.coronaOuter = this.createCoronaMesh(THREE, 6.4, 0.17, 2.37);
+    this.coronaOuter.position.z = -0.18;
+    this.coronaOuter.renderOrder = -3;
+    this.scene.add(this.coronaOuter);
+
+    this.prominenceGroup = new THREE.Group();
+    this.createProminences(THREE);
+    this.sunGroup.add(this.prominenceGroup);
+    this.createParticleSystem(THREE);
+    this.createStarfield(THREE);
+    this.createMercuryTravelObject(THREE);
+
+    canvas.addEventListener("webglcontextlost", event => {
+      event.preventDefault();
+      this.createCanvasFallback();
+      this.resize();
+      if (this.active) this.render();
+    }, { once: true });
+  }
+
+  createCoronaMesh(THREE, scale, baseOpacity, seed) {
+    const geometry = new THREE.PlaneGeometry(scale, scale, 1, 1);
+    const material = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 }, uOpacity: { value: baseOpacity }, uSeed: { value: seed }, uFlare: { value: 0 } },
+      transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
+      vertexShader: `varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+      fragmentShader: `precision highp float; varying vec2 vUv; uniform float uTime; uniform float uOpacity; uniform float uSeed; uniform float uFlare;
+        float h(float x){return fract(sin(x*127.1+uSeed*91.7)*43758.5453);} void main(){vec2 p=vUv-.5; float r=length(p)*2.; float a=atan(p.y,p.x); if(r<.405||r>1.) discard; float wave=sin(a*5.+uSeed*2.1+uTime*.055)*.5+.5; float wave2=sin(a*11.-uTime*.034+uSeed*4.7)*.5+.5; float streams=pow(.22+.78*wave,3.)*.68+pow(.18+.82*wave2,5.)*.32; float asym=.58+.42*sin(a*2.3+uSeed+uTime*.016); float fall=pow(1.-smoothstep(.40,1.,r),1.65); float inner=smoothstep(.40,.48,r); float alpha=inner*fall*(.20+.80*streams)*(.62+.38*asym)*uOpacity; alpha*=1.+uFlare*.22; vec3 col=mix(vec3(1.,.22,.035),vec3(1.,.79,.34),clamp((r-.4)*1.7,0.,1.)); gl_FragColor=vec4(col,alpha);}`
+    });
+    return new THREE.Mesh(geometry, material);
+  }
+
+  createProminences(THREE) {
+    const specs = [
+      { a: -2.15, span: .52, h: .34, z: .035, color: 0xff6a30 },
+      { a: .55, span: .42, h: .26, z: .05, color: 0xffb14b },
+      { a: 2.35, span: .32, h: .20, z: -.02, color: 0xff5b38 }
+    ];
+    this.prominences = [];
+    specs.forEach((spec, index) => {
+      const a0 = spec.a - spec.span * .5, a1 = spec.a + spec.span * .5, am = (a0 + a1) * .5;
+      const p0 = new THREE.Vector3(Math.cos(a0)*1.005, Math.sin(a0)*1.005, spec.z);
+      const p1 = new THREE.Vector3(Math.cos(am)*(1.005+spec.h), Math.sin(am)*(1.005+spec.h), spec.z+.04);
+      const p2 = new THREE.Vector3(Math.cos(a1)*1.005, Math.sin(a1)*1.005, spec.z);
+      const curve = new THREE.QuadraticBezierCurve3(p0, p1, p2);
+      const geometry = new THREE.TubeGeometry(curve, 64, .012 + index*.002, 8, false);
+      const material = new THREE.MeshBasicMaterial({ color: spec.color, transparent: true, opacity: .48, blending: THREE.AdditiveBlending, depthWrite: false });
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.renderOrder = 3;
+      this.prominenceGroup.add(mesh);
+      this.prominences.push(mesh);
+    });
+  }
+
+  createParticleSystem(THREE) {
+    const high = window.innerWidth > 900 && (navigator.deviceMemory || 8) >= 6;
+    this.particleCount = high ? 320 : window.innerWidth <= 700 ? 120 : 210;
+    const positions = new Float32Array(this.particleCount * 3);
+    const life = new Float32Array(this.particleCount);
+    const size = new Float32Array(this.particleCount);
+    this.particleVelocity = Array.from({ length: this.particleCount }, () => new THREE.Vector3());
+    this.particleLife = life;
+    for (let i=0;i<this.particleCount;i++){ positions[i*3+0]=999; positions[i*3+1]=999; positions[i*3+2]=999; life[i]=0; size[i]=1; }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions,3));
+    geometry.setAttribute("aLife", new THREE.BufferAttribute(life,1));
+    geometry.setAttribute("aSize", new THREE.BufferAttribute(size,1));
+    const material = new THREE.ShaderMaterial({
+      uniforms: { uPixelRatio: { value: Math.min(window.devicePixelRatio||1,2) } }, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+      vertexShader:`attribute float aLife; attribute float aSize; varying float vLife; uniform float uPixelRatio; void main(){vLife=aLife; vec4 mv=modelViewMatrix*vec4(position,1.); gl_PointSize=(2.2+4.8*aSize)*uPixelRatio*(3.5/max(-mv.z,1.)); gl_Position=projectionMatrix*mv;}`,
+      fragmentShader:`varying float vLife; void main(){vec2 q=gl_PointCoord-.5; float d=length(q); if(d>.5)discard; float a=smoothstep(.5,.08,d)*smoothstep(0.,.18,vLife)*smoothstep(1.,.55,vLife); vec3 c=mix(vec3(1.,.18,.025),vec3(1.,.78,.28),vLife); gl_FragColor=vec4(c,a*.86);}`
+    });
+    this.particleGeometry=geometry; this.particles=new THREE.Points(geometry,material); this.particles.renderOrder=4; this.sunGroup.add(this.particles);
+  }
+
+  createStarfield(THREE) {
+    const count = 300, positions = new Float32Array(count*3);
+    for(let i=0;i<count;i++){
+      const a=Math.sin((i+1)*91.17)*43758.5453, b=Math.sin((i+1)*17.53)*14375.921, c=Math.sin((i+1)*63.71)*19731.411;
+      positions[i*3]=(a-Math.floor(a)-.5)*180; positions[i*3+1]=(b-Math.floor(b)-.5)*110; positions[i*3+2]=-14-(c-Math.floor(c))*130;
+    }
+    const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(positions,3));
+    this.starfield=new THREE.Points(g,new THREE.PointsMaterial({color:0xb5c4d7,size:.105,transparent:true,opacity:.44,depthWrite:false,sizeAttenuation:true})); this.scene.add(this.starfield);
+  }
+
+  createMercuryTravelObject(THREE) {
+    const texture = new THREE.Texture(this.mercurySurface || this.makeMercuryFallbackSurface());
+    texture.colorSpace=THREE.SRGBColorSpace; texture.wrapS=THREE.RepeatWrapping; texture.wrapT=THREE.ClampToEdgeWrapping;
+    texture.minFilter=THREE.LinearMipmapLinearFilter; texture.magFilter=THREE.LinearFilter; texture.generateMipmaps=true;
+    texture.anisotropy=Math.max(1,Math.min(12,this.renderer.capabilities.getMaxAnisotropy())); texture.needsUpdate=true;
+    this.travelMercuryMaterial=new THREE.MeshStandardMaterial({map:texture,roughness:.91,metalness:0,color:0xffffff,transparent:true,opacity:1});
+    this.travelMercury=new THREE.Mesh(new THREE.SphereGeometry(1,112,80),this.travelMercuryMaterial);
+    this.travelMercuryGroup=new THREE.Group(); this.travelMercuryGroup.add(this.travelMercury);
+    const key=new THREE.DirectionalLight(0xfff4dd,2.2); key.position.set(-4.5,2.6,4.2); this.scene.add(key,new THREE.AmbientLight(0xb5bdc7,.09));
+    this.travelMercuryGroup.visible=false; this.scene.add(this.travelMercuryGroup);
+  }
+
+  createCanvasFallback() {
+    this.renderer?.dispose?.(); this.renderer=null; this.THREE=null;
+    this.canvas=document.createElement("canvas"); this.ctx=this.canvas.getContext("2d");
+    if(!this.ctx) return this.createCssFallback();
+    this.viewport.replaceChildren(this.canvas); this.mode="canvas"; this.element.dataset.renderer=this.mode; this.resize();
+  }
+
+  createCssFallback() {
+    this.mode="css"; this.element.dataset.renderer=this.mode;
+    this.viewport.innerHTML='<div class="sun-emergency-corona" aria-hidden="true"></div><div class="sun-emergency-sphere" aria-hidden="true"></div><div class="sun-emergency-mercury" aria-hidden="true"></div>';
+    this.resize();
+  }
+
+  preloadInfoImages() {
+    if (navigator.connection?.saveData) return;
+    SUN_INFO_STOPS.flatMap(stop => stop.images || []).forEach(item => {
+      if (!item.src || item.src.startsWith("./")) return;
+      const img = new Image(); img.decoding="async"; img.src=item.src;
+    });
+  }
+
+  start({ settled = false } = {}) {
+    this.active=true; this.travelMode=null; this.element.hidden=false; this.element.style.opacity="1"; this.element.classList.remove("is-leaving");
+    this.caption.classList.toggle("is-visible", settled); this.caption.inert=!settled; this.caption.style.opacity=settled?"1":"0"; this.credit.style.opacity=settled?".9":"0";
+    this.credit.tabIndex=0; this.exploring=false; this.explorationBlend=this.explorationBlendTarget=0; this.exploration.inert=true; this.element.classList.remove("is-exploring");
+    this.pointer.x=this.pointer.y=this.cameraOffset.x=this.cameraOffset.y=0; this.prepare(); this.resize(); cancelAnimationFrame(this.frame); this.previous=performance.now(); this.tick(this.previous);
+    if(!settled) requestAnimationFrame(()=>requestAnimationFrame(()=>{ if(!this.active||this.travelMode)return; this.caption.classList.add("is-visible"); this.caption.inert=false; this.caption.style.opacity="1"; this.credit.style.opacity=".9"; }));
+  }
+
+  stop() {
+    this.active=false; this.travelMode=null; this.travelCallbacks={}; cancelAnimationFrame(this.frame); this.frame=null;
+    this.element.hidden=true; this.element.style.opacity="0"; this.element.classList.remove("is-exploring","is-leaving");
+    this.exploring=false; this.explorationBlend=this.explorationBlendTarget=0; this.caption.inert=true; this.exploration.inert=true; this.credit.tabIndex=-1;
+    if(this.travelMercuryGroup) this.travelMercuryGroup.visible=false;
+    window.ExplorationMedia?.closeLightbox?.({restoreFocus:false});
+  }
+
+  resize() {
+    const rect=this.viewport.getBoundingClientRect(); this.width=Math.max(1,Math.round(rect.width||window.innerWidth)); this.height=Math.max(1,Math.round(rect.height||window.innerHeight)); this.mobile=this.width<=700;
+    if(this.renderer&&this.camera){ const cap=this.mobile?1.45:2; this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,cap)); this.renderer.setSize(this.width,this.height,false); this.camera.aspect=this.width/this.height; this.camera.updateProjectionMatrix(); if(this.particles?.material?.uniforms?.uPixelRatio)this.particles.material.uniforms.uPixelRatio.value=Math.min(window.devicePixelRatio||1,cap); }
+    if(this.canvas){ const dpr=Math.min(window.devicePixelRatio||1,this.mobile?1.35:1.8); this.canvas.width=Math.round(this.width*dpr); this.canvas.height=Math.round(this.height*dpr); this.canvas.style.width=`${this.width}px`; this.canvas.style.height=`${this.height}px`; this.ctx.setTransform(dpr,0,0,dpr,0,0); }
+  }
+
+  tick(now) {
+    this.frame=null; if(!this.active||document.hidden)return; const delta=Math.min((now-this.previous)/1000,.12); this.previous=now; this.time+=delta;
+    const damping=1-Math.exp(-delta*2.3); this.cameraOffset.x+=(this.pointer.x-this.cameraOffset.x)*damping; this.cameraOffset.y+=(this.pointer.y-this.cameraOffset.y)*damping;
+    const expDamping=this.motion.matches?1:1-Math.exp(-delta*2.7); this.explorationBlend+=(this.explorationBlendTarget-this.explorationBlend)*expDamping;
+    this.updateSolarEvent(delta); this.render();
+    if(!this.motion.matches||this.travelMode||Math.abs(this.explorationBlendTarget-this.explorationBlend)>.001||this.time<12) this.frame=requestAnimationFrame(this.tick);
+  }
+
+  updateSolarEvent(delta) {
+    const e=this.solarEvent;
+    if(this.motion.matches){ e.strength=0; return; }
+    if(e.state==="cooldown"&&this.time>=e.nextAt){ e.state="prepare"; e.stateAt=this.time; e.region=e.serial%2; }
+    if(e.state==="prepare"){
+      e.strength=this.smooth((this.time-e.stateAt)/1.5)*.35;
+      if(this.time-e.stateAt>=1.5){ e.state="flare"; e.stateAt=this.time; this.spawnBurst(e.region, e.serial%4===3?34:18); }
+    } else if(e.state==="flare"){
+      const p=this.clamp((this.time-e.stateAt)/1.1); e.strength=.35+.65*Math.sin(p*Math.PI);
+      if(this.time-this.lastParticleSpawn>.18){ this.lastParticleSpawn=this.time; this.spawnBurst(e.region,3); }
+      if(p>=1){ e.state="decay"; e.stateAt=this.time; }
+    } else if(e.state==="decay"){
+      e.strength=(1-this.smooth((this.time-e.stateAt)/2.2))*.32;
+      if(this.time-e.stateAt>=2.2){ e.state="cooldown"; e.stateAt=this.time; e.strength=0; e.serial++; e.nextAt=this.time+13+(e.serial%3)*4.5; }
+    }
+    this.updateParticles(delta);
+  }
+
+  spawnBurst(region=0,count=8){
+    if(!this.particleGeometry||!this.THREE)return; const positions=this.particleGeometry.attributes.position.array, life=this.particleGeometry.attributes.aLife.array, size=this.particleGeometry.attributes.aSize.array;
+    const base=region===0?new this.THREE.Vector3(-.49,.31,.815):new this.THREE.Vector3(.43,-.27,.86); base.normalize();
+    for(let n=0;n<count;n++){
+      const i=this.particleCursor++%this.particleCount; const seed=(i+1)*(this.solarEvent.serial+3)*12.9898+n*7.31; const r=Math.sin(seed)*43758.5453, r2=Math.sin(seed*1.73)*19171.17; const j1=r-Math.floor(r)-.5, j2=r2-Math.floor(r2)-.5;
+      const tangent=new this.THREE.Vector3(-base.y,base.x,.18*j1).normalize(); const p=base.clone().multiplyScalar(1.02).addScaledVector(tangent,j1*.08);
+      positions[i*3]=p.x; positions[i*3+1]=p.y; positions[i*3+2]=p.z; life[i]=1; size[i]=.45+Math.abs(j2)*.9;
+      this.particleVelocity[i].copy(base).multiplyScalar(.22+.28*Math.abs(j2)).addScaledVector(tangent,j1*.16).add(new this.THREE.Vector3(0,j2*.025,.02*j1));
+    }
+    this.particleGeometry.attributes.position.needsUpdate=true; this.particleGeometry.attributes.aLife.needsUpdate=true; this.particleGeometry.attributes.aSize.needsUpdate=true;
+  }
+
+  updateParticles(delta){
+    if(!this.particleGeometry)return; const pos=this.particleGeometry.attributes.position.array, life=this.particleGeometry.attributes.aLife.array; let dirty=false;
+    for(let i=0;i<this.particleCount;i++){ if(life[i]<=0)continue; dirty=true; life[i]=Math.max(0,life[i]-delta*(.20+(i%7)*.008)); const v=this.particleVelocity[i]; const x=pos[i*3],y=pos[i*3+1]; const bend=.035*delta; v.x+=-y*bend; v.y+=x*bend; pos[i*3]+=v.x*delta; pos[i*3+1]+=v.y*delta; pos[i*3+2]+=v.z*delta; if(life[i]<=0){pos[i*3]=pos[i*3+1]=pos[i*3+2]=999;} }
+    if(dirty){this.particleGeometry.attributes.position.needsUpdate=true; this.particleGeometry.attributes.aLife.needsUpdate=true;}
+  }
+
+  enterExploration(){
+    if(!this.active||this.travelMode||this.exploring)return; this.exploring=true; this.element.classList.add("is-exploring"); this.caption.inert=true; this.exploration.inert=false; this.explorationBlendTarget=1; this.setExplorationStop(this.topicIndex,{immediate:true,announce:false}); if(!this.frame){this.previous=performance.now();this.tick(this.previous);} requestAnimationFrame(()=>this.topicTitle.focus({preventScroll:true}));
+  }
+
+  exitExploration(){
+    if(!this.exploring)return; window.ExplorationMedia?.closeLightbox?.({restoreFocus:false}); this.exploring=false; this.element.classList.remove("is-exploring"); this.exploration.inert=true; this.caption.inert=false; this.explorationBlendTarget=0; this.contextMedia.hidden=true; this.contextMedia.replaceChildren(); if(!this.frame){this.previous=performance.now();this.tick(this.previous);} requestAnimationFrame(()=>this.exploreButton.focus({preventScroll:true}));
+  }
+
+  setExplorationStop(index,{immediate=false,announce=true}={}){
+    const total=SUN_INFO_STOPS.length; this.topicIndex=(index%total+total)%total; const stop=SUN_INFO_STOPS[this.topicIndex];
+    const apply=()=>{
+      this.topicKicker.textContent=stop.kicker; this.topicTitle.textContent=stop.title; this.topicSubtitle.textContent=stop.subtitle; this.topicSummary.textContent=stop.summary;
+      this.topicFacts.replaceChildren(...stop.facts.map(text=>{const li=document.createElement("li");li.textContent=text;return li;}));
+      this.topicSource.href=stop.source; this.topicCurrent.textContent=String(this.topicIndex+1).padStart(2,"0"); [...this.topicProgress.children].forEach((el,i)=>el.classList.toggle("is-active",i===this.topicIndex));
+      if(this.exploring) window.ExplorationMedia?.render?.("sun",stop,this.contextMedia);
+      if(announce) document.getElementById("announcement").textContent=`Topik Matahari: ${stop.title}.`;
+      if(this.topicScroll) this.topicScroll.scrollTop=0;
+    };
+    if(immediate){apply();return;} this.exploration.classList.add("is-changing"); requestAnimationFrame(()=>requestAnimationFrame(()=>{apply();this.exploration.classList.remove("is-changing");}));
+  }
+
+  beginTravelToMercury({onReveal,onComplete}={}){
+    if(!this.active||this.travelMode||this.exploring)return; this.travelMode="to-mercury"; this.travelStartedAt=this.time; this.travelDuration=this.motion.matches ? 0.45 : 6.4; this.travelRevealFired=false; this.travelCompleteFired=false; this.travelCallbacks={onReveal,onComplete}; this.element.classList.add("is-leaving"); this.caption.inert=true; this.pointer.x=this.pointer.y=0; if(!this.frame){this.previous=performance.now();this.tick(this.previous);}
+  }
+
+  beginTravelFromMercury({onCovered,onComplete,mercuryRotation=.62}={}){
+    if(this.active&&this.travelMode)return; this.active=true; this.exploring=false; this.explorationBlend=this.explorationBlendTarget=0; this.travelMode="from-mercury"; this.time=0; this.travelStartedAt=0; this.travelDuration=this.motion.matches ? 0.45 : 6.4; this.travelCoveredFired=false; this.travelCompleteFired=false; this.travelMercuryStartRotation=mercuryRotation; this.travelCallbacks={onCovered,onComplete}; this.element.hidden=false; this.element.style.opacity="0"; this.element.classList.add("is-leaving"); this.caption.classList.remove("is-visible"); this.caption.inert=true; this.exploration.inert=true; this.prepare(); this.resize(); cancelAnimationFrame(this.frame); this.previous=performance.now(); this.tick(this.previous);
+  }
+
+  travelState(){ const p=this.smooth((this.time-this.travelStartedAt)/this.travelDuration); return {progress:p,depart:this.smooth(p/.34),cross:this.smooth((p-.18)/.57),arrive:this.smooth((p-.58)/.42)}; }
+
+  render(){ if(this.travelMode)this.renderTravel(); else this.renderSun(); }
+
+  normalLayout(){ const dist=5.45; const half=Math.tan((35*Math.PI/180)/2)*dist; return {distance:dist,half,x:half*(this.width/this.height)*(this.mobile?0:.25),y:half*(this.mobile?.20:.08),scale:this.mobile?.86:1}; }
+
+  renderSun(){
+    const layout=this.normalLayout(); const blend=this.explorationBlend; const groupX=layout.x + blend*layout.half*(this.mobile?0:-.42); const groupScale=layout.scale*(1-blend*(this.mobile?.12:.18)); const cameraX=this.cameraOffset.x*.12*(1-blend), cameraY=-this.cameraOffset.y*.08*(1-blend);
+    this.renderedRotation=.35+this.time*.008;
+    if(this.mode==="webgl"){
+      this.sunGroup.visible=true; this.sunGroup.position.set(groupX,layout.y,0); this.sunGroup.scale.setScalar(groupScale); this.photosphere.rotation.y=this.renderedRotation; this.photosphereMaterial.uniforms.uTime.value=this.time; this.photosphereMaterial.uniforms.uFlare.value=this.solarEvent.strength; this.photosphereMaterial.uniforms.uActivity.value=.35+.25*this.solarEvent.strength;
+      this.chromosphere.material.uniforms.uTime.value=this.time; this.chromosphere.material.uniforms.uFlare.value=this.solarEvent.strength;
+      this.corona.material.uniforms.uTime.value=this.time; this.corona.material.uniforms.uFlare.value=this.solarEvent.strength; this.corona.position.x=groupX; this.corona.position.y=layout.y; this.corona.scale.setScalar(groupScale);
+      this.coronaOuter.material.uniforms.uTime.value=this.time*.78; this.coronaOuter.material.uniforms.uFlare.value=this.solarEvent.strength; this.coronaOuter.position.x=groupX; this.coronaOuter.position.y=layout.y; this.coronaOuter.scale.setScalar(groupScale);
+      this.prominenceGroup.rotation.z=this.time*.0055; this.prominences.forEach((mesh,i)=>{mesh.material.opacity=(.32+.13*Math.sin(this.time*(.13+i*.025)+i*1.7))*(1-.30*blend); mesh.scale.setScalar(1+.018*Math.sin(this.time*.17+i));});
+      if(this.travelMercuryGroup)this.travelMercuryGroup.visible=false;
+      this.camera.position.set(cameraX,cameraY,layout.distance); this.camera.lookAt(cameraX*.24,cameraY*.16,0); this.renderer.render(this.scene,this.camera);
+    } else if(this.mode==="canvas") this.drawCanvasSun(layout,blend); else {
+      const sphere=this.viewport.querySelector(".sun-emergency-sphere"), corona=this.viewport.querySelector(".sun-emergency-corona"); const left=50+(this.mobile?0:7)-blend*(this.mobile?0:13); if(sphere){sphere.style.left=`${left}%`;sphere.style.transform=`translate(-50%,-50%) scale(${groupScale}) rotate(${this.renderedRotation*.18}rad)`;} if(corona){corona.style.left=`${left}%`;corona.style.transform=`translate(-50%,-50%) scale(${groupScale*(1+.03*Math.sin(this.time*.2))})`;}
+    }
+  }
+
+  renderTravel(){
+    const s=this.travelState(), reverse=this.travelMode==="from-mercury", layout=this.normalLayout(); const span=layout.half*(this.width/this.height)*(this.mobile?4.6:4.0);
+    const sunP=reverse?this.smooth((s.progress-.04)/.18):1-s.depart*.82; const mercuryP=reverse?1-s.depart:this.smooth((s.progress-.48)/.34); const sunX=layout.x+(reverse?(1-s.cross)*(-span):s.cross*(-span)); const mercuryX=layout.x+(reverse?s.cross*span:(1-s.cross)*span); const sunScale=layout.scale*(reverse?(.26+.74*s.arrive):(1-.72*s.depart)); const mercuryScale=reverse?(1-.70*s.depart):(.25+.75*s.arrive);
+    this.element.style.opacity=String(reverse?this.smooth(s.progress/.08):1); this.caption.style.opacity="0"; this.credit.style.opacity="0";
+    if(!reverse&&s.progress>=.84&&!this.travelRevealFired){this.travelRevealFired=true;this.travelCallbacks.onReveal?.();}
+    if(reverse&&s.progress>=.20&&!this.travelCoveredFired){this.travelCoveredFired=true;this.travelCallbacks.onCovered?.();}
+    if(this.mode==="webgl"){
+      this.sunGroup.visible=sunP>.01; this.sunGroup.position.set(sunX,layout.y,0); this.sunGroup.scale.setScalar(sunScale); this.photosphere.rotation.y=.35+this.time*.008; this.photosphereMaterial.uniforms.uTime.value=this.time; this.photosphereMaterial.uniforms.uFlare.value=this.solarEvent.strength*.55;
+      this.chromosphere.material.uniforms.uTime.value=this.time; this.corona.position.set(sunX,layout.y,-.12); this.corona.scale.setScalar(sunScale); this.corona.material.uniforms.uTime.value=this.time; this.corona.material.uniforms.uOpacity.value=.29*(.45+.55*sunP); this.coronaOuter.position.set(sunX,layout.y,-.18); this.coronaOuter.scale.setScalar(sunScale); this.coronaOuter.material.uniforms.uTime.value=this.time*.78; this.coronaOuter.material.uniforms.uOpacity.value=.17*(.35+.65*sunP);
+      this.travelMercuryGroup.visible=mercuryP>.01; this.travelMercuryGroup.position.set(mercuryX,layout.y,0); this.travelMercuryGroup.scale.setScalar(mercuryScale); this.travelMercury.rotation.set(.09,(reverse?this.travelMercuryStartRotation:.62)+this.time*.014,.12); this.travelMercuryMaterial.opacity=this.clamp(mercuryP); this.travelMercuryMaterial.depthWrite=mercuryP>.98;
+      this.camera.position.set(0,0,layout.distance*(1+.42*Math.sin(s.cross*Math.PI))); this.camera.lookAt(0,0,0); this.renderer.toneMappingExposure=.92+.13*(reverse?s.arrive:1-s.depart*.3); this.renderer.render(this.scene,this.camera);
+    } else if(this.mode==="canvas") this.drawCanvasTravel(s,reverse,{sunX,sunScale,mercuryX,mercuryScale,sunP,mercuryP,layout});
+    else if(this.mode==="css") {
+      const sphere=this.viewport.querySelector(".sun-emergency-sphere"), corona=this.viewport.querySelector(".sun-emergency-corona"), mercury=this.viewport.querySelector(".sun-emergency-mercury");
+      const toPercent=x=>50+(x-layout.x)/(layout.half*(this.width/this.height))*20;
+      if(sphere){sphere.style.left=`${toPercent(sunX)}%`;sphere.style.opacity=String(sunP);sphere.style.transform=`translate(-50%,-50%) scale(${sunScale})`;}
+      if(corona){corona.style.left=`${toPercent(sunX)}%`;corona.style.opacity=String(.7*sunP);corona.style.transform=`translate(-50%,-50%) scale(${sunScale})`;}
+      if(mercury){mercury.style.display=mercuryP>.01?"block":"none";mercury.style.left=`${toPercent(mercuryX)}%`;mercury.style.opacity=String(mercuryP);mercury.style.transform=`translate(-50%,-50%) scale(${mercuryScale})`;}
+    }
+    if(s.progress>=.999&&!this.travelCompleteFired){ this.travelCompleteFired=true; const callback=this.travelCallbacks.onComplete; if(reverse){ this.travelMode=null; this.travelCallbacks={}; this.element.classList.remove("is-leaving"); this.element.style.opacity="1"; this.caption.classList.add("is-visible"); this.caption.inert=false; this.caption.style.opacity="1"; this.credit.style.opacity=".9"; if(this.travelMercuryGroup)this.travelMercuryGroup.visible=false; if(this.renderer)this.renderer.toneMappingExposure=1.05; document.getElementById("announcement").textContent="Tiba di Matahari."; } callback?.(); }
+  }
+
+  drawCanvasSun(layout,blend){
+    const ctx=this.ctx,w=this.width,h=this.height; ctx.clearRect(0,0,w,h); this.drawCanvasStars(ctx,w,h); const x=w*.5+(this.mobile?0:w*.07)-blend*(this.mobile?0:w*.13), y=h*(.49+layout.y*.02), r=Math.min(w,h)*(this.mobile?.29:.34)*(1-blend*(this.mobile?.12:.18)); this.drawSunDisc(ctx,x,y,r,1); if(this.solarEvent.strength>.12)this.drawCanvasEjecta(ctx,x,y,r,this.solarEvent.strength);
+  }
+
+  drawCanvasStars(ctx,w,h){ ctx.save(); for(let i=0;i<180;i++){const a=Math.sin((i+2)*91.17)*43758.5453,b=Math.sin((i+4)*17.53)*14375.921;const x=(a-Math.floor(a))*w,y=(b-Math.floor(b))*h;ctx.globalAlpha=.12+(i%7)*.035;ctx.fillStyle="#c9d7e6";ctx.fillRect(x,y,i%11===0?1.4:.8,i%11===0?1.4:.8);} ctx.restore(); }
+
+  drawSunDisc(ctx,x,y,r,opacity=1){
+    ctx.save(); ctx.globalAlpha=opacity; const corona=ctx.createRadialGradient(x,y,r*.82,x,y,r*1.6); corona.addColorStop(0,"rgba(255,160,54,0)");corona.addColorStop(.55,"rgba(255,116,38,.14)");corona.addColorStop(1,"rgba(255,92,28,0)");ctx.fillStyle=corona;ctx.beginPath();ctx.arc(x,y,r*1.65,0,Math.PI*2);ctx.fill();
+    const g=ctx.createRadialGradient(x-r*.28,y-r*.34,r*.08,x,y,r);g.addColorStop(0,"#fff1a8");g.addColorStop(.43,"#ffc34c");g.addColorStop(.78,"#e97825");g.addColorStop(1,"#8e2e17");ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.clip();
+    for(let i=0;i<190;i++){const s=i+this.time*.55;const a=(Math.sin(s*12.9898)*43758.5453)%1,b=(Math.sin(s*78.233)*19642.349)%1;const ang=(a-Math.floor(a))*Math.PI*2,rad=Math.sqrt(b-Math.floor(b))*r*.94,cx=x+Math.cos(ang)*rad,cy=y+Math.sin(ang)*rad,sz=2+(i%7)*.75;ctx.globalAlpha=.055+(i%5)*.018;ctx.fillStyle=i%3?"#fff3a8":"#9d381c";ctx.beginPath();ctx.ellipse(cx,cy,sz*1.8,sz,ang,0,Math.PI*2);ctx.fill();}
+    ctx.globalAlpha=.72;ctx.fillStyle="#5b2619";ctx.beginPath();ctx.ellipse(x-r*.37,y-r*.18,r*.085,r*.042,-.25,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(x+r*.28,y+r*.23,r*.062,r*.032,.32,0,Math.PI*2);ctx.fill();ctx.restore();
+    ctx.save();ctx.globalAlpha=.55;ctx.strokeStyle="#ff7b3e";ctx.lineWidth=Math.max(1.5,r*.012);ctx.shadowColor="#ff6d30";ctx.shadowBlur=r*.05;for(let i=0;i<3;i++){const a=[-2.1,.58,2.32][i],span=[.55,.42,.32][i],hh=[.34,.26,.20][i];const x0=x+Math.cos(a-span/2)*r,y0=y+Math.sin(a-span/2)*r,x1=x+Math.cos(a)*r*(1+hh),y1=y+Math.sin(a)*r*(1+hh),x2=x+Math.cos(a+span/2)*r,y2=y+Math.sin(a+span/2)*r;ctx.beginPath();ctx.moveTo(x0,y0);ctx.quadraticCurveTo(x1,y1,x2,y2);ctx.stroke();}ctx.restore();
+  }
+
+  drawCanvasEjecta(ctx,x,y,r,strength){ ctx.save();ctx.translate(x,y);ctx.rotate(-.72);ctx.strokeStyle=`rgba(255,158,70,${.12+.30*strength})`;ctx.lineWidth=2;for(let i=0;i<9;i++){ctx.beginPath();ctx.moveTo(r*.86,(i-4)*r*.015);ctx.quadraticCurveTo(r*(1.05+i*.025),-r*(.10+i*.018),r*(1.25+i*.06),-r*(.16+i*.025));ctx.stroke();}ctx.restore(); }
+
+  drawCanvasTravel(s,reverse,state){ const ctx=this.ctx,w=this.width,h=this.height;ctx.clearRect(0,0,w,h);this.drawCanvasStars(ctx,w,h);const worldScale=Math.min(w,h)*.34/state.layout.scale,screenX=v=>w*.5+(v-state.layout.x)*worldScale;const y=h*.49;this.drawSunDisc(ctx,screenX(state.sunX),y,Math.min(w,h)*.34*state.sunScale/state.layout.scale,state.sunP);this.drawMercuryCanvas(ctx,screenX(state.mercuryX),y,Math.min(w,h)*.30*state.mercuryScale,state.mercuryP); }
+
+  drawMercuryCanvas(ctx,x,y,r,opacity){ if(opacity<=.01)return;ctx.save();ctx.globalAlpha=opacity;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.clip();if(this.mercurySurface){ctx.drawImage(this.mercurySurface,x-r,y-r,r*2,r*2);}else{const g=ctx.createRadialGradient(x-r*.3,y-r*.3,0,x,y,r);g.addColorStop(0,"#aaa69c");g.addColorStop(.6,"#696761");g.addColorStop(1,"#242529");ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2);}ctx.restore(); }
+};

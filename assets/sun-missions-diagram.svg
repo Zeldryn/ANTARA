@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="t d">
+<title id="t">Observatorium yang mempelajari Matahari</title><desc id="d">Diagram SDO, Parker Solar Probe, SOHO, dan Solar Orbiter sebagai contoh misi heliophysics.</desc>
+<rect width="960" height="620" fill="#050a14"/><circle cx="480" cy="310" r="92" fill="#f9b844"/><circle cx="480" cy="310" r="122" fill="none" stroke="#f6a73e" stroke-opacity=".18" stroke-width="20"/>
+<g fill="none" stroke="#876f45" stroke-opacity=".45"><ellipse cx="480" cy="310" rx="230" ry="175"/><ellipse cx="480" cy="310" rx="340" ry="235"/></g>
+<g font-family="Arial,Helvetica,sans-serif"><text x="480" y="54" text-anchor="middle" fill="#f1d89a" font-size="18" letter-spacing="5">MENGAMATI MATAHARI</text>
+<g transform="translate(246 183)"><rect x="-52" y="-30" width="104" height="60" rx="4" fill="#15233a" stroke="#91acc9"/><rect x="-107" y="-18" width="48" height="36" fill="#355d8d"/><rect x="59" y="-18" width="48" height="36" fill="#355d8d"/><text y="58" text-anchor="middle" fill="#d8e1ea" font-size="14">SDO</text></g>
+<g transform="translate(728 191)"><path d="M-42 -22h68l18 22-18 22h-68Z" fill="#c5aa72"/><path d="M44 0h52" stroke="#7f9db8" stroke-width="8"/><text y="58" text-anchor="middle" fill="#d8e1ea" font-size="14">PARKER SOLAR PROBE</text></g>
+<g transform="translate(230 438)"><rect x="-45" y="-28" width="90" height="56" fill="#c8b47e"/><path d="M-110 0h60M50 0h60" stroke="#557ca5" stroke-width="15"/><text y="58" text-anchor="middle" fill="#d8e1ea" font-size="14">SOHO</text></g>
+<g transform="translate(728 435)"><path d="M-48 -25h80v50h-80Z" fill="#b89d6d"/><path d="M32 -15h65v30H32Z" fill="#39658e"/><text y="58" text-anchor="middle" fill="#d8e1ea" font-size="14">SOLAR ORBITER</text></g>
+<text x="480" y="565" text-anchor="middle" fill="#7f8b9d" font-size="12">Teleskop jarak jauh dan instrumen in-situ melengkapi gambaran aktivitas Matahari.</text></g></svg>
