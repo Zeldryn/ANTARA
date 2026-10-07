@@ -10,7 +10,18 @@ const MERCURY_EXPLORATION_DISTANCE_SCALE_DESKTOP = 1.035;
 const MERCURY_EXPLORATION_DISTANCE_SCALE_MOBILE = 1.045;
 const MERCURY_EXPLORATION_CENTER_X_DESKTOP = 0.23;
 const MERCURY_EXPLORATION_CENTER_Y_DESKTOP = 0.055;
-const MERCURY_SURFACE_TEXTURE = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Mercury_MESSENGER_MDIS_Basemap_BDR_Mosaic_Global_32ppd.jpg/2560px-Mercury_MESSENGER_MDIS_Basemap_BDR_Mosaic_Global_32ppd.jpg";
+const MERCURY_SURFACE_TEXTURES = Object.freeze({
+  desktop: [
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Mercury_MESSENGER_MDIS_Basemap_BDR_Mosaic_Global_32ppd.jpg/3840px-Mercury_MESSENGER_MDIS_Basemap_BDR_Mosaic_Global_32ppd.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Mercury_MESSENGER_MDIS_Basemap_BDR_Mosaic_Global_32ppd.jpg/2560px-Mercury_MESSENGER_MDIS_Basemap_BDR_Mosaic_Global_32ppd.jpg",
+    "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533"
+  ],
+  mobile: [
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Mercury_MESSENGER_MDIS_Basemap_BDR_Mosaic_Global_32ppd.jpg/2560px-Mercury_MESSENGER_MDIS_Basemap_BDR_Mosaic_Global_32ppd.jpg",
+    "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533"
+  ]
+});
+const MERCURY_TEXTURE_SOURCE = "https://astrogeology.usgs.gov/search/map/mercury_messenger_mdis_global_basemap_bdr_166m";
 
 const wrapMercuryRadians = angle => Math.atan2(Math.sin(angle), Math.cos(angle));
 const unwrapMercuryAngleNear = (angle, reference) => reference + wrapMercuryRadians(angle - reference);
@@ -64,7 +75,16 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
     shift: { x: 0, y: 0 }
   },
   {
-    images: [],
+    images: [
+      {
+        src: "./assets/mercury-orbit-rotation.svg",
+        alt: "Diagram orbit Merkurius dan resonansi rotasi tiga banding dua",
+        credit: "ANTARA · data NASA Science",
+        source: "https://science.nasa.gov/mercury/facts/",
+        caption: "Orbit 88 hari dan resonansi spin-orbit 3:2",
+        fit: "contain"
+      }
+    ],
     title: "Tahun 88 Hari",
     kicker: "ORBIT & ROTASI",
     subtitle: "Gerak cepat mengelilingi Matahari, rotasi yang jauh lebih lambat",
@@ -80,7 +100,27 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
     shift: { x: 0, y: 0 }
   },
   {
-    images: [],
+    images: [
+      {
+        src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19247/PIA19247.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1550&w=2044",
+        alt: "Peta suhu maksimum wilayah kutub utara Merkurius dari data MESSENGER",
+        credit: "NASA/JHU APL/Carnegie",
+        source: "https://science.nasa.gov/photojournal/hot-and-cold/",
+        license: "NASA image policy",
+        licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        caption: "Hot and Cold · suhu permukaan kutub Merkurius",
+        fit: "cover",
+        position: "50% 56%"
+      },
+      {
+        src: "./assets/mercury-temperature-diagram.svg",
+        alt: "Diagram edukasi kontras suhu sisi siang dan malam Merkurius",
+        credit: "ANTARA · data NASA Science",
+        source: "https://science.nasa.gov/mercury/facts/",
+        caption: "Kontras suhu siang dan malam Merkurius",
+        fit: "contain"
+      }
+    ],
     title: "Panas dan Dingin Ekstrem",
     kicker: "SUHU PERMUKAAN",
     subtitle: "Tanpa atmosfer tebal untuk menahan dan menyebarkan panas",
@@ -96,7 +136,26 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
     shift: { x: 0, y: 0 }
   },
   {
-    images: [],
+    images: [
+      {
+        src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19418/PIA19418.jpg?crop=faces%2Cfocalpoint&fit=clip&h=3094&w=4096",
+        alt: "Peta emisi sodium pada eksosfer dan ekor Merkurius dari MESSENGER",
+        credit: "NASA/JHU APL/Carnegie",
+        source: "https://science.nasa.gov/photojournal/mercurys-sodium-tail-2/",
+        license: "NASA image policy",
+        licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        caption: "Mercury's Sodium Tail · MESSENGER MASCS/UVVS",
+        fit: "contain"
+      },
+      {
+        src: "./assets/mercury-exosphere-diagram.svg",
+        alt: "Diagram edukasi eksosfer tipis dan ekor sodium Merkurius",
+        credit: "ANTARA · data NASA MESSENGER",
+        source: "https://science.nasa.gov/photojournal/mercurys-sodium-tail-2/",
+        caption: "Eksosfer tipis dan ekor sodium",
+        fit: "contain"
+      }
+    ],
     title: "Eksosfer yang Sangat Tipis",
     kicker: "HAMPIR TANPA ATMOSFER",
     subtitle: "Partikel tipis menggantikan selimut udara seperti di Bumi",
@@ -129,12 +188,12 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
     subtitle: "Salah satu cekungan tumbukan terbesar di Tata Surya",
     summary: "Caloris adalah bekas tumbukan raksasa yang menjadi salah satu ciri paling menonjol di Merkurius. Cekungan ini dikelilingi pegunungan cincin dan sebagian lantainya kemudian tertutup aliran lava.",
     facts: [
-      "Caloris Planitia berdiameter sekitar 1.500 km.",
-      "Pusat fitur Caloris Planitia tercatat sekitar 31,65° LU dan 198,02° BT pada basis data IAU/USGS.",
+      "Caloris Basin berdiameter sekitar 1.525 km.",
+      "Pusat Caloris Basin berada sekitar 31,5° LU dan 162,7° BT pada pemetaan MESSENGER NASA.",
       "Bentang tumbukan raksasa ini membantu ilmuwan mempelajari sejarah awal kerak Merkurius."
     ],
-    source: "https://planetarynames.wr.usgs.gov/Feature/979",
-    location: { label: "Caloris Planitia", latitude: 31.65, longitudeEast: 198.02, source: "https://planetarynames.wr.usgs.gov/Feature/979" },
+    source: "https://science.nasa.gov/photojournal/the-mighty-caloris/",
+    location: { label: "Caloris Basin", latitude: 31.5, longitudeEast: 162.7, source: "https://science.nasa.gov/photojournal/the-mighty-caloris/" },
     shift: { x: 0.006, y: -0.005 }
   },
   {
@@ -165,7 +224,27 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
     shift: { x: 0, y: 0 }
   },
   {
-    images: [],
+    images: [
+      {
+        src: "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2024/09/bepicolombo_says_goodbye_to_mercury_for_the_fourth_time/26299692-11-eng-GB/BepiColombo_says_goodbye_to_Mercury_for_the_fourth_time.jpg",
+        alt: "Merkurius dipotret wahana ESA JAXA BepiColombo saat lintasan dekat 2024",
+        credit: "ESA/BepiColombo/MTM",
+        source: "https://www.esa.int/ESA_Multimedia/Images/2024/09/BepiColombo_says_goodbye_to_Mercury_for_the_fourth_time",
+        license: "CC BY-SA 3.0 IGO / ESA Standard Licence",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/igo/",
+        caption: "BepiColombo dekat Merkurius · M-CAM 2",
+        fit: "cover",
+        position: "50% 43%"
+      },
+      {
+        src: "./assets/mercury-missions-timeline.svg",
+        alt: "Linimasa eksplorasi Merkurius dari Mariner 10, MESSENGER hingga BepiColombo",
+        credit: "ANTARA · data NASA dan ESA",
+        source: "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo",
+        caption: "Linimasa eksplorasi Merkurius",
+        fit: "contain"
+      }
+    ],
     title: "Dari Mariner 10 ke BepiColombo",
     kicker: "EKSPLORASI MERKURIUS",
     subtitle: "Sedikit wahana pernah berani masuk ke lingkungan sedekat ini dengan Matahari",
@@ -428,22 +507,102 @@ window.MercuryScene = class MercuryScene {
     this.exploreButton.focus({ preventScroll: true });
   }
 
+  surfaceTextureCandidates() {
+    const compact = Math.min(window.innerWidth || 9999, window.innerHeight || 9999) <= 820
+      || (navigator.deviceMemory && navigator.deviceMemory <= 4);
+    const defaults = compact ? MERCURY_SURFACE_TEXTURES.mobile : MERCURY_SURFACE_TEXTURES.desktop;
+    const override = typeof window.ANTARA_MERCURY_TEXTURE === "string" ? window.ANTARA_MERCURY_TEXTURE.trim() : "";
+    return override ? [override, ...defaults] : defaults;
+  }
+
+  loadImage(url, { timeoutMs = 18000, crossOrigin = true } = {}) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      const timeout = setTimeout(() => {
+        image.onload = image.onerror = null;
+        reject(new Error(`Timed out loading ${url}`));
+      }, timeoutMs);
+      image.onload = async () => {
+        clearTimeout(timeout);
+        try { if (typeof image.decode === "function") await image.decode(); } catch (_) {}
+        resolve(image);
+      };
+      image.onerror = () => { clearTimeout(timeout); reject(new Error(`Unable to load ${url}`)); };
+      if (crossOrigin && /^https?:/i.test(url)) image.crossOrigin = "anonymous";
+      image.decoding = "async";
+      image.src = url;
+    });
+  }
+
+  async loadMercurySurface() {
+    const errors = [];
+    for (const url of this.surfaceTextureCandidates()) {
+      try {
+        const image = await this.loadImage(url);
+        if (image.naturalWidth < 1400 || image.naturalHeight < 700) throw new Error("Mercury map resolution too small");
+        this.surfaceSource = url;
+        return image;
+      } catch (error) {
+        errors.push(error);
+      }
+    }
+    const error = new Error("No scientific Mercury surface texture could be loaded");
+    error.causes = errors;
+    throw error;
+  }
+
+  showTextureWarning() {
+    let warning = this.element.querySelector(".mercury-texture-warning");
+    if (!warning) {
+      warning = document.createElement("div");
+      warning.className = "mercury-texture-warning";
+      warning.setAttribute("role", "status");
+      warning.textContent = "Tekstur ilmiah Merkurius tidak dapat dimuat. Periksa koneksi aset.";
+      this.element.append(warning);
+    }
+    warning.hidden = false;
+  }
+
+  hideTextureWarning() {
+    const warning = this.element.querySelector(".mercury-texture-warning");
+    if (warning) warning.hidden = true;
+  }
+
+  preloadExplorationImages() {
+    if (this.infoImagePreloadStarted) return;
+    this.infoImagePreloadStarted = true;
+    const urls = [...new Set(MERCURY_EXPLORATION_STOPS.flatMap(stop => stop.images || []).map(image => image.src).filter(Boolean))];
+    const work = () => {
+      this.infoImagePreloads = urls.map(url => {
+        const image = new Image();
+        image.decoding = "async";
+        image.src = url;
+        return image;
+      });
+    };
+    if ("requestIdleCallback" in window) requestIdleCallback(work, { timeout: 2500 });
+    else setTimeout(work, 700);
+  }
+
   prepare() {
     if (this.loading) return this.loading;
     this.loading = (async () => {
       const [moduleResult, imageResult] = await Promise.allSettled([
         import("./assets/vendor/three/three.module.min.js"),
-        new Promise((resolve, reject) => {
-          const image = new Image();
-          const timeout = setTimeout(() => reject(new Error("Texture timeout")), 8000);
-          image.onload = () => { clearTimeout(timeout); resolve(image); };
-          image.onerror = () => { clearTimeout(timeout); reject(new Error("Texture unavailable")); };
-          image.crossOrigin = "anonymous";
-          image.src = MERCURY_SURFACE_TEXTURE;
-        })
+        this.loadMercurySurface()
       ]);
-      this.surface = imageResult.status === "fulfilled" ? imageResult.value : this.makeProceduralSurface();
-      this.element.dataset.texture = imageResult.status === "fulfilled" ? "map" : "procedural";
+      if (imageResult.status === "fulfilled") {
+        this.surface = imageResult.value;
+        this.element.dataset.texture = "scientific-map";
+        this.element.dataset.textureWidth = String(this.surface.naturalWidth || this.surface.width || 0);
+        this.hideTextureWarning();
+      } else {
+        this.surface = this.makeMissingTextureSurface();
+        this.element.dataset.texture = "missing";
+        this.showTextureWarning();
+        console.error("Mercury scientific surface failed to load", imageResult.reason);
+      }
+      this.preloadExplorationImages();
       if (moduleResult.status === "fulfilled") {
         try { this.createThreeScene(moduleResult.value); }
         catch { this.createCanvasFallback(); }
@@ -468,7 +627,7 @@ window.MercuryScene = class MercuryScene {
     this.THREE = THREE;
     this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias: true });
     this.renderer.setClearColor(0x030812, 0);
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75));
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, window.innerWidth <= 700 ? 1.6 : 2));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.08;
@@ -478,12 +637,30 @@ window.MercuryScene = class MercuryScene {
     this.camera.position.z = 6;
     const texture = new THREE.Texture(this.surface);
     texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = Math.min(8, this.renderer.capabilities.getMaxAnisotropy());
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.generateMipmaps = true;
+    texture.anisotropy = Math.max(1, Math.min(12, this.renderer.capabilities.getMaxAnisotropy()));
     texture.needsUpdate = true;
     const relief = texture.clone();
     relief.colorSpace = THREE.NoColorSpace;
+    relief.minFilter = THREE.LinearMipmapLinearFilter;
+    relief.magFilter = THREE.LinearFilter;
+    relief.generateMipmaps = true;
+    relief.anisotropy = texture.anisotropy;
     relief.needsUpdate = true;
-    const material = new THREE.MeshStandardMaterial({ map: texture, bumpMap: relief, bumpScale: 0.026, roughness: 0.94, metalness: 0, color: 0xd9d0c2 });
+    const material = new THREE.MeshStandardMaterial({
+      map: texture,
+      bumpMap: relief,
+      bumpScale: 0.034,
+      roughness: 0.91,
+      metalness: 0,
+      color: 0xffffff
+    });
+    material.map.name = "Mercury MESSENGER/USGS surface";
+    material.bumpMap.name = "Mercury relief from MESSENGER surface";
     this.planet = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 96), material);
     this.planet.rotation.set(0.09, 0.6, 0.12);
     this.planetGroup = new THREE.Group();
@@ -514,10 +691,10 @@ window.MercuryScene = class MercuryScene {
     this.axisX = new THREE.Vector3(1, 0, 0);
     this.axisY = new THREE.Vector3(0, 1, 0);
     this.axisZ = new THREE.Vector3(0, 0, 1);
-    const sun = new THREE.DirectionalLight(0xfff1d4, 4.15);
+    const sun = new THREE.DirectionalLight(0xfff5e8, 2.55);
     sun.position.set(-4.7, 2.8, 4.5);
-    this.scene.add(sun, new THREE.AmbientLight(0x9ba2aa, 0.075));
-    const fill = new THREE.DirectionalLight(0x66717e, 0.055);
+    this.scene.add(sun, new THREE.AmbientLight(0xaeb4bb, 0.12));
+    const fill = new THREE.DirectionalLight(0x6f7782, 0.09);
     fill.position.set(4, -1, -3);
     this.scene.add(fill);
     // Thin warm limb scattering; it is deliberately much subtler than an Earth halo.
@@ -565,22 +742,17 @@ window.MercuryScene = class MercuryScene {
     this.element.dataset.renderer = this.mode;
   }
 
-  makeProceduralSurface() {
+  makeMissingTextureSurface() {
     const canvas = document.createElement("canvas");
-    canvas.width = 512; canvas.height = 256;
+    canvas.width = 1024;
+    canvas.height = 512;
     const ctx = canvas.getContext("2d");
-    const pixels = ctx.createImageData(512, 256);
-    for (let y = 0; y < 256; y++) for (let x = 0; x < 512; x++) {
-      const longitude = x / 512 * Math.PI * 2;
-      const latitude = y / 256 * Math.PI;
-      const large = Math.sin(longitude * 3 + Math.sin(latitude * 6)) * Math.cos(latitude * 5 + Math.sin(longitude * 2));
-      const fine = Math.sin(longitude * 51 + Math.cos(latitude * 27)) * Math.sin(latitude * 43) * 8;
-      const dust = 26 * large + fine;
-      const polar = Math.pow(Math.abs(Math.cos(latitude)), 38) * 65;
-      const i = (y * 512 + x) * 4;
-      pixels.data.set([143 + dust * 0.52 + polar * 0.18, 136 + dust * 0.48 + polar * 0.16, 126 + dust * 0.42 + polar * 0.13, 255], i);
-    }
-    ctx.putImageData(pixels, 0, 0);
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    gradient.addColorStop(0, "#77756f");
+    gradient.addColorStop(0.52, "#55534f");
+    gradient.addColorStop(1, "#343434");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     return canvas;
   }
 
@@ -593,9 +765,11 @@ window.MercuryScene = class MercuryScene {
     this.viewport.replaceChildren(this.canvas);
     const map = document.createElement("canvas");
     map.width = 1536; map.height = 768;
-    const mapContext = map.getContext("2d");
-    mapContext.drawImage(this.surface, 0, 0, 1536, 768);
-    this.surfacePixels = mapContext.getImageData(0, 0, 1024, 512).data;
+    const mapContext = map.getContext("2d", { willReadFrequently: true });
+    mapContext.imageSmoothingEnabled = true;
+    mapContext.imageSmoothingQuality = "high";
+    mapContext.drawImage(this.surface, 0, 0, map.width, map.height);
+    this.surfacePixels = mapContext.getImageData(0, 0, map.width, map.height).data;
     this.sphereCanvas = document.createElement("canvas");
     this.sphereCanvas.width = this.sphereCanvas.height = 360;
     this.sphereContext = this.sphereCanvas.getContext("2d");
@@ -613,6 +787,7 @@ window.MercuryScene = class MercuryScene {
     this.finalDistance = this.height / (2 * Math.tan(Math.PI / 10) * radius);
     this.finalRadius = radius;
     if (this.mode === "webgl") {
+      this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, this.mobile ? 1.6 : 2));
       this.renderer.setSize(this.width, this.height);
       this.camera.aspect = this.width / this.height;
       this.camera.updateProjectionMatrix();
@@ -872,7 +1047,8 @@ window.MercuryScene = class MercuryScene {
       this.travelVenusGroup.position.set(layout.x + separation, destinationY, 0);
       this.planet.rotation.set(0.09, mercuryRotation, MERCURY_EXPLORATION_ROLL);
       this.planet.material.opacity = mercuryOpacity;
-      this.planet.material.transparent = true;
+      this.planet.material.transparent = mercuryOpacity < 0.999;
+      this.planet.material.depthWrite = mercuryOpacity >= 0.999;
       this.atmosphere.visible = mercuryOpacity > 0.035;
       this.travelVenus.rotation.set(0.09, venusRotation, 0.12);
       this.travelVenusMaterial.opacity = venusOpacity;
@@ -910,6 +1086,7 @@ window.MercuryScene = class MercuryScene {
         this.credit.style.opacity = ".9";
         this.planet.material.opacity = 1;
         this.planet.material.transparent = false;
+        this.planet.material.depthWrite = true;
         this.travelVenusGroup.visible = false;
         document.getElementById("announcement").textContent = "Tiba di orbit Merkurius.";
       }
@@ -1001,6 +1178,7 @@ window.MercuryScene = class MercuryScene {
       this.planetGroup.visible = true;
       this.planet.material.opacity = 1;
       this.planet.material.transparent = false;
+      this.planet.material.depthWrite = true;
       this.planetGroup.position.set(halfHeight * this.camera.aspect * groupX, halfHeight * groupY + drift * (1 - this.explorationBlend * 0.45), 0);
 
       // Preserve the arrival pose, but in exploration orient the real sphere from

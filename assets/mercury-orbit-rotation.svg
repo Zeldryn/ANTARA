@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+<title id="title">Orbit dan resonansi rotasi Merkurius</title>
+<desc id="desc">Diagram edukasi yang menunjukkan orbit Merkurius selama 88 hari dan resonansi spin orbit tiga banding dua dengan rotasi sidereal sekitar 59 hari.</desc>
+<defs>
+  <radialGradient id="bg" cx="50%" cy="45%" r="75%"><stop offset="0" stop-color="#1a2430"/><stop offset="1" stop-color="#050911"/></radialGradient>
+  <radialGradient id="sun"><stop offset="0" stop-color="#fff4bf"/><stop offset="0.5" stop-color="#e9b75a"/><stop offset="1" stop-color="#a65a24"/></radialGradient>
+  <radialGradient id="mercury"><stop offset="0" stop-color="#a6a39c"/><stop offset="0.7" stop-color="#66645f"/><stop offset="1" stop-color="#2c2d30"/></radialGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1200" height="760" fill="url(#bg)"/>
+<g opacity=".45" fill="#dbe8ff">
+  <circle cx="106" cy="104" r="2"/><circle cx="211" cy="154" r="1.6"/><circle cx="974" cy="115" r="1.8"/><circle cx="1090" cy="242" r="1.4"/><circle cx="912" cy="610" r="1.7"/><circle cx="135" cy="594" r="1.4"/>
+</g>
+<ellipse cx="600" cy="382" rx="410" ry="235" fill="none" stroke="#bca66f" stroke-width="3" opacity=".55"/>
+<ellipse cx="600" cy="382" rx="410" ry="235" fill="none" stroke="#d7c18a" stroke-width="1" stroke-dasharray="9 13" opacity=".48"/>
+<circle cx="600" cy="382" r="72" fill="url(#sun)" filter="url(#glow)"/>
+<text x="600" y="490" text-anchor="middle" fill="#f1dfad" font-family="Arial,sans-serif" font-size="26" letter-spacing="5">MATAHARI</text>
+<g transform="translate(960 272)">
+  <circle r="48" fill="url(#mercury)" stroke="#c8c0af" stroke-width="2"/>
+  <g fill="none" stroke="#464640" stroke-width="3" opacity=".8"><circle cx="-15" cy="-10" r="10"/><circle cx="13" cy="14" r="14"/><circle cx="19" cy="-17" r="7"/><circle cx="-24" cy="21" r="6"/></g>
+  <path d="M-8 -76 A78 78 0 1 1 -55 -55" fill="none" stroke="#8fc7d9" stroke-width="4" stroke-linecap="round"/>
+  <path d="M-58 -66 l4 18 13-12" fill="#8fc7d9"/>
+</g>
+<text x="960" y="352" text-anchor="middle" fill="#e8e5dd" font-family="Arial,sans-serif" font-size="24" font-weight="700">MERKURIUS</text>
+<g font-family="Arial,sans-serif">
+  <rect x="76" y="72" width="350" height="162" rx="20" fill="#0b111b" stroke="#8c7b4e" stroke-width="2" opacity=".92"/>
+  <text x="108" y="118" fill="#cbb77b" font-size="18" letter-spacing="3">PERIODE ORBIT</text>
+  <text x="108" y="172" fill="#ffffff" font-size="48" font-weight="700">~88 hari</text>
+  <text x="108" y="205" fill="#9eb0c0" font-size="19">satu tahun Merkurius</text>
+  <rect x="774" y="510" width="350" height="168" rx="20" fill="#0b111b" stroke="#8c7b4e" stroke-width="2" opacity=".92"/>
+  <text x="806" y="556" fill="#cbb77b" font-size="18" letter-spacing="3">ROTASI SIDEREAL</text>
+  <text x="806" y="610" fill="#ffffff" font-size="48" font-weight="700">~59 hari</text>
+  <text x="806" y="643" fill="#9eb0c0" font-size="19">resonansi spin-orbit 3:2</text>
+  <text x="600" y="716" text-anchor="middle" fill="#8293a3" font-size="17">3 putaran pada sumbu untuk setiap 2 orbit mengelilingi Matahari</text>
+</g>
+</svg>

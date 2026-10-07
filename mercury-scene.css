@@ -281,3 +281,22 @@
 }
 .mercury-scene.is-leaving .mercury-caption,
 .mercury-scene.is-leaving .mercury-credit { pointer-events: none; }
+
+
+/* Only appears when every scientific Mercury texture source fails. */
+.mercury-texture-warning {
+  position: absolute;
+  right: clamp(18px, 3vw, 46px);
+  bottom: clamp(18px, 3vw, 38px);
+  z-index: 12;
+  max-width: min(360px, calc(100% - 36px));
+  padding: 10px 13px;
+  border: 1px solid rgba(199, 174, 109, .42);
+  border-radius: 10px;
+  background: rgba(6, 10, 17, .88);
+  color: rgba(235, 230, 216, .88);
+  font: 600 11px/1.45 system-ui, sans-serif;
+  letter-spacing: .04em;
+  backdrop-filter: blur(12px);
+}
+.mercury-texture-warning[hidden] { display: none; }
