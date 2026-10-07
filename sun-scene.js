@@ -162,11 +162,12 @@ window.SunScene = class SunScene {
     this.travelCoveredFired = false;
     this.travelCompleteFired = false;
     this.travelMercuryStartRotation = 0.62;
-    this.solarEvent = { state: "cooldown", stateAt: 0, nextAt: 6.8, strength: 0, serial: 0, region: 0 };
-    this.regionActivity = [.48, .66, .39, .57];
+    this.solarEvent = { state: "cooldown", stateAt: 0, nextAt: 4.8, strength: 0, serial: 0, region: 0 };
+    this.regionActivity = [.62, .78, .55, .69, .48, .74, .58, .66];
     this.particleCursor = 0;
     this.lastParticleSpawn = 0;
     this.lastAmbientParticleSpawn = 0;
+    this.lastSecondaryBurst = 0;
 
     this.caption.inert = true;
     this.exploration.inert = true;
@@ -275,101 +276,162 @@ window.SunScene = class SunScene {
       new THREE.Vector3(-.49, .29, .82).normalize(),
       new THREE.Vector3(.43, -.27, .86).normalize(),
       new THREE.Vector3(.08, .57, .82).normalize(),
-      new THREE.Vector3(.58, .24, .78).normalize()
+      new THREE.Vector3(.58, .24, .78).normalize(),
+      new THREE.Vector3(-.18, -.58, .79).normalize(),
+      new THREE.Vector3(-.66, -.08, .75).normalize(),
+      new THREE.Vector3(.31, .49, .815).normalize(),
+      new THREE.Vector3(-.34, .55, .76).normalize()
     ];
 
     const photosphereMaterial = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
         uFlare: { value: 0 },
-        uActivity: { value: 0.52 },
-        uRegionStrengths: { value: new THREE.Vector4(...this.regionActivity) },
+        uActivity: { value: 0.68 },
+        uRegionStrengthsA: { value: new THREE.Vector4(...this.regionActivity.slice(0, 4)) },
+        uRegionStrengthsB: { value: new THREE.Vector4(...this.regionActivity.slice(4, 8)) },
         uFlareDirection: { value: this.solarActiveDirections[0].clone() }
       },
       toneMapped: false,
       vertexShader: `varying vec3 vWorldNormal; varying vec3 vWorld; varying vec2 vUv;
         void main(){ vWorldNormal=normalize(mat3(modelMatrix)*normal); vUv=uv; vec4 world=modelMatrix*vec4(position,1.0); vWorld=world.xyz; gl_Position=projectionMatrix*viewMatrix*world; }`,
-      fragmentShader: `precision highp float; varying vec3 vWorldNormal; varying vec3 vWorld; varying vec2 vUv; uniform float uTime; uniform float uFlare; uniform float uActivity; uniform vec4 uRegionStrengths; uniform vec3 uFlareDirection;
+      fragmentShader: `precision highp float; varying vec3 vWorldNormal; varying vec3 vWorld; varying vec2 vUv; uniform float uTime; uniform float uFlare; uniform float uActivity; uniform vec4 uRegionStrengthsA; uniform vec4 uRegionStrengthsB; uniform vec3 uFlareDirection;
         float hash(vec3 p){ p=fract(p*.3183099+.1); p*=17.; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
         float noise(vec3 p){ vec3 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(mix(hash(i+vec3(0,0,0)),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z); }
         float fbm4(vec3 p){ float v=0.; float a=.53; for(int i=0;i<4;i++){v+=a*noise(p); p=p*2.07+vec3(3.7,1.9,5.3); a*=.48;} return v; }
+        float fbm5(vec3 p){ float v=0.; float a=.52; for(int i=0;i<5;i++){v+=a*noise(p); p=p*2.03+vec3(4.1,2.3,5.9); a*=.49;} return v; }
         mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
         vec3 driftDirection(vec3 d,float yaw,float pitch){d.xz=rot(yaw)*d.xz;d.yz=rot(pitch)*d.yz;return normalize(d);}
-        float regionMask(vec3 n,vec3 d,float edge,float wobble,float phase){float irregular=(fbm4(n*11.0+vec3(phase,-phase*.63,phase*.37))-.48)*wobble;return smoothstep(edge,edge+.055,dot(n,d)+irregular);}
+        float regionMask(vec3 n,vec3 d,float edge,float wobble,float phase){float irregular=(fbm4(n*10.7+vec3(phase,-phase*.63,phase*.37))-.48)*wobble;return smoothstep(edge,edge+.060,dot(n,d)+irregular);}
+        float contour(float v,float bands,float width){float f=abs(fract(v*bands)-.5);return 1.0-smoothstep(width,width*2.5,f);}
         void main(){
           vec3 n=normalize(vWorldNormal); float t=uTime;
 
-          float slowA=fbm4(n*3.1+vec3(t*.0048,-t*.0031,t*.0023));
-          float slowB=fbm4(n*6.4+vec3(-t*.0062,t*.0047,-t*.0036)+slowA*1.45);
+          float slowA=fbm5(n*2.7+vec3(t*.0052,-t*.0034,t*.0026));
+          float slowB=fbm4(n*5.7+vec3(-t*.0071,t*.0051,-t*.0038)+slowA*1.7);
           vec3 flowVec=vec3(
-            fbm4(n*5.2+vec3(7.1,t*.003,-3.4)),
-            fbm4(n*5.2+vec3(-2.8,5.7,-t*.0037)),
-            fbm4(n*5.2+vec3(t*.0024,-6.3,2.1))
+            fbm4(n*4.7+vec3(7.1,t*.0042,-3.4)),
+            fbm4(n*4.9+vec3(-2.8,5.7,-t*.0047)),
+            fbm4(n*5.1+vec3(t*.0033,-6.3,2.1))
           )-.5;
-          vec3 flow=normalize(n+flowVec*.105+(slowA-.5)*.050+(slowB-.5)*.028);
+          vec3 warped=normalize(n+flowVec*.165+(slowA-.5)*.072+(slowB-.5)*.045);
 
-          vec3 q=flow*17.5+flowVec*2.35;
-          float convectA=fbm4(q+vec3(t*.017,-t*.011,t*.008));
-          float convectB=fbm4(q*1.82+vec3(-t*.024,t*.017,-t*.012)+slowA*1.7);
-          float convectC=fbm4(q*3.65+vec3(t*.032,-t*.026,t*.019));
-          float convection=clamp(convectA*.49+convectB*.34+convectC*.17,0.0,1.0);
+          vec3 q=warped*15.8+flowVec*3.35;
+          float convectA=fbm5(q+vec3(t*.022,-t*.014,t*.010));
+          float convectB=fbm4(q*1.72+vec3(-t*.031,t*.023,-t*.015)+slowA*1.95);
+          float convectC=fbm4(q*3.15+vec3(t*.041,-t*.033,t*.024));
+          float convection=clamp(convectA*.50+convectB*.33+convectC*.17,0.0,1.0);
 
-          float edgeProbe=fbm4(q+vec3(.12,-.09,.07));
-          float localGradient=clamp(abs(convectA-edgeProbe)*5.0,0.0,1.0);
+          float edgeProbe=fbm4(q+vec3(.14,-.11,.08));
+          float localGradient=clamp(abs(convectA-edgeProbe)*5.8,0.0,1.0);
           float folded=1.0-abs(convectB*2.0-1.0);
           float microFold=1.0-abs(convectC*2.0-1.0);
-          float filament=smoothstep(.40,.88,folded)*(.51+.49*convectC);
-          float cellCore=smoothstep(.46,.82,microFold)*(.64+.36*convectB);
-          float lanes=clamp(localGradient*.62+(1.0-filament)*.24+(1.0-cellCore)*.08,0.0,1.0);
-          float granulation=clamp(convection*.65+filament*.25+cellCore*.20-lanes*.18,0.0,1.0);
+          float cellCore=smoothstep(.42,.86,microFold)*(.58+.42*convectB);
+          float lane=smoothstep(.12,.70,localGradient)*(.45+.55*(1.0-folded));
+          float granulation=clamp(convection*.76+cellCore*.24-lane*.15,0.0,1.0);
 
-          vec3 d0=driftDirection(vec3(-.49,.29,.82),.035*sin(t*.021),.022*sin(t*.016+1.1));
-          vec3 d1=driftDirection(vec3(.43,-.27,.86),.030*sin(t*.018+2.4),.026*sin(t*.014+.7));
-          vec3 d2=driftDirection(vec3(.08,.57,.82),.038*sin(t*.015+4.1),.020*sin(t*.019+2.2));
-          vec3 d3=driftDirection(vec3(.58,.24,.78),.032*sin(t*.017+5.0),.024*sin(t*.013+3.5));
+          float streakSourceA=fbm5(warped*5.9+flowVec*2.2+vec3(t*.014,-t*.020,t*.011));
+          float streakSourceB=fbm4(warped*9.7+vec3(-t*.024,t*.015,t*.019)+slowB*2.3);
+          float streakSourceC=fbm4(warped*14.8+flowVec*1.4+vec3(t*.029,t*.011,-t*.023));
+          float streakA=contour(streakSourceA+slowA*.32,5.2,.040);
+          float streakB=contour(streakSourceB+streakSourceA*.28,6.8,.032);
+          float streakC=contour(streakSourceC+streakSourceB*.21,8.4,.025);
+          float lineDistribution=.42+.58*smoothstep(.30,.76,fbm4(warped*3.35+vec3(-t*.010,t*.007,t*.005)+slowA*.9));
+          float plasmaLines=clamp(streakA*.78+streakB*.54+streakC*.32,0.0,1.0);
+          plasmaLines*=lineDistribution*(.44+.56*smoothstep(.34,.80,convection));
+          float lineHalo=clamp(contour(streakSourceA+slowA*.32,5.2,.080)*.48+contour(streakSourceB+streakSourceA*.28,6.8,.060)*.34,0.0,1.0)*lineDistribution;
 
-          float ar0=regionMask(n,d0,.895,.060,t*.004);
-          float ar1=regionMask(n,d1,.910,.058,t*.004+2.3);
-          float ar2=regionMask(n,d2,.925,.053,t*.004+4.7);
-          float ar3=regionMask(n,d3,.918,.056,t*.004+7.1);
-          float activeField=clamp(ar0*uRegionStrengths.x+ar1*uRegionStrengths.y+ar2*uRegionStrengths.z+ar3*uRegionStrengths.w,0.0,1.35);
+          vec3 d0=driftDirection(vec3(-.49,.29,.82),.050*sin(t*.025),.030*sin(t*.018+1.1));
+          vec3 d1=driftDirection(vec3(.43,-.27,.86),.045*sin(t*.021+2.4),.034*sin(t*.017+.7));
+          vec3 d2=driftDirection(vec3(.08,.57,.82),.052*sin(t*.019+4.1),.028*sin(t*.023+2.2));
+          vec3 d3=driftDirection(vec3(.58,.24,.78),.046*sin(t*.022+5.0),.032*sin(t*.016+3.5));
+          vec3 d4=driftDirection(vec3(-.18,-.58,.79),.050*sin(t*.020+1.7),.031*sin(t*.018+5.2));
+          vec3 d5=driftDirection(vec3(-.66,-.08,.75),.047*sin(t*.023+3.6),.027*sin(t*.015+2.8));
+          vec3 d6=driftDirection(vec3(.31,.49,.815),.042*sin(t*.018+5.5),.036*sin(t*.020+4.4));
+          vec3 d7=driftDirection(vec3(-.34,.55,.76),.049*sin(t*.016+.8),.030*sin(t*.024+6.1));
 
-          float spotTexture0=smoothstep(.49,.70,fbm4(n*31.0+vec3(t*.003,-t*.002,t*.001)));
-          float spotTexture1=smoothstep(.51,.72,fbm4(n*34.0+vec3(-t*.002,t*.0025,-t*.0015)+4.3));
-          float pen0=regionMask(n,d0,.930,.047,t*.003+.6)*(.66+.34*spotTexture0)*(.35+.65*uRegionStrengths.x);
-          float pen1=regionMask(n,d1,.944,.044,t*.003+3.1)*(.68+.32*spotTexture1)*(.35+.65*uRegionStrengths.y);
-          float pen2=regionMask(n,d2,.957,.038,t*.003+5.8)*(.72+.28*spotTexture0)*(.28+.55*uRegionStrengths.z);
-          float umbra0=regionMask(n,d0,.966,.030,t*.002+.8)*spotTexture0*(.40+.60*uRegionStrengths.x);
-          float umbra1=regionMask(n,d1,.973,.028,t*.002+3.7)*spotTexture1*(.42+.58*uRegionStrengths.y);
-          float umbra=clamp(umbra0+.80*umbra1,0.0,1.0);
-          float penumbra=clamp(pen0+.78*pen1+.38*pen2-umbra*.55,0.0,1.0);
+          float ar0=regionMask(n,d0,.890,.066,t*.004);
+          float ar1=regionMask(n,d1,.905,.062,t*.004+2.3);
+          float ar2=regionMask(n,d2,.918,.060,t*.004+4.7);
+          float ar3=regionMask(n,d3,.910,.064,t*.004+7.1);
+          float ar4=regionMask(n,d4,.915,.060,t*.004+8.4);
+          float ar5=regionMask(n,d5,.902,.064,t*.004+10.2);
+          float ar6=regionMask(n,d6,.922,.056,t*.004+12.1);
+          float ar7=regionMask(n,d7,.914,.059,t*.004+13.8);
 
-          vec3 deepGold=vec3(1.00,.38,.015);
-          vec3 amber=vec3(1.00,.57,.035);
-          vec3 solarYellow=vec3(1.00,.79,.13);
-          vec3 hotCream=vec3(1.00,.955,.54);
-          vec3 col=mix(deepGold,amber,.44+.28*slowA);
-          col=mix(col,solarYellow,.18+.53*granulation);
-          col=mix(col,hotCream,smoothstep(.70,.96,granulation)*(.13+.11*convectC));
-          col=mix(col,vec3(1.00,.31,.010),lanes*.155);
-          col+=vec3(1.00,.77,.16)*cellCore*.055;
-          col*=.88+.09*slowB+.105*convection;
+          float flash0=.58+.42*sin(t*.83+0.2); float flash1=.60+.40*sin(t*.69+2.1);
+          float flash2=.62+.38*sin(t*.91+4.7); float flash3=.58+.42*sin(t*.74+1.5);
+          float flash4=.64+.36*sin(t*.79+5.8); float flash5=.59+.41*sin(t*.87+3.3);
+          float flash6=.61+.39*sin(t*.72+6.4); float flash7=.60+.40*sin(t*.95+4.0);
+          flash0*=flash0;flash1*=flash1;flash2*=flash2;flash3*=flash3;flash4*=flash4;flash5*=flash5;flash6*=flash6;flash7*=flash7;
 
-          col=mix(col,vec3(.43,.105,.014),penumbra*.50);
-          col=mix(col,vec3(.105,.014,.0025),umbra*.76);
+          float activeField=clamp(
+            ar0*uRegionStrengthsA.x*(.62+.38*flash0)+ar1*uRegionStrengthsA.y*(.62+.38*flash1)+
+            ar2*uRegionStrengthsA.z*(.62+.38*flash2)+ar3*uRegionStrengthsA.w*(.62+.38*flash3)+
+            ar4*uRegionStrengthsB.x*(.62+.38*flash4)+ar5*uRegionStrengthsB.y*(.62+.38*flash5)+
+            ar6*uRegionStrengthsB.z*(.62+.38*flash6)+ar7*uRegionStrengthsB.w*(.62+.38*flash7),0.0,2.15);
+          float eruptionField=clamp(
+            ar0*uRegionStrengthsA.x*pow(flash0,3.2)+ar1*uRegionStrengthsA.y*pow(flash1,3.2)+
+            ar2*uRegionStrengthsA.z*pow(flash2,3.2)+ar3*uRegionStrengthsA.w*pow(flash3,3.2)+
+            ar4*uRegionStrengthsB.x*pow(flash4,3.2)+ar5*uRegionStrengthsB.y*pow(flash5,3.2)+
+            ar6*uRegionStrengthsB.z*pow(flash6,3.2)+ar7*uRegionStrengthsB.w*pow(flash7,3.2),0.0,1.65);
+          float eruptionEdges=clamp(
+            4.0*ar0*(1.0-ar0)*uRegionStrengthsA.x*pow(flash0,4.0)+
+            4.0*ar1*(1.0-ar1)*uRegionStrengthsA.y*pow(flash1,4.0)+
+            4.0*ar2*(1.0-ar2)*uRegionStrengthsA.z*pow(flash2,4.0)+
+            4.0*ar3*(1.0-ar3)*uRegionStrengthsA.w*pow(flash3,4.0)+
+            4.0*ar4*(1.0-ar4)*uRegionStrengthsB.x*pow(flash4,4.0)+
+            4.0*ar5*(1.0-ar5)*uRegionStrengthsB.y*pow(flash5,4.0)+
+            4.0*ar6*(1.0-ar6)*uRegionStrengthsB.z*pow(flash6,4.0)+
+            4.0*ar7*(1.0-ar7)*uRegionStrengthsB.w*pow(flash7,4.0),0.0,1.6);
+
+          float spotTexture0=smoothstep(.47,.70,fbm4(n*30.0+vec3(t*.003,-t*.002,t*.001)));
+          float spotTexture1=smoothstep(.49,.72,fbm4(n*35.0+vec3(-t*.002,t*.0025,-t*.0015)+4.3));
+          float spotTexture2=smoothstep(.51,.74,fbm4(n*32.0+vec3(t*.0016,t*.0011,-t*.0021)+7.8));
+          float pen0=regionMask(n,d0,.934,.046,t*.003+.6)*(.62+.38*spotTexture0)*(.30+.70*uRegionStrengthsA.x);
+          float pen1=regionMask(n,d1,.947,.043,t*.003+3.1)*(.64+.36*spotTexture1)*(.30+.70*uRegionStrengthsA.y);
+          float pen4=regionMask(n,d4,.952,.041,t*.003+5.8)*(.66+.34*spotTexture2)*(.26+.62*uRegionStrengthsB.x);
+          float pen5=regionMask(n,d5,.958,.038,t*.003+8.2)*(.68+.32*spotTexture0)*(.24+.58*uRegionStrengthsB.y);
+          float umbra0=regionMask(n,d0,.970,.029,t*.002+.8)*spotTexture0*(.38+.62*uRegionStrengthsA.x);
+          float umbra1=regionMask(n,d1,.976,.027,t*.002+3.7)*spotTexture1*(.40+.60*uRegionStrengthsA.y);
+          float umbra4=regionMask(n,d4,.978,.025,t*.002+6.3)*spotTexture2*(.34+.56*uRegionStrengthsB.x);
+          float umbra=clamp(umbra0+.78*umbra1+.58*umbra4,0.0,1.0);
+          float penumbra=clamp(pen0+.78*pen1+.52*pen4+.38*pen5-umbra*.48,0.0,1.0);
+
+          vec3 deepOrange=vec3(1.00,.105,.0025);
+          vec3 hotOrange=vec3(1.00,.235,.006);
+          vec3 goldenOrange=vec3(1.00,.405,.016);
+          vec3 hotGold=vec3(1.00,.625,.065);
+          vec3 whiteGold=vec3(1.00,.865,.34);
+
+          vec3 col=mix(deepOrange,hotOrange,.42+.30*slowA);
+          col=mix(col,goldenOrange,.28+.50*granulation);
+          col=mix(col,hotGold,smoothstep(.58,.91,granulation)*(.22+.14*convectC));
+          col=mix(col,vec3(1.00,.285,.004),lane*.13);
+          col*=.94+.07*slowB+.11*convection;
+
+          col+=vec3(1.00,.46,.018)*lineHalo*(.075+.065*uActivity);
+          col+=vec3(1.00,.74,.105)*plasmaLines*(.17+.14*uActivity);
+          col+=whiteGold*pow(plasmaLines,2.6)*(.050+.050*uActivity);
+
+          col=mix(col,vec3(.50,.105,.006),penumbra*.48);
+          col=mix(col,vec3(.125,.013,.0018),umbra*.72);
 
           float facing=max(dot(n,normalize(cameraPosition-vWorld)),0.0);
-          float limb=.85+.17*pow(facing,.42);
+          float limb=.88+.14*pow(facing,.38);
           col*=limb;
-          col=mix(col,vec3(1.00,.55,.045),(1.0-facing)*.072);
+          col=mix(col,vec3(1.00,.39,.014),(1.0-facing)*.095);
 
-          float faculae=smoothstep(.56,.79,fbm4(flow*19.0+vec3(t*.014,-t*.011,t*.008)))*pow(1.0-facing,.58)*(1.0-umbra);
-          col+=vec3(1.00,.89,.40)*faculae*(.045+.055*uActivity);
-          col+=vec3(1.00,.91,.48)*activeField*(.048+.085*uActivity)*(1.0-umbra*.65);
+          float faculae=smoothstep(.55,.79,fbm4(warped*18.0+vec3(t*.018,-t*.013,t*.010)))*pow(1.0-facing,.54)*(1.0-umbra);
+          col+=vec3(1.00,.71,.12)*faculae*(.060+.070*uActivity);
+          col+=vec3(1.00,.64,.055)*activeField*(.085+.135*uActivity)*(1.0-umbra*.58);
+          col+=whiteGold*pow(activeField*.62,2.0)*(.040+.060*uActivity);
+          col+=vec3(1.00,.93,.48)*eruptionField*(.075+.115*uActivity);
+          col+=vec3(1.00,.78,.16)*eruptionEdges*(.11+.14*uActivity);
 
-          float flareCore=smoothstep(.968,.997,dot(n,normalize(uFlareDirection))+(fbm4(n*26.0+vec3(t*.015))-.48)*.024);
-          float flareHalo=smoothstep(.905,.982,dot(n,normalize(uFlareDirection))+(fbm4(n*10.0-vec3(t*.007))-.48)*.034);
-          col+=vec3(1.00,.985,.76)*(flareCore*.76+flareHalo*.19)*uFlare;
+          float flareCore=smoothstep(.961,.997,dot(n,normalize(uFlareDirection))+(fbm4(n*25.0+vec3(t*.021))-.48)*.030);
+          float flareHalo=smoothstep(.888,.982,dot(n,normalize(uFlareDirection))+(fbm4(n*10.0-vec3(t*.009))-.48)*.044);
+          col+=vec3(1.00,.975,.62)*(flareCore*.98+flareHalo*.28)*uFlare;
 
           col=clamp(col,vec3(0.0),vec3(1.0));
           gl_FragColor=vec4(col,1.0);
@@ -386,15 +448,15 @@ window.SunScene = class SunScene {
     this.chromosphere = new THREE.Mesh(new THREE.SphereGeometry(1.018, 96, 64), new THREE.ShaderMaterial({
       uniforms: { uTime: { value: 0 }, uFlare: { value: 0 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false,
       vertexShader: `varying vec3 vWorldNormal; varying vec3 vWorld; void main(){vWorldNormal=normalize(mat3(modelMatrix)*normal); vec4 w=modelMatrix*vec4(position,1.); vWorld=w.xyz; gl_Position=projectionMatrix*viewMatrix*w;}`,
-      fragmentShader: `varying vec3 vWorldNormal; varying vec3 vWorld; uniform float uTime; uniform float uFlare; void main(){float rim=pow(1.-max(dot(normalize(vWorldNormal),normalize(cameraPosition-vWorld)),0.),3.0); float pulse=.80+.12*sin(uTime*.32+vWorldNormal.y*21.); gl_FragColor=vec4(1.0,.66,.16,rim*(.115+.070*pulse+.050*uFlare));\n#include <colorspace_fragment>\n}`
+      fragmentShader: `varying vec3 vWorldNormal; varying vec3 vWorld; uniform float uTime; uniform float uFlare; void main(){float rim=pow(1.-max(dot(normalize(vWorldNormal),normalize(cameraPosition-vWorld)),0.),3.0); float pulse=.76+.18*sin(uTime*.42+vWorldNormal.y*21.); gl_FragColor=vec4(1.0,.43,.045,rim*(.175+.105*pulse+.075*uFlare));\n#include <colorspace_fragment>\n}`
     }));
     this.sunGroup.add(this.chromosphere);
 
-    this.corona = this.createCoronaMesh(THREE, 4.55, 0.18, 1.0);
+    this.corona = this.createCoronaMesh(THREE, 4.55, 0.26, 1.0);
     this.corona.position.z = -0.12;
     this.corona.renderOrder = -2;
     this.scene.add(this.corona);
-    this.coronaOuter = this.createCoronaMesh(THREE, 5.85, 0.072, 2.37);
+    this.coronaOuter = this.createCoronaMesh(THREE, 5.85, 0.105, 2.37);
     this.coronaOuter.position.z = -0.18;
     this.coronaOuter.renderOrder = -3;
     this.scene.add(this.coronaOuter);
@@ -421,18 +483,45 @@ window.SunScene = class SunScene {
       transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending, toneMapped: false,
       vertexShader: `varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
       fragmentShader: `precision highp float; varying vec2 vUv; uniform float uTime; uniform float uOpacity; uniform float uSeed; uniform float uFlare;
-        float h(float x){return fract(sin(x*127.1+uSeed*91.7)*43758.5453);} void main(){vec2 p=vUv-.5; float r=length(p)*2.; float a=atan(p.y,p.x); if(r<.405||r>1.) discard; float bend=.18*sin(a*2.0-uTime*.012+uSeed)+.07*sin(a*7.0+uTime*.019); float wave=sin(a*5.0+bend+uSeed*2.1+uTime*.041)*.5+.5; float wave2=sin(a*9.0-bend*1.4-uTime*.027+uSeed*4.7)*.5+.5; float wave3=sin(a*14.0+uTime*.018+uSeed*7.3)*.5+.5; float streams=pow(.18+.82*wave,3.4)*.49+pow(.16+.84*wave2,4.5)*.34+pow(.22+.78*wave3,5.2)*.17; float asym=.62+.22*sin(a*2.1+uSeed+uTime*.013)+.16*sin(a*3.7-uTime*.009+uSeed*.7); float radialRipple=1.0+.028*sin(a*6.0-uTime*.021+uSeed*3.0); float fall=pow(1.-smoothstep(.40,1.,r/radialRipple),1.72); float inner=smoothstep(.40,.485,r); float alpha=inner*fall*(.16+.84*streams)*clamp(asym,.34,1.0)*uOpacity; alpha*=1.+uFlare*.16; float radial=clamp((r-.4)*1.72,0.,1.); vec3 col=mix(vec3(1.,.95,.67),vec3(1.,.42,.03),radial); gl_FragColor=vec4(col,alpha);\n#include <colorspace_fragment>\n}`
+        float h(float x){return fract(sin(x*127.1+uSeed*91.7)*43758.5453);}
+        void main(){
+          vec2 p=vUv-.5; float r=length(p)*2.; float a=atan(p.y,p.x); if(r<.395||r>1.) discard;
+          float bend=.22*sin(a*2.0-uTime*.018+uSeed)+.10*sin(a*7.0+uTime*.026);
+          float wave=sin(a*5.0+bend+uSeed*2.1+uTime*.058)*.5+.5;
+          float wave2=sin(a*9.0-bend*1.6-uTime*.041+uSeed*4.7)*.5+.5;
+          float wave3=sin(a*15.0+uTime*.027+uSeed*7.3)*.5+.5;
+          float streams=pow(.13+.87*wave,3.0)*.46+pow(.12+.88*wave2,4.0)*.35+pow(.17+.83*wave3,5.0)*.19;
+          float hotA=pow(.5+.5*sin(a*3.0-uTime*.31+uSeed*1.7),5.0)*(.55+.45*sin(uTime*.77+uSeed));
+          float hotB=pow(.5+.5*sin(a*5.0+uTime*.23+uSeed*3.3),7.0)*(.58+.42*sin(uTime*.63+uSeed*2.1));
+          float hotC=pow(.5+.5*sin(a*8.0-uTime*.18+uSeed*5.1),9.0)*(.60+.40*sin(uTime*.91+uSeed*.8));
+          float localHeat=clamp(hotA*.58+hotB*.40+hotC*.28,0.0,1.35);
+          float asym=.58+.24*sin(a*2.1+uSeed+uTime*.021)+.18*sin(a*3.7-uTime*.015+uSeed*.7);
+          float radialRipple=1.0+.035*sin(a*6.0-uTime*.032+uSeed*3.0)+.018*sin(a*11.0+uTime*.023);
+          float fall=pow(1.-smoothstep(.39,1.,r/radialRipple),1.58);
+          float inner=smoothstep(.39,.475,r);
+          float shimmer=.86+.14*sin(uTime*.64+a*13.0+uSeed*2.0);
+          float alpha=inner*fall*(.12+.88*streams)*clamp(asym,.28,1.1)*uOpacity*shimmer;
+          alpha*=1.0+localHeat*.95+uFlare*.32;
+          float radial=clamp((r-.39)*1.76,0.,1.);
+          vec3 col=mix(vec3(1.,.94,.48),vec3(1.,.28,.012),radial);
+          col=mix(col,vec3(1.,.52,.028),clamp(localHeat*.62,0.0,1.0));
+          gl_FragColor=vec4(col,alpha);
+          #include <colorspace_fragment>
+        }`
     });
     return new THREE.Mesh(geometry, material);
   }
 
   createProminences(THREE) {
     const specs = [
-      { a: -2.18, span: .54, h: .28, z: .035, width: .022, phase: .4, region: 0 },
-      { a: -.82, span: .31, h: .15, z: -.025, width: .013, phase: 5.3, region: 2 },
-      { a: .56, span: .45, h: .22, z: .050, width: .018, phase: 2.2, region: 1 },
-      { a: 1.72, span: .27, h: .13, z: .018, width: .012, phase: 7.0, region: 3 },
-      { a: 2.42, span: .34, h: .17, z: -.015, width: .014, phase: 4.1, region: 2 }
+      { a: -2.48, span: .46, h: .235, z: .038, width: .030, phase: .4, region: 0 },
+      { a: -1.72, span: .25, h: .135, z: -.018, width: .018, phase: 6.4, region: 5 },
+      { a: -1.02, span: .35, h: .185, z: -.028, width: .023, phase: 5.3, region: 4 },
+      { a: -.36, span: .22, h: .120, z: .028, width: .017, phase: 8.1, region: 2 },
+      { a: .48, span: .42, h: .220, z: .052, width: .028, phase: 2.2, region: 1 },
+      { a: 1.22, span: .28, h: .145, z: .018, width: .019, phase: 7.0, region: 6 },
+      { a: 1.92, span: .38, h: .200, z: -.012, width: .024, phase: 4.1, region: 3 },
+      { a: 2.58, span: .27, h: .150, z: .026, width: .019, phase: 9.2, region: 7 }
     ];
     this.prominences = specs.map((spec, index) => this.createProminenceRibbon(THREE, spec, index));
   }
@@ -447,10 +536,12 @@ window.SunScene = class SunScene {
     const a1 = spec.a + spec.span * .5;
     for (let i = 0; i <= segments; i++) {
       const t = i / segments;
-      const arch = Math.pow(Math.sin(Math.PI * t), 1.08);
-      const angle = a0 + (a1 - a0) * t;
-      const ripple = (Math.sin(t * 17.0 + spec.phase) * .010 + Math.sin(t * 31.0 + spec.phase * 1.7) * .004) * arch;
-      const radius = 1.007 + spec.h * arch + ripple;
+      const baseArch = Math.pow(Math.sin(Math.PI * t), 1.08);
+      const arch = baseArch * (0.84 + .11 * Math.sin(t * 8.0 + spec.phase) + .05 * Math.sin(t * 19.0 + spec.phase * 1.9));
+      const angleWarp = Math.sin(t * 11.0 + spec.phase) * .012 * baseArch + Math.sin(t * 27.0 + spec.phase * .8) * .005 * baseArch;
+      const angle = a0 + (a1 - a0) * t + angleWarp;
+      const ripple = (Math.sin(t * 17.0 + spec.phase) * .014 + Math.sin(t * 31.0 + spec.phase * 1.7) * .006) * baseArch;
+      const radius = 1.004 + spec.h * arch + ripple;
       const cx = Math.cos(angle) * radius;
       const cy = Math.sin(angle) * radius;
       const cz = spec.z + Math.sin(Math.PI * t) * .018 + Math.sin(t * 13.0 + spec.phase) * .004 * arch;
@@ -483,8 +574,8 @@ window.SunScene = class SunScene {
     const material = new THREE.ShaderMaterial({
       uniforms: { uTime: { value: 0 }, uPhase: { value: spec.phase }, uStrength: { value: .72 + index * .04 } },
       transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, toneMapped: false,
-      vertexShader: `attribute float aAlong; varying vec2 vUv; varying float vAlong; uniform float uTime; uniform float uPhase; void main(){vUv=uv;vAlong=aAlong;vec3 p=position;float arch=sin(3.14159265*aAlong);float wobble=(sin(aAlong*19.0+uTime*.24+uPhase)*.005+sin(aAlong*37.0-uTime*.17+uPhase)*.0025)*arch;p.xy+=normalize(p.xy)*wobble;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}`,
-      fragmentShader: `precision highp float; varying vec2 vUv; varying float vAlong; uniform float uTime; uniform float uPhase; uniform float uStrength; void main(){float edge=1.0-abs(vUv.y*2.0-1.0);edge=smoothstep(0.0,.78,edge);float taper=pow(max(sin(3.14159265*vAlong),0.0),.58);float pulse=.82+.18*sin(vAlong*15.0-uTime*.21+uPhase);float strands=.72+.28*sin(vAlong*43.0+uTime*.12+uPhase*2.0);float attach=1.0-smoothstep(0.0,.23,min(vAlong,1.0-vAlong));float alpha=edge*taper*pulse*strands*uStrength;vec3 col=mix(vec3(1.0,.22,.018),vec3(1.0,.76,.20),.30+.42*edge+.22*attach);gl_FragColor=vec4(col,alpha*.64);\n#include <colorspace_fragment>\n}`
+      vertexShader: `attribute float aAlong; varying vec2 vUv; varying float vAlong; uniform float uTime; uniform float uPhase; void main(){vUv=uv;vAlong=aAlong;vec3 p=position;float arch=sin(3.14159265*aAlong);float wobble=(sin(aAlong*17.0+uTime*.39+uPhase)*.009+sin(aAlong*31.0-uTime*.27+uPhase)*.0045+sin(aAlong*53.0+uTime*.18+uPhase*2.0)*.0025)*arch;p.xy+=normalize(p.xy)*wobble;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}`,
+      fragmentShader: `precision highp float; varying vec2 vUv; varying float vAlong; uniform float uTime; uniform float uPhase; uniform float uStrength; void main(){float edge=1.0-abs(vUv.y*2.0-1.0);edge=smoothstep(0.0,.76,edge);float taper=pow(max(sin(3.14159265*vAlong),0.0),.52);float pulse=.68+.32*sin(vAlong*14.0-uTime*.36+uPhase);float pulse2=.72+.28*sin(vAlong*29.0+uTime*.21+uPhase*1.7);float strands=.58+.42*sin(vAlong*47.0+uTime*.18+uPhase*2.0);float attach=1.0-smoothstep(0.0,.22,min(vAlong,1.0-vAlong));float core=pow(edge,2.6);float alpha=edge*taper*max(.18,pulse*pulse2)*(.62+.38*strands)*uStrength;vec3 col=mix(vec3(1.0,.16,.006),vec3(1.0,.82,.18),.24+.46*edge+.24*attach);col=mix(col,vec3(1.0,.95,.50),core*.28);gl_FragColor=vec4(col,alpha*.96);\n#include <colorspace_fragment>\n}`
     });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.renderOrder = 3;
@@ -499,15 +590,16 @@ window.SunScene = class SunScene {
     this.prominences.forEach((mesh, i) => {
       const meta = mesh.userData.prominence || { region: i % 4, phase: i * 1.7 };
       const localActivity = this.regionActivity?.[meta.region] ?? .5;
-      const slowCycle = .5 + .5 * Math.sin(this.time * (.074 + i * .0055) + meta.phase * 1.37);
-      const secondCycle = .5 + .5 * Math.sin(this.time * (.033 + i * .0038) + meta.phase * 2.11 + 1.2);
-      const envelope = Math.pow(Math.max(0, slowCycle * .72 + secondCycle * .28), 1.35);
-      const eventBoost = this.solarEvent.region === meta.region ? flareStrength * .20 : 0;
-      const strength = (.12 + .66 * envelope * (.48 + .52 * localActivity) + eventBoost) * (1 - .14 * blend);
+      const slowCycle = .5 + .5 * Math.sin(this.time * (.095 + i * .0070) + meta.phase * 1.37);
+      const secondCycle = .5 + .5 * Math.sin(this.time * (.047 + i * .0049) + meta.phase * 2.11 + 1.2);
+      const sparkCycle = .5 + .5 * Math.sin(this.time * (.21 + i * .013) + meta.phase * 3.7);
+      const envelope = Math.pow(Math.max(0, slowCycle * .55 + secondCycle * .27 + sparkCycle * .18), 1.18);
+      const eventBoost = this.solarEvent.region === meta.region ? flareStrength * .34 : 0;
+      const strength = (.16 + .88 * envelope * (.48 + .58 * localActivity) + eventBoost) * (1 - .12 * blend);
       mesh.material.uniforms.uTime.value = this.time;
       mesh.material.uniforms.uStrength.value = strength;
-      mesh.rotation.z = .018 * Math.sin(this.time * (.018 + i * .002) + meta.phase);
-      const radialBreath = 1 + .018 * Math.sin(this.time * (.072 + i * .006) + meta.phase * 1.8) * (.35 + .65 * envelope);
+      mesh.rotation.z = .028 * Math.sin(this.time * (.028 + i * .0028) + meta.phase);
+      const radialBreath = 1 + .032 * Math.sin(this.time * (.095 + i * .007) + meta.phase * 1.8) * (.35 + .65 * envelope);
       mesh.scale.set(radialBreath, radialBreath, 1);
       mesh.visible = strength > .07;
     });
@@ -515,7 +607,7 @@ window.SunScene = class SunScene {
 
   createParticleSystem(THREE) {
     const high = window.innerWidth > 900 && (navigator.deviceMemory || 8) >= 6;
-    this.particleCount = high ? 320 : window.innerWidth <= 700 ? 120 : 210;
+    this.particleCount = high ? 440 : window.innerWidth <= 700 ? 150 : 280;
     const positions = new Float32Array(this.particleCount * 3);
     const life = new Float32Array(this.particleCount);
     const size = new Float32Array(this.particleCount);
@@ -528,8 +620,8 @@ window.SunScene = class SunScene {
     geometry.setAttribute("aSize", new THREE.BufferAttribute(size,1));
     const material = new THREE.ShaderMaterial({
       uniforms: { uPixelRatio: { value: Math.min(window.devicePixelRatio||1,2) } }, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, toneMapped:false,
-      vertexShader:`attribute float aLife; attribute float aSize; varying float vLife; uniform float uPixelRatio; void main(){vLife=aLife; vec4 mv=modelViewMatrix*vec4(position,1.); gl_PointSize=(2.2+4.8*aSize)*uPixelRatio*(3.5/max(-mv.z,1.)); gl_Position=projectionMatrix*mv;}`,
-      fragmentShader:`varying float vLife; void main(){vec2 q=gl_PointCoord-.5; float d=length(q); if(d>.5)discard; float a=smoothstep(.5,.08,d)*smoothstep(0.,.18,vLife)*smoothstep(1.,.55,vLife); vec3 c=mix(vec3(1.,.18,.018),vec3(1.,.90,.48),vLife); gl_FragColor=vec4(c,a*.82);\n#include <colorspace_fragment>\n}`
+      vertexShader:`attribute float aLife; attribute float aSize; varying float vLife; uniform float uPixelRatio; void main(){vLife=aLife; vec4 mv=modelViewMatrix*vec4(position,1.); gl_PointSize=(2.5+5.6*aSize)*uPixelRatio*(3.5/max(-mv.z,1.)); gl_Position=projectionMatrix*mv;}`,
+      fragmentShader:`varying float vLife; void main(){vec2 q=gl_PointCoord-.5; float d=length(q); if(d>.5)discard; float a=smoothstep(.5,.07,d)*smoothstep(0.,.16,vLife)*smoothstep(1.,.48,vLife); vec3 c=mix(vec3(1.,.10,.004),vec3(1.,.88,.30),vLife); c=mix(c,vec3(1.,.97,.67),pow(vLife,3.0)*.28); gl_FragColor=vec4(c,a*.92);\n#include <colorspace_fragment>\n}`
     });
     this.particleGeometry=geometry; this.particles=new THREE.Points(geometry,material); this.particles.renderOrder=4; this.sunGroup.add(this.particles);
   }
@@ -537,18 +629,20 @@ window.SunScene = class SunScene {
   updateSolarMaterial(flareScale = 1, activityScale = 1) {
     if (!this.photosphereMaterial) return;
     const uniforms = this.photosphereMaterial.uniforms;
-    const regionActivity = this.regionActivity || (this.regionActivity = [.48, .66, .39, .57]);
+    const regionActivity = this.regionActivity || (this.regionActivity = [.62, .78, .55, .69, .48, .74, .58, .66]);
     for (let i = 0; i < regionActivity.length; i++) {
-      const waveA = .5 + .5 * Math.sin(this.time * (.082 + i * .009) + i * 1.73);
-      const waveB = .5 + .5 * Math.sin(this.time * (.034 + i * .005) + i * 2.91 + 1.2);
-      let value = .18 + .43 * waveA + .27 * waveB;
-      if (this.solarEvent.region === i) value += this.solarEvent.strength * .34 * activityScale;
+      const waveA = .5 + .5 * Math.sin(this.time * (.105 + i * .0107) + i * 1.73);
+      const waveB = .5 + .5 * Math.sin(this.time * (.047 + i * .0061) + i * 2.91 + 1.2);
+      const waveC = .5 + .5 * Math.sin(this.time * (.231 + i * .014) + i * .83 + 4.1);
+      let value = .24 + .38 * waveA + .24 * waveB + .15 * Math.pow(waveC, 3);
+      if (this.solarEvent.region === i) value += this.solarEvent.strength * .46 * activityScale;
       regionActivity[i] = this.clamp(value);
     }
     uniforms.uTime.value = this.time;
     uniforms.uFlare.value = this.solarEvent.strength * flareScale;
-    uniforms.uActivity.value = .38 + .20 * regionActivity.reduce((a,b)=>a+b,0) / regionActivity.length + .10 * this.solarEvent.strength * activityScale;
-    if (uniforms.uRegionStrengths?.value?.set) uniforms.uRegionStrengths.value.set(regionActivity[0], regionActivity[1], regionActivity[2], regionActivity[3]);
+    uniforms.uActivity.value = .58 + .24 * regionActivity.reduce((a,b)=>a+b,0) / regionActivity.length + .13 * this.solarEvent.strength * activityScale;
+    if (uniforms.uRegionStrengthsA?.value?.set) uniforms.uRegionStrengthsA.value.set(regionActivity[0], regionActivity[1], regionActivity[2], regionActivity[3]);
+    if (uniforms.uRegionStrengthsB?.value?.set) uniforms.uRegionStrengthsB.value.set(regionActivity[4], regionActivity[5], regionActivity[6], regionActivity[7]);
     const direction = this.solarActiveDirections?.[this.solarEvent.region % (this.solarActiveDirections?.length||1)];
     if (direction && uniforms.uFlareDirection?.value?.copy) uniforms.uFlareDirection.value.copy(direction);
   }
@@ -629,22 +723,43 @@ window.SunScene = class SunScene {
   updateSolarEvent(delta) {
     const e=this.solarEvent;
     if(this.motion.matches){ e.strength=0; return; }
-    if(e.state==="cooldown"&&this.time>=e.nextAt){ e.state="prepare"; e.stateAt=this.time; e.region=(e.serial*3+1)%(this.solarActiveDirections?.length||4); }
+    const regionCount=this.solarActiveDirections?.length||8;
+    if(e.state==="cooldown"&&this.time>=e.nextAt){ e.state="prepare"; e.stateAt=this.time; e.region=(e.serial*5+2)%regionCount; }
     if(e.state==="prepare"){
-      e.strength=this.smooth((this.time-e.stateAt)/1.8)*.30;
-      if(this.time-e.stateAt>=1.8){ e.state="flare"; e.stateAt=this.time; this.spawnBurst(e.region, e.serial%4===3?30:16); }
+      e.strength=this.smooth((this.time-e.stateAt)/1.25)*.38;
+      if(this.time-e.stateAt>=1.25){
+        e.state="flare"; e.stateAt=this.time;
+        this.spawnBurst(e.region, e.serial%3===2?36:22);
+        const secondary=(e.region+3+(e.serial%3))%regionCount;
+        this.spawnBurst(secondary, 8+(e.serial%4)*2);
+        this.lastSecondaryBurst=this.time;
+      }
     } else if(e.state==="flare"){
-      const p=this.clamp((this.time-e.stateAt)/1.25); e.strength=.30+.70*Math.sin(p*Math.PI);
-      if(this.time-this.lastParticleSpawn>.20){ this.lastParticleSpawn=this.time; this.spawnBurst(e.region,2+(e.serial%2)); }
+      const p=this.clamp((this.time-e.stateAt)/1.55); e.strength=.38+.78*Math.sin(p*Math.PI);
+      if(this.time-this.lastParticleSpawn>.14){
+        this.lastParticleSpawn=this.time;
+        this.spawnBurst(e.region,3+(e.serial%3));
+      }
+      if(this.time-this.lastSecondaryBurst>.48){
+        this.lastSecondaryBurst=this.time;
+        const secondary=(e.region+2+Math.floor(this.time*1.7)%5)%regionCount;
+        this.spawnBurst(secondary,2+(e.serial%2));
+      }
       if(p>=1){ e.state="decay"; e.stateAt=this.time; }
     } else if(e.state==="decay"){
-      e.strength=(1-this.smooth((this.time-e.stateAt)/2.6))*.28;
-      if(this.time-e.stateAt>=2.6){ e.state="cooldown"; e.stateAt=this.time; e.strength=0; e.serial++; e.nextAt=this.time+12.5+(e.serial%4)*3.7; }
+      e.strength=(1-this.smooth((this.time-e.stateAt)/2.15))*.36;
+      if(this.time-e.stateAt>=2.15){ e.state="cooldown"; e.stateAt=this.time; e.strength=0; e.serial++; e.nextAt=this.time+6.6+(e.serial%4)*1.9; }
     }
-    if(e.state==="cooldown" && this.time-this.lastAmbientParticleSpawn>1.55){
-      const idx=Math.floor(this.time/1.55)%(this.solarActiveDirections?.length||4);
-      const activity=this.regionActivity?.[idx] ?? .4;
-      if(activity>.54) this.spawnBurst(idx, activity>.76?2:1);
+    if(this.time-this.lastAmbientParticleSpawn>.78){
+      const base=Math.floor(this.time/.78);
+      const idx=(base*3+e.serial*2)%regionCount;
+      const activity=this.regionActivity?.[idx] ?? .55;
+      if(activity>.46) this.spawnBurst(idx, activity>.78?3:activity>.62?2:1);
+      if(base%4===1){
+        const secondary=(idx+4+(base%3))%regionCount;
+        const secondActivity=this.regionActivity?.[secondary] ?? .5;
+        if(secondActivity>.57) this.spawnBurst(secondary,1+(secondActivity>.80?2:0));
+      }
       this.lastAmbientParticleSpawn=this.time;
     }
     this.updateParticles(delta);
@@ -658,14 +773,14 @@ window.SunScene = class SunScene {
       const i=this.particleCursor++%this.particleCount; const seed=(i+1)*(this.solarEvent.serial+3)*12.9898+n*7.31; const r=Math.sin(seed)*43758.5453, r2=Math.sin(seed*1.73)*19171.17; const j1=r-Math.floor(r)-.5, j2=r2-Math.floor(r2)-.5;
       const tangent=new this.THREE.Vector3(-base.y,base.x,.18*j1).normalize(); const p=base.clone().multiplyScalar(1.02).addScaledVector(tangent,j1*.08);
       positions[i*3]=p.x; positions[i*3+1]=p.y; positions[i*3+2]=p.z; life[i]=1; size[i]=.45+Math.abs(j2)*.9;
-      this.particleVelocity[i].copy(base).multiplyScalar(.22+.28*Math.abs(j2)).addScaledVector(tangent,j1*.16).add(new this.THREE.Vector3(0,j2*.025,.02*j1));
+      this.particleVelocity[i].copy(base).multiplyScalar(.28+.38*Math.abs(j2)).addScaledVector(tangent,j1*.22).add(new this.THREE.Vector3(0,j2*.035,.026*j1));
     }
     this.particleGeometry.attributes.position.needsUpdate=true; this.particleGeometry.attributes.aLife.needsUpdate=true; this.particleGeometry.attributes.aSize.needsUpdate=true;
   }
 
   updateParticles(delta){
     if(!this.particleGeometry)return; const pos=this.particleGeometry.attributes.position.array, life=this.particleGeometry.attributes.aLife.array; let dirty=false;
-    for(let i=0;i<this.particleCount;i++){ if(life[i]<=0)continue; dirty=true; life[i]=Math.max(0,life[i]-delta*(.20+(i%7)*.008)); const v=this.particleVelocity[i]; const x=pos[i*3],y=pos[i*3+1]; const bend=.035*delta; v.x+=-y*bend; v.y+=x*bend; pos[i*3]+=v.x*delta; pos[i*3+1]+=v.y*delta; pos[i*3+2]+=v.z*delta; if(life[i]<=0){pos[i*3]=pos[i*3+1]=pos[i*3+2]=999;} }
+    for(let i=0;i<this.particleCount;i++){ if(life[i]<=0)continue; dirty=true; life[i]=Math.max(0,life[i]-delta*(.24+(i%7)*.010)); const v=this.particleVelocity[i]; const x=pos[i*3],y=pos[i*3+1]; const bend=.046*delta; v.x+=-y*bend; v.y+=x*bend; pos[i*3]+=v.x*delta; pos[i*3+1]+=v.y*delta; pos[i*3+2]+=v.z*delta; if(life[i]<=0){pos[i*3]=pos[i*3+1]=pos[i*3+2]=999;} }
     if(dirty){this.particleGeometry.attributes.position.needsUpdate=true; this.particleGeometry.attributes.aLife.needsUpdate=true;}
   }
 
@@ -754,7 +869,7 @@ window.SunScene = class SunScene {
     if(reverse&&s.progress>=.20&&!this.travelCoveredFired){this.travelCoveredFired=true;this.travelCallbacks.onCovered?.();}
     if(this.mode==="webgl"){
       this.sunGroup.visible=sunP>.01; this.sunGroup.position.set(sunX,layout.y,0); this.sunGroup.scale.setScalar(sunScale); this.photosphere.rotation.y=.35+this.time*.008; this.updateSolarMaterial(.55,.7); this.updateProminences(.08,this.solarEvent.strength*.55);
-      this.chromosphere.material.uniforms.uTime.value=this.time; this.chromosphere.material.uniforms.uFlare.value=this.solarEvent.strength*.55; this.corona.position.set(sunX,layout.y,-.12); this.corona.scale.setScalar(sunScale); this.corona.material.uniforms.uTime.value=this.time; this.corona.material.uniforms.uFlare.value=this.solarEvent.strength*.55; this.corona.material.uniforms.uOpacity.value=.18*(.45+.55*sunP); this.coronaOuter.position.set(sunX,layout.y,-.18); this.coronaOuter.scale.setScalar(sunScale); this.coronaOuter.material.uniforms.uTime.value=this.time*.78; this.coronaOuter.material.uniforms.uFlare.value=this.solarEvent.strength*.55; this.coronaOuter.material.uniforms.uOpacity.value=.072*(.35+.65*sunP);
+      this.chromosphere.material.uniforms.uTime.value=this.time; this.chromosphere.material.uniforms.uFlare.value=this.solarEvent.strength*.55; this.corona.position.set(sunX,layout.y,-.12); this.corona.scale.setScalar(sunScale); this.corona.material.uniforms.uTime.value=this.time; this.corona.material.uniforms.uFlare.value=this.solarEvent.strength*.55; this.corona.material.uniforms.uOpacity.value=.26*(.45+.55*sunP); this.coronaOuter.position.set(sunX,layout.y,-.18); this.coronaOuter.scale.setScalar(sunScale); this.coronaOuter.material.uniforms.uTime.value=this.time*.78; this.coronaOuter.material.uniforms.uFlare.value=this.solarEvent.strength*.55; this.coronaOuter.material.uniforms.uOpacity.value=.105*(.35+.65*sunP);
       this.travelMercuryGroup.visible=mercuryP>.01; this.travelMercuryGroup.position.set(mercuryX,layout.y,0); this.travelMercuryGroup.scale.setScalar(mercuryScale); this.travelMercury.rotation.set(.09,(reverse?this.travelMercuryStartRotation:.62)+this.time*.014,.12); this.travelMercuryMaterial.opacity=this.clamp(mercuryP); this.travelMercuryMaterial.depthWrite=mercuryP>.98;
       this.camera.position.set(0,0,layout.distance*(1+.42*Math.sin(s.cross*Math.PI))); this.camera.lookAt(0,0,0); this.renderer.toneMappingExposure=1.18+.07*(reverse?s.arrive:1-s.depart*.20); this.renderer.render(this.scene,this.camera);
     } else if(this.mode==="canvas") this.drawCanvasTravel(s,reverse,{sunX,sunScale,mercuryX,mercuryScale,sunP,mercuryP,layout});
@@ -778,18 +893,18 @@ window.SunScene = class SunScene {
     ctx.save();
     ctx.globalAlpha=opacity;
     const corona=ctx.createRadialGradient(x,y,r*.78,x,y,r*1.52);
-    corona.addColorStop(0,"rgba(255,244,170,0)");
-    corona.addColorStop(.36,"rgba(255,225,112,.13)");
-    corona.addColorStop(.64,"rgba(255,161,45,.075)");
-    corona.addColorStop(1,"rgba(255,103,22,0)");
+    corona.addColorStop(0,"rgba(255,226,125,0)");
+    corona.addColorStop(.34,"rgba(255,190,70,.18)");
+    corona.addColorStop(.62,"rgba(255,105,18,.10)");
+    corona.addColorStop(1,"rgba(255,70,8,0)");
     ctx.fillStyle=corona;ctx.beginPath();ctx.arc(x,y,r*1.56,0,Math.PI*2);ctx.fill();
 
     const g=ctx.createRadialGradient(x-r*.14,y-r*.16,r*.03,x,y,r);
-    g.addColorStop(0,"#fff9c7");g.addColorStop(.28,"#ffe96c");g.addColorStop(.66,"#ffc72d");g.addColorStop(.92,"#ffad18");g.addColorStop(1,"#f28c16");
+    g.addColorStop(0,"#ffe07a");g.addColorStop(.20,"#ffb62d");g.addColorStop(.52,"#ff7910");g.addColorStop(.84,"#f84c08");g.addColorStop(1,"#d93605");
     ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.clip();
 
     ctx.globalCompositeOperation="soft-light";
-    for(let i=0;i<78;i++){
+    for(let i=0;i<112;i++){
       const a0=Math.sin((i+5)*12.9898)*43758.5453, b0=Math.sin((i+11)*78.233)*19642.349;
       const fa=a0-Math.floor(a0), fb=b0-Math.floor(b0);
       const baseAng=fa*Math.PI*2+Math.sin(this.time*.021+i*.37)*.045;
@@ -804,12 +919,13 @@ window.SunScene = class SunScene {
       const ex=sx+Math.cos(tang)*length+Math.cos(baseAng)*length*.05;
       const ey=sy+Math.sin(tang)*length+Math.sin(baseAng)*length*.05;
       ctx.quadraticCurveTo(mx,my,ex,ey);
-      ctx.globalAlpha=.045+(i%6)*.012;
-      ctx.strokeStyle=i%5===0?"#ff8a14":i%3===0?"#fff080":"#ffd548";
-      ctx.lineWidth=Math.max(.7,r*(.0021+(i%4)*.00055));ctx.stroke();
+      const flicker=.72+.28*Math.sin(this.time*(.55+(i%7)*.035)+i*1.71);
+      ctx.globalAlpha=(.055+(i%6)*.014)*flicker;
+      ctx.strokeStyle=i%7===0?"#fff1a0":i%3===0?"#ffcf42":"#ff6c0d";
+      ctx.lineWidth=Math.max(.8,r*(.0024+(i%5)*.00065));ctx.stroke();
     }
     ctx.globalCompositeOperation="overlay";
-    for(let i=0;i<28;i++){
+    for(let i=0;i<44;i++){
       const a0=Math.sin((i+41)*41.17)*27182.817, b0=Math.sin((i+17)*19.73)*31415.926;
       const fa=a0-Math.floor(a0), fb=b0-Math.floor(b0), ang=fa*Math.PI*2+this.time*.002*(i%2?1:-1);
       const rad=Math.sqrt(fb)*r*.78, span=.20+(i%7)*.027;
@@ -820,7 +936,8 @@ window.SunScene = class SunScene {
         const px=x+Math.cos(aa)*rr, py=y+Math.sin(aa)*rr;
         if(j===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
       }
-      ctx.globalAlpha=.035+(i%4)*.010;ctx.strokeStyle=i%2?"#fff5a8":"#ff7f12";ctx.lineWidth=Math.max(1,r*.0042);ctx.stroke();
+      const pulse=.62+.38*Math.sin(this.time*(.38+(i%5)*.047)+i*.91);
+      ctx.globalAlpha=(.045+(i%5)*.012)*pulse;ctx.strokeStyle=i%3?"#ffbe31":"#fff0a0";ctx.lineWidth=Math.max(1,r*(.0040+(i%3)*.0009));ctx.stroke();
     }
 
     ctx.globalCompositeOperation="source-over";
@@ -833,7 +950,7 @@ window.SunScene = class SunScene {
     ctx.restore();
 
     ctx.save();ctx.globalCompositeOperation="lighter";ctx.shadowColor="#ffd45f";ctx.shadowBlur=r*.020;
-    const arcs=[[-2.12,.58,.30],[.57,.46,.23],[2.33,.35,.17]];
+    const arcs=[[-2.45,.62,.34],[-1.03,.40,.22],[.48,.53,.29],[1.89,.45,.25],[2.58,.30,.18]];
     for(let i=0;i<arcs.length;i++){const [a,span,hh]=arcs[i];for(let strand=0;strand<3;strand++){ctx.beginPath();const steps=54;for(let j=0;j<=steps;j++){const t=j/steps,arch=Math.pow(Math.sin(Math.PI*t),1.08),ang=a-span*.5+span*t;const ripple=(Math.sin(t*17+i*2.1+strand*.8+this.time*.05)*.009+Math.sin(t*31+i-this.time*.03)*.004)*arch;const rr=r*(1+hh*arch+ripple)+(strand-1)*r*.005*arch;const px=x+Math.cos(ang)*rr,py=y+Math.sin(ang)*rr;if(j===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}ctx.globalAlpha=.14+strand*.055;ctx.strokeStyle=strand===1?"#ffd15c":"#ff7624";ctx.lineWidth=Math.max(.65,r*(.0028+strand*.0013));ctx.stroke();}}
     ctx.restore();
   }
