@@ -262,18 +262,19 @@
       this.group = new THREE.Group();
       this.scene.add(this.group);
 
-      const texture = new THREE.Texture(surfaceImage);
-      texture.colorSpace = THREE.SRGBColorSpace;
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.ClampToEdgeWrapping;
-      texture.needsUpdate = true;
-      this.surfaceTexture = texture;
-      this.material = new THREE.MeshStandardMaterial({
-        map: texture,
-        roughness: 1,
-        metalness: 0,
-        color: 0xc9825e
-      });
+      // The orbit renderer only has a 2K global color map. On the surface that
+      // means roughly six source color texels per geographic degree, which is the
+      // main reason the previous build looked muddy up close. Cache that map once,
+      // then build per-tile albedo at MOLA resolution so real topographic changes
+      // can restore local contrast without inventing fake elevation.
+      this.sourceCanvas = document.createElement("canvas");
+      this.sourceCanvas.width = surfaceImage.width || 2048;
+      this.sourceCanvas.height = surfaceImage.height || 1024;
+      const sourceContext = this.sourceCanvas.getContext("2d", { willReadFrequently: true });
+      sourceContext.drawImage(surfaceImage, 0, 0, this.sourceCanvas.width, this.sourceCanvas.height);
+      this.sourcePixels = sourceContext.getImageData(0, 0, this.sourceCanvas.width, this.sourceCanvas.height).data;
+      this.sourceWidth = this.sourceCanvas.width;
+      this.sourceHeight = this.sourceCanvas.height;
     }
 
     setOrigin(latitude, longitudeEast) {
@@ -373,6 +374,82 @@
       this.ensureAround(latitude, signedLongitude, { requiredRadius: 0 }).catch(() => {});
     }
 
+    createTileAlbedo(tile) {
+      const THREE = this.THREE;
+      const size = TILE_SIZE;
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      const context = canvas.getContext("2d");
+      const image = context.createImageData(size, size);
+      const output = image.data;
+      const heights = tile.heights;
+      const baseSample = new Float32Array(3);
+
+      const sampleSource = (latitude, signedLongitude) => {
+        const u = ((signedLongitude + 180) / 360 + 1) % 1;
+        const v = clamp((90 - latitude) / 180, 0, 0.999999);
+        const px = u * (this.sourceWidth - 1);
+        const py = v * (this.sourceHeight - 1);
+        const x0 = Math.floor(px);
+        const y0 = Math.floor(py);
+        const x1 = (x0 + 1) % this.sourceWidth;
+        const y1 = Math.min(this.sourceHeight - 1, y0 + 1);
+        const tx = px - x0;
+        const ty = py - y0;
+        const i00 = (y0 * this.sourceWidth + x0) * 4;
+        const i10 = (y0 * this.sourceWidth + x1) * 4;
+        const i01 = (y1 * this.sourceWidth + x0) * 4;
+        const i11 = (y1 * this.sourceWidth + x1) * 4;
+        for (let channel = 0; channel < 3; channel += 1) {
+          const top = lerp(this.sourcePixels[i00 + channel], this.sourcePixels[i10 + channel], tx);
+          const bottom = lerp(this.sourcePixels[i01 + channel], this.sourcePixels[i11 + channel], tx);
+          baseSample[channel] = lerp(top, bottom, ty);
+        }
+      };
+
+      for (let y = 0; y < size; y += 1) {
+        const fy = y / (size - 1);
+        const latitude = tile.latNorth - fy;
+        for (let x = 0; x < size; x += 1) {
+          const fx = x / (size - 1);
+          const signedLongitude = wrapLongitude(tile.lonWest + fx);
+          sampleSource(latitude, signedLongitude);
+          const index = y * size + x;
+          const left = heights[y * size + Math.max(0, x - 1)];
+          const right = heights[y * size + Math.min(size - 1, x + 1)];
+          const up = heights[Math.max(0, y - 1) * size + x];
+          const down = heights[Math.min(size - 1, y + 1) * size + x];
+          const center = heights[index];
+          const localAverage = (left + right + up + down) * 0.25;
+          const curvature = center - localAverage;
+          const slope = Math.hypot(right - left, down - up);
+          const border = x === 0 || y === 0 || x === size - 1 || y === size - 1;
+          const altitudeTone = clamp(center / 12, -0.5, 0.5) * 0.08;
+          const reliefTone = border ? 0 : clamp(curvature * 0.72, -0.13, 0.13);
+          const roughTone = border ? 0 : clamp(slope * 0.10, 0, 0.065);
+          const gain = clamp(1 + altitudeTone + reliefTone - roughTone, 0.78, 1.20);
+          const out = index * 4;
+          output[out] = clamp(baseSample[0] * gain, 0, 255);
+          output[out + 1] = clamp(baseSample[1] * gain, 0, 255);
+          output[out + 2] = clamp(baseSample[2] * gain, 0, 255);
+          output[out + 3] = 255;
+        }
+      }
+
+      context.putImageData(image, 0, 0);
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.wrapS = THREE.ClampToEdgeWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.generateMipmaps = true;
+      texture.anisotropy = this.quality.anisotropy || 4;
+      texture.needsUpdate = true;
+      return texture;
+    }
+
     createTileMesh(tile, segments) {
       const THREE = this.THREE;
       const verticesPerSide = segments + 1;
@@ -395,9 +472,10 @@
           positions[p++] = height;
           positions[p++] = world.z;
 
-          // The existing Mars color map is equirectangular with -180 degrees at U=0.
-          uvs[uv++] = (signedLongitude + 180) / 360;
-          uvs[uv++] = 1 - (90 - latitude) / 180;
+          // Each terrain tile now receives its own MOLA-resolution albedo, so use
+          // local UVs instead of stretching the 2K global Mars texture directly.
+          uvs[uv++] = fx;
+          uvs[uv++] = 1 - fz;
         }
       }
 
@@ -423,17 +501,33 @@
       geometry.setIndex(new THREE.BufferAttribute(indices, 1));
       geometry.computeVertexNormals();
       geometry.computeBoundingSphere();
-      const mesh = new THREE.Mesh(geometry, this.material);
+
+      const tileTexture = this.createTileAlbedo(tile);
+      const material = new THREE.MeshStandardMaterial({
+        map: tileTexture,
+        roughness: 0.94,
+        metalness: 0,
+        color: 0xffffff,
+        dithering: true
+      });
+      const mesh = new THREE.Mesh(geometry, material);
       mesh.frustumCulled = true;
       mesh.userData.molaTile = `${tile.lonWest},${tile.latNorth}`;
+      mesh.userData.surfaceTexture = tileTexture;
       return mesh;
+    }
+
+    disposeMesh(mesh) {
+      mesh.geometry.dispose();
+      mesh.material?.map?.dispose?.();
+      mesh.material?.dispose?.();
     }
 
     prune(desired) {
       for (const [key, entry] of this.meshes) {
         if (desired.has(key)) continue;
         this.group.remove(entry.mesh);
-        entry.mesh.geometry.dispose();
+        this.disposeMesh(entry.mesh);
         this.meshes.delete(key);
       }
     }
@@ -447,7 +541,7 @@
       this.requestGeneration += 1;
       for (const entry of this.meshes.values()) {
         this.group.remove(entry.mesh);
-        entry.mesh.geometry.dispose();
+        this.disposeMesh(entry.mesh);
       }
       this.meshes.clear();
       this.lastCenterTile = "";
@@ -456,8 +550,8 @@
     dispose() {
       this.clearMeshes();
       this.group.removeFromParent();
-      this.material.dispose();
-      this.surfaceTexture.dispose();
+      this.sourcePixels = null;
+      this.sourceCanvas = null;
     }
   }
 
@@ -470,6 +564,7 @@
       this.dragPointer = null;
       this.bound = false;
       this.abortController = null;
+      this.pointerLockSupported = typeof document !== "undefined" && "pointerLockElement" in document;
     }
 
     bind() {
@@ -486,6 +581,8 @@
       viewport.addEventListener("pointerup", event => this.onLookEnd(event), { signal });
       viewport.addEventListener("pointercancel", event => this.onLookEnd(event), { signal });
       viewport.addEventListener("contextmenu", event => event.preventDefault(), { signal });
+      document.addEventListener("mousemove", event => this.onLockedMouseMove(event), { signal });
+      document.addEventListener("pointerlockchange", () => this.onPointerLockChange(), { signal });
 
       this.controller.root.querySelectorAll("[data-mars-control]").forEach(button => {
         button.addEventListener("pointerdown", event => this.onControlStart(event, button), { signal });
@@ -497,9 +594,11 @@
     }
 
     unbind() {
+      if (document.pointerLockElement === this.controller.viewport) document.exitPointerLock?.();
       this.abortController?.abort();
       this.abortController = null;
       this.bound = false;
+      this.controller.root?.classList.remove("is-pointer-locked");
       this.clear();
     }
 
@@ -516,6 +615,11 @@
       event.stopImmediatePropagation();
       if (key === "escape") {
         if (event.repeat) return;
+        if (document.pointerLockElement === this.controller.viewport) {
+          document.exitPointerLock?.();
+          this.clear();
+          return;
+        }
         this.controller.exit();
         return;
       }
@@ -536,7 +640,16 @@
     onLookStart(event) {
       if (!this.isInteractive()) return;
       if (event.target.closest("button, a, [data-mars-ui]")) return;
-      if (event.pointerType === "mouse" && event.button !== 0) return;
+      if (event.pointerType === "mouse") {
+        if (event.button !== 0) return;
+        this.controller.dismissTutorial();
+        if (this.controller.viewport.requestPointerLock) {
+          if (document.pointerLockElement !== this.controller.viewport) {
+            try { this.controller.viewport.requestPointerLock(); } catch {}
+          }
+          return;
+        }
+      }
       this.dragPointer = event.pointerId;
       this.dragPointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
       this.controller.viewport.setPointerCapture?.(event.pointerId);
@@ -551,9 +664,18 @@
       const dy = event.clientY - previous.y;
       previous.x = event.clientX;
       previous.y = event.clientY;
-      const sensitivity = event.pointerType === "touch" ? 0.0036 : 0.0025;
-      this.controller.yaw -= dx * sensitivity;
-      this.controller.pitch = clamp(this.controller.pitch - dy * sensitivity, -1.28, 0.48);
+      this.controller.addLookDelta(dx, dy, event.pointerType === "touch" ? "touch" : "mouse");
+    }
+
+    onLockedMouseMove(event) {
+      if (!this.isInteractive() || document.pointerLockElement !== this.controller.viewport) return;
+      this.controller.addLookDelta(event.movementX || 0, event.movementY || 0, "locked");
+    }
+
+    onPointerLockChange() {
+      const locked = document.pointerLockElement === this.controller.viewport;
+      this.controller.root.classList.toggle("is-pointer-locked", locked);
+      if (!locked) this.keys.clear();
     }
 
     onLookEnd(event) {
@@ -653,11 +775,14 @@
       this.statsClock = 0;
       this.statsFrames = 0;
       this.lowFpsWindows = 0;
+      this.highFpsWindows = 0;
       this.lastGround = 0;
       this.cameraAltitude = 2.8;
       this.speed = 0;
       this.yaw = 0.18;
       this.pitch = -0.28;
+      this.lookYawTarget = this.yaw;
+      this.lookPitchTarget = this.pitch;
       this.velocity = { x: 0, y: 0, z: 0 };
       this.currentLandmark = LANDMARKS[0];
       this.transitionToken = 0;
@@ -678,18 +803,30 @@
 
     detectQuality() {
       const width = window.innerWidth;
-      const height = window.innerHeight;
-      const pixels = width * height * Math.min(window.devicePixelRatio || 1, 2) ** 2;
       const cores = navigator.hardwareConcurrency || 4;
       const memory = navigator.deviceMemory || 4;
       const coarse = window.matchMedia("(pointer: coarse)").matches;
-      if (coarse || width <= 760 || cores <= 4 || memory <= 3 || pixels > 7000000) {
-        return { name: "LOW", radius: 1, nearSegments: 40, midSegments: 24, farSegments: 16, maxDpr: 1.15 };
+
+      // Do not classify a strong high-DPI desktop as LOW simply because DPR makes
+      // its theoretical pixel count large. Quality selection is capability based;
+      // the render-pixel budget below controls the actual resolution separately.
+      if (coarse || width <= 760 || cores <= 4 || memory <= 3) {
+        return { name: "LOW", radius: 1, nearSegments: 56, midSegments: 32, farSegments: 18, maxDpr: 1.25, minDpr: 0.85, supersample: 1, pixelBudget: 2200000, anisotropy: 4 };
       }
-      if (cores >= 8 && memory >= 6 && pixels < 5500000) {
-        return { name: "HIGH", radius: 3, nearSegments: 96, midSegments: 48, farSegments: 24, maxDpr: 1.6 };
+      if (cores >= 8 && memory >= 6) {
+        return { name: "HIGH", radius: 3, nearSegments: 128, midSegments: 64, farSegments: 32, maxDpr: 2, minDpr: 0.9, supersample: 1.18, pixelBudget: 6200000, anisotropy: 16 };
       }
-      return { name: "MEDIUM", radius: 2, nearSegments: 64, midSegments: 32, farSegments: 20, maxDpr: 1.35 };
+      return { name: "MEDIUM", radius: 2, nearSegments: 96, midSegments: 48, farSegments: 24, maxDpr: 1.7, minDpr: 0.88, supersample: 1.08, pixelBudget: 4200000, anisotropy: 8 };
+    }
+
+    calculateIdealDpr() {
+      const width = Math.max(1, this.viewport?.clientWidth || window.innerWidth);
+      const height = Math.max(1, this.viewport?.clientHeight || window.innerHeight);
+      const cssPixels = width * height;
+      const deviceDpr = window.devicePixelRatio || 1;
+      const requested = Math.max(deviceDpr, this.quality.supersample || 1);
+      const budgetDpr = Math.sqrt(this.quality.pixelBudget / cssPixels);
+      return clamp(Math.min(requested, this.quality.maxDpr, budgetDpr), this.quality.minDpr, this.quality.maxDpr);
     }
 
     bindUI() {
@@ -813,25 +950,32 @@
         this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias: this.quality.name !== "LOW" });
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.05;
-        this.currentDpr = Math.min(window.devicePixelRatio || 1, this.quality.maxDpr);
+        this.renderer.toneMappingExposure = 1.02;
+        this.quality.anisotropy = Math.min(this.quality.anisotropy, this.renderer.capabilities.getMaxAnisotropy());
+        this.idealDpr = this.calculateIdealDpr();
+        this.currentDpr = this.idealDpr;
         this.renderer.setPixelRatio(this.currentDpr);
         this.renderer.setClearColor(0xb76f52, 0);
         this.viewport.replaceChildren(canvas);
 
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0xa55f45, this.quality.name === "LOW" ? 0.0054 : 0.0044);
+        this.scene.fog = new THREE.FogExp2(0xa55f45, this.quality.name === "LOW" ? 0.0025 : 0.00175);
         this.camera = new THREE.PerspectiveCamera(this.mobileFov(), 1, 0.035, 850);
         this.camera.rotation.order = "YXZ";
 
-        const sun = new THREE.DirectionalLight(0xffd5af, 3.05);
+        const sun = new THREE.DirectionalLight(0xffd5af, 3.2);
         sun.position.set(-70, 95, 45);
         this.scene.add(sun);
-        const hemi = new THREE.HemisphereLight(0xe2a27a, 0x401b15, 0.72);
+        const hemi = new THREE.HemisphereLight(0xe2a27a, 0x401b15, 0.40);
         this.scene.add(hemi);
-        const fill = new THREE.DirectionalLight(0x8b6a65, 0.22);
+        const fill = new THREE.DirectionalLight(0x8b6a65, 0.12);
         fill.position.set(40, 18, -55);
         this.scene.add(fill);
+
+        this.moveForward = new THREE.Vector3();
+        this.moveRight = new THREE.Vector3();
+        this.moveUp = new THREE.Vector3(0, 1, 0);
+        this.moveIntent = new THREE.Vector3();
 
         this.provider = new MolaTileProvider();
         this.terrain = new TerrainManager(THREE, this.scene, this.provider, this.mars.surface, this.quality);
@@ -858,8 +1002,26 @@
       }
     }
 
+    addLookDelta(dx, dy, source = "mouse") {
+      const sensitivity = source === "touch" ? 0.0034 : source === "locked" ? 0.00175 : 0.0022;
+      this.lookYawTarget -= dx * sensitivity;
+      this.lookPitchTarget = clamp(this.lookPitchTarget - dy * sensitivity, -1.40, 1.20);
+    }
+
+    syncLookTargets() {
+      this.lookYawTarget = this.yaw;
+      this.lookPitchTarget = this.pitch;
+    }
+
+    updateLook(delta) {
+      const response = 1 - Math.exp(-delta * 27);
+      this.yaw += (this.lookYawTarget - this.yaw) * response;
+      this.pitch += (this.lookPitchTarget - this.pitch) * response;
+      this.pitch = clamp(this.pitch, -1.40, 1.20);
+    }
+
     mobileFov() {
-      return window.innerWidth <= 760 ? 70 : 62;
+      return window.innerWidth <= 760 ? 70 : 66;
     }
 
     setLoading(progress, status) {
@@ -957,6 +1119,7 @@
       this.currentLandmark = landmark;
       this.yaw = landmark.heading || 0;
       this.pitch = -0.28;
+      this.syncLookTargets();
       this.camera.position.x = 0;
       this.camera.position.z = 0;
       const ground = this.terrain.getHeightAtWorld(0, 0) ?? 0;
@@ -987,8 +1150,9 @@
       this.statsClock += delta;
       this.statsFrames += 1;
 
-      if (this.state === STATES.EXPLORING) this.updateMovement(delta);
+      if (this.state === STATES.EXPLORING) this.updateLook(delta);
       this.camera.rotation.set(this.pitch, this.yaw, 0);
+      if (this.state === STATES.EXPLORING) this.updateMovement(delta);
       this.renderer.render(this.scene, this.camera);
       this.updateHUD();
       this.adaptResolution();
@@ -1000,29 +1164,44 @@
       const ground = this.terrain.getHeightAtWorld(this.camera.position.x, this.camera.position.z);
       if (ground !== null) this.lastGround = ground;
       const clearance = Math.max(0, this.camera.position.y - this.lastGround);
-      const baseSpeed = clearance < 0.25 ? 0.12
-        : clearance < 1 ? lerp(0.12, 0.7, (clearance - 0.25) / 0.75)
-          : clearance < 8 ? lerp(0.7, 3.8, (clearance - 1) / 7)
-            : clearance < 40 ? lerp(3.8, 13, (clearance - 8) / 32)
-              : 22;
+      const baseSpeed = clearance < 0.25 ? 0.14
+        : clearance < 1 ? lerp(0.14, 0.82, (clearance - 0.25) / 0.75)
+          : clearance < 8 ? lerp(0.82, 4.2, (clearance - 1) / 7)
+            : clearance < 40 ? lerp(4.2, 14.5, (clearance - 8) / 32)
+              : 24;
       const boost = this.input.boost() ? 3 : 1;
       const precision = this.input.precision() ? 0.28 : 1;
       const targetSpeed = baseSpeed * boost * precision;
+
       let forward = axes.forward;
       let strafe = axes.strafe;
-      const magnitude = Math.hypot(forward, strafe);
-      if (magnitude > 1) { forward /= magnitude; strafe /= magnitude; }
+      const horizontalMagnitude = Math.hypot(forward, strafe);
+      if (horizontalMagnitude > 1) {
+        forward /= horizontalMagnitude;
+        strafe /= horizontalMagnitude;
+      }
 
-      const sin = Math.sin(this.yaw);
-      const cos = Math.cos(this.yaw);
-      const targetX = (forward * sin + strafe * cos) * targetSpeed;
-      const targetZ = (-forward * cos + strafe * sin) * targetSpeed;
-      const verticalSpeed = Math.max(0.18, Math.min(7, targetSpeed * 0.55));
-      const targetY = axes.vertical * verticalSpeed;
-      const acceleration = 1 - Math.exp(-delta * (magnitude || axes.vertical ? 5.1 : 7.4));
-      this.velocity.x += (targetX - this.velocity.x) * acceleration;
-      this.velocity.z += (targetZ - this.velocity.z) * acceleration;
-      this.velocity.y += (targetY - this.velocity.y) * acceleration;
+      // Ask Three.js for the actual camera direction. The previous hand-written
+      // sin/cos formula had the X/Z signs opposite to the camera's positive yaw,
+      // so W/A/S/D could slide across the world in a direction that did not match
+      // where the user was looking. This keeps movement truly camera-relative.
+      this.camera.getWorldDirection(this.moveForward);
+      this.moveRight.crossVectors(this.moveForward, this.camera.up).normalize();
+      this.moveIntent.set(0, 0, 0);
+      this.moveIntent.addScaledVector(this.moveForward, forward);
+      this.moveIntent.addScaledVector(this.moveRight, strafe);
+
+      if (horizontalMagnitude > 1) this.moveIntent.normalize();
+      const targetX = this.moveIntent.x * targetSpeed;
+      const targetZ = this.moveIntent.z * targetSpeed;
+      const verticalSpeed = Math.max(0.22, Math.min(8, targetSpeed * 0.58));
+      const targetY = this.moveIntent.y * targetSpeed + axes.vertical * verticalSpeed;
+      const moving = horizontalMagnitude > 0 || axes.vertical !== 0;
+      const responseRate = moving ? 11.5 : 15.5;
+      const response = 1 - Math.exp(-delta * responseRate);
+      this.velocity.x += (targetX - this.velocity.x) * response;
+      this.velocity.z += (targetZ - this.velocity.z) * response;
+      this.velocity.y += (targetY - this.velocity.y) * response;
 
       const nextX = this.camera.position.x + this.velocity.x * delta;
       const nextZ = this.camera.position.z + this.velocity.z * delta;
@@ -1038,15 +1217,15 @@
       const safeClearance = clearance < 2 ? 0.11 : 0.16;
       const minimumY = this.lastGround + safeClearance;
       if (this.camera.position.y < minimumY) {
-        const correction = 1 - Math.exp(-delta * 16);
+        const correction = 1 - Math.exp(-delta * 17);
         this.camera.position.y = lerp(this.camera.position.y, minimumY + 0.025, correction);
         if (this.camera.position.y < minimumY) this.camera.position.y = minimumY;
-        if (this.velocity.y < 0) this.velocity.y *= 0.16;
+        if (this.velocity.y < 0) this.velocity.y *= 0.12;
       }
 
       this.speed = Math.hypot(this.velocity.x, this.velocity.y, this.velocity.z);
       this.streamClock += delta;
-      if (this.streamClock > 0.42) {
+      if (this.streamClock > 0.36) {
         this.streamClock = 0;
         const geo = this.terrain.geoFromWorld(this.camera.position.x, this.camera.position.z);
         this.terrain.maybeStream(geo.latitude, geo.signedLongitude);
@@ -1058,13 +1237,29 @@
       const fps = this.statsFrames / this.statsClock;
       this.statsFrames = 0;
       this.statsClock = 0;
-      if (fps < 34) this.lowFpsWindows += 1;
-      else this.lowFpsWindows = Math.max(0, this.lowFpsWindows - 1);
-      if (this.lowFpsWindows >= 2 && this.currentDpr > 0.85) {
-        this.currentDpr = Math.max(0.85, this.currentDpr - 0.15);
+      this.idealDpr = this.calculateIdealDpr();
+
+      if (fps < 38) {
+        this.lowFpsWindows += 1;
+        this.highFpsWindows = 0;
+      } else if (fps > 56) {
+        this.highFpsWindows += 1;
+        this.lowFpsWindows = Math.max(0, this.lowFpsWindows - 1);
+      } else {
+        this.lowFpsWindows = Math.max(0, this.lowFpsWindows - 1);
+        this.highFpsWindows = 0;
+      }
+
+      if (this.lowFpsWindows >= 2 && this.currentDpr > this.quality.minDpr) {
+        this.currentDpr = Math.max(this.quality.minDpr, this.currentDpr - 0.12);
         this.renderer.setPixelRatio(this.currentDpr);
-        this.resize();
+        this.resize(false);
         this.lowFpsWindows = 0;
+      } else if (this.highFpsWindows >= 3 && this.currentDpr + 0.04 < this.idealDpr) {
+        this.currentDpr = Math.min(this.idealDpr, this.currentDpr + 0.10);
+        this.renderer.setPixelRatio(this.currentDpr);
+        this.resize(false);
+        this.highFpsWindows = 0;
       }
     }
 
@@ -1117,6 +1312,7 @@
         this.camera.position.set(0, 60, 0);
         this.yaw = landmark.heading || 0;
         this.pitch = -0.34;
+        this.syncLookTargets();
         await this.terrain.ensureAround(landmark.latitude, wrapLongitude(landmark.longitudeEast > 180 ? landmark.longitudeEast - 360 : landmark.longitudeEast), { requiredRadius: 1 });
         if (token !== this.transitionToken) return;
         const ground = this.terrain.getHeightAtWorld(0, 0) ?? 0;
@@ -1297,10 +1493,16 @@
       if (this.prepared) this.resize();
     }
 
-    resize() {
+    resize(recalculateDpr = true) {
       if (!this.prepared || !this.renderer || !this.camera) return;
       const width = Math.max(1, this.viewport.clientWidth);
       const height = Math.max(1, this.viewport.clientHeight);
+      if (recalculateDpr) {
+        this.idealDpr = this.calculateIdealDpr();
+        if (!Number.isFinite(this.currentDpr)) this.currentDpr = this.idealDpr;
+        if (this.currentDpr > this.idealDpr) this.currentDpr = this.idealDpr;
+        this.renderer.setPixelRatio(this.currentDpr);
+      }
       this.renderer.setSize(width, height, false);
       this.camera.aspect = width / height;
       this.camera.fov = this.mobileFov();

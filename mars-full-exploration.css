@@ -58,9 +58,9 @@
   left: -15%; right: -15%; top: 45%; height: 28%;
   z-index: 3;
   pointer-events: none;
-  opacity: var(--surface-opacity);
-  background: linear-gradient(180deg, #dc9b7442, #b76b4d16 40%, transparent 88%);
-  filter: blur(18px);
+  opacity: calc(var(--surface-opacity) * .48);
+  background: linear-gradient(180deg, #dc9b742b, #b76b4d0f 40%, transparent 88%);
+  filter: blur(7px);
   transform: translateY(calc((1 - var(--entry-progress)) * 18px));
 }
 
@@ -79,15 +79,17 @@
 .mars-full-exploration.is-entering .mars-full-viewport,
 .mars-full-exploration.is-exiting .mars-full-viewport { touch-action: none; }
 .mars-full-canvas { display: block; width: 100%; height: 100%; }
+.mars-full-exploration.is-active .mars-full-viewport { cursor: crosshair; }
+.mars-full-exploration.is-pointer-locked .mars-full-viewport { cursor: none; }
 
 .mars-full-horizon {
   position: absolute;
   z-index: 4;
   left: -8%; right: -8%; top: 40%; height: 24%;
   pointer-events: none;
-  opacity: calc(var(--surface-opacity) * .7);
-  background: radial-gradient(ellipse at center, #e3a37b24 0%, #b96d4f14 48%, transparent 73%);
-  filter: blur(16px);
+  opacity: calc(var(--surface-opacity) * .38);
+  background: radial-gradient(ellipse at center, #e3a37b1a 0%, #b96d4f0d 48%, transparent 73%);
+  filter: blur(8px);
 }
 
 .mars-full-hud,
