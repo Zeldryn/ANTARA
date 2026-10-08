@@ -1,1 +1,1 @@
-Salin folder ANTARA ke C:/xampp/htdocs/ANTARA dan aktifkan Apache. Buka http://localhost/ANTARA/ . Dokumen laporan ada di docs/; tools/ berisi alat verifikasi. Source aplikasi serta PHP dan aset tidak diubah. Folder .git tidak disertakan. Jangan mengunggah tools/ atau docs/ jika hanya membutuhkan runtime publik.
+Taruh folder ANTARA di C:\xampp\htdocs\ANTARA. Jalankan Apache, buka http://localhost/ANTARA/. Jangan buka lewat file://. Jika ada api/, baca docs/DEPLOY_DATABASE.md dan import SQL terlebih dahulu.

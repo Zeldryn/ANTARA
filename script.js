@@ -704,6 +704,7 @@ class CockpitProfileHUD {
   constructor() {
     this.root = document.getElementById("cockpit-profile-hud");
     this.trigger = document.getElementById("profile-hud-trigger");
+    this.avatarTrigger = document.getElementById("profile-avatar-trigger");
     this.avatarImage = document.getElementById("profile-avatar-image");
     this.loginGlyph = document.getElementById("profile-login-glyph");
     this.initials = document.getElementById("profile-avatar-initials");
@@ -722,6 +723,11 @@ class CockpitProfileHUD {
         return;
       }
 
+      event.preventDefault();
+      this.activate();
+    });
+    this.avatarTrigger?.addEventListener("click", event => {
+      if (!this.user) return;
       event.preventDefault();
       this.activate();
     });
@@ -888,6 +894,30 @@ const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const flight = new LaunchVisual();
 const companions = new CockpitCompanions();
 const profileHUD = new CockpitProfileHUD();
+
+const profileMoreTrigger = document.getElementById("profile-more-trigger");
+const profileNavSuite = document.getElementById("profile-nav-suite");
+if (profileMoreTrigger && profileNavSuite) {
+  const closeProfileMore = () => {
+    profileMoreTrigger.setAttribute("aria-expanded", "false");
+    profileNavSuite.classList.remove("is-open");
+  };
+  profileMoreTrigger.addEventListener("click", event => {
+    event.stopPropagation();
+    const open = profileMoreTrigger.getAttribute("aria-expanded") === "true";
+    profileMoreTrigger.setAttribute("aria-expanded", String(!open));
+    profileNavSuite.classList.toggle("is-open", !open);
+  });
+  profileNavSuite.addEventListener("click", event => {
+    if (event.target.closest("a")) closeProfileMore();
+  });
+  document.addEventListener("click", event => {
+    if (!profileNavSuite.contains(event.target) && !profileMoreTrigger.contains(event.target)) closeProfileMore();
+  });
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 700) closeProfileMore();
+  }, { passive: true });
+}
 companions.setJourneyPhase("idle");
 companions.setDialogue(DIALOGUE_TIMELINE[0], true);
 const earth = new EarthScene({ onNext: travelToMars });
