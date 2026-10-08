@@ -141,13 +141,13 @@ const path = require('path');
     assert.deepEqual(dedup, ['assets/test.webp?one=1', 'assets/other.webp']);
 
     // Earth: six mapped natural extremes, one authentic scientific/reference image each.
-    for (let i = 1; i < 7; i++) await verifyEarthVisual(i);
+    for (const i of [6, 7, 8, 9, 10, 11]) await verifyEarthVisual(i);
     assert.equal(await p.locator('#earth-exploration .exploration-marker-frame').count(), 0);
     assert.equal(await p.locator('#earth-exploration img').count(), 0);
     await p.screenshot({ path: path.join(tmp, 'media-earth-marker-desktop.png') });
 
     // Old state must be cleared when changing selections.
-    await settle('earth', 1);
+    await settle('earth', 11);
     const oldSrc = await p.locator('#earth-marker-media img').nth(0).getAttribute('src');
     await settle('earth', 6);
     const newSrc = await p.locator('#earth-marker-media img').nth(0).getAttribute('src');

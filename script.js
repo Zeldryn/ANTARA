@@ -731,6 +731,7 @@ const companions = new CockpitCompanions();
 companions.setJourneyPhase("idle");
 companions.setDialogue(DIALOGUE_TIMELINE[0], true);
 const earth = new EarthScene({ onNext: travelToMars });
+const earthFull = new EarthFullExploration(earth);
 const mars = new MarsScene();
 const mercury = new MercuryScene();
 const sun = new SunScene();
@@ -1001,7 +1002,7 @@ launchButton.addEventListener("click", () => {
 });
 
 function travelToVenus() {
-  if (earth.exploring || !beginPlanetTransition("earth", "venus-transition", document.getElementById("earth-prev-planet"), "venus")) return;
+  if (earth.fullExploring || earth.exploring || !beginPlanetTransition("earth", "venus-transition", document.getElementById("earth-prev-planet"), "venus")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU VENUS";
   announcement.textContent = "Meninggalkan Bumi. Kamera beralih ke kiri menuju Venus.";
@@ -1155,6 +1156,7 @@ function travelVenusToEarth() {
 }
 
 function travelToMars() {
+  if (earth.fullExploring) return;
   if (!beginPlanetTransition("earth", "mars-transition", document.getElementById("earth-next"), "mars")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU PLANET MERAH";
@@ -1443,6 +1445,7 @@ function travelNeptuneToUranus() {
 
 
 function resetMission() {
+  earthFull.forceReset?.();
   cancelAnimationFrame(animationFrame);
   sound.stop(1.1);
   phase = "idle";
@@ -1490,6 +1493,10 @@ uranusPreviousButton.addEventListener("click", travelUranusToSaturn);
 uranusNextButton.addEventListener("click", travelUranusToNeptune);
 neptunePreviousButton.addEventListener("click", travelNeptuneToUranus);
 document.addEventListener("keydown", event => {
+  if (phase === "earth" && earthFull.state !== "idle") {
+    if (event.key === "Escape") { event.preventDefault(); earthFull.exit(); }
+    return;
+  }
   if (phase === "mars" && mars.fullExplorationActive) {
     if (event.key === "Escape") { event.preventDefault(); mars.fullExploration?.exit(); }
     return;

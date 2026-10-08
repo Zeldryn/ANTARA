@@ -27,7 +27,11 @@ Tidak ada video background atau poster karakter statis yang dipakai untuk menyam
 
 ## Planet exploration
 
-Sistem eksplorasi Bumi, Venus, dan Mars tetap memakai renderer, marker, image preview, lightbox, internal scrolling, audio, dan navigasi planet yang sudah ada. Fix kualitas transisi Venus dan struktur materi umum Mars dari revisi sebelumnya tetap dipertahankan.
+Sistem eksplorasi planet tetap memakai renderer, marker, image preview, lightbox, internal scrolling, audio, dan navigasi yang sudah ada. Bumi kini memiliki **14 slide informasi** yang memisahkan konsep global dari lokasi nyata, serta mode **Eksplorasi Pengalaman Penuh** untuk lima wilayah terkurasi: Everest/Himalaya, Challenger Deep/Mariana, Mauna Kea, Grand Canyon, dan Antarktika.
+
+Earth Full Exploration memakai tile elevasi Terrarium yang dimuat hanya setelah region dipilih. Nilai elevasi tile membentuk geometry Three.js; material detail lokal hanya memperkaya keterbacaan permukaan dan tidak mengganti bentuk geografinya. Terrain dipecah menjadi chunk dengan LOD dan frustum culling. Mariana mempertahankan elevasi negatif sebagai bathymetry dan memakai water plane terpisah.
+
+Mode terrain nyata memerlukan koneksi internet untuk mengambil tile DEM/bathymetry. Jika sumber real gagal dimuat, ANTARA menampilkan error dan tidak menggantinya dengan terrain prosedural fiktif. Detail sumber dan keterbatasan ada di `EARTH_FULL_EXPLORATION.md`. Fix kualitas Mars dan optimasi view-dependent Mars dari revisi sebelumnya tetap dipertahankan tanpa perubahan.
 
 ## Audio
 

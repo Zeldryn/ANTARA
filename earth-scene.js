@@ -6,19 +6,148 @@ const MARS_TRAVEL_TEXTURE = "assets/textures/mars-surface-2k.jpg";
 
 const EARTH_EXPLORATION_STOPS = [
   {
-    title: "Bumi, Dunia yang Aktif",
-    kicker: "REKOR & EKSTREM BUMI",
-    subtitle: "Satu planet, dari puncak tertinggi sampai jurang samudra terdalam",
-    summary: "Bumi bukan sekadar rumah kita. Tektonik, air, es, atmosfer, dan waktu geologi membentuk bentang alam dengan skala ekstrem yang bisa kita petakan langsung pada globe.",
-    context: "Urutan ini memakai definisi rekornya secara eksplisit. Everest dibahas berdasarkan elevasi di atas muka laut, Mauna Kea berdasarkan tinggi dari dasar ke puncak, sementara Challenger Deep memakai kedalaman terhadap muka laut.",
+    title: "Bumi",
+    kicker: "PLANET BIRU",
+    subtitle: "Planet berbatu ketiga dari Matahari dan satu-satunya dunia yang diketahui menopang kehidupan",
+    summary: "Bumi adalah planet berbatu dengan samudra air cair, atmosfer aktif, medan magnet global, dan geologi yang terus berubah. Kombinasi sistem ini membuat permukaannya sangat dinamis dibanding dunia berbatu lain yang kita kenal.",
+    context: "ANTARA memisahkan fakta global, konsep ilmiah, dan lokasi nyata. Slide konsep memakai diagram atau visualisasi; slide lokasi memutar globe ke koordinat sebenarnya dan menampilkan marker.",
     facts: [
-      "Sekitar 71% permukaan Bumi tertutup air.",
-      "Litosfer Bumi terpecah menjadi lempeng tektonik yang terus bergerak.",
-      "Rekor alam dapat berubah makna jika cara pengukurannya berbeda."
+      "Bumi adalah planet ketiga dari Matahari dengan usia sekitar 4,5 miliar tahun.",
+      "Sekitar 71% permukaan Bumi tertutup samudra.",
+      "Atmosfer, samudra, batuan, es, dan biosfer saling bertukar energi dan materi."
     ],
     source: "https://science.nasa.gov/earth/facts/",
     sourceName: "NASA Science",
-    location: null
+    location: null,
+    images: [{
+      src: "assets/textures/earth-blue-marble-4k.jpg",
+      alt: "Citra global Bumi Blue Marble",
+      credit: "NASA Blue Marble / Visible Earth",
+      source: "https://visibleearth.nasa.gov/collection/1484/blue-marble",
+      caption: "Bumi · mosaik global Blue Marble",
+      fit: "cover",
+      type: "CITRA BUMI"
+    }]
+  },
+  {
+    title: "Dunia Air",
+    kicker: "SISTEM BUMI",
+    subtitle: "Samudra menyimpan sebagian besar air permukaan dan membantu mengatur iklim",
+    summary: "Samudra mendominasi wajah Bumi. Air terus berpindah antara laut, atmosfer, daratan, es, dan organisme melalui penguapan, kondensasi, presipitasi, aliran permukaan, serta infiltrasi.",
+    context: "Air bukan hanya fitur permukaan. Kapasitas panas samudra membuat laut menyerap dan memindahkan energi dalam jumlah besar, sehingga berperan penting pada cuaca dan iklim global.",
+    facts: [
+      "Sekitar 71% permukaan Bumi tertutup air.",
+      "Sebagian besar air Bumi berada di samudra dan bersifat asin.",
+      "Arus laut dan pertukaran panas laut-atmosfer membantu mendistribusikan energi di seluruh planet."
+    ],
+    source: "https://oceanservice.noaa.gov/facts/oceanwater.html",
+    sourceName: "NOAA Ocean Service",
+    location: null,
+    images: [{
+      src: "assets/textures/earth-blue-marble-4k.jpg",
+      alt: "Citra global Bumi yang memperlihatkan dominasi samudra",
+      credit: "NASA Blue Marble / Visible Earth",
+      source: "https://visibleearth.nasa.gov/collection/1484/blue-marble",
+      caption: "Samudra mendominasi permukaan Bumi",
+      fit: "cover",
+      type: "CITRA BUMI"
+    }]
+  },
+  {
+    title: "Atmosfer yang Menjaga Kehidupan",
+    kicker: "ATMOSFER",
+    subtitle: "Campuran gas berlapis yang mengatur iklim dan melindungi permukaan",
+    summary: "Atmosfer Bumi didominasi nitrogen dan oksigen, dengan uap air serta gas jejak yang sangat penting bagi cuaca dan efek rumah kaca alami. Tekanan dan komposisinya memungkinkan air cair stabil pada banyak wilayah permukaan.",
+    context: "Efek rumah kaca bukan sekadar 'pemanasan buruk'. Dalam kadar alami, gas rumah kaca menjaga Bumi jauh lebih hangat daripada jika atmosfer hanya transparan terhadap radiasi inframerah. Perubahan konsentrasi gas rumah kaca mengubah keseimbangan energi tersebut.",
+    facts: [
+      "Udara kering dekat permukaan terdiri terutama dari nitrogen dan oksigen.",
+      "Troposfer adalah lapisan tempat hampir seluruh cuaca terjadi.",
+      "Stratosfer mengandung sebagian besar ozon atmosfer yang menyerap radiasi ultraviolet berenergi tinggi."
+    ],
+    source: "https://science.nasa.gov/earth/facts/",
+    sourceName: "NASA Science",
+    location: null,
+    images: [{
+      src: "assets/earth/atmosphere-diagram.svg",
+      alt: "Diagram konseptual lapisan atmosfer Bumi",
+      credit: "Visualisasi ANTARA berdasarkan terminologi atmosfer standar",
+      source: "https://science.nasa.gov/earth/facts/",
+      caption: "Lapisan atmosfer · diagram konseptual, tidak berskala linear",
+      fit: "contain",
+      type: "DIAGRAM ILMIAH"
+    }]
+  },
+  {
+    title: "Bumi yang Terus Bergerak",
+    kicker: "TEKTONIK LEMPENG",
+    subtitle: "Litosfer terpecah menjadi lempeng yang bergerak di atas interior Bumi",
+    summary: "Gerak lempeng tektonik membentuk pegunungan, palung samudra, busur vulkanik, dan banyak gempa. Batas lempeng dapat saling menjauh, bertumbukan, atau bergeser sejajar.",
+    context: "Gerak lempeng hanya beberapa sentimeter per tahun pada banyak wilayah, tetapi terakumulasi selama jutaan tahun. Skala waktu yang panjang mengubah posisi benua dan bentuk cekungan samudra secara dramatis.",
+    facts: [
+      "Lempeng litosfer bergerak relatif satu sama lain di atas astenosfer yang lebih lemah.",
+      "Batas konvergen dapat menghasilkan subduksi, gempa besar, dan vulkanisme.",
+      "Punggung tengah samudra adalah contoh batas divergen tempat kerak samudra baru terbentuk."
+    ],
+    source: "https://www.usgs.gov/programs/earthquake-hazards/science/plate-tectonics",
+    sourceName: "U.S. Geological Survey",
+    location: null,
+    images: [{
+      src: "assets/earth/tectonics-diagram.svg",
+      alt: "Diagram batas lempeng divergen, konvergen, dan transform",
+      credit: "Visualisasi ANTARA · diagram proses tektonik",
+      source: "https://www.usgs.gov/programs/earthquake-hazards/science/plate-tectonics",
+      caption: "Tektonik lempeng · diagram proses, bukan peta lempeng global",
+      fit: "contain",
+      type: "DIAGRAM ILMIAH"
+    }]
+  },
+  {
+    title: "Pelindung Tak Terlihat",
+    kicker: "MEDAN MAGNET",
+    subtitle: "Magnetosfer membentuk wilayah pertahanan dinamis terhadap angin Matahari",
+    summary: "Gerak logam cair konduktif di inti luar menghasilkan geodynamo yang mempertahankan sebagian besar medan magnet global Bumi. Di ruang angkasa, medan ini membentuk magnetosfer yang membelokkan banyak partikel bermuatan dari Matahari.",
+    context: "Magnetosfer bukan perisai padat. Bentuknya berubah mengikuti kondisi angin Matahari dan aktivitas Matahari. Sebagian partikel tetap dapat masuk melalui interaksi kompleks dan menghasilkan aurora di wilayah kutub.",
+    facts: [
+      "Sumber utama medan magnet global berada pada gerak fluida konduktif di inti luar.",
+      "Angin Matahari menekan sisi siang magnetosfer dan memanjangkan sisi malam menjadi magnetotail.",
+      "Aurora terkait interaksi partikel bermuatan dengan atmosfer atas di wilayah medan magnet kutub."
+    ],
+    source: "https://science.nasa.gov/heliophysics/focus-areas/magnetosphere-ionosphere/",
+    sourceName: "NASA Science",
+    location: null,
+    images: [{
+      src: "assets/earth/magnetosphere-diagram.svg",
+      alt: "Diagram magnetosfer Bumi dan angin Matahari",
+      credit: "Visualisasi ANTARA · diagram konseptual",
+      source: "https://science.nasa.gov/heliophysics/focus-areas/magnetosphere-ionosphere/",
+      caption: "Magnetosfer dan angin Matahari · tidak berskala",
+      fit: "contain",
+      type: "DIAGRAM ILMIAH"
+    }]
+  },
+  {
+    title: "Isi Bumi",
+    kicker: "STRUKTUR INTERNAL",
+    subtitle: "Kerak, mantel, inti luar cair, dan inti dalam padat",
+    summary: "Kita tidak dapat melihat langsung sebagian besar interior Bumi. Struktur dalam disimpulkan dari gelombang seismik, eksperimen material bertekanan tinggi, gravitasi, medan magnet, dan pemodelan fisika.",
+    context: "Batas antarlapisan tidak sekadar perubahan warna. Tekanan, temperatur, komposisi, dan fase material berubah dengan kedalaman. Inti luar yang cair sangat penting bagi geodynamo Bumi.",
+    facts: [
+      "Kerak adalah lapisan terluar yang sangat tipis dibanding radius Bumi.",
+      "Mantel sebagian besar padat namun dapat mengalir sangat lambat dalam skala geologi.",
+      "Inti luar bersifat cair, sedangkan inti dalam tetap padat karena tekanan sangat tinggi."
+    ],
+    source: "https://pubs.usgs.gov/gip/interior/",
+    sourceName: "U.S. Geological Survey",
+    location: null,
+    images: [{
+      src: "assets/earth/interior-diagram.svg",
+      alt: "Diagram penampang struktur internal Bumi",
+      credit: "Visualisasi ANTARA berdasarkan model lapisan internal Bumi",
+      source: "https://pubs.usgs.gov/gip/interior/",
+      caption: "Struktur internal Bumi · diagram penampang, proporsi disederhanakan",
+      fit: "contain",
+      type: "DIAGRAM ILMIAH"
+    }]
   },
   {
     title: "Mount Everest",
@@ -35,101 +164,93 @@ const EARTH_EXPLORATION_STOPS = [
     source: "https://www.tourismdepartment.gov.np/files/statistics/46.pdf",
     sourceName: "Department of Tourism Nepal",
     location: { latitude: 27.9881, longitude: 86.9253 },
-    images: [
-      {
-        src: "https://upload.wikimedia.org/wikipedia/commons/1/13/Everest%2C_South_Col%2C_Himalayas.jpg",
-        alt: "Foto Mount Everest dari arah South Col di Himalaya",
-        credit: "Vyacheslav Argenberg",
-        source: "https://commons.wikimedia.org/wiki/File:Everest,_South_Col,_Himalayas.jpg",
-        license: "CC BY 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
-        caption: "Mount Everest · Himalaya",
-        fit: "cover",
-        type: "FOTO REFERENSI"
-      }
-    ]
-  },
-  {
-    title: "Challenger Deep",
-    kicker: "REKOR & EKSTREM",
-    subtitle: "Titik terdalam yang diketahui di samudra Bumi",
-    region: "Palung Mariana · Pasifik Barat",
-    summary: "Challenger Deep berada di bagian selatan Palung Mariana. Lokasinya tidak terlihat sebagai celah raksasa dari foto satelit biasa, jadi visual pendukung memakai data batimetri yang memang memetakan dasar laut.",
-    context: "Kedalaman laut diukur terhadap muka laut dan ditentukan dengan kombinasi survei sonar, tekanan, serta koreksi oseanografi. Pengukuran modern memberi estimasi terdalam sekitar 10.935 meter.",
-    facts: [
-      "Estimasi NOAA untuk Challenger Deep sekitar 10.935 meter di bawah muka laut.",
-      "Kedalamannya lebih besar daripada elevasi Everest di atas muka laut.",
-      "Peta warna pada visual adalah batimetri ilmiah, bukan foto optik dasar samudra."
-    ],
-    source: "https://oceanservice.noaa.gov/facts/oceandepth.html",
-    sourceName: "NOAA Ocean Service",
-    location: { latitude: 11.35, longitude: 142.20 },
-    images: [
-      {
-        src: "https://omao.noaa.gov/sites/default/files/2025-12/survey%20area.png",
-        alt: "Peta batimetri ilmiah wilayah Mariana dan Guam dari NOAA",
-        credit: "Shannon Hoy, NOAA",
-        source: "https://omao.noaa.gov/marine-operations/news-media/image/mariana-trench-survey-area",
-        caption: "Batimetri wilayah Mariana · warna menunjukkan bentuk dasar laut",
-        fit: "cover",
-        type: "PETA BATIMETRI"
-      }
-    ]
+    images: [{
+      src: "https://upload.wikimedia.org/wikipedia/commons/1/13/Everest%2C_South_Col%2C_Himalayas.jpg",
+      alt: "Foto Mount Everest dari arah South Col di Himalaya",
+      credit: "Vyacheslav Argenberg",
+      source: "https://commons.wikimedia.org/wiki/File:Everest,_South_Col,_Himalayas.jpg",
+      license: "CC BY 4.0",
+      licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      caption: "Mount Everest · Himalaya",
+      fit: "cover",
+      type: "FOTO REFERENSI"
+    }]
   },
   {
     title: "Mauna Kea",
     kicker: "REKOR & EKSTREM",
     subtitle: "Raksasa yang sebagian besar tersembunyi di bawah laut",
     region: "Hawaiʻi · Samudra Pasifik",
-    summary: "Mauna Kea menunjukkan kenapa kata tertinggi dan tertinggi dari dasar tidak selalu berarti hal yang sama. Sebagian besar tubuh gunung ini berada di bawah Samudra Pasifik.",
-    context: "USGS memperkirakan Mauna Kea sekitar 4.205 meter di atas muka laut dan memanjang sekitar 6.000 meter lagi sampai dasar samudra. Total dasar-ke-puncaknya hampir 10.211 meter.",
+    summary: "Mauna Kea menunjukkan kenapa kata 'tertinggi' dan 'tertinggi dari dasar' tidak selalu berarti hal yang sama. Sebagian besar tubuh gunung ini berada di bawah Samudra Pasifik.",
+    context: "USGS memperkirakan Mauna Kea sekitar 4.205 meter di atas muka laut dan memanjang kira-kira 6.000 meter lagi sampai dasar samudra. Total dasar-ke-puncaknya mendekati 10 kilometer.",
     facts: [
       "Puncaknya sekitar 4,2 kilometer di atas muka laut.",
-      "Dari dasar samudra ke puncak, total tingginya hampir 10,2 kilometer.",
+      "Jika dihitung dari dasar samudra, tubuh vulkaniknya jauh lebih tinggi daripada angka elevasi puncaknya saja.",
       "Everest tetap memegang rekor elevasi di atas muka laut."
     ],
     source: "https://www.usgs.gov/faqs/how-big-are-hawaiian-volcanoes",
     sourceName: "U.S. Geological Survey",
     location: { latitude: 19.8207, longitude: -155.4681 },
-    images: [
-      {
-        src: "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/thumbnails/image/maunakea2.jpg",
-        alt: "Foto Mauna Kea di Hawaiʻi",
-        credit: "Scot K. Izuka, USGS",
-        source: "https://www.usgs.gov/media/images/mauna-kea-0",
-        license: "Public Domain",
-        caption: "Mauna Kea · gunung perisai Hawaiʻi",
-        fit: "cover",
-        type: "FOTO USGS"
-      }
-    ]
+    images: [{
+      src: "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/thumbnails/image/maunakea2.jpg",
+      alt: "Foto Mauna Kea di Hawaiʻi",
+      credit: "Scot K. Izuka, USGS",
+      source: "https://www.usgs.gov/media/images/mauna-kea-0",
+      license: "Public Domain",
+      caption: "Mauna Kea · gunung perisai Hawaiʻi",
+      fit: "cover",
+      type: "FOTO USGS"
+    }]
   },
   {
-    title: "Vostok, Antarktika",
+    title: "Challenger Deep",
     kicker: "REKOR & EKSTREM",
-    subtitle: "Rekor suhu terendah dari pengukuran langsung di permukaan",
-    region: "Dataran Tinggi Antarktika Timur",
-    summary: "Antarktika adalah laboratorium alam untuk dingin ekstrem. Rekor suhu udara terendah yang diakui WMO dari pengukuran langsung di permukaan tercatat di Stasiun Vostok.",
-    context: "WMO membedakan pengukuran stasiun di permukaan dari estimasi suhu permukaan es berbasis satelit. Rekor stasiun yang diakui adalah -89,2 °C pada 21 Juli 1983.",
+    subtitle: "Titik terdalam yang diketahui di samudra Bumi",
+    region: "Palung Mariana · Pasifik Barat",
+    summary: "Challenger Deep berada di bagian selatan Palung Mariana. Lokasinya tidak tampak sebagai celah raksasa dari foto satelit biasa, sehingga ANTARA memakai batimetri ilmiah untuk menjelaskan bentuk dasar laut.",
+    context: "Kedalaman laut diukur terhadap muka laut dan ditentukan dengan survei akustik, sensor tekanan, serta koreksi oseanografi. Angka tepat dapat berbeda antarsurvei karena metode dan ketidakpastian pengukuran.",
     facts: [
-      "Rekor pengukuran darat WMO: -89,2 °C.",
-      "Tercatat di Stasiun Vostok pada 21 Juli 1983.",
-      "Lokasi berada jauh di interior Antarktika dan pada elevasi tinggi."
+      "Pengukuran modern menempatkan kedalaman Challenger Deep sekitar 10,9 kilometer di bawah muka laut.",
+      "Kedalamannya lebih besar daripada elevasi Everest di atas muka laut.",
+      "Visual batimetri adalah representasi data kedalaman, bukan foto optik dasar samudra."
+    ],
+    source: "https://oceanservice.noaa.gov/facts/oceandepth.html",
+    sourceName: "NOAA Ocean Service",
+    location: { latitude: 11.35, longitude: 142.20 },
+    images: [{
+      src: "https://omao.noaa.gov/sites/default/files/2025-12/survey%20area.png",
+      alt: "Peta batimetri ilmiah wilayah Mariana dan Guam dari NOAA",
+      credit: "NOAA",
+      source: "https://omao.noaa.gov/marine-operations/news-media/image/mariana-trench-survey-area",
+      caption: "Batimetri Mariana · warna menunjukkan bentuk dasar laut",
+      fit: "cover",
+      type: "PETA BATIMETRI"
+    }]
+  },
+  {
+    title: "Benua Es",
+    kicker: "REKOR & EKSTREM",
+    subtitle: "Antarktika menyimpan es terbesar di Bumi dan rekor dingin ekstrem",
+    region: "Antarktika · fokus Stasiun Vostok",
+    summary: "Antarktika adalah benua yang hampir seluruh permukaannya tertutup es. Interiornya tinggi, kering, sangat dingin, dan berperan besar dalam sistem iklim serta muka laut global.",
+    context: "ANTARA membedakan permukaan es dari batuan di bawahnya. Citra permukaan dan DEM permukaan es tidak boleh dipresentasikan sebagai topografi subglasial yang terlihat langsung.",
+    facts: [
+      "Rekor suhu udara terendah dari pengukuran stasiun yang diakui WMO adalah -89,2 °C di Vostok pada 21 Juli 1983.",
+      "Lapisan es Antarktika menyimpan sebagian besar es tawar Bumi.",
+      "Permukaan es dan topografi batuan dasar di bawah es adalah dua data yang berbeda."
     ],
     source: "https://wmo.int/media/news/wmo-concludes-evaluation-of-possible-new-record-antarctic-temperature",
     sourceName: "World Meteorological Organization",
     location: { latitude: -78.4667, longitude: 106.8000 },
-    images: [
-      {
-        src: "https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/36000/36839/Antarctica_AMO_2009027_lrg.jpg?crop=faces%2Cfocalpoint&fit=clip&h=6144&w=6144",
-        alt: "Mosaik satelit MODIS Antarktika dari NASA Earth Observatory",
-        credit: "NASA MODIS Rapid Response Team, GSFC",
-        source: "https://science.nasa.gov/earth/earth-observatory/antarctica-36839/",
-        caption: "Antarktika · mosaik MODIS, bukan foto khusus Stasiun Vostok",
-        fit: "cover",
-        type: "CITRA SATELIT"
-      }
-    ]
+    images: [{
+      src: "https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/36000/36839/Antarctica_AMO_2009027_lrg.jpg?crop=faces%2Cfocalpoint&fit=clip&h=6144&w=6144",
+      alt: "Mosaik satelit MODIS Antarktika dari NASA Earth Observatory",
+      credit: "NASA MODIS Rapid Response Team, GSFC",
+      source: "https://science.nasa.gov/earth/earth-observatory/antarctica-36839/",
+      caption: "Antarktika · mosaik MODIS, bukan citra batuan di bawah es",
+      fit: "cover",
+      type: "CITRA SATELIT"
+    }]
   },
   {
     title: "Furnace Creek",
@@ -137,53 +258,97 @@ const EARTH_EXPLORATION_STOPS = [
     subtitle: "Lokasi rekor panas resmi WMO",
     region: "Death Valley · California, Amerika Serikat",
     summary: "Furnace Creek berada di Death Valley, cekungan gurun yang sangat panas dan rendah. WMO masih mencantumkan pengukuran 56,7 °C pada 10 Juli 1913 sebagai rekor suhu udara tertinggi resmi.",
-    context: "Sebagian peneliti sejarah cuaca mempertanyakan akurasi sejumlah rekor lama. Karena itu ANTARA menampilkan statusnya secara jujur: 56,7 °C adalah rekor yang masih diakui WMO, bukan klaim bahwa perdebatan ilmiah sudah tertutup.",
+    context: "Sebagian peneliti sejarah cuaca mempertanyakan akurasi sejumlah rekor lama. Karena itu ANTARA menampilkan statusnya secara eksplisit sebagai rekor resmi WMO yang masih berlaku, bukan klaim bahwa semua perdebatan ilmiah sudah tertutup.",
     facts: [
       "Rekor resmi WMO: 56,7 °C pada 10 Juli 1913.",
       "Furnace Creek berada di Death Valley, California.",
-      "Rekor lama ini tetap tercatat WMO sambil terbuka terhadap evaluasi bukti baru."
+      "Topografi cekungan, udara kering, dan radiasi Matahari kuat berkontribusi pada panas ekstrem kawasan ini."
     ],
     source: "https://public.wmo.int/media/news/wmo-verifies-3rd-and-4th-hottest-temperature-recorded-earth",
     sourceName: "World Meteorological Organization",
     location: { latitude: 36.4667, longitude: -116.8500 },
-    images: [
-      {
-        src: "https://www.nps.gov/deva/learn/news/images/130-F-54-C-thermometer_IMG_7890.jpg",
-        alt: "Termometer luar ruang di Furnace Creek Visitor Center menunjukkan panas ekstrem",
-        credit: "NPS / J. Jurado",
-        source: "https://www.nps.gov/deva/learn/news/summer-2020-heat-records.htm",
-        caption: "Furnace Creek · dokumentasi panas ekstrem 2020",
-        fit: "cover",
-        type: "FOTO DOKUMENTASI"
-      }
-    ]
+    images: [{
+      src: "https://www.nps.gov/deva/learn/news/images/130-F-54-C-thermometer_IMG_7890.jpg",
+      alt: "Termometer luar ruang di Furnace Creek Visitor Center menunjukkan panas ekstrem",
+      credit: "NPS / J. Jurado",
+      source: "https://www.nps.gov/deva/learn/news/summer-2020-heat-records.htm",
+      caption: "Furnace Creek · dokumentasi panas ekstrem",
+      fit: "cover",
+      type: "FOTO DOKUMENTASI"
+    }]
   },
   {
     title: "Danau Baikal",
     kicker: "REKOR & EKSTREM",
     subtitle: "Danau terdalam di dunia",
     region: "Siberia · Rusia",
-    summary: "Danau Baikal membentuk cekungan air tawar yang sangat dalam di Siberia. Kedalamannya mencapai sekitar 1,7 kilometer dan menjadikannya danau terdalam di dunia.",
-    context: "Baikal juga sangat tua secara geologi. Citra satelit memperlihatkan bentuk danau memanjang di antara pegunungan, sementara angka kedalamannya berasal dari pengukuran batimetri, bukan dari warna foto.",
+    summary: "Danau Baikal membentuk cekungan air tawar yang sangat dalam di Siberia. Kedalamannya mencapai sekitar 1,6 kilometer dan menjadikannya danau terdalam di dunia.",
+    context: "Baikal juga sangat tua secara geologi. Citra satelit memperlihatkan bentuk danau memanjang di antara pegunungan, sedangkan angka kedalamannya berasal dari pengukuran batimetri, bukan dari warna foto satelit.",
     facts: [
-      "Kedalaman maksimum sekitar 1,7 kilometer.",
-      "NASA menyebut Baikal sebagai danau terdalam di dunia.",
-      "Danau ini terbentuk sekitar 25 juta tahun lalu menurut rujukan UNESCO yang dikutip NASA."
+      "Kedalaman maksimum sekitar 1.642 meter.",
+      "Baikal merupakan danau terdalam di dunia.",
+      "Cekungannya berada pada zona rift benua yang masih aktif."
     ],
     source: "https://science.nasa.gov/earth/earth-observatory/lake-baikal-at-night-153110/",
     sourceName: "NASA Earth Observatory",
     location: { latitude: 53.50, longitude: 108.00 },
-    images: [
-      {
-        src: "https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/77000/77871/Russia_amo_2012125_lrg.jpg?crop=faces%2Cfocalpoint&fit=clip&h=4000&w=3200",
-        alt: "Citra satelit MODIS Danau Baikal dan wilayah Siberia di sekitarnya",
-        credit: "NASA Earth Observatory / Jeff Schmaltz",
-        source: "https://science.nasa.gov/earth/earth-observatory/ice-melting-on-lake-baikal-77871/",
-        caption: "Danau Baikal · citra MODIS saat es musim semi mencair",
-        fit: "cover",
-        type: "CITRA SATELIT"
-      }
-    ]
+    images: [{
+      src: "https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/77000/77871/Russia_amo_2012125_lrg.jpg?crop=faces%2Cfocalpoint&fit=clip&h=4000&w=3200",
+      alt: "Citra satelit MODIS Danau Baikal dan wilayah Siberia di sekitarnya",
+      credit: "NASA Earth Observatory / Jeff Schmaltz",
+      source: "https://science.nasa.gov/earth/earth-observatory/lake-baikal-77871/",
+      caption: "Danau Baikal dan Siberia · citra MODIS",
+      fit: "cover",
+      type: "CITRA SATELIT"
+    }]
+  },
+  {
+    title: "Bumi dan Bulan",
+    kicker: "SISTEM BUMI–BULAN",
+    subtitle: "Dua dunia yang saling memengaruhi melalui gravitasi",
+    summary: "Bulan mengorbit Bumi dan bersama-sama keduanya mengorbit Matahari. Gravitasi Bulan berperan besar pada pasang surut laut, sementara pertukaran momentum perlahan mengubah rotasi Bumi dan orbit Bulan.",
+    context: "Bulan tidak 'menjaga Bumi tetap diam'. Pengaruhnya lebih halus: dinamika pasang surut dan interaksi gravitasi berkontribusi pada evolusi rotasi dan orientasi sistem Bumi–Bulan dalam jangka panjang.",
+    facts: [
+      "Jarak rata-rata Bumi–Bulan sekitar 384.400 kilometer.",
+      "Pasang surut terutama dipengaruhi gravitasi Bulan, dengan kontribusi penting dari Matahari.",
+      "Bulan perlahan menjauh dari Bumi beberapa sentimeter per tahun menurut pengukuran laser."
+    ],
+    source: "https://science.nasa.gov/moon/facts/",
+    sourceName: "NASA Science",
+    location: null,
+    images: [{
+      src: "assets/earth/moon-system-diagram.svg",
+      alt: "Diagram konseptual sistem Bumi dan Bulan",
+      credit: "Visualisasi ANTARA berdasarkan data NASA",
+      source: "https://science.nasa.gov/moon/facts/",
+      caption: "Sistem Bumi–Bulan · jarak dan ukuran tidak berskala",
+      fit: "contain",
+      type: "DIAGRAM ILMIAH"
+    }]
+  },
+  {
+    title: "Dunia yang Dapat Dihuni",
+    kicker: "HABITABILITAS",
+    subtitle: "Satu-satunya planet yang saat ini diketahui pasti menopang kehidupan",
+    summary: "Habitabilitas Bumi bukan hasil satu faktor tunggal. Air cair, sumber energi, kimia yang kaya, atmosfer, siklus geologi, serta rentang lingkungan yang relatif stabil bekerja sebagai sistem yang saling terkait.",
+    context: "Pernyataan ini tidak berarti Bumi pasti satu-satunya dunia berkehidupan di alam semesta. Artinya, sampai sekarang Bumi adalah satu-satunya tempat dengan kehidupan yang telah dikonfirmasi secara langsung.",
+    facts: [
+      "Air cair tersedia dalam jumlah besar di permukaan.",
+      "Atmosfer dan samudra membantu mengatur distribusi panas dan tekanan permukaan.",
+      "Matahari menyediakan sumber energi utama bagi sebagian besar ekosistem permukaan."
+    ],
+    source: "https://astrobiology.nasa.gov/research/life-detection/about/",
+    sourceName: "NASA Astrobiology",
+    location: null,
+    images: [{
+      src: "assets/earth/habitability-diagram.svg",
+      alt: "Diagram faktor-faktor yang mendukung habitabilitas Bumi",
+      credit: "Visualisasi ANTARA berdasarkan konsep astrobiologi NASA",
+      source: "https://astrobiology.nasa.gov/research/life-detection/about/",
+      caption: "Habitabilitas Bumi · faktor saling terkait, bukan daftar syarat universal",
+      fit: "contain",
+      type: "DIAGRAM ILMIAH"
+    }]
   }
 ];
 
@@ -215,6 +380,7 @@ window.EarthScene = class EarthScene {
     this.cameraOffset = { x: 0, y: 0 };
     this.tick = this.tick.bind(this);
     this.exploring = false;
+    this.fullExploring = false;
     this.topicIndex = 0;
     this.pose = { yaw: 4.58, pitch: 0, roll: -0.18 };
     this.poseTarget = { ...this.pose };
@@ -348,6 +514,44 @@ window.EarthScene = class EarthScene {
         this.render();
       }
     }
+    this.wake();
+  }
+
+  beginFullExplorationFocus(region = null) {
+    if (!this.active || this.travelMode) return;
+    if (this.exploring) this.exitExploration(false);
+    this.fullExploring = true;
+    this.information.inert = true;
+    this.element.classList.add("is-full-focus");
+    this.element.classList.remove("is-full-surface-active");
+    if (region?.latitude != null && region?.longitude != null) {
+      const yaw = -Math.PI / 2 - region.longitude * Math.PI / 180;
+      const delta = Math.atan2(Math.sin(yaw - this.pose.yaw), Math.cos(yaw - this.pose.yaw));
+      this.poseTarget = { yaw: this.pose.yaw + delta, pitch: region.latitude * Math.PI / 180, roll: 0 };
+      this.element.classList.add("is-full-descending");
+    } else {
+      this.element.classList.remove("is-full-descending");
+    }
+    this.wake();
+  }
+
+  completeFullExplorationHandoff() {
+    if (!this.fullExploring) return;
+    this.element.classList.add("is-full-surface-active");
+    this.element.classList.remove("is-full-descending");
+  }
+
+  returnFromFullExplorationToSelector() {
+    if (!this.fullExploring) return;
+    this.element.classList.remove("is-full-surface-active", "is-full-descending");
+    this.element.classList.add("is-full-focus");
+    this.wake();
+  }
+
+  endFullExplorationFocus() {
+    this.fullExploring = false;
+    this.element.classList.remove("is-full-focus", "is-full-descending", "is-full-surface-active");
+    this.information.inert = false;
     this.wake();
   }
 

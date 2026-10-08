@@ -166,7 +166,7 @@ def main():
 
         # Every real Earth/Mars entry exposes exactly two distinct source identities.
         dataset = browser.evaluate("""(() => ({
-          earth: EARTH_EXPLORATION_STOPS.slice(1).map(stop => ({ title: stop.title, images: ExplorationMedia.getImages(stop).map(x => x.src) })),
+          earth: EARTH_EXPLORATION_STOPS.filter(stop => stop.location).map(stop => ({ title: stop.title, images: ExplorationMedia.getImages(stop).map(x => x.src) })),
           mars: MARS_EXPLORATION_STOPS.map(stop => ({ title: stop.title, images: ExplorationMedia.getImages(stop).map(x => x.src) }))
         }))()""")
         assert len(dataset["earth"]) == 6
@@ -191,7 +191,7 @@ def main():
           earth.start({settled:true}); earth.element.style.opacity='1'; earth.enterExploration();
         })()""")
         time.sleep(.4)
-        browser.evaluate("earth.setExplorationStop(6); earth.pose={...earth.poseTarget}; earth.render()")
+        browser.evaluate("earth.setExplorationStop(11); earth.pose={...earth.poseTarget}; earth.render()")
         wait_for(browser, "document.querySelectorAll('#earth-marker-media .exploration-marker-frame').length >= 1")
         earth_bounds = browser.evaluate("""(()=>{const r=document.getElementById('earth-marker-media').getBoundingClientRect();return {l:r.left,t:r.top,r:r.right,b:r.bottom,w:innerWidth,h:innerHeight}})()""")
         assert earth_bounds["l"] >= -1 and earth_bounds["t"] >= -1 and earth_bounds["r"] <= earth_bounds["w"] + 1 and earth_bounds["b"] <= earth_bounds["h"] + 1, earth_bounds
@@ -241,7 +241,7 @@ def main():
         assert browser.evaluate("document.querySelectorAll('#earth-marker-media img').length===1")
 
         # Changing selection clears old preview/modal state.
-        browser.evaluate("earth.setExplorationStop(1); earth.pose={...earth.poseTarget}; earth.render()")
+        browser.evaluate("earth.setExplorationStop(11); earth.pose={...earth.poseTarget}; earth.render()")
         wait_for(browser, "document.querySelectorAll('#earth-marker-media .exploration-marker-frame').length>=1")
         old_src = browser.evaluate("document.querySelector('#earth-marker-media img').getAttribute('src')")
         browser.evaluate("earth.setExplorationStop(6); earth.pose={...earth.poseTarget}; earth.render()")

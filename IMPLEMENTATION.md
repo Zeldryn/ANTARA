@@ -138,8 +138,7 @@ Proyek lengkap beserta aset lokal, dokumentasi, dan skrip verifikasi. Cache brow
 # Implementasi eksplorasi Bumi
 
 Bumi kini membuka intro `Bumi.` dan `Si Planet Biru.`. Kartu fakta baru muncul
-setelah tombol `Jelajahi Bumi` ditekan. Ada 11 topik: empat fakta sains dan tujuh
-karena planet tersebut belum tersedia dalam proyek sumber.
+setelah tombol `Jelajahi Bumi` ditekan. Ada 14 topik: enam konsep/sistem Bumi, enam Rekor & Ekstrem berbasis lokasi nyata, sistem Bumi–Bulan, dan habitabilitas. Slide non-lokasi memakai diagram/visualisasi, sedangkan slide lokasi mempertahankan rotasi globe, marker, callout, dan koordinat nyata.
 
 ## Berkas dan sistem yang digunakan
 
