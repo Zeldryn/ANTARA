@@ -297,7 +297,7 @@
             float venusRough = venusTriSample(uVenusDetail, vVenusWorldPosition, venusGeomNormal, uVenusDetailScale * 0.72);
             roughnessFactor = clamp(roughnessFactor + (venusRough - 0.5) * 0.15, 0.68, 0.99);`);
       };
-      material.customProgramCacheKey = () => `antara-venus-science-terrain-v4-${this.quality.name}`;
+      material.customProgramCacheKey = () => `antara-venus-morphology-terrain-v5-${this.quality.name}`;
       return material;
     }
     geoForWorld(x, z, poi = this.poi) {
@@ -306,39 +306,172 @@
       const lon = eastLon(poi.longitudeEast + x / (KM_PER_DEG * cosLat));
       return { lat, lon };
     }
-    fallbackHeight(x, z, poi = this.poi) {
-      const n = fbm(x, z), micro = Math.sin(x * 1.6 + z * .3) * Math.cos(z * 1.25 - x * .22) * .045;
-      if (poi.profile === "shield") { const r = Math.hypot(x * .86, z); return .35 + n * .32 + 5.4 * Math.exp(-(r * r) / 92) - .55 * Math.exp(-(r * r) / 2.3) + micro; }
-      if (poi.profile === "mountain") { const a = ridge(Math.sin((x + z * .32) * .46)), b = ridge(Math.sin((z - x * .18) * .58)); return 4.7 + n * .44 + a * b * 1.2 + micro; }
-      if (poi.profile === "plateau") { const r = Math.hypot(x * .72, z); return 2.2 + 2.0 * smooth(1 - r / 24) + n * .28 + micro; }
-      if (poi.profile === "tessera") { const a = ridge(Math.sin(x * .62 + z * .25)), b = ridge(Math.sin(z * .58 - x * .31)); return 1.1 + n * .24 + a * b * .7 + micro; }
-      return 1.2 + n * .34 + Math.sin(x * .10) * Math.cos(z * .08) * .45 + micro;
+    rotatedCoords(x, z, angleDeg) {
+      const a = angleDeg * DEG, c = Math.cos(a), s = Math.sin(a);
+      return { u: x * c + z * s, v: -x * s + z * c };
     }
-    microHeight(x, z) {
-      const p = this.poi.profile;
-      const base = fbm(x * 2.4 + 17, z * 2.4 - 11) * (p === "tessera" ? .045 : .028);
-      if (p === "tessera") return base + ridge(Math.sin(x * .85 + z * .31)) * ridge(Math.sin(z * .72 - x * .28)) * .035;
-      if (p === "mountain") return base + ridge(Math.sin(x * .34 + z * .11)) * .018;
-      if (p === "highland") return base + Math.sin(x * .27 + z * .16) * .018;
-      if (p === "shield") return base + Math.sin(x * .19 - z * .07) * .012;
-      return base;
+    ridgeBand(x, z, angleDeg, spacingKm, sharpness = 5, warpKm = 0) {
+      const q = this.rotatedCoords(x, z, angleDeg);
+      const warp = warpKm ? Math.sin(q.v * .13 + fbm(q.v * .22, q.u * .05) * 1.8) * warpKm : 0;
+      const frequencyWarp = 1 + fbm(q.u * .055 + 19, q.v * .045 - 7) * .11;
+      const phase = (q.u + warp) * Math.PI / Math.max(.4, spacingKm) * frequencyWarp;
+      return Math.pow(clamp(ridge(Math.sin(phase)), 0, 1), sharpness);
+    }
+    troughBand(x, z, angleDeg, spacingKm, sharpness = 7, warpKm = 0) {
+      return this.ridgeBand(x, z, angleDeg, spacingKm, sharpness, warpKm);
+    }
+    gaussianMask(x, z, cx, cz, rx, rz, angleDeg = 0) {
+      const q = this.rotatedCoords(x - cx, z - cz, angleDeg);
+      return Math.exp(-((q.u * q.u) / Math.max(.01, rx * rx) + (q.v * q.v) / Math.max(.01, rz * rz)));
+    }
+    regionalSignals(x, z, poi = this.poi) {
+      const p = poi.profile;
+      if (p === "tessera") {
+        const maskA = clamp(.58 + fbm(x * .075 + 7, z * .070 - 13) * .58, .08, 1);
+        const maskB = clamp(.55 + fbm(x * .066 - 23, z * .082 + 17) * .60, .06, 1);
+        const maskCross = clamp(.34 + fbm(x * .052 + 41, z * .060 + 8) * .52, 0, .82);
+        const ridgeA = this.ridgeBand(x, z, 28, 5.5, 6, 2.45) * maskA;
+        const ridgeB = this.ridgeBand(x, z, -41, 7.1, 6, 2.15) * maskB;
+        const trough = this.troughBand(x, z, 72, 14.8, 8, 2.75) * clamp(.55 + fbm(x * .05 - 9, z * .055 + 29) * .55, .12, 1);
+        const cross = this.ridgeBand(x, z, 5, 10.6, 7, 1.75) * maskCross;
+        const smoothLow = clamp(
+          this.gaussianMask(x, z, 13, -9, 10, 6, 22) +
+          this.gaussianMask(x, z, -18, 16, 8, 12, -31) +
+          this.gaussianMask(x, z, 29, 18, 11, 7, 48) +
+          this.gaussianMask(x, z, -34, -22, 12, 8, 8), 0, 1
+        );
+        return { ridgeA, ridgeB, trough, cross, smoothLow, structure: clamp(ridgeA * .68 + ridgeB * .62 + cross * .22 + trough * .28, 0, 1) };
+      }
+      if (p === "mountain") {
+        const ridgeA = this.ridgeBand(x, z, 12, 4.4, 6, .38);
+        const ridgeB = this.ridgeBand(x, z, 16, 7.8, 5, .55);
+        const trough = this.troughBand(x, z, 102, 18, 8, .45);
+        return { ridgeA, ridgeB, trough, smoothLow: 0, structure: clamp(ridgeA * .72 + ridgeB * .38 + trough * .24, 0, 1) };
+      }
+      if (p === "shield") {
+        const r = Math.hypot(x * .86, z);
+        const angle = Math.atan2(z, x);
+        const flow = Math.pow(clamp(ridge(Math.sin(angle * 8.0 + r * .34 + Math.sin(angle * 3) * .9)), 0, 1), 5);
+        const fracture = this.troughBand(x, z, 24, 16.0, 8, .65);
+        const apron = smooth(1 - clamp((r - 9) / 58, 0, 1));
+        return { ridgeA: flow * apron, ridgeB: 0, trough: fracture, smoothLow: 0, structure: clamp(flow * .72 * apron + fracture * .18, 0, 1) };
+      }
+      if (p === "plateau") {
+        const r = Math.hypot(x * .72, z);
+        const edge = smooth(clamp((r - 15) / 24, 0, 1));
+        const marginA = this.ridgeBand(x, z, 34, 7.4, 6, .75) * edge;
+        const marginB = this.ridgeBand(x, z, -18, 11.5, 6, .55) * edge;
+        const graben = this.troughBand(x, z, 88, 20, 8, .75);
+        return { ridgeA: marginA, ridgeB: marginB, trough: graben, smoothLow: 1 - edge, structure: clamp(marginA * .62 + marginB * .42 + graben * .18, 0, 1) };
+      }
+      // Aphrodite / Ovda style broad highland: several structural generations, but not a uniform cross-hatch.
+      const maskA = clamp(.54 + fbm(x * .060 + 11, z * .052 - 18) * .56, .05, 1);
+      const maskB = clamp(.40 + fbm(x * .050 - 37, z * .064 + 14) * .52, 0, .92);
+      const ridgeA = this.ridgeBand(x, z, 18, 8.6, 5, 2.4) * maskA;
+      const ridgeB = this.ridgeBand(x, z, -29, 13.6, 5, 2.8) * maskB;
+      const trough = this.troughBand(x, z, 78, 21.5, 8, 3.1) * clamp(.44 + fbm(x * .045 + 5, z * .052 - 21) * .48, .08, .95);
+      const lavaLow = clamp(
+        this.gaussianMask(x, z, -14, 10, 15, 9, -14) +
+        this.gaussianMask(x, z, 26, -17, 17, 10, 31) +
+        this.gaussianMask(x, z, 38, 22, 12, 18, -4), 0, 1
+      );
+      return { ridgeA, ridgeB, trough, smoothLow: lavaLow, structure: clamp(ridgeA * .56 + ridgeB * .42 + trough * .24, 0, 1) };
+    }
+    regionalStructureHeight(x, z, poi = this.poi, measured = false) {
+      const p = poi.profile, s = this.regionalSignals(x, z, poi);
+      const scale = measured ? 1 : 1.85;
+      const micro = fbm(x * 2.7 + 17, z * 2.7 - 11) * (p === "tessera" ? .026 : .018);
+      if (p === "tessera") {
+        // Alpha Regio: two cross-cutting ridge populations + fault troughs + irregular upland blocks.
+        const blocks = (fbm(x * .18 + 31, z * .18 - 13) * .10 + fbm(x * .39 - 9, z * .31 + 22) * .045) * (1 - s.smoothLow * .72);
+        const ridged = ((s.ridgeA - .10) * .105 + (s.ridgeB - .10) * .095 + (s.cross - .08) * .045) * (1 - s.smoothLow * .76);
+        const faults = -(s.trough - .04) * .115 * (1 - s.smoothLow * .45);
+        const infill = -s.smoothLow * .055;
+        return (blocks + ridged + faults + infill + micro) * scale;
+      }
+      if (p === "mountain") {
+        // Maxwell Montes: parallel, elongated compressional ridges instead of random alpine bumps.
+        const envelope = .72 + .28 * smooth(1 - clamp(Math.abs(this.rotatedCoords(x, z, 12).v) / 58, 0, 1));
+        return (((s.ridgeA - .10) * .125 + (s.ridgeB - .10) * .075 - (s.trough - .04) * .055) * envelope + micro) * scale;
+      }
+      if (p === "shield") {
+        // Maat Mons: radial/ribbon-like flow texture over a broad measured shield and fractured plains.
+        const r = Math.hypot(x * .86, z);
+        const flowMask = smooth(1 - clamp((r - 4) / 70, 0, 1));
+        const plainsFracture = (this.ridgeBand(x, z, -27, 21, 8, .7) - .05) * .030;
+        return (((s.ridgeA - .08) * .072 * flowMask - (s.trough - .04) * .027 + plainsFracture) + micro) * scale;
+      }
+      if (p === "plateau") {
+        // Ishtar/Lakshmi context: smoother plateau interior, increasingly deformed margins.
+        const edgeStructure = (s.ridgeA - .08) * .095 + (s.ridgeB - .08) * .070 - (s.trough - .04) * .040;
+        const interior = fbm(x * .16 + 8, z * .16 - 5) * .020 * s.smoothLow;
+        return (edgeStructure + interior + micro * (.55 + .45 * (1 - s.smoothLow))) * scale;
+      }
+      // Aphrodite / Ovda: broad deformed highland, curvilinear ridge systems, long graben, smoother flooded lows.
+      const deformed = ((s.ridgeA - .09) * .080 + (s.ridgeB - .09) * .070 - (s.trough - .04) * .065) * (1 - s.smoothLow * .60);
+      const broad = fbm(x * .13 + 42, z * .13 - 27) * .050 * (1 - s.smoothLow * .35);
+      return (deformed + broad - s.smoothLow * .035 + micro) * scale;
+    }
+    fallbackHeight(x, z, poi = this.poi) {
+      const n = fbm(x * .62, z * .62), p = poi.profile;
+      let base;
+      if (p === "shield") {
+        const q = this.rotatedCoords(x + 2.8, z - 1.5, -9);
+        const r = Math.hypot(q.u * .78, q.v);
+        const shoulder = 4.25 * Math.exp(-(r * r) / 1320) + .72 * this.gaussianMask(x, z, -18, 9, 28, 17, 28);
+        const caldera = .34 * this.gaussianMask(x, z, 1.5, -1.2, 4.2, 3.1, 18);
+        const plainsTilt = .18 * Math.sin((x - z * .34) * .020) + .10 * fbm(x * .12 + 8, z * .12 - 3);
+        base = .42 + n * .14 + shoulder - caldera + plainsTilt;
+      } else if (p === "mountain") {
+        const q = this.rotatedCoords(x, z, 12);
+        const massifSide = smooth(clamp((q.v + 22) / 48, 0, 1));
+        const longWave = .52 * Math.sin(q.u * .043 + Math.sin(q.v * .018) * .8) * massifSide;
+        base = 3.55 + 3.05 * massifSide + longWave + n * (.12 + .12 * massifSide);
+      } else if (p === "plateau") {
+        const q = this.rotatedCoords(x + 4, z - 2, 11);
+        const plateau = smooth(clamp((q.v + 34) / 46, 0, 1));
+        const broadStep = .32 * smooth(clamp((q.u + 38) / 76, 0, 1));
+        base = 2.70 + 1.10 * plateau + broadStep + n * (.08 + .08 * (1 - plateau));
+      } else if (p === "tessera") {
+        const broad = fbm(x * .18, z * .18) * .32;
+        base = 1.35 + broad;
+      } else {
+        const q = this.rotatedCoords(x, z, 20);
+        base = 1.55 + fbm(q.u * .15, q.v * .15) * .55 + Math.sin(q.u * .045) * .22;
+      }
+      return base + this.regionalStructureHeight(x, z, poi, false);
     }
     height(x, z, poi = this.poi) {
       const geo = this.geoForWorld(x, z, poi);
       const measured = this.provider.sample(poi, geo.lat, geo.lon);
-      if (Number.isFinite(measured)) return measured + this.microHeight(x, z);
+      if (Number.isFinite(measured)) return measured + this.regionalStructureHeight(x, z, poi, true);
       return this.fallbackHeight(x, z, poi);
     }
     colorFor(h, slope, x, z) {
-      const T = this.THREE, p = this.poi.profile;
-      const variation = (hash2(x * .51, z * .47) - .5) * .10;
+      const T = this.THREE, p = this.poi.profile, s = this.regionalSignals(x, z, this.poi);
+      const granular = (hash2(x * .51, z * .47) - .5) * .055;
+      const broad = fbm(x * .12 + 9, z * .12 - 7) * .030;
       let c;
-      if (p === "shield") c = h > 6 ? new T.Color("#6d4129") : h > 3 ? new T.Color("#82492d") : new T.Color("#995a34");
-      else if (p === "mountain") c = h > 8 ? new T.Color("#9e724b") : h > 5 ? new T.Color("#7b4b31") : new T.Color("#8f5736");
-      else if (p === "plateau") c = h > 5 ? new T.Color("#865333") : new T.Color("#a16239");
-      else if (p === "tessera") c = slope > .45 ? new T.Color("#74402b") : new T.Color(h > 2.5 ? "#875036" : "#9d5b37");
-      else c = slope > .50 ? new T.Color("#6e402d") : new T.Color(h > 3 ? "#7e4a31" : "#9a5b38");
-      c.offsetHSL(0, 0, variation - slope * .035); return c;
+      if (p === "shield") {
+        const flowDark = clamp(s.ridgeA * .65 + s.trough * .22, 0, 1);
+        c = new T.Color(h > 5.8 ? "#73503d" : h > 2.6 ? "#875c43" : "#9a6a49");
+        c.lerp(new T.Color("#5b3b30"), flowDark * .32 + slope * .14);
+      } else if (p === "mountain") {
+        c = new T.Color(h > 8.2 ? "#a48464" : h > 5.2 ? "#81614c" : "#8f684d");
+        c.lerp(new T.Color("#5b4438"), clamp(s.ridgeA * .28 + slope * .34, 0, .48));
+      } else if (p === "plateau") {
+        c = new T.Color(s.smoothLow > .55 ? "#9a7458" : "#7e5c48");
+        c.lerp(new T.Color("#5d4337"), clamp(s.structure * .42 + slope * .20, 0, .50));
+      } else if (p === "tessera") {
+        c = new T.Color(s.smoothLow > .45 ? "#a67855" : "#80604d");
+        c.lerp(new T.Color("#b08a66"), clamp((s.ridgeA + s.ridgeB) * .18, 0, .26));
+        c.lerp(new T.Color("#513c34"), clamp(s.trough * .28 + slope * .30, 0, .52));
+      } else {
+        c = new T.Color(s.smoothLow > .45 ? "#9c7050" : h > 3.0 ? "#80604a" : "#8e674d");
+        c.lerp(new T.Color("#5f4437"), clamp(s.structure * .30 + slope * .26, 0, .48));
+      }
+      c.offsetHSL(0, -0.025, granular + broad - slope * .020);
+      return c;
     }
     cacheKey(cx, cz, segments) { return `${this.poi.id}:${this.provider.activeMode}:${cx}:${cz}:${segments}`; }
     geometry(cx, cz, segments) {
@@ -370,8 +503,9 @@
       while (this.geometryCache.size > this.quality.cacheLimit && candidates.length) { const [key, value] = candidates.shift(); value.geometry.dispose(); this.geometryCache.delete(key); }
     }
     desiredSegments(ring, distance) {
-      if (distance < 11) return this.quality.near;
-      if (distance < 24 || ring <= 1) return this.quality.mid;
+      const nearBoost = this.poi.profile === "tessera" ? 1.18 : this.poi.profile === "mountain" ? 1.10 : this.poi.profile === "highland" ? 1.06 : 1;
+      if (distance < 11) return Math.round(this.quality.near * nearBoost);
+      if (distance < 24 || ring <= 1) return Math.round(this.quality.mid * Math.min(1.10, nearBoost));
       if (ring <= 3) return this.quality.far;
       return this.quality.horizon;
     }
@@ -408,6 +542,15 @@
     async setLocation(poi) {
       this.poi = poi; this.lastStreamCX = Infinity; this.lastStreamCZ = Infinity;
       const mode = await this.provider.prepare(poi);
+      const materialProfiles = {
+        shield: { roughness: .88, bump: .085 },
+        mountain: { roughness: .94, bump: .125 },
+        highland: { roughness: .91, bump: .115 },
+        plateau: { roughness: .89, bump: .080 },
+        tessera: { roughness: .95, bump: .135 }
+      };
+      const visual = materialProfiles[poi.profile] || materialProfiles.highland;
+      this.material.roughness = visual.roughness; this.material.bumpScale = visual.bump;
       for (const mesh of this.chunks.values()) this.group.remove(mesh); this.chunks.clear();
       for (const entry of this.geometryCache.values()) entry.geometry.dispose(); this.geometryCache.clear();
       return mode;
@@ -473,9 +616,25 @@
       if (this.renderer) return; this.loadingStatus.textContent = "MENYIAPKAN RENDERER VENUS"; this.loadingProgress.style.transform = "scaleX(.18)";
       const THREE = await import("./assets/vendor/three/three.module.min.js"); if (token !== this.transitionToken) throw new Error("Persiapan dibatalkan."); this.THREE = THREE;
       this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" }); this.renderer.setPixelRatio(this.quality.dpr); this.renderer.outputColorSpace = THREE.SRGBColorSpace; this.renderer.toneMapping = THREE.ACESFilmicToneMapping; this.renderer.toneMappingExposure = 1.10; this.renderer.domElement.className = "mars-full-canvas"; this.viewport.replaceChildren(this.renderer.domElement);
-      this.scene = new THREE.Scene(); this.scene.background = new THREE.Color("#8a4d2d"); this.scene.fog = new THREE.FogExp2("#b86b3d", .028); this.camera = new THREE.PerspectiveCamera(67, 1, .03, 165); this.camera.rotation.order = "YXZ";
-      this.scene.add(new THREE.HemisphereLight("#ffe0aa", "#32130d", 1.75)); const sun = new THREE.DirectionalLight("#ffd3a0", 2.55); sun.position.set(-8, 12, 5); this.scene.add(sun);
+      this.scene = new THREE.Scene(); this.scene.background = new THREE.Color("#79513e"); this.scene.fog = new THREE.FogExp2("#9c7058", .0195); this.camera = new THREE.PerspectiveCamera(67, 1, .03, 165); this.camera.rotation.order = "YXZ";
+      this.hemi = new THREE.HemisphereLight("#ffe4bd", "#2b1714", 1.42); this.scene.add(this.hemi);
+      this.sun = new THREE.DirectionalLight("#ffd0a1", 3.05); this.sun.position.set(-16, 7.2, 9); this.scene.add(this.sun);
       this.topography = new MagellanTopographyProvider(); this.terrain = new VenusTerrain(THREE, this.scene, this.renderer, this.quality, this.topography); this.loadRadarMacroTexture(); this.loadingProgress.style.transform = "scaleX(.52)"; this.makeParticles(); this.loadingProgress.style.transform = "scaleX(.68)"; this.resize(); window.addEventListener("resize", () => this.resize(), { signal: this.abort.signal });
+    }
+    applyLocationEnvironment(location = this.location) {
+      if (!this.scene || !this.THREE) return;
+      const presets = {
+        maat: { bg: "#7c503a", fog: "#a66f4d", density: .0205, sky: "#ffe0b3", ground: "#2d1712", hemi: 1.34, sun: "#ffd1a3", sunI: 2.95, pos: [-16, 6.4, 11], exposure: 1.12 },
+        maxwell: { bg: "#725145", fog: "#98715c", density: .0182, sky: "#f6dfc4", ground: "#251816", hemi: 1.22, sun: "#ffd8b4", sunI: 3.35, pos: [-18, 5.4, 7], exposure: 1.16 },
+        aphrodite: { bg: "#785442", fog: "#9d735b", density: .0190, sky: "#ffe0bd", ground: "#2a1714", hemi: 1.28, sun: "#ffd2a7", sunI: 3.18, pos: [-14, 6.0, 12], exposure: 1.14 },
+        ishtar: { bg: "#735348", fog: "#967360", density: .0185, sky: "#f6dfc9", ground: "#271918", hemi: 1.24, sun: "#ffd9b7", sunI: 3.22, pos: [-17, 5.8, 8], exposure: 1.15 },
+        alpha: { bg: "#704f42", fog: "#94705e", density: .0176, sky: "#f2dcc5", ground: "#241817", hemi: 1.18, sun: "#ffd8b5", sunI: 3.42, pos: [-19, 4.8, 10], exposure: 1.17 }
+      };
+      const p = presets[location.id] || presets.aphrodite;
+      this.scene.background.set(p.bg); this.scene.fog.color.set(p.fog); this.scene.fog.density = p.density;
+      this.hemi?.color.set(p.sky); this.hemi?.groundColor.set(p.ground); if (this.hemi) this.hemi.intensity = p.hemi;
+      this.sun?.color.set(p.sun); if (this.sun) { this.sun.intensity = p.sunI; this.sun.position.set(...p.pos); }
+      if (this.renderer) this.renderer.toneMappingExposure = p.exposure;
     }
     async loadRadarMacroTexture() {
       try { const loader = new this.THREE.TextureLoader(); loader.setCrossOrigin?.("anonymous"); const texture = await loader.loadAsync(MAGELLAN_GLOBAL_RADAR); if (this.terrain) this.terrain.setMacroTexture(texture); }
@@ -504,7 +663,7 @@
       this.root.hidden = false; this.root.setAttribute("aria-hidden", "false"); this.root.className = "mars-full-exploration venus-full-exploration is-preparing"; document.getElementById("mission").classList.add("is-venus-full"); this.venus.beginFullExploration?.(this.location); this.loadingProgress.style.transform = "scaleX(.05)";
       try {
         await this.prepareRenderer(token); if (token !== this.transitionToken) return; this.loadingStatus.textContent = "MEMUAT TOPOGRAFI MAGELLAN"; this.loadingProgress.style.transform = "scaleX(.72)";
-        await this.terrain.setLocation(this.location); if (token !== this.transitionToken) return; this.resetCamera(); this.syncLocationHUD(); this.loadingStatus.textContent = "MENEMBUS LAPISAN AWAN VENUS"; this.loadingProgress.style.transform = "scaleX(1)"; await sleep(520); if (token !== this.transitionToken) return;
+        await this.terrain.setLocation(this.location); if (token !== this.transitionToken) return; this.applyLocationEnvironment(this.location); this.resetCamera(); this.syncLocationHUD(); this.loadingStatus.textContent = "MENEMBUS LAPISAN AWAN VENUS"; this.loadingProgress.style.transform = "scaleX(1)"; await sleep(520); if (token !== this.transitionToken) return;
         this.state = STATES.ENTERING; this.root.className = "mars-full-exploration venus-full-exploration is-entering"; await sleep(900); if (token !== this.transitionToken) return; this.loading.hidden = true; this.state = STATES.EXPLORING; this.root.className = "mars-full-exploration venus-full-exploration is-active"; this.tutorial.classList.add("is-visible"); this.showLocationCard(true); this.last = performance.now(); this.loop(this.last); document.getElementById("announcement").textContent = `Eksplorasi penuh Venus dimulai di ${this.location.name}.`;
       } catch (err) { console.error(err); this.state = STATES.ERROR; this.errorMessage.textContent = err.message || "Renderer Venus tidak dapat disiapkan."; this.error.hidden = false; this.loading.hidden = true; }
     }
@@ -524,7 +683,7 @@
     }
     async travelTo(location) {
       if (this.state !== STATES.EXPLORING || location.id === this.location.id) return; this.state = STATES.TRAVELLING; this.keys.clear(); if (document.pointerLockElement === this.viewport) document.exitPointerLock?.(); this.locationMenu.classList.remove("is-open"); this.locationToggle.setAttribute("aria-expanded", "false"); this.travelLabel.textContent = `MENUJU ${location.name.toUpperCase()}`; this.travelVeil.classList.add("is-visible");
-      await sleep(320); this.location = location; this.travelLabel.textContent = `MEMUAT MAGELLAN · ${location.name.toUpperCase()}`; await this.terrain.setLocation(location); this.resetCamera(); this.syncLocationHUD(); await sleep(420); this.travelVeil.classList.remove("is-visible"); this.state = STATES.EXPLORING; this.showLocationCard(true); document.getElementById("announcement").textContent = `Lokasi Venus: ${location.name}.`;
+      await sleep(320); this.location = location; this.travelLabel.textContent = `MEMUAT MAGELLAN · ${location.name.toUpperCase()}`; await this.terrain.setLocation(location); this.applyLocationEnvironment(location); this.resetCamera(); this.syncLocationHUD(); await sleep(420); this.travelVeil.classList.remove("is-visible"); this.state = STATES.EXPLORING; this.showLocationCard(true); document.getElementById("announcement").textContent = `Lokasi Venus: ${location.name}.`;
     }
     async exit() {
       if (this.state === STATES.IDLE || this.state === STATES.EXITING) return; const token = ++this.transitionToken; this.state = STATES.EXITING; this.keys.clear(); if (document.pointerLockElement === this.viewport) document.exitPointerLock?.(); this.locationMenu.classList.remove("is-open"); this.landmarkCard?.classList.remove("is-visible"); if (this.cardOpen) this.cardOpen.hidden = true; this.root.classList.add("is-exiting");

@@ -33,9 +33,15 @@ If the remote PDS frame cannot be fetched, ANTARA keeps the exploration function
 
 The terrain material keeps the global NASA/JPL Magellan radar-derived surface context. Radar brightness is treated as radar/scattering information, not visible-light natural color. The educational card labels authentic thumbnails as Magellan radar and, where relevant, simulated/false color.
 
-### Micro detail
+### Radar-informed regional morphology and micro detail
 
-Procedural detail is limited to small-scale rendering enrichment: rock breakup, fractures, bump/normal response, roughness variation, and tens-of-meters-scale micro relief. It is never used to replace the large-scale GTDR landform when measured topography is available.
+GTDR is roughly 4.64 km/pixel, so it cannot geometrically resolve many ridge, fault, graben, lava-flow and tessera patterns that are obvious in Magellan SAR. ANTARA therefore separates three levels:
+
+1. **Measured macro elevation**: Magellan GTDR remains the authoritative large-scale height field whenever the PDS frame is available.
+2. **Radar-informed mesostructure**: deterministic regional ridge/trough/flow masks reproduce the documented *morphological character* of each location at scales the GTDR cannot resolve. This layer is a scientific visualization aid and is not labelled as directly measured elevation.
+3. **Micro rendering**: triplanar rock breakup, bump/normal response and roughness variation provide near-camera surface readability.
+
+The meso and micro layers are intentionally modest in vertical amplitude so they do not replace or radically reshape measured GTDR macro topography.
 
 ## POI audits
 

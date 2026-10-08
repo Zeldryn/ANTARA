@@ -69,3 +69,21 @@ Mobile keeps the established ANTARA directional and altitude controls.
 ## Scientific scope
 
 See `VENUS_SCIENCE_AUDIT.md` for the required location-by-location comparison of the previous procedural implementation against Magellan/PDS/USGS/NASA references and the fixes applied.
+
+## 2026-09-27 morphology accuracy pass
+
+The flyable Venus world now separates three scales explicitly:
+
+- **Macro**: Magellan GTDR measured elevation whenever the archived PDS frame is available.
+- **Regional / meso morphology**: deterministic, radar-informed structural visualization used to restore ridge, trough, graben, flow and tessera character below GTDR's ~4.64 km/pixel sampling. It is not labelled as directly measured elevation.
+- **Micro**: triplanar detail, bump/normal response and roughness breakup.
+
+Regional profiles are no longer one universal Venus background:
+
+- Maat Mons: broad asymmetric shield + flow/fractured plains context.
+- Maxwell Montes: elongated massif transition + parallel compressional ridge character.
+- Aphrodite Terra: broad deformed highland + multiple structural generations + graben + smoother flooded lows.
+- Ishtar Terra: smoother plateau/highland interior + deformed mountain-margin transition.
+- Alpha Regio: multiple cross-cutting ridge fields + fault/trough network + irregular blocks + smoother local volcanic lows.
+
+Atmospheric fog was reduced enough to preserve nearby geological contrast while keeping a dense Venus horizon. Lighting is now location-tuned and more directional so structural relief reads through haze. The existing educational card, GTDR fallback labels, chunk streaming, LOD, frustum culling, pointer lock and re-entry lifecycle remain in place.
