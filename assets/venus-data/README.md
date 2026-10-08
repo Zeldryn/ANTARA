@@ -62,3 +62,9 @@ python tools/prepare_venus_magellan_data.py --global-topography /path/to/Venus_M
 ```
 
 For a competition deployment, generate these local assets before uploading the site. The runtime can attempt remote fallbacks, but local assets avoid CORS and network reliability problems.
+
+## Runtime resilience added in hotfix
+
+If the regional Float32 crops are not present, ANTARA now tries the local PDS byte grid, a same-origin PHP cache endpoint (`venus-data-proxy.php?asset=topogrd`), the direct NASA PDS byte grid, and the ASCII PDS grid. On PHP/XAMPP hosting, the proxy can cache the official 64,800-byte NASA PDS `TOPOGRD.IMG` locally so browser CORS does not block the fallback.
+
+If every scientific path fails, Full Exploration no longer hard-stops. It enters a clearly labelled `OFFLINE PREVIEW · NON-SCIENTIFIC TOPOGRAPHY` emergency mode. That generated relief is never labelled Magellan/GTDR data and exists only so the experience remains usable until scientific assets can be installed.

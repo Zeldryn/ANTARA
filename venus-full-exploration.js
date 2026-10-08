@@ -230,6 +230,8 @@
   const VENUS_REGIONAL_TOPO_HALF_EXTENT_KM = 330;
   const VENUS_REGIONAL_TOPO_TEMPLATE = "assets/venus-data/topography-{region}.f32";
   const VENUS_PDS_TOPO_LOCAL = "assets/venus-data/topogrd.img";
+  const VENUS_PDS_TOPO_LOCAL_ASCII = "assets/venus-data/topogrd.dat";
+  const VENUS_PDS_TOPO_PROXY = "venus-data-proxy.php?asset=topogrd";
   const VENUS_PDS_TOPO_REMOTE = "https://pds-geosciences.wustl.edu/mgn/mgn-v-rss-5-gravity-l2-v1/mg_5201/images/topogrd.img";
   const VENUS_PDS_TOPO_REMOTE_ASCII = "https://pds-geosciences.wustl.edu/mgn/mgn-v-rss-5-gravity-l2-v1/mg_5201/topo/topogrd.dat";
   const VENUS_WMS_ENDPOINT = "https://planetarymaps.usgs.gov/cgi-bin/mapserv";
@@ -247,6 +249,7 @@
       this.sourceLabel = "MAGELLAN TOPOGRAPHY · PDS GTDR 1°";
       this.sourceUrl = null;
       this.local = false;
+      this.emergencyApproximation = false;
     }
 
     async fetchWithTimeout(url, timeoutMs = 12000) {
@@ -316,13 +319,15 @@
       }
 
       const configured = window.ANTARA_VENUS_TOPOGRAPHY_URL;
-      const candidates = [configured, VENUS_PDS_TOPO_LOCAL, VENUS_PDS_TOPO_REMOTE].filter(Boolean);
-      for (const url of candidates) {
+      const binaryCandidates = [configured, VENUS_PDS_TOPO_LOCAL, VENUS_PDS_TOPO_PROXY, VENUS_PDS_TOPO_REMOTE].filter(Boolean);
+      for (const url of binaryCandidates) {
         try {
           const response = await this.fetchWithTimeout(url);
           this.grid = this.decodeImageBytes(await response.arrayBuffer());
           if (!this.regionalGrid) {
-            this.sourceLabel = "PDS MAGELLAN TOPOGRAPHY · 1° FALLBACK";
+            this.sourceLabel = url === VENUS_PDS_TOPO_PROXY
+              ? "PDS MAGELLAN TOPOGRAPHY · 1° SERVER-CACHED"
+              : "PDS MAGELLAN TOPOGRAPHY · 1° FALLBACK";
             this.sourceUrl = url;
             this.local = !/^https?:/i.test(url);
           }
@@ -332,21 +337,35 @@
           coarseError = error;
         }
       }
-      try {
-        const response = await this.fetchWithTimeout(VENUS_PDS_TOPO_REMOTE_ASCII, 15000);
-        this.grid = this.decodeAscii(await response.text());
-        if (!this.regionalGrid) {
-          this.sourceLabel = "PDS MAGELLAN TOPOGRAPHY · 1° ASCII FALLBACK";
-          this.sourceUrl = VENUS_PDS_TOPO_REMOTE_ASCII;
-          this.local = false;
+
+      for (const url of [VENUS_PDS_TOPO_LOCAL_ASCII, VENUS_PDS_TOPO_REMOTE_ASCII]) {
+        try {
+          const response = await this.fetchWithTimeout(url, 15000);
+          this.grid = this.decodeAscii(await response.text());
+          if (!this.regionalGrid) {
+            this.sourceLabel = "PDS MAGELLAN TOPOGRAPHY · 1° ASCII FALLBACK";
+            this.sourceUrl = url;
+            this.local = !/^https?:/i.test(url);
+          }
+          onProgress(0.82);
+          return this;
+        } catch (error) {
+          coarseError = error;
         }
-        onProgress(0.82);
-        return this;
-      } catch (error) {
-        coarseError = error;
       }
 
-      throw new Error(`Data topografi ilmiah Venus tidak tersedia. Jalankan tools/prepare_venus_magellan_data.py untuk membuat crop GTDR lokal. Regional: ${regionalError?.message || "tidak tersedia"}. Fallback: ${coarseError?.message || "tidak tersedia"}.`);
+      // Never hard-stop the experience because a scientific asset is absent.
+      // This emergency terrain is deliberately labelled NON-SCIENTIFIC and is
+      // used only when local GTDR, the same-origin PHP cache, and direct PDS
+      // fallbacks all fail. It keeps ANTARA usable without pretending that
+      // generated relief is Magellan elevation data.
+      this.emergencyApproximation = true;
+      this.sourceLabel = "OFFLINE PREVIEW · NON-SCIENTIFIC TOPOGRAPHY";
+      this.sourceUrl = null;
+      this.local = true;
+      console.warn("[ANTARA Venus] Scientific topography unavailable; using clearly-labelled offline preview terrain.", { regionalError, coarseError });
+      onProgress(0.82);
+      return this;
     }
 
     sampleRegional(latitude, longitudeEast) {
@@ -393,16 +412,66 @@
       return lerp(lerp(a, b, fc), lerp(c, d, fc), fr);
     }
 
+    sampleEmergency(latitude, longitudeEast) {
+      let deltaLon = wrapLongitudeEast(longitudeEast) - wrapLongitudeEast(this.region.longitudeEast);
+      if (deltaLon > 180) deltaLon -= 360;
+      if (deltaLon < -180) deltaLon += 360;
+      const cosLat = Math.max(0.18, Math.cos(this.region.latitude * DEG));
+      const x = deltaLon * KM_PER_DEG_LAT * cosLat;
+      const z = (this.region.latitude - latitude) * KM_PER_DEG_LAT;
+      const r = Math.hypot(x, z);
+      const gauss = (cx, cz, sx, sz, amplitude) => {
+        const dx = (x - cx) / sx, dz = (z - cz) / sz;
+        return amplitude * Math.exp(-(dx * dx + dz * dz));
+      };
+      const oriented = (angle, longScale, shortScale, spacing, amplitude, seed) => {
+        const ca = Math.cos(angle), sa = Math.sin(angle);
+        const u = x * ca + z * sa;
+        const v = -x * sa + z * ca;
+        const envelope = Math.exp(-((u / longScale) ** 2 + (v / shortScale) ** 2));
+        return envelope * (0.45 + 0.55 * Math.cos(v / spacing + valueNoise(u * 0.012, v * 0.012, seed) * 0.8)) * amplitude;
+      };
+      const broad = valueNoise(x * 0.010, z * 0.010, 701) * 0.22 + valueNoise(x * 0.025, z * 0.025, 709) * 0.10;
+      let h = broad;
+      if (this.region.id === "maat") {
+        const shield = gauss(0, -34, 92, 82, 7.0);
+        const shoulder = gauss(-34, -8, 66, 50, 1.0) + gauss(42, -24, 72, 58, 0.8);
+        const caldera = gauss(0, -34, 14, 12, -0.48);
+        h += shield + shoulder + caldera;
+      } else if (this.region.id === "maxwell") {
+        h += gauss(2, -12, 108, 68, 6.4);
+        h += oriented(-0.34, 165, 72, 6.8, 1.65, 733);
+        h += oriented(-0.34, 145, 60, 12.5, 0.72, 739);
+      } else if (this.region.id === "aphrodite") {
+        h += gauss(-10, -8, 145, 88, 2.2);
+        h += oriented(0.70, 170, 95, 8.5, 0.78, 751);
+        h += oriented(-0.72, 150, 100, 11.5, 0.62, 757);
+        h -= gauss(42, 10, 58, 26, 0.75);
+      } else if (this.region.id === "ishtar") {
+        const plateau = 3.05 / (1 + Math.exp((r - 108) / 13));
+        const margin = Math.exp(-(((r - 103) / 28) ** 2)) * (0.42 + 0.58 * Math.abs(valueNoise(x * 0.028, z * 0.028, 773))) * 1.25;
+        h += plateau + margin + gauss(82, -34, 52, 78, 2.0);
+      } else if (this.region.id === "alpha") {
+        h += gauss(0, -4, 115, 105, 1.35);
+        h += oriented(0.78, 150, 112, 7.4, 0.83, 787);
+        h += oriented(-0.80, 150, 112, 8.6, 0.76, 797);
+        h -= gauss(-26, 24, 28, 48, 0.55);
+      }
+      return h;
+    }
+
     sample(latitude, longitudeEast) {
       const regional = this.sampleRegional(latitude, longitudeEast);
       if (Number.isFinite(regional)) return regional;
       if (this.grid) return this.sampleRawGrid(latitude, longitudeEast);
+      if (this.emergencyApproximation) return this.sampleEmergency(latitude, longitudeEast);
       throw new Error("Magellan GTDR belum dimuat.");
     }
 
     clear() {
       this.grid = null;
       this.regionalGrid = null;
+      this.emergencyApproximation = false;
       this.sourceUrl = null;
     }
   }
