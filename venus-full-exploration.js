@@ -120,8 +120,8 @@
   function qualityTier() {
     const mobile = matchMedia("(max-width: 760px), (pointer: coarse)").matches;
     const low = (navigator.deviceMemory && navigator.deviceMemory <= 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
-    if (mobile || low) return { name: "MOBILE", outerRadius: 5, chunkSize: 9.5, near: 48, mid: 24, far: 12, horizon: 6, dpr: 1.2, particles: 420, cacheLimit: 150 };
-    return { name: "HIGH", outerRadius: 7, chunkSize: 9.5, near: 88, mid: 44, far: 20, horizon: 8, dpr: Math.min(1.8, devicePixelRatio || 1), particles: 1050, cacheLimit: 280 };
+    if (mobile || low) return { name: "MOBILE", outerRadius: 5, chunkSize: 9.5, near: 48, mid: 24, far: 12, horizon: 6, dpr: 1.2, minDpr: .90, maxDpr: 1.35, pixelBudget: 2800000, particles: 420, cacheLimit: 150, lodSwaps: 1 };
+    return { name: "HIGH", outerRadius: 7, chunkSize: 9.5, near: 88, mid: 44, far: 20, horizon: 8, dpr: Math.min(1.8, devicePixelRatio || 1), minDpr: 1.0, maxDpr: 1.8, pixelBudget: 7600000, particles: 1050, cacheLimit: 280, lodSwaps: 2 };
   }
 
   function hash2(x, z) { const s = Math.sin(x * 127.1 + z * 311.7) * 43758.5453123; return s - Math.floor(s); }
@@ -330,10 +330,15 @@
         const maskA = clamp(.58 + fbm(x * .075 + 7, z * .070 - 13) * .58, .08, 1);
         const maskB = clamp(.55 + fbm(x * .066 - 23, z * .082 + 17) * .60, .06, 1);
         const maskCross = clamp(.34 + fbm(x * .052 + 41, z * .060 + 8) * .52, 0, .82);
-        const ridgeA = this.ridgeBand(x, z, 28, 5.5, 6, 2.45) * maskA;
-        const ridgeB = this.ridgeBand(x, z, -41, 7.1, 6, 2.15) * maskB;
-        const trough = this.troughBand(x, z, 72, 14.8, 8, 2.75) * clamp(.55 + fbm(x * .05 - 9, z * .055 + 29) * .55, .12, 1);
-        const cross = this.ridgeBand(x, z, 5, 10.6, 7, 1.75) * maskCross;
+        // Alpha is a tessera upland, not a field of tiny periodic bumps. Use several
+        // kilometre-scale structural families, with broad domain warping and local masks,
+        // so the pattern reads as intersecting ridges / troughs / fault valleys.
+        const provinceA = clamp(.30 + this.gaussianMask(x, z, -18, -4, 34, 24, 18), .30, 1);
+        const provinceB = clamp(.28 + this.gaussianMask(x, z, 22, 12, 31, 27, -24), .28, 1);
+        const ridgeA = this.ridgeBand(x, z, 27, 8.8, 6, 3.2) * maskA * provinceA;
+        const ridgeB = this.ridgeBand(x, z, -39, 12.4, 6, 3.6) * maskB * provinceB;
+        const trough = this.troughBand(x, z, 70, 19.5, 9, 4.2) * clamp(.55 + fbm(x * .05 - 9, z * .055 + 29) * .55, .12, 1);
+        const cross = this.ridgeBand(x, z, 4, 15.2, 7, 2.8) * maskCross;
         const smoothLow = clamp(
           this.gaussianMask(x, z, 13, -9, 10, 6, 22) +
           this.gaussianMask(x, z, -18, 16, 8, 12, -31) +
@@ -486,14 +491,26 @@
         heights[i] = h; xs[i] = wx; zs[i] = wz; pos.setY(i, h); uv.setXY(i, geo.lon / 360, (geo.lat + 90) / 180);
       }
       const hAt = (r, c) => heights[clamp(r, 0, segments) * count + clamp(c, 0, segments)];
+      const normals = new Float32Array(pos.count * 3);
+      const step = this.chunkSize / Math.max(1, segments);
       for (let row = 0; row <= segments; row += 1) for (let col = 0; col <= segments; col += 1) {
-        const i = row * count + col; const dx = Math.max(.04, Math.abs(xs[row * count + Math.min(segments, col + 1)] - xs[row * count + Math.max(0, col - 1)]));
-        const dz = Math.max(.04, Math.abs(zs[Math.min(segments, row + 1) * count + col] - zs[Math.max(0, row - 1) * count + col]));
-        const gx = (hAt(row, col + 1) - hAt(row, col - 1)) / dx, gz = (hAt(row + 1, col) - hAt(row - 1, col)) / dz;
-        const slope = clamp(Math.hypot(gx, gz) * 1.8, 0, 1), colr = this.colorFor(heights[i], slope, xs[i], zs[i]);
+        const i = row * count + col, wx = xs[i], wz = zs[i];
+        // Interior gradients reuse the generated grid. Border gradients sample just
+        // across the chunk edge, so adjacent chunks derive the same world-space normal.
+        const hL = col > 0 ? hAt(row, col - 1) : this.height(wx - step, wz);
+        const hR = col < segments ? hAt(row, col + 1) : this.height(wx + step, wz);
+        const hD = row > 0 ? hAt(row - 1, col) : this.height(wx, wz - step);
+        const hU = row < segments ? hAt(row + 1, col) : this.height(wx, wz + step);
+        const gx = (hR - hL) / Math.max(.04, step * 2), gz = (hU - hD) / Math.max(.04, step * 2);
+        const invN = 1 / Math.max(.0001, Math.hypot(gx, 1, gz));
+        normals[i * 3] = -gx * invN; normals[i * 3 + 1] = invN; normals[i * 3 + 2] = -gz * invN;
+        const slope = clamp(Math.hypot(gx, gz) * 1.8, 0, 1), colr = this.colorFor(heights[i], slope, wx, wz);
         colors[i * 3] = colr.r; colors[i * 3 + 1] = colr.g; colors[i * 3 + 2] = colr.b;
       }
-      uv.needsUpdate = true; pos.needsUpdate = true; g.setAttribute("color", new T.BufferAttribute(colors, 3)); g.computeVertexNormals(); g.computeBoundingSphere(); g.computeBoundingBox();
+      uv.needsUpdate = true; pos.needsUpdate = true;
+      g.setAttribute("color", new T.BufferAttribute(colors, 3));
+      g.setAttribute("normal", new T.BufferAttribute(normals, 3));
+      g.computeBoundingSphere(); g.computeBoundingBox();
       this.geometryCache.set(key, { geometry: g, lastUsed: performance.now() }); this.pruneGeometryCache(); return g;
     }
     pruneGeometryCache() {
@@ -509,10 +526,13 @@
       if (ring <= 3) return this.quality.far;
       return this.quality.horizon;
     }
-    ensureChunk(cx, cz, centerCX, centerCZ) {
+    ensureChunk(cx, cz, centerCX, centerCZ, camera) {
       const key = `${cx},${cz}`, ring = Math.max(Math.abs(cx - centerCX), Math.abs(cz - centerCZ));
       let mesh = this.chunks.get(key);
-      const d = Math.hypot((cx * this.chunkSize), (cz * this.chunkSize));
+      // LOD must be camera-relative. Measuring from world origin caused newly streamed
+      // chunks to enter with the wrong mesh density after the player travelled away.
+      const wx = cx * this.chunkSize, wz = cz * this.chunkSize;
+      const d = Math.hypot(camera.position.x - wx, camera.position.z - wz);
       const segments = this.desiredSegments(ring, d);
       if (!mesh) {
         mesh = new this.THREE.Mesh(this.geometry(cx, cz, segments), this.material); mesh.position.set(cx * this.chunkSize, 0, cz * this.chunkSize);
@@ -526,17 +546,48 @@
       this.lastStreamCX = centerCX; this.lastStreamCZ = centerCZ; const keep = new Set();
       for (let dz = -this.quality.outerRadius; dz <= this.quality.outerRadius; dz += 1) for (let dx = -this.quality.outerRadius; dx <= this.quality.outerRadius; dx += 1) {
         const ring = Math.max(Math.abs(dx), Math.abs(dz)); if (ring > this.quality.outerRadius) continue;
-        const cx = centerCX + dx, cz = centerCZ + dz, key = `${cx},${cz}`; keep.add(key); this.ensureChunk(cx, cz, centerCX, centerCZ);
+        const cx = centerCX + dx, cz = centerCZ + dz, key = `${cx},${cz}`; keep.add(key); this.ensureChunk(cx, cz, centerCX, centerCZ, camera);
       }
       for (const [key, mesh] of this.chunks) if (!keep.has(key)) { this.group.remove(mesh); this.chunks.delete(key); }
       this.pruneGeometryCache();
     }
     updateLOD(camera) {
       this.stream(camera);
+      // Rebuilding several dense chunks in one animation frame produces visible spikes.
+      // Queue candidates by proximity and pay only a tiny geometry budget per LOD pass.
+      const candidates = [];
       for (const mesh of this.chunks.values()) {
         const dx = camera.position.x - mesh.position.x, dz = camera.position.z - mesh.position.z, d = Math.hypot(dx, dz);
-        const desired = this.desiredSegments(mesh.userData.ring, d);
-        if (mesh.userData.segments !== desired) { mesh.geometry = this.geometry(mesh.userData.cx, mesh.userData.cz, desired); mesh.userData.segments = desired; }
+        let desired = this.desiredSegments(mesh.userData.ring, d);
+        const current = mesh.userData.segments;
+        const near = Math.round(this.quality.near * (this.poi.profile === "tessera" ? 1.18 : this.poi.profile === "mountain" ? 1.10 : this.poi.profile === "highland" ? 1.06 : 1));
+        const mid = Math.round(this.quality.mid * Math.min(1.10, this.poi.profile === "tessera" ? 1.18 : this.poi.profile === "mountain" ? 1.10 : this.poi.profile === "highland" ? 1.06 : 1));
+        // Hysteresis prevents a chunk from oscillating around the 11/24 km boundaries.
+        if (current === near && d < 13.0) desired = near;
+        else if (current === mid && d >= 9.5 && d < 27.0) desired = mid;
+        if (current !== desired) candidates.push({ mesh, desired, d });
+      }
+      candidates.sort((a, b) => a.d - b.d);
+      const budget = this.quality.lodSwaps || 1;
+      for (let i = 0; i < Math.min(budget, candidates.length); i += 1) {
+        const { mesh, desired } = candidates[i];
+        mesh.geometry = this.geometry(mesh.userData.cx, mesh.userData.cz, desired);
+        mesh.userData.segments = desired;
+      }
+    }
+    updateVisibility(camera) {
+      const dir = new this.THREE.Vector3();
+      camera.getWorldDirection(dir); dir.y = 0;
+      if (dir.lengthSq() < .0001) dir.set(0, 0, -1); else dir.normalize();
+      for (const mesh of this.chunks.values()) {
+        const vx = mesh.position.x - camera.position.x, vz = mesh.position.z - camera.position.z;
+        const dist = Math.hypot(vx, vz);
+        // Keep a generous safety ring fully alive. Far terrain substantially behind the
+        // camera is hidden, then becomes visible in the same frame as a fast turn.
+        if (dist < 24 || mesh.userData.ring <= 2) { mesh.visible = true; continue; }
+        const inv = 1 / Math.max(.001, dist);
+        const dot = vx * inv * dir.x + vz * inv * dir.z;
+        mesh.visible = dot > -.30;
       }
     }
     async setLocation(poi) {
@@ -579,7 +630,7 @@
       this.landmarkDescription = document.getElementById("venus-landmark-description"); this.landmarkFacts = document.getElementById("venus-landmark-facts"); this.landmarkSource = document.getElementById("venus-landmark-source"); this.landmarkCoordinateSource = document.getElementById("venus-landmark-coordinate-source"); this.landmarkTopographySource = document.getElementById("venus-landmark-topography-source");
       this.landmarkImage = document.getElementById("venus-landmark-image"); this.landmarkImageLabel = document.getElementById("venus-landmark-image-label"); this.landmarkDataBadge = document.getElementById("venus-landmark-data-badge");
       this.cardCollapse = document.getElementById("venus-card-collapse"); this.cardClose = document.getElementById("venus-card-close"); this.cardOpen = document.getElementById("venus-location-info-open");
-      this.state = STATES.IDLE; this.location = LOCATIONS[0]; this.quality = qualityTier(); this.keys = new Set(); this.yaw = 0; this.pitch = -.08; this.speed = 0; this.frame = null; this.last = 0; this.lodClock = 0; this.transitionToken = 0; this.abort = new AbortController(); this.cardClosed = false;
+      this.state = STATES.IDLE; this.location = LOCATIONS[0]; this.quality = qualityTier(); this.keys = new Set(); this.yaw = 0; this.pitch = -.08; this.speed = 0; this.velocity = { x: 0, y: 0, z: 0 }; this.frame = null; this.last = 0; this.lodClock = 0; this.hudClock = 0; this.statsClock = 0; this.statsFrames = 0; this.lowFpsWindows = 0; this.highFpsWindows = 0; this.transitionToken = 0; this.abort = new AbortController(); this.cardClosed = false; this.debugEnabled = new URLSearchParams(location.search).has("venusDebug");
       this.buildMenu(); this.bind();
     }
     get active() { return ![STATES.IDLE, STATES.ERROR].includes(this.state); }
@@ -615,11 +666,34 @@
     async prepareRenderer(token) {
       if (this.renderer) return; this.loadingStatus.textContent = "MENYIAPKAN RENDERER VENUS"; this.loadingProgress.style.transform = "scaleX(.18)";
       const THREE = await import("./assets/vendor/three/three.module.min.js"); if (token !== this.transitionToken) throw new Error("Persiapan dibatalkan."); this.THREE = THREE;
-      this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" }); this.renderer.setPixelRatio(this.quality.dpr); this.renderer.outputColorSpace = THREE.SRGBColorSpace; this.renderer.toneMapping = THREE.ACESFilmicToneMapping; this.renderer.toneMappingExposure = 1.10; this.renderer.domElement.className = "mars-full-canvas"; this.viewport.replaceChildren(this.renderer.domElement);
+      this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" }); this.currentDpr = this.calculateIdealDpr(); this.renderer.setPixelRatio(this.currentDpr); this.renderer.outputColorSpace = THREE.SRGBColorSpace; this.renderer.toneMapping = THREE.ACESFilmicToneMapping; this.renderer.toneMappingExposure = 1.10; this.renderer.domElement.className = "mars-full-canvas"; this.viewport.replaceChildren(this.renderer.domElement);
       this.scene = new THREE.Scene(); this.scene.background = new THREE.Color("#79513e"); this.scene.fog = new THREE.FogExp2("#9c7058", .0195); this.camera = new THREE.PerspectiveCamera(67, 1, .03, 165); this.camera.rotation.order = "YXZ";
       this.hemi = new THREE.HemisphereLight("#ffe4bd", "#2b1714", 1.42); this.scene.add(this.hemi);
       this.sun = new THREE.DirectionalLight("#ffd0a1", 3.05); this.sun.position.set(-16, 7.2, 9); this.scene.add(this.sun);
       this.topography = new MagellanTopographyProvider(); this.terrain = new VenusTerrain(THREE, this.scene, this.renderer, this.quality, this.topography); this.loadRadarMacroTexture(); this.loadingProgress.style.transform = "scaleX(.52)"; this.makeParticles(); this.loadingProgress.style.transform = "scaleX(.68)"; this.resize(); window.addEventListener("resize", () => this.resize(), { signal: this.abort.signal });
+    }
+    calculateIdealDpr() {
+      const w = Math.max(1, this.viewport?.clientWidth || innerWidth), h = Math.max(1, this.viewport?.clientHeight || innerHeight);
+      const budget = Math.sqrt(this.quality.pixelBudget / Math.max(1, w * h));
+      return clamp(Math.min(this.quality.dpr, this.quality.maxDpr, budget), this.quality.minDpr, this.quality.maxDpr);
+    }
+    adaptResolution(dt) {
+      this.statsClock += dt; this.statsFrames += 1;
+      if (this.statsClock < 1.5 || !this.renderer) return;
+      const fps = this.statsFrames / this.statsClock;
+      const ideal = this.calculateIdealDpr();
+      if (fps < 50 && this.currentDpr > this.quality.minDpr) {
+        this.lowFpsWindows += 1; this.highFpsWindows = 0;
+        if (this.lowFpsWindows >= 2) { this.currentDpr = Math.max(this.quality.minDpr, this.currentDpr - .10); this.renderer.setPixelRatio(this.currentDpr); this.resize(); this.lowFpsWindows = 0; }
+      } else if (fps > 57 && this.currentDpr < ideal - .04) {
+        this.highFpsWindows += 1; this.lowFpsWindows = 0;
+        if (this.highFpsWindows >= 3) { this.currentDpr = Math.min(ideal, this.currentDpr + .05); this.renderer.setPixelRatio(this.currentDpr); this.resize(); this.highFpsWindows = 0; }
+      } else { this.lowFpsWindows = 0; this.highFpsWindows = 0; }
+      if (this.debugEnabled) {
+        const info = this.renderer.info.render;
+        console.debug("[ANTARA Venus render]", { fps: Number(fps.toFixed(1)), frameMs: Number((1000 / Math.max(1, fps)).toFixed(2)), calls: info.calls, triangles: info.triangles, points: info.points, dpr: Number(this.currentDpr.toFixed(2)), chunks: this.terrain?.chunks.size || 0, cache: this.terrain?.geometryCache.size || 0 });
+      }
+      this.statsClock = 0; this.statsFrames = 0;
     }
     applyLocationEnvironment(location = this.location) {
       if (!this.scene || !this.THREE) return;
@@ -646,7 +720,7 @@
       g.setAttribute("position", new T.BufferAttribute(a, 3)); const m = new T.PointsMaterial({ color: "#ffd09a", size: .025, transparent: true, opacity: .24, depthWrite: false }); this.particles = new T.Points(g, m); this.scene.add(this.particles);
     }
     resize() { if (!this.renderer) return; const r = this.viewport.getBoundingClientRect(), w = Math.max(2, r.width), h = Math.max(2, r.height); this.renderer.setSize(w, h, false); this.camera.aspect = w / h; this.camera.updateProjectionMatrix(); }
-    resetCamera() { const h = this.terrain.height(0, 5); this.camera.position.set(0, Math.min(MAX_ALTITUDE_KM - .4, h + 1.55), 6.4); this.yaw = this.location.heading || 0; this.pitch = -.10; this.speed = 0; this.applyCameraRotation(); this.terrain.prime(this.camera); }
+    resetCamera() { const h = this.terrain.height(0, 5); this.camera.position.set(0, Math.min(MAX_ALTITUDE_KM - .4, h + 1.55), 6.4); this.yaw = this.location.heading || 0; this.pitch = -.10; this.speed = 0; this.velocity.x = this.velocity.y = this.velocity.z = 0; this.applyCameraRotation(); this.terrain.prime(this.camera); this.terrain.updateVisibility(this.camera); }
     applyCameraRotation() { this.camera.rotation.set(this.pitch, this.yaw, 0, "YXZ"); }
     dataBadgeText() { return this.topography?.activeMode === "GTDR_4_6KM" ? "MACRO RELIEF: MAGELLAN GTDR" : "MACRO RELIEF: FALLBACK (PDS UNAVAILABLE)"; }
     showLocationCard(force = true) { if (!this.landmarkCard) return; if (force) this.cardClosed = false; if (this.cardClosed) return; this.landmarkCard.classList.add("is-visible"); this.landmarkCard.classList.remove("is-collapsed"); this.cardCollapse?.setAttribute("aria-expanded", "true"); if (this.cardOpen) this.cardOpen.hidden = true; }
@@ -670,16 +744,27 @@
     updateMovement(dt) {
       if (this.state !== STATES.EXPLORING) return; const T = this.THREE, forward = new T.Vector3(-Math.sin(this.yaw), 0, -Math.cos(this.yaw)), right = new T.Vector3(Math.cos(this.yaw), 0, -Math.sin(this.yaw));
       let dx = 0, dz = 0, dy = 0; if (this.keys.has("KeyW") || this.keys.has("forward")) { dx += forward.x; dz += forward.z; } if (this.keys.has("KeyS") || this.keys.has("backward")) { dx -= forward.x; dz -= forward.z; } if (this.keys.has("KeyA") || this.keys.has("left")) { dx -= right.x; dz -= right.z; } if (this.keys.has("KeyD") || this.keys.has("right")) { dx += right.x; dz += right.z; } if (this.keys.has("KeyQ") || this.keys.has("down")) dy -= 1; if (this.keys.has("KeyE") || this.keys.has("up")) dy += 1;
-      const len = Math.hypot(dx, dz) || 1, boost = (this.keys.has("ShiftLeft") || this.keys.has("ShiftRight")) ? 3.1 : 1, move = 4.3 * boost * dt; this.camera.position.x += dx / len * move; this.camera.position.z += dz / len * move; this.camera.position.y += dy * 3.2 * boost * dt;
-      const ground = this.terrain.height(this.camera.position.x, this.camera.position.z), min = ground + MIN_CLEARANCE_KM; this.camera.position.y = clamp(this.camera.position.y, min, MAX_ALTITUDE_KM); this.speed = Math.hypot(dx, dz, dy) * 4.3 * boost; this.applyCameraRotation();
+      const len = Math.hypot(dx, dz) || 1, boost = (this.keys.has("ShiftLeft") || this.keys.has("ShiftRight")) ? 3.1 : 1;
+      const targetX = dx / len * 4.3 * boost, targetZ = dz / len * 4.3 * boost, targetY = dy * 3.2 * boost;
+      const moving = Math.abs(dx) + Math.abs(dz) + Math.abs(dy) > 0;
+      const response = 1 - Math.exp(-dt * (moving ? 12.5 : 17.0));
+      this.velocity.x += (targetX - this.velocity.x) * response; this.velocity.z += (targetZ - this.velocity.z) * response; this.velocity.y += (targetY - this.velocity.y) * response;
+      this.camera.position.x += this.velocity.x * dt; this.camera.position.z += this.velocity.z * dt; this.camera.position.y += this.velocity.y * dt;
+      const ground = this.terrain.height(this.camera.position.x, this.camera.position.z), min = ground + MIN_CLEARANCE_KM;
+      if (this.camera.position.y < min) { this.camera.position.y = min; if (this.velocity.y < 0) this.velocity.y *= .12; }
+      if (this.camera.position.y > MAX_ALTITUDE_KM) { this.camera.position.y = MAX_ALTITUDE_KM; if (this.velocity.y > 0) this.velocity.y = 0; }
+      this.speed = Math.hypot(this.velocity.x, this.velocity.z, this.velocity.y); this.applyCameraRotation();
     }
     geoPosition() { return this.terrain.geoForWorld(this.camera.position.x, this.camera.position.z, this.location); }
     updateHUD() { const g = this.terrain.height(this.camera.position.x, this.camera.position.z), clear = this.camera.position.y - g, geo = this.geoPosition(); this.hudCoordinates.textContent = fmtCoord(geo.lat, geo.lon); this.hudAltitude.textContent = `${fmtAlt(this.camera.position.y)} · ${fmtAlt(clear)} AGL`; this.hudSpeed.textContent = this.speed < 1 ? `${Math.round(this.speed * 1000)} M/S` : `${this.speed.toFixed(2)} KM/S`; }
     loop(now) {
-      if (!this.active || !this.renderer) return; const dt = Math.min(.05, Math.max(.001, (now - this.last) / 1000)); this.last = now; this.updateMovement(dt); this.lodClock += dt;
-      if (this.lodClock > .32) { this.terrain.updateLOD(this.camera); this.lodClock = 0; }
+      if (!this.active || !this.renderer) return; const dt = Math.min(.05, Math.max(.001, (now - this.last) / 1000)); this.last = now; this.updateMovement(dt); this.lodClock += dt; this.hudClock += dt;
+      if (this.lodClock > .28) { this.terrain.updateLOD(this.camera); this.lodClock = 0; }
+      // View culling is cheap enough to resolve every frame after the final camera pose.
+      this.terrain.updateVisibility(this.camera);
       if (this.particles) { this.particles.rotation.y += dt * .012; this.particles.position.x = this.camera.position.x * .7; this.particles.position.z = this.camera.position.z * .7; }
-      this.updateHUD(); this.renderer.render(this.scene, this.camera); this.frame = requestAnimationFrame(t => this.loop(t));
+      if (this.hudClock > .10) { this.updateHUD(); this.hudClock = 0; }
+      this.renderer.render(this.scene, this.camera); this.adaptResolution(dt); this.frame = requestAnimationFrame(t => this.loop(t));
     }
     async travelTo(location) {
       if (this.state !== STATES.EXPLORING || location.id === this.location.id) return; this.state = STATES.TRAVELLING; this.keys.clear(); if (document.pointerLockElement === this.viewport) document.exitPointerLock?.(); this.locationMenu.classList.remove("is-open"); this.locationToggle.setAttribute("aria-expanded", "false"); this.travelLabel.textContent = `MENUJU ${location.name.toUpperCase()}`; this.travelVeil.classList.add("is-visible");
