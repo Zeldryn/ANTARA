@@ -55,7 +55,7 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
       "Vesta memiliki kerak, mantel, dan inti yang terdiferensiasi, karakteristik yang membuatnya sangat penting bagi ilmu keplanetan."
     ],
     source: "https://science.nasa.gov/dwarf-planets/ceres/facts/",
-    images: [{ src: "./assets/asteroid-belt/ceres-vesta.svg", alt: "Ilustrasi Ceres dan Vesta", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/dwarf-planets/ceres/facts/", caption: "Ceres dan Vesta adalah dua dunia utama di sabuk asteroid.", fit: "contain" }]
+    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia21/pia21906/PIA21906.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600", alt: "Citra Dawn resolusi tinggi Ceres", credit: "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA", source: "https://science.nasa.gov/photojournal/high-resolution-ceres/", caption: "Ceres dipotret wahana Dawn · PIA21906", fit: "contain", type: "CITRA WAHANA" }, { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia15/pia15678/PIA15678.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1200", alt: "Citra global Vesta oleh Dawn", credit: "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA", source: "https://science.nasa.gov/photojournal/full-view-of-vesta/", caption: "Vesta dipotret wahana Dawn · PIA15678", fit: "contain", type: "CITRA WAHANA" }]
   },
   {
     kicker: "KOMPOSISI ASTEROID",

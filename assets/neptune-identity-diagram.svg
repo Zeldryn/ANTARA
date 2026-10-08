@@ -1,1 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720"><defs><radialGradient id="bg"><stop stop-color="#102854"/><stop offset="1" stop-color="#020817"/></radialGradient><radialGradient id="n"><stop stop-color="#5aa8e8"/><stop offset=".52" stop-color="#2458ad"/><stop offset="1" stop-color="#102b69"/></radialGradient><filter id="g"><feGaussianBlur stdDeviation="7"/></filter></defs><rect width="1200" height="720" fill="url(#bg)"/><text x="64" y="82" fill="#e8f3ff" font-family="Arial" font-size="32" letter-spacing="4">NEPTUNUS · PLANET KEDELAPAN</text><text x="66" y="112" fill="#7f9cc6" font-family="Arial" font-size="13" letter-spacing="2">VISUALISASI ANTARA · BERDASARKAN NASA SCIENCE</text><circle cx="730" cy="370" r="220" fill="#397ad1" opacity=".16" filter="url(#g)"/><circle cx="730" cy="370" r="182" fill="url(#n)"/><path d="M565 334 Q730 300 895 335" stroke="#99d3f5" stroke-width="7" opacity=".38" fill="none"/><path d="M580 410 Q730 385 880 420" stroke="#86bde7" stroke-width="5" opacity=".28" fill="none"/><ellipse cx="790" cy="335" rx="60" ry="27" fill="#112c63" opacity=".65"/><ellipse cx="840" cy="307" rx="35" ry="8" fill="#c8edff" opacity=".8"/><g fill="none" stroke="#576378" opacity=".55"><ellipse cx="730" cy="370" rx="256" ry="60"/><ellipse cx="730" cy="370" rx="282" ry="66"/></g><text x="70" y="245" fill="#dcecff" font-size="23" font-family="Arial">30,1 AU dari Matahari</text><text x="70" y="292" fill="#dcecff" font-size="23" font-family="Arial">Diameter ~49.528 km</text><text x="70" y="339" fill="#dcecff" font-size="23" font-family="Arial">1 tahun ~165 tahun Bumi</text><text x="70" y="386" fill="#dcecff" font-size="23" font-family="Arial">16 bulan diketahui</text><text x="70" y="433" fill="#dcecff" font-size="23" font-family="Arial">5 cincin utama</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="Identitas Neptunus">
+<defs>
+  <radialGradient id="bg"><stop offset="0" stop-color="#0d2b55"/><stop offset="1" stop-color="#020711"/></radialGradient>
+  <linearGradient id="blue"><stop stop-color="#4b9fe8"/><stop offset=".52" stop-color="#175eaa"/><stop offset="1" stop-color="#0b3268"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="10"/></filter>
+</defs>
+<rect width="1200" height="720" fill="url(#bg)"/>
+<text x="60" y="72" fill="#9ed4ff" font-size="22" font-family="Arial" letter-spacing="5">IDENTITAS NEPTUNUS</text>
+<text x="60" y="108" fill="#6686a7" font-size="14" font-family="Arial" letter-spacing="2">planet kedelapan · raksasa es</text>
+<circle cx="790" cy="360" r="175" fill="url(#blue)"/>
+<ellipse cx="790" cy="330" rx="155" ry="11" fill="#7bc1f0" opacity=".16"/>
+<ellipse cx="790" cy="396" rx="165" ry="8" fill="#8fd6ff" opacity=".14"/>
+<ellipse cx="855" cy="385" rx="60" ry="26" fill="#051f52" opacity=".62"/>
+<ellipse cx="820" cy="335" rx="96" ry="8" fill="#dff8ff" opacity=".42"/>
+<circle cx="790" cy="360" r="181" fill="none" stroke="#4fc5ff" stroke-opacity=".32" stroke-width="4"/>
+<g fill="none" stroke="#526274" stroke-width="4" opacity=".7">
+<ellipse cx="790" cy="360" rx="260" ry="56"/><ellipse cx="790" cy="360" rx="305" ry="64"/>
+</g>
+<text x="80" y="250" fill="#d7e8f6" font-size="34" font-family="Georgia">Dunia biru yang jauh</text>
+<text x="80" y="298" fill="#8ea7be" font-size="18" font-family="Arial">Atmosfer aktif, cincin redup, dan angin sangat cepat.</text>
+</svg>

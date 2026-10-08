@@ -16,7 +16,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
       "Jupiter terbentuk sekitar 4,6 miliar tahun lalu bersama Tata Surya."
     ],
     source: "https://science.nasa.gov/jupiter/jupiter-facts/",
-    images: [{ src: "./assets/jupiter-global-card.jpg", alt: "Visualisasi global Jupiter dengan pita atmosfer dan Bintik Merah Besar", credit: "Visualisasi ANTARA berdasarkan data NASA/Hubble", source: "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/", caption: "Jupiter · pita atmosfer global", fit: "contain" }]
+    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9JYWYARC4A8336KMKNTQ.tif?w=2000", alt: "Citra global Jupiter dengan pita atmosfer dan Bintik Merah Besar", credit: "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)", source: "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/", caption: "Jupiter · pita atmosfer global", fit: "contain" , type: "CITRA TELESKOP" }]
   },
   {
     kicker: "ATMOSFER RAKSASA",
@@ -29,7 +29,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
       "Jet atmosfer pada lintang yang berdekatan dapat bergerak ke arah berlawanan dan membentuk batas pita yang tajam."
     ],
     source: "https://science.nasa.gov/jupiter/jupiter-facts/",
-    images: [{ src: "./assets/jupiter-atmosphere-diagram.svg", alt: "Diagram edukasi pita atmosfer Jupiter", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/jupiter/jupiter-facts/", caption: "Zona, sabuk, dan badai atmosfer Jupiter", fit: "contain" }]
+    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9A3VN7VYXN5H6Z1GDG93.tif?w=2000", alt: "Peta atmosfer global Jupiter dari Hubble", credit: "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)", source: "https://science.nasa.gov/jupiter/jupiter-facts/", caption: "Zona, sabuk, dan badai atmosfer Jupiter", fit: "contain" , type: "CITRA TELESKOP" }]
   },
   {
     kicker: "BADAI RAKSASA",
@@ -42,7 +42,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
       "Data Juno menunjukkan struktur badai berlanjut ratusan kilometer ke bawah puncak awan."
     ],
     source: "https://science.nasa.gov/missions/juno/nasas-juno-probes-the-depths-of-jupiters-great-red-spot/",
-    images: [{ src: "./assets/jupiter-great-red-spot.jpg", alt: "Detail Bintik Merah Besar pada tekstur atmosfer Jupiter", credit: "Visualisasi ANTARA berdasarkan peta global Jupiter", source: "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/", caption: "Bintik Merah Besar dan aliran awan sekitarnya", fit: "cover" }]
+    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9JYWYARC4A8336KMKNTQ.tif?w=2000", alt: "Detail Bintik Merah Besar pada tekstur atmosfer Jupiter", credit: "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)", source: "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/", caption: "Bintik Merah Besar dan aliran awan sekitarnya", fit: "cover" , type: "CITRA TELESKOP" }]
   },
   {
     kicker: "ROTASI CEPAT",
@@ -82,8 +82,8 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
     ],
     source: "https://science.nasa.gov/jupiter/jupiter-facts/",
     images: [
-      { src: "./assets/jupiter-moons-diagram.svg", alt: "Diagram Io, Europa, Ganymede, dan Callisto", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/jupiter/moons/", caption: "Empat bulan Galilea", fit: "contain" },
-      { src: "./assets/jupiter-rings-diagram.svg", alt: "Diagram cincin tipis dan berdebu milik Jupiter", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/photojournal/jupiters-main-ring-and-halo/", caption: "Cincin lokal Jupiter · halo, main ring, gossamer", fit: "contain" }
+      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia01/pia01481/PIA01481.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1654&w=2081", alt: "Montase Jupiter dan bulan Galilea dari data Voyager", credit: "NASA/JPL", source: "https://science.nasa.gov/jupiter/moons/", caption: "Empat bulan Galilea", fit: "contain" , type: "CITRA WAHANA" },
+      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia09/pia09249/PIA09249.jpg?crop=faces%2Cfocalpoint&fit=clip&h=626&w=835", alt: "Citra cincin tipis Jupiter", credit: "NASA/Johns Hopkins University APL/Southwest Research Institute", source: "https://science.nasa.gov/photojournal/jupiters-main-ring-and-halo/", caption: "Cincin lokal Jupiter · halo, main ring, gossamer", fit: "contain" , type: "CITRA WAHANA" }
     ]
   },
   {

@@ -1,1 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720"><defs><radialGradient id="bg"><stop stop-color="#102854"/><stop offset="1" stop-color="#020817"/></radialGradient><radialGradient id="n"><stop stop-color="#5aa8e8"/><stop offset=".52" stop-color="#2458ad"/><stop offset="1" stop-color="#102b69"/></radialGradient><filter id="g"><feGaussianBlur stdDeviation="7"/></filter></defs><rect width="1200" height="720" fill="url(#bg)"/><text x="64" y="82" fill="#e8f3ff" font-family="Arial" font-size="32" letter-spacing="4">TRITON · ORBIT RETROGRADE</text><text x="66" y="112" fill="#7f9cc6" font-family="Arial" font-size="13" letter-spacing="2">VISUALISASI ANTARA · BERDASARKAN NASA SCIENCE</text><circle cx="720" cy="375" r="132" fill="url(#n)"/><ellipse cx="720" cy="375" rx="295" ry="92" fill="none" stroke="#779ac0" stroke-width="2"/><circle cx="442" cy="344" r="43" fill="#d7d0c7"/><path d="M470 306 Q514 286 555 304" stroke="#dce9f2" stroke-width="2" fill="none"/><path d="M492 292l-15 17 23 2z" fill="#dce9f2"/><text x="72" y="272" fill="#edf7ff" font-family="Arial" font-size="28">SATELIT TERBESAR</text><text x="72" y="315" fill="#8fb2d5" font-family="Arial" font-size="18">diameter ~2.700 km</text><text x="72" y="399" fill="#edf7ff" font-family="Arial" font-size="25">RETROGRADE</text><text x="72" y="440" fill="#8fb2d5" font-family="Arial" font-size="18">mengorbit berlawanan arah rotasi Neptune</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="Triton">
+<defs>
+  <radialGradient id="bg"><stop offset="0" stop-color="#0d2b55"/><stop offset="1" stop-color="#020711"/></radialGradient>
+  <linearGradient id="blue"><stop stop-color="#4b9fe8"/><stop offset=".52" stop-color="#175eaa"/><stop offset="1" stop-color="#0b3268"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="10"/></filter>
+</defs>
+<rect width="1200" height="720" fill="url(#bg)"/>
+<text x="60" y="72" fill="#9ed4ff" font-size="22" font-family="Arial" letter-spacing="5">TRITON</text>
+<text x="60" y="108" fill="#6686a7" font-size="14" font-family="Arial" letter-spacing="2">bulan terbesar · orbit retrograde</text>
+<circle cx="790" cy="360" r="175" fill="url(#blue)"/>
+<ellipse cx="790" cy="330" rx="155" ry="11" fill="#7bc1f0" opacity=".16"/>
+<ellipse cx="790" cy="396" rx="165" ry="8" fill="#8fd6ff" opacity=".14"/>
+<ellipse cx="855" cy="385" rx="60" ry="26" fill="#051f52" opacity=".62"/>
+<ellipse cx="820" cy="335" rx="96" ry="8" fill="#dff8ff" opacity=".42"/>
+<circle cx="790" cy="360" r="181" fill="none" stroke="#4fc5ff" stroke-opacity=".32" stroke-width="4"/>
+<circle cx="360" cy="370" r="78" fill="#c9c8bd"/><path d="M315 340c45-35 92-24 122 5" fill="none" stroke="#e7ddd3" stroke-width="10" opacity=".7"/><path d="M600 555C410 640 210 560 180 390C150 220 360 140 560 205" fill="none" stroke="#8aa5bc" stroke-width="3" stroke-dasharray="10 12"/>
+<path d="m183 390-12-28 29 8z" fill="#8aa5bc"/><text x="205" y="495" fill="#cfe4f2" font-size="18" font-family="Arial">ORBIT RETROGRADE</text>
+</svg>

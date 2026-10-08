@@ -132,16 +132,6 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
   {
     images: [
       {
-        src: "assets/exploration/olympus-mons.webp",
-        alt: "Mosaik Viking Orbiter memperlihatkan Olympus Mons di Mars",
-        credit: "NASA/JPL/USGS",
-        source: "https://science.nasa.gov/photojournal/olympus-mons/",
-        license: "NASA image policy",
-        licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Olympus Mons · mosaik Viking",
-        fit: "cover"
-      },
-      {
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04689/PIA04689.jpg?crop=faces%2Cfocalpoint&fit=clip&h=2305&w=1537",
         alt: "Citra Mars Global Surveyor memperlihatkan wilayah puncak dan dinding kaldera Olympus Mons",
         credit: "NASA/JPL/Malin Space Science Systems",
@@ -167,16 +157,6 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
   },
   {
     images: [
-      {
-        src: "assets/exploration/valles-marineris.webp",
-        alt: "Mosaik Viking memperlihatkan sistem ngarai Valles Marineris di Mars",
-        credit: "NASA/JPL-Caltech",
-        source: "https://science.nasa.gov/resource/valles-marineris-the-grand-canyon-of-mars/",
-        license: "NASA image policy",
-        licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Valles Marineris · mosaik luas",
-        fit: "cover"
-      },
       {
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia22/pia22238/PIA22238.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1800&w=2880",
         alt: "Citra HiRISE berwarna olahan memperlihatkan batuan di kedalaman Valles Marineris",
@@ -204,16 +184,6 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
   {
     images: [
       {
-        src: "assets/exploration/jezero.webp",
-        alt: "Citra berwarna olahan memperlihatkan endapan delta di Kawah Jezero, Mars",
-        credit: "NASA/JPL-Caltech/MSSS/JHU-APL",
-        source: "https://science.nasa.gov/photojournal/jezero-crater-mars-2020s-landing-site/",
-        license: "NASA image policy",
-        licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Delta Jezero · citra orbital",
-        fit: "cover"
-      },
-      {
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/mars/downloadable_items/4/5/45791_PIA24485_K4_ZCAM_main_sol004_Delta_Remnant_unannotated.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1648",
         alt: "Pandangan Perseverance dari permukaan menuju sisa delta di Kawah Jezero",
         credit: "NASA/JPL-Caltech/ASU/MSSS",
@@ -239,16 +209,6 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
   },
   {
     images: [
-      {
-        src: "assets/exploration/polar-cap.webp",
-        alt: "Citra Viking 1 memperlihatkan tudung es kutub utara Mars pada musim panas",
-        credit: "NASA/JPL/USGS",
-        source: "https://science.nasa.gov/photojournal/north-polar-ice-cap/",
-        license: "NASA image policy",
-        licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Tudung es kutub utara Mars",
-        fit: "cover"
-      },
       {
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia25/pia25614/PIA25614.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1397&w=490",
         alt: "Citra Mars Odyssey memperlihatkan lapisan es dan debu pada tudung kutub selatan Mars",
@@ -278,16 +238,6 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
   {
     images: [
       {
-        src: "assets/exploration/atmosphere.webp",
-        alt: "Citra Curiosity memperlihatkan senja kebiruan di atmosfer berdebu Kawah Gale, Mars",
-        credit: "NASA/JPL-Caltech/MSSS/Texas A&M Univ.",
-        source: "https://science.nasa.gov/photojournal/sunset-in-mars-gale-crater/",
-        license: "NASA image policy",
-        licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Senja kebiruan di Kawah Gale",
-        fit: "cover"
-      },
-      {
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04271/PIA04271.jpg?crop=faces%2Cfocalpoint&fit=clip&h=540&w=810",
         alt: "Citra Mars Global Surveyor memperlihatkan lapisan tipis haze di limb Mars",
         credit: "NASA/JPL/Malin Space Science Systems",
@@ -315,16 +265,6 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
   },
   {
     images: [
-      {
-        src: "assets/exploration/dust-storm.webp",
-        alt: "Perbandingan Mars pada badai debu besar tahun 2001",
-        credit: "NASA/JPL-Caltech/MSSS",
-        source: "https://science.nasa.gov/resource/the-2001-great-dust-storms-hellassyrtis-major/",
-        license: "NASA image policy",
-        licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Badai debu besar Mars 2001",
-        fit: "cover"
-      },
       {
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia22/pia22519/PIA22519.jpg?crop=faces%2Cfocalpoint&fit=clip&h=709&w=1438",
         alt: "Peta Mars Reconnaissance Orbiter memperlihatkan perkembangan badai debu raksasa tahun 2018",

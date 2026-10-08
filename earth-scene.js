@@ -75,16 +75,6 @@ const EARTH_EXPLORATION_STOPS = [
     "history": "Sekitar 220 SM, Qin Shi Huang menyatukan bagian-bagian benteng yang lebih tua. Pembangunannya berlanjut lintas dinasti hingga masa Ming (1368–1644) untuk memperkuat pertahanan di utara Tiongkok.",
     images: [
       {
-        src: "assets/exploration/great-wall.webp",
-        alt: "Foto Tembok Besar Tiongkok mengikuti punggung pegunungan di Badaling",
-        credit: "Ktausz",
-        source: "https://commons.wikimedia.org/wiki/File:Great_wall_panorama.jpg",
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
-        caption: "Panorama Tembok Besar di Badaling",
-        fit: "cover"
-      },
-      {
         src: "https://upload.wikimedia.org/wikipedia/commons/6/6f/GreatWallTower.jpg",
         alt: "Foto bagian Tembok Besar di dekat Menara Utara keempat, Badaling",
         credit: "Leonard G.",
@@ -116,16 +106,6 @@ const EARTH_EXPLORATION_STOPS = [
     "flag": "assets/flags/jo.svg",
     "history": "Petra berkembang sebagai ibu kota kerajaan Nabatea dan pusat perdagangan pada masa Helenistik serta Romawi. Kota ini menghubungkan jalur kafilah dari Arabia, Mesir, dan kawasan Mediterania.",
     images: [
-      {
-        src: "assets/exploration/petra.webp",
-        alt: "Foto fasad Al-Khazneh yang dipahat pada tebing batu di Petra, Yordania",
-        credit: "Markv; koreksi perspektif: Berthold Werner",
-        source: "https://commons.wikimedia.org/wiki/File:Treasury_Petra.jpg",
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
-        caption: "Al-Khazneh / Treasury, Petra",
-        fit: "cover"
-      },
       {
         src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Ad-Deir.jpg/1280px-Ad-Deir.jpg",
         alt: "Foto Ad-Deir atau Monastery di Petra, Yordania",
@@ -159,16 +139,6 @@ const EARTH_EXPLORATION_STOPS = [
     "history": "Dibangun pada 1922–1931 sebagai monumen Kristen, patung ini melibatkan pematung Paul Landowski dan insinyur Heitor da Silva Costa. Sosok berlengan terbuka itu kemudian menjadi lambang budaya Rio de Janeiro.",
     images: [
       {
-        src: "assets/exploration/christ-redeemer.webp",
-        alt: "Foto patung Christ the Redeemer dengan kedua lengan terbuka di Rio de Janeiro, Brasil",
-        credit: "acediscovery",
-        source: "https://commons.wikimedia.org/wiki/File:Christ-Redeemer-Rio-de-Janeiro.jpg",
-        license: "CC BY 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
-        caption: "Christ the Redeemer, Corcovado",
-        fit: "cover"
-      },
-      {
         src: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Aerial_view_of_Cristo_Redentor%2C_Rio_de_Janeiro.jpg",
         alt: "Foto udara Christ the Redeemer dan Gunung Corcovado di Rio de Janeiro",
         credit: "Florent Pécassou",
@@ -200,16 +170,6 @@ const EARTH_EXPLORATION_STOPS = [
     "flag": "assets/flags/pe.svg",
     "history": "Dibangun oleh peradaban Inka pada abad ke-15, Machu Picchu memadukan ruang upacara, hunian, dan pertanian di punggung Andes. Situs ini menjadi salah satu peninggalan penting kemampuan tata ruang dan teknik bangunan Inka.",
     images: [
-      {
-        src: "assets/exploration/machu-picchu.webp",
-        alt: "Foto teras dan bangunan batu Machu Picchu di pegunungan Andes, Peru",
-        credit: "Martin St-Amant (S23678)",
-        source: "https://commons.wikimedia.org/wiki/File:Machu_Picchu_D%C3%A9cembre_2006_-_Panorama_1.jpg",
-        license: "CC BY 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by/3.0/",
-        caption: "Panorama Machu Picchu",
-        fit: "cover"
-      },
       {
         src: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Terraces_at_Machu_Picchu.jpg",
         alt: "Foto teras pertanian dan jalur batu di Machu Picchu, Peru",
@@ -243,16 +203,6 @@ const EARTH_EXPLORATION_STOPS = [
     "history": "Chichén Itzá tumbuh sebagai kota Maya pada periode Klasik. Bangunan awalnya berkembang pada abad ke-6 hingga ke-10, lalu memperlihatkan perpaduan tradisi Maya dan pengaruh dari Meksiko tengah.",
     images: [
       {
-        src: "assets/exploration/chichen-itza.webp",
-        alt: "Foto piramida El Castillo di Chichén Itzá, Meksiko",
-        credit: "Daniel Schwen",
-        source: "https://commons.wikimedia.org/wiki/File:Chichen_Itza_3.jpg",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-        caption: "El Castillo, Chichén Itzá",
-        fit: "cover"
-      },
-      {
         src: "https://upload.wikimedia.org/wikipedia/commons/b/bf/Temple_of_the_warriors_chichen_itza.jpg",
         alt: "Foto Temple of the Warriors di Chichén Itzá, Meksiko",
         credit: "André Möller",
@@ -285,16 +235,6 @@ const EARTH_EXPLORATION_STOPS = [
     "history": "Dibangun pada abad pertama Masehi oleh dinasti Flavia, Colosseum menjadi tempat pertarungan gladiator dan pertunjukan publik. Bangunannya memperlihatkan kemampuan teknik serta penyelenggaraan acara besar dalam masyarakat Romawi.",
     images: [
       {
-        src: "assets/exploration/colosseum.webp",
-        alt: "Foto bagian luar Colosseum di Roma, Italia",
-        credit: "DAVID ILIFF",
-        source: "https://commons.wikimedia.org/wiki/File:Colosseum_in_Rome%2C_Italy_-_April_2007.jpg",
-        license: "CC BY-SA 2.5",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/2.5/",
-        caption: "Eksterior Colosseum, Roma",
-        fit: "cover"
-      },
-      {
         src: "https://upload.wikimedia.org/wikipedia/commons/e/e9/Rome_Colosseum_interior_view.jpg",
         alt: "Foto interior arena dan tribun Colosseum di Roma, Italia",
         credit: "Nicholas Hartmann",
@@ -326,16 +266,6 @@ const EARTH_EXPLORATION_STOPS = [
     "flag": "assets/flags/in.svg",
     "history": "Shah Jahan memerintahkan pembangunan kompleks ini pada abad ke-17 untuk mengenang istrinya, Mumtaz Mahal. Makam utamanya selesai pada 1648, sementara bangunan pelengkap diselesaikan hingga 1653.",
     images: [
-      {
-        src: "assets/exploration/taj-mahal.webp",
-        alt: "Foto Taj Mahal dan taman di depannya di Agra, India",
-        credit: "Sidheeq",
-        source: "https://commons.wikimedia.org/wiki/File:Taj_Mahal_complete_clear_view.jpg",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-        caption: "Taj Mahal dari sisi selatan",
-        fit: "cover"
-      },
       {
         src: "https://upload.wikimedia.org/wikipedia/commons/e/e1/View_of_Taj_Mahal_from_Mehtab_Bagh.jpg",
         alt: "Foto Taj Mahal dari Mehtab Bagh di sisi utara Sungai Yamuna",

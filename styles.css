@@ -3109,3 +3109,17 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .spaceport-antenna b,
   .spaceport-horizon-lights i { animation:none !important; }
 }
+
+
+/* ANTARA object-specific primary CTA accents. Layout intentionally unchanged. */
+#sun-explore-button{background:linear-gradient(120deg,#e2b44f,#bb7a26)!important;border-color:#efc96d!important;color:#19130a!important}
+#mercury-explore-button{background:linear-gradient(120deg,#c8c1b6,#8f8980)!important;border-color:#d9d2c7!important;color:#171716!important}
+#venus-explore-button{background:linear-gradient(120deg,#ddc583,#b9924c)!important;border-color:#ead6a3!important;color:#17140d!important}
+#earth-explore-button{background:linear-gradient(120deg,#2f6fa8,#235987)!important;border-color:#80b9e2!important;color:#f8fbff!important}
+#mars-explore-button{background:linear-gradient(120deg,#c97553,#b36b52)!important;border-color:#d99072!important;color:#1a0e08!important}
+#asteroid-explore-button{background:linear-gradient(120deg,#a8adb2,#7f8790)!important;border-color:#bdc2c6!important;color:#11171c!important}
+#jupiter-explore-button{background:linear-gradient(120deg,#d1ad83,#aa7956)!important;border-color:#dfc3a0!important;color:#1b130e!important}
+#saturn-explore-button{background:linear-gradient(120deg,#dbc899,#ad8e5f)!important;border-color:#e5d5ad!important;color:#1b160e!important}
+#uranus-explore-button{background:linear-gradient(120deg,#9adce0,#5eaeb7)!important;border-color:#b2e8e9!important;color:#07191d!important}
+#neptune-explore-button{background:linear-gradient(120deg,#426bb4,#2b4f9f)!important;border-color:#7299e1!important;color:#f8fbff!important}
+#sun-explore-button:hover,#mercury-explore-button:hover,#venus-explore-button:hover,#earth-explore-button:hover,#mars-explore-button:hover,#asteroid-explore-button:hover,#jupiter-explore-button:hover,#saturn-explore-button:hover,#uranus-explore-button:hover,#neptune-explore-button:hover{filter:brightness(1.08)}

@@ -15,7 +15,7 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
       "Satu hari Saturnus berlangsung sekitar 10,7 jam, sementara satu tahunnya sekitar 29,4 tahun Bumi."
     ],
     source: "https://science.nasa.gov/saturn/facts/",
-    images: [{ src: "./assets/saturn-identity-diagram.svg", alt: "Diagram identitas Saturnus dan sistem cincinnya", credit: "Visualisasi ANTARA berdasarkan NASA Science", source: "https://science.nasa.gov/saturn/facts/", caption: "Saturnus · raksasa gas keenam dari Matahari", fit: "contain" }]
+    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia05/pia05425/PIA05425.jpg?crop=faces%2Cfocalpoint&fit=clip&h=649&w=1166", alt: "Citra Saturnus dan sistem cincinnya dari Cassini", credit: "NASA/JPL/Space Science Institute", source: "https://science.nasa.gov/saturn/facts/", caption: "Saturnus · raksasa gas keenam dari Matahari", fit: "contain" , type: "CITRA WAHANA" }]
   },
   {
     kicker: "CINCIN SATURNUS",
@@ -28,7 +28,7 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
       "Partikel cincin mengorbit Saturnus secara individual, bukan sebagai satu cakram padat."
     ],
     source: "https://science.nasa.gov/saturn/facts/",
-    images: [{ src: "./assets/saturn-rings-diagram.svg", alt: "Diagram struktur cincin Saturnus dengan Cassini Division", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/saturn/facts/", caption: "Struktur cincin dan Cassini Division", fit: "contain" }]
+    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06175/PIA06175.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1000&w=5890", alt: "Citra panorama cincin Saturnus dari Cassini", credit: "NASA/JPL/Space Science Institute", source: "https://science.nasa.gov/saturn/facts/", caption: "Struktur cincin dan Cassini Division", fit: "contain" , type: "CITRA WAHANA" }]
   },
   {
     kicker: "ATMOSFER DAN AWAN",
@@ -41,7 +41,7 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
       "Kontras pita Saturnus cenderung lebih lembut daripada pita atmosfer Jupiter."
     ],
     source: "https://science.nasa.gov/saturn/facts/",
-    images: [{ src: "./assets/saturn-atmosphere-diagram.svg", alt: "Diagram atmosfer dan pita awan Saturnus", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/saturn/facts/", caption: "Pita awan dan sirkulasi atmosfer Saturnus", fit: "contain" }]
+    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06114/PIA06114.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1016&w=1020", alt: "Citra atmosfer Saturnus dari Cassini", credit: "NASA/JPL/Space Science Institute", source: "https://science.nasa.gov/saturn/facts/", caption: "Pita awan dan sirkulasi atmosfer Saturnus", fit: "contain" , type: "CITRA WAHANA" }]
   },
   {
     kicker: "HEXAGON KUTUB UTARA",
@@ -54,7 +54,7 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
       "Cassini menghasilkan salah satu pandangan warna dan detail terbaik terhadap hexagon."
     ],
     source: "https://science.nasa.gov/mission/cassini/about-the-mission/",
-    images: [{ src: "./assets/saturn-hexagon-diagram.svg", alt: "Diagram edukasi hexagon kutub utara Saturnus", credit: "Visualisasi ANTARA berdasarkan pengamatan Cassini", source: "https://science.nasa.gov/mission/cassini/about-the-mission/", caption: "Hexagon kutub utara Saturnus", fit: "contain" }]
+    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia14/pia14646/PIA14646.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1016&w=1016", alt: "Citra hexagon kutub utara Saturnus dari Cassini", credit: "NASA/JPL-Caltech/Space Science Institute", source: "https://science.nasa.gov/mission/cassini/about-the-mission/", caption: "Hexagon kutub utara Saturnus", fit: "contain" , type: "CITRA WAHANA" }]
   },
   {
     kicker: "BULAN-BULAN SATURNUS",
@@ -67,7 +67,7 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
       "Interaksi beberapa bulan dengan cincin membantu membentuk dan mempertahankan struktur cincin tertentu."
     ],
     source: "https://science.nasa.gov/saturn/moons/facts/",
-    images: [{ src: "./assets/saturn-moons-diagram.svg", alt: "Diagram bulan-bulan penting Saturnus", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/saturn/moons/facts/", caption: "Beberapa bulan penting dalam sistem Saturnus", fit: "contain" }]
+    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06475/PIA06475.jpg?crop=faces%2Cfocalpoint&fit=clip&h=870&w=1021", alt: "Saturnus bersama Dione, Enceladus, Tethys, Mimas, dan Rhea dalam citra Cassini", credit: "NASA/JPL/Space Science Institute", source: "https://science.nasa.gov/photojournal/family-portrait/", caption: "Family Portrait · Saturnus dan lima bulan · Cassini PIA06475", fit: "contain", type: "CITRA WAHANA" }]
   },
   {
     kicker: "TITAN & ENCELADUS",
@@ -80,7 +80,7 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
       "Plume Enceladus memasok material ke cincin E Saturnus dan membawa material dari lingkungan samudra bawah permukaan."
     ],
     source: "https://science.nasa.gov/saturn/moons/titan/facts/",
-    images: [{ src: "./assets/saturn-titan-enceladus.svg", alt: "Diagram Titan dan Enceladus", credit: "Visualisasi ANTARA berdasarkan NASA Science", source: "https://science.nasa.gov/saturn/moons/facts/", caption: "Titan dan Enceladus · dua laboratorium alam", fit: "contain" }]
+    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06440/PIA06440.jpg?crop=faces%2Cfocalpoint&fit=clip&h=718&w=504", alt: "Permukaan Titan dipotret Huygens", credit: "ESA/NASA/JPL/University of Arizona", source: "https://science.nasa.gov/photojournal/titans-surface/", caption: "Permukaan Titan dari Huygens · PIA06440", fit: "cover", type: "CITRA WAHANA" }, { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12713/PIA12713.jpg?crop=faces%2Cfocalpoint&fit=clip&h=826&w=826", alt: "Plume Enceladus dipotret Cassini", credit: "NASA/JPL/Space Science Institute", source: "https://science.nasa.gov/photojournal/enceladus-plumes/", caption: "Plume Enceladus dari Cassini · PIA12713", fit: "contain", type: "CITRA WAHANA" }]
   },
   {
     kicker: "EKSPLORASI SATURNUS",

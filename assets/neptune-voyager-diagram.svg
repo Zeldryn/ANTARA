@@ -1,1 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720"><defs><radialGradient id="bg"><stop stop-color="#102854"/><stop offset="1" stop-color="#020817"/></radialGradient><radialGradient id="n"><stop stop-color="#5aa8e8"/><stop offset=".52" stop-color="#2458ad"/><stop offset="1" stop-color="#102b69"/></radialGradient><filter id="g"><feGaussianBlur stdDeviation="7"/></filter></defs><rect width="1200" height="720" fill="url(#bg)"/><text x="64" y="82" fill="#e8f3ff" font-family="Arial" font-size="32" letter-spacing="4">VOYAGER 2 · 25 AGUSTUS 1989</text><text x="66" y="112" fill="#7f9cc6" font-family="Arial" font-size="13" letter-spacing="2">VISUALISASI ANTARA · BERDASARKAN NASA SCIENCE</text><circle cx="835" cy="355" r="165" fill="url(#n)"/><path d="M235 455 C420 290 590 245 700 275" fill="none" stroke="#d9e9ff" stroke-width="2" stroke-dasharray="10 9"/><g transform="translate(320 410) rotate(-20)"><rect x="-30" y="-18" width="60" height="36" rx="4" fill="#d9dce2"/><path d="M30 0L100-18v36z" fill="#8e96a6"/><circle r="14" fill="#bc9f55"/><line x1="-30" y1="0" x2="-95" y2="0" stroke="#cfd8e4" stroke-width="4"/><circle cx="-105" cy="0" r="25" fill="none" stroke="#cfd8e4" stroke-width="3"/></g><text x="70" y="250" fill="#edf6ff" font-family="Arial" font-size="25">SATU-SATUNYA FLYBY DEKAT</text><text x="70" y="290" fill="#8faed1" font-family="Arial" font-size="18">Voyager 2 melintas sekitar 4.800 km di atas puncak awan</text><text x="70" y="353" fill="#edf6ff" font-family="Arial" font-size="23">RINGS · MOONS · WINDS · MAGNETIC FIELD</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="Voyager 2">
+<defs>
+  <radialGradient id="bg"><stop offset="0" stop-color="#0d2b55"/><stop offset="1" stop-color="#020711"/></radialGradient>
+  <linearGradient id="blue"><stop stop-color="#4b9fe8"/><stop offset=".52" stop-color="#175eaa"/><stop offset="1" stop-color="#0b3268"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="10"/></filter>
+</defs>
+<rect width="1200" height="720" fill="url(#bg)"/>
+<text x="60" y="72" fill="#9ed4ff" font-size="22" font-family="Arial" letter-spacing="5">VOYAGER 2</text>
+<text x="60" y="108" fill="#6686a7" font-size="14" font-family="Arial" letter-spacing="2">flyby Neptune · 1989</text>
+<circle cx="790" cy="360" r="175" fill="url(#blue)"/>
+<ellipse cx="790" cy="330" rx="155" ry="11" fill="#7bc1f0" opacity=".16"/>
+<ellipse cx="790" cy="396" rx="165" ry="8" fill="#8fd6ff" opacity=".14"/>
+<ellipse cx="855" cy="385" rx="60" ry="26" fill="#051f52" opacity=".62"/>
+<ellipse cx="820" cy="335" rx="96" ry="8" fill="#dff8ff" opacity=".42"/>
+<circle cx="790" cy="360" r="181" fill="none" stroke="#4fc5ff" stroke-opacity=".32" stroke-width="4"/>
+<g transform="translate(280 350)">
+<rect x="-46" y="-25" width="92" height="50" rx="4" fill="#aeb9c0"/><path d="M-46 0H-155M46 0H155" stroke="#d7dfe4" stroke-width="7"/><rect x="-205" y="-35" width="50" height="70" fill="#244f81"/><rect x="155" y="-35" width="50" height="70" fill="#244f81"/><circle cx="0" cy="-55" r="35" fill="none" stroke="#d6d2c7" stroke-width="8"/><path d="M0-90V-145" stroke="#d6d2c7" stroke-width="5"/></g>
+<path d="M425 350C540 300 600 290 650 295" fill="none" stroke="#84add0" stroke-width="3" stroke-dasharray="8 10"/>
+<text x="80" y="555" fill="#9fb9cd" font-size="18" font-family="Arial">Satu-satunya wahana yang pernah mengunjungi Neptune dari dekat.</text>
+</svg>

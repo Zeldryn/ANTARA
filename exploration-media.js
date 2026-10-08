@@ -21,6 +21,25 @@ window.ExplorationMedia = {
       .toLowerCase();
   },
 
+
+  inferVisualType(item) {
+    if (item?.type) return item.type;
+    const src = String(item?.src || "").toLowerCase();
+    const credit = String(item?.credit || "").toLowerCase();
+    const source = String(item?.source || "").toLowerCase();
+    if (src.endsWith(".svg") || credit.includes("diagram") || credit.includes("visualisasi antara")) return "DIAGRAM ILMIAH";
+    if (credit.includes("hubble") || credit.includes("hst") || credit.includes("jwst") || source.includes("hubble") || source.includes("webb")) return "CITRA TELESKOP";
+    if (/voyager|cassini|messenger|magellan|mariner|juno|junocam|dawn|new horizons|huygens|bepicolombo|perseverance|mro|mars express|sdo|soho/.test(credit + " " + source)) return "CITRA WAHANA";
+    if (credit.includes("wikimedia") || source.includes("wikimedia") || source.includes("wikipedia")) return "FOTO DOKUMENTASI";
+    if (/nasa|jpl|esa|usgs|observatory/.test(credit + " " + source)) return "FOTO OBSERVASI";
+    return "VISUAL REFERENSI";
+  },
+
+  isExplorationInteractive(frame) {
+    const scene = frame?.closest?.('[id$="-scene"]');
+    return !!scene?.classList?.contains("is-exploring");
+  },
+
   getImages(stop) {
     const seen = new Set();
     const raw = Array.isArray(stop?.images) ? stop.images : [];
@@ -43,7 +62,8 @@ window.ExplorationMedia = {
         licenseUrl: item.licenseUrl || "",
         caption: item.caption || stop.title || "",
         fit: item.fit || "cover",
-        position: item.position || "50% 50%"
+        position: item.position || "50% 50%",
+        type: this.inferVisualType(item)
       }));
   },
 
@@ -227,7 +247,7 @@ window.ExplorationMedia = {
     modal.title.textContent = this.activeStop?.title || "Visual eksplorasi";
     modal.counter.textContent = `${String(this.activeIndex + 1).padStart(2, "0")} / ${String(this.activeImages.length).padStart(2, "0")}`;
     modal.description.textContent = item.caption || item.alt || "";
-    modal.metadata.textContent = [item.credit, item.license].filter(Boolean).join(" · ");
+    modal.metadata.textContent = [item.type, item.credit, item.license].filter(Boolean).join(" · ");
     modal.metadata.hidden = !modal.metadata.textContent;
 
     modal.source.hidden = !item.source;
@@ -301,6 +321,7 @@ window.ExplorationMedia = {
   handleThumbnailClick(event, frame, gallery, stop) {
     event.preventDefault();
     event.stopPropagation();
+    if (!this.isExplorationInteractive(frame)) return;
 
     const liveFrames = [...gallery.querySelectorAll(".exploration-marker-frame")];
     const liveImages = liveFrames.map(button => button._explorationImage).filter(Boolean);
@@ -309,6 +330,25 @@ window.ExplorationMedia = {
 
     this.playUISound();
     this.openLightbox(liveImages, clickedIndex, stop, frame);
+  },
+
+
+  syncHostInteraction(host) {
+    const scene = host?.closest?.('[id$="-scene"]');
+    if (!scene) return;
+    const apply = () => {
+      const enabled = scene.classList.contains("is-exploring");
+      host.querySelectorAll(".exploration-marker-frame").forEach(frame => {
+        frame.disabled = !enabled;
+        frame.tabIndex = enabled ? 0 : -1;
+        frame.setAttribute("aria-disabled", enabled ? "false" : "true");
+      });
+    };
+    apply();
+    if (!host._explorationModeObserver) {
+      host._explorationModeObserver = new MutationObserver(apply);
+      host._explorationModeObserver.observe(scene, { attributes: true, attributeFilter: ["class"] });
+    }
   },
 
   render(prefix, stop, hostOverride = null) {
@@ -320,6 +360,8 @@ window.ExplorationMedia = {
     host.replaceChildren();
 
     const images = this.getImages(stop);
+    const featureTopic = /bintik merah|great red|hexagon|cassini|cincin|ceres|vortex|badai besar|awan terang|lautan awan|cloud|storm/i.test(`${stop?.kicker || ""} ${stop?.title || ""}`);
+    host.dataset.mediaLayout = featureTopic ? "feature" : "detached";
     host.hidden = images.length === 0;
     if (!images.length) return;
 
@@ -350,6 +392,15 @@ window.ExplorationMedia = {
       status.className = "exploration-marker-status";
       status.textContent = "Memuat…";
 
+      const type = document.createElement("span");
+      type.className = "exploration-marker-type";
+      type.textContent = item.type;
+
+      const credit = document.createElement("span");
+      credit.className = "exploration-marker-credit";
+      credit.textContent = item.credit ? `SUMBER: ${item.credit}` : "SUMBER: LIHAT DETAIL";
+      credit.title = credit.textContent;
+
       const image = document.createElement("img");
       image.alt = item.alt;
       image.loading = "eager";
@@ -370,14 +421,15 @@ window.ExplorationMedia = {
       });
       frame.addEventListener("click", event => this.handleThumbnailClick(event, frame, gallery, stop));
 
-      frame.append(image, chip, status);
+      frame.append(image, chip, credit, type, status);
       gallery.append(frame);
     });
 
     const meta = document.createElement("span");
     meta.className = "exploration-marker-meta";
-    meta.textContent = "VISUAL · KLIK UNTUK PERBESAR";
+    meta.textContent = "VISUAL ILMIAH · KLIK UNTUK PERBESAR";
 
     host.append(gallery, meta);
+    this.syncHostInteraction(host);
   }
 };
