@@ -75,7 +75,7 @@ assert(source.indexOf("await this.animateExitRetreat") < source.indexOf("this.fi
 const maat = REGIONS.find(item => item.id === "maat");
 assert(maat && maat.fogDensity <= 0.0065, "Maat atmosphere no longer erases the far shield-volcano silhouette");
 assert(REGIONS.every(item => item.lookTarget && item.spawn), "each destination has its own spawn and initial composition target");
-assert(source.includes("PIA00254 grammar") && source.includes("PIA00149 grammar") && source.includes("PIA00218 / Ovda grammar") && source.includes("PIA00093 grammar") && source.includes("PIA00481 grammar"), "all five morphology systems are explicitly tied to their scientific reference grammar");
+assert(source.includes("PIA00254") && source.includes("PIA00149") && source.includes("PIA00218 / Ovda") && source.includes("PIA00093") && source.includes("PIA00481"), "all five morphology systems are explicitly tied to their scientific reference grammar");
 
 const requestedDimensions = [...venusScene.matchAll(/[?&](?:h|w)=(\d+)/g)].map(match => Number(match[1]));
 assert(requestedDimensions.length > 0 && Math.max(...requestedDimensions) <= 2245, "Venus info imagery no longer requests multi-thousand-pixel 4K-class dynamic assets");

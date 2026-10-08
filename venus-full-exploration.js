@@ -42,21 +42,24 @@
       tileSize: 10, tileHalfCount: 3, nearSegments: 58, midSegments: 34, farSegments: 20, backgroundSegments: 48,
       maxDpr: 1.18, minDpr: 0.78, supersample: 1.0, pixelBudget: 2250000, anisotropy: 3,
       accentCount: 6, propMultiplier: 5, particleCount: 82, microTextureSize: 192, shaderDetailTier: 2, radarSize: 576,
-      visibleDistance: 54, coreVisibleDistance: 21, atmosphereParticles: 72, worldSpan: 96
+      visibleDistance: 54, coreVisibleDistance: 21, atmosphereParticles: 72, worldSpan: 96,
+      continuationMidSegments: 24, continuationFarSegments: 14, continuationMidScale: 0.92, continuationFarScale: 1.46
     }),
     MEDIUM: Object.freeze({
       name: "MEDIUM", label: "SEDANG", description: "Seimbang",
       tileSize: 9, tileHalfCount: 4, nearSegments: 86, midSegments: 50, farSegments: 28, backgroundSegments: 68,
       maxDpr: 1.45, minDpr: 0.86, supersample: 1.05, pixelBudget: 4100000, anisotropy: 7,
       accentCount: 10, propMultiplier: 6, particleCount: 145, microTextureSize: 320, shaderDetailTier: 3, radarSize: 896,
-      visibleDistance: 68, coreVisibleDistance: 29, atmosphereParticles: 128, worldSpan: 116
+      visibleDistance: 68, coreVisibleDistance: 29, atmosphereParticles: 128, worldSpan: 116,
+      continuationMidSegments: 34, continuationFarSegments: 20, continuationMidScale: 0.94, continuationFarScale: 1.52
     }),
     HIGH: Object.freeze({
       name: "HIGH", label: "TINGGI", description: "Visual terbaik",
       tileSize: 8, tileHalfCount: 4, nearSegments: 122, midSegments: 72, farSegments: 36, backgroundSegments: 88,
       maxDpr: 1.72, minDpr: 0.92, supersample: 1.12, pixelBudget: 5900000, anisotropy: 12,
       accentCount: 15, propMultiplier: 6, particleCount: 220, microTextureSize: 448, shaderDetailTier: 3, radarSize: 1280,
-      visibleDistance: 82, coreVisibleDistance: 36, atmosphereParticles: 190, worldSpan: 134
+      visibleDistance: 82, coreVisibleDistance: 36, atmosphereParticles: 190, worldSpan: 134,
+      continuationMidSegments: 44, continuationFarSegments: 26, continuationMidScale: 0.96, continuationFarScale: 1.58
     })
   });
   const copyQualityProfile = name => ({ ...(QUALITY_PROFILES[name] || QUALITY_PROFILES.MEDIUM) });
@@ -828,12 +831,18 @@
         + valueNoise(x * 0.026 + 4.7, z * 0.026 - 2.1, 709) * 0.07;
     }
 
-    sample(latitude, longitudeEast) {
+    sampleOrNaN(latitude, longitudeEast) {
       const regional = this.sampleRegional(latitude, longitudeEast);
       if (Number.isFinite(regional)) return regional;
       if (this.grid) return this.sampleRawGrid(latitude, longitudeEast);
       if (this.emergencyApproximation) return this.sampleEmergency(latitude, longitudeEast);
-      throw new Error("Magellan GTDR belum dimuat.");
+      return Number.NaN;
+    }
+
+    sample(latitude, longitudeEast) {
+      const value = this.sampleOrNaN(latitude, longitudeEast);
+      if (Number.isFinite(value)) return value;
+      throw new Error("Magellan GTDR belum dimuat untuk koordinat ini.");
     }
 
     clear() {
@@ -932,6 +941,8 @@
       this.backgroundMaterial = null;
       this.tiles = [];
       this.background = null;
+      this.continuationMeshes = [];
+      this.continuationMaterial = null;
       this.props = null;
       this.particles = null;
       this.resources = [];
@@ -943,6 +954,9 @@
       this.horizontalCompression = Math.max(1, region.space?.horizontalCompression || 1);
       this.verticalReliefScale = Math.max(0.5, region.space?.verticalReliefScale || 1);
       this.worldSpan = quality.worldSpan || (quality.name === "HIGH" ? 134 : quality.name === "MEDIUM" ? 116 : 96);
+      this.continuationMidHalf = this.worldSpan * (quality.continuationMidScale || 0.94);
+      this.continuationFarHalf = this.worldSpan * (quality.continuationFarScale || 1.52);
+      this.outerScientificBaseline = 0;
       this.tileSize = quality.tileSize || 26;
       this.tileHalfCount = quality.tileHalfCount ?? 4;
       this.tmpColor = new THREE.Color();
@@ -1028,13 +1042,53 @@
       return (this.topography.sample(geo.latitude, geo.longitudeEast) - this.referenceElevation) * this.verticalReliefScale;
     }
 
+    estimateOuterScientificBaseline() {
+      if (!this.topography.regionalGrid) return 0;
+      const extent = this.topography.regionalHalfExtentKm * 0.72;
+      const samples = [
+        [ extent, 0], [-extent, 0], [0, extent], [0, -extent],
+        [ extent * 0.72, extent * 0.72], [-extent * 0.72, extent * 0.72],
+        [ extent * 0.72,-extent * 0.72], [-extent * 0.72,-extent * 0.72]
+      ];
+      const values = [];
+      for (const [sx, sz] of samples) {
+        const worldX = sx / this.horizontalCompression;
+        const worldZ = sz / this.horizontalCompression;
+        const geo = this.geoFromWorld(worldX, worldZ);
+        const elevation = this.topography.sampleRegional(geo.latitude, geo.longitudeEast);
+        if (Number.isFinite(elevation)) values.push((elevation - this.referenceElevation) * this.verticalReliefScale);
+      }
+      if (!values.length) return 0;
+      values.sort((a, b) => a - b);
+      return values[Math.floor(values.length / 2)];
+    }
+
+    outerBaseHeightAt(x, z) {
+      const broad = valueNoise(x * 0.010 + 3.7, z * 0.010 - 6.1, 1703) * 0.13;
+      const regional = valueNoise(x * 0.004 - 2.2, z * 0.004 + 4.6, 1709) * 0.09;
+      return this.outerScientificBaseline + broad + regional;
+    }
+
+    scientificVisualHeightAt(x, z) {
+      const geo = this.geoFromWorld(x, z);
+      const source = this.sourceKmFromWorld(x, z);
+      const sample = this.topography.sampleOrNaN(geo.latitude, geo.longitudeEast);
+      const outer = this.outerBaseHeightAt(x, z);
+      if (!Number.isFinite(sample)) return outer;
+      const measured = (sample - this.referenceElevation) * this.verticalReliefScale;
+      if (!this.topography.regionalGrid || this.topography.grid || this.topography.emergencyApproximation) return measured;
+      const edge = Math.max(Math.abs(source.x), Math.abs(source.z)) / this.topography.regionalHalfExtentKm;
+      const outerMix = smootherstep(clamp((edge - 0.78) / 0.20, 0, 1));
+      return lerp(measured, outer, outerMix);
+    }
+
     morphologySourceWeight() {
       // Real elevation remains the base. The regional values below are deliberately modest
       // readability reinforcement for first-person viewing, not a replacement heightmap.
       // Maat and Alpha need slightly stronger meso-scale guidance because their identity is
       // especially easy to lose in 4.641 km/pixel GTDR data at ground level.
-      const regionalWeights = { maat: 0.52, maxwell: 0.40, aphrodite: 0.36, ishtar: 0.38, alpha: 0.46 };
-      const coarseWeights = { maat: 0.78, maxwell: 0.70, aphrodite: 0.68, ishtar: 0.68, alpha: 0.74 };
+      const regionalWeights = { maat: 0.62, maxwell: 0.47, aphrodite: 0.43, ishtar: 0.45, alpha: 0.54 };
+      const coarseWeights = { maat: 0.82, maxwell: 0.74, aphrodite: 0.72, ishtar: 0.72, alpha: 0.78 };
       if (this.topography.emergencyApproximation) return 1.0;
       if (this.topography.regionalGrid) return regionalWeights[this.region.id] ?? 0.40;
       if (this.topography.grid) return coarseWeights[this.region.id] ?? 0.70;
@@ -1069,254 +1123,403 @@
     }
 
     maatMorphologyAt(x, z) {
-      // PIA00254 grammar: low fractured plains in the north foreground, long cooled
-      // flow units, then one enormous broad shield volcano on the southern horizon.
-      // The body is intentionally much wider than it is tall. This is a readability
-      // reconstruction on top of measured macro topography, not a 22.5x NASA-style
-      // vertical exaggeration.
+      // PIA00254: fractured foreground plains, very long flow surfaces and one
+      // enormous broad shield. The profile deliberately favors width over height.
       const cx = 0, cz = -46;
       const dx = x - cx, dz = z - cz;
-      const radial = Math.hypot(dx / 150, dz / 132);
-      const lowerSlope = smootherstep(clamp(1 - radial, 0, 1));
-      const body = Math.pow(lowerSlope, 0.80) * 5.12;
-      const upper = Math.pow(clamp(1 - radial / 0.44, 0, 1), 1.65) * 0.66;
-      const flankAsymmetry = (valueNoise(x * 0.008, z * 0.008, 1181) * 0.12
-        + Math.sin(Math.atan2(dz, dx) * 3.0 + 0.7) * 0.055) * clamp(1 - radial, 0, 1);
+      const radial = Math.hypot(dx / 160, dz / 142);
+      const t = clamp(1 - radial, 0, 1);
+      const broadProfile = t * 0.68 + smootherstep(t) * 0.32;
+      const body = broadProfile * 5.30;
+      const upperGate = smootherstep(clamp((t - 0.46) / 0.54, 0, 1));
+      const upper = upperGate * 0.78;
+      const flankAsymmetry = (valueNoise(x * 0.007, z * 0.007, 1181) * 0.13
+        + Math.sin(Math.atan2(dz, dx) * 3.0 + 0.7) * 0.055) * t;
 
-      // Summit is a broad irregular complex rather than a pointed cone.
       const summitX = 2.0, summitZ = -47.5;
-      const summitR = Math.hypot((x - summitX) / 15.0, (z - summitZ) / 11.5);
+      const summitR = Math.hypot((x - summitX) / 17.0, (z - summitZ) / 13.0);
       const summitAngle = Math.atan2(z - summitZ, x - summitX);
-      const rimRadius = 0.92 + Math.sin(summitAngle * 3.0 + 0.6) * 0.09
-        + valueNoise(x * 0.031, z * 0.031, 1201) * 0.055;
-      const rim = Math.exp(-(((summitR - rimRadius) / 0.28) ** 2)) * 0.24;
-      const depression = -Math.exp(-((summitR / 0.73) ** 2)) * 0.38;
-      const collapsedShelf = -this.ellipseGaussian(x, z, -6, -50, 9, 6, 0.10)
-        + this.ellipseGaussian(x, z, 9, -43, 12, 7, 0.08);
+      const rimRadius = 0.95 + Math.sin(summitAngle * 3.0 + 0.6) * 0.08
+        + valueNoise(x * 0.028, z * 0.028, 1201) * 0.05;
+      const rim = Math.exp(-(((summitR - rimRadius) / 0.30) ** 2)) * 0.22;
+      const depression = -Math.exp(-((summitR / 0.70) ** 2)) * 0.56;
+      const collapsedShelf = -this.ellipseGaussian(x, z, -7, -51, 11, 7, 0.08)
+        + this.ellipseGaussian(x, z, 10, -43, 14, 8, 0.07);
 
-      // Long, broad, cooled flow provinces run outward across the lower plains.
-      // Relief is subtle so they read as flow morphology rather than fantasy lava rivers.
-      const outward = smootherstep((z + 26) / 30);
+      const outward = smootherstep(clamp((z + 28) / 34, 0, 1));
       const pathA = x - (18 + Math.sin((z + 12) * 0.020) * 10.0);
       const pathB = x - (-34 + Math.sin((z + 8) * 0.017 + 1.25) * 11.5);
       const pathC = x - (48 + Math.sin((z + 20) * 0.016 - 0.85) * 8.5);
-      const flowA = Math.exp(-((pathA / 22) ** 2)) * Math.exp(-(((z - 34) / 118) ** 4)) * outward * 0.13;
-      const flowB = Math.exp(-((pathB / 25) ** 2)) * Math.exp(-(((z - 42) / 126) ** 4)) * outward * 0.11;
-      const flowC = Math.exp(-((pathC / 19) ** 2)) * Math.exp(-(((z - 30) / 108) ** 4)) * outward * 0.085;
-      const leveeA = Math.exp(-(((Math.abs(pathA) - 21) / 4.5) ** 2)) * Math.exp(-(((z - 36) / 116) ** 4)) * outward * 0.035;
-      const leveeB = Math.exp(-(((Math.abs(pathB) - 24) / 5.0) ** 2)) * Math.exp(-(((z - 42) / 124) ** 4)) * outward * 0.030;
+      const flowA = Math.exp(-((pathA / 23) ** 2)) * Math.exp(-(((z - 36) / 124) ** 4)) * outward * 0.15;
+      const flowB = Math.exp(-((pathB / 27) ** 2)) * Math.exp(-(((z - 44) / 132) ** 4)) * outward * 0.125;
+      const flowC = Math.exp(-((pathC / 21) ** 2)) * Math.exp(-(((z - 32) / 114) ** 4)) * outward * 0.095;
+      const leveeA = Math.exp(-(((Math.abs(pathA) - 22) / 4.8) ** 2)) * Math.exp(-(((z - 38) / 122) ** 4)) * outward * 0.035;
+      const leveeB = Math.exp(-(((Math.abs(pathB) - 26) / 5.4) ** 2)) * Math.exp(-(((z - 44) / 128) ** 4)) * outward * 0.030;
 
-      // Fractured plains remain visually subordinate to the shield silhouette.
-      const plainMask = clamp(1 - body / 4.9, 0, 1);
-      const fractureA = ridge(valueNoise(x * 0.035 + z * 0.010, z * 0.024, 1229));
-      const fractureB = ridge(valueNoise(x * 0.018 - z * 0.009, z * 0.032, 1237));
-      const fracturedPlain = ((fractureA - 0.60) * 0.070 + (fractureB - 0.61) * 0.045) * plainMask;
+      const plainMask = clamp(1 - body / 5.0, 0, 1);
+      const fractureA = ridge(valueNoise(x * 0.034 + z * 0.010, z * 0.023, 1229));
+      const fractureB = ridge(valueNoise(x * 0.017 - z * 0.009, z * 0.031, 1237));
+      const fracturedPlain = ((fractureA - 0.60) * 0.068 + (fractureB - 0.61) * 0.042) * plainMask;
 
       return body + upper + flankAsymmetry + rim + depression + collapsedShelf
         + flowA + flowB + flowC + leveeA + leveeB + fracturedPlain;
     }
 
     maxwellMorphologyAt(x, z) {
-      // PIA00149 grammar: a long compressional mountain system with broad connected
-      // ridges and valleys. Maxwell is intentionally directional and asymmetric,
-      // with a steep western flank and a more gradual transition toward Fortuna.
-      const { u, v } = this.rotateLocal(x, z, -8, -16, -0.30);
-      const beltEnvelope = Math.exp(-((u / 154) ** 6 + (v / 78) ** 4));
-      const regionalUplift = beltEnvelope * 2.20;
-      const ridgeOffsets = [-50, -31, -11, 10, 31, 51];
+      // PIA00149: the mountain belt is the identity. Cleopatra remains a secondary
+      // landmark inside long, connected compressional ridges and deep valleys.
+      const { u, v } = this.rotateLocal(x, z, -10, -15, -0.30);
+      const beltEnvelope = Math.exp(-((u / 178) ** 6 + (v / 90) ** 4));
+      // Keep the base massif lower than the individual folds. Maxwell should read
+      // as a directional ridge/valley belt, not as one broad mound with texture.
+      const regionalUplift = beltEnvelope * 1.18;
+      const ridgeOffsets = [-60, -41, -21, 0, 21, 43, 64];
       let ridgeSystem = 0;
       for (let i = 0; i < ridgeOffsets.length; i += 1) {
-        const offset = ridgeOffsets[i];
-        const warp = Math.sin(u * (0.020 + i * 0.0015) + i * 0.7) * (3.8 + i * 0.25)
-          + valueNoise(u * 0.013 + i * 1.7, v * 0.010 - i, 1301 + i * 11) * 3.2;
-        const width = 8.0 + (i % 2) * 1.8;
-        const d = (v - offset - warp) / width;
-        const continuity = Math.exp(-((u / (146 - i * 3)) ** 6));
-        ridgeSystem += Math.exp(-(d * d)) * continuity * (0.72 + (i === 2 || i === 3 ? 0.18 : 0));
+        const split = Math.sin(u * 0.011 + i * 0.91) * (2.8 + (i % 3) * 0.7);
+        const warp = Math.sin(u * (0.017 + i * 0.0011) + i * 0.72) * (4.8 + i * 0.24)
+          + valueNoise(u * 0.010 + i * 1.7, v * 0.009 - i, 1301 + i * 11) * 3.8 + split;
+        const width = 7.0 + (i % 3) * 1.5;
+        const d = (v - ridgeOffsets[i] - warp) / width;
+        const continuity = Math.exp(-((u / (166 - i * 3)) ** 6));
+        const breakMask = clamp(0.72 + valueNoise(u * 0.008 + i, v * 0.008 - i, 1331 + i) * 0.32, 0.34, 1.0);
+        ridgeSystem += Math.exp(-(d * d)) * continuity * breakMask * (0.76 + (i === 3 ? 0.17 : 0));
       }
-      ridgeSystem *= 0.78;
+      ridgeSystem *= 0.86;
 
-      // Connected valleys between ridges are broad enough to travel through.
-      const valleyFabric = -0.22 * beltEnvelope
-        * (0.40 + 0.60 * ridge(valueNoise(u * 0.025, v * 0.013, 1361)));
-      const westEscarpment = this.ellipseGaussian(x, z, -68, -10, 22, 96, 1.20)
-        * (0.72 + 0.28 * ridge(valueNoise(z * 0.022, x * 0.014, 1367)));
-      const eastShoulder = this.ellipseGaussian(x, z, 52, -10, 72, 100, 0.48);
+      const valleyWave = Math.cos((v + Math.sin(u * 0.020) * 4.0) * Math.PI / 20.5);
+      const valleyFabric = -Math.pow(clamp((-valleyWave + 0.18) / 1.18, 0, 1), 2.0) * beltEnvelope * 0.44;
+      const westEscarpment = this.ellipseGaussian(x, z, -78, -8, 22, 108, 1.38)
+        * (0.70 + 0.30 * ridge(valueNoise(z * 0.020, x * 0.013, 1367)));
+      const eastShoulder = this.ellipseGaussian(x, z, 70, -9, 92, 112, 0.28);
 
-      // Cleopatra is a meaningful ~100 km double-ring basin, not a decorative dent.
-      const craterX = 48, craterZ = -38;
+      const craterX = 54, craterZ = -40;
       const craterR = Math.hypot(x - craterX, z - craterZ);
-      const outerRim = Math.exp(-(((craterR - 50) / 7.5) ** 2)) * 0.70;
-      const innerRim = Math.exp(-(((craterR - 27) / 6.2) ** 2)) * 0.23;
-      const basin = -(1 - smootherstep((craterR - 37) / 15)) * 1.05;
-      const channelLocal = this.rotateLocal(x, z, 68, -17, 0.72);
-      const channel = -Math.exp(-((channelLocal.v / 4.4) ** 2))
-        * Math.exp(-((channelLocal.u / 48) ** 4)) * 0.20;
+      const outerRim = Math.exp(-(((craterR - 46) / 7.8) ** 2)) * 0.34;
+      const innerRim = Math.exp(-(((craterR - 25) / 6.5) ** 2)) * 0.11;
+      const basin = -(1 - smootherstep((craterR - 34) / 14)) * 0.52;
+      const channelLocal = this.rotateLocal(x, z, 74, -18, 0.72);
+      const channel = -Math.exp(-((channelLocal.v / 4.8) ** 2))
+        * Math.exp(-((channelLocal.u / 50) ** 4)) * 0.16;
 
       return regionalUplift + ridgeSystem + valleyFabric + westEscarpment + eastShoulder
         + outerRim + innerRim + basin + channel;
     }
 
     aphroditeMorphologyAt(x, z) {
-      // PIA00218 / Ovda grammar: a broad highland recording multiple deformation
-      // generations. Older NE-SW ridges and valleys are broad and curved, then later
-      // NW-SE extensional fractures cross-cut them. Large graben and smoother lows
-      // interrupt the fabric so this never reads as a simple mountain range.
-      const highland = this.ellipseGaussian(x, z, -4, -8, 150, 108, 1.46)
-        + this.ellipseGaussian(x, z, -58, -6, 74, 58, 0.25)
-        + this.ellipseGaussian(x, z, 54, -20, 80, 66, 0.30);
-      const domes = this.ellipseGaussian(x, z, -48, -20, 38, 30, 0.26)
-        + this.ellipseGaussian(x, z, 16, -38, 44, 33, 0.24)
-        + this.ellipseGaussian(x, z, 60, 20, 38, 30, 0.20);
+      // PIA00218 / Ovda: a broad highland recording several tectonic generations.
+      // The dominant visual is a broken fabric of curved ridges, cross-cutting
+      // extension fractures, broad troughs and smoother lava-filled lows.
+      // Ovda is elevated, but its identity comes from superposed deformation rather
+      // than a single smooth massif. Break the macro highland into overlapping lobes.
+      const highland = this.ellipseGaussian(x, z, -18, -8, 222, 184, 0.62)
+        + this.ellipseGaussian(x, z, -92, 10, 78, 60, 0.28)
+        + this.ellipseGaussian(x, z, 76, -34, 84, 66, 0.30);
+      const domes = this.ellipseGaussian(x, z, -62, -30, 40, 31, 0.25)
+        + this.ellipseGaussian(x, z, 18, -50, 45, 34, 0.23)
+        + this.ellipseGaussian(x, z, 76, 31, 42, 32, 0.20)
+        + this.ellipseGaussian(x, z, -8, 52, 50, 34, 0.15);
 
-      const primary = this.rotateLocal(x, z, 0, -6, -0.78);
-      const primaryEnvelope = Math.exp(-((primary.u / 168) ** 6 + (primary.v / 116) ** 6));
-      const ridgeOffsets = [-54, -33, -11, 13, 38, 61];
+      const primary = this.rotateLocal(x, z, -4, -8, -0.78);
+      const primaryEnvelope = Math.exp(-((primary.u / 184) ** 6 + (primary.v / 128) ** 6));
+      const ridgeOffsets = [-58, -33, -8, 20, 49];
       let oldFabric = 0;
       for (let i = 0; i < ridgeOffsets.length; i += 1) {
-        const warp = Math.sin(primary.u * (0.015 + i * 0.0011) + i * 0.66) * (5.0 + i * 0.45)
-          + valueNoise(primary.u * 0.010 + i * 1.4, primary.v * 0.007 - i, 1409 + i * 7) * 4.0;
-        const localOffset = ridgeOffsets[i] + valueNoise(primary.u * 0.006 + i, primary.v * 0.006, 1460 + i) * 3.2;
-        const center = primary.v - localOffset - warp;
-        const width = 6.4 + (i % 3) * 1.1;
-        const continuity = clamp(0.60 + valueNoise(x * 0.010 + i * 0.7, z * 0.009 - i, 1471 + i) * 0.50, 0.18, 1.0);
-        const ridgeBand = Math.exp(-((center / width) ** 2)) * (0.115 + (i % 2) * 0.018) * continuity;
-        const valleyBand = -Math.exp(-(((center - width * 1.45) / (width * 1.25)) ** 2)) * 0.040 * continuity;
-        oldFabric += ridgeBand + valleyBand;
+        const warp = Math.sin(primary.u * (0.013 + i * 0.0012) + i * 0.72) * (7.0 + i * 0.65)
+          + Math.sin(primary.u * 0.006 - i * 0.51) * 4.0
+          + valueNoise(primary.u * 0.008 + i, primary.v * 0.006 - i, 1409 + i * 7) * 4.6;
+        const center = primary.v - ridgeOffsets[i] - warp;
+        const width = 7.6 + (i % 2) * 1.8;
+        const along = Math.exp(-((primary.u / (170 - i * 7)) ** 6));
+        const broken = clamp(0.58 + valueNoise(x * 0.009 + i * 0.8, z * 0.009 - i, 1460 + i) * 0.52, 0.12, 1.0);
+        const ridgeBand = Math.exp(-((center / width) ** 2)) * (0.18 + (i % 2) * 0.028) * along * broken;
+        const adjacentValley = -Math.exp(-(((center - width * 1.55) / (width * 1.30)) ** 2)) * 0.085 * along * broken;
+        oldFabric += ridgeBand + adjacentValley;
       }
       oldFabric *= primaryEnvelope;
 
-      // Younger cross-cutting fractures are discrete, broken troughs rather than a
-      // second infinite stripe texture. Their orientation deliberately crosses the
-      // older fabric, matching the event sequence described for interior Ovda.
-      const secondary = this.rotateLocal(x, z, 4, -4, 0.58);
-      const fractureOffsets = [-48, -19, 16, 48];
+      const secondary = this.rotateLocal(x, z, 8, -2, 0.58);
+      const fractureSpecs = [
+        [-58, -82, 72, 0.15], [-18, -38, 92, 0.17], [25, 22, 86, 0.16], [62, 62, 66, 0.13]
+      ];
       let crossCutFractures = 0;
-      for (let i = 0; i < fractureOffsets.length; i += 1) {
-        const warp = Math.sin(secondary.u * (0.017 + i * 0.0015) + i * 1.1) * (5.5 + i)
-          + valueNoise(secondary.u * 0.009 - i, secondary.v * 0.008 + i, 1487 + i * 9) * 4.3;
-        const center = secondary.v - fractureOffsets[i] - warp;
-        const along = Math.exp(-((secondary.u / (136 - i * 8)) ** 6));
-        const breakMask = clamp(0.56 + valueNoise(x * 0.011 - i, z * 0.010 + i, 1521 + i) * 0.55, 0.08, 1.0);
-        crossCutFractures += -Math.exp(-((center / (4.3 + (i % 2) * 1.3)) ** 2)) * along * breakMask * 0.16;
+      for (let i = 0; i < fractureSpecs.length; i += 1) {
+        const [offset, alongCenter, alongLength, amplitude] = fractureSpecs[i];
+        const warp = Math.sin(secondary.u * (0.015 + i * 0.0014) + i * 1.23) * (5.0 + i)
+          + valueNoise(secondary.u * 0.008 - i, secondary.v * 0.007 + i, 1487 + i * 9) * 4.8;
+        const center = secondary.v - offset - warp;
+        const along = Math.exp(-(((secondary.u - alongCenter) / alongLength) ** 6));
+        const breakMask = clamp(0.52 + valueNoise(x * 0.012 - i, z * 0.011 + i, 1521 + i) * 0.60, 0.05, 1.0);
+        crossCutFractures += -Math.exp(-((center / (4.8 + (i % 2) * 1.2)) ** 2)) * along * breakMask * amplitude;
       }
 
-      // Major Ovda-scale troughs have broad floors and remain legible above the
-      // smaller structural fabric.
-      const graben = this.rotateLocal(x, z, 18, -6, 0.66);
-      const grabenCenter = graben.v - Math.sin(graben.u * 0.020) * 4.5;
-      const majorGraben = -(1 - smoothstep((Math.abs(grabenCenter) - 9.5) / 5.5))
-        * Math.exp(-((graben.u / 112) ** 6)) * 0.50;
-      const valley = this.rotateLocal(x, z, -32, 18, -0.50);
-      const valleyCenter = valley.v - Math.sin(valley.u * 0.026) * 8.0;
-      const broadValley = -(1 - smoothstep((Math.abs(valleyCenter) - 9.0) / 5.5))
-        * Math.exp(-((valley.u / 102) ** 4)) * 0.32;
+      const grabenA = this.rotateLocal(x, z, 26, -15, 0.42);
+      const grabenACenter = grabenA.v - Math.sin(grabenA.u * 0.017) * 6.0;
+      const majorGrabenA = -(1 - smoothstep((Math.abs(grabenACenter) - 10.5) / 5.5))
+        * Math.exp(-(((grabenA.u - 12) / 92) ** 6)) * 0.47;
+      const grabenB = this.rotateLocal(x, z, -48, 30, -0.27);
+      const grabenBCenter = grabenB.v - Math.sin(grabenB.u * 0.022 + 1.1) * 6.5;
+      const majorGrabenB = -(1 - smoothstep((Math.abs(grabenBCenter) - 7.5) / 5.0))
+        * Math.exp(-(((grabenB.u + 8) / 72) ** 6)) * 0.32;
 
-      // Smaller broken lineations keep the highland visibly deformed between the
-      // major ridges without turning it into random mountainous noise.
-      const finePrimary = ridge(valueNoise(primary.u * 0.040 + 2.8, primary.v * 0.024 - 1.2, 1561));
-      const fineSecondary = ridge(valueNoise(secondary.u * 0.044 - 1.9, secondary.v * 0.025 + 2.6, 1567));
       const blockMask = clamp(0.58 + valueNoise(x * 0.014, z * 0.013, 1571) * 0.52, 0.12, 1.0);
-      const tectonicRoughness = ((finePrimary - 0.56) * 0.090 + (fineSecondary - 0.58) * 0.070)
+      const tectonicRoughness = ((ridge(valueNoise(primary.u * 0.038, primary.v * 0.023, 1561)) - 0.57) * 0.070
+        + (ridge(valueNoise(secondary.u * 0.042, secondary.v * 0.024, 1567)) - 0.58) * 0.055)
         * primaryEnvelope * blockMask;
 
-      const lavaLowA = -this.ellipseGaussian(x, z, 44, 28, 38, 23, 0.34);
-      const lavaLowB = -this.ellipseGaussian(x, z, -54, -38, 32, 21, 0.25);
+      const lavaLowA = -this.ellipseGaussian(x, z, 50, 32, 42, 27, 0.33);
+      const lavaLowB = -this.ellipseGaussian(x, z, -60, -42, 36, 24, 0.24);
       return highland + domes + oldFabric + crossCutFractures + tectonicRoughness
-        + majorGraben + broadValley + lavaLowA + lavaLowB;
+        + majorGrabenA + majorGrabenB + lavaLowA + lavaLowB;
     }
 
     ishtarMorphologyAt(x, z) {
-      // PIA00093 grammar: Lakshmi Planum is a vast elevated plain whose identity is
-      // the contrast between a broad, comparatively smooth interior and mountain
-      // systems on selected margins. The boundary is intentionally warped and
-      // asymmetric so the plateau never reads as a square game arena.
-      const px = x + 8, pz = z + 2;
-      const angle = Math.atan2(pz, px);
-      const boundaryWarp = 1
-        + Math.sin(angle * 3.0 + 0.35) * 0.035
-        + Math.sin(angle * 5.0 - 0.8) * 0.020
-        + valueNoise(x * 0.006, z * 0.006, 1493) * 0.045;
-      const ellipseR = Math.hypot(px / 103, pz / 79) / Math.max(0.90, boundaryWarp);
-      const westLobeR = Math.hypot((x + 46) / 72, (z + 1) / 67);
-      const northLobeR = Math.hypot((x + 6) / 82, (z + 28) / 66);
-      const coreMask = 1 - smootherstep((ellipseR - 0.76) / 0.36);
-      const westLobe = (1 - smootherstep((westLobeR - 0.76) / 0.34)) * 0.55;
-      const northLobe = (1 - smootherstep((northLobeR - 0.79) / 0.34)) * 0.35;
-      const plateauMask = clamp(Math.max(coreMask, westLobe, northLobe), 0, 1);
-      const plateau = plateauMask * 2.72;
+      // PIA00093: Lakshmi Planum is an expansive elevated plain bordered only on
+      // selected sides by major massifs. The plateau deliberately does not form a
+      // closed bowl or ring around the player.
+      // A large shifted oval keeps the west/south interior open while the north/east
+      // margins curve naturally into mountain provinces. It avoids the rectangular
+      // plateau footprint produced by four independent axis gates.
+      const warpX = Math.sin((z + 18) * 0.009) * 12
+        + valueNoise(z * 0.006, x * 0.003, 1493) * 9;
+      const warpZ = Math.sin((x - 6) * 0.008 + 0.9) * 11
+        + valueNoise(x * 0.005, z * 0.003, 1499) * 8;
+      const plateauX = (x + 82 + warpX) / 274;
+      const plateauZ = (z - 76 + warpZ) / 252;
+      const plateauMetric = Math.hypot(plateauX, plateauZ);
+      const plateauMask = 1 - smootherstep(clamp((plateauMetric - 0.82) / 0.24, 0, 1));
+      const plateau = plateauMask * 2.68;
       const interiorUndulation = plateauMask * (
-        valueNoise(x * 0.012, z * 0.012, 1501) * 0.040
-        + valueNoise(x * 0.005, z * 0.005, 1503) * 0.030
+        valueNoise(x * 0.010, z * 0.010, 1501) * 0.035
+        + valueNoise(x * 0.0045, z * 0.0045, 1503) * 0.028
       );
 
-      // Mountain systems sit on selected edges rather than wrapping the plateau.
-      const akna = this.elongatedRange(x, z, -100, -7, Math.PI / 2 - 0.12, 94, 15, 1.78, 1511);
-      const freyja = this.elongatedRange(x, z, -31, -91, 0.10, 92, 16, 1.90, 1523);
-      const maxwellEdge = this.elongatedRange(x, z, 101, -19, Math.PI / 2 + 0.15, 100, 16, 2.68, 1531);
-      const southwestScarp = this.elongatedRange(x, z, -62, 74, -0.06, 69, 12, 0.48, 1543);
+      const akna = this.elongatedRange(x, z, -154, -8, Math.PI / 2 - 0.10, 132, 17, 1.70, 1511);
+      const freyja = this.elongatedRange(x, z, -50, -145, 0.08, 130, 18, 1.82, 1523);
+      const maxwellEdge = this.elongatedRange(x, z, 158, -24, Math.PI / 2 + 0.14, 140, 19, 2.52, 1531);
+      const northwesternShoulder = this.elongatedRange(x, z, -104, -108, 0.50, 82, 12, 0.48, 1537);
 
-      // A few broken scarps make the plateau rim geological rather than geometric.
-      const westBoundary = this.ellipseGaussian(x, z, -88, 5, 19, 63, 0.30)
-        * clamp(0.70 + valueNoise(z * 0.014, x * 0.008, 1549) * 0.35, 0.25, 1.0);
-      const northBoundary = this.ellipseGaussian(x, z, -20, -80, 58, 16, 0.22)
-        * clamp(0.72 + valueNoise(x * 0.013, z * 0.009, 1553) * 0.32, 0.28, 1.0);
-      // East of Maxwell is lower, complex terrain, matching the regional composition.
-      const easternLow = -this.ellipseGaussian(x, z, 130, -8, 58, 84, 0.50);
+      const westScarp = this.ellipseGaussian(x, z, -175, 12, 21, 94, 0.22)
+        * clamp(0.68 + valueNoise(z * 0.013, x * 0.008, 1549) * 0.34, 0.24, 1.0);
+      const northScarp = this.ellipseGaussian(x, z, -20, -150, 88, 18, 0.19)
+        * clamp(0.70 + valueNoise(x * 0.012, z * 0.008, 1553) * 0.30, 0.30, 1.0);
+      const easternLow = -this.ellipseGaussian(x, z, 205, -8, 84, 126, 0.44);
 
       return plateau + interiorUndulation + akna + freyja + maxwellEdge
-        + southwestScarp + westBoundary + northBoundary + easternLow;
+        + northwesternShoulder + westScarp + northScarp + easternLow;
     }
 
     alphaMorphologyAt(x, z) {
-      // PIA00481 grammar: Alpha is tessera. Identity comes from two major warped
-      // structural families, troughs and flat-floored fault valleys. Intersections
-      // are blended instead of added so they do not become forests of needle peaks.
-      const upland = this.ellipseGaussian(x, z, 4, -8, 132, 116, 0.86);
-      const envelope = Math.exp(-((x / 140) ** 6 + ((z + 6) / 130) ** 6));
+      // PIA00481: Alpha is a province-wide tessera fabric. There is no enclosing
+      // basin and no single mountain landmark. Two warped structural families cross
+      // almost the whole region, interrupted by fault valleys and smoother lows.
+      const broadUpland = 0.70
+        + valueNoise(x * 0.0055 + 1.7, z * 0.0055 - 2.2, 1627) * 0.17
+        + valueNoise(x * 0.010 - 3.1, z * 0.010 + 1.5, 1629) * 0.07;
+      const fabricMask = clamp(0.78 + valueNoise(x * 0.0048, z * 0.0048, 1631) * 0.28, 0.42, 1.0);
 
       const familyA = this.rotateLocal(x, z, 0, -6, 0.54);
-      const warpA = Math.sin(familyA.u * 0.026) * 6.0
-        + valueNoise(familyA.u * 0.011, familyA.v * 0.008, 1601) * 5.0;
-      const phaseA = (familyA.v + warpA) * (Math.PI * 2 / 22.0)
-        + valueNoise(x * 0.014, z * 0.014, 1607) * 0.55;
+      const warpA = Math.sin(familyA.u * 0.022) * 7.0
+        + Math.sin(familyA.u * 0.008 + 1.2) * 4.0
+        + valueNoise(familyA.u * 0.009, familyA.v * 0.006, 1601) * 5.0;
+      const phaseA = (familyA.v + warpA) * (Math.PI * 2 / 24.0)
+        + valueNoise(x * 0.012, z * 0.012, 1607) * 0.58;
       const cosA = Math.cos(phaseA);
-      const ridgeA = Math.pow(clamp((cosA + 0.30) / 1.30, 0, 1), 2.0) * 0.28;
-      const troughA = -Math.pow(clamp((-cosA + 0.38) / 1.38, 0, 1), 2.2) * 0.18;
-      const maskA = clamp(0.76 + valueNoise(x * 0.009 + 2.4, z * 0.010 - 1.8, 1609) * 0.28, 0.35, 1.0);
+      const ridgeA = Math.pow(clamp((cosA + 0.32) / 1.32, 0, 1), 2.0) * 0.25;
+      const troughA = -Math.pow(clamp((-cosA + 0.36) / 1.36, 0, 1), 2.1) * 0.16;
+      const maskA = clamp(0.72 + valueNoise(x * 0.008 + 2.4, z * 0.009 - 1.8, 1609) * 0.34, 0.22, 1.0);
 
-      const familyB = this.rotateLocal(x, z, 6, -4, -0.74);
-      const warpB = Math.sin(familyB.u * 0.022 + 1.7) * 6.5
-        + valueNoise(familyB.u * 0.010, familyB.v * 0.008, 1613) * 5.2;
-      const phaseB = (familyB.v + warpB) * (Math.PI * 2 / 27.0)
-        + valueNoise(x * 0.013 - 3.0, z * 0.014 + 1.5, 1619) * 0.62;
+      const familyB = this.rotateLocal(x, z, 8, -2, -0.76);
+      const warpB = Math.sin(familyB.u * 0.020 + 1.7) * 7.2
+        + Math.sin(familyB.u * 0.007 - 0.5) * 4.6
+        + valueNoise(familyB.u * 0.009, familyB.v * 0.006, 1613) * 5.4;
+      const phaseB = (familyB.v + warpB) * (Math.PI * 2 / 29.0)
+        + valueNoise(x * 0.011 - 3.0, z * 0.012 + 1.5, 1619) * 0.62;
       const cosB = Math.cos(phaseB);
-      const ridgeB = Math.pow(clamp((cosB + 0.28) / 1.28, 0, 1), 2.0) * 0.26;
-      const troughB = -Math.pow(clamp((-cosB + 0.40) / 1.40, 0, 1), 2.2) * 0.17;
-      const maskB = clamp(0.74 + valueNoise(x * 0.010 - 1.2, z * 0.009 + 2.8, 1621) * 0.30, 0.32, 1.0);
+      const ridgeB = Math.pow(clamp((cosB + 0.30) / 1.30, 0, 1), 2.0) * 0.23;
+      const troughB = -Math.pow(clamp((-cosB + 0.38) / 1.38, 0, 1), 2.1) * 0.15;
+      const maskB = clamp(0.70 + valueNoise(x * 0.009 - 1.2, z * 0.008 + 2.8, 1621) * 0.36, 0.20, 1.0);
 
-      const ridgeBlend = Math.max(ridgeA * maskA, ridgeB * maskB);
-      const troughBlend = Math.min(troughA * maskA, troughB * maskB);
-      const tesseraFabric = (ridgeBlend + troughBlend) * envelope;
-      const blockRelief = valueNoise(x * 0.010 + 1.7, z * 0.010 - 2.2, 1627) * envelope * 0.16;
+      const tesseraFabric = ((ridgeA + troughA) * maskA + (ridgeB + troughB) * maskB) * fabricMask;
+      const blockRelief = (ridge(valueNoise(x * 0.020 + 1.2, z * 0.019 - 2.1, 1637)) - 0.54) * 0.10 * fabricMask;
 
-      // Large broken fault valleys offset the older fabric and create broad low corridors.
-      const faultA = this.rotateLocal(x, z, 16, -12, 0.17);
-      const faultACenter = faultA.v - Math.sin(faultA.u * 0.021) * 4.0;
-      const faultValleyA = -(1 - smoothstep((Math.abs(faultACenter) - 5.5) / 4.5))
-        * Math.exp(-((faultA.u / 94) ** 4)) * 0.38;
-      const faultB = this.rotateLocal(x, z, -30, 20, -0.44);
-      const faultBCenter = faultB.v - Math.sin(faultB.u * 0.023 + 0.8) * 5.2;
-      const faultValleyB = -(1 - smoothstep((Math.abs(faultBCenter) - 6.5) / 4.8))
-        * Math.exp(-((faultB.u / 78) ** 4)) * 0.32;
+      const faultA = this.rotateLocal(x, z, 18, -10, 0.17);
+      const faultACenter = faultA.v - Math.sin(faultA.u * 0.019) * 5.0;
+      const faultValleyA = -(1 - smoothstep((Math.abs(faultACenter) - 5.8) / 4.6))
+        * Math.exp(-((faultA.u / 108) ** 6)) * 0.30;
+      const faultB = this.rotateLocal(x, z, -42, 32, -0.40);
+      const faultBCenter = faultB.v - Math.sin(faultB.u * 0.020 + 0.8) * 5.8;
+      const faultValleyB = -(1 - smoothstep((Math.abs(faultBCenter) - 6.8) / 5.0))
+        * Math.exp(-((faultB.u / 92) ** 6)) * 0.26;
 
-      const lowA = -this.ellipseGaussian(x, z, -42, -36, 34, 25, 0.38);
-      const lowB = -this.ellipseGaussian(x, z, 50, 26, 36, 26, 0.31);
-      const eveLow = -this.ellipseGaussian(x, z, 10, 82, 42, 28, 0.27);
-      const eveRim = Math.exp(-(((Math.hypot((x - 10) / 42, (z - 82) / 28) - 1.0) / 0.20) ** 2)) * 0.06;
+      const lowA = -this.ellipseGaussian(x, z, -54, -42, 36, 28, 0.29);
+      const lowB = -this.ellipseGaussian(x, z, 58, 34, 40, 30, 0.25);
+      const eveLow = -this.ellipseGaussian(x, z, 12, 96, 48, 34, 0.22);
+      return broadUpland + tesseraFabric + blockRelief + faultValleyA + faultValleyB
+        + lowA + lowB + eveLow;
+    }
 
-      return upland + tesseraFabric + blockRelief + faultValleyA + faultValleyB
-        + lowA + lowB + eveLow + eveRim;
+    continuationMorphologyAt(x, z) {
+      // Non-playable visual world. Every province keeps its own large-scale terrain
+      // grammar beyond the walkable boundary. The continuation is intentionally
+      // cheap, but it is never allowed to become a blank skirt, a symmetric ring,
+      // or a different terrain family pasted around the playable map.
+      if (this.region.id === "maat") {
+        const volcano = this.worldPointFromReference({ x: 0, z: -46 });
+        const dx = x - volcano.x, dz = z - volcano.z;
+        const radius = Math.hypot(dx, dz);
+        const plain = valueNoise(x * 0.010, z * 0.010, 1801) * 0.16
+          + valueNoise(x * 0.0038, z * 0.0038, 1803) * 0.13
+          + (ridge(valueNoise(x * 0.020 + z * 0.004, z * 0.017, 1805)) - 0.56) * 0.055;
+
+        // Broad cooled lava units radiate away from the shield. They are low relief,
+        // long, broken and overlapping, so distant Maat remains volcanic plains rather
+        // than generic hills or an empty floor.
+        const flowAngles = [-1.02, -0.34, 0.38, 1.18, 2.38];
+        let flows = 0;
+        for (let i = 0; i < flowAngles.length; i += 1) {
+          const a = flowAngles[i];
+          const ca = Math.cos(a), sa = Math.sin(a);
+          const u = dx * ca + dz * sa;
+          const v = -dx * sa + dz * ca;
+          const warp = Math.sin(u * (0.034 + i * 0.002) + i * 0.75) * (4.0 + (i % 3) * 1.8)
+            + valueNoise(u * 0.020 + i, v * 0.012 - i, 1807 + i) * 3.5;
+          const forward = smootherstep(clamp((u + 18) / 34, 0, 1))
+            * (1 - smootherstep(clamp((u - 148) / 32, 0, 1)));
+          const band = Math.exp(-(((v - warp) / (10.0 + (i % 2) * 4.0)) ** 2));
+          const broken = clamp(0.52 + valueNoise(x * 0.014 + i, z * 0.013 - i, 1819 + i) * 0.54, 0.08, 1.0);
+          flows += band * forward * broken * (0.095 + (i % 3) * 0.020);
+          flows += Math.exp(-(((Math.abs(v - warp) - (11 + i % 2 * 3)) / 3.8) ** 2))
+            * forward * broken * 0.025;
+        }
+        const distantRiseA = this.ellipseGaussian(x, z, -118, -138, 88, 72, 0.36);
+        const distantRiseB = this.ellipseGaussian(x, z, 142, -92, 104, 82, 0.27);
+        const oldPlainBreak = Math.sin((x + z) * 0.030 + valueNoise(x * 0.012, z * 0.012, 1827) * 1.8)
+          * Math.exp(-Math.max(0, radius - 24) / 180) * 0.035;
+        return 0.16 + plain + flows + distantRiseA + distantRiseB + oldPlainBreak;
+      }
+
+      if (this.region.id === "maxwell") {
+        const local = this.rotateLocal(x, z, -6, -12, -0.30);
+        const offsets = [-150, -112, -77, -43, -12, 22, 60, 103, 148];
+        let ridges = 0;
+        for (let i = 0; i < offsets.length; i += 1) {
+          const warp = Math.sin(local.u * (0.020 + (i % 3) * 0.0023) + i * 0.67) * (6.0 + (i % 4) * 1.8)
+            + Math.sin(local.u * 0.0065 - i * 0.42) * 4.0
+            + valueNoise(local.u * 0.012 + i, local.v * 0.007 - i, 1831 + i) * 5.0;
+          const center = local.v - offsets[i] - warp;
+          const width = 8.0 + (i % 3) * 2.2;
+          const segment = clamp(0.46 + valueNoise(local.u * 0.009 + i * 2.1, local.v * 0.006 - i, 1847 + i) * 0.62, 0.03, 1.0);
+          const branch = 1 + Math.sin(local.u * 0.014 + i * 1.15) * 0.12;
+          ridges += Math.exp(-((center / width) ** 2)) * segment * branch * (0.43 + (i % 2) * 0.10);
+          ridges -= Math.exp(-(((center - width * 1.55) / (width * 1.30)) ** 2)) * segment * 0.14;
+        }
+        // A few oblique fold splays break the impression of perfect parallel stripes
+        // while keeping a coherent compressional mountain-belt direction.
+        const splayA = this.elongatedRange(x, z, 78, 95, -0.07, 96, 13, 0.31, 1861);
+        const splayB = this.elongatedRange(x, z, -106, -96, -0.52, 82, 12, 0.27, 1867);
+        const broad = 0.25 + valueNoise(local.u * 0.009, local.v * 0.007, 1871) * 0.15;
+        return broad + ridges + splayA + splayB;
+      }
+
+      if (this.region.id === "aphrodite") {
+        // Ovda's distant world uses overlapping upland lobes, an older curved fabric,
+        // and a younger oblique fracture generation. Large structures cross instead
+        // of turning into Maxwell-style parallel mountain belts.
+        const a = this.rotateLocal(x, z, 0, 0, -0.78);
+        const b = this.rotateLocal(x, z, 0, 0, 0.57);
+        const broadUplands = 0.27
+          + this.ellipseGaussian(x, z, -105, 62, 118, 86, 0.24)
+          + this.ellipseGaussian(x, z, 106, -74, 126, 92, 0.22)
+          + valueNoise(x * 0.007, z * 0.007, 1881) * 0.12;
+        const offsetsA = [-134, -76, -22, 39, 108];
+        let oldFabric = 0;
+        for (let i = 0; i < offsetsA.length; i += 1) {
+          const warp = Math.sin(a.u * (0.015 + i * 0.0014) + i * 0.83) * (8 + i * 1.7)
+            + Math.sin(a.u * 0.0055 - i * 0.47) * 6.0
+            + valueNoise(a.u * 0.010 + i, a.v * 0.006, 1887 + i) * 5.5;
+          const center = a.v - offsetsA[i] - warp;
+          const along = clamp(0.43 + valueNoise(a.u * 0.008 + i, a.v * 0.005 - i, 1897 + i) * 0.65, 0.02, 1.0);
+          oldFabric += Math.exp(-((center / (11 + (i % 2) * 3)) ** 2)) * along * (0.17 + (i % 3) * 0.025);
+          oldFabric -= Math.exp(-(((center - 15) / (13 + (i % 2) * 2)) ** 2)) * along * 0.065;
+        }
+        const offsetsB = [-112, -51, 9, 71, 126];
+        let fractures = 0;
+        for (let i = 0; i < offsetsB.length; i += 1) {
+          const warp = Math.sin(b.u * (0.017 + i * 0.0016) + i * 1.18) * (6.0 + i)
+            + valueNoise(b.u * 0.011 - i, b.v * 0.006 + i, 1911 + i) * 4.8;
+          const center = b.v - offsetsB[i] - warp;
+          const along = clamp(0.40 + valueNoise(b.u * 0.008 + i, b.v * 0.005, 1921 + i) * 0.66, 0.015, 1.0);
+          fractures -= Math.exp(-((center / (6.2 + (i % 2) * 1.8)) ** 2)) * along * (0.12 + (i % 2) * 0.035);
+        }
+        const lavaLowA = -this.ellipseGaussian(x, z, 88, 96, 58, 42, 0.18);
+        const lavaLowB = -this.ellipseGaussian(x, z, -116, -80, 52, 38, 0.15);
+        return broadUplands + oldFabric + fractures + lavaLowA + lavaLowB;
+      }
+
+      if (this.region.id === "ishtar") {
+        // Continue Lakshmi as a large open plateau. Mountain systems appear as
+        // separate, finite provinces at selected margins rather than a rectangular
+        // shell or enclosing ring.
+        const warpX = Math.sin(z * 0.018) * 9 + valueNoise(z * 0.010, x * 0.004, 1931) * 7;
+        const warpZ = Math.sin(x * 0.015 + 0.8) * 8 + valueNoise(x * 0.009, z * 0.004, 1937) * 6;
+        const metric = Math.hypot((x + 46 + warpX) / 162, (z - 44 + warpZ) / 150);
+        const plateauMask = 1 - smootherstep(clamp((metric - 0.76) / 0.34, 0, 1));
+        const plateau = plateauMask * (1.14
+          + valueNoise(x * 0.008, z * 0.008, 1943) * 0.10
+          + (ridge(valueNoise(x * 0.016, z * 0.013, 1949)) - 0.55) * 0.045);
+
+        const eastA = this.elongatedRange(x, z, 104, -54, Math.PI / 2 + 0.20, 92, 13, 0.78, 1951);
+        const eastB = this.elongatedRange(x, z, 124, 54, Math.PI / 2 - 0.12, 76, 15, 0.62, 1957);
+        const northA = this.elongatedRange(x, z, 34, -112, 0.16, 102, 14, 0.70, 1961);
+        const northwest = this.elongatedRange(x, z, -94, -96, 0.43, 72, 13, 0.55, 1967);
+        const westSegment = this.elongatedRange(x, z, -126, 42, Math.PI / 2 - 0.18, 68, 13, 0.42, 1973);
+        const eastLow = -this.ellipseGaussian(x, z, 158, -4, 88, 142, 0.30);
+        return plateau + eastA + eastB + northA + northwest + westSegment + eastLow;
+      }
+
+      if (this.region.id === "alpha") {
+        const a = this.rotateLocal(x, z, 0, 0, 0.54);
+        const b = this.rotateLocal(x, z, 0, 0, -0.76);
+        const regionalMask = clamp(0.70
+          + valueNoise(x * 0.0055 + 2.0, z * 0.0052 - 1.0, 1981) * 0.34
+          + valueNoise(x * 0.012 - 3.0, z * 0.011 + 2.0, 1987) * 0.12, 0.24, 1.0);
+        const offsetsA = [-146, -106, -62, -20, 28, 76, 126, 166];
+        const offsetsB = [-154, -101, -48, 8, 62, 116, 166];
+        let fabric = 0;
+        for (let i = 0; i < offsetsA.length; i += 1) {
+          const warp = Math.sin(a.u * (0.027 + (i % 2) * 0.003) + i * 0.74) * (5.0 + (i % 3) * 1.8)
+            + valueNoise(a.u * 0.016 + i, a.v * 0.009, 1993 + i) * 4.4;
+          const center = a.v - offsetsA[i] - warp;
+          const mask = clamp(0.44 + valueNoise(x * 0.013 + i, z * 0.012 - i, 2003 + i) * 0.62, 0.02, 1.0);
+          fabric += Math.exp(-((center / (6.8 + (i % 3) * 1.2)) ** 2)) * mask * 0.15;
+          fabric -= Math.exp(-(((center - 10) / 7.8) ** 2)) * mask * 0.075;
+        }
+        for (let i = 0; i < offsetsB.length; i += 1) {
+          const warp = Math.sin(b.u * (0.025 + (i % 3) * 0.002) + i * 0.83) * (5.4 + (i % 2) * 2.0)
+            + valueNoise(b.u * 0.016 - i, b.v * 0.009, 2017 + i) * 4.6;
+          const center = b.v - offsetsB[i] - warp;
+          const mask = clamp(0.43 + valueNoise(x * 0.012 - i, z * 0.013 + i, 2027 + i) * 0.63, 0.02, 1.0);
+          fabric += Math.exp(-((center / (7.2 + (i % 2) * 1.5)) ** 2)) * mask * 0.135;
+          fabric -= Math.exp(-(((center + 10) / 8.2) ** 2)) * mask * 0.070;
+        }
+        const smoothLowA = -this.ellipseGaussian(x, z, -112, 78, 54, 42, 0.18);
+        const smoothLowB = -this.ellipseGaussian(x, z, 116, -88, 60, 44, 0.16);
+        return 0.34 + fabric * regionalMask
+          + valueNoise(x * 0.012, z * 0.012, 2039) * 0.08
+          + smoothLowA + smoothLowB;
+      }
+      return 0;
+    }
+
+    continuationBlendAt(x, z) {
+      const r = Math.hypot(x, z);
+      const angle = Math.atan2(z, x);
+      const irregularEdge = this.region.playRadius * (0.90
+        + Math.sin(angle * 3.0 + 0.4) * 0.055
+        + Math.sin(angle * 5.0 - 0.7) * 0.030
+        + valueNoise(x * 0.025, z * 0.025, 1993) * 0.055);
+      return smootherstep(clamp((r - irregularEdge) / Math.max(4, this.region.playRadius * 0.72), 0, 1));
     }
 
     morphologyHeightAt(x, z) {
@@ -1329,9 +1532,8 @@
       else if (this.region.id === "ishtar") morphology = this.ishtarMorphologyAt(sx, sz);
       else if (this.region.id === "alpha") morphology = this.alphaMorphologyAt(sx, sz);
       const sourceWeight = this.morphologyWeight ?? this.morphologySourceWeight();
-      const farRadius = this.worldSpan * 0.53;
-      const edgeFade = 1 - smoothstep((Math.hypot(x, z) - farRadius * 0.78) / Math.max(1, farRadius * 0.22));
-      return morphology * sourceWeight * clamp(edgeFade, 0.18, 1);
+      // Never attenuate the landmark just because the sample is used by a far LOD.
+      return morphology * sourceWeight;
     }
 
     morphologyDetailScaleAt(x, z) {
@@ -1400,6 +1602,14 @@
       return this.scientificHeightAt(x, z) + this.morphologyHeightAt(x, z) + this.microHeightAt(x, z);
     }
 
+    visualHeightAt(x, z, detailScale = 0.18) {
+      const continuation = this.continuationMorphologyAt(x, z) * this.continuationBlendAt(x, z);
+      return this.scientificVisualHeightAt(x, z)
+        + this.morphologyHeightAt(x, z)
+        + continuation
+        + this.microHeightAt(x, z) * detailScale;
+    }
+
     slopeAt(x, z, epsilon = 0.22) {
       const hL = this.heightAt(x - epsilon, z), hR = this.heightAt(x + epsilon, z);
       const hD = this.heightAt(x, z - epsilon), hU = this.heightAt(x, z + epsilon);
@@ -1417,12 +1627,12 @@
       return target;
     }
 
-    createMaterial(radarTexture, background = false) {
+    createMaterial(radarTexture, background = false, continuation = false) {
       const T = this.THREE;
       const material = new T.MeshStandardMaterial({
         color: 0xffffff,
         vertexColors: true,
-        map: radarTexture || null,
+        map: continuation ? null : (radarTexture || null),
         bumpMap: this.detailTexture,
         bumpScale: 0.001,
         roughness: background ? 0.98 : this.quality.name === "HIGH" ? 0.885 : this.quality.name === "MEDIUM" ? 0.90 : 0.92,
@@ -1430,7 +1640,7 @@
         fog: true,
         dithering: true
       });
-      material.name = background ? "venus-gtdr-background-material" : "venus-gtdr-surface-material";
+      material.name = continuation ? "venus-province-continuation-material" : background ? "venus-gtdr-background-material" : "venus-gtdr-surface-material";
       material.onBeforeCompile = shader => {
         shader.uniforms.uVenusMicroDetail = { value: this.detailTexture };
         shader.uniforms.uVenusAlbedoDetail = { value: background ? 0.055 : this.quality.name === "HIGH" ? 0.20 : this.quality.name === "MEDIUM" ? 0.16 : 0.12 };
@@ -1487,42 +1697,49 @@
             roughnessFactor = clamp(roughnessFactor + (0.5 - venusBroad) * 0.08 + (0.5 - venusGrit) * 0.045 * step(2.5, uVenusDetailTier), 0.72, 1.0);`);
         material.userData.venusShader = shader;
       };
-      material.customProgramCacheKey = () => `antara-venus-gtdr-triplanar-v3-${background ? "background" : "surface"}-${this.quality.name}`;
+      material.customProgramCacheKey = () => `antara-venus-gtdr-triplanar-v4-${continuation ? "continuation" : background ? "background" : "surface"}-${this.quality.name}`;
       material.needsUpdate = true;
       return material;
     }
 
-    geometryForPatch(centerX, centerZ, size, segments, background = false) {
+    geometryForRect(xMin, xMax, zMin, zMax, segmentsX, segmentsZ, backgroundLevel = 0) {
       const T = this.THREE;
-      const row = segments + 1;
-      const positions = new Float32Array(row * row * 3);
-      const colors = new Float32Array(row * row * 3);
-      const uvs = new Float32Array(row * row * 2);
-      const indices = new Uint32Array(segments * segments * 6);
-      const half = size / 2;
+      const row = segmentsX + 1;
+      const rows = segmentsZ + 1;
+      const positions = new Float32Array(row * rows * 3);
+      const colors = new Float32Array(row * rows * 3);
+      const uvs = new Float32Array(row * rows * 2);
+      const indices = new Uint32Array(segmentsX * segmentsZ * 6);
       let p = 0, c = 0, uv = 0, q = 0;
       const radarExtent = this.radar.extentKm;
-      for (let iz = 0; iz <= segments; iz += 1) {
-        const z = centerZ - half + size * (iz / segments);
-        for (let ix = 0; ix <= segments; ix += 1) {
-          const x = centerX - half + size * (ix / segments);
-          const scientific = this.scientificHeightAt(x, z);
-          const morphology = this.morphologyHeightAt(x, z);
-          const micro = background ? this.microHeightAt(x, z) * 0.18 : this.microHeightAt(x, z);
-          const y = scientific + morphology + micro - (background ? 0.028 : 0);
-          const slope = background ? 0.08 : this.slopeAt(x, z, Math.max(0.18, size / segments * 0.72));
+      const visual = backgroundLevel > 0;
+      const detailScale = backgroundLevel >= 2 ? 0.04 : backgroundLevel === 1 ? 0.11 : 1.0;
+      for (let iz = 0; iz <= segmentsZ; iz += 1) {
+        const z = lerp(zMin, zMax, iz / segmentsZ);
+        for (let ix = 0; ix <= segmentsX; ix += 1) {
+          const x = lerp(xMin, xMax, ix / segmentsX);
+          const y = visual ? this.visualHeightAt(x, z, detailScale) : this.heightAt(x, z);
+          const slope = visual
+            ? 0.07 + Math.abs(valueNoise(x * 0.025, z * 0.025, 1901)) * 0.08
+            : this.slopeAt(x, z, Math.max(0.18, Math.max((xMax - xMin) / segmentsX, (zMax - zMin) / segmentsZ) * 0.72));
           const color = this.colorAt(x, z, y, slope);
-          const farFade = background ? smoothstep(Math.hypot(x, z) / (this.worldSpan * 0.54)) : 0;
-          if (background) color.lerp(this.fogColor, farFade * 0.26).multiplyScalar(1 - farFade * 0.12);
-          positions[p++] = x; positions[p++] = y; positions[p++] = z;
+          if (visual) {
+            const r = Math.hypot(x, z);
+            const fadeStart = this.region.playRadius * 1.10;
+            const fadeEnd = Math.max(fadeStart + 1, this.continuationFarHalf * 0.96);
+            const farFade = smoothstep((r - fadeStart) / (fadeEnd - fadeStart));
+            const strength = backgroundLevel >= 2 ? 0.54 : 0.34;
+            color.lerp(this.fogColor, farFade * strength).multiplyScalar(1 - farFade * (backgroundLevel >= 2 ? 0.16 : 0.10));
+          }
+          positions[p++] = x; positions[p++] = y - (visual ? 0.018 * backgroundLevel : 0); positions[p++] = z;
           colors[c++] = color.r; colors[c++] = color.g; colors[c++] = color.b;
           const source = this.sourceKmFromWorld(x, z);
           uvs[uv++] = clamp((source.x + radarExtent) / (radarExtent * 2), 0, 1);
           uvs[uv++] = clamp((radarExtent - source.z) / (radarExtent * 2), 0, 1);
         }
       }
-      for (let iz = 0; iz < segments; iz += 1) {
-        for (let ix = 0; ix < segments; ix += 1) {
+      for (let iz = 0; iz < segmentsZ; iz += 1) {
+        for (let ix = 0; ix < segmentsX; ix += 1) {
           const a = iz * row + ix, b = a + 1, d = (iz + 1) * row + ix, e = d + 1;
           indices[q++] = a; indices[q++] = d; indices[q++] = b;
           indices[q++] = b; indices[q++] = d; indices[q++] = e;
@@ -1538,6 +1755,35 @@
       return geometry;
     }
 
+    geometryForPatch(centerX, centerZ, size, segments, background = false) {
+      const half = size / 2;
+      return this.geometryForRect(centerX - half, centerX + half, centerZ - half, centerZ + half, segments, segments, background ? 1 : 0);
+    }
+
+    createContinuationRing(innerHalf, outerHalf, longSegments, backgroundLevel) {
+      const overlap = 0.55;
+      const inner = Math.max(1, innerHalf - overlap);
+      const outer = outerHalf;
+      const width = Math.max(1, outer - inner);
+      const long = Math.max(12, longSegments);
+      const short = Math.max(5, Math.round(long * width / (outer * 2)));
+      const rects = [
+        [-outer, -inner, -outer, outer, short, long],
+        [ inner,  outer, -outer, outer, short, long],
+        [-inner, inner, -outer, -inner, long, short],
+        [-inner, inner,  inner,  outer, long, short]
+      ];
+      for (const [x0, x1, z0, z1, sx, sz] of rects) {
+        const geometry = this.geometryForRect(x0, x1, z0, z1, sx, sz, backgroundLevel);
+        const mesh = new this.THREE.Mesh(geometry, this.continuationMaterial);
+        mesh.name = `venus-${backgroundLevel >= 2 ? "far" : "mid"}-continuation-${this.region.id}-${this.continuationMeshes.length}`;
+        mesh.frustumCulled = true;
+        mesh.renderOrder = -3 - backgroundLevel;
+        this.group.add(mesh);
+        this.continuationMeshes.push(mesh);
+      }
+    }
+
     chooseSegments(cx, cz) {
       const distance = Math.hypot(cx, cz);
       if (distance < this.tileSize * 1.25) return this.quality.nearSegments;
@@ -1549,20 +1795,29 @@
       onProgress(0.01);
       await this.topography.load(value => onProgress(0.02 + value * 0.20));
       this.referenceElevation = this.topography.sample(this.region.latitude, this.region.longitudeEast);
+      this.outerScientificBaseline = this.estimateOuterScientificBaseline();
       this.morphologyWeight = this.morphologySourceWeight();
       onProgress(0.24);
       const radarTexture = await this.radar.load().catch(() => null);
       onProgress(0.34);
-      this.material = this.createMaterial(radarTexture, false);
-      this.backgroundMaterial = this.createMaterial(radarTexture, true);
+      this.material = this.createMaterial(radarTexture, false, false);
+      // The visual continuation intentionally does not clamp/stretch the final SAR texels.
+      // Close interactive chunks keep radar context; outer terrain uses world-space material
+      // plus the same regional geometry grammar.
+      this.backgroundMaterial = this.createMaterial(null, true, true);
+      this.continuationMaterial = this.backgroundMaterial;
       this.resources.push(this.material, this.backgroundMaterial);
 
       const bgSegments = this.quality.backgroundSegments || (this.quality.name === "HIGH" ? 98 : this.quality.name === "MEDIUM" ? 76 : 52);
       this.background = new this.THREE.Mesh(this.geometryForPatch(0, 0, this.worldSpan, bgSegments, true), this.backgroundMaterial);
-      this.background.name = `venus-scientific-visual-world-${this.region.id}`;
+      this.background.name = `venus-regional-underlay-${this.region.id}`;
       this.background.frustumCulled = true;
       this.background.renderOrder = -2;
       this.group.add(this.background);
+
+      const coreHalf = this.worldSpan * 0.5;
+      this.createContinuationRing(coreHalf, this.continuationMidHalf, this.quality.continuationMidSegments || 34, 1);
+      this.createContinuationRing(this.continuationMidHalf, this.continuationFarHalf, this.quality.continuationFarSegments || 20, 2);
       onProgress(0.48);
 
       const half = this.tileHalfCount;
@@ -1773,6 +2028,8 @@
       for (const entry of this.tiles) entry.mesh.geometry.dispose();
       this.tiles.length = 0;
       this.background?.geometry?.dispose?.();
+      for (const mesh of this.continuationMeshes) mesh.geometry?.dispose?.();
+      this.continuationMeshes.length = 0;
       this.radar.dispose();
       this.topography.clear();
       const seen = new Set();
@@ -1784,6 +2041,7 @@
       this.resources.length = 0;
       this.group.clear();
       this.background = null;
+      this.continuationMaterial = null;
       this.props = null;
       this.particles = null;
       this.observationGroup = null;

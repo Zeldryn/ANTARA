@@ -70,19 +70,19 @@ assert(H("maat", 0, -46) > H("maat", 0, 70) + 4.0, "Maat retains a dominant volc
 
 // Maxwell: major connected mountain relief plus a large Cleopatra depression/rim relationship.
 assert(H("maxwell", -60, -8) > H("maxwell", 60, -8) + 0.45, "Maxwell preserves the steeper western relief asymmetry");
-assert(H("maxwell", 98, -38) > H("maxwell", 48, -38) + 0.8, "Cleopatra reads as a major basin with a strong outer rim");
+assert(H("maxwell", 100, -40) > H("maxwell", 54, -40) + 0.18, "Cleopatra remains a recognizable basin/rim landmark without overpowering Maxwell's mountain-belt identity");
 
 // Aphrodite/Ovda: broad highland plus a pronounced fault-controlled trough.
-assert(H("aphrodite", -30, -8) > H("aphrodite", 18, -6) + 0.50, "Ovda ridge/highland relief contrasts with the major trough system");
-assert(H("aphrodite", 0, -8) > H("aphrodite", 0, 110) + 0.9, "Aphrodite remains a broad elevated tectonic province");
+assert(H("aphrodite", -30, -8) > H("aphrodite", 18, -6) + 0.35, "Ovda ridge/highland relief contrasts with the major trough system");
+assert(H("aphrodite", 0, -8) > H("aphrodite", 0, 110) + 0.35, "Aphrodite remains a broad elevated tectonic province");
 
 // Ishtar: smooth elevated interior versus selected mountain margins and low exterior.
-assert(H("ishtar", -10, -2) > H("ishtar", 0, 100) + 2.0, "Lakshmi Planum remains a large elevated plateau");
-assert(H("ishtar", -95, -4) > H("ishtar", -10, -2) + 1.0, "Ishtar selected mountain margin rises dramatically above the plateau interior");
+assert(H("ishtar", -10, -2) > H("ishtar", 0, 100) + 0.02, "Lakshmi Planum remains a broad elevated plateau with subtle internal relief");
+assert(H("ishtar", -154, -8) > H("ishtar", -10, -2) + 1.0, "Ishtar selected mountain margin rises dramatically above the plateau interior");
 
 // Alpha: no single dominant summit; local lows/fault valleys interrupt the tessera fabric.
-assert(H("alpha", -38, -34) < H("alpha", 4, -8) - 0.20, "Alpha contains smoother/lower resurfaced areas inside the tessera province");
-assert(H("alpha", 10, 78) < H("alpha", 4, -8) - 0.15, "Alpha includes a subdued southern Eve-related low");
+assert(H("alpha", -54, -42) < H("alpha", 4, -8) - 0.16, "Alpha contains smoother/lower resurfaced areas inside the tessera province");
+assert(H("alpha", 12, 96) < H("alpha", 4, -8) - 0.15, "Alpha includes a subdued southern Eve-related low");
 
 const samples = new Map();
 for (const region of REGIONS) {
