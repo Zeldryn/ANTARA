@@ -5105,3 +5105,169 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 .cockpit-profile-hud > .leaderboard-hud-frame * {
   user-select: none;
 }
+
+
+/* ========================================================================
+   2026-09-30 START + DUPLICATE TOP STRIP CORRECTION
+   Scope: permanently remove the obsolete windshield top strip and restyle
+   only the existing START control in ANTARA's cockpit language.
+   ======================================================================== */
+
+/* Structural removal fallback. The element is also removed from index.html,
+   so it cannot reappear when HOME changes into LAUNCH state. */
+.window-depth-top { display:none !important; }
+
+/* Keep the CTA in the exact existing position. Only its visual skin changes. */
+.launch-button {
+  --launch-gold: #dfb76f;
+  --launch-gold-soft: rgba(223,183,111,.56);
+  --launch-cyan: #78bcd8;
+  --launch-cyan-soft: rgba(120,188,216,.46);
+  min-width: clamp(210px,18vw,286px) !important;
+  min-height: 54px !important;
+  padding: 0 17px 0 21px !important;
+  gap: 18px !important;
+  justify-content: space-between !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  clip-path: polygon(10px 0,calc(100% - 16px) 0,100% 14px,100% calc(100% - 8px),calc(100% - 8px) 100%,14px 100%,0 calc(100% - 14px),0 9px);
+  background:
+    linear-gradient(90deg,var(--launch-gold-soft),transparent 27%) top left / 43% 1px no-repeat,
+    linear-gradient(90deg,transparent 0 34%,var(--launch-cyan-soft) 56%,transparent 100%) top right / 49% 1px no-repeat,
+    linear-gradient(90deg,var(--launch-cyan-soft),transparent 34%) bottom left / 39% 1px no-repeat,
+    linear-gradient(90deg,transparent 0 28%,var(--launch-gold-soft) 60%,transparent 100%) bottom right / 52% 1px no-repeat,
+    linear-gradient(180deg,rgba(12,27,41,.96),rgba(4,12,21,.98)) !important;
+  color: #f5f2ea !important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.025),
+    inset 0 -8px 16px rgba(0,0,0,.16),
+    0 12px 30px rgba(0,0,0,.20) !important;
+  overflow: visible;
+  isolation: isolate;
+}
+.launch-button::before,
+.launch-button::after {
+  content:"" !important;
+  display:block !important;
+  position:absolute !important;
+  pointer-events:none;
+  z-index:0;
+  width:auto !important;
+  height:auto !important;
+  top:auto !important;
+  right:auto !important;
+  left:auto !important;
+  transform:none !important;
+}
+.launch-button::before {
+  inset: 5px 7px 5px 7px !important;
+  clip-path: polygon(7px 0,64% 0,68% 2px,100% 2px,100% calc(100% - 7px),calc(100% - 7px) 100%,34% 100%,30% calc(100% - 2px),0 calc(100% - 2px),0 7px);
+  background:
+    linear-gradient(90deg,rgba(223,183,111,.88),rgba(223,183,111,.18) 48%,transparent 72%) top left / 72% 1px no-repeat,
+    linear-gradient(90deg,transparent 0 22%,rgba(120,188,216,.38) 48%,rgba(120,188,216,.78)) bottom right / 78% 1px no-repeat,
+    linear-gradient(180deg,rgba(223,183,111,.72),transparent 66%) left top / 1px 70% no-repeat,
+    linear-gradient(180deg,transparent 0 32%,rgba(120,188,216,.68)) right bottom / 1px 68% no-repeat;
+  opacity:.95;
+}
+.launch-button::after {
+  width: 4px !important;
+  height: 4px !important;
+  left: 13px !important;
+  top: 50% !important;
+  transform: translateY(-50%) rotate(45deg) !important;
+  border: 1px solid rgba(223,183,111,.78);
+  background: transparent !important;
+  box-shadow: 0 0 7px rgba(223,183,111,.15);
+  opacity:.92;
+}
+.launch-button-copy {
+  position:relative;
+  z-index:2;
+  display:grid;
+  align-content:center;
+  justify-items:start;
+  text-align:left;
+  gap:2px;
+  padding-left:12px;
+}
+.launch-button-copy small {
+  display:block;
+  margin:0;
+  color:rgba(120,188,216,.78);
+  font:600 6px/1 system-ui,sans-serif;
+  letter-spacing:.26em;
+  text-indent:.26em;
+}
+.launch-button-copy strong {
+  display:block;
+  margin:0;
+  color:#f4efe4;
+  font:650 12px/1.05 system-ui,sans-serif;
+  letter-spacing:.16em;
+  text-indent:.16em;
+  text-shadow:0 0 10px rgba(223,183,111,.08);
+}
+.launch-button-arrow {
+  position:relative;
+  z-index:2;
+  display:grid;
+  place-items:center;
+  width:30px;
+  height:28px;
+  border-left:1px solid rgba(120,188,216,.22);
+}
+.launch-button-arrow::before {
+  content:"";
+  position:absolute;
+  left:-1px;
+  top:6px;
+  width:1px;
+  height:7px;
+  background:rgba(223,183,111,.64);
+}
+.launch-button-arrow svg {
+  width:17px !important;
+  height:17px !important;
+  stroke:var(--launch-gold) !important;
+  stroke-width:1.45 !important;
+  transition:transform .22s ease,stroke .22s ease !important;
+}
+.launch-button:hover,
+.launch-button:focus-visible {
+  background:
+    linear-gradient(90deg,rgba(223,183,111,.70),transparent 29%) top left / 46% 1px no-repeat,
+    linear-gradient(90deg,transparent 0 30%,rgba(120,188,216,.62) 58%,transparent 100%) top right / 53% 1px no-repeat,
+    linear-gradient(90deg,rgba(120,188,216,.58),transparent 38%) bottom left / 43% 1px no-repeat,
+    linear-gradient(90deg,transparent 0 23%,rgba(223,183,111,.68) 62%,transparent 100%) bottom right / 56% 1px no-repeat,
+    linear-gradient(180deg,rgba(15,33,49,.985),rgba(5,14,24,.99)) !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.035),0 13px 31px rgba(0,0,0,.22) !important;
+}
+.launch-button:hover .launch-button-arrow svg,
+.launch-button:focus-visible .launch-button-arrow svg {
+  transform:translateX(3px) !important;
+  stroke:#f1cb82 !important;
+}
+.launch-button:focus-visible {
+  outline:1px solid rgba(223,183,111,.60);
+  outline-offset:4px;
+}
+.launch-button:active {
+  filter:brightness(1.08);
+}
+.is-preparing .launch-button {
+  animation: launch-confirm .45s ease-out both !important;
+}
+
+@media (max-width:700px) {
+  .launch-button {
+    min-width: 186px !important;
+    min-height: 49px !important;
+    padding:0 13px 0 16px !important;
+    gap:13px !important;
+  }
+  .launch-button-copy { padding-left:10px; gap:1px; }
+  .launch-button-copy small { font-size:5.2px; letter-spacing:.21em; text-indent:.21em; }
+  .launch-button-copy strong { font-size:10px; letter-spacing:.14em; text-indent:.14em; }
+  .launch-button-arrow { width:26px; height:24px; }
+  .launch-button-arrow svg { width:15px !important; height:15px !important; }
+}
