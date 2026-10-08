@@ -265,18 +265,15 @@ The content intentionally distinguishes measurement definitions: Everest is high
 
 ## Venus information + Full Exploration expansion
 
-Venus was extended without replacing the existing `VenusScene` architecture. Its information dataset now contains 14 stops. Global science topics use diagrams or mission imagery and no fake geographic marker; Maat Mons, Maxwell Montes, Alpha Regio, and Mead use real coordinates and the existing Venus marker/rotation pipeline.
+Venus keeps the existing `VenusScene` normal/info architecture and the established Full Exploration entry, exit, HUD, pointer-lock, WASD/Q/E/Shift, mobile-control and fullscreen language. The rebuild is scoped to the Full Exploration environment renderer.
 
-The Venus panorama now exposes the same two-level hero choice as Earth/Mars: `Jelajahi Venus` for normal information mode and `Eksplorasi Pengalaman Penuh` for the separate real-time exploration path. `venus-full-exploration.js` reuses ANTARA's established full-exploration interaction language: lazy Three.js setup, one reusable renderer, pointer lock, WASD/Q/E/Shift movement, Mars-style HUD, location menu, chunk LOD, frustum culling, FrontSide terrain, cinematic cloud entry/exit, and clean re-entry.
+Five destinations remain registered: Maat Mons, Maxwell Montes, Aphrodite Terra, Ishtar Terra, and Alpha Regio. Their geographic centers drive the scientific terrain sampling and HUD coordinates.
 
-Five named Venus POIs are registered in one renderer: Maat Mons, Maxwell Montes, Aphrodite Terra, Ishtar Terra, and Alpha Regio. Their IAU/USGS coordinates drive the global Venus orientation and HUD. The global surface context uses NASA/JPL Magellan radar-derived imagery, while NASA PDS Magellan GTDR framelets now drive measured macro relief when available. Procedural geometry is restricted to small-scale visual enrichment and an explicitly labelled fallback path.
+The new macro-height path prefers preprocessed regional crops from USGS **Venus Magellan Global Topography 4641m v02**. If those compact files have not been generated, the runtime may use the real NASA PDS one-degree Magellan topography grid as a coarse fallback. It never substitutes radar brightness or generic procedural noise as measured elevation.
 
-## Venus Full Exploration scientific/world-density rework (2026-09-27)
+The renderer builds a quality-dependent high-detail chunk field around the playable area plus a much larger low-detail non-playable terrain mesh sampled from the same geographic source. The player is constrained by movement logic while the visible terrain continues far beyond the boundary and is progressively absorbed by Venus atmospheric extinction.
 
-Venus Full Exploration now uses a measured-data-first terrain path. NASA PDS Magellan GTDR sinusoidal framelets are lazy-loaded per active Venus POI and sampled directly into the flyable mesh. Measured topography controls macro relief when the archive is reachable; procedural terrain is retained only as an explicitly labelled runtime fallback and as micro-scale renderer enrichment.
+Magellan SAR is a separate surface/material provider. World-space roughness variation and low-amplitude region-specific procedural geology enrich scales below the DEM resolution. The same final height function is used for mesh geometry, slope sampling, prop placement, and player ground collision.
 
-The fixed local terrain patch was replaced by a camera-centered streaming field with near/mid/far/horizon geometry tiers, Three.js frustum culling, a bounded geometry cache, and a wider low-cost safety ring. This keeps real surrounding terrain available beyond the primary POI without maintaining maximum detail everywhere.
+Local scientific assets are generated with `tools/prepare_venus_magellan_data.py`. See `VENUS_FULL_EXPLORATION.md`, `MARS_TO_VENUS_ARCHITECTURE_AUDIT.md`, and `VENUS_SCIENCE_AUDIT.md`.
 
-The former minimal Venus landmark label is now one reusable educational card. It updates on location changes, can collapse/close/reopen, exposes science/coordinate/topography sources, labels Magellan radar imagery honestly, and remains compatible with Pointer Lock.
-
-See `VENUS_SCIENCE_AUDIT.md` for the five-location data audit.

@@ -33,7 +33,7 @@
   <script src="mercury-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="sun-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="venus-scene.js?v=20260928-marsblueprint-2" defer></script>
-  <script src="venus-full-exploration.js?v=20260929d" defer></script>
+  <script src="venus-full-exploration.js?v=20260929-gtdr-rebuild-1" defer></script>
   <script src="asteroid-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="jupiter-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="saturn-scene.js?v=20260927-venusscience-2" defer></script>
@@ -556,21 +556,21 @@
         <div class="venus-heat-shimmer" aria-hidden="true"></div>
 
         <section class="venus-region-selector" id="venus-region-selector" aria-labelledby="venus-region-selector-title">
-          <div class="venus-region-selector-topline"><span>ANTARA · VENUS CURATED REGIONS</span><button id="venus-region-selector-close" type="button" aria-label="Tutup pemilih destinasi Venus">×</button></div>
+          <div class="venus-region-selector-topline"><span>ANTARA · VENUS MAGELLAN REGIONS</span><button id="venus-region-selector-close" type="button" aria-label="Tutup pemilih destinasi Venus">×</button></div>
           <h3 id="venus-region-selector-title">Pilih Destinasi Venus</h3>
-          <p>Pilih satu region sebelum turun ke permukaan. ANTARA akan menyiapkan satu lingkungan eksplorasi terkurasi, lalu membawa kamera masuk melalui atmosfer Venus.</p>
+          <p>Pilih satu region sebelum turun ke permukaan. ANTARA akan menyiapkan terrain dari topografi Magellan, lalu membawa kamera masuk melalui atmosfer Venus.</p>
           <div class="venus-region-grid" id="venus-region-grid"></div>
           <div class="venus-region-provenance">
             <strong>REFERENSI MORFOLOGI</strong>
             <span>NASA / JPL · Magellan · IAU / USGS</span>
-            <small>Setiap region memprioritaskan bentuk, struktur geologi, dan identitas visual dari referensi ilmiah. Hanya satu region detail tinggi yang aktif pada satu waktu.</small>
+            <small>Macro terrain mengikuti topografi ilmiah Magellan. Detail prosedural hanya memperkaya skala yang lebih kecil, sementara dunia visual terus berlanjut di luar batas gerak.</small>
           </div>
         </section>
 
         <aside class="mars-full-hud" data-venus-ui aria-label="Informasi penerbangan Venus">
           <div class="mars-hud-kicker">VENUS</div>
           <h3>Eksplorasi</h3>
-          <div class="mars-hud-mode">CURATED REGION · FULL EXPLORATION</div>
+          <div class="mars-hud-mode">MAGELLAN TERRAIN · FULL EXPLORATION</div>
           <div class="mars-hud-location" id="venus-hud-location">Pilih destinasi</div>
           <div class="mars-hud-coordinates" id="venus-hud-coordinates">--</div>
           <div class="mars-hud-metrics">
@@ -579,7 +579,7 @@
             <div class="mars-hud-metric"><small>Jarak ke fitur</small><strong id="venus-hud-distance">--</strong></div>
             <div class="mars-hud-metric"><small>Region</small><strong id="venus-hud-region-type">--</strong></div>
           </div>
-          <div class="mars-hud-data" id="venus-hud-data">NASA/JPL MAGELLAN · REFERENCE-DRIVEN</div>
+          <div class="mars-hud-data" id="venus-hud-data">MAGELLAN GTDR · SCIENTIFIC TERRAIN</div>
         </aside>
 
         <div class="mars-full-actions" data-venus-ui>
@@ -610,7 +610,7 @@
         <div class="venus-boundary-hint" id="venus-boundary-hint" aria-live="polite"></div>
 
         <div class="mars-full-loading" id="venus-full-loading" data-venus-ui hidden>
-          <div class="mars-full-loading-kicker">ANTARA · VENUS CURATED REGION</div>
+          <div class="mars-full-loading-kicker">ANTARA · VENUS MAGELLAN TERRAIN</div>
           <h3>Menembus Atmosfer Venus</h3>
           <div class="mars-full-loading-status" id="venus-full-loading-status">MENYIAPKAN DESTINASI</div>
           <div class="mars-loading-track"><div class="mars-loading-progress" id="venus-full-loading-progress"></div></div>
@@ -641,7 +641,7 @@
 
         <aside class="mars-landmark-card venus-location-card" id="venus-landmark-card" data-venus-ui aria-live="polite" aria-hidden="true">
           <div class="venus-location-card-head">
-            <small>VENUS CURATED REGION · MAGELLAN REFERENCE</small>
+            <small>VENUS SCIENTIFIC REGION · MAGELLAN DATA</small>
             <button class="venus-location-minimize" id="venus-landmark-minimize" type="button" aria-label="Minimalkan informasi lokasi">Sembunyikan</button>
           </div>
           <h4 id="venus-landmark-name">Venus</h4>
@@ -654,7 +654,7 @@
           <p class="venus-location-description" id="venus-landmark-description"></p>
           <ul class="venus-location-facts" id="venus-landmark-facts"></ul>
           <div class="venus-location-visualization-note" id="venus-landmark-visualization-note" hidden></div>
-          <div class="venus-location-data-badge" id="venus-landmark-data-badge">REFERENCE-DRIVEN MORPHOLOGY · CURATED REGION</div>
+          <div class="venus-location-data-badge" id="venus-landmark-data-badge">MAGELLAN GTDR · SCIENTIFIC MACRO TERRAIN</div>
           <div class="venus-location-sources">
             <a class="mars-landmark-source" id="venus-landmark-source" href="https://science.nasa.gov/venus/" target="_blank" rel="noopener noreferrer">Referensi morfologi: NASA/JPL ↗</a>
             <a class="mars-landmark-source" id="venus-landmark-coordinate-source" href="https://planetarynames.wr.usgs.gov/" target="_blank" rel="noopener noreferrer">Koordinat: IAU/USGS ↗</a>

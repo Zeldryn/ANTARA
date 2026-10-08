@@ -1,52 +1,43 @@
-# Mars Template -> Venus Full Exploration Rebuild Audit
+# Mars to Venus Architecture Audit
 
-## Removed from the rejected Venus Full Exploration
+## Mars systems studied
 
-The current `venus-full-exploration.js` replaces the old Venus surface implementation instead of layering another renderer over it. The project no longer contains the rejected Full Exploration implementation's fixed/custom square-world generator, custom 9.5 km chunk grid, old radial/generic orange terrain profiles, separate custom top controls, card-collapse/reopen controls, or a second Full Exploration animation loop.
+The current Mars implementation was used as the technical benchmark for terrain density, quality profiles, camera-relative movement, ground sampling, adaptive DPR, input lifecycle, culling, cleanup, entry/exit behavior and the separation between high-detail local terrain and cheaper distant coverage.
 
-## Mars systems used as the template
+Mars source files were not modified.
 
-The rebuilt Venus module starts from the actual Mars Full Exploration structure and retains its core technical language:
+## What was removed from Venus
 
-- `TerrainManager` streamed geographic chunk lifecycle
-- quality-based radius and LOD tiers
-- mandatory center/safety-ring load then outer-ring streaming
-- explicit frustum and camera-facing visibility pass
-- rear-camera culling with near safety buffer
-- bounded geometry cache and texture promotion only for relevant chunks
-- `InputManager` Pointer Lock and mobile-control behavior
-- delta-time, camera-relative WASD/Q/E/Shift movement
-- adaptive DPR
-- Mars-style HUD/top actions/location menu/fullscreen
-- progress-driven entry/exit lifecycle
-- cruise/cover/re-anchor/descend location travel
-- stop/dispose/re-entry cleanup model
+The active Venus Full Exploration no longer uses the old macro terrain functions that manually sculpted Maat Mons, Maxwell Montes, Aphrodite Terra, Ishtar Terra and Alpha Regio. The previous synthetic macro-landscape, fake edge continuation and decoration-first terrain hierarchy are not retained underneath the new renderer.
 
-Mars and Earth source files are not modified by this rebuild.
+## New Venus-specific architecture
 
-## Venus-specific systems
+Venus now has:
 
-Only planetary content differs: Venus radius and atmosphere, Magellan GTDR macro relief, Magellan radar context, Venus material profiles, five Venus POIs and their regional structural models.
+- `VenusTopographyProvider` for real Magellan elevation;
+- preferred preprocessed USGS GTDR 4.641 km/pixel regional Float32 grids;
+- PDS one-degree Magellan topography as a coarse scientific fallback;
+- `VenusRadarProvider` for independent Magellan SAR material context;
+- a dense near/mid/far playable terrain grid;
+- a large low-detail non-playable scientific visual world;
+- world-space material roughness/detail;
+- low-amplitude region-specific sub-resolution geology;
+- instanced geological props;
+- shared terrain/collision sampling;
+- explicit scene/resource cleanup.
 
-### Maat Mons
-A broad shield-like volcanic rise with fractured plains and long flow structures. The feature continues across chunks through shared world coordinates.
+## Playable world versus visual world
 
-### Maxwell Montes
-An elongated mountain province with directional ridge trains, cross-valleys and smoother neighboring highland/plain context, rather than independent random peaks.
+Movement remains constrained to each destination's performance-friendly radius. The rendering boundary is much farther away. The exterior terrain is generated from the same geographic elevation source instead of stretching the last row of playable vertices or surrounding the player with a mountain ring.
 
-### Aphrodite Terra
-A geographically broad highland model based on Ovda-style multi-stage deformation: older ridge/valley fabric, younger cross-cutting extension/graben and smoother lava-filled lows.
+The result is intentionally asymmetric: physics stops, terrain does not visibly stop.
 
-### Ishtar Terra
-A high plateau context with comparatively smoother interior and rough, deformed mountain margins.
+## Scientific separation
 
-### Alpha Regio
-A tessera model built from several intersecting ridge families plus independent trough/fault-valley families, irregular block relief and smoother local volcanic lows. It is not a single mound, dune field or repeating hill noise.
+Elevation and radar are kept separate.
 
-## World continuity
+- GTDR controls macro height.
+- SAR contributes surface context and material variation.
+- Procedural detail adds only sub-resolution relief and roughness.
 
-Terrain addresses use one-degree geographic tiles. Height/detail functions are sampled in shared latitude/longitude coordinates rather than local chunk coordinates, so structures cross chunk edges continuously. A world-space gradient provides matching top-surface normals at shared borders, while skirts protect temporary LOD gaps.
-
-The renderer keeps a Mars-style active ring around the player, streams replacement chunks as the camera crosses a geographic tile, and retains a near safety ring during the transition. Camera rotation changes visibility/LOD only. It does not rebuild the world.
-
-Far terrain is blended into dense Venus atmospheric fog before the active ring boundary, and the renderer uses an opaque atmospheric clear color. This prevents a visible square/black edge while preserving strong nearby terrain contrast.
+If real topography cannot be loaded, the renderer reports the missing data rather than claiming random noise is Magellan terrain.

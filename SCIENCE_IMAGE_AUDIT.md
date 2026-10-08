@@ -38,14 +38,14 @@ Observational imagery is used when a reputable mission/telescope image exists. N
 - Global cloud imagery is identified as visible/UV cloud observation where applicable.
 - Surface products from Magellan are explicitly described as radar-derived or simulated-color visualizations, not ordinary visible-light photographs.
 - Maat Mons, Maxwell Montes, Alpha Regio, and Mead use mission/scientific imagery with supporting source links.
-- Full Exploration uses real IAU/USGS POI coordinates, NASA/JPL Magellan radar context, and attempts to sample NASA PDS Magellan GTDR topography for measured macro relief. Procedural geometry is limited to renderer micro detail or an explicitly labelled fallback when PDS data is unavailable.
+- Full Exploration uses real IAU/USGS POI coordinates and a measured-data-first height pipeline. Preferred macro elevation comes from regional crops of USGS Venus Magellan Global Topography 4641m v02. NASA PDS one-degree Magellan topography is the coarse scientific fallback.
 
-## Venus Full Exploration source labeling update (2026-09-27)
+## Venus Full Exploration source labeling update (2026-09-29)
 
-Venus Full Exploration uses three visually distinct source categories:
+Venus Full Exploration keeps three source categories separate:
 
-- **Topography**: NASA PDS Magellan GTDR framelets, sampled numerically for macro relief when available.
-- **Radar context**: NASA/JPL Magellan radar mosaics and location thumbnails. These are labelled as radar and, where applicable, simulated/false color rather than natural visible-light photographs.
-- **Renderer detail**: procedural micro texture, bump/normal response, roughness, and small-scale relief. These are visual enrichment and are never labelled measured Magellan topography.
+- **Topography**: USGS Magellan GTDR 4.641 km/pixel regional crops when generated locally, otherwise the real PDS one-degree topography fallback.
+- **Radar context**: Magellan SAR imagery used only for material/surface context, never as elevation.
+- **Renderer detail**: procedural micro and meso enrichment below the DEM resolution. It remains subordinate to measured macro elevation.
 
-The educational location card includes direct source links and reports whether the active macro terrain is GTDR-derived or fallback.
+The HUD and location card report the active topography source. If no legitimate elevation source is available, Full Exploration reports an error instead of presenting procedural terrain as scientific data.

@@ -9,8 +9,9 @@
  * - Earth Full Exploration: choose a destination before terrain is loaded and
  *   return to the destination selector without leaving the planet.
  *
- * The rejected planet-wide Venus terrain/streaming implementation is not used.
- * Exactly one bounded curated Venus region exists in memory at a time.
+ * The rejected synthetic Venus macro-terrain renderer is not used.
+ * Exactly one high-detail region is interactive at a time, while lower-LOD
+ * scientific terrain continues far beyond the collision boundary.
  */
 
 (() => {
@@ -190,6 +191,7 @@
     }
   ]);
 
+
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const lerp = (a, b, t) => a + (b - a) * t;
   const smoothstep = value => { const t = clamp(value, 0, 1); return t * t * (3 - 2 * t); };
@@ -198,343 +200,283 @@
   const formatAltitude = km => km < 1 ? `${Math.max(0, km * 1000).toFixed(0)} M` : `${Math.max(0, km).toFixed(km < 10 ? 2 : 1)} KM`;
   const formatSpeed = kmPerSecond => kmPerSecond < 1 ? `${Math.round(kmPerSecond * 1000)} M/S` : `${kmPerSecond.toFixed(2)} KM/S`;
   const wait = ms => new Promise(resolve => window.setTimeout(resolve, ms));
-  const gaussian = (x, z, cx, cz, sx, sz) => Math.exp(-(((x - cx) / sx) ** 2 + ((z - cz) / sz) ** 2));
-  const rotatedGaussian = (x, z, cx, cz, sx, sz, angle = 0) => {
-    const dx = x - cx, dz = z - cz;
-    const ca = Math.cos(angle), sa = Math.sin(angle);
-    const rx = dx * ca + dz * sa;
-    const rz = -dx * sa + dz * ca;
-    return Math.exp(-((rx / sx) ** 2 + (rz / sz) ** 2));
-  };
-  const ridgeWave = (value, power = 6) => Math.pow(Math.abs(Math.sin(value)), power);
+  const wrapLongitudeEast = longitude => ((longitude % 360) + 360) % 360;
   const hash2 = (x, z, seed = 0) => {
-    const v = Math.sin(x * 127.1 + z * 311.7 + seed * 74.7) * 43758.5453123;
-    return v - Math.floor(v);
+    const value = Math.sin(x * 127.1 + z * 311.7 + seed * 74.7) * 43758.5453123;
+    return value - Math.floor(value);
   };
   const valueNoise = (x, z, seed = 0) => {
-    const x0 = Math.floor(x), z0 = Math.floor(z);
-    const fx = smoothstep(x - x0), fz = smoothstep(z - z0);
-    const a = hash2(x0, z0, seed), b = hash2(x0 + 1, z0, seed);
-    const c = hash2(x0, z0 + 1, seed), d = hash2(x0 + 1, z0 + 1, seed);
-    return lerp(lerp(a, b, fx), lerp(c, d, fx), fz) * 2 - 1;
+    const ix = Math.floor(x), iz = Math.floor(z);
+    const fx = x - ix, fz = z - iz;
+    const sx = fx * fx * (3 - 2 * fx), sz = fz * fz * (3 - 2 * fz);
+    const a = hash2(ix, iz, seed), b = hash2(ix + 1, iz, seed);
+    const c = hash2(ix, iz + 1, seed), d = hash2(ix + 1, iz + 1, seed);
+    return lerp(lerp(a, b, sx), lerp(c, d, sx), sz) * 2 - 1;
   };
-  const fbm = (x, z, seed = 0, octaves = 3) => {
-    let amp = 0.5, freq = 1, sum = 0, norm = 0;
-    for (let i = 0; i < octaves; i += 1) {
-      sum += valueNoise(x * freq, z * freq, seed + i * 19) * amp;
+  const fbm = (x, z, seed = 0) => {
+    let sum = 0, amp = 0.5, freq = 1, norm = 0;
+    for (let octave = 0; octave < 4; octave += 1) {
+      sum += valueNoise(x * freq, z * freq, seed + octave * 17) * amp;
       norm += amp;
       amp *= 0.5;
-      freq *= 2.03;
+      freq *= 2.04;
     }
-    return norm ? sum / norm : 0;
+    return sum / norm;
   };
+  const ridge = n => 1 - Math.abs(n);
+  const sleepFrame = () => new Promise(resolve => requestAnimationFrame(() => resolve()));
 
-  const smoothBand = (value, inner, outer) => 1 - smoothstep((Math.abs(value) - inner) / Math.max(0.0001, outer - inner));
+  const VENUS_REGIONAL_TOPO_SIZE = 257;
+  const VENUS_REGIONAL_TOPO_HALF_EXTENT_KM = 330;
+  const VENUS_REGIONAL_TOPO_TEMPLATE = "assets/venus-data/topography-{region}.f32";
+  const VENUS_PDS_TOPO_LOCAL = "assets/venus-data/topogrd.img";
+  const VENUS_PDS_TOPO_REMOTE = "https://pds-geosciences.wustl.edu/mgn/mgn-v-rss-5-gravity-l2-v1/mg_5201/images/topogrd.img";
+  const VENUS_PDS_TOPO_REMOTE_ASCII = "https://pds-geosciences.wustl.edu/mgn/mgn-v-rss-5-gravity-l2-v1/mg_5201/topo/topogrd.dat";
+  const VENUS_WMS_ENDPOINT = "https://planetarymaps.usgs.gov/cgi-bin/mapserv";
+  const VENUS_WMS_MAP = "/maps/venus/venus_simp_cyl.map";
 
-  function maatFlowFields(x, z) {
-    // PIA00254 foreground: broad, irregular cooled-flow fields with lighter
-    // channels between them. The masks deliberately avoid bilateral symmetry.
-    const travel = clamp((z + 24) / 72, 0, 1);
-    const envelope = smoothstep((z + 27) / 11) * (1 - smoothstep((z - 51) / 12));
-    const ribbon = (distance, width) => Math.exp(-Math.pow(distance / Math.max(0.1, width), 4));
-    const bendA = -11.0 - travel * 8.0 + Math.sin((z + 17) * 0.050) * 4.0 + Math.sin(z * 0.019) * 2.0;
-    const bendB = 12.0 + travel * 7.0 + Math.sin((z + 3) * 0.047 + 1.4) * 4.2 + Math.sin(z * 0.021) * 1.5;
-    const feederA = ribbon(x - bendA, 4.8 + travel * 7.5);
-    const feederB = ribbon(x - bendB, 4.4 + travel * 7.0);
-    const west = Math.max(
-      rotatedGaussian(x, z, -22, 14, 22, 24, -0.13),
-      rotatedGaussian(x, z, -33, 37, 27, 18, 0.18),
-      rotatedGaussian(x, z, -12, 35, 17, 20, -0.05)
-    );
-    const east = Math.max(
-      rotatedGaussian(x, z, 20, 11, 18, 24, 0.13),
-      rotatedGaussian(x, z, 34, 39, 22, 18, -0.12),
-      rotatedGaussian(x, z, 13, 34, 15, 21, 0.07)
-    );
-    const localPatch = Math.max(
-      rotatedGaussian(x, z, -5, 8, 12, 8, 0.22),
-      rotatedGaussian(x, z, 8, 23, 10, 12, -0.18)
-    );
-    const regionalWarp = 0.88 + 0.12 * valueNoise(x * 0.035, z * 0.035, 101);
-    const radial = Math.hypot((x + 0.8) / 34.5, (z + 26) / 29.5);
-    const apronMask = smoothstep((radial - 0.60) / 0.38);
-    const broad = Math.max(west * 0.94, east * 0.90, feederA * 0.56, feederB * 0.58, localPatch * 0.42) * envelope * regionalWarp * apronMask;
-    const channelPath = 1.5 + Math.sin((z + 8) * 0.044) * 3.4 + Math.sin(z * 0.016 + 0.7) * 1.4;
-    const centralLight = ribbon(x - channelPath, 3.8 + travel * 2.4) * envelope * apronMask;
-    const sideChannel = ribbon(x + 11 - Math.sin(z * 0.041) * 2.5, 2.8 + travel * 1.7) * envelope * apronMask * 0.55;
-    const combined = clamp(broad * (1 - centralLight * 0.74) * (1 - sideChannel * 0.42), 0, 1);
-    const edge = clamp(4.2 * combined * (1 - combined), 0, 1);
-    const internalLineation = Math.max(
-      ridgeWave(x * 0.107 + z * 0.045 + 0.46 * Math.sin(z * 0.031) + valueNoise(x * 0.025, z * 0.025, 133) * 0.6, 13),
-      ridgeWave(-x * 0.068 + z * 0.096 + 0.34 * Math.sin(x * 0.028) + valueNoise(x * 0.021, z * 0.021, 139) * 0.5, 14)
-    ) * combined;
-    return { combined, edge, internalLineation, travel, centralLight, sideChannel };
-  }
-
-  function maatHeight(x, z) {
-    // Broad shield-volcano morphology derived from PIA00254. The edifice is
-    // intentionally wider than it is steep; small lineation rides on top of the
-    // macro shape instead of defining it.
-    const dx = x + 0.8;
-    const dz = z + 26;
-    const radial = Math.hypot(dx / 34.5, dz / 29.5);
-    const angular = Math.atan2(dz, dx);
-    const radialWarp = radial * (1 + 0.045 * Math.sin(angular * 3 + 0.3) + 0.025 * Math.sin(angular * 5 - 0.9));
-    const broadBase = 5.35 * Math.exp(-1.08 * Math.pow(radialWarp, 2.35));
-    const upperEdifice = 0.92 * Math.exp(-3.00 * Math.pow(radialWarp, 3.10));
-    const asymmetricShoulder = 0.66 * rotatedGaussian(x, z, -11, -18, 38, 29, 0.10)
-      + 0.30 * rotatedGaussian(x, z, 15, -18, 31, 27, -0.10);
-
-    const summitBench = 0.86 * rotatedGaussian(x, z, -1.0, -25.5, 11.8, 9.0, 0.13)
-      + 0.20 * rotatedGaussian(x, z, -4.2, -24.5, 5.5, 4.5, -0.08)
-      + 0.16 * rotatedGaussian(x, z, 4.0, -26.0, 5.0, 4.0, 0.12);
-    const ventPrimary = -0.43 * rotatedGaussian(x, z, 1.4, -26.0, 4.0, 2.9, 0.28);
-    const ventSecondary = -0.15 * rotatedGaussian(x, z, -2.3, -23.8, 2.6, 1.9, -0.30);
-    const brokenRim = 0.11 * rotatedGaussian(x, z, 0.2, -25.4, 6.0, 4.6, 0.18)
-      * (0.54 + 0.46 * ridgeWave(x * 0.54 + z * 0.21 + 0.30 * Math.sin(z * 0.22), 8));
-
-    // PIA00254 contains layered foreground and midground volcanic relief. Keep
-    // this subordinate so it supports, rather than hides, the main edifice.
-    const foregroundShelf = 0.58 * rotatedGaussian(x, z, -9.0, -5.0, 12.5, 8.5, -0.08)
-      + 0.22 * rotatedGaussian(x, z, -12.0, -2.0, 6.5, 4.8, 0.10);
-
-    const flows = maatFlowFields(x, z);
-    const flowRelief = flows.combined * (0.065 + 0.032 * valueNoise(x * 0.075, z * 0.075, 113));
-    const flowLevees = flows.edge * 0.045;
-
-    // Low-relief lineation is confined to the slopes and plains. It is subtle
-    // enough to read as surface flow / fracture language rather than starburst ridges.
-    const edificeEnvelope = clamp(1 - radial / 1.15, 0, 1);
-    const slopeLineA = ridgeWave((x * 0.105 + z * 0.040 + 0.30 * Math.sin(z * 0.034)), 13);
-    const slopeLineB = ridgeWave((-x * 0.072 + z * 0.092 + 0.22 * Math.sin(x * 0.030)), 14);
-    const slopeLineation = (slopeLineA * 0.55 + slopeLineB * 0.45) * edificeEnvelope * smoothstep((radial - 0.20) / 0.60) * 0.060;
-    const flowGrooves = flows.internalLineation * 0.040;
-    const flankTerraces = ridgeWave(
-      radial * 18.0 + angular * 0.78 + Math.sin(angular * 4.0 + radial * 5.0) * 0.32,
-      12
-    ) * edificeEnvelope * smoothstep((radial - 0.30) / 0.58) * 0.036;
-    const apronStreaks = Math.max(
-      ridgeWave(x * 0.082 + z * 0.040 + Math.sin(z * 0.031) * 0.36, 16),
-      ridgeWave(-x * 0.054 + z * 0.094 + Math.sin(x * 0.028) * 0.34, 17)
-    ) * clamp(flows.combined + flows.edge * 0.45, 0, 1) * 0.025;
-    const plainFracture = Math.max(
-      ridgeWave(x * 0.145 + z * 0.050 + 0.20 * Math.sin(z * 0.035), 14),
-      ridgeWave(-x * 0.092 + z * 0.165 + 0.16 * Math.sin(x * 0.035), 15)
-    ) * (1 - edificeEnvelope) * 0.040;
-    const plainUndulation = 0.075 * fbm(x * 0.043, z * 0.043, 11, 3);
-
-    return broadBase + upperEdifice + asymmetricShoulder + summitBench + ventPrimary + ventSecondary
-      + brokenRim + foregroundShelf + flowRelief + flowLevees + slopeLineation + flowGrooves
-      + flankTerraces + apronStreaks + plainFracture + plainUndulation;
-  }
-
-  function maxwellStructure(x, z) {
-    const warp = valueNoise(x * 0.024, z * 0.024, 23) * 4.4;
-    const massif = rotatedGaussian(x, z, 8, -18, 31, 55, -0.06);
-    // Lakshmi is a broad smooth plain west of Maxwell, not an oval depression.
-    const westFade = smoothstep((-x + z * 0.11 - 1 + valueNoise(x * 0.018, z * 0.018, 151) * 6.5) / 31);
-    const northSouth = smoothstep((z + 61) / 14) * (1 - smoothstep((z - 55) / 14));
-    const lakshmi = clamp(westFade * northSouth * (1 - massif * 0.72), 0, 1);
-    const ridgeA = ridgeWave((x + warp + 1.2 * Math.sin(z * 0.055)) * 0.315 + z * 0.048, 8) * massif;
-    const ridgeB = ridgeWave((x - warp * 0.58 + 1.0 * Math.sin(z * 0.043 + 0.8)) * 0.205 - z * 0.061 + 0.7, 10) * massif;
-    const ridgeFine = ridgeWave((x + warp * 0.35 + 1.1 * Math.sin(z * 0.067)) * 0.49 + z * 0.027 + 1.2, 14) * massif;
-    const craterX = 17.5, craterZ = -25.0;
-    const craterR = Math.hypot(x - craterX, z - craterZ);
-    const cleopatraBowl = Math.exp(-Math.pow(craterR / 5.1, 2));
-    const cleopatraOuter = Math.exp(-Math.pow((craterR - 7.0) / 1.55, 2));
-    const cleopatraInner = Math.exp(-Math.pow((craterR - 3.3) / 0.95, 2));
-    const channelCenter = z + 22 + 0.22 * (x - craterX) + 1.2 * Math.sin((x - craterX) * 0.11);
-    const channel = Math.exp(-Math.pow(channelCenter / 2.5, 2)) * smoothstep((x - 15) / 22) * gaussian(x, z, 27, -18, 29, 25);
-    return { warp, massif, lakshmi, ridgeA, ridgeB, ridgeFine, cleopatraBowl, cleopatraOuter, cleopatraInner, channel };
-  }
-
-  function maxwellHeight(x, z) {
-    const s = maxwellStructure(x, z);
-    const broadMassif = 7.10 * s.massif + 1.45 * rotatedGaussian(x, z, 17, -32, 18, 30, 0.08);
-    const ridges = s.ridgeA * 1.30 + s.ridgeB * 0.62 + s.ridgeFine * 0.24;
-    const valleys = -0.58 * ridgeWave(x * 0.145 + z * 0.060 + 0.9 + s.warp * 0.023, 10) * s.massif;
-    const westTransition = -1.05 * s.lakshmi;
-    const ridgeShoulders = ridgeWave(
-      (x + s.warp * 0.28) * 0.61 + z * 0.075 + Math.sin(z * 0.041) * 0.32,
-      15
-    ) * s.massif * 0.090;
-    const talusBreakup = s.ridgeFine * (1 - s.ridgeA * 0.55) * 0.050;
-    const cleopatra = -1.18 * s.cleopatraBowl + 0.42 * s.cleopatraOuter + 0.22 * s.cleopatraInner - 0.28 * s.channel;
-    const micro = 0.085 * fbm(x * 0.057, z * 0.057, 23, 3);
-    return Math.max(-1.5, broadMassif + ridges + valleys + westTransition + ridgeShoulders + talusBreakup + cleopatra + micro);
-  }
-
-  function aphroditeStructure(x, z) {
-    const envelope = gaussian(x, z, 0, -9, 64, 50);
-    const warp = valueNoise(x * 0.027, z * 0.027, 37) * 5.2;
-    const fabricNE = ridgeWave((x + z * 0.72 + warp + 1.8 * Math.sin(z * 0.050)) * 0.225, 10) * envelope;
-    const fabricNW = ridgeWave((x - z * 0.90 - warp * 0.55 + 1.4 * Math.sin(x * 0.047)) * 0.292 + 0.6, 13) * envelope;
-    const fineNE = ridgeWave((x + z * 0.69 + warp * 0.55 + 1.2 * Math.sin(z * 0.073)) * 0.41 + 0.9, 16) * envelope;
-    // A broad meandering lava-filled valley dominates the reference, with a less
-    // prominent secondary branch. Curvature removes the artificial V shape.
-    const mainCenter = x - z * 0.29 - 5.5 + 6.0 * Math.sin((z + 10) * 0.030) + warp * 0.12;
-    const mainValley = Math.exp(-Math.pow(mainCenter / 7.2, 2)) * gaussian(x, z, 2, -4, 72, 56);
-    const branchCenter = x + z * 0.16 + 26 + 3.5 * Math.sin((z - 4) * 0.040) + warp * 0.08;
-    const branchValley = Math.exp(-Math.pow(branchCenter / 5.3, 2)) * gaussian(x, z, -14, -1, 58, 46);
-    const broadValley = Math.exp(-Math.pow((x + z * 0.50 + 16 + 2.0 * Math.sin(z * 0.035)) / 9.5, 2)) * gaussian(x, z, -8, -4, 64, 50);
-    const blockMask = smoothstep((fbm(x * 0.045, z * 0.045, 57, 2) + 0.62) / 1.18) * envelope;
-    return { envelope, warp, fabricNE, fabricNW, fineNE, mainValley, branchValley, broadValley, blockMask };
-  }
-
-  function aphroditeHeight(x, z) {
-    const s = aphroditeStructure(x, z);
-    const upland = 2.85 * gaussian(x, z, 0, -10, 58, 44) + 0.72 * gaussian(x, z, -20, -18, 32, 26);
-    const fabrics = s.fabricNE * 0.76 + s.fabricNW * 0.43 + s.fineNE * 0.18;
-    const blockRelief = s.blockMask * 0.28;
-    const valleys = -0.68 * s.mainValley - 0.18 * s.branchValley - 0.15 * s.broadValley;
-    const fractureGrooves = -0.10 * ridgeWave((x - z * 0.90 - s.warp * 0.55) * 0.305 + 0.6, 18) * s.envelope;
-    const crossTraces = (
-      ridgeWave((x + z * 0.74 + s.warp * 0.22) * 0.62 + 0.9, 18) * 0.060
-      - ridgeWave((x - z * 0.93 - s.warp * 0.18) * 0.54 + 1.5, 20) * 0.040
-    ) * s.envelope * (0.55 + s.blockMask * 0.45);
-    const micro = 0.080 * fbm(x * 0.060, z * 0.060, 37, 3);
-    return upland + fabrics + blockRelief + valleys + fractureGrooves + crossTraces + micro;
-  }
-
-  function ishtarPlateauMask(x, z) {
-    const core = gaussian(x, z, -7, 2, 58, 42);
-    const west = gaussian(x, z, -28, 5, 38, 31);
-    const east = gaussian(x, z, 18, -7, 39, 31);
-    const north = gaussian(x, z, -8, -23, 47, 29);
-    const south = gaussian(x, z, 0, 22, 44, 30);
-    const southeastNotch = gaussian(x, z, 39, 24, 24, 19);
-    const boundaryWarp = valueNoise(x * 0.024, z * 0.024, 97) * 0.11 + valueNoise(x * 0.052, z * 0.052, 109) * 0.035;
-    const field = core * 0.62 + west * 0.28 + east * 0.23 + north * 0.21 + south * 0.13 - southeastNotch * 0.12 + boundaryWarp;
-    return smoothstep((clamp(field, 0, 1) - 0.27) / 0.58);
-  }
-
-  function ishtarStructure(x, z) {
-    const plateau = ishtarPlateauMask(x, z);
-    // Three principal boundary massifs echo the PIA00093 composition: Akna/Freyja
-    // on the west/northwest and Maxwell on the east.
-    const maxwell = rotatedGaussian(x, z, 27, -10, 13, 31, -0.05);
-    const akna = rotatedGaussian(x, z, -30, -2, 13, 29, 0.08);
-    const freyja = rotatedGaussian(x, z, -10, -29, 28, 10, 0.04);
-    const eastHills = gaussian(x, z, 47, -2, 24, 44);
-    const warp = valueNoise(x * 0.031, z * 0.031, 41) * 3.0;
-    return { plateau, maxwell, akna, freyja, eastHills, warp };
-  }
-
-  function ishtarHeight(x, z) {
-    const s = ishtarStructure(x, z);
-    const plateauRelief = 3.05 * s.plateau + 0.24 * gaussian(x, z, -18, 6, 34, 28);
-    const maxwell = s.maxwell * (4.55 + ridgeWave((x + s.warp) * 0.36 + z * 0.045, 8) * 1.65);
-    const akna = s.akna * (2.05 + ridgeWave((x - s.warp) * 0.29 - z * 0.040, 9) * 0.92);
-    const freyja = s.freyja * (1.72 + ridgeWave(x * 0.22 + z * 0.045 + s.warp * 0.022, 9) * 0.72);
-    const easternHills = s.eastHills * (0.62 + ridgeWave(x * 0.16 - z * 0.08, 11) * 0.32);
-    const interiorLineation = ridgeWave(x * 0.072 + z * 0.032 + 0.22 * Math.sin(x * 0.027), 15) * s.plateau * 0.060;
-    const plateauWrinkle = ridgeWave(
-      x * 0.118 - z * 0.046 + s.warp * 0.030 + Math.sin(z * 0.029) * 0.22,
-      18
-    ) * s.plateau * (1 - Math.max(s.maxwell, s.akna, s.freyja)) * 0.035;
-    const marginFractures = ridgeWave(x * 0.11 + z * 0.21 + s.warp * 0.02, 13) * (s.maxwell + s.akna + s.freyja) * 0.115;
-    const marginBench = ridgeWave(x * 0.072 + z * 0.090 + s.warp * 0.015, 16) * Math.max(s.maxwell, s.akna, s.freyja) * 0.060;
-    const southernLowland = -0.62 * gaussian(x, z, 6, 55, 72, 28);
-    const micro = 0.050 * fbm(x * 0.052, z * 0.052, 41, 3);
-    return plateauRelief + maxwell + akna + freyja + easternHills + interiorLineation + plateauWrinkle
-      + marginFractures + marginBench + southernLowland + micro;
-  }
-
-  function alphaStructure(x, z) {
-    const warpA = valueNoise(x * 0.028, z * 0.028, 59) * 8.2;
-    const warpB = valueNoise(x * 0.023 + 11, z * 0.023 - 7, 71) * 7.0;
-    const core = gaussian(x, z, 2, -8, 43, 36);
-    const west = gaussian(x, z, -27, -5, 25, 33);
-    const north = gaussian(x, z, 7, -29, 34, 21);
-    const east = gaussian(x, z, 31, -3, 23, 30);
-    const south = gaussian(x, z, 0, 20, 29, 18);
-    const regionalNoise = valueNoise(x * 0.024, z * 0.024, 83) * 0.11;
-    const tesseraMask = smoothstep((clamp(core * 0.68 + west * 0.29 + north * 0.21 + east * 0.19 + south * 0.10 + regionalNoise, 0, 1) - 0.27) / 0.50);
-    const localWarpA = warpA + 2.8 * Math.sin(z * 0.072) + 1.4 * Math.sin((x + z) * 0.038);
-    const localWarpB = warpB + 2.4 * Math.sin(x * 0.067) - 1.6 * Math.sin((x - z) * 0.035);
-    const blockMod = 0.68 + 0.32 * smoothstep((fbm(x * 0.050, z * 0.050, 89, 2) + 0.70) / 1.25);
-    const packetA = 0.46 + 0.54 * smoothstep((valueNoise(x * 0.034, z * 0.034, 157) + 0.62) / 1.20);
-    const packetB = 0.44 + 0.56 * smoothstep((valueNoise(x * 0.031 + 8, z * 0.031 - 5, 173) + 0.60) / 1.18);
-    const ridgeA = ridgeWave((x + z * 0.55 + localWarpA) * 0.285, 10) * tesseraMask * blockMod * packetA;
-    const ridgeB = ridgeWave((-x * 0.52 + z + localWarpB) * 0.278, 10) * tesseraMask * (1.08 - blockMod * 0.20) * packetB;
-    const ridgeFine = ridgeWave((x * 0.18 - z * 0.28 + localWarpA * 0.22 + 1.2) * 0.95, 14) * tesseraMask * (0.62 + packetA * 0.38);
-    const faultA = Math.exp(-Math.pow((x - z * 0.42 - 8 - localWarpB * 0.10) / 3.4, 2)) * tesseraMask;
-    const faultB = Math.exp(-Math.pow((x + z * 0.58 + 13 + localWarpA * 0.08) / 3.8, 2)) * tesseraMask;
-    const faultC = Math.exp(-Math.pow((x - z * 0.08 + 24 + 1.5 * Math.sin(z * 0.05)) / 2.9, 2)) * tesseraMask;
-    const lowA = gaussian(x, z, 24, 13, 11, 8);
-    const lowB = gaussian(x, z, -27, -4, 10, 12);
-    const lowC = gaussian(x, z, 5, 24, 12, 9);
-    const boundary = clamp(4 * tesseraMask * (1 - tesseraMask), 0, 1);
-    return { warpA, warpB, tesseraMask, ridgeA, ridgeB, ridgeFine, faultA, faultB, faultC, lowA, lowB, lowC, boundary };
-  }
-
-  function alphaHeight(x, z) {
-    const s = alphaStructure(x, z);
-    const upland = 1.70 * s.tesseraMask + 0.34 * gaussian(x, z, -17, -18, 30, 27);
-    const ridges = s.ridgeA * 0.56 + s.ridgeB * 0.50 + s.ridgeFine * 0.13;
-    const scarps = s.boundary * 0.30;
-    const faults = -(s.faultA * 0.48 + s.faultB * 0.38 + s.faultC * 0.20);
-    const fineCrossTrace = ridgeWave(
-      (x * 0.44 + z * 0.17 + s.warpA * 0.10 - s.warpB * 0.06) * 0.88 + 0.7,
-      18
-    ) * s.tesseraMask * 0.050;
-    const blockEdgeRelief = s.boundary * (0.025 + s.ridgeFine * 0.035);
-    const lavaLows = -(s.lowA * 0.84 + s.lowB * 0.64 + s.lowC * 0.42);
-    const outsidePlain = 0.045 * fbm(x * 0.040, z * 0.040, 91, 2) * (1 - s.tesseraMask);
-    const micro = 0.070 * fbm(x * 0.070, z * 0.070, 59, 3) * (0.35 + s.tesseraMask * 0.65);
-    return upland + ridges + scarps + faults + fineCrossTrace + blockEdgeRelief + lavaLows + outsidePlain + micro;
-  }
-
-  const HEIGHT_FUNCTIONS = Object.freeze({
-    maat: maatHeight,
-    maxwell: maxwellHeight,
-    aphrodite: aphroditeHeight,
-    ishtar: ishtarHeight,
-    alpha: alphaHeight
-  });
-
-  function regionHeight(region, x, z) {
-    return HEIGHT_FUNCTIONS[region.id](x, z);
-  }
-
-  function surfaceClass(region, x, z, height, slope) {
-    if (region.id === "maat") {
-      const r = Math.hypot((x + 0.8) / 34.5, (z + 26) / 29.5);
-      const flows = maatFlowFields(x, z);
-      if (r < 0.25) return "summit";
-      if (flows.combined > 0.55 && z > -22) return "lava"; // cooled flow unit
-      if (r < 1.02 && (height > 1.8 || slope > 0.27)) return "rugged";
-      if (flows.internalLineation > 0.48 || slope > 0.32) return "fracture";
-      return "plain";
+  class VenusTopographyProvider {
+    constructor(region) {
+      this.region = region;
+      this.width = 360;
+      this.height = 180;
+      this.grid = null;
+      this.regionalGrid = null;
+      this.regionalSize = VENUS_REGIONAL_TOPO_SIZE;
+      this.regionalHalfExtentKm = VENUS_REGIONAL_TOPO_HALF_EXTENT_KM;
+      this.sourceLabel = "MAGELLAN TOPOGRAPHY · PDS GTDR 1°";
+      this.sourceUrl = null;
+      this.local = false;
     }
-    if (region.id === "maxwell") {
-      const s = maxwellStructure(x, z);
-      if (s.cleopatraBowl > 0.42) return "fracture";
-      if (s.lakshmi > 0.52 && height < 1.9 && slope < 0.20) return "plain";
-      if (height > 7.1 || slope > 0.46 || s.ridgeFine > 0.56) return "rugged";
-      return "highland";
+
+    async fetchWithTimeout(url, timeoutMs = 12000) {
+      const controller = new AbortController();
+      const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(url, { signal: controller.signal, cache: "force-cache", mode: "cors" });
+        if (!response.ok) throw new Error(`HTTP ${response.status} saat memuat ${url}`);
+        return response;
+      } finally {
+        window.clearTimeout(timer);
+      }
     }
-    if (region.id === "aphrodite") {
-      const s = aphroditeStructure(x, z);
-      if (s.mainValley > 0.58 && s.envelope > 0.34) return "lava";
-      if (height > 3.0 || Math.max(s.fabricNE, s.fabricNW) > 0.70) return "highland";
-      if (s.fabricNW > 0.54 || slope > 0.28) return "fracture";
-      return "rugged";
+
+    decodeRegionalFloat32(buffer) {
+      const expected = this.regionalSize * this.regionalSize * 4;
+      if (buffer.byteLength !== expected) {
+        throw new Error(`Ukuran regional GTDR tidak cocok (${buffer.byteLength} byte, perlu ${expected}).`);
+      }
+      return new Float32Array(buffer.slice(0));
     }
-    if (region.id === "ishtar") {
-      const s = ishtarStructure(x, z);
-      if (s.plateau > 0.58 && slope < 0.18 && Math.max(s.maxwell, s.akna, s.freyja) < 0.32) return "plain";
-      if (Math.max(s.maxwell, s.akna, s.freyja) > 0.28 || slope > 0.38) return "rugged";
-      return "highland";
+
+    async loadRegionalGrid() {
+      const configured = window.ANTARA_VENUS_TOPOGRAPHY_TEMPLATE;
+      const url = configured
+        ? String(configured).replace("{region}", this.region.id)
+        : VENUS_REGIONAL_TOPO_TEMPLATE.replace("{region}", this.region.id);
+      const response = await this.fetchWithTimeout(url, 10000);
+      this.regionalGrid = this.decodeRegionalFloat32(await response.arrayBuffer());
+      this.sourceLabel = "USGS MAGELLAN GTDR · 4.641 KM/PIX SOURCE";
+      this.sourceUrl = url;
+      this.local = !/^https?:/i.test(url);
+      return true;
     }
-    if (region.id === "alpha") {
-      const s = alphaStructure(x, z);
-      if (Math.max(s.lowA, s.lowB, s.lowC) > 0.52 && height < 1.10) return "lava";
-      if (s.tesseraMask > 0.46 && (Math.max(s.ridgeA, s.ridgeB) > 0.30 || height > 1.55)) return "tessera";
-      if (s.tesseraMask > 0.22) return "fracture";
-      return "plain";
+
+    decodeImageBytes(buffer) {
+      const bytes = new Uint8Array(buffer);
+      if (bytes.byteLength !== this.width * this.height) {
+        throw new Error(`Ukuran TOPOGRD.IMG tidak cocok (${bytes.byteLength} byte).`);
+      }
+      const grid = new Float32Array(bytes.length);
+      for (let i = 0; i < bytes.length; i += 1) grid[i] = bytes[i] * 0.0478 - 2.492;
+      return grid;
     }
-    return "plain";
+
+    decodeAscii(text) {
+      const matches = text.match(/[-+]?\d+(?:\.\d+)?/g) || [];
+      if (matches.length < this.width * this.height) {
+        throw new Error(`TOPOGRD.DAT hanya menghasilkan ${matches.length} sampel.`);
+      }
+      const grid = new Float32Array(this.width * this.height);
+      for (let i = 0; i < grid.length; i += 1) grid[i] = Number(matches[i]);
+      return grid;
+    }
+
+    async load(onProgress = () => {}) {
+      if (this.grid || this.regionalGrid) return this;
+      let regionalError = null;
+      let coarseError = null;
+      onProgress(0.03);
+      try {
+        await this.loadRegionalGrid();
+        onProgress(0.82);
+        return this;
+      } catch (error) {
+        regionalError = error;
+      }
+
+      const configured = window.ANTARA_VENUS_TOPOGRAPHY_URL;
+      const candidates = [configured, VENUS_PDS_TOPO_LOCAL, VENUS_PDS_TOPO_REMOTE].filter(Boolean);
+      for (const url of candidates) {
+        try {
+          const response = await this.fetchWithTimeout(url);
+          this.grid = this.decodeImageBytes(await response.arrayBuffer());
+          if (!this.regionalGrid) {
+            this.sourceLabel = "PDS MAGELLAN TOPOGRAPHY · 1° FALLBACK";
+            this.sourceUrl = url;
+            this.local = !/^https?:/i.test(url);
+          }
+          onProgress(0.82);
+          return this;
+        } catch (error) {
+          coarseError = error;
+        }
+      }
+      try {
+        const response = await this.fetchWithTimeout(VENUS_PDS_TOPO_REMOTE_ASCII, 15000);
+        this.grid = this.decodeAscii(await response.text());
+        if (!this.regionalGrid) {
+          this.sourceLabel = "PDS MAGELLAN TOPOGRAPHY · 1° ASCII FALLBACK";
+          this.sourceUrl = VENUS_PDS_TOPO_REMOTE_ASCII;
+          this.local = false;
+        }
+        onProgress(0.82);
+        return this;
+      } catch (error) {
+        coarseError = error;
+      }
+
+      throw new Error(`Data topografi ilmiah Venus tidak tersedia. Jalankan tools/prepare_venus_magellan_data.py untuk membuat crop GTDR lokal. Regional: ${regionalError?.message || "tidak tersedia"}. Fallback: ${coarseError?.message || "tidak tersedia"}.`);
+    }
+
+    sampleRegional(latitude, longitudeEast) {
+      if (!this.regionalGrid) return Number.NaN;
+      let deltaLon = wrapLongitudeEast(longitudeEast) - wrapLongitudeEast(this.region.longitudeEast);
+      if (deltaLon > 180) deltaLon -= 360;
+      if (deltaLon < -180) deltaLon += 360;
+      const cosLat = Math.max(0.18, Math.cos(this.region.latitude * DEG));
+      const xKm = deltaLon * KM_PER_DEG_LAT * cosLat;
+      const zKm = (this.region.latitude - latitude) * KM_PER_DEG_LAT;
+      const u = (xKm / this.regionalHalfExtentKm + 1) * 0.5;
+      const v = (zKm / this.regionalHalfExtentKm + 1) * 0.5;
+      if (u < 0 || u > 1 || v < 0 || v > 1) return Number.NaN;
+      const fx = u * (this.regionalSize - 1);
+      const fy = v * (this.regionalSize - 1);
+      const x0 = clamp(Math.floor(fx), 0, this.regionalSize - 1);
+      const y0 = clamp(Math.floor(fy), 0, this.regionalSize - 1);
+      const x1 = clamp(x0 + 1, 0, this.regionalSize - 1);
+      const y1 = clamp(y0 + 1, 0, this.regionalSize - 1);
+      const tx = fx - x0, ty = fy - y0;
+      const a = this.regionalGrid[y0 * this.regionalSize + x0];
+      const b = this.regionalGrid[y0 * this.regionalSize + x1];
+      const c = this.regionalGrid[y1 * this.regionalSize + x0];
+      const d = this.regionalGrid[y1 * this.regionalSize + x1];
+      if (![a, b, c, d].every(Number.isFinite)) return Number.NaN;
+      return lerp(lerp(a, b, tx), lerp(c, d, tx), ty);
+    }
+
+    sampleRawGrid(latitude, longitudeEast) {
+      const lat = clamp(latitude, -89.49, 89.49);
+      const lon = wrapLongitudeEast(longitudeEast);
+      const rowFloat = 89.5 - lat;
+      const colFloat = wrapLongitudeEast(lon - 240);
+      const r0 = clamp(Math.floor(rowFloat), 0, this.height - 1);
+      const r1 = clamp(r0 + 1, 0, this.height - 1);
+      const c0 = ((Math.floor(colFloat) % this.width) + this.width) % this.width;
+      const c1 = (c0 + 1) % this.width;
+      const fr = clamp(rowFloat - Math.floor(rowFloat), 0, 1);
+      const fc = clamp(colFloat - Math.floor(colFloat), 0, 1);
+      const a = this.grid[r0 * this.width + c0];
+      const b = this.grid[r0 * this.width + c1];
+      const c = this.grid[r1 * this.width + c0];
+      const d = this.grid[r1 * this.width + c1];
+      return lerp(lerp(a, b, fc), lerp(c, d, fc), fr);
+    }
+
+    sample(latitude, longitudeEast) {
+      const regional = this.sampleRegional(latitude, longitudeEast);
+      if (Number.isFinite(regional)) return regional;
+      if (this.grid) return this.sampleRawGrid(latitude, longitudeEast);
+      throw new Error("Magellan GTDR belum dimuat.");
+    }
+
+    clear() {
+      this.grid = null;
+      this.regionalGrid = null;
+      this.sourceUrl = null;
+    }
+  }
+
+  class VenusRadarProvider {
+    constructor(THREE, region, quality) {
+      this.THREE = THREE;
+      this.region = region;
+      this.quality = quality;
+      this.texture = null;
+      this.extentKm = 310;
+      this.sourceLabel = "USGS · MAGELLAN SAR FMAP";
+    }
+
+    buildWmsUrl() {
+      const latRadius = this.extentKm / KM_PER_DEG_LAT;
+      const lonScale = Math.max(0.18, Math.cos(this.region.latitude * DEG));
+      const lonRadius = this.extentKm / (KM_PER_DEG_LAT * lonScale);
+      const centerLon = this.region.longitudeEast < 3 ? this.region.longitudeEast + 360 : this.region.longitudeEast;
+      const minLon = centerLon - lonRadius;
+      const maxLon = centerLon + lonRadius;
+      const minLat = clamp(this.region.latitude - latRadius, -89.5, 89.5);
+      const maxLat = clamp(this.region.latitude + latRadius, -89.5, 89.5);
+      const bbox = `${minLon},${minLat},${maxLon},${maxLat}`;
+      const size = this.quality.name === "HIGH" ? 1536 : this.quality.name === "MEDIUM" ? 1024 : 768;
+      const params = new URLSearchParams({
+        map: VENUS_WMS_MAP,
+        SERVICE: "WMS",
+        VERSION: "1.1.1",
+        REQUEST: "GetMap",
+        LAYERS: "MAGELLAN",
+        STYLES: "",
+        SRS: "EPSG:4326",
+        BBOX: bbox,
+        WIDTH: String(size),
+        HEIGHT: String(size),
+        FORMAT: "image/png",
+        TRANSPARENT: "FALSE"
+      });
+      return `${VENUS_WMS_ENDPOINT}?${params.toString()}`;
+    }
+
+    async load() {
+      const configured = window.ANTARA_VENUS_RADAR_TEMPLATE;
+      const urls = configured
+        ? [String(configured).replace("{region}", this.region.id)]
+        : [`assets/venus-data/radar-${this.region.id}.png`, this.buildWmsUrl()];
+      let texture = null;
+      for (const url of urls) {
+        texture = await new Promise((resolve, reject) => {
+          const loader = new this.THREE.TextureLoader();
+          loader.setCrossOrigin("anonymous");
+          loader.load(url, resolve, undefined, reject);
+        }).catch(() => null);
+        if (texture) {
+          this.sourceLabel = /^https?:/i.test(url) ? "USGS · MAGELLAN SAR FMAP" : "LOCAL · MAGELLAN SAR FMAP";
+          break;
+        }
+      }
+      if (!texture) return null;
+      texture.colorSpace = this.THREE.SRGBColorSpace;
+      texture.wrapS = this.THREE.ClampToEdgeWrapping;
+      texture.wrapT = this.THREE.ClampToEdgeWrapping;
+      texture.minFilter = this.THREE.LinearMipmapLinearFilter;
+      texture.magFilter = this.THREE.LinearFilter;
+      texture.anisotropy = Math.min(this.quality.anisotropy, 16);
+      this.texture = texture;
+      return texture;
+    }
+
+    dispose() {
+      this.texture?.dispose?.();
+      this.texture = null;
+    }
   }
 
   class VenusRegionWorld {
@@ -545,931 +487,402 @@
       this.region = region;
       this.quality = quality;
       this.group = new THREE.Group();
-      this.group.name = `venus-region-${region.id}`;
+      this.group.name = `venus-gtdr-world-${region.id}`;
       this.scene.add(this.group);
-      this.tiles = [];
-      this.horizon = null;
-      this.distantTerrain = null;
-      this.accentMesh = null;
-      this.regionalVisualization = null;
-      this.atmosphericMotes = null;
-      this.ambientClock = 0;
+      this.topography = new VenusTopographyProvider(region);
+      this.radar = new VenusRadarProvider(THREE, region, quality);
       this.material = null;
-      this.horizonMaterial = null;
-      this.distantMaterial = null;
-      this.accentResources = [];
-      this.textures = [];
-      this.frustum = new THREE.Frustum();
-      this.projection = new THREE.Matrix4();
-      this.cameraDirection = new THREE.Vector3();
-      this.tileVector = new THREE.Vector3();
-      this.thermalColor = new THREE.Color();
-      this.visibilityClock = 0;
-      this.visibilityStats = { visible: 0, buffered: 0, culled: 0, total: 0 };
+      this.backgroundMaterial = null;
+      this.tiles = [];
+      this.background = null;
+      this.props = null;
+      this.particles = null;
+      this.resources = [];
+      this.referenceElevation = 0;
+      this.cosLat = Math.max(0.18, Math.cos(region.latitude * DEG));
+      this.worldSpan = quality.name === "HIGH" ? 520 : quality.name === "MEDIUM" ? 460 : 400;
+      this.tileSize = quality.tileSize || 24;
+      this.tileHalfCount = quality.name === "HIGH" ? 4 : quality.name === "MEDIUM" ? 3 : 3;
+      this.tmpColor = new THREE.Color();
+      this.lowColor = new THREE.Color(region.palette.low);
+      this.midColor = new THREE.Color(region.palette.mid);
+      this.highColor = new THREE.Color(region.palette.high);
+      this.rockColor = new THREE.Color(region.palette.rock);
+      this.fogColor = new THREE.Color(region.fog);
+      this.detailTexture = this.createMicroDetailTexture();
+      this.resources.push(this.detailTexture);
+      this.frame = 0;
     }
 
-    async build(onProgress = () => {}) {
-      this.material = this.createMaterial();
-      this.horizonMaterial = this.material.clone();
-      // Reuse the SAME already-loaded terrain textures for the visual continuation.
-      // This adds no new texture allocation, but prevents the outer world from
-      // collapsing into a flat vertex-color polygon. Detail strength is reduced
-      // because this mesh is non-playable and progressively hidden by atmosphere.
-      this.horizonMaterial.vertexColors = true;
-      this.horizonMaterial.roughness = Math.min(1, this.material.roughness + 0.035);
-      this.horizonMaterial.normalScale.multiplyScalar(0.58);
-      this.horizonMaterial.needsUpdate = true;
-
-      const tileSize = this.quality.tileSize;
-      const halfTiles = 3;
-      const specs = [];
-      for (let iz = -halfTiles; iz <= halfTiles; iz += 1) {
-        for (let ix = -halfTiles; ix <= halfTiles; ix += 1) {
-          const cx = ix * tileSize;
-          const cz = iz * tileSize;
-          const distance = Math.hypot(cx, cz);
-          if (distance > this.region.playRadius + tileSize * 0.78) continue;
-          const segments = distance <= tileSize * 1.15 ? this.quality.nearSegments
-            : distance <= tileSize * 2.25 ? this.quality.midSegments
-              : this.quality.farSegments;
-          specs.push({ ix, iz, cx, cz, distance, segments });
+    createMicroDetailTexture() {
+      const T = this.THREE;
+      const size = this.quality.name === "HIGH" ? 512 : this.quality.name === "MEDIUM" ? 384 : 256;
+      const data = new Uint8Array(size * size * 4);
+      const hash = (x, y, seed) => {
+        let h = Math.imul((x + seed * 17) | 0, 374761393) ^ Math.imul((y - seed * 29) | 0, 668265263);
+        h = Math.imul(h ^ (h >>> 13), 1274126177);
+        return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
+      };
+      const fade = t => t * t * (3 - 2 * t);
+      const wrapCell = (value, cells) => ((value % cells) + cells) % cells;
+      const periodicNoise = (u, v, cells, seed) => {
+        const px = u * cells, py = v * cells;
+        const x0 = Math.floor(px), y0 = Math.floor(py);
+        const tx = fade(px - x0), ty = fade(py - y0);
+        const a = hash(wrapCell(x0, cells), wrapCell(y0, cells), seed);
+        const b = hash(wrapCell(x0 + 1, cells), wrapCell(y0, cells), seed);
+        const c = hash(wrapCell(x0, cells), wrapCell(y0 + 1, cells), seed);
+        const d = hash(wrapCell(x0 + 1, cells), wrapCell(y0 + 1, cells), seed);
+        return lerp(lerp(a, b, tx), lerp(c, d, tx), ty);
+      };
+      for (let y = 0; y < size; y += 1) {
+        const v = y / size;
+        for (let x = 0; x < size; x += 1) {
+          const u = x / size;
+          const broad = periodicNoise(u, v, 8, 337);
+          const fine = periodicNoise(u, v, 29, 353);
+          const grit = periodicNoise(u, v, 73, 379);
+          const fractured = Math.abs(periodicNoise(u, v, 17, 401) - 0.5) * 2;
+          const value = clamp(0.48 + (broad - 0.5) * 0.34 + (fine - 0.5) * 0.25 + (grit - 0.5) * 0.12 - fractured * 0.05, 0, 1);
+          const byte = Math.round(value * 255);
+          const i = (y * size + x) * 4;
+          data[i] = byte; data[i + 1] = byte; data[i + 2] = byte; data[i + 3] = 255;
         }
       }
-      specs.sort((a, b) => a.distance - b.distance);
+      const texture = new T.DataTexture(data, size, size, T.RGBAFormat, T.UnsignedByteType);
+      texture.name = "venus-subresolution-microdetail";
+      texture.colorSpace = T.NoColorSpace;
+      texture.wrapS = T.RepeatWrapping;
+      texture.wrapT = T.RepeatWrapping;
+      texture.minFilter = T.LinearMipmapLinearFilter;
+      texture.magFilter = T.LinearFilter;
+      texture.anisotropy = Math.min(this.quality.anisotropy, 12);
+      texture.needsUpdate = true;
+      return texture;
+    }
 
-      for (let i = 0; i < specs.length; i += 1) {
-        const spec = specs[i];
-        const mesh = this.createTile(spec.cx, spec.cz, tileSize, spec.segments);
-        this.group.add(mesh);
-        this.tiles.push({ mesh, cx: spec.cx, cz: spec.cz, distance: spec.distance, radius: tileSize * 0.74 });
-        onProgress((i + 1) / (specs.length + 3) * 0.78);
-        if (i % 2 === 1) await new Promise(resolve => requestAnimationFrame(() => resolve()));
+    geoFromWorld(x, z) {
+      return {
+        latitude: clamp(this.region.latitude - z / KM_PER_DEG_LAT, -89.49, 89.49),
+        longitudeEast: wrapLongitudeEast(this.region.longitudeEast + x / (KM_PER_DEG_LAT * this.cosLat))
+      };
+    }
+
+    scientificHeightAt(x, z) {
+      const geo = this.geoFromWorld(x, z);
+      return this.topography.sample(geo.latitude, geo.longitudeEast) - this.referenceElevation;
+    }
+
+    microHeightAt(x, z) {
+      const r = Math.hypot(x, z);
+      const detailFade = 1 - smoothstep((r - this.region.playRadius * 0.92) / Math.max(1, this.worldSpan * 0.42 - this.region.playRadius));
+      const n1 = fbm(x * 0.080, z * 0.080, 31);
+      const n2 = fbm(x * 0.19 + 7.1, z * 0.19 - 3.4, 73);
+      const fractured = ridge(valueNoise(x * 0.12, z * 0.12, 109)) - 0.54;
+      let meso = n1 * 0.10 + n2 * 0.045;
+      if (this.region.id === "maat") {
+        const flow = ridge(valueNoise(x * 0.045 + z * 0.011, z * 0.060, 151));
+        meso += (flow - 0.58) * 0.16 + fractured * 0.07;
+      } else if (this.region.id === "maxwell") {
+        const aligned = ridge(valueNoise((x * 0.82 + z * 0.36) * 0.075, (-x * 0.36 + z * 0.82) * 0.030, 191));
+        meso += (aligned - 0.56) * 0.34 + fractured * 0.10;
+      } else if (this.region.id === "aphrodite") {
+        const a = ridge(valueNoise((x + z) * 0.070, (z - x) * 0.022, 229));
+        const b = ridge(valueNoise((x - z) * 0.050, (x + z) * 0.030, 233));
+        meso += (a - 0.57) * 0.22 + (b - 0.60) * 0.16;
+      } else if (this.region.id === "ishtar") {
+        meso += fractured * 0.08 + n2 * 0.05;
+      } else if (this.region.id === "alpha") {
+        const a = ridge(valueNoise((x + z) * 0.105, (z - x) * 0.036, 269));
+        const b = ridge(valueNoise((x - z) * 0.095, (x + z) * 0.031, 271));
+        meso += (a - 0.55) * 0.28 + (b - 0.56) * 0.23;
       }
-
-      this.horizon = this.createHorizon();
-      this.group.add(this.horizon);
-      this.distantTerrain = this.createDistantTerrain();
-      if (this.distantTerrain) this.group.add(this.distantTerrain);
-      onProgress(0.86);
-      await new Promise(resolve => requestAnimationFrame(() => resolve()));
-      this.accentMesh = this.createSurfaceAccents();
-      if (this.accentMesh) this.group.add(this.accentMesh);
-      this.regionalVisualization = this.createRegionalVisualization();
-      if (this.regionalVisualization) this.group.add(this.regionalVisualization);
-      this.atmosphericMotes = this.createAtmosphericMotes();
-      if (this.atmosphericMotes) this.group.add(this.atmosphericMotes);
-      onProgress(0.96);
-      await new Promise(resolve => requestAnimationFrame(() => resolve()));
-      this.group.updateMatrixWorld(true);
-      this.visibilityStats.total = this.tiles.length;
-      onProgress(1);
+      return meso * clamp(detailFade, 0, 1);
     }
 
     heightAt(x, z) {
-      return regionHeight(this.region, x, z);
+      return this.scientificHeightAt(x, z) + this.microHeightAt(x, z);
     }
 
-    normalAt(x, z, epsilon = 0.18) {
+    slopeAt(x, z, epsilon = 0.22) {
+      const hL = this.heightAt(x - epsilon, z), hR = this.heightAt(x + epsilon, z);
+      const hD = this.heightAt(x, z - epsilon), hU = this.heightAt(x, z + epsilon);
+      return Math.hypot((hR - hL) / (epsilon * 2), (hU - hD) / (epsilon * 2));
+    }
+
+    colorAt(x, z, height, slope, target = this.tmpColor) {
+      const localNoise = fbm(x * 0.032 + 4.7, z * 0.032 - 9.2, 313);
+      const normalized = clamp((height + 1.2) / 8.8, 0, 1);
+      if (normalized < 0.46) target.copy(this.lowColor).lerp(this.midColor, normalized / 0.46);
+      else target.copy(this.midColor).lerp(this.highColor, (normalized - 0.46) / 0.54);
+      const rockMix = clamp((slope - 0.11) * 1.9 + Math.max(0, localNoise) * 0.13, 0, 0.46);
+      target.lerp(this.rockColor, rockMix);
+      target.multiplyScalar(0.90 + localNoise * 0.10);
+      return target;
+    }
+
+    createMaterial(radarTexture, background = false) {
       const T = this.THREE;
-      const hL = this.heightAt(x - epsilon, z);
-      const hR = this.heightAt(x + epsilon, z);
-      const hD = this.heightAt(x, z - epsilon);
-      const hU = this.heightAt(x, z + epsilon);
-      return new T.Vector3(hL - hR, epsilon * 2, hD - hU).normalize();
+      const material = new T.MeshStandardMaterial({
+        color: 0xffffff,
+        vertexColors: true,
+        map: radarTexture || null,
+        bumpMap: this.detailTexture,
+        bumpScale: 0.001,
+        roughness: background ? 0.98 : this.quality.name === "HIGH" ? 0.885 : this.quality.name === "MEDIUM" ? 0.90 : 0.92,
+        metalness: 0.0,
+        fog: true,
+        dithering: true
+      });
+      material.name = background ? "venus-gtdr-background-material" : "venus-gtdr-surface-material";
+      material.onBeforeCompile = shader => {
+        shader.uniforms.uVenusMicroDetail = { value: this.detailTexture };
+        shader.uniforms.uVenusAlbedoDetail = { value: background ? 0.055 : this.quality.name === "HIGH" ? 0.20 : this.quality.name === "MEDIUM" ? 0.16 : 0.12 };
+        shader.uniforms.uVenusNormalDetail = { value: background ? 0.7 : this.quality.name === "HIGH" ? 5.1 : this.quality.name === "MEDIUM" ? 3.9 : 2.8 };
+        shader.uniforms.uVenusDetailTier = { value: background ? 1.0 : 3.0 };
+        shader.vertexShader = shader.vertexShader
+          .replace("#include <common>", "#include <common>\nvarying vec3 vAntaraWorld;")
+          .replace("#include <begin_vertex>", "#include <begin_vertex>\nvAntaraWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;");
+        shader.fragmentShader = shader.fragmentShader
+          .replace("#include <common>", `#include <common>
+            varying vec3 vAntaraWorld;
+            uniform sampler2D uVenusMicroDetail;
+            uniform float uVenusAlbedoDetail;
+            uniform float uVenusNormalDetail;
+            uniform float uVenusDetailTier;
+
+            float venusTriSample(sampler2D tex, vec3 p, vec3 n, float scale, vec3 phase) {
+              vec3 blend = pow(max(abs(n), vec3(0.0001)), vec3(5.0));
+              blend /= max(blend.x + blend.y + blend.z, 0.0001);
+              float sx = texture2D(tex, p.yz * scale + phase.yz).r;
+              float sy = texture2D(tex, p.xz * scale + phase.xz).r;
+              float sz = texture2D(tex, p.xy * scale + phase.xy).r;
+              return sx * blend.x + sy * blend.y + sz * blend.z;
+            }`)
+          .replace("#include <map_fragment>", `#include <map_fragment>
+            vec3 venusDx = dFdx(vAntaraWorld);
+            vec3 venusDy = dFdy(vAntaraWorld);
+            vec3 venusGeomNormal = normalize(cross(venusDx, venusDy));
+            if (!gl_FrontFacing) venusGeomNormal = -venusGeomNormal;
+            float venusViewDistance = length(cameraPosition - vAntaraWorld);
+            float venusNearWeight = 1.0 - smoothstep(1.0, 13.0, venusViewDistance);
+            float venusMidWeight = 1.0 - smoothstep(6.0, 42.0, venusViewDistance);
+            float venusBroad = 0.5;
+            float venusFine = 0.5;
+            float venusGrit = 0.5;
+            if (uVenusDetailTier > 0.5) venusBroad = venusTriSample(uVenusMicroDetail, vAntaraWorld, venusGeomNormal, 0.16, vec3(0.19, 0.47, 0.71));
+            if (uVenusDetailTier > 1.5) venusFine = venusTriSample(uVenusMicroDetail, vAntaraWorld, venusGeomNormal, 0.78, vec3(0.63, 0.11, 0.39));
+            if (uVenusDetailTier > 2.5) venusGrit = venusTriSample(uVenusMicroDetail, vAntaraWorld, venusGeomNormal, 2.10, vec3(0.31, 0.79, 0.09));
+            float venusMicro = (venusBroad - 0.5) * 0.50 * venusMidWeight
+              + (venusFine - 0.5) * 0.36 * venusNearWeight
+              + (venusGrit - 0.5) * 0.14 * venusNearWeight;
+            float venusMicroHeight = (venusBroad - 0.5) * 0.54 * venusMidWeight
+              + (venusFine - 0.5) * 0.34 * venusNearWeight
+              + (venusGrit - 0.5) * 0.12 * venusNearWeight;
+            diffuseColor.rgb *= clamp(1.0 + venusMicro * uVenusAlbedoDetail, 0.87, 1.13);`)
+          .replace("#include <normal_fragment_maps>", `#include <normal_fragment_maps>
+            #ifdef USE_BUMPMAP
+              if (uVenusDetailTier > 1.5) {
+                vec2 venusMicroSlope = vec2(dFdx(venusMicroHeight), dFdy(venusMicroHeight));
+                normal = perturbNormalArb(-vViewPosition, normal, venusMicroSlope * uVenusNormalDetail, faceDirection);
+              }
+            #endif`)
+          .replace("#include <roughnessmap_fragment>", `#include <roughnessmap_fragment>
+            roughnessFactor = clamp(roughnessFactor + (0.5 - venusBroad) * 0.08 + (0.5 - venusGrit) * 0.045 * step(2.5, uVenusDetailTier), 0.72, 1.0);`);
+        material.userData.venusShader = shader;
+      };
+      material.customProgramCacheKey = () => `antara-venus-gtdr-triplanar-v3-${background ? "background" : "surface"}-${this.quality.name}`;
+      material.needsUpdate = true;
+      return material;
     }
 
-    colorFor(x, z, height, slope, target = null) {
-      const T = this.THREE;
-      const p = this.region.palette;
-      const cls = surfaceClass(this.region, x, z, height, slope);
-      const color = target || new T.Color();
-      const low = new T.Color(p.low);
-      const mid = new T.Color(p.mid);
-      const high = new T.Color(p.high);
-      const accent = new T.Color(p.accent);
-      const rock = new T.Color(p.rock);
-
-      // Macro/mid tonal distribution comes from the same region structures that
-      // shape the terrain. Noise is deliberately limited to subtle micro breakup.
-      if (this.region.id === "maat") {
-        const flows = maatFlowFields(x, z);
-        const radial = Math.hypot((x + 0.8) / 34.5, (z + 26) / 29.5);
-        const mountainMask = clamp(1 - radial / 1.20, 0, 1);
-        const ventHeat = rotatedGaussian(x, z, 1.4, -26.0, 5.2, 3.7, 0.24);
-        const flankLine = Math.max(
-          ridgeWave(x * 0.105 + z * 0.040 + 0.30 * Math.sin(z * 0.034), 13),
-          ridgeWave(-x * 0.072 + z * 0.092 + 0.22 * Math.sin(x * 0.030), 14)
-        ) * mountainMask;
-
-        // PIA00254: golden/yellow-orange edifice and plains, coherent burnt-brown
-        // foreground flow fields, thin lighter channels and restrained hot vent.
-        color.copy(mid).lerp(high, clamp(mountainMask * 0.76 + Math.max(0, height - 3.8) * 0.035, 0, 0.90));
-        if (flows.combined > 0.10) {
-          color.lerp(accent, clamp(0.20 + flows.combined * 0.60, 0, 0.76));
-          color.lerp(mid, clamp(flows.internalLineation * 0.20, 0, 0.20));
-        }
-        if (flows.centralLight > 0.24) color.lerp(high, flows.centralLight * 0.18);
-        if (cls === "fracture") color.lerp(rock, 0.30 + clamp(flows.internalLineation, 0, 1) * 0.20);
-        if (cls === "rugged") color.lerp(high, 0.16 + flankLine * 0.11);
-        if (cls === "summit") color.lerp(high, 0.26);
-        if (ventHeat > 0.36) {
-          this.thermalColor.setHex(ventHeat > 0.74 ? 0xffd75d : 0xf0a33c);
-          color.lerp(this.thermalColor, (ventHeat - 0.36) * 0.23);
-        }
-        const coherent = valueNoise(x * 0.050, z * 0.050, 111);
-        const micro = valueNoise(x * 0.30, z * 0.30, 127);
-        const tone = 0.985 + coherent * 0.030 + micro * 0.012 + flows.edge * 0.022 + flankLine * 0.018;
-        color.multiplyScalar(clamp(tone * (1.015 + slope * 0.050), 0.90, 1.12));
-        return color;
-      }
-
-      if (this.region.id === "maxwell") {
-        const s = maxwellStructure(x, z);
-        const ridgeStrength = Math.max(s.ridgeA, s.ridgeB, s.ridgeFine);
-        const brightnessBand = smoothstep((height - 2.6) / 3.0) * (1 - 0.34 * smoothstep((height - 8.5) / 1.6));
-        color.copy(mid);
-        if (s.lakshmi > 0.30) color.lerp(low, clamp(0.14 + s.lakshmi * 0.42, 0, 0.54));
-        if (cls === "highland") color.lerp(high, 0.30 + ridgeStrength * 0.24 + brightnessBand * 0.12);
-        if (cls === "rugged") color.copy(high).lerp(rock, 0.12 + clamp(slope, 0, 0.75) * 0.16);
-        if (s.cleopatraBowl > 0.18) color.lerp(accent, clamp(s.cleopatraBowl * 0.44, 0, 0.38));
-        if (s.cleopatraOuter > 0.34) color.lerp(high, s.cleopatraOuter * 0.18);
-        const micro = valueNoise(x * 0.16, z * 0.16, 29) * 0.015;
-        color.multiplyScalar(clamp(0.95 + ridgeStrength * 0.085 + brightnessBand * 0.07 + micro, 0.83, 1.16));
-        return color;
-      }
-
-      if (this.region.id === "aphrodite") {
-        const s = aphroditeStructure(x, z);
-        const fabric = Math.max(s.fabricNE, s.fabricNW, s.fineNE * 0.8);
-        const valley = Math.max(s.mainValley, s.branchValley * 0.46, s.broadValley * 0.30);
-        color.copy(mid);
-        if (cls === "highland") color.lerp(high, 0.36 + fabric * 0.24);
-        if (cls === "fracture") color.lerp(rock, 0.28 + s.fabricNW * 0.20);
-        if (cls === "lava") color.lerp(accent, 0.40 + valley * 0.20);
-        else if (s.branchValley > 0.52) color.lerp(accent, s.branchValley * 0.16);
-        if (cls === "rugged") color.lerp(high, fabric * 0.13);
-        const micro = valueNoise(x * 0.15, z * 0.15, 43) * 0.014;
-        color.multiplyScalar(clamp(0.95 + fabric * 0.080 - valley * 0.055 + micro, 0.84, 1.14));
-        return color;
-      }
-
-      if (this.region.id === "ishtar") {
-        const s = ishtarStructure(x, z);
-        const massif = Math.max(s.maxwell, s.akna, s.freyja);
-        const altitudeTone = clamp((height + 0.6) / 10.0, 0, 1);
-        color.copy(low).lerp(mid, clamp(s.plateau * 0.72 + altitudeTone * 0.18, 0, 0.86));
-        color.lerp(high, clamp(altitudeTone * 0.26 + massif * 0.16, 0, 0.38));
-        if (cls === "rugged") color.lerp(rock, 0.08 + clamp(slope, 0, 0.7) * 0.11);
-        // PIA00093 is color-coded altimetry. Preserve relative elevation and
-        // plateau-vs-massif contrast in Venus hues, not literal blue/green.
-        color.multiplyScalar(clamp(0.99 + altitudeTone * 0.10 + valueNoise(x * 0.12, z * 0.12, 47) * 0.010, 0.91, 1.16));
-        return color;
-      }
-
-      if (this.region.id === "alpha") {
-        const s = alphaStructure(x, z);
-        const tessera = Math.max(s.ridgeA, s.ridgeB, s.ridgeFine * 0.8);
-        const localLow = Math.max(s.lowA, s.lowB, s.lowC);
-        color.copy(low).lerp(mid, 0.16 + s.tesseraMask * 0.64);
-        if (cls === "tessera") color.lerp(high, 0.30 + tessera * 0.18 + s.boundary * 0.10);
-        if (cls === "fracture") color.lerp(rock, 0.14 + Math.max(s.faultA, s.faultB, s.faultC) * 0.14);
-        if (cls === "lava") color.copy(accent).lerp(mid, 0.12);
-        if (localLow > 0.30) color.lerp(accent, localLow * 0.40);
-        color.multiplyScalar(clamp(0.94 + tessera * 0.065 + s.boundary * 0.05 + valueNoise(x * 0.15, z * 0.15, 61) * 0.012, 0.84, 1.14));
-        return color;
-      }
-
-      color.setHex(p.mid);
-      return color;
-    }
-
-    createTile(centerX, centerZ, size, segments) {
+    geometryForPatch(centerX, centerZ, size, segments, background = false) {
       const T = this.THREE;
       const row = segments + 1;
-      const count = row * row;
-      const positions = new Float32Array(count * 3);
-      const normals = new Float32Array(count * 3);
-      const colors = new Float32Array(count * 3);
-      const uvs = new Float32Array(count * 2);
-      const indexCount = segments * segments * 6;
-      const IndexArray = count > 65535 ? Uint32Array : Uint16Array;
-      const indices = new IndexArray(indexCount);
+      const positions = new Float32Array(row * row * 3);
+      const colors = new Float32Array(row * row * 3);
+      const uvs = new Float32Array(row * row * 2);
+      const indices = new Uint32Array(segments * segments * 6);
       const half = size / 2;
-      const step = size / segments;
-
-      /*
-       * Terrain is static after a destination is loaded. Build one expanded
-       * height grid and derive both vertices and normals from it. This keeps
-       * the expensive morphology functions out of the animation loop and
-       * avoids four extra height-function evaluations for every vertex.
-       */
-      const sampleRow = segments + 3;
-      const heightGrid = new Float32Array(sampleRow * sampleRow);
-      for (let gz = -1; gz <= segments + 1; gz += 1) {
-        const worldZ = centerZ - half + gz * step;
-        const gridZ = gz + 1;
-        for (let gx = -1; gx <= segments + 1; gx += 1) {
-          const worldX = centerX - half + gx * step;
-          heightGrid[gridZ * sampleRow + gx + 1] = this.heightAt(worldX, worldZ);
-        }
-      }
-      const sampleHeight = (gx, gz) => heightGrid[(gz + 1) * sampleRow + gx + 1];
-
-      let p = 0, n = 0, c = 0, u = 0;
-      const normal = new T.Vector3();
-      const color = new T.Color();
+      let p = 0, c = 0, uv = 0, q = 0;
+      const radarExtent = this.radar.extentKm;
       for (let iz = 0; iz <= segments; iz += 1) {
-        const vz = iz / segments;
-        const localZ = lerp(-half, half, vz);
-        const worldZ = centerZ + localZ;
+        const z = centerZ - half + size * (iz / segments);
         for (let ix = 0; ix <= segments; ix += 1) {
-          const vx = ix / segments;
-          const localX = lerp(-half, half, vx);
-          const worldX = centerX + localX;
-          const height = sampleHeight(ix, iz);
-          const hL = sampleHeight(ix - 1, iz);
-          const hR = sampleHeight(ix + 1, iz);
-          const hD = sampleHeight(ix, iz - 1);
-          const hU = sampleHeight(ix, iz + 1);
-          normal.set(hL - hR, step * 2, hD - hU).normalize();
-          const slope = 1 - Math.max(0, normal.y);
-          this.colorFor(worldX, worldZ, height, slope, color);
-          positions[p++] = localX; positions[p++] = height; positions[p++] = localZ;
-          normals[n++] = normal.x; normals[n++] = normal.y; normals[n++] = normal.z;
+          const x = centerX - half + size * (ix / segments);
+          const scientific = this.scientificHeightAt(x, z);
+          const micro = background ? this.microHeightAt(x, z) * 0.18 : this.microHeightAt(x, z);
+          const y = scientific + micro - (background ? 0.028 : 0);
+          const slope = background ? 0.08 : this.slopeAt(x, z, Math.max(0.18, size / segments * 0.72));
+          const color = this.colorAt(x, z, y, slope);
+          const farFade = background ? smoothstep(Math.hypot(x, z) / (this.worldSpan * 0.54)) : 0;
+          if (background) color.lerp(this.fogColor, farFade * 0.26).multiplyScalar(1 - farFade * 0.12);
+          positions[p++] = x; positions[p++] = y; positions[p++] = z;
           colors[c++] = color.r; colors[c++] = color.g; colors[c++] = color.b;
-          uvs[u++] = worldX / 7; uvs[u++] = worldZ / 7;
+          uvs[uv++] = clamp((x + radarExtent) / (radarExtent * 2), 0, 1);
+          uvs[uv++] = clamp((radarExtent - z) / (radarExtent * 2), 0, 1);
         }
       }
-
-      let q = 0;
       for (let iz = 0; iz < segments; iz += 1) {
         for (let ix = 0; ix < segments; ix += 1) {
-          const a = iz * row + ix;
-          const b = a + 1;
-          const d = (iz + 1) * row + ix;
-          const e = d + 1;
+          const a = iz * row + ix, b = a + 1, d = (iz + 1) * row + ix, e = d + 1;
           indices[q++] = a; indices[q++] = d; indices[q++] = b;
           indices[q++] = b; indices[q++] = d; indices[q++] = e;
         }
       }
-
       const geometry = new T.BufferGeometry();
       geometry.setAttribute("position", new T.BufferAttribute(positions, 3));
-      geometry.setAttribute("normal", new T.BufferAttribute(normals, 3));
       geometry.setAttribute("color", new T.BufferAttribute(colors, 3));
       geometry.setAttribute("uv", new T.BufferAttribute(uvs, 2));
       geometry.setIndex(new T.BufferAttribute(indices, 1));
-      geometry.computeBoundingSphere();
-      const mesh = new T.Mesh(geometry, this.material);
-      mesh.position.set(centerX, 0, centerZ);
-      mesh.frustumCulled = true;
-      mesh.matrixAutoUpdate = false;
-      mesh.updateMatrix();
-      return mesh;
-    }
-
-    distantRelief(angle, rt) {
-      const depth = smoothstep((rt - 0.12) / 0.88);
-      if (depth <= 0) return 0;
-      let profile = 0.20;
-      if (this.region.id === "maat") {
-        profile = 0.14 + ridgeWave(angle * 3.0 + 0.3, 8) * 0.36 + ridgeWave(angle * 6.0 - 0.8, 11) * 0.12;
-      } else if (this.region.id === "maxwell") {
-        profile = 0.28 + ridgeWave(angle * 3.5 + 0.4, 5) * 1.18 + ridgeWave(angle * 7.0 - 0.9, 8) * 0.42;
-      } else if (this.region.id === "aphrodite") {
-        profile = 0.20 + ridgeWave(angle * 4.0 + 0.7, 6) * 0.62 + ridgeWave(angle * 7.5 - 0.4, 9) * 0.24;
-      } else if (this.region.id === "ishtar") {
-        profile = 0.24 + ridgeWave(angle * 3.0 - 0.2, 7) * 0.78 + ridgeWave(angle * 5.5 + 1.1, 10) * 0.24;
-      } else if (this.region.id === "alpha") {
-        profile = 0.18 + ridgeWave(angle * 5.0 + 0.2, 7) * 0.48 + ridgeWave(angle * 7.0 - 1.0, 8) * 0.34;
-      }
-      return profile * depth * (0.52 + rt * 0.48);
-    }
-
-    createHorizon() {
-      const T = this.THREE;
-      const radial = 12;
-      const angular = Math.max(96, Math.round(this.quality.horizonSegments * 1.35));
-      const inner = this.region.playRadius * 0.72;
-      const outer = 205;
-      const vertices = [];
-      const colors = [];
-      const uvs = [];
-      const indices = [];
-      const fogColor = new T.Color(this.region.fog);
-
-      // One continuous non-playable continuation surface now replaces the former
-      // horizon + distant-shell overlap. The mesh begins underneath the outer
-      // playable tiles, crosses the real exploration boundary seamlessly, then
-      // becomes progressively coarser-looking through geometry shape + fog rather
-      // than through an abrupt terrain cutoff. It is visual only: movement remains
-      // clamped to region.playRadius in updateMovement().
-      for (let r = 0; r <= radial; r += 1) {
-        const rt = r / radial;
-        // More rings close to the playable boundary, fewer rings far away.
-        const radius = lerp(inner, outer, Math.pow(rt, 1.46));
-        const outsideT = smoothstep((radius - this.region.playRadius * 0.94) / Math.max(1, outer - this.region.playRadius * 0.94));
-        const farT = smoothstep((radius - this.region.playRadius) / Math.max(1, outer - this.region.playRadius));
-
-        for (let a = 0; a <= angular; a += 1) {
-          const angle = a / angular * Math.PI * 2;
-          const directionNoise = valueNoise(Math.cos(angle) * 3.6, Math.sin(angle) * 3.6, 251);
-          const warpedAngle = angle + directionNoise * 0.035 * outsideT;
-
-          // Near the boundary, sample the actual world coordinate so the terrain
-          // meets the playable region naturally. Further out, progressively reuse
-          // the region's edge morphology instead of evaluating a huge open world.
-          const sourceRadius = radius <= this.region.playRadius
-            ? radius
-            : this.region.playRadius * lerp(0.99, 0.83, farT);
-          const sourceX = Math.cos(warpedAngle) * sourceRadius;
-          const sourceZ = Math.sin(warpedAngle) * sourceRadius;
-          const base = this.heightAt(sourceX, sourceZ);
-
-          const localReliefT = clamp((radius - this.region.playRadius * 0.86) / Math.max(1, 112 - this.region.playRadius * 0.86), 0, 1);
-          const localRelief = this.distantRelief(warpedAngle, localReliefT);
-          const massif = this.distantMassifProfile(warpedAngle);
-          const massifEnvelope = smoothstep(farT) * lerp(0.92, 0.48, farT);
-          const radialBreakup = valueNoise(
-            Math.cos(warpedAngle) * 4.4 + radius * 0.018,
-            Math.sin(warpedAngle) * 4.4 - radius * 0.014,
-            263
-          ) * 0.26 * outsideT;
-
-          // Keep the immediate exterior at almost the same vertical language as
-          // the playable terrain. Only the distant world is gently compressed.
-          const heightScale = lerp(1.0, 0.46, farT);
-          const farFloor = this.region.id === "maat" ? -0.10 : -0.26;
-          const y = base * heightScale
-            + localRelief * lerp(0.86, 0.34, farT)
-            + massif * massifEnvelope
-            + radialBreakup
-            + farFloor * farT;
-
-          const x = Math.cos(angle) * radius;
-          const z = Math.sin(angle) * radius;
-          const color = this.colorFor(sourceX, sourceZ, base, 0.10);
-          // Three.js fog already attenuates this mesh. Keep the baked fade mild so
-          // nearby exterior terrain still reads as real ground instead of a matte.
-          const bakedFog = clamp(0.035 + farT * 0.40, 0, 0.44);
-          color.lerp(fogColor, bakedFog).multiplyScalar(lerp(0.98, 0.76, farT));
-          vertices.push(x, y, z);
-          colors.push(color.r, color.g, color.b);
-          // Match the world-space projection used by playable tiles, so the same
-          // material texture continues naturally past the exploration boundary.
-          uvs.push(x / 7, z / 7);
-        }
-      }
-
-      const row = angular + 1;
-      for (let r = 0; r < radial; r += 1) {
-        for (let a = 0; a < angular; a += 1) {
-          const i = r * row + a;
-          indices.push(i, i + row, i + 1, i + 1, i + row, i + row + 1);
-        }
-      }
-
-      const geometry = new T.BufferGeometry();
-      geometry.setAttribute("position", new T.Float32BufferAttribute(vertices, 3));
-      geometry.setAttribute("color", new T.Float32BufferAttribute(colors, 3));
-      geometry.setAttribute("uv", new T.Float32BufferAttribute(uvs, 2));
-      geometry.setIndex(indices);
       geometry.computeVertexNormals();
       geometry.computeBoundingSphere();
-      const mesh = new T.Mesh(geometry, this.horizonMaterial);
-      mesh.name = `venus-outer-continuation-${this.region.id}`;
-      mesh.frustumCulled = false;
-      mesh.renderOrder = -1;
-      return mesh;
+      return geometry;
     }
 
-    distantMassifProfile(angle) {
-      const angularDistance = (a, b) => Math.acos(Math.cos(a - b));
-      const lobe = (center, width) => Math.exp(-Math.pow(angularDistance(angle, center) / width, 2));
-      const broadNoise = 0.72 + 0.28 * valueNoise(Math.cos(angle) * 3.2, Math.sin(angle) * 3.2, 251);
-      if (this.region.id === "maat") {
-        return (0.88 + lobe(3.85, 0.55) * 2.05 + lobe(5.35, 0.78) * 1.05) * broadNoise;
-      }
-      if (this.region.id === "maxwell") {
-        return (1.20 + lobe(3.45, 0.82) * 4.8 + lobe(4.85, 0.62) * 2.4
-          + ridgeWave(angle * 5.2 + 0.5, 7) * 1.25) * broadNoise;
-      }
-      if (this.region.id === "aphrodite") {
-        return (0.85 + lobe(3.65, 1.05) * 2.15 + lobe(5.50, 0.75) * 1.10
-          + ridgeWave(angle * 4.4 - 0.6, 8) * 0.55) * broadNoise;
-      }
-      if (this.region.id === "ishtar") {
-        return (1.00 + lobe(2.95, 0.68) * 2.15 + lobe(4.20, 0.62) * 3.35 + lobe(5.35, 0.72) * 1.55) * broadNoise;
-      }
-      return (0.78 + lobe(3.60, 0.95) * 1.45 + lobe(5.30, 0.75) * 1.15
-        + ridgeWave(angle * 5.6 + 0.3, 8) * 0.72) * broadNoise;
+    chooseSegments(cx, cz) {
+      const distance = Math.hypot(cx, cz);
+      if (distance < this.tileSize * 1.25) return this.quality.nearSegments;
+      if (distance < this.tileSize * 2.75) return this.quality.midSegments;
+      return this.quality.farSegments;
     }
 
-    createDistantTerrain() {
-      // The old second shell overlapped the horizon from roughly 92-150 km and
-      // produced visible layered/angular exterior geometry. The continuation is
-      // now a single mesh built by createHorizon(), so there is no overlapping
-      // terrain surface and no depth-fighting seam outside the playable region.
-      return null;
-    }
+    async build(onProgress = () => {}) {
+      onProgress(0.01);
+      await this.topography.load(value => onProgress(0.02 + value * 0.20));
+      this.referenceElevation = this.topography.sample(this.region.latitude, this.region.longitudeEast);
+      onProgress(0.24);
+      const radarTexture = await this.radar.load().catch(() => null);
+      onProgress(0.34);
+      this.material = this.createMaterial(radarTexture, false);
+      this.backgroundMaterial = this.createMaterial(radarTexture, true);
+      this.resources.push(this.material, this.backgroundMaterial);
 
-    createSurfaceAccents() {
-      const T = this.THREE;
-      const total = this.quality.accentCount;
-      if (!total) return null;
+      const bgSegments = this.quality.name === "HIGH" ? 118 : this.quality.name === "MEDIUM" ? 92 : 70;
+      this.background = new this.THREE.Mesh(this.geometryForPatch(0, 0, this.worldSpan, bgSegments, true), this.backgroundMaterial);
+      this.background.name = `venus-scientific-visual-world-${this.region.id}`;
+      this.background.frustumCulled = true;
+      this.background.renderOrder = -2;
+      this.group.add(this.background);
+      onProgress(0.48);
 
-      // Perceived richness comes from composition, not brute-force mesh count.
-      // Keep roughly the same instance budget, but cluster it along real regional
-      // structures: Maat flow corridors, Maxwell ridge/talus belts, Aphrodite
-      // fractures, Ishtar plateau margins and Alpha tessera intersections.
-      const rockGeometry = new T.DodecahedronGeometry(0.68, 0);
-      const shardGeometry = new T.OctahedronGeometry(0.72, 0);
-      const plateGeometry = (() => {
-        const ring = [
-          [-0.95, -0.42], [-0.42, -0.88], [0.30, -0.82], [0.92, -0.28],
-          [0.72, 0.60], [0.08, 0.92], [-0.72, 0.61]
-        ];
-        const vertices = [];
-        const topY = [0.10, 0.14, 0.08, 0.13, 0.09, 0.15, 0.11];
-        for (let i = 0; i < ring.length; i += 1) vertices.push(ring[i][0], topY[i], ring[i][1]);
-        for (let i = 0; i < ring.length; i += 1) vertices.push(ring[i][0] * 0.96, -0.10, ring[i][1] * 0.96);
-        vertices.push(0, 0.105, 0, 0, -0.10, 0);
-        const topCenter = ring.length * 2;
-        const bottomCenter = topCenter + 1;
-        const indices = [];
-        for (let i = 0; i < ring.length; i += 1) {
-          const next = (i + 1) % ring.length;
-          indices.push(topCenter, i, next);
-          indices.push(bottomCenter, ring.length + next, ring.length + i);
-          indices.push(i, ring.length + i, next, next, ring.length + i, ring.length + next);
+      const half = this.tileHalfCount;
+      const total = (half * 2 + 1) ** 2;
+      let built = 0;
+      for (let tz = -half; tz <= half; tz += 1) {
+        for (let tx = -half; tx <= half; tx += 1) {
+          const cx = tx * this.tileSize, cz = tz * this.tileSize;
+          const segments = this.chooseSegments(cx, cz);
+          const geometry = this.geometryForPatch(cx, cz, this.tileSize, segments, false);
+          const mesh = new this.THREE.Mesh(geometry, this.material);
+          mesh.name = `venus-gtdr-chunk-${tx}-${tz}`;
+          mesh.frustumCulled = true;
+          mesh.renderOrder = 1;
+          this.group.add(mesh);
+          this.tiles.push({ mesh, cx, cz, segments });
+          built += 1;
+          if (built % 4 === 0) {
+            onProgress(0.48 + (built / total) * 0.35);
+            await sleepFrame();
+          }
         }
-        const geometry = new T.BufferGeometry();
-        geometry.setAttribute("position", new T.Float32BufferAttribute(vertices, 3));
-        geometry.setIndex(indices);
-        geometry.computeVertexNormals();
-        geometry.computeBoundingSphere();
-        return geometry;
-      })();
+      }
+      this.createGeologicalProps();
+      this.createAtmosphericParticles();
+      onProgress(1);
+    }
 
-      const volcanic = this.region.id === "maat";
-      const rockMaterial = new T.MeshStandardMaterial({ color: 0xffffff, roughness: volcanic ? 0.91 : 0.97, metalness: 0, flatShading: true });
-      const plateMaterial = new T.MeshStandardMaterial({ color: 0xffffff, roughness: volcanic ? 0.82 : (this.region.id === "alpha" ? 0.91 : 0.94), metalness: 0, flatShading: true });
-      const shardMaterial = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.96, metalness: 0, flatShading: true });
-      this.accentResources.push(rockGeometry, plateGeometry, shardGeometry, rockMaterial, plateMaterial, shardMaterial);
-
-      const rocks = new T.InstancedMesh(rockGeometry, rockMaterial, total);
-      const plates = new T.InstancedMesh(plateGeometry, plateMaterial, total);
-      const shards = new T.InstancedMesh(shardGeometry, shardMaterial, total);
-      rocks.frustumCulled = plates.frustumCulled = shards.frustumCulled = true;
-
-      const zones = {
-        maat: [
-          { x: 0, z: 20, rx: 27, rz: 12 },
-          { x: -13, z: 7, rx: 13, rz: 28 },
-          { x: 14, z: 4, rx: 14, rz: 27 },
-          { x: 0, z: -10, rx: 23, rz: 15 }
-        ],
-        maxwell: [
-          { x: -18, z: -4, rx: 19, rz: 27 },
-          { x: 6, z: -18, rx: 23, rz: 29 },
-          { x: 23, z: -7, rx: 16, rz: 23 }
-        ],
-        aphrodite: [
-          { x: 8, z: -5, rx: 17, rz: 34 },
-          { x: -13, z: -12, rx: 27, rz: 23 },
-          { x: 20, z: 5, rx: 21, rz: 24 }
-        ],
-        ishtar: [
-          { x: 35, z: -8, rx: 11, rz: 27 },
-          { x: -35, z: -3, rx: 11, rz: 26 },
-          { x: 0, z: -34, rx: 28, rz: 10 },
-          { x: -5, z: 7, rx: 24, rz: 18 }
-        ],
-        alpha: [
-          { x: 0, z: -5, rx: 25, rz: 23 },
-          { x: 22, z: 10, rx: 15, rz: 17 },
-          { x: -24, z: -4, rx: 15, rz: 19 }
-        ]
-      }[this.region.id] || [{ x: 0, z: 0, rx: 30, rz: 30 }];
-
+    createGeologicalProps() {
+      const T = this.THREE;
+      const count = Math.max(0, this.quality.accentCount * 7);
+      if (!count) return;
+      const geometry = new T.DodecahedronGeometry(0.24, 0);
+      const material = new T.MeshStandardMaterial({ color: this.region.palette.rock, roughness: 0.96, metalness: 0 });
+      const mesh = new T.InstancedMesh(geometry, material, count);
+      mesh.name = `venus-geologic-props-${this.region.id}`;
       const dummy = new T.Object3D();
-      const instanceColor = new T.Color();
-      const rockBase = new T.Color(this.region.palette.rock);
-      const plateBase = new T.Color(this.region.palette.mid).lerp(new T.Color(this.region.palette.rock), volcanic ? 0.36 : 0.24);
-      const shardBase = new T.Color(this.region.palette.high).lerp(new T.Color(this.region.palette.rock), 0.42);
-      const thermalRock = new T.Color(volcanic ? 0x9c4828 : this.region.palette.accent);
-      let placedRocks = 0, placedPlates = 0, placedShards = 0;
-      const seed = this.region.id.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
-      const maxAttempts = total * 12;
-      const golden = 2.399963229728653;
-
-      for (let i = 0; i < maxAttempts && placedRocks + placedPlates + placedShards < total; i += 1) {
-        const zone = zones[i % zones.length];
-        const a = i * golden + hash2(i, 19, seed) * 0.72;
-        const r = Math.sqrt(hash2(i, 31, seed + 7));
-        const x = zone.x + Math.cos(a) * zone.rx * r;
-        const z = zone.z + Math.sin(a) * zone.rz * r;
-        if (Math.hypot(x, z) > this.region.softBoundaryStart - 4) continue;
-
-        // Preserve the hero sightline from the spawn point toward the main Maat edifice.
-        if (this.region.id === "maat" && z > -17 && z < 28 && Math.abs(x) < 4.5 && hash2(i, 55, seed) < 0.72) continue;
-
+      let written = 0;
+      for (let i = 0; i < count * 5 && written < count; i += 1) {
+        const angle = hash2(i, 7, 19) * Math.PI * 2;
+        const radius = 8 + Math.sqrt(hash2(i, 11, 23)) * (this.region.playRadius - 12);
+        const x = Math.cos(angle) * radius, z = Math.sin(angle) * radius;
+        const slope = this.slopeAt(x, z, 0.35);
+        const geologyGate = this.region.id === "maxwell" || this.region.id === "alpha" ? 0.11 : 0.07;
+        if (slope < geologyGate && hash2(i, 13, 29) < 0.56) continue;
         const y = this.heightAt(x, z);
-        const normal = this.normalAt(x, z, 0.35);
-        const slope = 1 - normal.y;
-        const cls = surfaceClass(this.region, x, z, y, slope);
-        let useful = true;
-        if (this.region.id === "maat") useful = cls === "plain" || cls === "lava" || cls === "rugged";
-        else if (this.region.id === "maxwell") useful = cls === "rugged" || cls === "highland";
-        else if (this.region.id === "aphrodite") useful = cls === "fracture" || cls === "highland" || cls === "rugged";
-        else if (this.region.id === "ishtar") useful = cls === "highland" || cls === "rugged" || (cls === "plain" && i % 5 === 0);
-        else if (this.region.id === "alpha") useful = cls === "tessera" || cls === "fracture";
-        if (!useful) continue;
-
-        const roll = hash2(i, 71, seed + 3);
-        const size = 0.24 + hash2(i, 37, seed + 11) * (this.region.id === "maxwell" ? 1.18 : 0.82);
-        const structuralYaw = this.region.id === "maxwell" ? -0.08
-          : this.region.id === "aphrodite" ? (i % 2 ? 0.78 : -0.74)
-            : this.region.id === "ishtar" ? (Math.abs(x) > 27 ? Math.PI * 0.5 : 0.12)
-              : this.region.id === "alpha" ? (i % 2 ? 0.57 : -0.91)
-                : (x < 0 ? -0.06 : 0.08);
-
-        dummy.position.set(x, y + 0.06, z);
-        dummy.rotation.set((hash2(i, 43, seed) - 0.5) * 0.30, structuralYaw + (hash2(i, 47, seed) - 0.5) * 0.52, (hash2(i, 53, seed) - 0.5) * 0.30);
-
-        const wantsShard = (this.region.id === "maxwell" || cls === "rugged" || cls === "highland") && roll > 0.53;
-        const wantsPlate = !wantsShard && (cls === "lava" || cls === "fracture" || cls === "tessera" || (this.region.id === "ishtar" && cls === "plain")) && roll > 0.24;
-
-        if (wantsShard && placedShards < total) {
-          dummy.scale.set(size * (0.62 + hash2(i, 59, seed) * 0.50), size * (1.10 + hash2(i, 61, seed) * 1.25), size * (0.55 + hash2(i, 67, seed) * 0.55));
-          dummy.position.y += size * 0.22;
-          dummy.updateMatrix();
-          shards.setMatrixAt(placedShards, dummy.matrix);
-          instanceColor.copy(shardBase).multiplyScalar(0.84 + hash2(i, 73, seed) * 0.24);
-          shards.setColorAt(placedShards++, instanceColor);
-        } else if (wantsPlate && placedPlates < total) {
-          dummy.scale.set(size * (1.20 + hash2(i, 79, seed) * 1.30), size * (0.58 + hash2(i, 83, seed) * 0.42), size * (0.90 + hash2(i, 89, seed) * 1.05));
-          dummy.updateMatrix();
-          plates.setMatrixAt(placedPlates, dummy.matrix);
-          instanceColor.copy(plateBase).multiplyScalar(0.86 + hash2(i, 97, seed) * 0.22);
-          if (volcanic && cls === "lava") instanceColor.lerp(thermalRock, 0.28);
-          plates.setColorAt(placedPlates++, instanceColor);
-        } else if (placedRocks < total) {
-          dummy.scale.set(size * (0.70 + hash2(i, 101, seed) * 0.70), size * (0.58 + hash2(i, 103, seed) * 0.90), size * (0.70 + hash2(i, 107, seed) * 0.70));
-          dummy.updateMatrix();
-          rocks.setMatrixAt(placedRocks, dummy.matrix);
-          instanceColor.copy(rockBase).multiplyScalar(0.84 + hash2(i, 109, seed) * 0.24);
-          rocks.setColorAt(placedRocks++, instanceColor);
-        }
+        const scale = 0.35 + hash2(i, 17, 31) * (this.region.id === "maxwell" ? 1.9 : 1.25);
+        dummy.position.set(x, y + scale * 0.10, z);
+        dummy.rotation.set(hash2(i, 2, 37) * 0.8, hash2(i, 3, 41) * Math.PI * 2, hash2(i, 5, 43) * 0.5);
+        dummy.scale.set(scale * (0.75 + hash2(i, 19, 47) * 0.45), scale * (0.55 + hash2(i, 23, 53) * 0.50), scale);
+        dummy.updateMatrix();
+        mesh.setMatrixAt(written, dummy.matrix);
+        written += 1;
       }
-
-      const finalize = (mesh, count) => {
-        mesh.count = count;
-        mesh.instanceMatrix.needsUpdate = true;
-        if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-        mesh.computeBoundingSphere?.();
-      };
-      finalize(rocks, placedRocks);
-      finalize(plates, placedPlates);
-      finalize(shards, placedShards);
-
-      const group = new T.Group();
-      group.name = `venus-geology-accents-${this.region.id}`;
-      if (placedRocks) group.add(rocks);
-      if (placedPlates) group.add(plates);
-      if (placedShards) group.add(shards);
-      group.userData.instanceCount = placedRocks + placedPlates + placedShards;
-      return group.children.length ? group : null;
+      mesh.count = written;
+      mesh.instanceMatrix.needsUpdate = true;
+      mesh.frustumCulled = true;
+      this.group.add(mesh);
+      this.props = mesh;
+      this.resources.push(geometry, material);
     }
 
-    createAtmosphericMotes() {
+    createAtmosphericParticles() {
       const T = this.THREE;
-      const count = this.quality.name === "HIGH" ? 56 : this.quality.name === "MEDIUM" ? 40 : 24;
-      if (!count) return null;
-
-      // A single Points draw call gives Venus a faint suspended-atmosphere cue.
-      // Nothing is regenerated per frame; the complete field only drifts as one object.
+      const count = this.quality.name === "LOW" ? 110 : this.quality.name === "HIGH" ? 260 : 180;
       const positions = new Float32Array(count * 3);
-      const colors = new Float32Array(count * 3);
-      const fogColor = new T.Color(this.region.fog);
-      const warmColor = new T.Color(this.region.sun);
-      const color = new T.Color();
-      const seed = this.region.id.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
-      const golden = 2.399963229728653;
       for (let i = 0; i < count; i += 1) {
-        const a = i * golden + hash2(i, 13, seed) * 0.65;
-        const radius = 5 + Math.sqrt(hash2(i, 17, seed + 5)) * (this.region.playRadius * 0.68);
-        const x = Math.cos(a) * radius;
-        const z = Math.sin(a) * radius;
-        const ground = this.heightAt(x, z);
-        const y = ground + 0.45 + hash2(i, 23, seed + 11) * (this.region.id === "maat" ? 6.5 : 5.2);
-        const p = i * 3;
-        positions[p] = x; positions[p + 1] = y; positions[p + 2] = z;
-        color.copy(fogColor).lerp(warmColor, 0.12 + hash2(i, 29, seed) * 0.22).multiplyScalar(0.78 + hash2(i, 31, seed) * 0.20);
-        colors[p] = color.r; colors[p + 1] = color.g; colors[p + 2] = color.b;
+        const angle = hash2(i, 31, 71) * Math.PI * 2;
+        const radius = 20 + Math.sqrt(hash2(i, 37, 73)) * 120;
+        positions[i * 3] = Math.cos(angle) * radius;
+        positions[i * 3 + 1] = 3 + hash2(i, 41, 79) * 21;
+        positions[i * 3 + 2] = Math.sin(angle) * radius;
       }
-
-      const canvas = document.createElement("canvas");
-      canvas.width = canvas.height = 32;
-      const ctx = canvas.getContext("2d");
-      const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
-      gradient.addColorStop(0, "rgba(255,255,255,.86)");
-      gradient.addColorStop(0.28, "rgba(255,255,255,.44)");
-      gradient.addColorStop(1, "rgba(255,255,255,0)");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, 32, 32);
-      const map = new T.CanvasTexture(canvas);
-      map.needsUpdate = true;
-      this.textures.push(map);
-
       const geometry = new T.BufferGeometry();
       geometry.setAttribute("position", new T.BufferAttribute(positions, 3));
-      geometry.setAttribute("color", new T.BufferAttribute(colors, 3));
-      geometry.computeBoundingSphere();
-      const baseOpacity = this.region.id === "maat" ? 0.15 : this.region.id === "alpha" || this.region.id === "aphrodite" ? 0.11 : 0.085;
-      const material = new T.PointsMaterial({
-        map,
-        color: 0xffffff,
-        vertexColors: true,
-        size: this.quality.name === "HIGH" ? 2.0 : 1.65,
-        sizeAttenuation: true,
-        transparent: true,
-        opacity: baseOpacity,
-        alphaTest: 0.015,
-        depthWrite: false,
-        fog: true
-      });
-      const points = new T.Points(geometry, material);
-      points.name = `venus-atmospheric-motes-${this.region.id}`;
-      points.frustumCulled = true;
-      points.renderOrder = 1;
-      points.userData.baseOpacity = baseOpacity;
-      points.userData.seed = seed;
-      this.accentResources.push(geometry, material);
-      return points;
+      const material = new T.PointsMaterial({ color: this.region.sun, size: 0.055, transparent: true, opacity: 0.16, depthWrite: false, fog: true });
+      this.particles = new T.Points(geometry, material);
+      this.particles.name = `venus-atmosphere-particulates-${this.region.id}`;
+      this.group.add(this.particles);
+      this.resources.push(geometry, material);
+    }
+
+    updateVisibility(camera) {
+      if (!camera) return;
+      this.frame += 1;
+      if (this.frame % 12 !== 0) return;
+      const headingX = -Math.sin(camera.rotation.y), headingZ = -Math.cos(camera.rotation.y);
+      for (const entry of this.tiles) {
+        const dx = entry.cx - camera.position.x, dz = entry.cz - camera.position.z;
+        const distance = Math.hypot(dx, dz);
+        const forwardDot = distance > 0.001 ? (dx * headingX + dz * headingZ) / distance : 1;
+        entry.mesh.visible = distance < 170 && (distance < 70 || forwardDot > -0.82);
+      }
     }
 
     updateAmbient(delta) {
-      if (!this.atmosphericMotes) return;
-      this.ambientClock += delta;
-      const t = this.ambientClock;
-      const seed = this.atmosphericMotes.userData.seed || 0;
-      this.atmosphericMotes.position.x = Math.sin(t * 0.055 + seed * 0.01) * 0.38;
-      this.atmosphericMotes.position.z = Math.cos(t * 0.043 + seed * 0.013) * 0.30;
-      this.atmosphericMotes.position.y = Math.sin(t * 0.031 + seed * 0.017) * 0.05;
-      const material = this.atmosphericMotes.material;
-      if (material) material.opacity = this.atmosphericMotes.userData.baseOpacity * (0.94 + Math.sin(t * 0.17) * 0.06);
-    }
-
-    createRegionalVisualization() {
-      if (this.region.id !== "maat") return null;
-      const T = this.THREE;
-      const group = new T.Group();
-      group.name = "maat-illustrative-volcanic-activity";
-
-      const cx = 1.5, cz = -25.7;
-      const rimCount = 11;
-      const positions = [cx, this.heightAt(cx, cz) + 0.018, cz];
-      for (let i = 0; i <= rimCount; i += 1) {
-        const a = i / rimCount * Math.PI * 2;
-        const radius = 0.62 + 0.22 * Math.sin(a * 3 + 0.7) + 0.10 * Math.sin(a * 5);
-        const x = cx + Math.cos(a) * radius * 1.35;
-        const z = cz + Math.sin(a) * radius * 0.82;
-        positions.push(x, this.heightAt(x, z) + 0.022, z);
-      }
-      const patchGeometry = new T.BufferGeometry();
-      patchGeometry.setAttribute("position", new T.Float32BufferAttribute(positions, 3));
-      const indices = [];
-      for (let i = 0; i < rimCount; i += 1) indices.push(0, i + 1, i + 2);
-      patchGeometry.setIndex(indices);
-      patchGeometry.computeVertexNormals();
-      const patchMaterial = new T.MeshBasicMaterial({
-        color: 0xffdf55,
-        transparent: true,
-        opacity: 0.68,
-        depthWrite: false,
-        toneMapped: false,
-        side: T.DoubleSide,
-        blending: T.AdditiveBlending
-      });
-      const patch = new T.Mesh(patchGeometry, patchMaterial);
-      patch.renderOrder = 3;
-      group.add(patch);
-
-      const crackPoints = [];
-      const paths = [
-        [[1.1, -25.2], [2.2, -24.4], [2.8, -23.6], [3.0, -22.8]],
-        [[0.8, -25.8], [0.2, -24.9], [-0.5, -24.2]],
-        [[1.9, -26.0], [2.7, -26.6], [3.4, -27.4]],
-        [[1.3, -25.5], [1.8, -24.8], [1.2, -24.0], [0.7, -23.2]],
-        [[1.5, -25.7], [0.9, -26.4], [0.4, -27.2]]
-      ];
-      paths.forEach(path => {
-        for (let i = 0; i < path.length - 1; i += 1) {
-          const a = path[i], b = path[i + 1];
-          crackPoints.push(a[0], this.heightAt(a[0], a[1]) + 0.028, a[1]);
-          crackPoints.push(b[0], this.heightAt(b[0], b[1]) + 0.028, b[1]);
-        }
-      });
-      const crackGeometry = new T.BufferGeometry();
-      crackGeometry.setAttribute("position", new T.Float32BufferAttribute(crackPoints, 3));
-      const crackMaterial = new T.LineBasicMaterial({
-        color: 0xffb82b,
-        transparent: true,
-        opacity: 0.82,
-        depthWrite: false,
-        toneMapped: false,
-        blending: T.AdditiveBlending
-      });
-      const cracks = new T.LineSegments(crackGeometry, crackMaterial);
-      cracks.renderOrder = 4;
-      group.add(cracks);
-
-      this.accentResources.push(patchGeometry, patchMaterial, crackGeometry, crackMaterial);
-      return group;
-    }
-
-    createMaterial() {
-      const T = this.THREE;
-      const size = this.quality.name === "HIGH" ? 160 : 128;
-      const materialProfiles = {
-        maat:      { repeat: 8.8, normal: 0.54, roughness: 0.88, roughSpread: 40, anisotropy: 0.25 },
-        maxwell:   { repeat: 10.0, normal: 0.60, roughness: 0.95, roughSpread: 32, anisotropy: 0.39 },
-        aphrodite: { repeat: 9.6, normal: 0.59, roughness: 0.92, roughSpread: 36, anisotropy: 0.37 },
-        ishtar:    { repeat: 8.1, normal: 0.45, roughness: 0.93, roughSpread: 32, anisotropy: 0.15 },
-        alpha:     { repeat: 10.2, normal: 0.65, roughness: 0.95, roughSpread: 36, anisotropy: 0.44 }
-      };
-      const profile = materialProfiles[this.region.id] || materialProfiles.maat;
-      const detail = new Float32Array(size * size);
-      const seed = this.region.id.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
-      const TAU = Math.PI * 2;
-
-      // Region-specific micro language. These periodic signals are intentionally
-      // subtle and seamless; they support the reference morphology but never
-      // determine the macro terrain design.
-      const microSignal = (u, v) => {
-        const base = 0.50 * valueNoise(u * 22, v * 22, seed)
-          + 0.28 * valueNoise(u * 54, v * 54, seed + 17)
-          + 0.14 * valueNoise(u * 112, v * 112, seed + 31);
-        if (this.region.id === "maat") {
-          const lineA = Math.sin(TAU * (u * 5 + v * 2 + 0.12 * Math.sin(TAU * v * 2)));
-          const lineB = Math.sin(TAU * (-u * 3 + v * 6 + 0.08 * Math.sin(TAU * u * 3)));
-          return base * 0.78 + (lineA * 0.13 + lineB * 0.09) * profile.anisotropy;
-        }
-        if (this.region.id === "maxwell") {
-          const folds = Math.sin(TAU * (u * 9 + v * 2 + 0.10 * Math.sin(TAU * v * 2)));
-          return base * 0.70 + folds * profile.anisotropy;
-        }
-        if (this.region.id === "aphrodite") {
-          const a = Math.sin(TAU * (u * 7 + v * 5));
-          const b = Math.sin(TAU * (u * 5 - v * 7));
-          return base * 0.68 + (a + b) * 0.5 * profile.anisotropy;
-        }
-        if (this.region.id === "alpha") {
-          const a = Math.sin(TAU * (u * 8 + v * 5));
-          const b = Math.sin(TAU * (-u * 6 + v * 9));
-          return base * 0.64 + (a + b) * 0.5 * profile.anisotropy;
-        }
-        const plateau = Math.sin(TAU * (u * 3 + v * 2));
-        return base * 0.90 + plateau * profile.anisotropy * 0.35;
-      };
-
-      for (let y = 0; y < size; y += 1) {
-        for (let x = 0; x < size; x += 1) {
-          const u = x / size, v = y / size;
-          detail[y * size + x] = clamp(microSignal(u, v), -1, 1);
-        }
-      }
-
-      const albedoCanvas = document.createElement("canvas");
-      const roughCanvas = document.createElement("canvas");
-      const normalCanvas = document.createElement("canvas");
-      albedoCanvas.width = roughCanvas.width = normalCanvas.width = size;
-      albedoCanvas.height = roughCanvas.height = normalCanvas.height = size;
-      const albedoCtx = albedoCanvas.getContext("2d");
-      const roughCtx = roughCanvas.getContext("2d");
-      const normalCtx = normalCanvas.getContext("2d");
-      const albedoImage = albedoCtx.createImageData(size, size);
-      const roughImage = roughCtx.createImageData(size, size);
-      const normalImage = normalCtx.createImageData(size, size);
-      const sample = (x, y) => detail[((y + size) % size) * size + ((x + size) % size)];
-
-      for (let y = 0; y < size; y += 1) {
-        for (let x = 0; x < size; x += 1) {
-          const i = y * size + x;
-          const p = i * 4;
-          const n = detail[i];
-          // Keep albedo essentially neutral so macro region colors come from the
-          // world-space reference masks, not from a generic orange texture.
-          const base = clamp(188 + n * 28, 164, 220);
-          albedoImage.data[p] = Math.round(base);
-          albedoImage.data[p + 1] = Math.round(base);
-          albedoImage.data[p + 2] = Math.round(base);
-          albedoImage.data[p + 3] = 255;
-
-          const rough = Math.round(clamp(profile.roughness * 255 + (0.5 - n) * profile.roughSpread, 150, 250));
-          roughImage.data[p] = rough;
-          roughImage.data[p + 1] = rough;
-          roughImage.data[p + 2] = rough;
-          roughImage.data[p + 3] = 255;
-
-          const dx = sample(x + 1, y) - sample(x - 1, y);
-          const dy = sample(x, y + 1) - sample(x, y - 1);
-          const nx = -dx * 1.85, ny = -dy * 1.85, nz = 1;
-          const inv = 1 / Math.hypot(nx, ny, nz);
-          normalImage.data[p] = Math.round((nx * inv * 0.5 + 0.5) * 255);
-          normalImage.data[p + 1] = Math.round((ny * inv * 0.5 + 0.5) * 255);
-          normalImage.data[p + 2] = Math.round((nz * inv * 0.5 + 0.5) * 255);
-          normalImage.data[p + 3] = 255;
-        }
-      }
-
-      albedoCtx.putImageData(albedoImage, 0, 0);
-      roughCtx.putImageData(roughImage, 0, 0);
-      normalCtx.putImageData(normalImage, 0, 0);
-
-      const makeTexture = canvas => {
-        const texture = new T.CanvasTexture(canvas);
-        texture.wrapS = texture.wrapT = T.RepeatWrapping;
-        texture.repeat.set(profile.repeat, profile.repeat);
-        texture.anisotropy = Math.min(this.quality.anisotropy, this.renderer.capabilities.getMaxAnisotropy());
-        texture.needsUpdate = true;
-        this.textures.push(texture);
-        return texture;
-      };
-
-      const map = makeTexture(albedoCanvas);
-      map.colorSpace = T.SRGBColorSpace;
-      const roughnessMap = makeTexture(roughCanvas);
-      const normalMap = makeTexture(normalCanvas);
-
-      return new T.MeshStandardMaterial({
-        color: 0xffffff,
-        vertexColors: true,
-        map,
-        roughnessMap,
-        normalMap,
-        normalScale: new T.Vector2(profile.normal, profile.normal),
-        roughness: profile.roughness,
-        metalness: 0,
-        fog: true,
-        dithering: true
-      });
-    }
-
-    updateVisibility(camera, delta) {
-      this.visibilityClock += delta;
-      if (this.visibilityClock < 0.075) return;
-      this.visibilityClock = 0;
-      camera.updateMatrixWorld();
-      this.projection.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
-      this.frustum.setFromProjectionMatrix(this.projection);
-      camera.getWorldDirection(this.cameraDirection).normalize();
-      let visible = 0, buffered = 0, culled = 0;
-      for (const entry of this.tiles) {
-        const mesh = entry.mesh;
-        const sphere = mesh.geometry.boundingSphere;
-        if (!sphere) { mesh.visible = true; visible += 1; continue; }
-        const center = this.tileVector.set(entry.cx, 0, entry.cz);
-        const dx = entry.cx - camera.position.x;
-        const dz = entry.cz - camera.position.z;
-        const distance = Math.hypot(dx, dz);
-        const inv = distance > 0.001 ? 1 / distance : 0;
-        const facing = (dx * this.cameraDirection.x + dz * this.cameraDirection.z) * inv;
-        const inFrustum = this.frustum.intersectsObject(mesh);
-        const safety = !inFrustum && distance < 34 && facing > -0.55;
-        const keep = inFrustum || safety || distance < 22;
-        mesh.visible = keep;
-        if (inFrustum || distance < 22) visible += 1;
-        else if (safety) buffered += 1;
-        else culled += 1;
-      }
-      this.visibilityStats = { visible, buffered, culled, total: this.tiles.length };
-    }
-
-    geoFromWorld(x, z) {
-      const latitude = this.region.latitude - z / KM_PER_DEG_LAT;
-      const cos = Math.max(0.16, Math.cos(this.region.latitude * DEG));
-      const longitudeEast = this.region.longitudeEast + x / (KM_PER_DEG_LAT * cos);
-      return { latitude, longitudeEast };
+      if (this.particles) this.particles.rotation.y += delta * 0.008;
     }
 
     dispose() {
       this.scene.remove(this.group);
       for (const entry of this.tiles) entry.mesh.geometry.dispose();
       this.tiles.length = 0;
-      this.horizon?.geometry?.dispose();
-      this.distantTerrain?.geometry?.dispose();
-      for (const resource of this.accentResources) resource?.dispose?.();
-      this.accentResources.length = 0;
-      this.material?.dispose();
-      this.horizonMaterial?.dispose();
-      this.distantMaterial?.dispose();
-      this.distantMaterial = null;
-      this.distantTerrain = null;
-      for (const texture of this.textures) texture.dispose();
-      this.textures.length = 0;
+      this.background?.geometry?.dispose?.();
+      this.radar.dispose();
+      this.topography.clear();
+      const seen = new Set();
+      for (const resource of this.resources) {
+        if (!resource || seen.has(resource)) continue;
+        seen.add(resource);
+        resource.dispose?.();
+      }
+      this.resources.length = 0;
       this.group.clear();
+      this.background = null;
+      this.props = null;
+      this.particles = null;
+      this.material = null;
+      this.backgroundMaterial = null;
     }
   }
 
@@ -1735,12 +1148,12 @@
       const memory = navigator.deviceMemory || 4;
       const coarse = window.matchMedia("(pointer: coarse)").matches;
       if (coarse || width <= 760 || cores <= 4 || memory <= 3) {
-        return { name: "LOW", tileSize: 24, nearSegments: 26, midSegments: 16, farSegments: 10, horizonSegments: 56, maxDpr: 1.25, minDpr: 0.88, supersample: 1, pixelBudget: 2400000, anisotropy: 4, accentCount: 8 };
+        return { name: "LOW", tileSize: 28, nearSegments: 72, midSegments: 44, farSegments: 24, maxDpr: 1.25, minDpr: 0.88, supersample: 1, pixelBudget: 2600000, anisotropy: 4, accentCount: 8 };
       }
       if (cores >= 8 && memory >= 6) {
-        return { name: "HIGH", tileSize: 24, nearSegments: 52, midSegments: 32, farSegments: 18, horizonSegments: 80, maxDpr: 1.65, minDpr: 0.95, supersample: 1.10, pixelBudget: 5200000, anisotropy: 8, accentCount: 18 };
+        return { name: "HIGH", tileSize: 24, nearSegments: 176, midSegments: 104, farSegments: 48, maxDpr: 1.85, minDpr: 0.95, supersample: 1.18, pixelBudget: 6800000, anisotropy: 12, accentCount: 18 };
       }
-      return { name: "MEDIUM", tileSize: 24, nearSegments: 38, midSegments: 24, farSegments: 14, horizonSegments: 72, maxDpr: 1.45, minDpr: 0.92, supersample: 1.05, pixelBudget: 4200000, anisotropy: 6, accentCount: 12 };
+      return { name: "MEDIUM", tileSize: 26, nearSegments: 112, midSegments: 68, farSegments: 34, maxDpr: 1.55, minDpr: 0.92, supersample: 1.08, pixelBudget: 4700000, anisotropy: 8, accentCount: 12 };
     }
 
     calculateIdealDpr() {
@@ -1855,9 +1268,9 @@
         if (token !== this.transitionToken) return;
         this.disposeRegion();
         this.applyRegionEnvironment(region);
-        this.setLoading(0.10, `MEMBANGUN ${region.category}`);
+        this.setLoading(0.10, `MEMUAT MAGELLAN GTDR · ${region.category}`);
         this.regionWorld = new VenusRegionWorld(this.THREE, this.scene, this.renderer, region, this.quality);
-        await this.regionWorld.build(progress => this.setLoading(0.10 + progress * 0.76, `MEMBANGUN REGION · ${Math.round(progress * 100)}%`));
+        await this.regionWorld.build(progress => this.setLoading(0.10 + progress * 0.76, `MEMBANGUN TERRAIN GTDR · ${Math.round(progress * 100)}%`));
         if (token !== this.transitionToken) return;
         this.setCameraForRegion(region, switching ? 12 : 24);
         this.updateRegionUI();
@@ -1897,7 +1310,7 @@
         this.renderer.setClearColor(0x7b4a38, 1);
         this.viewport.replaceChildren(canvas);
         this.scene = new T.Scene();
-        this.camera = new T.PerspectiveCamera(this.mobileFov(), 1, 0.05, 220);
+        this.camera = new T.PerspectiveCamera(this.mobileFov(), 1, 0.05, 420);
         this.camera.rotation.order = "YXZ";
         this.hemiLight = new T.HemisphereLight(0xe8b889, 0x2d1a18, 1.0);
         this.sunLight = new T.DirectionalLight(0xffd0a0, 2.45);
@@ -2147,7 +1560,7 @@
       const finalRadius = Math.hypot(nextX, nextZ);
       const boundaryVisible = finalRadius > this.region.softBoundaryStart - 4;
       this.boundaryHint.classList.toggle("is-visible", boundaryVisible);
-      if (boundaryVisible) this.boundaryHint.textContent = finalRadius > this.region.playRadius - 1 ? "BATAS EKSPLORASI · REGION TERKURASI" : "MENDEKATI BATAS EKSPLORASI";
+      if (boundaryVisible) this.boundaryHint.textContent = finalRadius > this.region.playRadius - 1 ? "BATAS GERAK · TERRAIN VISUAL BERLANJUT" : "MENDEKATI BATAS GERAK";
     }
 
     updateHUD() {
@@ -2166,7 +1579,10 @@
       const featureDistance = Math.hypot(this.camera.position.x - feature.x, this.camera.position.z - feature.z);
       this.hudDistance.textContent = `${featureDistance.toFixed(featureDistance < 10 ? 1 : 0)} KM`;
       this.hudRegionType.textContent = this.region.category;
-      this.hudData.textContent = "NASA/JPL MAGELLAN · CURATED REGION";
+      {
+        const topo = this.regionWorld?.topography?.sourceLabel || "MAGELLAN GTDR";
+        this.hudData.textContent = this.regionWorld?.radar?.texture ? `${topo} + SAR` : `${topo} · SAR TIDAK TERMUAT`;
+      }
     }
 
     updateRegionUI() {
@@ -2175,7 +1591,10 @@
       this.hudCoordinates.textContent = formatCoordinate(region.latitude, region.longitudeEast);
       this.hudDistance.textContent = "--";
       this.hudRegionType.textContent = region.category;
-      this.hudData.textContent = "NASA/JPL MAGELLAN · CURATED REGION";
+      {
+        const topo = this.regionWorld?.topography?.sourceLabel || "MAGELLAN GTDR";
+        this.hudData.textContent = this.regionWorld?.radar?.texture ? `${topo} + SAR` : `${topo} · SAR TIDAK TERMUAT`;
+      }
       this.infoName.textContent = region.name;
       this.infoType.textContent = `${region.category} · ${region.descriptor}`;
       this.infoCoords.textContent = formatCoordinate(region.latitude, region.longitudeEast);
@@ -2184,7 +1603,7 @@
       this.infoMedia.setAttribute("aria-label", `Perbesar citra referensi Magellan untuk ${region.name}`);
       this.infoDescription.textContent = region.description;
       this.infoFacts.replaceChildren(...region.facts.map(fact => { const li = document.createElement("li"); li.textContent = fact; return li; }));
-      this.infoBadge.textContent = `REFERENCE-DRIVEN MORPHOLOGY · ${region.category} · STATIC BOUNDED REGION`;
+      this.infoBadge.textContent = `${this.regionWorld?.topography?.sourceLabel || "MAGELLAN GTDR"} · ${region.category} · VISUAL WORLD BERLANJUT`;
       this.infoVisualizationNote.hidden = !region.visualizationNote;
       this.infoVisualizationNote.textContent = region.visualizationNote || "";
       this.infoSource.href = region.source;

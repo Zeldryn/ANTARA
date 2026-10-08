@@ -1,61 +1,62 @@
 # ANTARA Venus Full Exploration
 
-Venus Full Exploration is now a Venus-specific implementation of the **Mars Full Exploration framework**. The rejected custom Venus world renderer is not used underneath this system.
+## Current architecture
 
-## Architecture
+Venus Full Exploration has been rebuilt around the engineering principles used by Mars while keeping a Venus-specific renderer and geology. The old named synthetic macro-height functions are not part of the active renderer.
 
-The surface experience follows Mars for:
+Only one Venus destination is loaded at a time. The player's collision radius stays limited for performance, but the rendered scientific terrain extends hundreds of kilometers farther through a lower-detail visual world.
 
-- one-degree geographic terrain chunks
-- camera-centered active terrain radius
-- mandatory near-ring loading and asynchronous outer-ring streaming
-- distance geometry LOD
-- explicit frustum + camera-direction culling
-- near-rear safety buffer for fast turns
-- geometry/material reuse and bounded caches
-- delta-time camera-relative movement
-- Pointer Lock lifecycle
-- HUD, top actions, location menu, fullscreen, mobile controls
-- entry, location travel, exit, cleanup and re-entry state flow
+## Elevation hierarchy
 
-There is one surface render loop and one active chunk manager.
+The active height source is selected in this order:
 
-## No fixed square world
+1. Local regional Float32 crops generated from **USGS Venus Magellan Global Topography 4641m v02**.
+2. NASA PDS `topogrd.img`, a real 360 x 180 one-degree Magellan/Pioneer topography grid, used only as a coarse scientific fallback.
+3. Remote PDS copies of the same one-degree product if the local fallback is absent.
+4. If no legitimate elevation source can be loaded, Venus Full Exploration shows an error instead of substituting fake macro terrain.
 
-There is no single Full Exploration `PlaneGeometry`. Each visible region is assembled from streamed geographic chunks around the current player tile. Moving into another tile streams the new ring while the previous safety ring remains until replacement chunks are ready.
+The preferred regional files are produced by `tools/prepare_venus_magellan_data.py`. The browser never needs to load the full 65 MB USGS GeoTIFF.
 
-The terrain function is evaluated in shared geographic/world coordinates. Adjacent chunks therefore share the same border heights and geological structures. Surface normals are also derived from a world-coordinate gradient so lighting does not reset at chunk borders.
+## Procedural detail rule
 
-Venus' dense atmosphere provides the far-horizon attenuation layer. On HIGH quality the Mars-style radius-3 ring covers roughly 740 km across on Venus; the far boundary is attenuated into the atmospheric clear/fog color rather than exposing a black or rectangular void.
+`heightAt()` is always:
 
-## Scientific terrain pipeline
+`scientific macro elevation + controlled sub-resolution detail`
 
-Macro relief:
+Procedural detail is low-amplitude and region-specific. It is used for surface breakup, fractured volcanic crust, ridge texture, tessera-style fine structure and other detail below the source DEM resolution. It does not create the primary mountain, plateau or basin shape.
 
-`Magellan GTDR / NASA PDS -> geographic one-degree chunks`
+The same `heightAt()` function drives rendered vertices, slope calculations, props and player ground collision.
 
-If the remote GTDR frame cannot be reached, the HUD explicitly reports a science-informed fallback rather than presenting procedural relief as measured data.
+## Terrain hierarchy
 
-Regional detail:
+### High-detail playable terrain
 
-`Magellan macro relief + region-specific structural model + micro material detail`
+A quality-dependent grid of dense chunks surrounds the destination. Near chunks have the highest tessellation, middle chunks are reduced, and outer chunks are cheaper. Chunk edge coordinates are evaluated from the same world-space height function, preventing independent per-tile terrain shapes.
 
-The structural model is deterministic in geographic coordinates and is subordinate to measured macro relief. It exists to communicate morphology below GTDR's roughly 4.6 km/pixel sampling scale.
+### Non-playable visual world
 
-Radar/material context:
+A much larger low-detail terrain mesh uses the same scientific provider and the same geographic transform. It extends beyond the collision radius and fades through Venus atmospheric extinction. The player is stopped by movement logic, not by a visible wall or terrain edge.
 
-`NASA/JPL Magellan radar-derived surface context -> streamed per-chunk albedo -> Venus material profile`
+### Atmosphere
 
-## Five rebuilt regions
+Venus uses dense, warm atmospheric fog and diffuse lighting. Fog is applied after terrain generation and is not used as a substitute for missing geometry.
 
-- **Maat Mons**: broad volcanic edifice, fractured plains and long flow-like structures.
-- **Maxwell Montes**: directional mountain belt, organized ridges and valleys, with smoother Lakshmi context.
-- **Aphrodite Terra**: broad highland field with older ridge/valley fabric cut by younger extensional fractures and lava-filled lows.
-- **Ishtar Terra**: elevated plateau context with smoother interior sectors and rugged mountain/deformation margins.
-- **Alpha Regio**: tessera terrain with multiple crossing ridge families, troughs, fault-valley structure, irregular blocks and smoother volcanic lows.
+## Material system
 
-These are regions that continue through surrounding chunks, not isolated features placed in the middle of empty terrain.
+The terrain uses world-space procedural roughness variation, vertex-color geology response and optional Magellan SAR imagery. Local SAR crops are preferred. A USGS Magellan WMS request is only a runtime fallback.
 
-## Educational card
+Radar imagery affects surface/material appearance only. Radar brightness is never converted to elevation.
 
-The location card uses the same Mars landmark-card slot in the exploration HUD. It retains the Venus educational content, radar image, coordinate source, science reference and Magellan topography source without introducing a second Venus-specific top-control system.
+## Performance
+
+The rebuild keeps three quality profiles. Quality changes affect near/mid/far terrain density, DPR, anisotropy, prop count and visual-world resolution. Expensive geological props are instanced. Visibility checks run periodically rather than rebuilding static geometry every frame. Assets, geometry, textures, event listeners and animation state are explicitly disposed on exit or region switch.
+
+## Data preparation
+
+Generate local competition assets with:
+
+```bash
+python tools/prepare_venus_magellan_data.py
+```
+
+See `assets/venus-data/README.md` for exact data products and file formats.
