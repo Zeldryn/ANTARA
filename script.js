@@ -1626,7 +1626,7 @@ document.addEventListener("click", event => {
   sound.uiClick();
 }, true);
 
-for (const button of [launchButton, earth.nextButton, earthPreviousButton, venusPreviousButton, venusNextButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, marsNextButton, mars.exploreButton, mars.fullExploration?.entryButton, asteroidPreviousButton, asteroidNextButton, asteroid.exploreButton, jupiterPreviousButton, jupiterNextButton, jupiter.exploreButton, saturnPreviousButton, saturnNextButton, saturn.exploreButton, uranusPreviousButton, uranusNextButton, uranus.exploreButton, neptunePreviousButton, neptune.exploreButton, audioToggle].filter(Boolean)) {
+for (const button of [launchButton, earth.nextButton, earthPreviousButton, earthFull.entryButton, venusPreviousButton, venusNextButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, marsNextButton, mars.exploreButton, mars.fullExploration?.entryButton, asteroidPreviousButton, asteroidNextButton, asteroid.exploreButton, jupiterPreviousButton, jupiterNextButton, jupiter.exploreButton, saturnPreviousButton, saturnNextButton, saturn.exploreButton, uranusPreviousButton, uranusNextButton, uranus.exploreButton, neptunePreviousButton, neptune.exploreButton, audioToggle].filter(Boolean)) {
   button.addEventListener("pointerenter", event => { if (event.pointerType === "mouse") sound.hover(); });
   button.addEventListener("focus", () => sound.hover());
 }

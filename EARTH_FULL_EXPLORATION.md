@@ -33,13 +33,13 @@ Mosaik sumber Terrarium menggabungkan dataset terbuka menurut cakupan, termasuk 
 
 ## Pipeline runtime
 
-1. User membuka info Bumi dan memilih `Eksplorasi Pengalaman Penuh`.
-2. Region selector tampil di atas konteks globe.
+1. Dari panorama Bumi, user memilih `Eksplorasi Pengalaman Penuh` sebagai CTA terpisah tepat di bawah `Jelajahi Bumi`, mengikuti hierarchy panorama Mars.
+2. CTA tersebut langsung memulai Full Exploration pada region aktif/default tanpa harus membuka mode informasi Bumi terlebih dahulu.
 3. Globe menghadap koordinat region menggunakan pose system Earth yang sudah ada.
 4. Renderer lokal disiapkan tanpa memuat semua region sekaligus.
 5. 3×3 core tile real dimuat lebih dulu.
 6. Setelah core siap, terrain lokal mengambil alih visual dan kontrol aktif.
-7. Ring luar dimuat lazy untuk safety buffer.
+7. Ring luar dimuat lazy untuk safety buffer. Region selector tetap tersedia melalui `Ganti Wilayah` setelah Full Exploration aktif.
 8. Saat user kembali ke selector/keluar, terrain, texture, provider cache, dan renderer lokal dibersihkan.
 
 ## Rendering dan performa

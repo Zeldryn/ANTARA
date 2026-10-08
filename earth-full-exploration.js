@@ -692,14 +692,14 @@
     }
 
     bindUI() {
-      this.entryButton.addEventListener("click", () => this.openSelector());
+      this.entryButton.addEventListener("click", () => this.enter());
       this.selectorGrid.addEventListener("click", event => {
         const button = event.target.closest("[data-earth-region]");
         if (!button) return;
         const region = REGIONS.find(item => item.id === button.dataset.earthRegion);
         if (region) this.enterRegion(region);
       });
-      this.selectorClose.addEventListener("click", () => this.closeSelector());
+      this.selectorClose.addEventListener("click", () => this.exit());
       this.exitButton.addEventListener("click", () => this.exit());
       this.regionButton.addEventListener("click", () => this.returnToSelector());
       this.fullscreenButton.addEventListener("click", () => this.toggleFullscreen());
@@ -713,32 +713,17 @@
       });
     }
 
-    openSelector() {
+    enter() {
       if (!this.earth.active || this.earth.travelMode || this.state !== STATES.IDLE) return;
-      this.state = STATES.SELECTING;
+      this.entryButton.disabled = true;
       this.root.hidden = false;
       this.root.inert = false;
       this.root.setAttribute("aria-hidden", "false");
-      this.root.className = "earth-full-exploration is-selecting";
-      this.selector.hidden = false;
+      this.selector.hidden = true;
       this.errorPanel.hidden = true;
       this.loading.hidden = true;
-      this.earth.beginFullExplorationFocus?.(null);
-      document.getElementById("mission").classList.add("is-earth-full-selecting");
-      document.getElementById("announcement").textContent = "Pilih wilayah nyata untuk Eksplorasi Pengalaman Penuh Bumi.";
-      requestAnimationFrame(() => this.selector.querySelector("button")?.focus({ preventScroll: true }));
-    }
-
-    closeSelector() {
-      if (this.state !== STATES.SELECTING) return;
-      this.state = STATES.IDLE;
-      this.root.hidden = true;
-      this.root.inert = true;
-      this.root.setAttribute("aria-hidden", "true");
-      this.root.className = "earth-full-exploration";
-      document.getElementById("mission").classList.remove("is-earth-full-selecting");
-      this.earth.endFullExplorationFocus?.();
-      this.earth.exploreButton?.focus({ preventScroll: true });
+      document.getElementById("announcement").textContent = `Memulai Eksplorasi Pengalaman Penuh Bumi di ${this.region.name}.`;
+      this.enterRegion(this.region);
     }
 
     setLoading(progress, text) {
@@ -748,7 +733,7 @@
     }
 
     async enterRegion(region) {
-      if (![STATES.SELECTING, STATES.ACTIVE].includes(this.state)) return;
+      if (![STATES.IDLE, STATES.SELECTING, STATES.ACTIVE].includes(this.state)) return;
       this.transitionToken += 1;
       const token = this.transitionToken;
       this.stopLoop();
@@ -985,7 +970,7 @@
       this.earth.endFullExplorationFocus?.();
       this.state = STATES.IDLE;
       this.entryButton.disabled = false;
-      this.earth.exploreButton?.focus({ preventScroll: true });
+      this.entryButton.focus({ preventScroll: true });
       document.getElementById("announcement").textContent = "Kembali ke panorama Bumi.";
     }
 

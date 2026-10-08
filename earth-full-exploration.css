@@ -1,8 +1,17 @@
-/* Earth Full Exploration: real DEM / bathymetry terrain, scoped to Earth only. */
-.earth-full-launch-row { display:grid; gap:6px; margin-top:10px; }
-.earth-full-launch-row small { color:#7890a1; font-size:5.6px; letter-spacing:.85px; text-transform:uppercase; text-align:center; }
-.earth-full-explore-button { min-height:36px; padding:0 14px; border:1px solid #8dcfe86b !important; background:#07141dcc !important; color:#c9ecf8 !important; font-size:6.2px; letter-spacing:1.05px; text-transform:uppercase; }
-.earth-full-explore-button:hover { border-color:#a6e1f4aa !important; background:#0d2230e8 !important; color:#effbff !important; }
+/* Earth Full Exploration: real DEM / bathymetry terrain, scoped to Earth only.
+   The panorama entry intentionally reuses Mars' .mars-explore-stack and
+   .mars-full-explore-button geometry so both worlds expose Full Exploration
+   with the same hierarchy and responsive behavior. Only the Earth accent differs. */
+.mars-caption.earth-caption .earth-full-explore-button {
+  border-color:#80b9e266;
+  background:#07141dcc;
+  color:#c9ecf8;
+}
+.mars-caption.earth-caption .earth-full-explore-button:hover:not(:disabled) {
+  border-color:#9ed8f1aa;
+  background:#0d2230e8;
+  color:#effbff;
+}
 
 .earth-scene.is-full-focus .earth-caption { opacity:0 !important; pointer-events:none !important; transition:opacity .35s ease; }
 .earth-scene.is-full-descending .earth-viewport { transform:scale(1.78); filter:saturate(1.06) contrast(1.02); transition:transform 1.35s cubic-bezier(.2,.72,.2,1), filter .8s ease; }
