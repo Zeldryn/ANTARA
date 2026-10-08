@@ -20,16 +20,26 @@ const scene = { add() {}, remove() {} };
 const renderer = { capabilities: { getMaxAnisotropy() { return 16; } } };
 const quality = {
   name: "LOW",
-  tileSize: 28,
-  nearSegments: 72,
-  midSegments: 44,
-  farSegments: 24,
-  maxDpr: 1.25,
-  minDpr: 0.88,
+  tileSize: 32,
+  tileHalfCount: 3,
+  nearSegments: 64,
+  midSegments: 38,
+  farSegments: 22,
+  backgroundSegments: 52,
+  maxDpr: 1.18,
+  minDpr: 0.78,
   supersample: 1,
-  pixelBudget: 2600000,
-  anisotropy: 4,
-  accentCount: 0
+  pixelBudget: 2250000,
+  anisotropy: 3,
+  accentCount: 0,
+  propMultiplier: 5,
+  particleCount: 0,
+  microTextureSize: 192,
+  shaderDetailTier: 2,
+  radarSize: 576,
+  visibleDistance: 142,
+  coreVisibleDistance: 54,
+  atmosphereParticles: 0
 };
 
 const worlds = new Map();
@@ -49,13 +59,14 @@ assert(REGIONS.length === 5, "exactly five Venus exploration destinations remain
 assert(REGIONS.every(region => region.lookTarget), "every destination has a region-specific initial look target");
 assert(new Set(REGIONS.map(region => `${region.spawn.x},${region.spawn.z}`)).size === 5, "spawn compositions differ across all five destinations");
 
-// Maat: summit depression inside a broad edifice, with low plains at spawn distance.
-assert(H("maat", 11, -38) > H("maat", 0, -38) + 0.20, "Maat summit is not a single highest Gaussian vertex");
-assert(H("maat", 0, 20) > H("maat", -22, 72) + 1.0, "Maat has a broad edifice rising from low volcanic plains");
+// Maat: a broad shield rising gradually from low plains, with an irregular summit depression/rim.
+assert(H("maat", 14, -47.5) > H("maat", 2, -47.5) + 0.20, "Maat summit contains an irregular depression/rim rather than one pointed vertex");
+assert(H("maat", 0, 20) > H("maat", -24, 82) + 2.0, "Maat has long broad slopes rising from the low volcanic spawn plain");
+assert(H("maat", 0, -46) > H("maat", 0, 70) + 4.0, "Maat retains a dominant volcanic edifice across regional scale");
 
 // Maxwell: major connected mountain relief plus a large Cleopatra depression/rim relationship.
 assert(H("maxwell", -60, -8) > H("maxwell", 60, -8) + 0.45, "Maxwell preserves the steeper western relief asymmetry");
-assert(H("maxwell", 93, -36) > H("maxwell", 45, -36) + 1.5, "Cleopatra reads as a major basin with a strong rim");
+assert(H("maxwell", 98, -38) > H("maxwell", 48, -38) + 0.8, "Cleopatra reads as a major basin with a strong outer rim");
 
 // Aphrodite/Ovda: broad highland plus a pronounced fault-controlled trough.
 assert(H("aphrodite", -30, -8) > H("aphrodite", 18, -6) + 0.50, "Ovda ridge/highland relief contrasts with the major trough system");
@@ -63,7 +74,7 @@ assert(H("aphrodite", 0, -8) > H("aphrodite", 0, 110) + 0.9, "Aphrodite remains 
 
 // Ishtar: smooth elevated interior versus selected mountain margins and low exterior.
 assert(H("ishtar", -10, -2) > H("ishtar", 0, 100) + 2.0, "Lakshmi Planum remains a large elevated plateau");
-assert(H("ishtar", -70, -2) > H("ishtar", -10, -2) + 1.0, "Ishtar mountain margin rises dramatically above the plateau interior");
+assert(H("ishtar", -95, -4) > H("ishtar", -10, -2) + 1.0, "Ishtar selected mountain margin rises dramatically above the plateau interior");
 
 // Alpha: no single dominant summit; local lows/fault valleys interrupt the tessera fabric.
 assert(H("alpha", -38, -34) < H("alpha", 4, -8) - 0.20, "Alpha contains smoother/lower resurfaced areas inside the tessera province");

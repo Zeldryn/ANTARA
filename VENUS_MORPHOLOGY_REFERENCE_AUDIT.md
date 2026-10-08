@@ -1,154 +1,144 @@
 # ANTARA Venus Destination Morphology Audit
 
-This rework keeps the existing Venus renderer, material, lighting, atmosphere, LOD, streaming, distant-terrain continuation, educational system, and expanded boundary. The change is intentionally limited to destination-scale morphology, spawn composition, and reference transparency.
+This audit describes the current runtime implementation after the reference-fidelity rework. The existing scientific topography provider, radar material system, triplanar surface material, atmospheric rendering, chunk LOD, educational system, and expanded exploration boundaries remain in use.
 
-Scientific topography remains the base elevation source. The region-specific morphology layer is a visualization aid that reinforces large/medium-scale geological signatures when the runtime source is too coarse to show them clearly. It is never presented as measured Magellan elevation. When the local high-resolution GTDR crop is present, the reinforcement weight is reduced substantially.
+The five destinations now have separate high-level morphology systems. Real topography remains the baseline. A destination-specific reference-guided meso layer reinforces large geological signatures that are difficult to read from coarse planetary datasets at first-person scale. The layer is explicitly a visualization aid, not a claim that every generated ridge or lava margin was measured by Magellan altimetry.
 
 ## 1. Maat Mons
 
-Reference currently shown in ANTARA: NASA/JPL PIA00254, “Venus - 3-D Perspective View of Maat Mons”.
+Primary reference: NASA/JPL PIA00254, Venus 3-D Perspective View of Maat Mons.
 
-Reference checklist:
+Reference grammar:
 
-1. Dominant macro landform: one enormous broad shield volcano.
-2. Secondary landforms: long cooled lava-flow units and fractured volcanic plains.
-3. Skyline: broad low-angle edifice, not a sharp cone or mountain chain.
-4. Main structural direction: flows extend away from the edifice across the plains.
-5. Flat vs rugged proportion: large low-relief foreground, dominant volcanic edifice in middle/far distance.
-6. Unique landmark: Maat Mons summit/vent region.
-7. Foreground: fractured plains crossed by long lava-flow morphology.
-8. Middle distance: gradual lower flanks and overlapping flow surfaces.
-9. Horizon: the broad shield body dominates.
+1. One enormous broad shield volcano.
+2. Long volcanic slopes rather than a steep cone.
+3. Low fractured volcanic plains in the foreground.
+4. Long cooled lava-flow morphology crossing the plains.
+5. A recognizable summit region rather than a single pointed vertex.
 
-Implementation:
+Current implementation:
 
-- Dedicated `maatMorphologyAt()` with a non-Gaussian shield profile.
-- Broad summit zone, long low-angle flanks, irregular shallow summit depression/rim.
-- Three long cooled flow corridors with subtle levee-like margins.
-- Low-amplitude fractured plain relief outside the edifice.
-- Spawn moved onto lower plains north of the volcano and camera looks toward the edifice.
-- PIA00254 vertical exaggeration (22.5x) is disclosed in the location card and is not copied literally.
+- `maatMorphologyAt()` builds one broad shield with a roughly 300 km regional footprint in the visualization coordinate system.
+- The lower body uses a smooth zero-slope toe so the edifice grows out of the plain instead of ending in a circular cliff.
+- The summit contains an irregular rim, shallow depression, and overlapping upper surfaces.
+- Multiple long flow corridors and subtle levee-like margins cross the lower plains.
+- Spawn is on the low northern volcanic plain at `x=-24, z=82`, aimed toward the summit area near `x=0, z=-46`.
+- Maat fog density is reduced to `0.0064` so the shield silhouette survives at the intended first-view distance while still retaining dense Venus haze.
+- The 22.5x vertical exaggeration used by PIA00254 is not reproduced.
 
 ## 2. Maxwell Montes
 
-Reference currently shown in ANTARA: NASA/JPL PIA00149, “Venus - Maxwell Montes and Cleopatra Crater”.
+Primary reference: NASA/JPL PIA00149, Maxwell Montes and Cleopatra Crater.
 
-Reference checklist:
+Reference grammar:
 
-1. Dominant macro landform: compressed mountain belt/massif.
-2. Secondary landforms: broad connected ridges, deep valleys, Cleopatra impact basin.
-3. Skyline: long interconnected ridges, not one central volcano.
-4. Main structural direction: long compressional ridge/valley trends.
-5. Flat vs rugged proportion: overwhelmingly rugged mountain terrain.
-6. Unique landmark: Cleopatra double-ring impact basin.
-7. Foreground: valley/ridge terrain inside the mountain system.
-8. Middle distance: merging/splitting folds and strong western relief.
-9. Horizon: continuous mountain belt with asymmetrical flanks.
+1. Long connected mountain system.
+2. Repeated broad ridges and deep valleys.
+3. Directional compressional structure.
+4. Strong west-east relief asymmetry.
+5. Cleopatra as a major impact structure when included in the frame.
 
-Implementation:
+Current implementation:
 
-- Dedicated `maxwellMorphologyAt()`.
-- Six long warped fold/ridge bands on a regional uplift envelope.
-- Western escarpment is steeper; eastern shoulder descends more gradually toward Fortuna logic.
-- Cleopatra is represented as a large double-ring basin close to the documented ~100 km diameter scale, with a channel relationship.
-- Spawn moved into/near the ridge-valley system rather than facing a generic hill.
+- `maxwellMorphologyAt()` creates six long warped compressional ridge bands on a regional uplift.
+- Valleys remain continuous between the ridges rather than becoming isolated noise pits.
+- The western side receives stronger escarpment relief and the eastern side transitions more gradually.
+- Cleopatra is represented at roughly 100 km-class visual diameter using a double-ring basin and surrounding rough terrain.
+- Spawn sits inside the ridge-valley system rather than outside a generic mountain blob.
 
 ## 3. Aphrodite Terra / Ovda Regio
 
-Reference currently shown in ANTARA: NASA/JPL PIA00218, “Venus - Interior of Ovda Regio”.
+Primary reference: NASA/JPL PIA00218, Interior of Ovda Regio.
 
-Reference checklist:
+Reference grammar:
 
-1. Dominant macro landform: broad deformed tectonic highland.
-2. Secondary landforms: irregular domes/blocks, ridge-valley fabric, extension fractures, large troughs.
-3. Skyline: complex highland rather than a single mountain chain.
-4. Main structural direction: underlying NE-SW ridge/valley fabric.
-5. Flat vs rugged proportion: rugged upland with selected smoother lows.
-6. Unique landmark: cross-cutting deformation fabric and large lava-filled valleys.
-7. Foreground: intersecting structures visible immediately.
-8. Middle distance: curved ridge/valley networks broken by later fractures.
-9. Horizon: broad elevated province with no single dominant summit.
+1. Broad tectonic highland.
+2. Older NE-SW ridge and valley fabric.
+3. Younger cross-cutting fracture family.
+4. Large fault-controlled troughs and graben.
+5. Smoother selected lows interpreted as possible volcanic infill.
 
-Implementation:
+Current implementation:
 
-- Dedicated `aphroditeMorphologyAt()`.
-- Broad highland plus irregular tectonic domes.
-- Warped NE-SW ridge/valley fabric at roughly the documented 10-20 km structural spacing.
-- Later cross-cutting fracture family and flat-floored fault-controlled troughs.
-- Major trough width is intentionally on the order of the ~20 km valley described by NASA.
-- Selected lows are smoothed/lowered to read as volcanic infill against deformed upland.
-- Spawn/camera changed to reveal overlapping structures immediately.
+- `aphroditeMorphologyAt()` starts with a broad highland and irregular dome-scale blocks.
+- Six curved and discontinuous older ridge bands replace the previous globally repeating stripe field.
+- Four younger broken fracture corridors cut across the older fabric at a different structural orientation.
+- Two large trough systems dominate selected parts of the province.
+- Small broken lineations fill the spaces between major structures without turning the region into random mountains.
+- Selected lows are reduced and smoothed to strengthen the contrast between deformed upland and possible lava-filled terrain.
 
 ## 4. Ishtar Terra / Lakshmi Planum
 
-Reference currently shown in ANTARA: NASA/JPL/USGS PIA00093, “Perspective View of Ishtar Terra”, derived from Pioneer Venus radar altimetry.
+Primary reference: NASA/JPL/USGS PIA00093, Perspective View of Ishtar Terra.
 
-Reference checklist:
+Reference grammar:
 
-1. Dominant macro landform: large elevated plateau/plain.
-2. Secondary landforms: Akna/Freyja/Maxwell-type mountainous margins appropriate to the reference framing.
-3. Skyline: broad plateau broken by dramatic margin ranges.
-4. Main structural direction: plateau interior versus directional mountain boundaries.
-5. Flat vs rugged proportion: substantial smooth/high interior contrasted with rugged edges.
-6. Unique landmark: Lakshmi Planum plateau-to-mountain relationship.
-7. Foreground: relatively broad plateau surface.
-8. Middle distance: approach to steep deformed boundary terrain.
-9. Horizon: one or more major mountain margins, not mountains everywhere.
+1. Large elevated plateau or plain.
+2. Comparatively smooth, open interior.
+3. Major deformed mountain terrain on selected margins.
+4. Strong plateau-versus-mountain contrast.
+5. No requirement for mountains to cover the entire destination.
 
-Implementation:
+Current implementation:
 
-- Dedicated `ishtarMorphologyAt()`.
-- Superellipse-like elevated plateau interior with subdued undulation.
-- Distinct elongated mountain systems occupy selected margins only.
-- Maxwell-side relief is strongest, with west/northwest margin systems and a more open interior.
-- Spawn placed on/near the plateau and camera composed toward the mountain boundary.
-- The reference’s color-coded altimetry is explicitly treated as data visualization rather than natural surface color.
+- `ishtarMorphologyAt()` uses a rounded, warped plateau footprint rather than a square or rectangular superellipse arena.
+- Lakshmi Planum receives a high, broad interior with very low undulation.
+- Akna-like, Freyja-like, and Maxwell-side relief are confined to selected margins.
+- The eastern exterior drops toward lower complex terrain instead of being enclosed by an equal mountain ring.
+- Spawn is inside the plateau and the initial view points toward the eastern mountain margin so the large-scale contrast is immediately readable.
 
 ## 5. Alpha Regio
 
-Reference currently shown in ANTARA: NASA/JPL PIA00481, “Venus - Three-Dimensional Perspective View of Alpha Region”.
+Primary reference: NASA/JPL PIA00481, Three-Dimensional Perspective View of Alpha Region.
 
-Reference checklist:
+Reference grammar:
 
-1. Dominant macro landform: tessera upland.
-2. Secondary landforms: intersecting ridges, troughs, flat-floored fault valleys, polygonal blocks, local volcanic lows.
-3. Skyline: no single giant landmark; structural texture itself is the identity.
-4. Main structural direction: at least two major intersecting deformation families.
-5. Flat vs rugged proportion: mostly deformed tessera interrupted by smoother local lows.
-6. Unique landmark: cross-hatched/polygonal structural fabric; Eve lies south of the complex terrain in the reference.
-7. Foreground: intersecting lineations visible immediately.
-8. Middle distance: broken/offset tessera blocks and fault valleys.
-9. Horizon: persistent complex deformation rather than one peak or ridge belt.
+1. Tessera terrain rather than ordinary hills.
+2. At least two intersecting structural families.
+3. Troughs and flat-floored fault valleys.
+4. Broken polygonal blocks and complex lineation.
+5. Local smoother lows interrupting the tessera fabric.
 
-Implementation:
+Current implementation:
 
-- Dedicated `alphaMorphologyAt()`.
-- Two independently warped, differently spaced structural families with non-orthogonal trends.
-- Low-frequency masks break/offset the families so the result is not a perfect grid.
-- Broad fault valleys cut through the fabric.
-- Local resurfaced lows interrupt the tessera, plus a subdued broad Eve-related low south of the main ridged terrain.
-- Crossing waves are blended rather than summed into needle-like peaks.
-- Spawn placed inside the tessera field with the initial camera aimed across intersecting structures.
-- PIA00481’s ~23x vertical exaggeration is disclosed and not copied literally.
+- `alphaMorphologyAt()` contains two independently warped structural families with different spacing and direction.
+- Ridge intersections are blended rather than summed, preventing forests of spike-like peaks.
+- Broad fault valleys cut through the tessera fabric.
+- Local resurfaced lows break up the deformed upland.
+- A subdued southern Eve-related low is retained as regional context.
+- Spawn sits within the tessera field and looks across intersecting structures.
 
-## Preservation and runtime rules
+## Scientific-data and visualization weights
 
-- `scientificHeightAt()` remains the measured-data baseline.
-- `heightAt()` combines measured topography, reference-guided morphology, and only then sub-resolution microdetail.
-- High-resolution regional GTDR: morphology reinforcement weight 0.26.
-- Coarse scientific 1-degree fallback: morphology reinforcement weight 0.60.
-- Clearly labelled emergency non-scientific preview: morphology reinforcement weight 1.00.
-- Radar remains a material/surface-context source and is never converted directly into elevation.
-- Existing HIGH/MEDIUM/LOW profiles, near/mid/far terrain, distant world continuation, collision, ground sampling, education, objectives, discoveries, Indonesian UI, and expanded boundaries are preserved.
+`heightAt()` uses this order:
 
-## Internal morphology validation
+1. scientific topography,
+2. reference-guided regional morphology,
+3. sub-resolution microdetail.
 
-The implementation was sampled with the same neutral gray presentation and no material/color differentiation. The five height fields produced visibly different large-scale compositions:
+Current reference-guided morphology weights when a local regional GTDR crop is available:
 
-- Maat: single broad shield and low plains.
-- Maxwell: directional connected ridge belt with a large basin.
-- Aphrodite/Ovda: broad highland with cross-cut structures and troughs.
-- Ishtar/Lakshmi: broad plateau bounded by selected mountain systems.
-- Alpha: broken cross-hatched tessera fabric with fault valleys and local lows.
+- Maat Mons: `0.52`
+- Maxwell Montes: `0.40`
+- Aphrodite / Ovda: `0.36`
+- Ishtar / Lakshmi: `0.38`
+- Alpha Regio: `0.46`
 
-Full browser/WebGL traversal could not be automated in the build environment because Chromium access to local HTTP was blocked by administrator policy. Static source validation, Node syntax checks, and direct sampling of the actual runtime morphology methods were used instead.
+When only the coarse scientific 1-degree fallback is available, the weights rise to `0.78`, `0.70`, `0.68`, `0.68`, and `0.74` respectively because the coarse grid cannot carry enough meso-scale identity at first-person scale.
+
+The clearly labelled emergency non-scientific preview uses weight `1.0`. Radar brightness is never converted directly into elevation.
+
+## Neutral-geometry validation
+
+`tools/verify_venus_morphology.mjs` samples the actual runtime morphology functions with material differences removed. The current validation checks:
+
+- Maat broad shield, low spawn plain, and summit depression/rim.
+- Maxwell west-east asymmetry and large Cleopatra basin/rim relation.
+- Aphrodite highland versus major troughs.
+- Ishtar elevated plateau versus selected mountain margin.
+- Alpha tessera lows and fault-valley interruptions.
+- Cross-region height-field correlation to reject a five-map reskin.
+
+Current highest pair correlation in the neutral height-field audit is below the failure threshold of `0.90`.
+
+Browser/WebGL visual traversal was attempted. The build environment could start Chromium only after disabling its sandbox, but the local test origin was then denied browser storage/access and the full local page could not be exercised reliably. Playwright is also not installed. Therefore the shipped validation does not claim a successful automated browser walkthrough. JavaScript syntax validation and direct execution of the actual morphology methods are used instead.

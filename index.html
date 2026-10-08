@@ -555,6 +555,28 @@
         <div class="venus-haze-vignette" aria-hidden="true"></div>
         <div class="venus-heat-shimmer" aria-hidden="true"></div>
 
+        <section class="venus-quality-panel" id="venus-quality-panel" aria-labelledby="venus-quality-title" hidden>
+          <div class="venus-quality-topline"><span>ANTARA · EKSPLORASI VENUS</span><button id="venus-quality-close" type="button" aria-label="Tutup pengaturan kualitas grafis">×</button></div>
+          <div class="venus-quality-copy">
+            <small>PERSIAPAN EKSPLORASI</small>
+            <h3 id="venus-quality-title">Kualitas Grafis</h3>
+            <p>Pilih kualitas sebelum turun ke permukaan. Bentuk geologi utama tetap dipertahankan pada semua mode, sedangkan detail, resolusi, dan jarak kualitas tinggi disesuaikan untuk menjaga performa.</p>
+          </div>
+          <div class="venus-quality-options" id="venus-quality-options" role="radiogroup" aria-label="Kualitas grafis Venus">
+            <button type="button" class="venus-quality-option" data-venus-quality="LOW" role="radio" aria-checked="false">
+              <span><strong>RENDAH</strong><small>Performa terbaik</small></span><em data-quality-recommendation></em>
+            </button>
+            <button type="button" class="venus-quality-option" data-venus-quality="MEDIUM" role="radio" aria-checked="false">
+              <span><strong>SEDANG</strong><small>Seimbang</small></span><em data-quality-recommendation></em>
+            </button>
+            <button type="button" class="venus-quality-option" data-venus-quality="HIGH" role="radio" aria-checked="false">
+              <span><strong>TINGGI</strong><small>Visual terbaik</small></span><em data-quality-recommendation></em>
+            </button>
+          </div>
+          <div class="venus-quality-summary"><span id="venus-quality-device-note">Rekomendasi ditentukan secara ringan dari kemampuan browser dan layar.</span><strong id="venus-quality-selected-label">SEDANG</strong></div>
+          <button class="venus-quality-start" id="venus-quality-start" type="button">MULAI EKSPLORASI</button>
+        </section>
+
         <section class="venus-region-selector" id="venus-region-selector" aria-labelledby="venus-region-selector-title">
           <div class="venus-region-selector-topline"><span>ANTARA · WILAYAH MAGELLAN VENUS</span><button id="venus-region-selector-close" type="button" aria-label="Tutup pemilih destinasi Venus">×</button></div>
           <h3 id="venus-region-selector-title">Pilih Destinasi Venus</h3>
@@ -578,6 +600,7 @@
             <div class="mars-hud-metric"><small>Kecepatan</small><strong id="venus-hud-speed">0 M/S</strong></div>
             <div class="mars-hud-metric"><small>Jarak ke fitur</small><strong id="venus-hud-distance">--</strong></div>
             <div class="mars-hud-metric"><small>Wilayah</small><strong id="venus-hud-region-type">--</strong></div>
+            <div class="mars-hud-metric"><small>Kualitas</small><strong id="venus-hud-quality">SEDANG</strong></div>
           </div>
           <div class="mars-hud-data" id="venus-hud-data">MAGELLAN GTDR · TOPOGRAFI ILMIAH</div>
         </aside>

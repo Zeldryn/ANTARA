@@ -130,7 +130,7 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
   },
   {
     images: [
-      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00254/PIA00254.jpg?crop=faces%2Cfocalpoint&fit=clip&h=4000&w=5000", alt: "Perspektif tiga dimensi Maat Mons dari radar dan altimetri Magellan", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/venus-3-d-perspective-view-of-maat-mons-2/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Maat Mons · radar + altimetri Magellan", fit: "cover" }
+      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00254/PIA00254.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1440&w=1800", alt: "Perspektif tiga dimensi Maat Mons dari radar dan altimetri Magellan", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/venus-3-d-perspective-view-of-maat-mons-2/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Maat Mons · radar + altimetri Magellan", fit: "cover" }
     ],
     title: "Maat Mons", kicker: "GUNUNG API VENUS", subtitle: "Gunung api besar dengan bukti perubahan lubang vulkanik pada data Magellan",
     summary: "Maat Mons adalah gunung api besar di Atla Regio. Analisis ulang dua citra radar Magellan dari 1991 menemukan perubahan bentuk lubang vulkanik yang ditafsirkan sebagai bukti langsung aktivitas vulkanik pada Venus.",
@@ -140,8 +140,8 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
   },
   {
     images: [
-      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00241/PIA00241.jpg?crop=faces%2Cfocalpoint&fit=clip&h=4603&w=3663", alt: "Citra radar Magellan memperlihatkan Lakshmi Planum dan Maxwell Montes", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/venus-lakshmi-planum-and-maxwell-montes/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Maxwell Montes · radar Magellan", fit: "cover" },
-      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00149/PIA00149.jpg?crop=faces%2Cfocalpoint&fit=clip&h=4600&w=5120", alt: "Citra radar Maxwell Montes dan Cleopatra", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Maxwell Montes dan Cleopatra · radar", fit: "cover" }
+      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00241/PIA00241.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1280", alt: "Citra radar Magellan memperlihatkan Lakshmi Planum dan Maxwell Montes", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/venus-lakshmi-planum-and-maxwell-montes/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Maxwell Montes · radar Magellan", fit: "cover" },
+      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00149/PIA00149.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1440&w=1600", alt: "Citra radar Maxwell Montes dan Cleopatra", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Maxwell Montes dan Cleopatra · radar", fit: "cover" }
     ],
     title: "Maxwell Montes", kicker: "REKOR & EKSTREM", subtitle: "Pegunungan tertinggi yang dikenal di Venus",
     summary: "Maxwell Montes berdiri di wilayah dataran tinggi utara dekat Ishtar Terra. Radar Magellan memperlihatkan relief dan struktur kompleks yang membantu ilmuwan menafsirkan deformasi kerak Venus.",
@@ -151,7 +151,7 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
   },
   {
     images: [
-      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00147/PIA00147.jpg?crop=faces%2Cfocalpoint&fit=clip&h=3200&w=3200", alt: "Citra radar Magellan Alpha Regio memperlihatkan medan berpotongan yang kompleks", credit: "NASA/JPL", source: "https://science.nasa.gov/photojournal/venus-false-color-image-of-alpha-regio/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Alpha Regio · radar Magellan, warna simulasi", fit: "cover" }
+      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00147/PIA00147.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1440&w=1440", alt: "Citra radar Magellan Alpha Regio memperlihatkan medan berpotongan yang kompleks", credit: "NASA/JPL", source: "https://science.nasa.gov/photojournal/venus-false-color-image-of-alpha-regio/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Alpha Regio · radar Magellan, warna simulasi", fit: "cover" }
     ],
     title: "Medan Tessera", kicker: "ALPHA REGIO", subtitle: "Punggungan, rekahan, dan lembah patahan saling berpotongan",
     summary: "Tesserae adalah salah satu medan paling kompleks di Venus. Alpha Regio memperlihatkan jaringan punggungan, palung, dan struktur patahan yang saling memotong, mencatat sejarah deformasi permukaan yang panjang.",
@@ -160,7 +160,7 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
     location: { label: "Alpha Regio", latitude: -25.50, longitudeEast: 0.30, source: "https://planetarynames.wr.usgs.gov/Feature/203" }, shift: { x: 0.006, y: 0.004 }
   },
   {
-    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00148/PIA00148.jpg?crop=faces%2Cfocalpoint&fit=clip&h=3200&w=3200", alt: "Citra radar Magellan Kawah Mead di Venus", credit: "NASA/JPL", source: "https://science.nasa.gov/photojournal/venus-mead-crater/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Mead · kawah tumbukan pada radar Magellan", fit: "cover" }],
+    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00148/PIA00148.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1440&w=1440", alt: "Citra radar Magellan Kawah Mead di Venus", credit: "NASA/JPL", source: "https://science.nasa.gov/photojournal/venus-mead-crater/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Mead · kawah tumbukan pada radar Magellan", fit: "cover" }],
     title: "Kawah dan Permukaan Venus", kicker: "KAWAH MEAD", subtitle: "Kawah membantu membaca umur relatif dan proses pembaruan permukaan",
     summary: "Venus memiliki kawah tumbukan, tetapi permukaannya tidak dipenuhi kawah seperti Bulan. Mead adalah kawah besar yang terpetakan Magellan; distribusi kawah secara global menjadi salah satu petunjuk untuk menilai sejarah pembaruan permukaan Venus.",
     facts: ["Mead berdiameter sekitar 275 km dalam deskripsi NASA Magellan.", "Pusatnya sekitar 12,5° LU dan 57,4° BT.", "Interpretasi pembaruan permukaan Venus tetap kompleks: proses vulkanik dan tektonik tidak harus terjadi sebagai satu peristiwa global tunggal."],
