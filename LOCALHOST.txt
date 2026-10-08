@@ -1,0 +1,1 @@
+Salin folder ANTARA ke C:/xampp/htdocs/ANTARA dan aktifkan Apache. Buka http://localhost/ANTARA/ . Dokumen laporan ada di docs/; tools/ berisi alat verifikasi. Source aplikasi serta PHP dan aset tidak diubah. Folder .git tidak disertakan. Jangan mengunggah tools/ atau docs/ jika hanya membutuhkan runtime publik.
