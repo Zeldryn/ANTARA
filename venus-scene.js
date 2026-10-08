@@ -151,12 +151,12 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
   },
   {
     images: [
-      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00147/PIA00147.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1440&w=1440", alt: "Citra radar Magellan Alpha Regio memperlihatkan medan berpotongan yang kompleks", credit: "NASA/JPL", source: "https://science.nasa.gov/photojournal/venus-false-color-image-of-alpha-regio/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Alpha Regio · radar Magellan, warna simulasi", fit: "cover" }
+      { src: "assets/venus-alpha-regio-reference.svg", alt: "Diagram lokal morfologi Alpha Regio berdasarkan deskripsi NASA/JPL PIA00481", credit: "ANTARA · berdasarkan NASA/JPL PIA00481", source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/", license: "Referensi ilmiah NASA/JPL", licenseUrl: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/", caption: "Alpha Regio · diagram tessera berdasarkan PIA00481", fit: "cover" }
     ],
     title: "Medan Tessera", kicker: "ALPHA REGIO", subtitle: "Punggungan, rekahan, dan lembah patahan saling berpotongan",
     summary: "Tesserae adalah salah satu medan paling kompleks di Venus. Alpha Regio memperlihatkan jaringan punggungan, palung, dan struktur patahan yang saling memotong, mencatat sejarah deformasi permukaan yang panjang.",
     facts: ["Pusat Alpha Regio: sekitar 25,5° LS dan 0,3° BT menurut IAU/USGS.", "Citra Magellan menunjukkan pola punggungan dan rekahan yang berpotongan.", "Citra yang digunakan adalah radar dengan warna simulasi, bukan foto cahaya tampak permukaan."],
-    source: "https://science.nasa.gov/photojournal/venus-false-color-image-of-alpha-regio/",
+    source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
     location: { label: "Alpha Regio", latitude: -25.50, longitudeEast: 0.30, source: "https://planetarynames.wr.usgs.gov/Feature/203" }, shift: { x: 0.006, y: 0.004 }
   },
   {

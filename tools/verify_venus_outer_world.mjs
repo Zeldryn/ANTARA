@@ -48,6 +48,6 @@ let maxCorr=-Infinity,pair='';
 const ids=REGIONS.map(r=>r.id);
 for(let i=0;i<ids.length;i++) for(let j=i+1;j<ids.length;j++) { const c=corr(signatures.get(ids[i]),signatures.get(ids[j])); if(c>maxCorr){maxCorr=c;pair=`${ids[i]} vs ${ids[j]}`;} }
 assert(maxCorr < 0.92, `outer worlds remain region-specific rather than one generic ring (max correlation ${maxCorr.toFixed(3)}: ${pair})`);
-assert(quality.continuationFarSegments < quality.backgroundSegments, "far continuation reduces geometry cost relative to the core underlay");
-assert(quality.continuationMidSegments < quality.backgroundSegments, "mid continuation uses cheaper geometry than the core underlay");
+assert(quality.continuationFarSegments < quality.backgroundSegments, "outer continuation reduces geometry cost relative to the detailed core terrain");
+assert(quality.continuationMidSegments < quality.backgroundSegments, "outer continuation remains substantially cheaper than detailed core terrain");
 console.log("Venus outer-world verification complete.");

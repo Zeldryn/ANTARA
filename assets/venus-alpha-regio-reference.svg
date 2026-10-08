@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Diagram morfologi Alpha Regio berdasarkan NASA/JPL PIA00481</title>
+  <desc id="desc">Diagram lokal yang menekankan punggungan, palung, lembah sesar, dan pola tessera yang saling berpotongan di Alpha Regio. Bukan citra NASA asli.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3d1c12"/>
+      <stop offset="0.45" stop-color="#8b4d24"/>
+      <stop offset="1" stop-color="#4a2416"/>
+    </linearGradient>
+    <radialGradient id="upland" cx="50%" cy="45%" r="60%">
+      <stop offset="0" stop-color="#e8b75f" stop-opacity="0.9"/>
+      <stop offset="0.55" stop-color="#b46e32" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#6d391f" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="9"/></filter>
+    <pattern id="grain" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="7" r="1.4" fill="#ffcf7a" opacity="0.12"/>
+      <circle cx="16" cy="14" r="1" fill="#2d140e" opacity="0.22"/>
+      <circle cx="22" cy="4" r="0.8" fill="#ffd990" opacity="0.10"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <ellipse cx="615" cy="455" rx="470" ry="315" fill="url(#upland)" filter="url(#soft)"/>
+  <g fill="none" stroke-linecap="round" opacity="0.78">
+    <g stroke="#efc170" stroke-width="8">
+      <path d="M110 650 C250 560 320 430 470 365 S760 300 1090 190"/>
+      <path d="M80 720 C245 610 355 515 500 455 S810 365 1135 275"/>
+      <path d="M155 790 C285 700 390 620 560 555 S865 475 1100 395"/>
+      <path d="M185 505 C310 455 405 385 510 300 S780 195 1010 130"/>
+      <path d="M255 820 C375 735 480 690 650 625 S920 560 1125 500"/>
+    </g>
+    <g stroke="#4f2718" stroke-width="12" opacity="0.9">
+      <path d="M190 140 C325 245 420 330 505 445 S690 670 915 820"/>
+      <path d="M310 95 C425 225 515 320 595 420 S765 625 1030 760"/>
+      <path d="M55 260 C210 340 315 415 410 530 S610 735 780 850"/>
+      <path d="M460 70 C550 190 655 285 735 390 S900 590 1150 710"/>
+    </g>
+    <g stroke="#ffd287" stroke-width="3" opacity="0.55">
+      <path d="M145 590 C260 525 350 455 430 385 S635 245 845 190"/>
+      <path d="M235 670 C360 595 445 535 555 470 S780 350 1040 320"/>
+      <path d="M280 250 C390 330 480 405 565 505 S735 675 925 785"/>
+      <path d="M520 170 C620 265 690 350 780 465 S945 655 1100 740"/>
+    </g>
+  </g>
+  <g fill="#3a1b12" opacity="0.78">
+    <ellipse cx="230" cy="300" rx="82" ry="45" transform="rotate(-18 230 300)"/>
+    <ellipse cx="930" cy="575" rx="105" ry="57" transform="rotate(16 930 575)"/>
+    <ellipse cx="555" cy="720" rx="72" ry="38" transform="rotate(-9 555 720)"/>
+  </g>
+  <rect width="1200" height="900" fill="url(#grain)"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#fff4d8">
+    <text x="58" y="72" font-size="38" font-weight="700">ALPHA REGIO · TESSERA</text>
+    <text x="58" y="112" font-size="21" opacity="0.9">Diagram morfologi lokal berdasarkan deskripsi NASA/JPL PIA00481</text>
+    <text x="58" y="820" font-size="18" opacity="0.82">Punggungan + palung + lembah sesar saling berpotongan membentuk pola struktural kompleks.</text>
+    <text x="58" y="853" font-size="16" opacity="0.68">Bukan citra NASA asli. Sumber ilmiah: NASA/JPL · Magellan · PIA00481.</text>
+  </g>
+</svg>

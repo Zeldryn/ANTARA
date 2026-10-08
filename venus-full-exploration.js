@@ -39,27 +39,27 @@
   const QUALITY_PROFILES = Object.freeze({
     LOW: Object.freeze({
       name: "LOW", label: "RENDAH", description: "Performa terbaik",
-      tileSize: 10, tileHalfCount: 3, nearSegments: 58, midSegments: 34, farSegments: 20, backgroundSegments: 48,
+      tileSize: 10, tileHalfCount: 3, nearSegments: 56, midSegments: 28, farSegments: 14, backgroundSegments: 48,
       maxDpr: 1.18, minDpr: 0.78, supersample: 1.0, pixelBudget: 2250000, anisotropy: 3,
       accentCount: 6, propMultiplier: 5, particleCount: 82, microTextureSize: 192, shaderDetailTier: 2, radarSize: 576,
       visibleDistance: 54, coreVisibleDistance: 21, atmosphereParticles: 72, worldSpan: 96,
-      continuationMidSegments: 24, continuationFarSegments: 14, continuationMidScale: 0.92, continuationFarScale: 1.46
+      continuationMidSegments: 24, continuationFarSegments: 12, continuationMidScale: 0.92, continuationFarScale: 1.46
     }),
     MEDIUM: Object.freeze({
       name: "MEDIUM", label: "SEDANG", description: "Seimbang",
-      tileSize: 9, tileHalfCount: 4, nearSegments: 86, midSegments: 50, farSegments: 28, backgroundSegments: 68,
+      tileSize: 9, tileHalfCount: 4, nearSegments: 84, midSegments: 42, farSegments: 21, backgroundSegments: 68,
       maxDpr: 1.45, minDpr: 0.86, supersample: 1.05, pixelBudget: 4100000, anisotropy: 7,
       accentCount: 10, propMultiplier: 6, particleCount: 145, microTextureSize: 320, shaderDetailTier: 3, radarSize: 896,
       visibleDistance: 68, coreVisibleDistance: 29, atmosphereParticles: 128, worldSpan: 116,
-      continuationMidSegments: 34, continuationFarSegments: 20, continuationMidScale: 0.94, continuationFarScale: 1.52
+      continuationMidSegments: 32, continuationFarSegments: 16, continuationMidScale: 0.94, continuationFarScale: 1.52
     }),
     HIGH: Object.freeze({
       name: "HIGH", label: "TINGGI", description: "Visual terbaik",
-      tileSize: 8, tileHalfCount: 4, nearSegments: 122, midSegments: 72, farSegments: 36, backgroundSegments: 88,
+      tileSize: 8, tileHalfCount: 4, nearSegments: 120, midSegments: 60, farSegments: 30, backgroundSegments: 88,
       maxDpr: 1.72, minDpr: 0.92, supersample: 1.12, pixelBudget: 5900000, anisotropy: 12,
       accentCount: 15, propMultiplier: 6, particleCount: 220, microTextureSize: 448, shaderDetailTier: 3, radarSize: 1280,
       visibleDistance: 82, coreVisibleDistance: 36, atmosphereParticles: 190, worldSpan: 134,
-      continuationMidSegments: 44, continuationFarSegments: 26, continuationMidScale: 0.96, continuationFarScale: 1.58
+      continuationMidSegments: 40, continuationFarSegments: 20, continuationMidScale: 0.96, continuationFarScale: 1.58
     })
   });
   const copyQualityProfile = name => ({ ...(QUALITY_PROFILES[name] || QUALITY_PROFILES.MEDIUM) });
@@ -504,7 +504,7 @@
       softBoundaryStart: 23,
       source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/203",
-      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00481/PIA00481.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
+      image: "assets/venus-alpha-regio-reference.svg",
       descriptor: "Tessera dengan punggungan, palung, dan lembah sesar yang saling berpotongan.",
       description: "Alpha Regio adalah salah satu contoh paling khas medan tessera Venus. Banyak tren struktur berpotongan membentuk pola kompleks, diselingi bagian rendah yang dapat terisi lava lebih halus.",
       facts: [
@@ -861,6 +861,185 @@
       this.texture = null;
       this.extentKm = region.space?.radarExtentKm || 330;
       this.sourceLabel = "USGS · CITRA RADAR SAR MAGELLAN";
+      this.repairedPixelCount = 0;
+    }
+
+    sanitizeTexture(texture) {
+      const image = texture?.image;
+      const width = Number(image?.naturalWidth || image?.videoWidth || image?.width || 0);
+      const height = Number(image?.naturalHeight || image?.videoHeight || image?.height || 0);
+      if (!image || width < 2 || height < 2 || typeof document === "undefined") return texture;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      if (!context) return texture;
+
+      let imageData;
+      try {
+        context.drawImage(image, 0, 0, width, height);
+        imageData = context.getImageData(0, 0, width, height);
+      } catch (_) {
+        // If the pixel data cannot be inspected, do not trust it as terrain albedo.
+        // An opaque Venus base is safer than accepting an unvalidated image that may
+        // contain transparent/no-data pixels or a server-generated error tile.
+        texture.dispose?.();
+        return null;
+      }
+
+      const data = imageData.data;
+      const pixelCount = width * height;
+      const invalid = new Uint8Array(pixelCount);
+      let missing = 0;
+
+      // First pass: alpha/no-data. Never let transparent pixels expose another terrain layer.
+      for (let i = 0; i < pixelCount; i += 1) {
+        const o = i * 4;
+        if (data[o + 3] < 250) {
+          invalid[i] = 1;
+          missing += 1;
+        }
+      }
+
+      // Some planetary WMS products encode missing edge coverage as a perfectly flat
+      // black/white border color instead of transparency. Detect only a dominant extreme
+      // border plateau, then flood-fill inward from the edge. Real radar-dark terrain is
+      // preserved because it is not treated as no-data unless it is connected to that
+      // uniform outer border.
+      const borderSamples = [];
+      const addBorder = (x, y) => {
+        const o = (y * width + x) * 4;
+        borderSamples.push([data[o], data[o + 1], data[o + 2]]);
+      };
+      for (let x = 0; x < width; x += Math.max(1, Math.floor(width / 128))) {
+        addBorder(x, 0); addBorder(x, height - 1);
+      }
+      for (let y = 0; y < height; y += Math.max(1, Math.floor(height / 128))) {
+        addBorder(0, y); addBorder(width - 1, y);
+      }
+      const bins = new Map();
+      for (const rgb of borderSamples) {
+        const key = `${rgb[0] >> 3},${rgb[1] >> 3},${rgb[2] >> 3}`;
+        bins.set(key, (bins.get(key) || 0) + 1);
+      }
+      let dominant = null, dominantCount = 0;
+      for (const [key, count] of bins) {
+        if (count > dominantCount) { dominant = key; dominantCount = count; }
+      }
+      if (dominant) {
+        const dominance = dominantCount / Math.max(1, borderSamples.length);
+        const [br, bg, bb] = dominant.split(',').map(v => (Number(v) << 3) + 4);
+        const luma = (br + bg + bb) / 3;
+        const extreme = luma < 22 || luma > 233;
+        // Extreme black/white no-data needs only moderate border dominance. A non-extreme
+        // color is repaired only when it overwhelmingly dominates the outer border, which
+        // avoids classifying legitimate dark radar terrain as missing coverage.
+        if ((extreme && dominance > 0.34) || (!extreme && dominance > 0.62)) {
+          const queue = new Int32Array(pixelCount);
+          const seen = new Uint8Array(pixelCount);
+          let head = 0, tail = 0;
+          const enqueueIfMatch = (x, y) => {
+            const idx = y * width + x;
+            if (seen[idx]) return;
+            const o = idx * 4;
+            const dr = data[o] - br, dg = data[o + 1] - bg, db = data[o + 2] - bb;
+            if (dr * dr + dg * dg + db * db <= 14 * 14 * 3) {
+              seen[idx] = 1; queue[tail++] = idx;
+            }
+          };
+          for (let x = 0; x < width; x += 1) { enqueueIfMatch(x, 0); enqueueIfMatch(x, height - 1); }
+          for (let y = 1; y < height - 1; y += 1) { enqueueIfMatch(0, y); enqueueIfMatch(width - 1, y); }
+          while (head < tail) {
+            const idx = queue[head++];
+            if (!invalid[idx]) { invalid[idx] = 1; missing += 1; }
+            const x = idx % width, y = (idx / width) | 0;
+            if (x > 0) enqueueIfMatch(x - 1, y);
+            if (x + 1 < width) enqueueIfMatch(x + 1, y);
+            if (y > 0) enqueueIfMatch(x, y - 1);
+            if (y + 1 < height) enqueueIfMatch(x, y + 1);
+          }
+        }
+      }
+
+      if (missing >= pixelCount * 0.985) {
+        texture.dispose?.();
+        return null;
+      }
+
+      if (missing > 0 && missing < pixelCount) {
+        // Multi-source flood from valid pixels touching a gap. Each missing pixel receives
+        // its nearest valid neighbor first; local averaging then softens the repaired rim.
+        const repairMask = invalid.slice();
+        const queue = new Int32Array(pixelCount);
+        let head = 0, tail = 0;
+        const queued = new Uint8Array(pixelCount);
+        const pushValidBoundary = idx => {
+          if (queued[idx] || invalid[idx]) return;
+          const x = idx % width, y = (idx / width) | 0;
+          const touchesGap = (x > 0 && invalid[idx - 1]) || (x + 1 < width && invalid[idx + 1])
+            || (y > 0 && invalid[idx - width]) || (y + 1 < height && invalid[idx + width]);
+          if (touchesGap) { queued[idx] = 1; queue[tail++] = idx; }
+        };
+        for (let i = 0; i < pixelCount; i += 1) pushValidBoundary(i);
+        const fillNeighbor = (from, to) => {
+          if (to < 0 || to >= pixelCount || !invalid[to]) return;
+          const a = from * 4, b = to * 4;
+          data[b] = data[a]; data[b + 1] = data[a + 1]; data[b + 2] = data[a + 2]; data[b + 3] = 255;
+          invalid[to] = 0;
+          if (!queued[to]) { queued[to] = 1; queue[tail++] = to; }
+        };
+        while (head < tail) {
+          const idx = queue[head++];
+          const x = idx % width, y = (idx / width) | 0;
+          if (x > 0) fillNeighbor(idx, idx - 1);
+          if (x + 1 < width) fillNeighbor(idx, idx + 1);
+          if (y > 0) fillNeighbor(idx, idx - width);
+          if (y + 1 < height) fillNeighbor(idx, idx + width);
+        }
+        for (let pass = 0; pass < 2; pass += 1) {
+          const previous = new Uint8ClampedArray(data);
+          for (let idx = 0; idx < pixelCount; idx += 1) {
+            if (!repairMask[idx]) continue;
+            const x = idx % width, y = (idx / width) | 0;
+            let rr = 0, gg = 0, bb = 0, count = 0;
+            const take = nidx => {
+              if (nidx < 0 || nidx >= pixelCount) return;
+              const o = nidx * 4;
+              rr += previous[o]; gg += previous[o + 1]; bb += previous[o + 2]; count += 1;
+            };
+            if (x > 0) take(idx - 1);
+            if (x + 1 < width) take(idx + 1);
+            if (y > 0) take(idx - width);
+            if (y + 1 < height) take(idx + width);
+            if (count) {
+              const o = idx * 4;
+              data[o] = Math.round(rr / count);
+              data[o + 1] = Math.round(gg / count);
+              data[o + 2] = Math.round(bb / count);
+              data[o + 3] = 255;
+            }
+          }
+        }
+        this.repairedPixelCount = missing;
+      }
+
+      // Surface opacity is always opaque. Radar is surface context, never an alpha mask.
+      for (let i = 3; i < data.length; i += 4) data[i] = 255;
+      context.putImageData(imageData, 0, 0);
+
+      const clean = new this.THREE.CanvasTexture(canvas);
+      clean.name = `venus-radar-sanitized-${this.region.id}`;
+      clean.colorSpace = this.THREE.SRGBColorSpace;
+      clean.wrapS = this.THREE.ClampToEdgeWrapping;
+      clean.wrapT = this.THREE.ClampToEdgeWrapping;
+      clean.minFilter = this.THREE.LinearMipmapLinearFilter;
+      clean.magFilter = this.THREE.LinearFilter;
+      clean.generateMipmaps = true;
+      clean.anisotropy = Math.min(this.quality.anisotropy, 16);
+      clean.needsUpdate = true;
+      texture.dispose?.();
+      return clean;
     }
 
     buildWmsUrl() {
@@ -898,23 +1077,25 @@
         : [`assets/venus-data/radar-${this.region.id}.png`, this.buildWmsUrl()];
       let texture = null;
       for (const url of urls) {
-        texture = await new Promise((resolve, reject) => {
+        let candidate = await new Promise((resolve, reject) => {
           const loader = new this.THREE.TextureLoader();
           loader.setCrossOrigin("anonymous");
           loader.load(url, resolve, undefined, reject);
         }).catch(() => null);
-        if (texture) {
-          this.sourceLabel = /^https?:/i.test(url) ? "USGS · CITRA RADAR SAR MAGELLAN" : "LOCAL · MAGELLAN SAR FMAP";
-          break;
-        }
+        if (!candidate) continue;
+        candidate.colorSpace = this.THREE.SRGBColorSpace;
+        candidate.wrapS = this.THREE.ClampToEdgeWrapping;
+        candidate.wrapT = this.THREE.ClampToEdgeWrapping;
+        candidate.minFilter = this.THREE.LinearMipmapLinearFilter;
+        candidate.magFilter = this.THREE.LinearFilter;
+        candidate.anisotropy = Math.min(this.quality.anisotropy, 16);
+        candidate = this.sanitizeTexture(candidate);
+        if (!candidate) continue;
+        texture = candidate;
+        this.sourceLabel = /^https?:/i.test(url) ? "USGS · CITRA RADAR SAR MAGELLAN" : "LOCAL · MAGELLAN SAR FMAP";
+        break;
       }
       if (!texture) return null;
-      texture.colorSpace = this.THREE.SRGBColorSpace;
-      texture.wrapS = this.THREE.ClampToEdgeWrapping;
-      texture.wrapT = this.THREE.ClampToEdgeWrapping;
-      texture.minFilter = this.THREE.LinearMipmapLinearFilter;
-      texture.magFilter = this.THREE.LinearFilter;
-      texture.anisotropy = Math.min(this.quality.anisotropy, 16);
       this.texture = texture;
       return texture;
     }
@@ -943,6 +1124,8 @@
       this.background = null;
       this.continuationMeshes = [];
       this.continuationMaterial = null;
+      this.midContinuationMaterial = null;
+      this.farContinuationMaterial = null;
       this.props = null;
       this.particles = null;
       this.resources = [];
@@ -959,6 +1142,7 @@
       this.outerScientificBaseline = 0;
       this.tileSize = quality.tileSize || 26;
       this.tileHalfCount = quality.tileHalfCount ?? 4;
+      this.coreHalf = (this.tileHalfCount + 0.5) * this.tileSize;
       this.tmpColor = new THREE.Color();
       this.lowColor = new THREE.Color(region.palette.low);
       this.midColor = new THREE.Color(region.palette.mid);
@@ -1610,6 +1794,21 @@
         + this.microHeightAt(x, z) * detailScale;
     }
 
+    continuationSurfaceHeightAt(x, z, backgroundLevel = 1) {
+      const full = this.heightAt(x, z);
+      const squareRadius = Math.max(Math.abs(x), Math.abs(z));
+      const farDetailT = smootherstep(clamp((squareRadius - this.continuationMidHalf * 0.82)
+        / Math.max(1, this.continuationFarHalf - this.continuationMidHalf * 0.82), 0, 1));
+      const detailScale = lerp(0.11, 0.04, farDetailT);
+      const simplified = this.visualHeightAt(x, z, detailScale);
+      const squareDistance = squareRadius - this.coreHalf;
+      // At the first continuation vertex the height is mathematically identical to the
+      // core terrain. Far-detail reduction is distance based, so mid/far meshes sample
+      // the same height at the same world position and cannot form a ring seam.
+      const t = smootherstep(clamp(squareDistance / 3.2, 0, 1));
+      return lerp(full, simplified, t);
+    }
+
     slopeAt(x, z, epsilon = 0.22) {
       const hL = this.heightAt(x - epsilon, z), hR = this.heightAt(x + epsilon, z);
       const hD = this.heightAt(x, z - epsilon), hU = this.heightAt(x, z + epsilon);
@@ -1627,25 +1826,35 @@
       return target;
     }
 
-    createMaterial(radarTexture, background = false, continuation = false) {
+    createMaterial(radarTexture, background = false, continuation = false, continuationLevel = 0) {
       const T = this.THREE;
       const material = new T.MeshStandardMaterial({
         color: 0xffffff,
         vertexColors: true,
-        map: continuation ? null : (radarTexture || null),
+        map: null,
         bumpMap: this.detailTexture,
         bumpScale: 0.001,
         roughness: background ? 0.98 : this.quality.name === "HIGH" ? 0.885 : this.quality.name === "MEDIUM" ? 0.90 : 0.92,
         metalness: 0.0,
         fog: true,
-        dithering: true
+        dithering: true,
+        transparent: false,
+        opacity: 1.0,
+        alphaTest: 0,
+        depthWrite: true,
+        depthTest: true
       });
-      material.name = continuation ? "venus-province-continuation-material" : background ? "venus-gtdr-background-material" : "venus-gtdr-surface-material";
+      material.name = "venus-unified-surface-material";
       material.onBeforeCompile = shader => {
+        const radarStrength = 0.16;
         shader.uniforms.uVenusMicroDetail = { value: this.detailTexture };
-        shader.uniforms.uVenusAlbedoDetail = { value: background ? 0.055 : this.quality.name === "HIGH" ? 0.20 : this.quality.name === "MEDIUM" ? 0.16 : 0.12 };
-        shader.uniforms.uVenusNormalDetail = { value: background ? 0.7 : this.quality.name === "HIGH" ? 5.1 : this.quality.name === "MEDIUM" ? 3.9 : 2.8 };
-        shader.uniforms.uVenusDetailTier = { value: background ? 1.0 : (this.quality.shaderDetailTier || 2.0) };
+        shader.uniforms.uVenusRadar = { value: radarTexture || this.detailTexture };
+        shader.uniforms.uVenusRadarEnabled = { value: radarTexture ? 1.0 : 0.0 };
+        shader.uniforms.uVenusRadarScale = { value: this.horizontalCompression / (this.radar.extentKm * 2) };
+        shader.uniforms.uVenusRadarStrength = { value: radarStrength };
+        shader.uniforms.uVenusAlbedoDetail = { value: this.quality.name === "HIGH" ? 0.20 : this.quality.name === "MEDIUM" ? 0.16 : 0.12 };
+        shader.uniforms.uVenusNormalDetail = { value: this.quality.name === "HIGH" ? 5.1 : this.quality.name === "MEDIUM" ? 3.9 : 2.8 };
+        shader.uniforms.uVenusDetailTier = { value: this.quality.shaderDetailTier || 2.0 };
         shader.vertexShader = shader.vertexShader
           .replace("#include <common>", "#include <common>\nvarying vec3 vAntaraWorld;")
           .replace("#include <begin_vertex>", "#include <begin_vertex>\nvAntaraWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;");
@@ -1653,6 +1862,10 @@
           .replace("#include <common>", `#include <common>
             varying vec3 vAntaraWorld;
             uniform sampler2D uVenusMicroDetail;
+            uniform sampler2D uVenusRadar;
+            uniform float uVenusRadarEnabled;
+            uniform float uVenusRadarScale;
+            uniform float uVenusRadarStrength;
             uniform float uVenusAlbedoDetail;
             uniform float uVenusNormalDetail;
             uniform float uVenusDetailTier;
@@ -1666,6 +1879,20 @@
               return sx * blend.x + sy * blend.y + sz * blend.z;
             }`)
           .replace("#include <map_fragment>", `#include <map_fragment>
+            // Radar is sampled in shared world/geographic space, never in per-tile UV space.
+            // Its alpha channel is intentionally ignored so no-data pixels can never punch
+            // holes through the Venus surface or reveal a differently colored underlay.
+            vec2 venusRadarUv = vec2(0.5 + vAntaraWorld.x * uVenusRadarScale,
+                                     0.5 - vAntaraWorld.z * uVenusRadarScale);
+            vec2 venusRadarEdge = min(venusRadarUv, vec2(1.0) - venusRadarUv);
+            float venusRadarInside = step(0.0, venusRadarEdge.x) * step(0.0, venusRadarEdge.y);
+            float venusRadarFeather = smoothstep(0.025, 0.095, min(venusRadarEdge.x, venusRadarEdge.y)) * venusRadarInside;
+            vec3 venusRadarRgb = texture2D(uVenusRadar, clamp(venusRadarUv, vec2(0.001), vec2(0.999))).rgb;
+            float venusRadarLum = dot(venusRadarRgb, vec3(0.299, 0.587, 0.114));
+            float venusRadarStructure = clamp((venusRadarLum - 0.5) * 1.10 + 0.5, 0.0, 1.0);
+            float venusRadarMod = mix(0.91, 1.09, venusRadarStructure);
+            diffuseColor.rgb *= mix(1.0, venusRadarMod, uVenusRadarEnabled * uVenusRadarStrength * venusRadarFeather);
+
             vec3 venusDx = dFdx(vAntaraWorld);
             vec3 venusDy = dFdy(vAntaraWorld);
             vec3 venusGeomNormal = normalize(cross(venusDx, venusDy));
@@ -1676,9 +1903,9 @@
             float venusBroad = 0.5;
             float venusFine = 0.5;
             float venusGrit = 0.5;
-            if (uVenusDetailTier > 0.5) venusBroad = venusTriSample(uVenusMicroDetail, vAntaraWorld, venusGeomNormal, 0.16, vec3(0.19, 0.47, 0.71));
-            if (uVenusDetailTier > 1.5) venusFine = venusTriSample(uVenusMicroDetail, vAntaraWorld, venusGeomNormal, 0.78, vec3(0.63, 0.11, 0.39));
-            if (uVenusDetailTier > 2.5) venusGrit = venusTriSample(uVenusMicroDetail, vAntaraWorld, venusGeomNormal, 2.10, vec3(0.31, 0.79, 0.09));
+            if (uVenusDetailTier > 0.5 && venusMidWeight > 0.001) venusBroad = venusTriSample(uVenusMicroDetail, vAntaraWorld, venusGeomNormal, 0.16, vec3(0.19, 0.47, 0.71));
+            if (uVenusDetailTier > 1.5 && venusNearWeight > 0.001) venusFine = venusTriSample(uVenusMicroDetail, vAntaraWorld, venusGeomNormal, 0.78, vec3(0.63, 0.11, 0.39));
+            if (uVenusDetailTier > 2.5 && venusNearWeight > 0.001) venusGrit = venusTriSample(uVenusMicroDetail, vAntaraWorld, venusGeomNormal, 2.10, vec3(0.31, 0.79, 0.09));
             float venusMicro = (venusBroad - 0.5) * 0.50 * venusMidWeight
               + (venusFine - 0.5) * 0.36 * venusNearWeight
               + (venusGrit - 0.5) * 0.14 * venusNearWeight;
@@ -1697,42 +1924,87 @@
             roughnessFactor = clamp(roughnessFactor + (0.5 - venusBroad) * 0.08 + (0.5 - venusGrit) * 0.045 * step(2.5, uVenusDetailTier), 0.72, 1.0);`);
         material.userData.venusShader = shader;
       };
-      material.customProgramCacheKey = () => `antara-venus-gtdr-triplanar-v4-${continuation ? "continuation" : background ? "background" : "surface"}-${this.quality.name}`;
+      material.customProgramCacheKey = () => `antara-venus-unified-material-v7-${this.quality.name}`;
       material.needsUpdate = true;
       return material;
     }
 
-    geometryForRect(xMin, xMax, zMin, zMax, segmentsX, segmentsZ, backgroundLevel = 0) {
+    geometryForRect(xMin, xMax, zMin, zMax, segmentsX, segmentsZ, backgroundLevel = 0, stitch = null) {
       const T = this.THREE;
       const row = segmentsX + 1;
       const rows = segmentsZ + 1;
       const positions = new Float32Array(row * rows * 3);
       const colors = new Float32Array(row * rows * 3);
       const uvs = new Float32Array(row * rows * 2);
+      const normals = new Float32Array(row * rows * 3);
       const indices = new Uint32Array(segmentsX * segmentsZ * 6);
-      let p = 0, c = 0, uv = 0, q = 0;
+      let p = 0, c = 0, uv = 0, n = 0, q = 0;
       const radarExtent = this.radar.extentKm;
       const visual = backgroundLevel > 0;
-      const detailScale = backgroundLevel >= 2 ? 0.04 : backgroundLevel === 1 ? 0.11 : 1.0;
+      const heightFn = visual
+        ? (x, z) => this.continuationSurfaceHeightAt(x, z, backgroundLevel)
+        : (x, z) => this.heightAt(x, z);
+      const normalEpsilon = 0.28;
       for (let iz = 0; iz <= segmentsZ; iz += 1) {
         const z = lerp(zMin, zMax, iz / segmentsZ);
         for (let ix = 0; ix <= segmentsX; ix += 1) {
           const x = lerp(xMin, xMax, ix / segmentsX);
-          const y = visual ? this.visualHeightAt(x, z, detailScale) : this.heightAt(x, z);
-          const slope = visual
-            ? 0.07 + Math.abs(valueNoise(x * 0.025, z * 0.025, 1901)) * 0.08
-            : this.slopeAt(x, z, Math.max(0.18, Math.max((xMax - xMin) / segmentsX, (zMax - zMin) / segmentsZ) * 0.72));
+          let y = heightFn(x, z);
+          if (!visual && stitch) {
+            const stitchVertical = (neighborSegments, index, fixedX) => {
+              if (!neighborSegments || neighborSegments >= segmentsZ || segmentsZ % neighborSegments !== 0) return null;
+              const ratio = segmentsZ / neighborSegments;
+              const coarse = index / ratio;
+              const lo = Math.floor(coarse), hi = Math.min(neighborSegments, lo + 1);
+              const t = coarse - lo;
+              const z0 = lerp(zMin, zMax, lo / neighborSegments);
+              const z1 = lerp(zMin, zMax, hi / neighborSegments);
+              return lerp(heightFn(fixedX, z0), heightFn(fixedX, z1), t);
+            };
+            const stitchHorizontal = (neighborSegments, index, fixedZ) => {
+              if (!neighborSegments || neighborSegments >= segmentsX || segmentsX % neighborSegments !== 0) return null;
+              const ratio = segmentsX / neighborSegments;
+              const coarse = index / ratio;
+              const lo = Math.floor(coarse), hi = Math.min(neighborSegments, lo + 1);
+              const t = coarse - lo;
+              const x0 = lerp(xMin, xMax, lo / neighborSegments);
+              const x1 = lerp(xMin, xMax, hi / neighborSegments);
+              return lerp(heightFn(x0, fixedZ), heightFn(x1, fixedZ), t);
+            };
+            let stitched = null;
+            if (ix === 0) stitched = stitchVertical(stitch.left, iz, xMin);
+            else if (ix === segmentsX) stitched = stitchVertical(stitch.right, iz, xMax);
+            if (iz === 0) { const v = stitchHorizontal(stitch.top, ix, zMin); if (v != null) stitched = stitched == null ? v : (stitched + v) * 0.5; }
+            else if (iz === segmentsZ) { const v = stitchHorizontal(stitch.bottom, ix, zMax); if (v != null) stitched = stitched == null ? v : (stitched + v) * 0.5; }
+            if (stitched != null) y = stitched;
+          }
+          const hL = heightFn(x - normalEpsilon, z);
+          const hR = heightFn(x + normalEpsilon, z);
+          const hD = heightFn(x, z - normalEpsilon);
+          const hU = heightFn(x, z + normalEpsilon);
+          let nx = hL - hR, ny = normalEpsilon * 2, nz = hD - hU;
+          const invLen = 1 / Math.max(1e-6, Math.hypot(nx, ny, nz));
+          nx *= invLen; ny *= invLen; nz *= invLen;
+          const slope = Math.hypot((hR - hL) / (normalEpsilon * 2), (hU - hD) / (normalEpsilon * 2));
           const color = this.colorAt(x, z, y, slope);
           if (visual) {
             const r = Math.hypot(x, z);
             const fadeStart = this.region.playRadius * 1.10;
             const fadeEnd = Math.max(fadeStart + 1, this.continuationFarHalf * 0.96);
-            const farFade = smoothstep((r - fadeStart) / (fadeEnd - fadeStart));
-            const strength = backgroundLevel >= 2 ? 0.54 : 0.34;
-            color.lerp(this.fogColor, farFade * strength).multiplyScalar(1 - farFade * (backgroundLevel >= 2 ? 0.16 : 0.10));
+            const radialFade = smoothstep((r - fadeStart) / (fadeEnd - fadeStart));
+            const squareRadius = Math.max(Math.abs(x), Math.abs(z));
+            const seamDistance = squareRadius - this.coreHalf;
+            const seamBlend = smootherstep(clamp(seamDistance / 4.0, 0, 1));
+            const farTier = smootherstep(clamp((squareRadius - this.continuationMidHalf * 0.78)
+              / Math.max(1, this.continuationFarHalf - this.continuationMidHalf * 0.78), 0, 1));
+            const farFade = radialFade * seamBlend;
+            const strength = lerp(0.34, 0.54, farTier);
+            const darkening = lerp(0.10, 0.16, farTier);
+            color.lerp(this.fogColor, farFade * strength).multiplyScalar(1 - farFade * darkening);
           }
-          positions[p++] = x; positions[p++] = y - (visual ? 0.018 * backgroundLevel : 0); positions[p++] = z;
+          positions[p++] = x; positions[p++] = y; positions[p++] = z;
           colors[c++] = color.r; colors[c++] = color.g; colors[c++] = color.b;
+          normals[n++] = nx; normals[n++] = ny; normals[n++] = nz;
           const source = this.sourceKmFromWorld(x, z);
           uvs[uv++] = clamp((source.x + radarExtent) / (radarExtent * 2), 0, 1);
           uvs[uv++] = clamp((radarExtent - source.z) / (radarExtent * 2), 0, 1);
@@ -1749,20 +2021,21 @@
       geometry.setAttribute("position", new T.BufferAttribute(positions, 3));
       geometry.setAttribute("color", new T.BufferAttribute(colors, 3));
       geometry.setAttribute("uv", new T.BufferAttribute(uvs, 2));
+      geometry.setAttribute("normal", new T.BufferAttribute(normals, 3));
       geometry.setIndex(new T.BufferAttribute(indices, 1));
-      geometry.computeVertexNormals();
       geometry.computeBoundingSphere();
       return geometry;
     }
 
-    geometryForPatch(centerX, centerZ, size, segments, background = false) {
+    geometryForPatch(centerX, centerZ, size, segments, background = false, stitch = null) {
       const half = size / 2;
-      return this.geometryForRect(centerX - half, centerX + half, centerZ - half, centerZ + half, segments, segments, background ? 1 : 0);
+      return this.geometryForRect(centerX - half, centerX + half, centerZ - half, centerZ + half, segments, segments, background ? 1 : 0, stitch);
     }
 
     createContinuationRing(innerHalf, outerHalf, longSegments, backgroundLevel) {
-      const overlap = 0.55;
-      const inner = Math.max(1, innerHalf - overlap);
+      // No overlapping underlay: the inner edge shares the exact same coordinates,
+      // height function, color function and sampled normals as the last core vertices.
+      const inner = Math.max(1, innerHalf);
       const outer = outerHalf;
       const width = Math.max(1, outer - inner);
       const long = Math.max(12, longSegments);
@@ -1775,7 +2048,8 @@
       ];
       for (const [x0, x1, z0, z1, sx, sz] of rects) {
         const geometry = this.geometryForRect(x0, x1, z0, z1, sx, sz, backgroundLevel);
-        const mesh = new this.THREE.Mesh(geometry, this.continuationMaterial);
+        const layerMaterial = backgroundLevel >= 2 ? this.farContinuationMaterial : this.midContinuationMaterial;
+        const mesh = new this.THREE.Mesh(geometry, layerMaterial || this.continuationMaterial);
         mesh.name = `venus-${backgroundLevel >= 2 ? "far" : "mid"}-continuation-${this.region.id}-${this.continuationMeshes.length}`;
         mesh.frustumCulled = true;
         mesh.renderOrder = -3 - backgroundLevel;
@@ -1800,34 +2074,50 @@
       onProgress(0.24);
       const radarTexture = await this.radar.load().catch(() => null);
       onProgress(0.34);
-      this.material = this.createMaterial(radarTexture, false, false);
-      // The visual continuation intentionally does not clamp/stretch the final SAR texels.
-      // Close interactive chunks keep radar context; outer terrain uses world-space material
-      // plus the same regional geometry grammar.
-      this.backgroundMaterial = this.createMaterial(null, true, true);
-      this.continuationMaterial = this.backgroundMaterial;
-      this.resources.push(this.material, this.backgroundMaterial);
+      this.material = this.createMaterial(radarTexture, false, false, 0);
+      // Every terrain LOD uses the SAME material instance. Cost is reduced through geometry,
+      // view-distance detail weights and texture resolution, not by swapping to a different
+      // orange fallback material at rectangular chunk boundaries.
+      this.midContinuationMaterial = this.material;
+      this.farContinuationMaterial = this.material;
+      this.backgroundMaterial = this.material;
+      this.continuationMaterial = this.material;
+      this.resources.push(this.material);
 
-      const bgSegments = this.quality.backgroundSegments || (this.quality.name === "HIGH" ? 98 : this.quality.name === "MEDIUM" ? 76 : 52);
-      this.background = new this.THREE.Mesh(this.geometryForPatch(0, 0, this.worldSpan, bgSegments, true), this.backgroundMaterial);
-      this.background.name = `venus-regional-underlay-${this.region.id}`;
-      this.background.frustumCulled = true;
-      this.background.renderOrder = -2;
-      this.group.add(this.background);
+      // IMPORTANT: never place a second terrain sheet underneath the core. The previous
+      // underlay used a different height approximation, so it physically intersected the
+      // detailed chunks and appeared as irregular orange islands / pasted rectangular tiles.
+      this.background = null;
 
-      const coreHalf = this.worldSpan * 0.5;
-      this.createContinuationRing(coreHalf, this.continuationMidHalf, this.quality.continuationMidSegments || 34, 1);
-      this.createContinuationRing(this.continuationMidHalf, this.continuationFarHalf, this.quality.continuationFarSegments || 20, 2);
+      const coreHalf = this.coreHalf;
+      // One continuous non-playable ring replaces the old stacked MID + FAR rectangles.
+      // Distance-based height/material detail still fades progressively, but there is no
+      // second rectangular LOD boundary where two independently tessellated terrain layers
+      // can meet or expose a crack. This is cheaper and visually safer.
+      this.createContinuationRing(coreHalf, this.continuationFarHalf, this.quality.continuationMidSegments || 34, 1);
       onProgress(0.48);
 
       const half = this.tileHalfCount;
       const total = (half * 2 + 1) ** 2;
+      const segmentPlan = new Map();
+      const tileKey = (tx, tz) => `${tx},${tz}`;
+      for (let tz = -half; tz <= half; tz += 1) {
+        for (let tx = -half; tx <= half; tx += 1) {
+          segmentPlan.set(tileKey(tx, tz), this.chooseSegments(tx * this.tileSize, tz * this.tileSize));
+        }
+      }
       let built = 0;
       for (let tz = -half; tz <= half; tz += 1) {
         for (let tx = -half; tx <= half; tx += 1) {
           const cx = tx * this.tileSize, cz = tz * this.tileSize;
-          const segments = this.chooseSegments(cx, cz);
-          const geometry = this.geometryForPatch(cx, cz, this.tileSize, segments, false);
+          const segments = segmentPlan.get(tileKey(tx, tz));
+          const stitch = {
+            left: segmentPlan.get(tileKey(tx - 1, tz)) || segments,
+            right: segmentPlan.get(tileKey(tx + 1, tz)) || segments,
+            top: segmentPlan.get(tileKey(tx, tz - 1)) || segments,
+            bottom: segmentPlan.get(tileKey(tx, tz + 1)) || segments
+          };
+          const geometry = this.geometryForPatch(cx, cz, this.tileSize, segments, false, stitch);
           const mesh = new this.THREE.Mesh(geometry, this.material);
           mesh.name = `venus-gtdr-chunk-${tx}-${tz}`;
           mesh.frustumCulled = true;
@@ -2048,6 +2338,8 @@
       this.observationMarkers.clear();
       this.material = null;
       this.backgroundMaterial = null;
+      this.midContinuationMaterial = null;
+      this.farContinuationMaterial = null;
     }
   }
 
