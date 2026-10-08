@@ -27,9 +27,10 @@
   const ALTITUDE_LIMIT_WARNING_KM = 27.5;
   const TILE_SIZE = 256;
 
-  // One entry anchor only. This is NOT a destination system. Once the handoff is
-  // complete, terrain streams continuously around the camera like Mars.
+  // Default entry anchor. Full Exploration still starts as one unified Earth world.
+  // Featured destinations below only re-anchor the SAME terrain manager/camera.
   const EARTH_ENTRY = Object.freeze({
+    id: "entry-java",
     name: "Jawa · Indonesia",
     latitude: -7.55,
     longitude: 110.44,
@@ -37,11 +38,70 @@
     pitch: -0.27
   });
 
+  // Real-world featured anchors inside the unified Earth renderer. Coordinates are
+  // WGS84-style decimal degrees. The Mariana anchor follows NOAA's recent
+  // Challenger Deep bathymetry location; the visual trench fallback is used only
+  // when Terrarium returns flattened ocean elevation at this scale.
+  const EARTH_DESTINATIONS = Object.freeze([
+    Object.freeze({
+      id: "everest",
+      name: "Everest / Himalaya",
+      hudName: "EVEREST · HIMALAYA",
+      type: "Pegunungan tinggi · batu, es, dan salju",
+      descriptor: "Punggungan Himalaya bersalju dengan relief ekstrem dan atmosfer dataran tinggi.",
+      latitude: 27.9881, longitude: 86.9250, heading: -0.58, pitch: -0.30,
+      arrivalAltitude: 1.25, cruiseAltitude: 24, profileCode: 1, labelRadiusKm: 220,
+      source: "https://www.openstreetmap.org/node/164979149", sourceLabel: "OpenStreetMap · Mount Everest"
+    }),
+    Object.freeze({
+      id: "mariana",
+      name: "Mariana Trench / Challenger Deep",
+      hudName: "CHALLENGER DEEP · MARIANA",
+      type: "Palung samudra · zona hadal",
+      descriptor: "Eksplorasi bawah laut di Challenger Deep, bagian terdalam Palung Mariana.",
+      latitude: 11.38212, longitude: 142.43763, heading: 0.72, pitch: -0.16,
+      arrivalAltitude: 0.72, cruiseAltitude: 21, profileCode: 2, labelRadiusKm: 260,
+      targetDepthKm: -10.935,
+      source: "https://oceanservice.noaa.gov/facts/oceandepth.html", sourceLabel: "NOAA · Challenger Deep"
+    }),
+    Object.freeze({
+      id: "mauna-kea",
+      name: "Mauna Kea / Hawai‘i",
+      hudName: "MAUNA KEA · HAWAI‘I",
+      type: "Gunung api perisai · basalt dan pulau samudra",
+      descriptor: "Lereng vulkanik Mauna Kea dengan hubungan gunung-pulau-laut yang tetap terbaca.",
+      latitude: 19.82, longitude: -155.47, heading: 0.42, pitch: -0.28,
+      arrivalAltitude: 1.35, cruiseAltitude: 22, profileCode: 3, labelRadiusKm: 190,
+      source: "https://www.usgs.gov/mauna-kea", sourceLabel: "USGS · Mauna Kea"
+    }),
+    Object.freeze({
+      id: "grand-canyon",
+      name: "Grand Canyon",
+      hudName: "GRAND CANYON · ARIZONA",
+      type: "Ngarai erosi · lapisan batuan sedimen",
+      descriptor: "Relief ngarai dalam dengan lapisan batu merah-cokelat dan dinding tererosi yang tegas.",
+      latitude: 36.1069, longitude: -112.1129, heading: -0.22, pitch: -0.31,
+      arrivalAltitude: 1.05, cruiseAltitude: 20, profileCode: 4, labelRadiusKm: 145,
+      source: "https://www.nps.gov/grca/planyourvisit/directions.htm", sourceLabel: "NPS · Grand Canyon"
+    }),
+    Object.freeze({
+      id: "antarctica",
+      name: "Antarctica / Mount Vinson",
+      hudName: "ANTARKTIKA · MOUNT VINSON",
+      type: "Pegunungan kutub · salju, es, dan batu",
+      descriptor: "Bentang kutub terang di sekitar Mount Vinson, puncak tertinggi Antarktika.",
+      latitude: -78.52528, longitude: -85.61722, heading: 0.36, pitch: -0.26,
+      arrivalAltitude: 1.25, cruiseAltitude: 21, profileCode: 5, labelRadiusKm: 520,
+      source: "https://data.aad.gov.au/aadc/gaz/display_name.cfm?gaz_id=136397", sourceLabel: "AADC · Mount Vinson"
+    })
+  ]);
+
   const STATES = Object.freeze({
     IDLE: "idle",
     PREPARING: "preparing",
     ENTERING: "entering",
     EXPLORING: "exploring",
+    TRAVELLING: "travelling_to_location",
     EXITING: "exiting",
     ERROR: "error"
   });
@@ -63,6 +123,12 @@
     return value;
   };
   const shortestLongitudeDelta = (from, to) => wrapLongitude(to - from);
+  const geoDistanceKm = (latA, lonA, latB, lonB) => {
+    const meanLat = ((latA + latB) * 0.5) * DEG;
+    const dx = shortestLongitudeDelta(lonA, lonB) * KM_PER_DEG_LAT * Math.max(0.08, Math.cos(meanLat));
+    const dz = (latB - latA) * KM_PER_DEG_LAT;
+    return Math.hypot(dx, dz);
+  };
   const formatLatLon = (lat, lon) => `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? "N" : "S"} · ${Math.abs(lon).toFixed(4)}° ${lon >= 0 ? "E" : "W"}`;
   const formatAltitude = km => km < 1 ? `${Math.round(km * 1000)} M` : `${km.toFixed(km < 10 ? 2 : 1)} KM`;
   const formatElevation = km => {
@@ -271,10 +337,18 @@
       this.visibilityStats = { visible: 0, buffered: 0, culled: 0, high: 0, medium: 0, low: 0 };
       this.water = null;
       this.sky = null;
+      this.underwaterParticles = null;
       this.environmentTime = 0;
       this.surfaceImage = surfaceImage || null;
+      this.destination = null;
       this.detailTexture = this.createDetailTexture();
       this.roughnessTexture = this.createRoughnessTexture();
+      this.destinationTextures = this.createDestinationTextures();
+    }
+
+    setDestination(destination = null) {
+      this.destination = destination || null;
+      this.applyEnvironmentProfile();
     }
 
     setOrigin(latitude, longitude) {
@@ -354,6 +428,95 @@
       return texture;
     }
 
+    createDestinationTextures() {
+      const T = this.THREE;
+      const configs = {
+        everest: { seed: 1.7, base: 205, contrast: 42, mode: "ridge" },
+        mariana: { seed: 3.9, base: 112, contrast: 34, mode: "silt" },
+        "mauna-kea": { seed: 5.6, base: 92, contrast: 48, mode: "basalt" },
+        "grand-canyon": { seed: 7.2, base: 142, contrast: 54, mode: "strata" },
+        antarctica: { seed: 9.1, base: 222, contrast: 30, mode: "ice" }
+      };
+      const textures = new Map();
+      for (const [id, config] of Object.entries(configs)) {
+        const size = 192;
+        const canvas = document.createElement("canvas");
+        canvas.width = canvas.height = size;
+        const context = canvas.getContext("2d");
+        const image = context.createImageData(size, size);
+        for (let y = 0; y < size; y += 1) {
+          for (let x = 0; x < size; x += 1) {
+            const p = (y * size + x) * 4;
+            const nx = x / size * Math.PI * 2;
+            const ny = y / size * Math.PI * 2;
+            const broad = Math.sin(nx * (2.7 + config.seed * .07) + ny * 1.6) * .55 + Math.cos(ny * 4.1 - nx * 1.2) * .45;
+            const fine = Math.sin(nx * 13.7 + ny * 9.4 + config.seed) * Math.cos(nx * 8.3 - ny * 15.1);
+            let feature = broad * .55 + fine * .25;
+            if (config.mode === "ridge") feature += Math.abs(Math.sin(nx * 6.0 + ny * 2.4)) * .48;
+            else if (config.mode === "silt") feature = broad * .35 + Math.sin(nx * 18.0 + ny * 5.0) * .10 + fine * .14;
+            else if (config.mode === "basalt") feature += (Math.abs(Math.sin(nx * 9.2) * Math.sin(ny * 7.8)) > .78 ? -.55 : .08);
+            else if (config.mode === "strata") feature = Math.sin(ny * 19.0 + Math.sin(nx * 2.1) * 2.3) * .55 + broad * .18;
+            else if (config.mode === "ice") feature = Math.abs(Math.sin(nx * 4.7 + ny * 5.1)) * .34 + fine * .16;
+            const value = Math.round(clamp(config.base + feature * config.contrast, 28, 248));
+            image.data[p] = value;
+            image.data[p + 1] = value;
+            image.data[p + 2] = value;
+            image.data[p + 3] = 255;
+          }
+        }
+        context.putImageData(image, 0, 0);
+        const texture = new T.CanvasTexture(canvas);
+        texture.wrapS = texture.wrapT = T.RepeatWrapping;
+        texture.colorSpace = T.NoColorSpace;
+        texture.anisotropy = Math.min(this.quality.anisotropy, this.renderer.capabilities.getMaxAnisotropy());
+        texture.needsUpdate = true;
+        textures.set(id, texture);
+      }
+      return textures;
+    }
+
+    destinationTexture() {
+      return this.destinationTextures.get(this.destination?.id) || this.detailTexture;
+    }
+
+    applyDestinationHeight(baseHeightKm, latitude, longitude) {
+      if (this.destination?.id !== "mariana") return baseHeightKm;
+      const anchor = this.destination;
+      const cosLat = Math.max(.08, Math.cos(anchor.latitude * DEG));
+      const eastKm = shortestLongitudeDelta(anchor.longitude, longitude) * KM_PER_DEG_LAT * cosLat;
+      const northKm = (latitude - anchor.latitude) * KM_PER_DEG_LAT;
+      const rotation = -.56;
+      const along = eastKm * Math.cos(rotation) - northKm * Math.sin(rotation);
+      const across = eastKm * Math.sin(rotation) + northKm * Math.cos(rotation);
+      const core = Math.exp(-((along / 62) ** 2 + (across / 14) ** 2) * 1.45);
+      const shoulder = Math.exp(-((along / 115) ** 2 + (across / 34) ** 2) * 1.2);
+      const abyssalFloorKm = -4.6;
+      const shoulderDepthKm = 0.9;
+      const targetDepthKm = Math.abs(anchor.targetDepthKm || -10.935);
+      const coreDepthKm = Math.max(0, targetDepthKm - Math.abs(abyssalFloorKm) - shoulderDepthKm);
+      const target = abyssalFloorKm - coreDepthKm * core - shoulderDepthKm * shoulder;
+      const radial = Math.hypot(eastKm, northKm);
+      const blend = 1 - smoothstep((radial - 18) / 125);
+      if (blend <= 0) return baseHeightKm;
+      // Terrarium is primarily land elevation. Where the ocean tile is flattened
+      // near sea level, use a restrained local bathymetric fallback anchored to
+      // NOAA's Challenger Deep position so the trench remains explorable.
+      const model = baseHeightKm < -1.5 ? Math.min(baseHeightKm, target) : target;
+      return lerp(baseHeightKm, model, blend);
+    }
+
+    sampleTerrainTile(tile, latitude, longitude) {
+      return this.applyDestinationHeight(this.provider.sampleTile(tile, latitude, longitude), latitude, longitude);
+    }
+
+    sampleTerrainCached(latitude, longitude) {
+      const address = this.provider.address(latitude, longitude, this.provider.zoom);
+      const tile = this.provider.cache.get(this.provider.tileKey(this.provider.zoom, address.x, address.y));
+      if (!tile) return null;
+      tile.lastUsed = performance.now();
+      return this.sampleTerrainTile(tile, latitude, longitude);
+    }
+
     createSurfacePatch(tile) {
       if (!this.surfaceImage) return null;
       const T = this.THREE;
@@ -379,6 +542,11 @@
       context.globalCompositeOperation = "soft-light";
       context.globalAlpha = 0.18;
       context.drawImage(this.detailTexture.image, 0, 0, size, size);
+      if (this.destination) {
+        const destinationTexture = this.destinationTexture();
+        context.globalAlpha = this.destination.id === "grand-canyon" ? 0.34 : this.destination.id === "mauna-kea" ? 0.29 : 0.25;
+        context.drawImage(destinationTexture.image, 0, 0, size, size);
+      }
       context.globalAlpha = 1;
       context.globalCompositeOperation = "source-over";
 
@@ -399,6 +567,40 @@
       const absLat = Math.abs(latitude);
       const moisture = 0.5 + 0.5 * Math.sin(longitude * DEG * 5.1 + latitude * DEG * 3.7);
       const snowLine = clamp(5.4 - absLat * 0.055, 0.5, 5.4);
+      const profile = this.destination?.id;
+
+      if (profile === "everest") {
+        if (heightKm > 6.0) return mix(0xd6e3e8, 0xffffff, smoothstep((heightKm - 6) / 2.7)).lerp(new T.Color(0x9aa8ae), slope * .25);
+        if (heightKm > 4.2) return mix(0x87929a, 0xe8f0f2, smoothstep((heightKm - 4.2) / 1.8)).lerp(new T.Color(0x626b70), slope * .42);
+        if (slope > .5) return mix(0x5f625f, 0x8d887e, 1 - slope);
+        return mix(0x6c765d, 0x9a9478, clamp(heightKm / 4.2, 0, 1));
+      }
+
+      if (profile === "mariana") {
+        const depth = clamp(-heightKm / 11.2, 0, 1);
+        const trench = mix(0x35565f, 0x111e29, depth);
+        return trench.lerp(new T.Color(0x53645d), clamp((1 - slope) * .14, 0, .14));
+      }
+
+      if (profile === "mauna-kea") {
+        if (heightKm < 0.08) return mix(0x4a665e, 0x273d44, clamp(-heightKm / 3, 0, 1));
+        if (heightKm > 3.25) return mix(0x55504a, 0x8b8479, clamp((heightKm - 3.25) / 1.3, 0, 1)).lerp(new T.Color(0x343536), slope * .26);
+        if (heightKm > 1.4) return mix(0x484642, 0x756b5c, clamp((heightKm - 1.4) / 1.8, 0, 1));
+        return mix(0x486347, 0x5c6c49, moisture).lerp(new T.Color(0x343a34), slope * .22);
+      }
+
+      if (profile === "grand-canyon") {
+        const band = 0.5 + 0.5 * Math.sin(heightKm * 15.0 + longitude * DEG * 9.0);
+        const warm = mix(0x6d3527, 0xb76e43, band);
+        const light = mix(0xc38a5e, 0xe0b17a, clamp((heightKm - .7) / 1.8, 0, 1));
+        return warm.lerp(light, .28).lerp(new T.Color(0x4b3028), slope * .28);
+      }
+
+      if (profile === "antarctica") {
+        const blueIce = mix(0xbfd8e4, 0xf8fcff, clamp((heightKm + .2) / 4.5, 0, 1));
+        if (slope > .68 && heightKm > 1.5) return blueIce.lerp(new T.Color(0x6d777d), clamp((slope - .68) * 1.8, 0, .35));
+        return blueIce.lerp(new T.Color(0xd5eef6), .2 + (1 - slope) * .08);
+      }
 
       if (heightKm < -0.03) {
         const depth = clamp(-heightKm / 8, 0, 1);
@@ -432,6 +634,8 @@
       material.onBeforeCompile = shader => {
         shader.uniforms.uEarthDetail = { value: this.detailTexture };
         shader.uniforms.uEarthRough = { value: this.roughnessTexture };
+        shader.uniforms.uEarthDestinationDetail = { value: this.destinationTexture() };
+        shader.uniforms.uEarthDestinationCode = { value: this.destination?.profileCode || 0 };
         shader.uniforms.uEarthDetailTier = { value: 3 };
         shader.vertexShader = shader.vertexShader
           .replace("#include <common>", "#include <common>\nvarying vec3 vEarthWorldPosition;")
@@ -441,6 +645,8 @@
             varying vec3 vEarthWorldPosition;
             uniform sampler2D uEarthDetail;
             uniform sampler2D uEarthRough;
+            uniform sampler2D uEarthDestinationDetail;
+            uniform float uEarthDestinationCode;
             uniform float uEarthDetailTier;
             float earthTriSample(sampler2D tex, vec3 p, vec3 n, float scale, vec3 phase) {
               vec3 blend = pow(max(abs(n), vec3(0.0001)), vec3(5.0));
@@ -462,6 +668,25 @@
               float fine = uEarthDetailTier > 1.5 ? earthTriSample(uEarthDetail, vEarthWorldPosition, geomN, 2.45, vec3(0.63,0.11,0.29)) : 0.5;
               float micro = (broad - 0.5) * 0.11 + (fine - 0.5) * 0.075 * nearWeight;
               diffuseColor.rgb *= clamp(1.0 + micro, 0.86, 1.14);
+
+              if (uEarthDestinationCode > 0.5) {
+                float destinationDetail = earthTriSample(uEarthDestinationDetail, vEarthWorldPosition, geomN, 0.82, vec3(0.31,0.67,0.13));
+                float destinationFine = uEarthDetailTier > 1.5 ? earthTriSample(uEarthDestinationDetail, vEarthWorldPosition, geomN, 2.8, vec3(0.73,0.21,0.49)) : 0.5;
+                float grain = (destinationDetail - 0.5) * 0.16 + (destinationFine - 0.5) * 0.08 * nearWeight;
+                if (uEarthDestinationCode < 1.5) {
+                  diffuseColor.rgb *= vec3(0.98, 1.02, 1.055) * (1.0 + grain * 0.65);
+                } else if (uEarthDestinationCode < 2.5) {
+                  diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.58, 0.82, 0.90), 0.34);
+                  diffuseColor.rgb *= 1.0 + grain * 0.38;
+                } else if (uEarthDestinationCode < 3.5) {
+                  diffuseColor.rgb *= vec3(0.92, 0.90, 0.86) * (1.0 + grain * 0.86);
+                } else if (uEarthDestinationCode < 4.5) {
+                  diffuseColor.rgb *= vec3(1.06, 0.92, 0.80) * (1.0 + grain * 0.78);
+                } else {
+                  diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.90, 0.965, 1.0), max(0.0, destinationDetail - 0.58) * 0.22);
+                  diffuseColor.rgb *= 1.0 + grain * 0.46;
+                }
+              }
             }`)
           .replace("#include <roughnessmap_fragment>", `#include <roughnessmap_fragment>
             if (uEarthDetailTier > 1.5) {
@@ -470,10 +695,15 @@
               vec3 geomN = normalize(cross(dx, dy));
               float roughSample = earthTriSample(uEarthRough, vEarthWorldPosition, geomN, 0.72, vec3(0.41,0.19,0.83));
               roughnessFactor = clamp(roughnessFactor + (roughSample - 0.5) * 0.16, 0.56, 0.99);
+              if (uEarthDestinationCode > 0.5) {
+                float destinationRough = earthTriSample(uEarthDestinationDetail, vEarthWorldPosition, geomN, 1.16, vec3(0.53,0.37,0.79));
+                float profileShift = uEarthDestinationCode < 1.5 ? 0.03 : uEarthDestinationCode < 2.5 ? -0.08 : uEarthDestinationCode < 3.5 ? 0.06 : uEarthDestinationCode < 4.5 ? 0.09 : -0.03;
+                roughnessFactor = clamp(roughnessFactor + (destinationRough - 0.5) * 0.14 + profileShift, 0.48, 1.0);
+              }
             }`);
         material.userData.earthShader = shader;
       };
-      material.customProgramCacheKey = () => `antara-earth-streamed-material-v1-${this.quality.name}`;
+      material.customProgramCacheKey = () => `antara-earth-streamed-material-v2-${this.quality.name}`;
       material.needsUpdate = true;
       return material;
     }
@@ -539,7 +769,7 @@
           const fx = ix / segments;
           const longitude = wrapLongitude(this.provider.longitudeForX(tile.x + fx, tile.z));
           const world = this.worldFromGeo(latitude, longitude);
-          const height = this.provider.sampleTile(tile, latitude, longitude);
+          const height = this.sampleTerrainTile(tile, latitude, longitude);
           const index = iz * verticesPerSide + ix;
           positions[p++] = world.x;
           positions[p++] = height;
@@ -861,9 +1091,86 @@
       this.provider.load(address.z, address.x, address.y).catch(() => {});
     }
 
+    async preloadAround(latitude, longitude, radius = 1, onProgress = null) {
+      const center = this.provider.tileForLocation(latitude, longitude);
+      const n = 2 ** center.z;
+      const requests = [];
+      for (let dy = -radius; dy <= radius; dy += 1) {
+        for (let dx = -radius; dx <= radius; dx += 1) {
+          const x = ((center.x + dx) % n + n) % n;
+          const y = center.y + dy;
+          if (y < 0 || y >= n) continue;
+          requests.push({ z: center.z, x, y });
+        }
+      }
+      let done = 0;
+      const total = Math.max(1, requests.length);
+      await Promise.all(requests.map(async request => {
+        await this.provider.load(request.z, request.x, request.y);
+        done += 1;
+        onProgress?.(done / total);
+      }));
+    }
+
     ensureEnvironment() {
       if (!this.sky) this.createSky();
       if (!this.water) this.createWater();
+      this.applyEnvironmentProfile();
+    }
+
+    ensureUnderwaterParticles() {
+      if (this.underwaterParticles) return;
+      const T = this.THREE;
+      const count = this.quality.name === "LOW" ? 420 : this.quality.name === "MEDIUM" ? 720 : 1050;
+      const positions = new Float32Array(count * 3);
+      for (let i = 0; i < count; i += 1) {
+        const seed = i * 12.9898 + 78.233;
+        const rx = Math.sin(seed) * 43758.5453;
+        const ry = Math.sin(seed * 1.73) * 24634.6345;
+        const rz = Math.sin(seed * 2.31) * 56445.2341;
+        positions[i * 3] = ((rx - Math.floor(rx)) - .5) * 48;
+        positions[i * 3 + 1] = ((ry - Math.floor(ry)) - .5) * 26;
+        positions[i * 3 + 2] = ((rz - Math.floor(rz)) - .5) * 48;
+      }
+      const geometry = new T.BufferGeometry();
+      geometry.setAttribute("position", new T.BufferAttribute(positions, 3));
+      const material = new T.PointsMaterial({
+        color: 0x8ab8bf,
+        size: this.quality.name === "LOW" ? .018 : .024,
+        transparent: true,
+        opacity: .24,
+        depthWrite: false,
+        sizeAttenuation: true
+      });
+      this.underwaterParticles = new T.Points(geometry, material);
+      this.underwaterParticles.frustumCulled = false;
+      this.underwaterParticles.visible = false;
+      this.scene.add(this.underwaterParticles);
+    }
+
+    applyEnvironmentProfile() {
+      if (!this.sky || !this.water) return;
+      const T = this.THREE;
+      const profile = this.destination?.id || "default";
+      const palette = {
+        default: { top: 0x4d8db9, horizon: 0xc6dce6, water: 0x176d88, waterOpacity: .78, roughness: .18 },
+        everest: { top: 0x397db4, horizon: 0xddebf1, water: 0x2b7891, waterOpacity: .70, roughness: .24 },
+        mariana: { top: 0x17384b, horizon: 0x416879, water: 0x0a4b66, waterOpacity: .88, roughness: .10 },
+        "mauna-kea": { top: 0x2f83b9, horizon: 0xcbe5ea, water: 0x0b789b, waterOpacity: .80, roughness: .15 },
+        "grand-canyon": { top: 0x4c8fbd, horizon: 0xd8c7aa, water: 0x286c7b, waterOpacity: .73, roughness: .22 },
+        antarctica: { top: 0x6ea8c8, horizon: 0xebf7fb, water: 0x3d8199, waterOpacity: .72, roughness: .34 }
+      }[profile] || null;
+      const selected = palette || { top: 0x4d8db9, horizon: 0xc6dce6, water: 0x176d88, waterOpacity: .78, roughness: .18 };
+      this.sky.material.uniforms.uTop.value.setHex(selected.top);
+      this.sky.material.uniforms.uHorizon.value.setHex(selected.horizon);
+      this.water.material.color.setHex(selected.water);
+      this.water.material.opacity = selected.waterOpacity;
+      this.water.material.roughness = selected.roughness;
+      this.water.material.transmission = profile === "mariana" ? .14 : .06;
+      this.water.material.clearcoat = profile === "antarctica" ? .60 : .46;
+      this.water.material.needsUpdate = true;
+      if (profile === "mariana") this.ensureUnderwaterParticles();
+      if (this.underwaterParticles) this.underwaterParticles.visible = false;
     }
 
     createSky() {
@@ -931,11 +1238,19 @@
         const shader = this.water.material.userData.earthWaterShader;
         if (shader?.uniforms?.uEarthWaterTime) shader.uniforms.uEarthWaterTime.value = this.environmentTime;
       }
+      if (this.underwaterParticles && camera) {
+        const underwater = this.destination?.id === "mariana" && camera.position.y < -0.03;
+        this.underwaterParticles.visible = underwater;
+        if (underwater) {
+          this.underwaterParticles.position.set(camera.position.x, camera.position.y, camera.position.z);
+          this.underwaterParticles.rotation.y = this.environmentTime * .018;
+        }
+      }
     }
 
     getHeightAtWorld(x, z) {
       const geo = this.geoFromWorld(x, z);
-      return this.provider.sampleCached(geo.latitude, geo.longitude);
+      return this.sampleTerrainCached(geo.latitude, geo.longitude);
     }
 
     disposeEntry(entry) {
@@ -983,6 +1298,14 @@
         this.sky.material.dispose();
         this.sky = null;
       }
+      if (this.underwaterParticles) {
+        this.scene.remove(this.underwaterParticles);
+        this.underwaterParticles.geometry.dispose();
+        this.underwaterParticles.material.dispose();
+        this.underwaterParticles = null;
+      }
+      for (const texture of this.destinationTextures.values()) texture.dispose?.();
+      this.destinationTextures.clear();
       this.detailTexture?.dispose?.();
       this.roughnessTexture?.dispose?.();
       this.detailTexture = null;
@@ -1177,6 +1500,18 @@
       this.entryButton = document.getElementById("earth-full-explore-button");
       this.exitButton = document.getElementById("earth-full-exit");
       this.fullscreenButton = document.getElementById("earth-fullscreen-toggle");
+      this.locationButton = document.getElementById("earth-location-toggle");
+      this.locationMenu = document.getElementById("earth-location-menu");
+      this.travelVeil = document.getElementById("earth-travel-veil");
+      this.travelLabel = document.getElementById("earth-travel-label");
+      this.travelStatus = document.getElementById("earth-travel-status");
+      this.travelProgress = document.getElementById("earth-travel-progress");
+      this.destinationCard = document.getElementById("earth-destination-card");
+      this.destinationName = document.getElementById("earth-destination-name");
+      this.destinationType = document.getElementById("earth-destination-type");
+      this.destinationCoords = document.getElementById("earth-destination-coords");
+      this.destinationDescriptor = document.getElementById("earth-destination-descriptor");
+      this.destinationSource = document.getElementById("earth-destination-source");
       this.loading = document.getElementById("earth-full-loading");
       this.loadingStatus = document.getElementById("earth-full-loading-status");
       this.loadingProgress = document.getElementById("earth-full-loading-progress");
@@ -1213,14 +1548,17 @@
       this.lookYawTarget = this.yaw;
       this.lookPitchTarget = this.pitch;
       this.velocity = { x: 0, y: 0, z: 0 };
+      this.currentDestination = null;
       this.transitionToken = 0;
       this.tutorialTimeout = null;
+      this.destinationInfoTimeout = null;
       this.quality = this.detectQuality();
       this.currentDpr = null;
       this.idealDpr = null;
       this.input = new EarthInputManager(this);
       this.tick = this.tick.bind(this);
       this.root.inert = true;
+      this.buildLocationMenu();
       this.bindUI();
     }
 
@@ -1267,12 +1605,56 @@
       return clamp(Math.min(requested, this.quality.maxDpr, budgetDpr), this.quality.minDpr, this.quality.maxDpr);
     }
 
+    buildLocationMenu() {
+      const fragment = document.createDocumentFragment();
+      EARTH_DESTINATIONS.forEach(destination => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.setAttribute("role", "menuitem");
+        button.dataset.earthDestination = destination.id;
+        button.innerHTML = `<span>${destination.name}</span><small>${formatLatLon(destination.latitude, destination.longitude)}</small>`;
+        fragment.append(button);
+      });
+      this.locationMenu.replaceChildren(fragment);
+    }
+
+    updateLocationMenuSelection() {
+      this.locationMenu.querySelectorAll("[data-earth-destination]").forEach(button => {
+        const active = button.dataset.earthDestination === this.currentDestination?.id;
+        button.classList.toggle("is-current", active);
+        button.setAttribute("aria-current", active ? "location" : "false");
+      });
+    }
+
     bindUI() {
       this.entryButton.addEventListener("click", () => this.enter());
       this.exitButton.addEventListener("click", () => this.exit());
       this.fullscreenButton.addEventListener("click", () => this.toggleFullscreen());
       this.errorReturn.addEventListener("click", () => this.failBackToOrbit());
       this.tutorialClose.addEventListener("click", () => this.dismissTutorial(true));
+      this.locationButton.addEventListener("click", event => {
+        event.stopPropagation();
+        if (this.state !== STATES.EXPLORING) return;
+        if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+        const open = !this.locationMenu.classList.contains("is-open");
+        this.locationMenu.classList.toggle("is-open", open);
+        this.locationButton.setAttribute("aria-expanded", String(open));
+        this.dismissTutorial();
+      });
+      this.locationMenu.addEventListener("click", event => {
+        const button = event.target.closest("[data-earth-destination]");
+        if (!button) return;
+        this.locationMenu.classList.remove("is-open");
+        this.locationButton.setAttribute("aria-expanded", "false");
+        const destination = EARTH_DESTINATIONS.find(item => item.id === button.dataset.earthDestination);
+        if (destination) this.travelToDestination(destination);
+      });
+      document.addEventListener("pointerdown", event => {
+        if (!this.active || !this.locationMenu.classList.contains("is-open")) return;
+        if (event.target.closest("#earth-location-menu, #earth-location-toggle")) return;
+        this.locationMenu.classList.remove("is-open");
+        this.locationButton.setAttribute("aria-expanded", "false");
+      });
       document.addEventListener("fullscreenchange", () => this.updateFullscreenLabel());
       document.addEventListener("visibilitychange", () => {
         if (!this.active) return;
@@ -1302,6 +1684,12 @@
       this.errorPanel.hidden = true;
       this.entryButton.disabled = true;
       this.tutorial.classList.remove("is-visible");
+      this.locationMenu.classList.remove("is-open");
+      this.locationButton.setAttribute("aria-expanded", "false");
+      this.travelVeil.classList.remove("is-visible", "is-covered");
+      this.destinationCard.classList.remove("is-visible");
+      this.currentDestination = null;
+      this.updateLocationMenuSelection();
       document.getElementById("mission").classList.add("is-earth-full");
       this.earth.beginFullExplorationFocus?.(EARTH_ENTRY);
       this.setLoading(0.04, "MENGHUBUNGKAN DATA ELEVASI BUMI");
@@ -1311,6 +1699,7 @@
         await this.prepare();
         if (token !== this.transitionToken || this.state !== STATES.PREPARING) return;
         this.terrain.clearMeshes();
+        this.terrain.setDestination(null);
         this.terrain.setOrigin(EARTH_ENTRY.latitude, EARTH_ENTRY.longitude);
         this.setLoading(0.16, "MEMUAT TERRAIN STREAMING DI SEKITAR KAMERA");
         await this.terrain.ensureAround(EARTH_ENTRY.latitude, EARTH_ENTRY.longitude, {
@@ -1611,18 +2000,44 @@
 
     updateAtmosphere(altitude) {
       if (!this.scene?.fog || !this.renderer) return;
+      const T = this.THREE;
       const geo = this.terrain.geoFromWorld(this.camera.position.x, this.camera.position.z);
       const polar = clamp((Math.abs(geo.latitude) - 50) / 32, 0, 1);
       const high = clamp(altitude / MAX_EXPLORATION_ALTITUDE_KM, 0, 1);
-      const horizon = new this.THREE.Color(0xb9d0da).lerp(new this.THREE.Color(0xdcebf0), polar * 0.35);
-      const thinAir = new this.THREE.Color(0x779db2);
-      this.scene.fog.color.copy(horizon).lerp(thinAir, high * 0.28);
-      const baseDensity = this.quality.name === "LOW" ? 0.0034 : this.quality.name === "MEDIUM" ? 0.0026 : 0.0020;
-      this.scene.fog.density = lerp(baseDensity, baseDensity * 0.36, high);
-      this.renderer.setClearColor(new this.THREE.Color(0xb7d2df).lerp(new this.THREE.Color(0x507997), high * 0.58), 1);
-      if (this.terrain.sky?.material?.uniforms) {
-        this.terrain.sky.material.uniforms.uHaze.value = lerp(0.58, 0.20, high);
+      const profile = this.currentDestination?.id || "default";
+      const underwater = profile === "mariana" && this.camera.position.y < -0.03;
+      this.root.classList.toggle("is-underwater", underwater);
+
+      if (underwater) {
+        const depthBelowSea = clamp(-this.camera.position.y / 11.2, 0, 1);
+        this.scene.fog.color.setHex(0x123746).lerp(new T.Color(0x071a26), depthBelowSea * .72);
+        this.scene.fog.density = lerp(.028, .074, depthBelowSea);
+        this.renderer.setClearColor(new T.Color(0x123b4d).lerp(new T.Color(0x061823), depthBelowSea * .82), 1);
+        if (this.terrain.sky?.material?.uniforms) this.terrain.sky.material.uniforms.uHaze.value = .82;
+        this.sunLight.color.setHex(0x87b8c7); this.sunLight.intensity = .42;
+        this.hemiLight.color.setHex(0x5c91a0); this.hemiLight.groundColor.setHex(0x07151b); this.hemiLight.intensity = .32;
+        this.fillLight.color.setHex(0x4f9db4); this.fillLight.intensity = .16;
+        return;
       }
+
+      const palettes = {
+        default: { horizon: 0xb9d0da, thin: 0x779db2, clear: 0xb7d2df, clearHigh: 0x507997, fog: 1, sun: 0xfff1d8, sunI: 3.05, hemi: 0xdff5ff, ground: 0x46503f, hemiI: .72, fill: 0x91b9d7, fillI: .20 },
+        everest: { horizon: 0xdce9ef, thin: 0x557fa4, clear: 0xc9e0eb, clearHigh: 0x315e8d, fog: .72, sun: 0xfff7e8, sunI: 3.35, hemi: 0xeaf8ff, ground: 0x59636a, hemiI: .82, fill: 0x8eb8d8, fillI: .22 },
+        mariana: { horizon: 0xb7d7df, thin: 0x4e7892, clear: 0xaad2df, clearHigh: 0x37667f, fog: .92, sun: 0xfff1d8, sunI: 2.8, hemi: 0xd6f3fb, ground: 0x30484d, hemiI: .68, fill: 0x76abc0, fillI: .20 },
+        "mauna-kea": { horizon: 0xc8e3e7, thin: 0x4d83a6, clear: 0xb7dce7, clearHigh: 0x3a78a0, fog: .78, sun: 0xffe9c2, sunI: 3.25, hemi: 0xdff8ff, ground: 0x3d4c3b, hemiI: .76, fill: 0x79afd0, fillI: .22 },
+        "grand-canyon": { horizon: 0xd8c4a6, thin: 0x66849a, clear: 0xc9c3b3, clearHigh: 0x4d7794, fog: 1.12, sun: 0xffdfb0, sunI: 3.35, hemi: 0xdcecff, ground: 0x65473a, hemiI: .66, fill: 0xb18c74, fillI: .18 },
+        antarctica: { horizon: 0xe9f5f9, thin: 0x82a9bd, clear: 0xe3f1f5, clearHigh: 0x6d9ab5, fog: 1.18, sun: 0xf5fbff, sunI: 3.0, hemi: 0xf2fbff, ground: 0x8aa4ad, hemiI: .92, fill: 0xa8c8d8, fillI: .28 }
+      };
+      const palette = palettes[profile] || palettes.default;
+      const horizon = new T.Color(palette.horizon).lerp(new T.Color(0xdcebf0), polar * 0.24);
+      this.scene.fog.color.copy(horizon).lerp(new T.Color(palette.thin), high * 0.28);
+      const baseDensity = (this.quality.name === "LOW" ? 0.0034 : this.quality.name === "MEDIUM" ? 0.0026 : 0.0020) * palette.fog;
+      this.scene.fog.density = lerp(baseDensity, baseDensity * 0.36, high);
+      this.renderer.setClearColor(new T.Color(palette.clear).lerp(new T.Color(palette.clearHigh), high * 0.58), 1);
+      if (this.terrain.sky?.material?.uniforms) this.terrain.sky.material.uniforms.uHaze.value = lerp(profile === "grand-canyon" ? .70 : .58, .20, high);
+      this.sunLight.color.setHex(palette.sun); this.sunLight.intensity = palette.sunI;
+      this.hemiLight.color.setHex(palette.hemi); this.hemiLight.groundColor.setHex(palette.ground); this.hemiLight.intensity = palette.hemiI;
+      this.fillLight.color.setHex(palette.fill); this.fillLight.intensity = palette.fillI;
     }
 
     updateHUD() {
@@ -1637,16 +2052,152 @@
       this.hudAltitude.textContent = formatAltitude(altitude);
       this.hudTerrain.textContent = formatElevation(this.lastGround);
       this.hudSpeed.textContent = formatSpeed(this.speed);
-      const ceilingActive = this.state === STATES.EXPLORING || this.state === STATES.ENTERING;
+      this.hudData.textContent = this.currentDestination ? `${MAPZEN_SOURCE} · ${this.currentDestination.name}` : MAPZEN_SOURCE;
+      const ceilingActive = this.state === STATES.EXPLORING || this.state === STATES.ENTERING || this.state === STATES.TRAVELLING;
       this.hudAltitudeLimit.hidden = !ceilingActive || altitude < ALTITUDE_LIMIT_WARNING_KM;
       this.hudAltitudeLimit.textContent = altitude >= MAX_EXPLORATION_ALTITUDE_KM - 0.02 ? "BATAS KETINGGIAN" : "MENDEKATI BATAS 30 KM";
     }
 
     locationLabel(latitude, longitude) {
+      if (this.currentDestination) {
+        const distance = geoDistanceKm(latitude, longitude, this.currentDestination.latitude, this.currentDestination.longitude);
+        if (distance <= this.currentDestination.labelRadiusKm) return this.currentDestination.hudName;
+      }
       const absLat = Math.abs(latitude);
       const zone = absLat < 23.5 ? "ZONA TROPIS" : absLat < 40 ? "ZONA SUBTROPIS" : absLat < 66.5 ? "LINTANG MENENGAH" : "ZONA POLAR";
       const hemisphere = latitude >= 0 ? "UTARA" : "SELATAN";
       return `BUMI · ${zone} ${hemisphere}`;
+    }
+
+    setTravelProgress(progress, status) {
+      this.travelProgress.style.transform = `scaleX(${clamp(progress, 0, 1)})`;
+      if (status) this.travelStatus.textContent = status;
+    }
+
+    showDestinationInfo(destination) {
+      if (!destination) return;
+      this.destinationName.textContent = destination.name;
+      this.destinationType.textContent = destination.type;
+      this.destinationCoords.textContent = formatLatLon(destination.latitude, destination.longitude);
+      this.destinationDescriptor.textContent = destination.descriptor;
+      this.destinationSource.href = destination.source;
+      this.destinationSource.textContent = destination.sourceLabel;
+      this.destinationCard.classList.add("is-visible");
+      window.clearTimeout(this.destinationInfoTimeout);
+      this.destinationInfoTimeout = window.setTimeout(() => this.destinationCard.classList.remove("is-visible"), 12000);
+    }
+
+    async restoreTravelOrigin(snapshot, token) {
+      if (!snapshot || token !== this.transitionToken) return;
+      this.terrain.clearMeshes();
+      this.terrain.setDestination(snapshot.destination);
+      this.terrain.setOrigin(snapshot.geo.latitude, snapshot.geo.longitude);
+      await this.terrain.ensureAround(snapshot.geo.latitude, snapshot.geo.longitude, { requiredRadius: 1 });
+      if (token !== this.transitionToken) return;
+      this.currentDestination = snapshot.destination;
+      this.yaw = snapshot.yaw;
+      this.pitch = snapshot.pitch;
+      this.syncLookTargets();
+      const ground = this.terrain.getHeightAtWorld(0, 0) ?? snapshot.ground ?? 0;
+      this.lastGround = ground;
+      this.camera.position.set(0, ground + snapshot.altitude, 0);
+      this.cameraAltitude = snapshot.altitude;
+      this.velocity.x = this.velocity.y = this.velocity.z = 0;
+      this.updateLocationMenuSelection();
+    }
+
+    async travelToDestination(destination) {
+      if (this.state !== STATES.EXPLORING || !destination || destination.id === this.currentDestination?.id) return;
+      const snapshot = {
+        destination: this.currentDestination,
+        geo: this.terrain.geoFromWorld(this.camera.position.x, this.camera.position.z),
+        altitude: this.cameraAltitude,
+        ground: this.lastGround,
+        yaw: this.yaw,
+        pitch: this.pitch
+      };
+      this.state = STATES.TRAVELLING;
+      this.input.clear();
+      if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+      const token = ++this.transitionToken;
+      let switched = false;
+      const cruiseAltitude = Math.min(MAX_EXPLORATION_ALTITUDE_KM - 2, Math.max(this.cameraAltitude, destination.cruiseAltitude || 22));
+      this.locationButton.disabled = true;
+      this.locationMenu.classList.remove("is-open");
+      this.locationButton.setAttribute("aria-expanded", "false");
+      this.destinationCard.classList.remove("is-visible");
+      this.travelLabel.textContent = `NAVIGASI · ${destination.name.toUpperCase()}`;
+      this.setTravelProgress(.04, "MENAIKKAN KETINGGIAN TRANSIT");
+      this.travelVeil.classList.add("is-visible");
+      this.travelVeil.setAttribute("aria-hidden", "false");
+      document.getElementById("announcement").textContent = `Berpindah menuju ${destination.name} tanpa keluar dari Eksplorasi Bumi.`;
+
+      try {
+        await this.animateCameraAltitude(cruiseAltitude, 1150, token);
+        if (token !== this.transitionToken || this.state !== STATES.TRAVELLING) return;
+        this.setTravelProgress(.18, "PRELOAD TERRAIN TUJUAN");
+        await this.terrain.preloadAround(destination.latitude, destination.longitude, 1, progress => {
+          if (token === this.transitionToken) this.setTravelProgress(.18 + progress * .42, `MEMUAT DATA REAL · ${Math.round(progress * 100)}%`);
+        });
+        if (token !== this.transitionToken || this.state !== STATES.TRAVELLING) return;
+
+        this.travelVeil.classList.add("is-covered");
+        this.setTravelProgress(.64, "MEREPOSISI SISTEM TERRAIN YANG SAMA");
+        await this.wait(300);
+        if (token !== this.transitionToken) return;
+
+        this.terrain.clearMeshes();
+        this.terrain.setDestination(destination);
+        this.terrain.setOrigin(destination.latitude, destination.longitude);
+        this.currentDestination = destination;
+        switched = true;
+        this.yaw = destination.heading || 0;
+        this.pitch = Number.isFinite(destination.pitch) ? destination.pitch : -.30;
+        this.syncLookTargets();
+        await this.terrain.ensureAround(destination.latitude, destination.longitude, {
+          requiredRadius: 1,
+          onProgress: progress => {
+            if (token === this.transitionToken) this.setTravelProgress(.64 + progress * .20, `MEMBANGUN MATERIAL LOKASI · ${Math.round(progress * 100)}%`);
+          }
+        });
+        if (token !== this.transitionToken) return;
+
+        const ground = this.terrain.getHeightAtWorld(0, 0) ?? 0;
+        this.lastGround = ground;
+        this.camera.position.set(0, ground + cruiseAltitude, 0);
+        this.cameraAltitude = cruiseAltitude;
+        this.velocity.x = this.velocity.y = this.velocity.z = 0;
+        this.updateLocationMenuSelection();
+        this.updateHUD();
+        this.setTravelProgress(.87, destination.id === "mariana" ? "MENURUN KE ZONA HADAL" : "MENURUN KE AREA EKSPLORASI");
+        this.travelVeil.classList.remove("is-covered");
+        await this.animateCameraAltitude(destination.arrivalAltitude || 1.2, 1850, token);
+        if (token !== this.transitionToken) return;
+
+        this.state = STATES.EXPLORING;
+        this.locationButton.disabled = false;
+        this.setTravelProgress(1, "TUJUAN SIAP");
+        this.travelVeil.classList.remove("is-visible");
+        this.travelVeil.setAttribute("aria-hidden", "true");
+        this.updateHUD();
+        this.showDestinationInfo(destination);
+        document.getElementById("announcement").textContent = `Tiba di ${destination.name}. Eksplorasi bebas dapat dilanjutkan.`;
+      } catch (error) {
+        console.warn("Earth destination travel failed", error);
+        if (token !== this.transitionToken) return;
+        try {
+          if (switched) await this.restoreTravelOrigin(snapshot, token);
+        } catch (restoreError) {
+          console.warn("Earth destination rollback failed", restoreError);
+        }
+        if (token !== this.transitionToken) return;
+        this.state = STATES.EXPLORING;
+        this.locationButton.disabled = false;
+        this.travelVeil.classList.remove("is-visible", "is-covered");
+        this.travelVeil.setAttribute("aria-hidden", "true");
+        this.setTravelProgress(0, "NAVIGASI DIBATALKAN");
+        document.getElementById("announcement").textContent = `Lokasi ${destination.name} belum dapat dimuat. Eksplorasi Bumi tetap aktif.`;
+      }
     }
 
     adaptResolution() {
@@ -1680,7 +2231,8 @@
     }
 
     animateCameraAltitude(targetAltitude, duration, token) {
-      targetAltitude = Math.max(this.cameraAltitude, targetAltitude);
+      const ceilingApplies = this.state === STATES.EXPLORING || this.state === STATES.TRAVELLING;
+      if (ceilingApplies) targetAltitude = clamp(targetAltitude, 0.12, MAX_EXPLORATION_ALTITUDE_KM);
       const startAltitude = this.cameraAltitude;
       const start = performance.now();
       const reduced = this.earth.motion?.matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1728,6 +2280,12 @@
       const token = ++this.transitionToken;
       this.input.clear();
       this.tutorial.classList.remove("is-visible");
+      this.locationMenu.classList.remove("is-open");
+      this.locationButton.setAttribute("aria-expanded", "false");
+      this.destinationCard.classList.remove("is-visible");
+      this.travelVeil.classList.remove("is-visible", "is-covered");
+      this.travelVeil.setAttribute("aria-hidden", "true");
+      this.locationButton.disabled = true;
       this.root.classList.add("is-exiting");
       document.getElementById("announcement").textContent = "Meninggalkan permukaan Bumi dan kembali ke panorama orbit.";
 
@@ -1769,6 +2327,10 @@
       this.root.style.removeProperty("--surface");
       this.root.style.removeProperty("--entry-progress");
       this.entryButton.disabled = false;
+      this.locationButton.disabled = false;
+      this.currentDestination = null;
+      this.updateLocationMenuSelection();
+      window.clearTimeout(this.destinationInfoTimeout);
       this.earth.setFullExplorationTransition?.(0, EARTH_ENTRY);
       this.earth.endFullExplorationFocus?.();
       document.getElementById("mission").classList.remove("is-earth-full");
@@ -1787,7 +2349,12 @@
         ? "Data elevasi Terrarium tidak dapat dimuat. Panorama Bumi tetap aman. Periksa koneksi internet atau host tile elevasi secara lokal."
         : (error?.message || "Terrain Bumi belum dapat dimuat.");
       this.root.classList.add("is-error");
-      this.root.classList.remove("is-preparing", "is-entering", "is-active", "is-surface-visible");
+      this.root.classList.remove("is-preparing", "is-entering", "is-active", "is-surface-visible", "is-underwater");
+      this.locationMenu.classList.remove("is-open");
+      this.destinationCard.classList.remove("is-visible");
+      this.travelVeil.classList.remove("is-visible", "is-covered");
+      this.travelVeil.setAttribute("aria-hidden", "true");
+      this.locationButton.disabled = false;
       this.entryButton.disabled = false;
       document.getElementById("announcement").textContent = "Eksplorasi penuh Bumi belum dapat dimuat. Panorama Bumi tetap tersedia.";
     }
@@ -1804,6 +2371,14 @@
       this.root.style.removeProperty("--entry-progress");
       this.errorPanel.hidden = true;
       this.loading.hidden = true;
+      this.locationMenu.classList.remove("is-open");
+      this.locationButton.setAttribute("aria-expanded", "false");
+      this.destinationCard.classList.remove("is-visible");
+      this.travelVeil.classList.remove("is-visible", "is-covered");
+      this.travelVeil.setAttribute("aria-hidden", "true");
+      this.locationButton.disabled = false;
+      this.currentDestination = null;
+      this.updateLocationMenuSelection();
       this.entryButton.disabled = false;
       this.earth.setFullExplorationTransition?.(0, EARTH_ENTRY);
       this.earth.endFullExplorationFocus?.();
@@ -1843,6 +2418,15 @@
       this.root.style.removeProperty("--entry-progress");
       this.errorPanel.hidden = true;
       this.loading.hidden = true;
+      this.locationMenu.classList.remove("is-open");
+      this.locationButton.setAttribute("aria-expanded", "false");
+      this.destinationCard.classList.remove("is-visible");
+      this.travelVeil.classList.remove("is-visible", "is-covered");
+      this.travelVeil.setAttribute("aria-hidden", "true");
+      this.locationButton.disabled = false;
+      this.currentDestination = null;
+      this.updateLocationMenuSelection();
+      window.clearTimeout(this.destinationInfoTimeout);
       this.entryButton.disabled = false;
       document.getElementById("mission").classList.remove("is-earth-full");
       this.earth.setFullExplorationTransition?.(0, EARTH_ENTRY);

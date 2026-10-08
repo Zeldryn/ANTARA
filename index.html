@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="styles.css?v=20260925-earthdest-2">
   <link rel="stylesheet" href="exploration-media.css?v=20260925-earthdest-2">
   <link rel="stylesheet" href="earth-scene.css?v=20260925-earthdest-2">
-  <link rel="stylesheet" href="earth-full-exploration.css?v=20260925-earth-unified-1">
+  <link rel="stylesheet" href="earth-full-exploration.css?v=20260925-earth-destinations-1">
   <link rel="stylesheet" href="mars-scene.css?v=20260925-earthdest-2">
   <link rel="stylesheet" href="mars-full-exploration.css?v=20260925-earthdest-2">
   <link rel="stylesheet" href="mercury-scene.css?v=20260925-earthdest-2">
@@ -26,7 +26,7 @@
   <link rel="stylesheet" href="neptune-scene.css?v=20260925-earthdest-2">
   <script src="exploration-media.js?v=20260925-earthdest-2" defer></script>
   <script src="earth-scene.js?v=20260925-earthdest-2" defer></script>
-  <script src="earth-full-exploration.js?v=20260925-earth-unified-1" defer></script>
+  <script src="earth-full-exploration.js?v=20260925-earth-destinations-1" defer></script>
   <script src="mars-scene.js?v=20260925-earthdest-2" defer></script>
   <script src="mars-full-exploration.js?v=20260925-earthdest-2" defer></script>
   <script src="mercury-scene.js?v=20260925-earthdest-2" defer></script>
@@ -302,6 +302,10 @@
         </aside>
 
         <div class="earth-full-actions" data-earth-ui>
+          <div class="earth-location-wrap">
+            <button id="earth-location-toggle" type="button" aria-expanded="false" aria-controls="earth-location-menu"><span>Lokasi</span></button>
+            <div class="earth-location-menu" id="earth-location-menu" role="menu" aria-label="Destinasi unggulan Bumi"></div>
+          </div>
           <button id="earth-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button>
           <button class="earth-full-exit" id="earth-full-exit" type="button">Keluar dari Eksplorasi</button>
         </div>
@@ -341,6 +345,23 @@
           <div class="earth-tutorial-grid earth-tutorial-desktop"><div><b>W A S D</b><span>Bergerak</span></div><div><b>KLIK + MOUSE</b><span>Lihat sekitar</span></div><div><b>Q / E</b><span>Turun / Naik</span></div><div><b>SHIFT</b><span>Percepat</span></div><div><b>ESC</b><span>Keluar</span></div></div>
           <div class="earth-tutorial-grid earth-tutorial-mobile"><div><b>ARROW</b><span>Bergerak</span></div><div><b>GESER</b><span>Lihat sekitar</span></div><div><b>＋ / −</b><span>Ketinggian</span></div></div>
         </div>
+
+        <div class="earth-travel-veil" id="earth-travel-veil" data-earth-ui aria-hidden="true">
+          <div class="earth-travel-panel">
+            <span id="earth-travel-label">NAVIGASI BUMI</span>
+            <small id="earth-travel-status">MENYIAPKAN TUJUAN</small>
+            <div class="earth-travel-track"><div class="earth-travel-progress" id="earth-travel-progress"></div></div>
+          </div>
+        </div>
+
+        <aside class="earth-destination-card" id="earth-destination-card" data-earth-ui aria-live="polite">
+          <small>FEATURED LOCATION</small>
+          <h4 id="earth-destination-name">Destinasi Bumi</h4>
+          <p class="earth-destination-type" id="earth-destination-type"></p>
+          <div class="earth-destination-coords" id="earth-destination-coords"></div>
+          <p class="earth-destination-descriptor" id="earth-destination-descriptor"></p>
+          <a id="earth-destination-source" href="#" target="_blank" rel="noopener noreferrer">Sumber lokasi</a>
+        </aside>
 
         <div class="earth-orientation-hint" aria-hidden="true">Putar perangkat untuk pengalaman terbaik</div>
       </section>
