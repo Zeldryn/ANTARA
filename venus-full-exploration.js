@@ -308,15 +308,24 @@
     const slopeLineA = ridgeWave((x * 0.105 + z * 0.040 + 0.30 * Math.sin(z * 0.034)), 13);
     const slopeLineB = ridgeWave((-x * 0.072 + z * 0.092 + 0.22 * Math.sin(x * 0.030)), 14);
     const slopeLineation = (slopeLineA * 0.55 + slopeLineB * 0.45) * edificeEnvelope * smoothstep((radial - 0.20) / 0.60) * 0.060;
-    const flowGrooves = flows.internalLineation * 0.028;
+    const flowGrooves = flows.internalLineation * 0.040;
+    const flankTerraces = ridgeWave(
+      radial * 18.0 + angular * 0.78 + Math.sin(angular * 4.0 + radial * 5.0) * 0.32,
+      12
+    ) * edificeEnvelope * smoothstep((radial - 0.30) / 0.58) * 0.036;
+    const apronStreaks = Math.max(
+      ridgeWave(x * 0.082 + z * 0.040 + Math.sin(z * 0.031) * 0.36, 16),
+      ridgeWave(-x * 0.054 + z * 0.094 + Math.sin(x * 0.028) * 0.34, 17)
+    ) * clamp(flows.combined + flows.edge * 0.45, 0, 1) * 0.025;
     const plainFracture = Math.max(
       ridgeWave(x * 0.145 + z * 0.050 + 0.20 * Math.sin(z * 0.035), 14),
       ridgeWave(-x * 0.092 + z * 0.165 + 0.16 * Math.sin(x * 0.035), 15)
-    ) * (1 - edificeEnvelope) * 0.035;
+    ) * (1 - edificeEnvelope) * 0.040;
     const plainUndulation = 0.075 * fbm(x * 0.043, z * 0.043, 11, 3);
 
     return broadBase + upperEdifice + asymmetricShoulder + summitBench + ventPrimary + ventSecondary
-      + brokenRim + foregroundShelf + flowRelief + flowLevees + slopeLineation + flowGrooves + plainFracture + plainUndulation;
+      + brokenRim + foregroundShelf + flowRelief + flowLevees + slopeLineation + flowGrooves
+      + flankTerraces + apronStreaks + plainFracture + plainUndulation;
   }
 
   function maxwellStructure(x, z) {
@@ -345,9 +354,14 @@
     const ridges = s.ridgeA * 1.30 + s.ridgeB * 0.62 + s.ridgeFine * 0.24;
     const valleys = -0.58 * ridgeWave(x * 0.145 + z * 0.060 + 0.9 + s.warp * 0.023, 10) * s.massif;
     const westTransition = -1.05 * s.lakshmi;
+    const ridgeShoulders = ridgeWave(
+      (x + s.warp * 0.28) * 0.61 + z * 0.075 + Math.sin(z * 0.041) * 0.32,
+      15
+    ) * s.massif * 0.090;
+    const talusBreakup = s.ridgeFine * (1 - s.ridgeA * 0.55) * 0.050;
     const cleopatra = -1.18 * s.cleopatraBowl + 0.42 * s.cleopatraOuter + 0.22 * s.cleopatraInner - 0.28 * s.channel;
     const micro = 0.085 * fbm(x * 0.057, z * 0.057, 23, 3);
-    return Math.max(-1.5, broadMassif + ridges + valleys + westTransition + cleopatra + micro);
+    return Math.max(-1.5, broadMassif + ridges + valleys + westTransition + ridgeShoulders + talusBreakup + cleopatra + micro);
   }
 
   function aphroditeStructure(x, z) {
@@ -374,8 +388,12 @@
     const blockRelief = s.blockMask * 0.28;
     const valleys = -0.68 * s.mainValley - 0.18 * s.branchValley - 0.15 * s.broadValley;
     const fractureGrooves = -0.10 * ridgeWave((x - z * 0.90 - s.warp * 0.55) * 0.305 + 0.6, 18) * s.envelope;
+    const crossTraces = (
+      ridgeWave((x + z * 0.74 + s.warp * 0.22) * 0.62 + 0.9, 18) * 0.060
+      - ridgeWave((x - z * 0.93 - s.warp * 0.18) * 0.54 + 1.5, 20) * 0.040
+    ) * s.envelope * (0.55 + s.blockMask * 0.45);
     const micro = 0.080 * fbm(x * 0.060, z * 0.060, 37, 3);
-    return upland + fabrics + blockRelief + valleys + fractureGrooves + micro;
+    return upland + fabrics + blockRelief + valleys + fractureGrooves + crossTraces + micro;
   }
 
   function ishtarPlateauMask(x, z) {
@@ -409,11 +427,17 @@
     const akna = s.akna * (2.05 + ridgeWave((x - s.warp) * 0.29 - z * 0.040, 9) * 0.92);
     const freyja = s.freyja * (1.72 + ridgeWave(x * 0.22 + z * 0.045 + s.warp * 0.022, 9) * 0.72);
     const easternHills = s.eastHills * (0.62 + ridgeWave(x * 0.16 - z * 0.08, 11) * 0.32);
-    const interiorLineation = ridgeWave(x * 0.072 + z * 0.032 + 0.22 * Math.sin(x * 0.027), 15) * s.plateau * 0.052;
-    const marginFractures = ridgeWave(x * 0.11 + z * 0.21 + s.warp * 0.02, 13) * (s.maxwell + s.akna + s.freyja) * 0.11;
+    const interiorLineation = ridgeWave(x * 0.072 + z * 0.032 + 0.22 * Math.sin(x * 0.027), 15) * s.plateau * 0.060;
+    const plateauWrinkle = ridgeWave(
+      x * 0.118 - z * 0.046 + s.warp * 0.030 + Math.sin(z * 0.029) * 0.22,
+      18
+    ) * s.plateau * (1 - Math.max(s.maxwell, s.akna, s.freyja)) * 0.035;
+    const marginFractures = ridgeWave(x * 0.11 + z * 0.21 + s.warp * 0.02, 13) * (s.maxwell + s.akna + s.freyja) * 0.115;
+    const marginBench = ridgeWave(x * 0.072 + z * 0.090 + s.warp * 0.015, 16) * Math.max(s.maxwell, s.akna, s.freyja) * 0.060;
     const southernLowland = -0.62 * gaussian(x, z, 6, 55, 72, 28);
     const micro = 0.050 * fbm(x * 0.052, z * 0.052, 41, 3);
-    return plateauRelief + maxwell + akna + freyja + easternHills + interiorLineation + marginFractures + southernLowland + micro;
+    return plateauRelief + maxwell + akna + freyja + easternHills + interiorLineation + plateauWrinkle
+      + marginFractures + marginBench + southernLowland + micro;
   }
 
   function alphaStructure(x, z) {
@@ -450,10 +474,15 @@
     const ridges = s.ridgeA * 0.56 + s.ridgeB * 0.50 + s.ridgeFine * 0.13;
     const scarps = s.boundary * 0.30;
     const faults = -(s.faultA * 0.48 + s.faultB * 0.38 + s.faultC * 0.20);
+    const fineCrossTrace = ridgeWave(
+      (x * 0.44 + z * 0.17 + s.warpA * 0.10 - s.warpB * 0.06) * 0.88 + 0.7,
+      18
+    ) * s.tesseraMask * 0.050;
+    const blockEdgeRelief = s.boundary * (0.025 + s.ridgeFine * 0.035);
     const lavaLows = -(s.lowA * 0.84 + s.lowB * 0.64 + s.lowC * 0.42);
     const outsidePlain = 0.045 * fbm(x * 0.040, z * 0.040, 91, 2) * (1 - s.tesseraMask);
     const micro = 0.070 * fbm(x * 0.070, z * 0.070, 59, 3) * (0.35 + s.tesseraMask * 0.65);
-    return upland + ridges + scarps + faults + lavaLows + outsidePlain + micro;
+    return upland + ridges + scarps + faults + fineCrossTrace + blockEdgeRelief + lavaLows + outsidePlain + micro;
   }
 
   const HEIGHT_FUNCTIONS = Object.freeze({
@@ -520,12 +549,14 @@
       this.scene.add(this.group);
       this.tiles = [];
       this.horizon = null;
+      this.distantTerrain = null;
       this.accentMesh = null;
       this.regionalVisualization = null;
       this.atmosphericMotes = null;
       this.ambientClock = 0;
       this.material = null;
       this.horizonMaterial = null;
+      this.distantMaterial = null;
       this.accentResources = [];
       this.textures = [];
       this.frustum = new THREE.Frustum();
@@ -575,6 +606,8 @@
 
       this.horizon = this.createHorizon();
       this.group.add(this.horizon);
+      this.distantTerrain = this.createDistantTerrain();
+      if (this.distantTerrain) this.group.add(this.distantTerrain);
       onProgress(0.86);
       await new Promise(resolve => requestAnimationFrame(() => resolve()));
       this.accentMesh = this.createSurfaceAccents();
@@ -856,6 +889,96 @@
       const mesh = new T.Mesh(geometry, this.horizonMaterial);
       mesh.frustumCulled = false;
       mesh.renderOrder = -1;
+      return mesh;
+    }
+
+    distantMassifProfile(angle) {
+      const angularDistance = (a, b) => Math.acos(Math.cos(a - b));
+      const lobe = (center, width) => Math.exp(-Math.pow(angularDistance(angle, center) / width, 2));
+      const broadNoise = 0.72 + 0.28 * valueNoise(Math.cos(angle) * 3.2, Math.sin(angle) * 3.2, 251);
+      if (this.region.id === "maat") {
+        return (0.88 + lobe(3.85, 0.55) * 2.05 + lobe(5.35, 0.78) * 1.05) * broadNoise;
+      }
+      if (this.region.id === "maxwell") {
+        return (1.20 + lobe(3.45, 0.82) * 4.8 + lobe(4.85, 0.62) * 2.4
+          + ridgeWave(angle * 5.2 + 0.5, 7) * 1.25) * broadNoise;
+      }
+      if (this.region.id === "aphrodite") {
+        return (0.85 + lobe(3.65, 1.05) * 2.15 + lobe(5.50, 0.75) * 1.10
+          + ridgeWave(angle * 4.4 - 0.6, 8) * 0.55) * broadNoise;
+      }
+      if (this.region.id === "ishtar") {
+        return (1.00 + lobe(2.95, 0.68) * 2.15 + lobe(4.20, 0.62) * 3.35 + lobe(5.35, 0.72) * 1.55) * broadNoise;
+      }
+      return (0.78 + lobe(3.60, 0.95) * 1.45 + lobe(5.30, 0.75) * 1.15
+        + ridgeWave(angle * 5.6 + 0.3, 8) * 0.72) * broadNoise;
+    }
+
+    createDistantTerrain() {
+      const T = this.THREE;
+      const radial = 4;
+      const angular = Math.max(36, Math.round(this.quality.horizonSegments * 0.68));
+      const inner = 92;
+      const outer = 190;
+      const vertices = [];
+      const colors = [];
+      const indices = [];
+      const fogColor = new T.Color(this.region.fog);
+      const sourceRadius = this.region.playRadius * 0.90;
+
+      // One extremely cheap, non-playable shell extends the visual geology beyond
+      // the bounded region. It is intentionally fog-heavy and uses only broad
+      // silhouettes, so the world feels wider without creating a second play area.
+      for (let r = 0; r <= radial; r += 1) {
+        const rt = r / radial;
+        const radius = lerp(inner, outer, rt);
+        const band = Math.sin(Math.PI * rt);
+        for (let a = 0; a <= angular; a += 1) {
+          const angle = a / angular * Math.PI * 2;
+          const x = Math.cos(angle) * radius;
+          const z = Math.sin(angle) * radius;
+          const sourceX = Math.cos(angle) * sourceRadius;
+          const sourceZ = Math.sin(angle) * sourceRadius;
+          const edgeHeight = this.heightAt(sourceX, sourceZ);
+          const profile = this.distantMassifProfile(angle);
+          const radialBreakup = valueNoise(
+            Math.cos(angle) * 4.2 + rt * 2.1,
+            Math.sin(angle) * 4.2 - rt * 1.7,
+            263
+          ) * 0.28;
+          const distantFloor = this.region.id === "maat" ? -0.72 : -1.25;
+          const y = edgeHeight * 0.13 + distantFloor + band * (profile + radialBreakup) * lerp(0.72, 1.0, rt);
+          const color = this.colorFor(sourceX, sourceZ, edgeHeight, 0.10);
+          color.lerp(fogColor, 0.46 + rt * 0.22).multiplyScalar(lerp(0.78, 0.54, rt));
+          vertices.push(x, y, z);
+          colors.push(color.r, color.g, color.b);
+        }
+      }
+
+      const row = angular + 1;
+      for (let r = 0; r < radial; r += 1) {
+        for (let a = 0; a < angular; a += 1) {
+          const i = r * row + a;
+          indices.push(i, i + row, i + 1, i + 1, i + row, i + row + 1);
+        }
+      }
+
+      const geometry = new T.BufferGeometry();
+      geometry.setAttribute("position", new T.Float32BufferAttribute(vertices, 3));
+      geometry.setAttribute("color", new T.Float32BufferAttribute(colors, 3));
+      geometry.setIndex(indices);
+      geometry.computeVertexNormals();
+      geometry.computeBoundingSphere();
+      this.distantMaterial = new T.MeshBasicMaterial({
+        vertexColors: true,
+        fog: true,
+        depthWrite: true,
+        toneMapped: true
+      });
+      const mesh = new T.Mesh(geometry, this.distantMaterial);
+      mesh.name = `venus-distant-terrain-${this.region.id}`;
+      mesh.frustumCulled = false;
+      mesh.renderOrder = -2;
       return mesh;
     }
 
@@ -1179,11 +1302,11 @@
       const T = this.THREE;
       const size = this.quality.name === "HIGH" ? 160 : 128;
       const materialProfiles = {
-        maat:      { repeat: 8.0, normal: 0.48, roughness: 0.88, roughSpread: 38, anisotropy: 0.22 },
-        maxwell:   { repeat: 9.5, normal: 0.56, roughness: 0.95, roughSpread: 30, anisotropy: 0.36 },
-        aphrodite: { repeat: 9.0, normal: 0.54, roughness: 0.92, roughSpread: 34, anisotropy: 0.33 },
-        ishtar:    { repeat: 7.5, normal: 0.40, roughness: 0.93, roughSpread: 30, anisotropy: 0.12 },
-        alpha:     { repeat: 9.5, normal: 0.60, roughness: 0.95, roughSpread: 34, anisotropy: 0.40 }
+        maat:      { repeat: 8.8, normal: 0.54, roughness: 0.88, roughSpread: 40, anisotropy: 0.25 },
+        maxwell:   { repeat: 10.0, normal: 0.60, roughness: 0.95, roughSpread: 32, anisotropy: 0.39 },
+        aphrodite: { repeat: 9.6, normal: 0.59, roughness: 0.92, roughSpread: 36, anisotropy: 0.37 },
+        ishtar:    { repeat: 8.1, normal: 0.45, roughness: 0.93, roughSpread: 32, anisotropy: 0.15 },
+        alpha:     { repeat: 10.2, normal: 0.65, roughness: 0.95, roughSpread: 36, anisotropy: 0.44 }
       };
       const profile = materialProfiles[this.region.id] || materialProfiles.maat;
       const detail = new Float32Array(size * size);
@@ -1345,10 +1468,14 @@
       for (const entry of this.tiles) entry.mesh.geometry.dispose();
       this.tiles.length = 0;
       this.horizon?.geometry?.dispose();
+      this.distantTerrain?.geometry?.dispose();
       for (const resource of this.accentResources) resource?.dispose?.();
       this.accentResources.length = 0;
       this.material?.dispose();
       this.horizonMaterial?.dispose();
+      this.distantMaterial?.dispose();
+      this.distantMaterial = null;
+      this.distantTerrain = null;
       for (const texture of this.textures) texture.dispose();
       this.textures.length = 0;
       this.group.clear();
@@ -2140,6 +2267,27 @@
       }
     }
 
+    animateExitAltitude(targetAltitude, duration, token) {
+      if (!this.regionWorld || !this.camera) return Promise.resolve();
+      const groundNow = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
+      const startAltitude = Math.max(0, this.camera.position.y - groundNow);
+      const start = performance.now();
+      return new Promise(resolve => {
+        const frame = now => {
+          if (token !== this.transitionToken) return resolve();
+          const raw = clamp((now - start) / (this.venus.motion.matches ? 120 : duration), 0, 1);
+          const eased = smootherstep(raw);
+          const ground = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
+          this.lastGround = ground;
+          this.cameraAltitude = lerp(startAltitude, targetAltitude, eased);
+          this.camera.position.y = ground + this.cameraAltitude;
+          if (raw < 1) requestAnimationFrame(frame);
+          else resolve();
+        };
+        requestAnimationFrame(frame);
+      });
+    }
+
     async exit() {
       if (!this.active || this.state === STATES.EXITING) return;
       if (this.state === STATES.SELECTING && !this.regionWorld) {
@@ -2150,10 +2298,12 @@
         this.failBackToOrbit();
         return;
       }
+
       this.state = STATES.EXITING;
       const token = ++this.transitionToken;
-      this.stopLoop();
-      this.input.unbind();
+      // Mirror Mars exit behavior: freeze input, but keep the render loop alive so
+      // atmosphere, visibility and camera motion continue to render smoothly.
+      this.input.clear();
       this.selector.hidden = true;
       this.tutorial.classList.remove("is-visible");
       this.infoCard.classList.remove("is-visible");
@@ -2162,34 +2312,30 @@
       this.boundaryHint.classList.remove("is-visible");
       this.root.classList.add("is-exiting");
       document.getElementById("announcement").textContent = "Meninggalkan permukaan Venus dan kembali ke panorama orbit.";
+      this.startLoop();
+
       if (this.regionWorld && this.camera) {
-        const startY = this.camera.position.y;
-        const ground = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
-        const targetY = ground + 15;
-        const start = performance.now();
-        const duration = this.venus.motion.matches ? 120 : 900;
-        await new Promise(resolve => {
-          const frame = now => {
-            if (token !== this.transitionToken) return resolve();
-            const t = smootherstep(clamp((now - start) / duration, 0, 1));
-            this.camera.position.y = lerp(startY, targetY, t);
-            this.renderer.render(this.scene, this.camera);
-            if (t < 1) requestAnimationFrame(frame); else resolve();
-          };
-          requestAnimationFrame(frame);
-        });
+        try {
+          const ground = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
+          const currentAltitude = Math.max(0, this.camera.position.y - ground);
+          await this.animateExitAltitude(Math.max(currentAltitude, 52), 1650, token);
+        } catch {}
       }
       if (token !== this.transitionToken) return;
-      const duration = this.venus.motion.matches ? 180 : 2100;
+
+      const reduced = this.venus.motion.matches;
+      const duration = reduced ? 260 : 3200;
       const start = performance.now();
       await new Promise(resolve => {
         const frame = now => {
           if (token !== this.transitionToken) return resolve();
           const raw = clamp((now - start) / duration, 0, 1);
           const eased = smootherstep(raw);
-          this.root.style.setProperty("--surface-opacity", String(1 - smoothstep(raw / 0.68)));
+          this.root.style.setProperty("--surface-opacity", String(1 - smoothstep(raw / 0.62)));
+          this.root.style.setProperty("--entry-progress", String(1 - eased));
           this.venus.setFullExplorationTransition?.(1 - eased, this.region);
-          if (raw < 1) requestAnimationFrame(frame); else resolve();
+          if (raw < 1) requestAnimationFrame(frame);
+          else resolve();
         };
         requestAnimationFrame(frame);
       });
