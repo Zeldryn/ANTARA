@@ -24,10 +24,10 @@ test('mobile presentation chooses most recent panel without resetting state', sy
 test('ESC closes most recently interacted secondary panel', inputEsc.includes('getTopSecondaryPanel') && inputEsc.indexOf('topPanel === "info"') < inputEsc.indexOf('this.controller.exit()') && inputEsc.indexOf('topPanel === "objectives"') < inputEsc.indexOf('this.controller.exit()'));
 test('desktop/laptop both-open responsive CSS exists', css.includes('.venus-full-exploration.is-info-open.is-objectives-open .venus-objectives-panel') && css.includes('.venus-full-exploration.is-info-open.is-objectives-open .venus-location-card'));
 test('discovery reason label is friendly', html.includes('KENAPA INI MENARIK?'));
-test('discovery status is friendlier', js.includes('BARU KAMU TEMUKAN') && js.includes('SUDAH KAMU LIHAT'));
-test('discovery announcement is not robotic', js.includes('Kamu menemukan sesuatu yang menarik'));
+test('discovery status is friendlier', js.includes('BARU KAMU LIHAT') && js.includes('SUDAH PERNAH KAMU LIHAT'));
+test('discovery announcement is not robotic', js.includes('Ada hal menarik di dekatmu') && js.includes('Coba amati!'));
 
-const friendlyTypes=['TAHUKAH KAMU?','COBA PERHATIKAN!','COBA LIHAT SEKITAR!','LIHAT DEH!','TERNYATA...','UNIKNYA...','KENAPA BISA BEGINI?','PANAS BANGET, YA?'];
+const friendlyTypes=['TAHUKAH KAMU?','COBA PERHATIKAN!','COBA LIHAT SEKITAR!','LIHAT DEH!','TERNYATA...','UNIKNYA...','KENAPA BISA BEGINI?'];
 const typeMatches=[...js.matchAll(/id:\s*"(?:maat|maxwell|aphrodite|ishtar|alpha)-[^"]+"[\s\S]{0,180}?type:\s*"([^"]+)"/g)].map(m=>m[1]);
 test('all 25 observation cards found', typeMatches.length===25);
 test('all observation card eyebrows use friendly discovery language', typeMatches.every(t=>friendlyTypes.includes(t)));

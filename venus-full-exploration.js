@@ -109,63 +109,63 @@
         ],
         observations: [
           {
-            id: "maat-slope", type: "TAHUKAH KAMU?", title: "Maat Mons Itu Sangat Lebar",
-            lead: "Dari dekat, Maat Mons bisa terasa seperti daratan yang terus menanjak. Itu karena gunung api ini sangat lebar, bukan kerucut tajam.",
+            id: "maat-slope", type: "TAHUKAH KAMU?", title: "Maat Mons Sangat Lebar",
+            lead: "Maat Mons tidak menjulang seperti kerucut tajam. Lerengnya naik perlahan dalam jarak yang sangat jauh, jadi dari dekat gunung ini bisa terasa seperti daratan yang terus menanjak.",
             sections: [
-              { heading: "COBA LIHAT LERENGNYA", text: "Kenaikannya pelan dan panjang. Bentuk seperti ini khas gunung api perisai yang dibangun oleh banyak aliran lava." },
-              { heading: "KENAPA BISA BEGINI?", text: "Lava dapat menyebar jauh sebelum membeku. Jika terjadi berulang kali, lapisannya membangun gunung yang sangat lebar." }
+              { heading: "COBA LIHAT LERENGNYA", text: "Coba ikuti lerengnya dengan mata. Ketinggiannya naik pelan dalam jarak yang sangat jauh. Itu ciri gunung api perisai seperti Maat Mons, bukan bukit kecil yang curam." },
+              { heading: "KENAPA BISA SELEBAR INI?", text: "Lava yang keluar berkali-kali dapat menyebar jauh sebelum membeku. Lapisan demi lapisan membangun tubuh gunung api yang sangat lebar." }
             ],
-            why: "Dari bentuk lerengnya, ilmuwan bisa mendapat petunjuk tentang bagaimana lava menyebar dan membangun Maat Mons.",
-            deepDive: ["Bandingkan lereng di dekatmu dengan dataran yang lebih jauh. Perubahannya tidak mendadak, tetapi berlangsung dalam jarak panjang.", "Warna ANTARA dibuat agar permukaan mudah dibaca. Warna itu bukan foto warna asli batuan Venus."],
+            why: "Bentuk lereng memberi petunjuk tentang bagaimana lava menumpuk dan menyebar dari pusat aktivitas vulkanik.",
+            deepDive: ["Bandingkan perubahan ketinggian di sekitar titik ini dengan dataran yang lebih jauh.", "Jangan menilai warna permukaan sebagai warna asli batuan. Visual ANTARA diberi pencahayaan dan warna untuk keterbacaan."],
             sourceLabel: "NASA/JPL · Magellan · Maat Mons", source: "https://science.nasa.gov/photojournal/venus-3-d-perspective-view-of-maat-mons-2/",
             anchor: { x: -24, z: -6 }, placement: "slope-medium"
           },
           {
-            id: "maat-flow", type: "COBA PERHATIKAN!", title: "Jejak Lava Membentang di Permukaan",
-            lead: "Lihat jalur yang memanjang di sekitar Maat Mons. Bentuk seperti ini membantu kita mengikuti jejak aliran lava lama.",
+            id: "maat-flow", type: "COBA PERHATIKAN!", title: "Jejak Lava yang Membentang Jauh",
+            lead: "Bagian permukaan yang memanjang di sekitar Maat Mons bisa membantu kita membaca jalur aliran lava lama.",
             sections: [
-              { heading: "COBA IKUTI POLANYA", text: "Cari bagian yang lebih halus atau memanjang di antara permukaan yang lebih kasar. Polanya bisa menunjukkan arah aliran vulkanik." },
-              { heading: "INGAT, RADAR BUKAN FOTO", text: "Terang dan gelap pada radar bukan warna asli batuan, dan bukan peta ketinggian. Kekasaran permukaan juga memengaruhi pantulannya." }
+              { heading: "LIHAT POLANYA", text: "Cari jalur yang tampak lebih halus atau memanjang di antara permukaan yang lebih kasar. Pola seperti ini bisa menjadi petunjuk arah aliran vulkanik." },
+              { heading: "INGAT, RADAR BUKAN FOTO", text: "Bagian terang dan gelap pada radar tidak menunjukkan warna asli atau ketinggian. Kekasaran permukaan juga memengaruhi pantulannya." }
             ],
-            why: "Jejak aliran membantu ilmuwan menyusun kembali cerita vulkanisme Venus tanpa harus melihat erupsinya secara langsung.",
-            deepDive: ["Magellan memakai radar karena awan tebal Venus menutupi permukaan dari pengamatan cahaya tampak dari orbit.", "Topografi dipakai untuk membaca ketinggian, sedangkan radar membantu membaca sifat permukaan. Keduanya tidak boleh dianggap sama."],
+            why: "Jejak seperti ini membantu ilmuwan menebak ke mana lava pernah bergerak, meski erupsinya terjadi jauh sebelum kita bisa mengamatinya.",
+            deepDive: ["Magellan memetakan permukaan Venus dengan radar karena awan Venus menghalangi pengamatan biasa pada cahaya tampak.", "Topografi dan citra radar dipakai untuk pertanyaan yang berbeda dan tidak boleh dipertukarkan."],
             sourceLabel: "NASA/JPL · Magellan", source: "https://science.nasa.gov/image-detail/venus-2/",
             anchor: { x: 30, z: 28 }, placement: "flat"
           },
           {
             id: "maat-vent", type: "TERNYATA...", title: "Venus Masih Bisa Aktif",
-            lead: "Dua citra Magellan dari tahun 1991 menunjukkan sebuah lubang vulkanik di kawasan Maat Mons berubah bentuk dan membesar.",
+            lead: "Citra Magellan dari Februari dan Oktober 1991 menunjukkan perubahan pada sebuah lubang vulkanik yang terkait dengan Maat Mons.",
             sections: [
-              { heading: "DARI MANA KITA TAHU?", text: "Magellan merekam lokasi yang sama pada Februari dan Oktober 1991. Perubahannya kemudian ditafsirkan sebagai bukti aktivitas vulkanik." },
-              { heading: "COBA BAYANGKAN", text: "Bentuk di depanmu bukan salinan persis lubang tersebut. Titik ini membantu membayangkan jenis perubahan yang ditemukan pada data Magellan." }
+              { heading: "APA YANG BERUBAH?", text: "Dua citra yang diambil beberapa bulan terpisah memperlihatkan lubang itu berubah bentuk dan membesar. Ilmuwan menilai perubahan ini sebagai bukti kuat aktivitas vulkanik." },
+              { heading: "COBA INGAT", text: "Bentuk kecil di depanmu bukan salinan persis lubang tersebut. Titik ini dipakai untuk membantu membayangkan bukti yang dilihat Magellan." }
             ],
-            why: "Temuan ini menunjukkan bahwa Venus bukan dunia yang seluruh aktivitas geologinya sudah berhenti.",
-            deepDive: ["Data misi lama masih bisa menghasilkan penemuan baru ketika dianalisis kembali dengan pertanyaan dan metode yang lebih baik.", "Magellan melihat permukaan dengan radar, jadi bukti ini berasal dari perubahan pada citra radar, bukan foto biasa."],
+            why: "Kalau bentuk permukaan berubah dari waktu ke waktu, berarti Venus masih punya proses geologi yang aktif. Itu yang membuat temuan ini menarik.",
+            deepDive: ["Data lama dapat menghasilkan penemuan baru ketika dianalisis dengan metode dan pertanyaan yang lebih baik.", "Magellan mengamati permukaan dengan radar, bukan kamera cahaya tampak biasa."],
             sourceLabel: "NASA/JPL · Analisis Magellan 1991", source: "https://www.jpl.nasa.gov/news/nasas-magellan-data-reveals-volcanic-activity-on-venus/",
             anchor: { x: 3, z: -39 }, placement: "elevation-high"
           },
           {
-            id: "maat-atmosphere", type: "PANAS BANGET, YA?", title: "Permukaan Venus Sangat Ekstrem",
-            lead: "Suhu rata-rata permukaan Venus sekitar 467°C, dengan tekanan sekitar 93 kali tekanan udara di permukaan laut Bumi.",
+            id: "maat-atmosphere", type: "TAHUKAH KAMU?", title: "Panas dan Tekanannya Ekstrem",
+            lead: "Di permukaan Venus, suhunya sekitar 467°C dan tekanannya kira-kira 93 kali tekanan udara di permukaan laut Bumi. Panas dan tekanannya sama-sama ekstrem.",
             sections: [
-              { heading: "KENAPA SEPANAS INI?", text: "Atmosfer karbon dioksida yang sangat tebal menahan panas melalui efek rumah kaca yang ekstrem." },
-              { heading: "TEKANANNYA JUGA BESAR", text: "Tekanannya begitu tinggi sehingga wahana pendarat harus dibuat sangat kuat agar bisa bertahan di permukaan." }
+              { heading: "PANAS BANGET, KENAPA?", text: "Atmosfer karbon dioksida yang sangat tebal menahan panas melalui efek rumah kaca yang ekstrem. Itu sebabnya permukaan Venus sangat panas." },
+              { heading: "TEKANANNYA JUGA BESAR", text: "Tekanan setinggi ini membuat wahana pendarat Venus harus dirancang jauh lebih kuat daripada kendaraan yang bekerja di Bumi atau Mars." }
             ],
-            why: "Lingkungan ekstrem ini menentukan bagaimana ilmuwan merancang wahana dan mempelajari Venus dari dekat.",
+            why: "Kondisi ini menentukan cara kita menjelajahi Venus. Wahana harus tahan panas dan tekanan besar agar bisa bertahan di permukaannya.",
             comparison: [{ label: "VENUS", value: "≈93 bar" }, { label: "BUMI", value: "≈1 bar" }],
-            deepDive: ["NASA mencantumkan suhu permukaan Venus sekitar 467°C dan tekanan sekitar 93 kali tekanan udara di permukaan laut Bumi.", "Awan Venus mengandung tetesan asam sulfat, sedangkan atmosfer dekat permukaannya didominasi karbon dioksida yang sangat padat."],
+            deepDive: ["NASA mencantumkan suhu permukaan sekitar 467°C dan tekanan sekitar 93 kali tekanan laut Bumi.", "Awan Venus mengandung tetesan asam sulfat, tetapi kondisi dekat permukaan didominasi atmosfer karbon dioksida yang sangat padat."],
             sourceLabel: "NASA Science · Fakta Venus", source: "https://science.nasa.gov/venus/venus-facts/",
             anchor: { x: -66, z: 42 }, placement: "open"
           },
           {
-            id: "maat-magellan", type: "TAHUKAH KAMU?", title: "Magellan Memakai Radar untuk Melihat Venus",
-            lead: "Awan Venus sangat tebal, jadi permukaannya sulit dilihat dari orbit dengan cahaya biasa. Magellan memakai radar untuk mengintip bentang di bawah awan.",
+            id: "maat-magellan", type: "KENAPA BISA BEGINI?", title: "Kenapa Magellan Memakai Radar?",
+            lead: "Awan tebal Venus menutupi permukaannya dari pandangan biasa. Karena itu, Magellan memakai radar untuk memetakan bentang di bawah awan.",
             sections: [
-              { heading: "GIMANA CARANYA?", text: "Gelombang radar menembus awan, memantul dari permukaan, lalu kembali membawa informasi tentang permukaan Venus." },
-              { heading: "TAPI JANGAN TERTUKAR", text: "Bagian yang lebih terang di radar belum tentu lebih tinggi. Ketinggian harus dibaca dari data topografi." }
+              { heading: "RADAR BISA MENEMBUS AWAN", text: "Radar bisa menembus selimut awan, memantul dari permukaan, lalu kembali membawa petunjuk tentang bentuk dan sifat permukaannya." },
+              { heading: "TAPI BUKAN PETA KETINGGIAN", text: "Radar yang tampak lebih terang tidak otomatis berarti tempat itu lebih tinggi. Elevasi harus diukur dengan data topografi." }
             ],
-            why: "Kalau kita tahu cara radar bekerja, citra Venus jadi jauh lebih mudah dibaca dengan benar.",
-            deepDive: ["Magellan memetakan sebagian besar permukaan Venus pada awal 1990-an.", "Di ANTARA, topografi dipakai untuk bentuk besar permukaan, sedangkan radar dipakai sebagai konteks sifat permukaan."],
+            why: "Dengan memahami cara radar bekerja, kita tidak akan salah membaca citra radar seperti foto biasa.",
+            deepDive: ["Magellan memetakan sebagian besar permukaan Venus pada awal 1990-an.", "ANTARA memisahkan penggunaan topografi untuk bentuk makro dan radar untuk konteks permukaan."],
             sourceLabel: "NASA · Magellan", source: "https://science.nasa.gov/image-detail/venus-2/",
             anchor: { x: 72, z: -42 }, placement: "open"
           }
@@ -215,62 +215,62 @@
         ],
         observations: [
           {
-            id: "maxwell-ridges", type: "LIHAT DEH!", title: "Maxwell Punya Punggungan Panjang",
-            lead: "Di depanmu, punggungan dan lembah membentuk pola memanjang. Maxwell Montes bukan satu gunung, tetapi bagian dari sistem pegunungan besar.",
+            id: "maxwell-ridges", type: "LIHAT DEH!", title: "Punggungan Panjang di Maxwell",
+            lead: "Permukaan di depanmu membentuk punggungan panjang dengan lembah di antaranya. Maxwell Montes bukan satu gunung tunggal, tetapi bagian dari sistem pegunungan besar.",
             sections: [
-              { heading: "COBA IKUTI ARAHNYA", text: "Banyak punggungan bergerak dalam arah yang mirip. Itu menunjukkan perubahan kerak terjadi pada wilayah yang luas." },
-              { heading: "KENAPA BISA BEGINI?", text: "Banyak bentuk di Maxwell cocok dengan kerak yang pernah mengalami tekanan atau kompresi kuat." }
+              { heading: "COBA IKUTI ARAHNYA", text: "Coba ikuti arah punggungannya. Banyak yang memanjang dengan pola serupa, jadi perubahan kerak di sini terjadi pada wilayah yang luas, bukan cuma satu titik." },
+              { heading: "KENAPA BISA BEGINI?", text: "Banyak punggungan dan lembah di Maxwell cocok dengan tanda kerak yang pernah ditekan sangat kuat. Tekanan seperti ini bisa melipat dan mengangkat permukaan." }
             ],
-            why: "Arah punggungan membantu ilmuwan menebak gaya yang pernah menekan dan membentuk kerak Venus.",
-            deepDive: ["Pegunungan tidak harus berupa satu puncak. Di Maxwell, identitas utamanya justru jaringan punggungan dan lembah yang saling terhubung.", "Interpretasi kompresi berasal dari bentuk struktur yang terlihat pada data Magellan dan kajian geologi wilayah ini."],
+            why: "Arah punggungan dapat menyimpan petunjuk tentang gaya yang pernah menekan dan membentuk kerak Venus.",
+            deepDive: ["Kompresi dapat melipat atau menebalkan kerak dan membangun pegunungan.", "Venus tidak memiliki sistem lempeng modern yang identik dengan Bumi, jadi mekanisme deformasinya tetap menjadi pertanyaan penting."],
             sourceLabel: "NASA/JPL · Maxwell Montes", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
             anchor: { x: -25, z: -10 }, placement: "slope-high"
           },
           {
             id: "maxwell-height", type: "TAHUKAH KAMU?", title: "Ini Pegunungan Tertinggi di Venus",
-            lead: "Maxwell Montes mencapai hampir 11 km di atas radius rata-rata Venus. Ini adalah pegunungan tertinggi yang dikenal di planet tersebut.",
+            lead: "Maxwell Montes mencapai hampir 11 km di atas radius rata-rata Venus. Itu membuat wilayah ini menjadi pegunungan tertinggi yang dikenal di planet ini.",
             sections: [
-              { heading: "COBA LIHAT SKALANYA", text: "Relief tinggi di sini menyatu dengan banyak punggungan dan lereng. Maxwell bukan satu puncak yang berdiri sendirian." },
-              { heading: "BANDINGKAN SEKITARNYA", text: "Perbedaan ketinggian membuat sabuk pegunungan Maxwell terlihat berbeda dari dataran di sekelilingnya." }
+              { heading: "COBA LIHAT SKALANYA", text: "Relief tinggi di sini menyatu dengan banyak punggungan dan lereng. Maxwell bukan sekadar satu puncak yang berdiri sendiri." },
+              { heading: "BANDINGKAN SEKITARNYA", text: "Perbedaan elevasi membantu kita membedakan sabuk pegunungan Maxwell dari dataran tinggi dan dataran yang lebih rendah di sekelilingnya." }
             ],
-            why: "Ketinggian dan bentuk relief membantu ilmuwan memahami hubungan Maxwell dengan dataran tinggi Ishtar di sekitarnya.",
-            deepDive: ["Angka hampir 11 km mengacu pada ketinggian relatif terhadap radius rata-rata Venus, bukan terhadap permukaan laut seperti di Bumi.", "Melihat elevasi bersama bentuk punggungan memberi gambaran yang lebih lengkap daripada hanya mencari titik tertinggi."],
+            why: "Dengan membandingkan tinggi dan bentuk permukaan, ilmuwan bisa melihat bagaimana Maxwell terhubung dengan dataran tinggi dan wilayah di sekitarnya.",
+            deepDive: ["Topografi berasal dari pengukuran ketinggian, bukan dari terang-gelap citra radar.", "Pada ANTARA, ketinggian kamera dan permukaan mengambil sumber topografi yang sama."],
             sourceLabel: "NASA/JPL · Maxwell Montes", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
             anchor: { x: -6, z: -42 }, placement: "elevation-high"
           },
           {
-            id: "maxwell-radar", type: "TERNYATA...", title: "Maxwell Sangat Terang di Radar",
-            lead: "Sebagian dataran tinggi Maxwell memantulkan radar dengan sangat kuat. Tapi terang di radar tidak berarti tempat itu otomatis lebih tinggi.",
+            id: "maxwell-radar", type: "TERNYATA...", title: "Maxwell Terlihat Sangat Terang di Radar",
+            lead: "Sebagian dataran tinggi Maxwell memantulkan radar dengan sangat kuat. Tetapi terang di radar belum tentu berarti tempat itu lebih tinggi.",
             sections: [
-              { heading: "APA YANG MEMENGARUHINYA?", text: "Pantulan radar dipengaruhi kekasaran, sudut pengamatan, dan sifat material permukaan." },
-              { heading: "MASIH ADA MISTERI", text: "Ilmuwan masih meneliti penyebab pasti material yang sangat reflektif di dataran tinggi Venus." }
+              { heading: "APA YANG KITA TAHU?", text: "Terang atau gelap pada radar bisa berubah karena permukaan kasar atau halus, sudut pengamatan, dan sifat materialnya." },
+              { heading: "MASIH ADA MISTERI", text: "Penyebab kimia tepat dari material yang sangat reflektif di dataran tinggi Venus belum dipastikan sepenuhnya." }
             ],
-            why: "Ini contoh bagus bahwa kita bisa mengukur sesuatu dengan jelas, tetapi penyebabnya masih perlu diteliti.",
-            deepDive: ["Radar memberi informasi tentang cara permukaan memantulkan gelombang, bukan warna asli batuan.", "Beberapa hipotesis menghubungkan reflektivitas tinggi dengan kondisi kimia pada elevasi tertentu, tetapi penyebab pastinya belum selesai diperdebatkan."],
+            why: "Kita bisa mengukur bahwa Maxwell sangat terang di radar, tetapi penyebab pastinya masih diteliti. Data dan penjelasan tidak selalu datang bersamaan.",
+            deepDive: ["Jangan menyamakan area radar-terang dengan puncak tertinggi secara otomatis.", "Temperatur, tekanan, kimia atmosfer, kekasaran, dan geometri radar semuanya dapat memengaruhi sinyal."],
             sourceLabel: "NASA/JPL · Maxwell Montes", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
             anchor: { x: 30, z: -22 }, placement: "elevation-high"
           },
           {
-            id: "maxwell-atmosphere", type: "UNIKNYA...", title: "Naik Lebih Tinggi, Kondisinya Ikut Berubah",
-            lead: "Di Maxwell, ketinggian berubah banyak. Suhu, tekanan, dan kondisi kimia atmosfer Venus juga berubah ketika elevasi bertambah.",
+            id: "maxwell-atmosphere", type: "UNIKNYA...", title: "Makin Tinggi, Kondisinya Ikut Berubah",
+            lead: "Semakin tinggi tempatnya, suhu, tekanan, dan kondisi atmosfer Venus ikut berubah. Maxwell membantu kita melihat hubungan antara ketinggian dan atmosfer itu.",
             sections: [
-              { heading: "TAPI TETAP EKSTREM", text: "Meski kondisi berubah dengan ketinggian, permukaan Venus tetap sangat panas dan bertekanan besar." },
-              { heading: "ADA HUBUNGAN DENGAN RADAR?", text: "Ilmuwan meneliti apakah kondisi di ketinggian tertentu membantu membentuk atau menjaga material yang sangat reflektif terhadap radar." }
+              { heading: "DI PUNCAK TETAP EKSTREM", text: "Walau kondisinya berubah dengan ketinggian, seluruh permukaan Venus tetap sangat panas dan berada di bawah tekanan besar." },
+              { heading: "ADA HUBUNGAN DENGAN RADAR?", text: "NASA meneliti kemungkinan bahwa kondisi pada elevasi tertentu membantu membentuk atau menjaga material yang sangat reflektif terhadap radar." }
             ],
-            why: "Topografi dan atmosfer bisa saling berkaitan. Itu sebabnya ilmuwan tidak mempelajari bentuk permukaan secara terpisah dari lingkungannya.",
-            deepDive: ["Hubungan antara elevasi dan reflektivitas radar menarik karena pola terang sering muncul di dataran tinggi Venus.", "Namun hubungan itu belum berarti satu penyebab kimia tertentu sudah terbukti."],
+            why: "Bentang planet tidak berdiri sendiri. Atmosfer dan topografi bisa saling berkaitan dan menghasilkan pola yang baru terlihat lewat data.",
+            deepDive: ["Penjelasan kimia untuk dataran tinggi yang sangat reflektif terhadap radar masih diteliti.", "Gunakan bahasa hipotesis ketika penyebab belum terbukti secara pasti."],
             sourceLabel: "NASA/JPL · Maxwell Montes", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
             anchor: { x: -58, z: 36 }, placement: "elevation-high"
           },
           {
             id: "maxwell-context", type: "COBA LIHAT SEKITAR!", title: "Maxwell Berdiri di Tepi Lakshmi Planum",
-            lead: "Maxwell Montes berada di sisi timur Lakshmi Planum, dataran tinggi luas yang menjadi bagian dari Ishtar Terra.",
+            lead: "Maxwell Montes berada di sisi timur Lakshmi Planum, bagian dari dataran tinggi Ishtar Terra yang sangat luas.",
             sections: [
-              { heading: "LIHAT KONTRASNYA", text: "Lakshmi Planum lebih halus, sedangkan Maxwell dipenuhi punggungan dan lembah. Peralihannya membantu kita melihat batas dua bentang yang berbeda." },
-              { heading: "SKALANYA BESAR", text: "Maxwell hanyalah satu bagian dari sistem geologi Ishtar yang jauh lebih luas." }
+              { heading: "PERHATIKAN KONTRASNYA", text: "Lakshmi Planum relatif lebih halus, sedangkan Maxwell dipenuhi relief pegunungan. Peralihan bentuk ini membantu kita memahami batas wilayahnya." },
+              { heading: "SKALANYA BESAR", text: "Ishtar Terra adalah dataran tinggi raksasa. Maxwell merupakan salah satu sistem pegunungan penting di dalam konteks regional tersebut." }
             ],
-            why: "Dengan melihat pegunungan bersama wilayah di sekitarnya, kita bisa memahami konteksnya, bukan cuma satu landmark.",
-            deepDive: ["Ishtar Terra mencakup dataran tinggi dan beberapa sistem pegunungan besar.", "Hubungan Maxwell dengan Lakshmi Planum adalah salah satu alasan wilayah ini terlihat sangat berbeda dari dataran Venus pada umumnya."],
+            why: "Melihat Maxwell bersama wilayah di sekitarnya membantu kita memahami bahwa satu pegunungan adalah bagian dari sistem geologi yang jauh lebih besar.",
+            deepDive: ["Pioneer Venus dan Magellan sama-sama berperan dalam membangun pemahaman topografi dan radar Venus.", "Perbandingan wilayah memperjelas hubungan antara dataran tinggi dan sabuk pegunungan."],
             sourceLabel: "NASA/JPL/USGS · Ishtar Terra", source: "https://science.nasa.gov/photojournal/perspective-view-of-ishtar-terra/",
             anchor: { x: 64, z: 48 }, placement: "relief"
           }
@@ -320,62 +320,62 @@
         ],
         observations: [
           {
-            id: "aphrodite-ridges", type: "COBA PERHATIKAN!", title: "Punggungan di Ovda Punya Arah",
-            lead: "Punggungan dan lembah di Ovda Regio tidak tersebar sembarangan. Banyak di antaranya mengikuti arah yang mirip.",
+            id: "aphrodite-ridges", type: "COBA PERHATIKAN!", title: "Punggungannya Punya Arah",
+            lead: "Di Ovda Regio, punggungan dan lembah tidak tersebar sembarangan. Banyak struktur mengikuti arah yang mirip.",
             sections: [
-              { heading: "COBA IKUTI GARISNYA", text: "NASA menggambarkan banyak punggungan dan lembah di Ovda yang cenderung berarah timur-laut ke barat-daya." },
-              { heading: "APA ARTINYA?", text: "Pola yang terarah memberi petunjuk bahwa gaya tektonik pernah bekerja pada wilayah yang luas." }
+              { heading: "COBA IKUTI GARISNYA", text: "NASA menggambarkan pola dasar Ovda dengan banyak punggungan dan lembah yang cenderung berarah timur-laut ke barat-daya." },
+              { heading: "APA ARTINYA?", text: "Pola yang terarah memberi petunjuk bahwa gaya tektonik pernah bekerja dalam skala luas, bukan hanya pada satu retakan kecil." }
             ],
-            why: "Arah struktur membantu ilmuwan membaca bagaimana kerak Venus pernah tertekan dan berubah.",
-            deepDive: ["Yang penting bukan satu punggungan, tetapi pola banyak struktur yang bergerak dalam arah serupa.", "Ketika pola lain memotongnya, ilmuwan bisa mulai menyusun urutan perubahan geologinya."],
+            why: "Arah punggungan ini seperti petunjuk. Dari polanya, ilmuwan bisa menyusun kembali bagaimana kerak Venus pernah tertekan dan berubah.",
+            deepDive: ["Punggungan dapat terbentuk ketika kerak dipendekkan atau dilipat.", "Hubungan potong-memotong antarstruktur membantu menentukan struktur mana yang lebih tua atau lebih muda."],
             sourceLabel: "NASA/JPL · Interior Ovda Regio", source: "https://science.nasa.gov/photojournal/venus-interior-of-ovda-regio/",
             anchor: { x: -30, z: -8 }, placement: "slope-medium"
           },
           {
             id: "aphrodite-fractures", type: "LIHAT DEH!", title: "Retakan Ini Memotong Struktur Lama",
-            lead: "Beberapa retakan di Ovda Regio memotong punggungan yang sudah ada lebih dulu. Permukaannya seperti menyimpan beberapa bab sejarah sekaligus.",
+            lead: "Beberapa retakan di Ovda Regio memotong punggungan yang sudah ada lebih dulu. Permukaan ini seperti menyimpan beberapa bab sejarah sekaligus.",
             sections: [
-              { heading: "MANA YANG LEBIH MUDA?", text: "Jika satu struktur memotong struktur lain, biasanya struktur yang memotong terbentuk belakangan." },
-              { heading: "DI OVDA REGIO", text: "NASA mencatat retakan berarah barat-laut ke tenggara yang memotong pola punggungan yang lebih tua." }
+              { heading: "MANA YANG LEBIH MUDA?", text: "Kalau satu retakan memotong struktur lain, biasanya retakan itu muncul belakangan. Dari pola potong-memotong ini, ilmuwan bisa membaca urutan kejadian." },
+              { heading: "DI OVDA REGIO", text: "NASA mencatat retakan berarah barat-laut ke tenggara yang memotong pola punggungan lebih tua di wilayah ini." }
             ],
-            why: "Dari pola saling memotong, ilmuwan bisa menyusun urutan perubahan yang pernah terjadi di permukaan.",
-            deepDive: ["Prinsip saling memotong juga digunakan geolog di Bumi untuk membaca urutan peristiwa.", "Di Venus, radar Magellan membantu kita melihat hubungan struktur ini dari orbit."],
+            why: "Cukup lihat struktur mana yang memotong yang lain. Dari sana, ilmuwan bisa memperkirakan mana yang terbentuk lebih dulu dan mana yang datang belakangan.",
+            deepDive: ["Retakan tidak otomatis berarti lempeng tektonik seperti di Bumi.", "Aphrodite adalah dataran tinggi besar, bukan benua dalam pengertian geologi Bumi modern."],
             sourceLabel: "NASA/JPL · Interior Ovda Regio", source: "https://science.nasa.gov/photojournal/venus-interior-of-ovda-regio/",
             anchor: { x: 18, z: -14 }, placement: "slope-high"
           },
           {
             id: "aphrodite-valley", type: "TERNYATA...", title: "Lembah Ini Mungkin Pernah Terisi Lava",
-            lead: "Sebagian lembah besar di Ovda Regio berisi material yang tampak lebih gelap pada radar. NASA menjelaskan bahwa sebagian area seperti ini mungkin terisi lava.",
+            lead: "Sebagian lembah besar di Ovda Regio berisi material yang tampak gelap pada radar dan ditafsirkan NASA sebagai kemungkinan lava.",
             sections: [
-              { heading: "COBA BEDAKAN DATANYA", text: "Topografi menunjukkan bagian mana yang rendah. Radar membantu melihat perbedaan sifat permukaan yang menutup bagian itu." },
-              { heading: "GELAP BUKAN BERARTI HITAM", text: "Pada radar, gelap dan terang menunjukkan kuat-lemahnya pantulan, bukan warna batuan yang akan dilihat mata." }
+              { heading: "BENTUK DAN PERMUKAAN", text: "Data ketinggian menunjukkan bagian mana yang lebih rendah. Radar lalu membantu melihat apakah permukaan di bagian itu punya sifat yang berbeda." },
+              { heading: "GELAP BUKAN BERARTI HITAM", text: "Pada citra radar, gelap dan terang menunjukkan kekuatan pantulan radar, bukan warna batuan yang akan dilihat mata." }
             ],
-            why: "Menggabungkan topografi dan radar membantu ilmuwan membedakan bentuk lembah dari material yang mungkin mengisinya.",
-            deepDive: ["Interpretasi lava didasarkan pada hubungan bentuk lembah dengan sifat radar permukaannya.", "Karena radar bukan foto warna, bagian gelap tidak boleh langsung dibayangkan sebagai batuan hitam."],
+            why: "Dengan menggabungkan data ketinggian dan radar, ilmuwan bisa memisahkan bentuk lembah dari material yang mungkin mengisinya.",
+            deepDive: ["NASA menyebut material gelap di lembah besar Ovda kemungkinan lava.", "Kata 'kemungkinan' penting karena interpretasi geologi harus mengikuti kekuatan bukti."],
             sourceLabel: "NASA/JPL · Interior Ovda Regio", source: "https://science.nasa.gov/photojournal/venus-interior-of-ovda-regio/",
             anchor: { x: 42, z: 26 }, placement: "elevation-low"
           },
           {
             id: "aphrodite-magellan", type: "TAHUKAH KAMU?", title: "Magellan Bisa Melihat di Balik Awan",
-            lead: "Dari orbit, permukaan Venus sulit dilihat dengan cahaya tampak. Magellan memakai radar untuk memetakan bentang di bawah awan tebal.",
+            lead: "Permukaan Venus sulit dipetakan dengan cahaya tampak dari orbit. Magellan memakai radar untuk melihat bentang di bawah selimut awan.",
             sections: [
-              { heading: "KENAPA RADAR?", text: "Gelombang radar bisa melewati awan, memantul dari permukaan, lalu membawa informasi kembali ke wahana." },
-              { heading: "JANGAN TERTUKAR", text: "Area yang terang di radar belum tentu lebih tinggi. Ketinggian berasal dari data topografi." }
+              { heading: "KENAPA RADAR?", text: "Radar dapat menembus awan, memantul dari permukaan, lalu membawa kembali petunjuk tentang bentuk dan sifat permukaannya." },
+              { heading: "JANGAN TERTUKAR", text: "Area yang terang di radar tidak otomatis lebih tinggi. Ketinggian berasal dari data topografi, bukan dari kecerahan radar saja." }
             ],
-            why: "Dengan tahu cara instrumennya bekerja, kita bisa membaca peta Venus tanpa salah mengartikan terang, gelap, dan tinggi.",
-            deepDive: ["Radar SAR menunjukkan pola pantulan permukaan, sedangkan altimetri dipakai untuk mengukur elevasi.", "Keduanya saling melengkapi, tetapi menjawab pertanyaan yang berbeda."],
+            why: "Mengetahui cara instrumen bekerja membantu kita membaca peta Venus dengan lebih tepat.",
+            deepDive: ["Magellan memberi pandangan global pertama yang sangat rinci tentang permukaan di bawah awan Venus.", "ANTARA menggunakan topografi untuk relief makro dan radar sebagai konteks permukaan, bukan sebagai heightmap langsung."],
             sourceLabel: "NASA · Magellan", source: "https://science.nasa.gov/image-detail/venus-2/",
             anchor: { x: -66, z: 18 }, placement: "open"
           },
           {
-            id: "aphrodite-transition", type: "COBA LIHAT SEKITAR!", title: "Di Sini Medannya Mulai Berubah",
-            lead: "Aphrodite Terra bukan satu permukaan yang seragam. Di sini kamu bisa melihat peralihan dari wilayah lebih rendah menuju dataran tinggi Ovda.",
+            id: "aphrodite-transition", type: "COBA LIHAT SEKITAR!", title: "Dataran dan Dataran Tinggi Bertemu di Sini",
+            lead: "Aphrodite Terra bukan satu permukaan yang seragam. Di sini, perubahan relief menunjukkan peralihan dari wilayah yang lebih rendah menuju dataran tinggi Ovda.",
             sections: [
-              { heading: "PERHATIKAN PERUBAHANNYA", text: "Topografi Ovda naik beberapa kilometer di atas dataran sekitarnya. Bentuk relief dan pola strukturnya ikut berubah." },
-              { heading: "INI BARU SATU POTONGAN", text: "Aphrodite Terra membentang sangat luas di sekitar ekuator Venus. Area ini hanya bagian kecil dari wilayah tersebut." }
+              { heading: "PERHATIKAN PERUBAHANNYA", text: "Topografi Ovda naik beberapa kilometer di atas dataran sekitarnya. Di batasnya, bentuk relief dan struktur ikut berubah." },
+              { heading: "INI BARU SATU BAGIAN", text: "Aphrodite Terra membentang sangat luas di sekitar ekuator Venus. Area yang kamu lihat hanyalah satu potongan dari sistem regional yang besar." }
             ],
-            why: "Peralihan relief membantu kita melihat bagaimana deformasi dan vulkanisme membentuk dataran tinggi besar.",
-            deepDive: ["Perubahan dari dataran ke dataran tinggi memberi konteks yang tidak terlihat jika kita hanya melihat satu bukit atau satu retakan.", "Aphrodite Terra adalah wilayah besar, jadi setiap titik eksplorasi hanya memperlihatkan sebagian dari ceritanya."],
+            why: "Perubahan bentuk dari dataran ke dataran tinggi membantu ilmuwan melihat bagaimana tekanan kerak dan aktivitas vulkanik membentuk wilayah besar ini.",
+            deepDive: ["Ovda Regio adalah bagian barat Aphrodite Terra.", "Struktur besar tidak harus berarti benua yang terbentuk dengan proses sama seperti benua Bumi."],
             sourceLabel: "NASA/JPL · Ovda Regio", source: "https://science.nasa.gov/photojournal/venus-ovda-regio/",
             anchor: { x: 72, z: -50 }, placement: "relief"
           }
@@ -426,25 +426,25 @@
         observations: [
           {
             id: "ishtar-lakshmi", type: "COBA LIHAT SEKITAR!", title: "Ini Bukan Puncak, Ini Dataran Tinggi",
-            lead: "Bagian yang lebih rata ini adalah Lakshmi Planum. Tempatnya tinggi, tetapi bagian dalamnya jauh lebih halus dibanding pegunungan di tepinya.",
+            lead: "Bagian yang lebih rata ini adalah Lakshmi Planum. Wilayahnya berada di ketinggian, tetapi bagian dalamnya jauh lebih halus dibanding pegunungan di tepinya.",
             sections: [
-              { heading: "BEDANYA DENGAN GUNUNG", text: "Dataran tinggi adalah wilayah luas yang berada pada elevasi tinggi. Ia tidak harus punya satu kaki dan satu puncak." },
-              { heading: "LIHAT KE TEPI", text: "Lakshmi Planum dibatasi sistem pegunungan besar seperti Akna Montes, Freyja Montes, dan Maxwell Montes." }
+              { heading: "BEDANYA DENGAN GUNUNG", text: "Dataran tinggi adalah wilayah luas yang berada pada elevasi tinggi. Jadi bentuknya tidak harus punya satu kaki dan satu puncak." },
+              { heading: "LIHAT KE TEPI", text: "Lakshmi Planum dibatasi sistem pegunungan seperti Akna Montes, Freyja Montes, dan Maxwell Montes." }
             ],
-            why: "Kalau kita bisa membedakan plateau dari pegunungan, skala Ishtar Terra jadi jauh lebih mudah dipahami.",
-            deepDive: ["Lakshmi Planum adalah bagian dari Ishtar Terra, dataran tinggi besar di belahan utara Venus.", "Kontras antara interior yang lebih halus dan batas pegunungan adalah salah satu ciri penting wilayah ini."],
+            why: "Membedakan dataran tinggi dari pegunungan membantu kita membaca skala Ishtar sebagai wilayah besar, bukan sekadar kumpulan bukit.",
+            deepDive: ["Ishtar kira-kira seukuran Australia menurut deskripsi NASA.", "Topografi berwarna pada citra referensi adalah representasi data ketinggian, bukan warna asli permukaan."],
             sourceLabel: "NASA/JPL/USGS · Ishtar Terra", source: "https://science.nasa.gov/photojournal/perspective-view-of-ishtar-terra/",
             anchor: { x: -18, z: 8 }, placement: "flat"
           },
           {
-            id: "ishtar-margin", type: "LIHAT DEH!", title: "Dataran Tinggi Ini Bertemu Pegunungan",
-            lead: "Saat bergerak ke tepi Ishtar, permukaan yang lebih halus berubah menjadi lereng dan punggungan yang jauh lebih kuat.",
+            id: "ishtar-margin", type: "LIHAT DEH!", title: "Dataran Tinggi Ini Berbatasan dengan Pegunungan",
+            lead: "Saat bergerak menuju tepi Ishtar, permukaan yang relatif lebih halus berubah menjadi lereng dan punggungan yang jauh lebih kuat.",
             sections: [
-              { heading: "COBA BANDINGKAN", text: "Interior Lakshmi Planum relatif terbuka. Di tepinya, relief pegunungan menjadi jauh lebih dramatis." },
-              { heading: "PEGUNUNGAN BESAR DI SEKITARNYA", text: "Maxwell berada di timur, sedangkan Akna dan Freyja membatasi bagian barat dan barat laut Lakshmi Planum." }
+              { heading: "COBA BANDINGKAN", text: "Kontras antara interior Lakshmi Planum dan pegunungan di tepinya adalah salah satu ciri paling mudah dikenali di Ishtar Terra." },
+              { heading: "PEGUNUNGAN BESAR DI SEKITARNYA", text: "Maxwell berada di sisi timur, sementara Akna dan Freyja membatasi bagian barat dan barat laut Lakshmi Planum." }
             ],
-            why: "Kontras dataran tinggi dan pegunungan membantu ilmuwan memahami deformasi kerak dalam skala sangat besar.",
-            deepDive: ["Ishtar tidak menarik hanya karena tinggi, tetapi karena hubungan antara plateau dan sistem pegunungan di sekelilingnya.", "Perbedaan bentuk itu memberi petunjuk tentang bagaimana kerak Venus berubah pada skala regional."],
+            why: "Pertemuan dataran tinggi dan pegunungan ini memberi petunjuk bahwa kerak Venus pernah berubah dalam skala yang sangat besar.",
+            deepDive: ["Ishtar menunjukkan bahwa topografi Venus memiliki provinsi geologi yang sangat berbeda dari dataran vulkanik luas.", "Batas tidak selalu simetris dan tidak boleh dibayangkan sebagai dinding melingkar."],
             sourceLabel: "NASA/JPL/USGS · Ishtar Terra", source: "https://science.nasa.gov/photojournal/perspective-view-of-ishtar-terra/",
             anchor: { x: 62, z: -18 }, placement: "slope-high"
           },
@@ -452,35 +452,35 @@
             id: "ishtar-relief", type: "TAHUKAH KAMU?", title: "Ishtar Menjulang Sekitar 3,3 km",
             lead: "NASA menggambarkan Ishtar Terra sebagai dataran tinggi sekitar 3,3 km di atas dataran rendah yang mengelilinginya.",
             sections: [
-              { heading: "SKALANYA BEDA", text: "Kenaikan beberapa kilometer ini tersebar pada wilayah yang sangat luas, bukan pada satu gunung tunggal." },
-              { heading: "GIMANA KITA TAHU?", text: "Data altimetri mengukur perbedaan ketinggian sehingga satu wilayah bisa dibandingkan dengan wilayah Venus lainnya." }
+              { heading: "SKALANYA BEDA", text: "Kenaikan beberapa kilometer ini tersebar di wilayah yang sangat luas. Itu berbeda dari satu gunung tunggal dengan kaki dan puncak yang jelas." },
+              { heading: "BAGAIMANA KITA TAHU?", text: "Data altimetri mengukur perbedaan ketinggian sehingga satu wilayah dapat dibandingkan dengan wilayah Venus lainnya." }
             ],
-            why: "Elevasi regional menjelaskan kenapa Ishtar disebut dataran tinggi, bukan sekadar kumpulan gunung.",
-            deepDive: ["Altimetri membantu ilmuwan mengubah permukaan Venus yang tertutup awan menjadi peta ketinggian.", "Karena wilayahnya luas, bentuk Ishtar lebih mudah dipahami dari gabungan data lokal dan regional."],
+            why: "Karena wilayah luasnya berada beberapa kilometer lebih tinggi dari sekitarnya, Ishtar disebut dataran tinggi, bukan cuma kumpulan gunung.",
+            deepDive: ["Pioneer Venus menyediakan altimetri penting sebelum Magellan memperluas pemetaan radar Venus.", "Dalam visualisasi ilmiah, skala vertikal kadang diperbesar untuk membuat relief lebih mudah dibaca. Selalu periksa keterangannya."],
             sourceLabel: "NASA/JPL/USGS · Pioneer Venus", source: "https://science.nasa.gov/photojournal/perspective-view-of-ishtar-terra/",
             anchor: { x: -62, z: -28 }, placement: "relief"
           },
           {
             id: "ishtar-radar", type: "TERNYATA...", title: "Terang di Radar Belum Tentu Lebih Tinggi",
-            lead: "Banyak dataran tinggi Venus terlihat terang pada radar. Tapi radar dan topografi sebenarnya sedang menunjukkan dua hal yang berbeda.",
+            lead: "Banyak dataran tinggi Venus terlihat sangat terang pada radar. Tetapi radar dan topografi memberi dua jenis informasi yang berbeda.",
             sections: [
-              { heading: "BEDANYA APA?", text: "Topografi menunjukkan bentuk dan elevasi. Radar SAR menunjukkan seberapa kuat permukaan memantulkan gelombang radar." },
-              { heading: "MASIH DITELITI", text: "Di Maxwell dan dataran tinggi lain, ilmuwan masih meneliti penyebab pasti material yang sangat reflektif terhadap radar." }
+              { heading: "BEDANYA APA?", text: "Topografi mengukur bentuk dan elevasi. Radar SAR merekam seberapa kuat permukaan memantulkan gelombang radar." },
+              { heading: "MASIH DITELITI", text: "Di Maxwell, ilmuwan meneliti material sangat reflektif yang mungkin stabil pada kondisi ketinggian tertentu. Penyebab kimia tepatnya belum pasti." }
             ],
-            why: "Memisahkan radar dan topografi mencegah kita mengira setiap area terang adalah gunung.",
-            deepDive: ["Kecerahan radar dapat dipengaruhi kekasaran permukaan dan sifat material, bukan hanya ketinggian.", "Hubungan dengan elevasi menarik untuk diteliti, tetapi tidak boleh dianggap sebagai aturan sederhana."],
+            why: "Kalau radar dan topografi dibaca terpisah, kita tidak akan salah mengira setiap bagian yang terang sebagai tempat yang lebih tinggi.",
+            deepDive: ["Pantulan radar dipengaruhi kekasaran, geometri, dan sifat dielektrik material.", "Ketinggian perlu sumber topografi terpisah."],
             sourceLabel: "NASA/JPL · Maxwell dan Ishtar", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
             anchor: { x: 30, z: -62 }, placement: "elevation-high"
           },
           {
-            id: "ishtar-atmosphere", type: "TAHUKAH KAMU?", title: "Di Dataran Tinggi Pun Venus Tetap Panas",
-            lead: "Walau Ishtar berada lebih tinggi, wilayah ini tetap berada di bawah atmosfer Venus yang sangat tebal, panas, dan bertekanan besar.",
+            id: "ishtar-atmosphere", type: "TAHUKAH KAMU?", title: "Dataran Tinggi Ini Tetap Sangat Panas",
+            lead: "Walau berada lebih tinggi, Ishtar tetap berada di bawah atmosfer Venus yang sangat tebal, panas, dan bertekanan besar.",
             sections: [
-              { heading: "TINGGI TIDAK BERARTI SEJUK", text: "Kondisi atmosfer memang berubah dengan elevasi, tetapi seluruh permukaan Venus tetap sangat ekstrem." },
-              { heading: "AWANNYA MENUTUPI PERMUKAAN", text: "Awan tebal membuat permukaan sulit dipetakan dengan cahaya tampak dari orbit. Karena itu radar sangat penting." }
+              { heading: "TINGGI TIDAK BERARTI SEJUK", text: "Kondisi atmosfer memang berubah dengan elevasi, tetapi lingkungan permukaan Venus secara keseluruhan tetap ekstrem." },
+              { heading: "AWANNYA MENUTUPI PERMUKAAN", text: "Selimut awan membuat pemetaan cahaya tampak dari orbit sulit. Itulah sebabnya radar sangat penting untuk mempelajari permukaan Venus." }
             ],
-            why: "Topografi dan atmosfer perlu dibaca bersama supaya kita memahami seperti apa lingkungan Venus sebenarnya.",
-            deepDive: ["Venus memiliki suhu permukaan sekitar 467°C dan tekanan sekitar 93 kali tekanan udara di permukaan laut Bumi.", "Awan Venus mengandung asam sulfat dan menyelimuti planet secara global."],
+            why: "Ketinggian dan atmosfer saling berkaitan. Keduanya perlu dilihat bersama kalau kita ingin memahami kondisi nyata di permukaan Venus.",
+            deepDive: ["Venus memiliki suhu permukaan sekitar 467°C dan tekanan sekitar 93 kali tekanan laut Bumi.", "Awan Venus mengandung asam sulfat dan menyelimuti planet secara global."],
             sourceLabel: "NASA Science · Fakta Venus", source: "https://science.nasa.gov/venus/venus-facts/",
             anchor: { x: 66, z: 44 }, placement: "open"
           }
@@ -530,62 +530,62 @@
         ],
         observations: [
           {
-            id: "alpha-tessera", type: "TAHUKAH KAMU?", title: "Alpha Regio Terlihat Seperti Kusut",
-            lead: "Punggungan, palung, dan lembah di Alpha Regio saling memotong dari banyak arah. Pola rumit seperti ini disebut medan tessera.",
+            id: "alpha-tessera", type: "TAHUKAH KAMU?", title: "Permukaan Alpha Regio Terlihat Seperti Kusut",
+            lead: "Punggungan, palung, dan lembah di Alpha Regio saling memotong dari beberapa arah. Pola rumit seperti ini disebut medan tessera.",
             sections: [
-              { heading: "COBA CARI ARAH LAIN", text: "Jangan ikuti satu garis saja. Kamu akan menemukan beberapa keluarga struktur yang saling bertemu dan memotong." },
-              { heading: "KENAPA BISA SERUMIT INI?", text: "Pola silang memberi petunjuk bahwa kerak pernah berubah dalam lebih dari satu arah atau lebih dari satu tahap." }
+              { heading: "COBA CARI ARAH LAIN", text: "Jangan lihat satu garis saja. Di Alpha Regio, banyak keluarga struktur bertemu dan membentuk pola yang tidak teratur." },
+              { heading: "KENAPA BISA RUMIT?", text: "Pola silang ini menunjukkan kerak Venus pernah berubah dari beberapa arah, atau mengalami lebih dari satu tahap perubahan." }
             ],
-            why: "Tessera adalah salah satu medan paling khas Venus dan bisa menyimpan petunjuk penting tentang sejarah kerak planet.",
-            deepDive: ["Tessera adalah istilah untuk medan kompleks dengan banyak struktur yang saling berpotongan.", "Tidak semua medan kasar di Venus disebut tessera. Pola strukturnya yang rumit adalah bagian penting dari identitasnya."],
+            why: "Tessera penting karena pola rumitnya bisa menyimpan petunjuk tentang bagaimana kerak Venus berubah sejak masa lampau.",
+            deepDive: ["Istilah tessera digunakan untuk medan kompleks yang memiliki set struktur saling berpotongan.", "Tidak semua medan kasar di Venus adalah tessera."],
             sourceLabel: "NASA/JPL · Alpha Regio", source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
             anchor: { x: 4, z: -20 }, placement: "slope-high"
           },
           {
             id: "alpha-trough", type: "COBA PERHATIKAN!", title: "Ada Palung di Antara Punggungan",
-            lead: "Di antara punggungan tessera ada bagian rendah yang memanjang, termasuk palung dan lembah sesar dengan lantai yang lebih datar.",
+            lead: "Di antara punggungan tessera terdapat bagian rendah yang memanjang, termasuk palung dan lembah sesar dengan lantai yang relatif lebih datar.",
             sections: [
-              { heading: "CARI BAGIAN RENDAHNYA", text: "Ikuti cekungan yang memanjang di antara relief tinggi. Arah dan hubungannya dengan punggungan membantu membaca pola deformasi." },
-              { heading: "BUKAN BEKAS SUNGAI", text: "Bentuk memanjang tidak otomatis berasal dari aliran air. Banyak lembah di Alpha berkaitan dengan struktur tektonik dan vulkanik." }
+              { heading: "CARI BAGIAN RENDAHNYA", text: "Coba ikuti bagian rendah yang memanjang di antara punggungan. Arah cekungan dan punggungan membantu kita membaca bagaimana permukaan ini pernah berubah." },
+              { heading: "BUKAN BEKAS SUNGAI", text: "Bentuk memanjang tidak otomatis berarti erosi air. Banyak lembah di Alpha berkaitan dengan struktur tektonik dan vulkanik." }
             ],
-            why: "Membedakan lembah tektonik dari bentuk erosi membantu kita tidak memaksakan proses Bumi ke Venus.",
-            deepDive: ["NASA menggambarkan lembah patahan berlantai datar sebagai salah satu struktur Alpha Regio.", "Untuk memahami asalnya, ilmuwan melihat bentuk, arah, hubungan antarstruktur, dan data radar sekaligus."],
+            why: "Bentuknya memang mirip lembah, tetapi penyebabnya belum tentu seperti di Bumi. Di sini, banyak struktur berkaitan dengan retakan dan perubahan kerak.",
+            deepDive: ["NASA mendeskripsikan lembah patahan berlantai datar sebagai salah satu struktur Alpha Regio.", "Interpretasi harus menggabungkan bentuk, hubungan antarstruktur, dan data radar."],
             sourceLabel: "NASA/JPL · Alpha Regio", source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
             anchor: { x: 36, z: 10 }, placement: "elevation-low"
           },
           {
             id: "alpha-lava-low", type: "TERNYATA...", title: "Bagian Rendah Ini Bisa Terisi Lava",
-            lead: "Beberapa bagian rendah di Alpha Regio tampak lebih halus dan gelap pada radar. Sebagian area seperti ini mungkin terisi lava yang lebih halus.",
+            lead: "Beberapa bagian rendah di Alpha Regio tampak lebih halus dan gelap pada radar. NASA menjelaskan sebagian area seperti ini dapat terisi lava yang lebih halus.",
             sections: [
-              { heading: "DUA DATA, DUA PETUNJUK", text: "Topografi menunjukkan bagian yang rendah. Radar menunjukkan perbedaan sifat permukaan di dalamnya." },
-              { heading: "TESSERA BISA TERTUTUP SEBAGIAN", text: "Lava yang lebih muda bisa mengisi cekungan tanpa menghapus seluruh pola tessera tua di sekitarnya." }
+              { heading: "DUA DATA SALING MELENGKAPI", text: "Topografi menunjukkan bagian yang rendah. Radar membantu melihat perbedaan sifat permukaan di dalamnya." },
+              { heading: "TESSERA BISA DITUTUP SEBAGIAN", text: "Lava yang lebih muda dapat mengisi cekungan tanpa menghapus seluruh pola tessera yang lebih tua di sekitarnya." }
             ],
-            why: "Hubungan ini membantu ilmuwan menyusun urutan antara deformasi kerak dan aktivitas vulkanik.",
-            deepDive: ["Jika lava menutupi struktur yang lebih tua, hubungan itu bisa membantu menentukan urutan relatif proses geologi.", "Radar gelap bukan berarti batuannya berwarna hitam. Itu hanya berarti pantulan radarnya lebih lemah."],
+            why: "Kalau lava menutupi struktur yang lebih tua, ilmuwan bisa memperkirakan mana yang terjadi lebih dulu: perubahan kerak atau aliran lava.",
+            deepDive: ["Hubungan saling menutupi dapat membantu menentukan urutan relatif proses geologi.", "Radar gelap tidak berarti batuannya berwarna hitam."],
             sourceLabel: "NASA/JPL · Alpha Regio", source: "https://science.nasa.gov/photojournal/venus-false-color-image-of-alpha-regio/",
             anchor: { x: -38, z: -34 }, placement: "elevation-low"
           },
           {
             id: "alpha-history", type: "UNIKNYA...", title: "Tessera Bisa Menyimpan Cerita Lama Venus",
-            lead: "Sebagian tessera mungkin termasuk permukaan tua yang masih menyimpan petunjuk tentang bagaimana Venus berubah di masa lalu.",
+            lead: "Sebagian tessera mungkin termasuk permukaan tua yang masih mempertahankan petunjuk tentang bagaimana Venus berubah di masa lalu.",
             sections: [
-              { heading: "KENAPA ILMUWAN TERTARIK?", text: "Tessera bisa membantu menjawab bagaimana kerak Venus terbentuk dan apakah kondisi awal planet pernah berbeda dari sekarang." },
-              { heading: "MASIH BANYAK PERTANYAAN", text: "Usia pasti dan cara semua tessera terbentuk belum diketahui. Ilmuwan masih mengujinya lewat data dan misi baru." }
+              { heading: "KENAPA ILMUWAN TERTARIK?", text: "Dengan mempelajari tessera, ilmuwan berharap memahami bagaimana kerak Venus terbentuk dan apakah kondisi awal planet pernah berbeda dari sekarang." },
+              { heading: "MASIH BANYAK PERTANYAAN", text: "Usia pasti dan cara semua tessera terbentuk belum diketahui. Misi seperti DAVINCI dan VERITAS dirancang untuk membantu menjawabnya." }
             ],
-            why: "Medan tua bisa menjadi arsip geologi yang menyimpan jejak masa lalu Venus.",
-            deepDive: ["NASA menjadikan Alpha Regio salah satu target penting untuk mempelajari permukaan tua Venus.", "Gagasan tentang air purba atau proses pembentuk tessera masih berupa pertanyaan ilmiah yang perlu diuji, bukan fakta yang sudah pasti."],
+            why: "Permukaan tua seperti ini ibarat arsip geologi. Strukturnya bisa menyimpan petunjuk tentang Venus pada masa yang jauh lebih awal.",
+            deepDive: ["NASA menyebut Alpha Regio sebagai salah satu permukaan tertua yang menjadi target penting DAVINCI.", "Interpretasi tentang air purba, benua, atau proses pembentuk tessera masih berupa pertanyaan ilmiah yang sedang diuji."],
             sourceLabel: "NASA · DAVINCI · Alpha Regio", source: "https://science.nasa.gov/missions/davinci/davincis-many-firsts-at-venus/",
             anchor: { x: -64, z: 38 }, placement: "open"
           },
           {
-            id: "alpha-magellan", type: "LIHAT DEH!", title: "Radar dan Ketinggian Bisa Membentuk Peta 3D",
-            lead: "Gambar perspektif Alpha Regio dibuat dengan menggabungkan pantulan radar dan data ketinggian. Dua data ini membantu kita melihat permukaan dalam tiga dimensi.",
+            id: "alpha-magellan", type: "LIHAT DEH!", title: "Radar dan Altimetri Bisa Jadi Peta 3D",
+            lead: "Perspektif Alpha Regio dibuat dengan menggabungkan pantulan radar dan data ketinggian. Dua jenis data ini membantu kita memahami bentuk permukaan dalam tiga dimensi.",
             sections: [
-              { heading: "RADAR + KETINGGIAN", text: "Radar SAR menunjukkan pola pantulan permukaan. Altimetri mengukur elevasi. Keduanya memberi petunjuk yang berbeda." },
-              { heading: "KENAPA RELIEF KADANG DIBESARKAN?", text: "Beberapa visual ilmiah memperbesar relief vertikal agar struktur lebih mudah dilihat. Karena itu keterangan gambar tetap penting." }
+              { heading: "RADAR + KETINGGIAN", text: "Radar SAR menunjukkan pola pantulan permukaan, sedangkan altimetri mengukur elevasi. Keduanya menjawab pertanyaan yang berbeda." },
+              { heading: "KENAPA RELIEF KADANG DIBESARKAN?", text: "Beberapa visual ilmiah memperbesar relief vertikal supaya struktur lebih mudah terlihat. Karena itu, keterangan gambar tetap penting dibaca." }
             ],
-            why: "Kalau kita tahu bagaimana visual ilmiah dibuat, kita bisa membedakan data asli dari cara data itu ditampilkan.",
-            deepDive: ["Perspektif Alpha Regio NASA/JPL dibuat dari radar dan altimetri Magellan.", "ANTARA juga memisahkan keduanya: kecerahan radar tidak dipakai langsung sebagai ketinggian."],
+            why: "Kalau kita tahu bagaimana gambar ini dibuat, kita bisa membedakan mana data pengukuran dan mana bagian yang diperjelas agar bentuknya mudah dibaca.",
+            deepDive: ["Perspektif Alpha Regio NASA/JPL menggunakan radar dan altimetri Magellan.", "ANTARA juga menjaga pemisahan konsep: kecerahan radar tidak digunakan sebagai elevasi langsung."],
             sourceLabel: "NASA/JPL · Magellan · Alpha Regio", source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
             anchor: { x: 66, z: -46 }, placement: "open"
           }
@@ -3447,7 +3447,7 @@
       this.saveDiscoveryState();
       this.renderObjectives();
       this.updateDiscoveryUI();
-      document.getElementById("announcement").textContent = `Kamu menemukan sesuatu yang menarik: ${observation.title}.`;
+      document.getElementById("announcement").textContent = `Ada hal menarik di dekatmu: ${observation.title}. Coba amati!`;
       return true;
     }
 
@@ -3460,7 +3460,7 @@
       this.setActionsMenu(false);
 
       this.observationType.textContent = observation.type || "COBA PERHATIKAN!";
-      this.observationStatus.textContent = wasNew ? "BARU KAMU TEMUKAN" : "SUDAH KAMU LIHAT";
+      this.observationStatus.textContent = wasNew ? "BARU KAMU LIHAT" : "SUDAH PERNAH KAMU LIHAT";
       this.observationTitle.textContent = observation.title;
       const distance = Math.hypot(observation.x - this.camera.position.x, observation.z - this.camera.position.z);
       this.observationMeta.textContent = `${formatCoordinate(observation.geo.latitude, observation.geo.longitudeEast)} · ${distance < 1 ? Math.round(distance * 1000) + " m" : distance.toFixed(1) + " km"} dari posisimu`;
@@ -3510,9 +3510,9 @@
 
       const topography = this.regionWorld?.topography;
       if (topography?.emergencyApproximation) {
-        this.observationSourceNote.textContent = "Catatan data: permukaan lokal saat ini memakai pratinjau luring karena topografi Magellan belum tersedia. Fakta sains pada kartu ini tetap mengikuti sumber NASA di bawah.";
+        this.observationSourceNote.textContent = "Catatan: relief lokal saat ini memakai pratinjau luring karena data topografi Magellan belum tersedia. Fakta sains pada kartu ini tetap mengikuti sumber NASA di bawah.";
       } else {
-        this.observationSourceNote.textContent = `Catatan data: relief memakai ${topography?.sourceLabel || "topografi Magellan"}. Bentuk regional diperjelas seperlunya agar ciri geologinya mudah dilihat. Kecerahan radar tidak dipakai sebagai ketinggian.`;
+        this.observationSourceNote.textContent = `Dasar relief memakai ${topography?.sourceLabel || "topografi Magellan"}. Bentuk regional diperjelas secara terbatas agar ciri geologinya mudah dilihat; kecerahan radar tetap tidak dipakai sebagai ketinggian.`;
       }
       this.observationSource.textContent = `Sumber: ${observation.sourceLabel || "NASA"} ↗`;
       this.observationSource.href = observation.source || "https://science.nasa.gov/venus/";
