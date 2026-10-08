@@ -5075,3 +5075,33 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .cockpit-profile-hud .profile-login-trigger .profile-hud-kicker { font-size:3.5px !important; letter-spacing:.12em !important; }
   .leaderboard-hud-frame strong { font-size:5.1px !important; letter-spacing:.045em !important; text-indent:.045em !important; }
 }
+
+/* ========================================================================
+   2026-09-30 HOME HEADER FINAL CORRECTION
+   Remove the obsolete top windshield strip that visually duplicates the
+   identity bar on Home, and restore real pointer interaction to Leaderboard.
+   No other cockpit/home component is changed.
+   ======================================================================== */
+
+/* The identity HUD is now the only long top bar on the HOME screen.
+   This old windshield-depth strip was the plain second trapezoid visible
+   immediately underneath it on narrow/mobile layouts. */
+.mission[data-experience="home"] .window-depth-top {
+  display: none !important;
+}
+
+/* An older reliability rule disables pointer events on every direct HUD child
+   except the login trigger. Leaderboard is intentionally another interactive
+   direct child, so opt it back in explicitly. */
+.cockpit-profile-hud > .leaderboard-hud-frame {
+  pointer-events: auto !important;
+  z-index: 30 !important;
+  cursor: pointer !important;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cockpit-profile-hud > .leaderboard-hud-frame,
+.cockpit-profile-hud > .leaderboard-hud-frame * {
+  user-select: none;
+}
