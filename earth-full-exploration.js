@@ -6,7 +6,7 @@
   const KM_PER_DEG_LAT = 111.32;
   const EARTH_RADIUS_KM = 6371.0088;
   const DEG = Math.PI / 180;
-  const STATES = Object.freeze({ IDLE: "idle", SELECTING: "selecting", PREPARING: "preparing", ACTIVE: "active", EXITING: "exiting" });
+  const STATES = Object.freeze({ IDLE: "idle", SELECTING: "selecting", PREPARING: "preparing", ENTERING: "entering", ACTIVE: "active", EXITING: "exiting" });
 
   const REGIONS = Object.freeze([
     {
@@ -118,6 +118,7 @@
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const lerp = (a, b, t) => a + (b - a) * t;
   const smoothstep = value => { const t = clamp(value, 0, 1); return t * t * (3 - 2 * t); };
+  const smootherstep = value => { const t = clamp(value, 0, 1); return t * t * t * (t * (t * 6 - 15) + 10); };
   const wrapLongitude = lon => { let v = lon; while (v < -180) v += 360; while (v >= 180) v -= 360; return v; };
   const formatLatLon = (lat, lon) => `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? "N" : "S"} · ${Math.abs(lon).toFixed(4)}° ${lon >= 0 ? "E" : "W"}`;
   const formatKm = km => Math.abs(km) < 1 ? `${Math.round(km * 1000)} M` : `${km.toFixed(Math.abs(km) < 10 ? 2 : 1)} KM`;
@@ -805,6 +806,7 @@
         }
         if (event.code === "Escape") {
           event.preventDefault();
+          event.stopImmediatePropagation();
           if (document.pointerLockElement === this.controller.viewport) document.exitPointerLock?.();
           this.controller.exit();
         }
@@ -910,6 +912,8 @@
       this.lookPitchTarget = -0.2;
       this.speed = 0;
       this.transitionToken = 0;
+      this.entryTargetY = 0;
+      this.entryStartY = 0;
       this.input = new EarthFullInput(this);
       this.root.inert = true;
       this.buildSelector();
@@ -961,8 +965,9 @@
       this.tutorialClose.addEventListener("click", () => this.tutorial.classList.add("is-dismissed"));
       document.addEventListener("keydown", event => {
         if (event.code !== "Escape") return;
-        if (this.state === STATES.SELECTING || this.state === STATES.PREPARING) {
+        if (this.state === STATES.SELECTING || this.state === STATES.PREPARING || this.state === STATES.ENTERING) {
           event.preventDefault();
+          event.stopImmediatePropagation();
           this.exit();
         }
       });
@@ -1007,6 +1012,7 @@
       this.state = STATES.PREPARING;
       this.selector.hidden = true;
       this.errorPanel.hidden = true;
+      this.tutorial.classList.add("is-dismissed");
       this.root.className = "earth-full-exploration is-preparing";
       document.getElementById("mission").classList.remove("is-earth-full-selecting");
       document.getElementById("mission").classList.add("is-earth-full");
@@ -1026,7 +1032,7 @@
         this.setLoading(1, "TERRAIN REAL SIAP");
         await wait(180);
         if (token !== this.transitionToken) return;
-        this.activateRegion();
+        await this.runEntryTransition(token);
       } catch (error) {
         if (token !== this.transitionToken) return;
         this.showError(error);
@@ -1070,16 +1076,19 @@
       this.setLoading(0.14, "MENGUNDUH TILE ELEVASI REAL");
       await this.terrain.loadCore(progress => this.setLoading(0.14 + progress * 0.70, `MEMBANGUN TERRAIN REAL · ${Math.round(progress * 100)}%`));
       if (token !== this.transitionToken) return;
-      this.setCameraForRegion(region);
+      this.setCameraForRegion(region, { entry: true });
       this.updateRegionUI();
       void this.terrain.loadExtended();
     }
 
-    setCameraForRegion(region) {
+    setCameraForRegion(region, { entry = false } = {}) {
       const ground = this.terrain.heightAtWorld(0, 0) ?? 0;
       const zOffset = region.id === "grandcanyon" ? 11 : region.id === "antarctica" ? 14 : region.id === "mariana" ? 18 : 12;
-      const y = Number.isFinite(region.startAbsoluteY) ? region.startAbsoluteY : ground + region.startAltitude;
-      this.camera.position.set(0, y, zOffset);
+      const targetY = Number.isFinite(region.startAbsoluteY) ? region.startAbsoluteY : ground + region.startAltitude;
+      const entryLift = region.mode === "underwater" ? 18 : 38;
+      this.entryTargetY = targetY;
+      this.entryStartY = targetY + entryLift;
+      this.camera.position.set(0, entry ? this.entryStartY : targetY, zOffset);
       this.yaw = region.yaw || 0;
       this.pitch = region.pitch || -0.2;
       this.lookYawTarget = this.yaw;
@@ -1125,17 +1134,52 @@
       if (this.fillLight) this.fillLight.intensity = this.region.id === "mariana" ? 0.10 : 0.27;
     }
 
+    async runEntryTransition(token) {
+      this.state = STATES.ENTERING;
+      this.root.classList.remove("is-preparing");
+      this.root.classList.add("is-entering");
+      this.loading.hidden = true;
+      const reduced = this.earth.motion?.matches || matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const duration = reduced ? 400 : 4700;
+      const start = performance.now();
+      const startY = this.entryStartY;
+      const targetY = this.entryTargetY;
+
+      await new Promise(resolve => {
+        const frame = now => {
+          if (token !== this.transitionToken || this.state !== STATES.ENTERING) return resolve();
+          const raw = clamp((now - start) / duration, 0, 1);
+          const eased = smootherstep(raw);
+          const surface = smoothstep((raw - 0.48) / 0.40);
+          this.earth.setFullExplorationTransition?.(eased, this.region);
+          this.root.style.setProperty("--surface", String(surface));
+          this.root.style.setProperty("--entry-progress", String(eased));
+          this.camera.position.y = lerp(startY, targetY, smoothstep((raw - 0.46) / 0.54));
+          this.terrain?.update(this.camera);
+          this.renderer?.render(this.scene, this.camera);
+          if (raw < 1) requestAnimationFrame(frame); else resolve();
+        };
+        requestAnimationFrame(frame);
+      });
+
+      if (token !== this.transitionToken || this.state !== STATES.ENTERING) return;
+      this.activateRegion();
+    }
+
     activateRegion() {
       this.state = STATES.ACTIVE;
-      this.root.classList.remove("is-preparing");
+      this.root.classList.remove("is-preparing", "is-entering");
       this.root.classList.add("is-active", "is-surface-visible");
+      this.root.style.setProperty("--surface", "1");
+      this.root.style.setProperty("--entry-progress", "1");
       this.loading.hidden = true;
+      this.earth.setFullExplorationTransition?.(1, this.region);
       this.earth.completeFullExplorationHandoff?.();
       this.tutorial.classList.remove("is-dismissed");
       this.previous = performance.now();
       this.startLoop();
       this.updateHUD();
-      document.getElementById("announcement").textContent = `Eksplorasi terrain real ${this.region.name} aktif.`;
+      document.getElementById("announcement").textContent = `Eksplorasi terrain real ${this.region.name} aktif. Gunakan WASD atau kontrol layar untuk bergerak.`;
     }
 
     applyCameraRotation() {
@@ -1237,26 +1281,80 @@
       document.getElementById("mission").classList.remove("is-earth-full");
       document.getElementById("mission").classList.add("is-earth-full-selecting");
       this.disposeTerrain();
+      this.earth.setFullExplorationTransition?.(0, this.region);
       this.earth.returnFromFullExplorationToSelector?.();
       requestAnimationFrame(() => this.selector.querySelector(`[data-earth-region="${this.region.id}"]`)?.focus({ preventScroll: true }));
     }
 
     async exit() {
-      if (![STATES.ACTIVE, STATES.PREPARING, STATES.SELECTING].includes(this.state)) return;
-      this.transitionToken += 1;
+      if (![STATES.ACTIVE, STATES.PREPARING, STATES.SELECTING, STATES.ENTERING].includes(this.state)) return;
+      const previousState = this.state;
+      const token = ++this.transitionToken;
       this.state = STATES.EXITING;
       this.stopLoop();
       this.input.reset();
       if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+      this.tutorial.classList.add("is-dismissed");
       this.root.classList.add("is-exiting");
-      await wait(matchMedia("(prefers-reduced-motion: reduce)").matches ? 50 : 520);
+      document.getElementById("announcement").textContent = "Meninggalkan terrain Bumi dan kembali ke panorama orbit.";
+
+      const canAnimateSurface = Boolean(this.renderer && this.camera && this.terrain && [STATES.ACTIVE, STATES.ENTERING].includes(previousState));
+      if (canAnimateSurface) {
+        const reduced = this.earth.motion?.matches || matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const liftDuration = reduced ? 120 : 1650;
+        const liftStart = performance.now();
+        const fromY = this.camera.position.y;
+        const toY = Math.max(fromY, this.entryStartY || fromY + 38);
+        await new Promise(resolve => {
+          const frame = now => {
+            if (token !== this.transitionToken || this.state !== STATES.EXITING) return resolve();
+            const raw = clamp((now - liftStart) / liftDuration, 0, 1);
+            this.camera.position.y = lerp(fromY, toY, smootherstep(raw));
+            this.terrain?.update(this.camera);
+            this.renderer?.render(this.scene, this.camera);
+            if (raw < 1) requestAnimationFrame(frame); else resolve();
+          };
+          requestAnimationFrame(frame);
+        });
+        if (token !== this.transitionToken || this.state !== STATES.EXITING) return;
+
+        const duration = reduced ? 260 : 3200;
+        const start = performance.now();
+        await new Promise(resolve => {
+          const frame = now => {
+            if (token !== this.transitionToken || this.state !== STATES.EXITING) return resolve();
+            const raw = clamp((now - start) / duration, 0, 1);
+            const eased = smootherstep(raw);
+            this.root.style.setProperty("--surface", String(1 - smoothstep(raw / 0.62)));
+            this.root.style.setProperty("--entry-progress", String(1 - eased));
+            this.earth.setFullExplorationTransition?.(1 - eased, this.region);
+            this.renderer?.render(this.scene, this.camera);
+            if (raw < 1) requestAnimationFrame(frame); else resolve();
+          };
+          requestAnimationFrame(frame);
+        });
+        if (token !== this.transitionToken || this.state !== STATES.EXITING) return;
+      } else if (previousState === STATES.SELECTING || previousState === STATES.PREPARING) {
+        await wait((this.earth.motion?.matches || matchMedia("(prefers-reduced-motion: reduce)").matches) ? 20 : 220);
+        if (token !== this.transitionToken || this.state !== STATES.EXITING) return;
+      }
+      this.finishExit();
+    }
+
+    finishExit() {
+      if (document.fullscreenElement === this.root) document.exitFullscreen().catch(() => {});
+      this.stopLoop();
+      this.input.reset();
       this.disposeTerrain();
       this.disposeRenderer();
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");
       this.root.className = "earth-full-exploration";
+      this.root.style.removeProperty("--surface");
+      this.root.style.removeProperty("--entry-progress");
       document.getElementById("mission").classList.remove("is-earth-full", "is-earth-full-selecting");
+      this.earth.setFullExplorationTransition?.(0, this.region);
       this.earth.endFullExplorationFocus?.();
       this.state = STATES.IDLE;
       this.entryButton.disabled = false;
@@ -1311,8 +1409,11 @@
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");
       this.root.className = "earth-full-exploration";
+      this.root.style.removeProperty("--surface");
+      this.root.style.removeProperty("--entry-progress");
       this.selector.hidden = false;
       document.getElementById("mission").classList.remove("is-earth-full", "is-earth-full-selecting");
+      this.earth.setFullExplorationTransition?.(0, this.region);
       this.earth.endFullExplorationFocus?.();
       this.state = STATES.IDLE;
       this.entryButton.disabled = false;

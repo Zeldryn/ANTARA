@@ -14,17 +14,23 @@
 }
 
 .earth-scene.is-full-focus .earth-caption { opacity:0 !important; pointer-events:none !important; transition:opacity .35s ease; }
-.earth-scene.is-full-descending .earth-viewport { transform:scale(1.78); filter:saturate(1.06) contrast(1.02); transition:transform 1.35s cubic-bezier(.2,.72,.2,1), filter .8s ease; }
-.earth-scene.is-full-surface-active .earth-viewport { opacity:.08; filter:blur(8px) saturate(.7); transform:scale(2.05); }
+/* The actual globe dive is driven by EarthScene.setFullExplorationTransition so WebGL,
+   Canvas and CSS fallbacks share one lifecycle instead of a one-off CSS zoom. */
+.earth-scene.is-full-descending .earth-viewport,
+.earth-scene.is-full-surface-active .earth-viewport { filter:none; transform:none; }
 
-.earth-full-exploration { --surface:0; position:absolute; inset:0; z-index:30; overflow:hidden; isolation:isolate; color:#eef8fb; background:transparent; }
+.earth-full-exploration { --surface:0; --entry-progress:0; position:absolute; inset:0; z-index:30; overflow:hidden; isolation:isolate; color:#eef8fb; background:transparent; }
 .earth-full-exploration[hidden] { display:none; }
-.earth-full-exploration.is-active, .earth-full-exploration.is-preparing { background:#07131b; }
-.earth-full-viewport { position:absolute; inset:0; z-index:1; opacity:var(--surface); background:linear-gradient(#6f9aaf 0 36%, #6e7167 58%, #38433f 100%); transition:opacity .55s ease; touch-action:none; }
+.earth-full-exploration.is-active { background:transparent; }
+.earth-full-exploration.is-preparing,.earth-full-exploration.is-entering,.earth-full-exploration.is-exiting { background:transparent; }
+.earth-full-viewport { position:absolute; inset:0; z-index:1; opacity:var(--surface); background:linear-gradient(#6f9aaf 0 36%, #6e7167 58%, #38433f 100%); transition:opacity .15s linear; touch-action:none; }
 .earth-full-canvas { display:block; width:100%; height:100%; }
 .earth-full-exploration.is-active { --surface:1; }
-.earth-full-exploration.is-preparing { --surface:.18; }
-.earth-full-exploration.is-exiting { opacity:0; transition:opacity .5s ease; }
+.earth-full-exploration.is-preparing { --surface:0; }
+.earth-full-exploration.is-entering .earth-full-viewport,
+.earth-full-exploration.is-exiting .earth-full-viewport { touch-action:none; }
+.earth-full-exploration:not(.is-active) .earth-full-actions,
+.earth-full-exploration:not(.is-active) .earth-mobile-controls { pointer-events:none; }
 .earth-full-exploration.is-underwater .earth-full-viewport { filter:saturate(.86) contrast(1.05); }
 .earth-full-atmosphere { position:absolute; inset:0; z-index:2; pointer-events:none; opacity:var(--surface); background:linear-gradient(180deg,#b9d2df16,transparent 42%,#0e2d3c18 75%,#03101866 100%); }
 

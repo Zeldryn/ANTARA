@@ -1550,11 +1550,8 @@
       event.stopImmediatePropagation();
       if (key === "escape") {
         if (event.repeat) return;
-        if (document.pointerLockElement === this.controller.viewport) {
-          document.exitPointerLock?.();
-          this.clear();
-          return;
-        }
+        if (document.pointerLockElement === this.controller.viewport) document.exitPointerLock?.();
+        this.clear();
         this.controller.exit();
         return;
       }
