@@ -3194,7 +3194,7 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   left: 10.7%;
   right: 10.7%;
   top: 7.7%;
-  height: clamp(58px,6.4vh,70px);
+  height: clamp(50px,5.6vh,58px);
   transform: translate3d(var(--cam-x),var(--cam-y),0) rotate(var(--cam-tilt));
   transform-origin: 50% 84%;
   pointer-events: none;
@@ -3215,7 +3215,7 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   left: 0;
   right: 0;
   top: 50%;
-  height: 32px;
+  height: clamp(44px,5.05vh,52px);
   transform: translateY(-50%);
   clip-path: polygon(0 34%,1.2% 0,98.8% 0,100% 34%,100% 66%,98.8% 100%,1.2% 100%,0 66%);
   background:
@@ -3227,7 +3227,8 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 }
 .cockpit-profile-hud::after {
   z-index: -1;
-  left: min(455px,39vw);
+  display: none;
+  left: 0;
   right: 1.5%;
   top: 50%;
   height: 1px;
@@ -3239,10 +3240,10 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   position: relative;
   z-index: 3;
   display: grid;
-  grid-template-columns: auto clamp(24px,2vw,34px) minmax(235px,1fr);
+  grid-template-columns: auto clamp(12px,1.2vw,18px) minmax(205px,1fr);
   align-items: center;
   gap: 0;
-  width: clamp(350px,39vw,505px);
+  width: clamp(285px,31vw,350px);
   height: 100%;
   padding: 0;
   border: 0;
@@ -3285,7 +3286,8 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 }
 .profile-hud-rail-left::after { right: 0; }
 .profile-hud-rail-right {
-  left: min(458px,39.4vw);
+  display: none;
+  left: 0;
   right: 0;
   transform: translateY(-50%);
   background: linear-gradient(90deg,rgba(222,181,108,.44),rgba(112,180,214,.2) 18%,transparent 92%);
@@ -3297,7 +3299,7 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   position: relative;
   display: grid;
   place-items: center;
-  width: clamp(55px,5vw,68px);
+  width: clamp(42px,4vw,50px);
   aspect-ratio: 1;
   flex: 0 0 auto;
   filter: drop-shadow(0 4px 7px rgba(0,0,0,.22));
@@ -3416,7 +3418,7 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   align-self: stretch;
   display: grid;
   place-items: center;
-  min-width: 24px;
+  min-width: 12px;
 }
 .profile-hud-connector::before,
 .profile-hud-connector::after {
@@ -3445,10 +3447,10 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   display: grid;
   grid-template-columns: minmax(0,1fr) auto;
   align-items: center;
-  gap: clamp(10px,1vw,15px);
+  gap: clamp(7px,.7vw,10px);
   min-width: 0;
-  height: clamp(45px,5.25vh,57px);
-  padding: 0 clamp(14px,1.35vw,21px) 0 clamp(14px,1.2vw,19px);
+  height: clamp(36px,4.25vh,43px);
+  padding: 0 clamp(10px,.9vw,13px) 0 clamp(10px,.85vw,12px);
   background: transparent;
   border: 0;
   box-shadow: none;
@@ -3460,7 +3462,7 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   position:absolute;
   left: 0;
   right: 0;
-  height: 8px;
+  height: 7px;
   pointer-events:none;
   opacity:.9;
 }
@@ -3484,18 +3486,18 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 
 .profile-hud-copy { min-width:0; display:grid; align-content:center; gap:2px; }
 .profile-hud-kicker {
-  display:flex; align-items:center; gap:7px; color:rgba(161,191,208,.72); font-size:clamp(5px,.47vw,7px);
+  display:flex; align-items:center; gap:6px; color:rgba(161,191,208,.72); font-size:clamp(5px,.42vw,6.5px);
   font-weight:600; letter-spacing:.23em; white-space:nowrap;
 }
 .profile-hud-kicker i { width:15px; height:1px; flex:0 0 auto; background:linear-gradient(90deg,var(--profile-gold),transparent); }
 .profile-hud-copy strong {
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#f1f4f6;
-  font:500 clamp(10px,.9vw,13px)/1.12 Georgia,"Times New Roman",serif; letter-spacing:.12em; text-transform:uppercase;
+  font:500 clamp(9px,.78vw,11px)/1.12 Georgia,"Times New Roman",serif; letter-spacing:.11em; text-transform:uppercase;
   text-shadow:0 2px 8px rgba(0,0,0,.48); transition:color .2s ease, letter-spacing .2s ease;
 }
 .profile-hud-copy small {
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:rgba(218,226,233,.54);
-  font-size:clamp(5px,.44vw,6.5px); font-weight:600; letter-spacing:.16em;
+  font-size:clamp(4.5px,.39vw,5.8px); font-weight:600; letter-spacing:.15em;
 }
 .profile-hud-action {
   display:grid; grid-template-columns:auto 18px; align-items:center; gap:8px; padding-left:10px;
@@ -3557,48 +3559,48 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 
 /* Laptop: keep the left-anchored composition but shorten ornament lengths. */
 @media (max-width: 1366px) {
-  .cockpit-profile-hud { left:10%; right:10%; top:7.55%; height:clamp(54px,6.1vh,64px); }
-  .profile-hud-trigger { width:clamp(330px,38vw,455px); grid-template-columns:auto 27px minmax(220px,1fr); }
-  .profile-avatar-frame { width:clamp(50px,4.8vw,60px); }
-  .profile-login-frame { height:clamp(43px,5.1vh,52px); padding-left:15px; padding-right:15px; }
-  .cockpit-profile-hud::after,.profile-hud-rail-right { left:min(415px,36.8vw); }
+  .cockpit-profile-hud { left:10%; right:10%; top:7.55%; height:clamp(48px,5.6vh,56px); }
+  .profile-hud-trigger { width:clamp(270px,30vw,330px); grid-template-columns:auto 14px minmax(195px,1fr); }
+  .profile-avatar-frame { width:clamp(40px,3.8vw,47px); }
+  .profile-login-frame { height:clamp(35px,4.2vh,41px); padding-left:10px; padding-right:10px; }
+  .cockpit-profile-hud::after,.profile-hud-rail-right { display:none; }
 }
 
 @media (max-width: 1100px) {
   .cockpit-profile-hud { left:9.2%; right:9.2%; top:7.35%; }
-  .profile-hud-trigger { width:clamp(305px,46vw,405px); grid-template-columns:auto 23px minmax(205px,1fr); }
+  .profile-hud-trigger { width:clamp(260px,40vw,315px); grid-template-columns:auto 13px minmax(185px,1fr); }
   .profile-hud-action span { display:none; }
   .profile-hud-action { grid-template-columns:16px; padding-left:8px; }
   .profile-hud-action svg { width:16px; height:16px; }
-  .cockpit-profile-hud::after,.profile-hud-rail-right { left:min(375px,43vw); }
+  .cockpit-profile-hud::after,.profile-hud-rail-right { display:none; }
 }
 
 @media (max-width: 900px) {
   .cockpit-profile-hud { left:8%; right:8%; top:7.1%; }
-  .profile-hud-trigger { width:clamp(285px,55vw,360px); grid-template-columns:auto 20px minmax(190px,1fr); }
+  .profile-hud-trigger { width:clamp(250px,48vw,300px); grid-template-columns:auto 12px minmax(175px,1fr); }
   .profile-hud-copy small { display:none; }
   .profile-hud-kicker { letter-spacing:.18em; }
   .profile-login-frame { padding-right:12px; }
-  .cockpit-profile-hud::after,.profile-hud-rail-right { left:min(335px,52vw); }
+  .cockpit-profile-hud::after,.profile-hud-rail-right { display:none; }
 }
 
 /* Mobile gets a compact equivalent, not a microscopic desktop header. */
 @media (max-width: 700px) {
   .cockpit-profile-hud {
-    left: 8%; right: 8%; top: 6.65%; height: 50px;
+    left: 8%; right: 8%; top: 6.65%; height: 46px;
     transform: translate3d(var(--cam-x),var(--cam-y),0) rotate(var(--cam-tilt));
   }
-  .cockpit-profile-hud::before { height: 28px; opacity:.82; }
+  .cockpit-profile-hud::before { height: 40px; opacity:.82; }
   .cockpit-profile-hud::after,.profile-hud-rail-right { display:none; }
-  .profile-hud-trigger { width:100%; grid-template-columns:42px 14px minmax(0,1fr); }
-  .profile-avatar-frame { width:42px; }
-  .profile-hud-connector { min-width:14px; }
+  .profile-hud-trigger { width:min(100%,275px); grid-template-columns:38px 10px minmax(0,1fr); }
+  .profile-avatar-frame { width:38px; }
+  .profile-hud-connector { min-width:10px; }
   .profile-hud-connector i { display:none; }
   .profile-hud-connector::before { top:42%; }
   .profile-hud-connector::after { bottom:42%; }
   .profile-login-frame {
-    height:43px; min-width:0; grid-template-columns:minmax(0,1fr) 15px; gap:7px;
-    padding:0 10px 0 11px;
+    height:36px; min-width:0; grid-template-columns:minmax(0,1fr) 15px; gap:6px;
+    padding:0 8px 0 9px;
   }
   .profile-hud-kicker,.profile-hud-copy small,.profile-hud-action span { display:none; }
   .profile-hud-copy strong { font-size:9px; letter-spacing:.085em; }
@@ -3609,15 +3611,15 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 }
 
 @media (max-height: 700px) and (min-width: 701px) {
-  .cockpit-profile-hud { top:6.35%; height:50px; }
-  .profile-avatar-frame { width:47px; }
-  .profile-login-frame { height:42px; }
+  .cockpit-profile-hud { top:6.35%; height:46px; }
+  .profile-avatar-frame { width:39px; }
+  .profile-login-frame { height:35px; }
   .profile-hud-copy small { display:none; }
 }
 @media (max-height: 560px) {
-  .cockpit-profile-hud { top:5.3%; height:45px; }
-  .profile-avatar-frame { width:41px; }
-  .profile-login-frame { height:38px; }
+  .cockpit-profile-hud { top:5.3%; height:42px; }
+  .profile-avatar-frame { width:36px; }
+  .profile-login-frame { height:33px; }
   .profile-hud-kicker { display:none; }
   .profile-hud-copy strong { font-size:9px; }
 }
@@ -3627,3 +3629,18 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     animation:none !important; transition-duration:.01ms !important;
   }
 }
+
+
+/* 2026-09-30 correction: identity module must live fully inside the long main rail. */
+.profile-login-frame,
+.profile-login-frame:hover,
+.profile-hud-trigger:hover .profile-login-frame,
+.profile-hud-trigger:focus-visible .profile-login-frame {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+.profile-hud-trigger { max-width: 350px; }
+.profile-hud-rail-right,
+.cockpit-profile-hud::after { display: none !important; }
