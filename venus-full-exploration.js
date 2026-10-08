@@ -2427,6 +2427,16 @@
           this.clear();
           return;
         }
+        if (this.controller.actionsMenuOpen) {
+          this.controller.setActionsMenu?.(false);
+          this.clear();
+          return;
+        }
+        if (this.controller.isInfoOpen?.()) {
+          this.controller.hideRegionInfo?.(false);
+          this.clear();
+          return;
+        }
         if (this.controller.isObjectivesExpanded?.()) {
           this.controller.collapseObjectives?.();
           this.clear();
@@ -2565,6 +2575,9 @@
       this.exitButton = document.getElementById("venus-full-exit");
       this.fullscreenButton = document.getElementById("venus-fullscreen-toggle");
       this.locationButton = document.getElementById("venus-location-toggle");
+      this.actionsRoot = this.root.querySelector(".venus-full-actions");
+      this.actionsMenu = document.getElementById("venus-actions-menu");
+      this.actionsMenuToggle = document.getElementById("venus-actions-menu-toggle");
       this.loading = document.getElementById("venus-full-loading");
       this.loadingStatus = document.getElementById("venus-full-loading-status");
       this.loadingProgress = document.getElementById("venus-full-loading-progress");
@@ -2665,6 +2678,7 @@
       this.nearbyObservation = null;
       this.activeObservation = null;
       this.selectedTarget = null;
+      this.actionsMenuOpen = false;
       this.recommendedQualityName = this.detectRecommendedQualityName();
       this.selectedQualityName = this.readSavedQualityName() || this.recommendedQualityName;
       this.quality = copyQualityProfile(this.selectedQualityName);
@@ -2826,9 +2840,13 @@
         if (this.selectorOpenedFromRegion && this.regionWorld) this.closeSelectorToRegion();
         else this.cancelPreEntry();
       });
-      this.exitButton.addEventListener("click", () => this.exit());
-      this.locationButton.addEventListener("click", () => this.openSelectorFromRegion());
-      this.fullscreenButton.addEventListener("click", () => this.toggleFullscreen());
+      this.exitButton.addEventListener("click", () => { this.setActionsMenu(false); this.exit(); });
+      this.locationButton.addEventListener("click", () => { this.setActionsMenu(false); this.openSelectorFromRegion(); });
+      this.fullscreenButton.addEventListener("click", () => { this.setActionsMenu(false); this.toggleFullscreen(); });
+      this.actionsMenuToggle?.addEventListener("click", event => {
+        event.stopPropagation();
+        this.setActionsMenu(!this.actionsMenuOpen, true);
+      });
       this.errorReturn.addEventListener("click", () => this.failBackToOrbit());
       this.tutorialClose.addEventListener("click", () => this.dismissTutorial(true));
       this.infoMinimize.addEventListener("click", event => { event.stopPropagation(); this.hideRegionInfo(); });
@@ -2839,6 +2857,10 @@
       this.observeButton?.addEventListener("click", () => this.tryObserveNearby());
       this.observationClose?.addEventListener("click", () => this.closeObservationCard(true));
       document.addEventListener("fullscreenchange", () => this.updateFullscreenLabel());
+      document.addEventListener("pointerdown", event => {
+        if (!this.actionsMenuOpen || this.actionsRoot?.contains(event.target)) return;
+        this.setActionsMenu(false);
+      });
       document.addEventListener("visibilitychange", () => {
         if (!this.active) return;
         if (document.hidden) this.stopLoop(); else this.startLoop();
@@ -2853,6 +2875,41 @@
         else if (this.selectorOpenedFromRegion && this.regionWorld) this.closeSelectorToRegion();
         else this.cancelPreEntry();
       }, true);
+    }
+
+    isMobileUi() {
+      return window.matchMedia?.("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)")?.matches || false;
+    }
+
+    isConstrainedUi() {
+      return window.matchMedia?.("(max-width: 1499px), (max-height: 819px), (pointer: coarse)")?.matches || false;
+    }
+
+    isInfoOpen() {
+      return Boolean(this.infoCard?.classList.contains("is-visible") && this.infoCard.getAttribute("aria-hidden") !== "true");
+    }
+
+    setActionsMenu(open, focus = false) {
+      const allowMenu = this.isMobileUi();
+      const next = Boolean(open && allowMenu && this.state === STATES.EXPLORING);
+      this.actionsMenuOpen = next;
+      this.actionsRoot?.classList.toggle("is-open", next);
+      this.actionsMenuToggle?.setAttribute("aria-expanded", String(next));
+      if (focus && next) requestAnimationFrame(() => this.actionsMenu?.querySelector("button")?.focus({ preventScroll: true }));
+    }
+
+    updateResponsiveUi() {
+      if (!this.root) return;
+      const mode = this.isMobileUi() ? "mobile" : this.isConstrainedUi() ? "compact" : "desktop";
+      this.root.dataset.uiMode = mode;
+      if (mode !== "mobile") this.setActionsMenu(false);
+      if (this.state !== STATES.EXPLORING) return;
+
+      // On constrained screens only one large secondary panel may own the visual field.
+      if (this.isConstrainedUi() && this.isInfoOpen() && this.isObjectivesExpanded()) {
+        this.collapseObjectives();
+        if (this.objectivesToggle) this.objectivesToggle.hidden = true;
+      }
     }
 
     enter() {
@@ -3067,9 +3124,11 @@
       this.startLoop();
       this.showTutorial();
       this.infoCard.classList.remove("is-visible");
+      this.root?.classList.remove("is-info-open");
       this.infoCard.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = false;
       this.collapseObjectives();
+      this.updateResponsiveUi();
       this.updateHUD();
       this.updateEducation(0);
       document.getElementById("announcement").textContent = `Eksplorasi Venus aktif di ${this.region.name}. Ikuti tujuan eksplorasi untuk menemukan fitur geologi.`;
@@ -3083,6 +3142,7 @@
       this.selector.hidden = false;
       this.root.classList.add("is-selecting");
       this.infoCard.classList.remove("is-visible");
+      this.root?.classList.remove("is-info-open", "is-objectives-open");
       this.infoCard.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = true;
       this.objectivesPanel.hidden = true;
@@ -3103,6 +3163,7 @@
       this.startLoop();
       this.collapseObjectives();
       this.infoToggle.hidden = false;
+      this.updateResponsiveUi();
       this.updateEducation(0);
     }
 
@@ -3142,12 +3203,8 @@
         this.camera.rotation.set(this.pitch, this.yaw, 0, "YXZ");
         this.updateMovement(delta);
       }
-      // Keep the live world rendering during exit, but freeze nonessential LOD/ambient
-      // decisions so the Mars-family handoff gets the frame budget.
-      if (this.state !== STATES.EXITING) {
-        this.regionWorld.updateVisibility(this.camera, delta);
-        this.regionWorld.updateAmbient(delta);
-      }
+      this.regionWorld.updateVisibility(this.camera, delta);
+      this.regionWorld.updateAmbient(delta);
       this.renderer.render(this.scene, this.camera);
       if (this.state === STATES.EXPLORING) {
         this.hudClock += delta;
@@ -3167,35 +3224,6 @@
 
     isObjectivesExpanded() {
       return Boolean(this.objectivesPanel && !this.objectivesPanel.hidden);
-    }
-
-    isResponsiveConstrained() {
-      return window.matchMedia("(max-width: 1500px), (max-height: 850px), (pointer: coarse)").matches;
-    }
-
-    syncResponsiveUiState() {
-      if (!this.root) return;
-      const constrained = this.isResponsiveConstrained();
-      const infoOpen = Boolean(this.infoCard?.classList.contains("is-visible"));
-      const objectivesOpen = this.isObjectivesExpanded();
-      const observationOpen = this.isObservationCardOpen();
-      this.root.classList.toggle("is-ui-constrained", constrained);
-      this.root.classList.toggle("is-info-open", infoOpen);
-      this.root.classList.toggle("is-objectives-open", objectivesOpen);
-      this.root.classList.toggle("is-observation-open", observationOpen);
-
-      // Constrained layouts intentionally allow only one large reading surface at a time.
-      if (constrained && infoOpen && objectivesOpen) {
-        this.objectivesPanel.hidden = true;
-        if (this.objectivesToggle) this.objectivesToggle.hidden = this.state !== STATES.EXPLORING;
-        this.root.classList.remove("is-objectives-open");
-      }
-      if (observationOpen) {
-        this.infoCard?.classList.remove("is-visible");
-        this.infoCard?.setAttribute("aria-hidden", "true");
-        if (this.objectivesPanel) this.objectivesPanel.hidden = true;
-        this.root.classList.remove("is-info-open", "is-objectives-open");
-      }
     }
 
     discoveryStorageKey() {
@@ -3237,7 +3265,7 @@
         this.observationCard.setAttribute("aria-hidden", "true");
       }
       if (this.observationMore) this.observationMore.open = false;
-      this.root?.classList.remove("is-observation-open");
+      this.root?.classList.remove("is-observation-open", "is-info-open", "is-objectives-open");
     }
 
     setupEducationUI() {
@@ -3252,7 +3280,7 @@
       this.observationPrompt.hidden = true;
       this.observationCard.hidden = true;
       this.observationCard.setAttribute("aria-hidden", "true");
-      this.root.classList.remove("is-observation-open");
+      this.root.classList.remove("is-observation-open", "is-info-open", "is-objectives-open");
       this.updateEducation(0);
     }
 
@@ -3283,23 +3311,23 @@
     collapseObjectives() {
       if (!this.objectivesPanel) return;
       this.objectivesPanel.hidden = true;
-      this.objectivesToggle.hidden = this.state !== STATES.EXPLORING;
       this.root?.classList.remove("is-objectives-open");
+      this.objectivesToggle.hidden = this.state !== STATES.EXPLORING;
     }
 
     expandObjectives(focus = false) {
       if (!this.objectivesPanel || !this.region?.education) return;
+      this.setActionsMenu(false);
       if (this.isObservationCardOpen()) this.closeObservationCard(false);
-      if (this.isResponsiveConstrained()) {
+      if (this.isConstrainedUi()) {
         this.infoCard?.classList.remove("is-visible");
-        this.infoCard?.setAttribute("aria-hidden", "true");
         this.root?.classList.remove("is-info-open");
+        this.infoCard?.setAttribute("aria-hidden", "true");
         if (this.infoToggle) this.infoToggle.hidden = false;
       }
       this.objectivesPanel.hidden = false;
-      this.objectivesToggle.hidden = true;
       this.root?.classList.add("is-objectives-open");
-      this.syncResponsiveUiState();
+      this.objectivesToggle.hidden = true;
       if (focus) requestAnimationFrame(() => this.objectivesCollapse?.focus({ preventScroll: true }));
     }
 
@@ -3375,7 +3403,9 @@
       this.activeObservation = observation;
       this.input.clear();
       if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+      this.setActionsMenu(false);
       this.infoCard?.classList.remove("is-visible");
+      this.root?.classList.remove("is-info-open");
       this.infoCard?.setAttribute("aria-hidden", "true");
       this.collapseObjectives();
       if (this.objectivesToggle) this.objectivesToggle.hidden = true;
@@ -3441,7 +3471,6 @@
       this.observationCard.hidden = false;
       this.observationCard.setAttribute("aria-hidden", "false");
       this.root.classList.add("is-observation-open");
-      this.syncResponsiveUiState();
       this.observationPrompt.hidden = true;
       this.updateEducation(0);
       requestAnimationFrame(() => this.observationClose?.focus({ preventScroll: true }));
@@ -3453,7 +3482,6 @@
       this.observationCard.setAttribute("aria-hidden", "true");
       this.root.classList.remove("is-observation-open");
       this.activeObservation = null;
-      this.syncResponsiveUiState();
       if (this.observationMore) this.observationMore.open = false;
       if (this.state === STATES.EXPLORING) {
         if (this.objectivesToggle && this.objectivesPanel?.hidden) this.objectivesToggle.hidden = false;
@@ -3580,26 +3608,25 @@
     }
 
     showRegionInfo(focus = false) {
+      this.setActionsMenu(false);
       this.closeObservationCard(false);
-      if (this.isResponsiveConstrained()) {
+      if (this.isConstrainedUi()) {
         this.collapseObjectives();
         if (this.objectivesToggle) this.objectivesToggle.hidden = true;
       }
       this.infoCard.classList.add("is-visible");
+      this.root?.classList.add("is-info-open");
       this.infoCard.setAttribute("aria-hidden", "false");
       this.infoToggle.hidden = true;
-      this.root?.classList.add("is-info-open");
-      this.syncResponsiveUiState();
       if (focus) requestAnimationFrame(() => this.infoMinimize.focus({ preventScroll: true }));
     }
 
     hideRegionInfo(focusToggle = true) {
       this.infoCard.classList.remove("is-visible");
+      this.root?.classList.remove("is-info-open");
       this.infoCard.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = false;
-      this.root?.classList.remove("is-info-open");
       if (this.objectivesToggle && this.objectivesPanel?.hidden && this.state === STATES.EXPLORING) this.objectivesToggle.hidden = false;
-      this.syncResponsiveUiState();
       if (focusToggle) this.infoToggle.focus({ preventScroll: true });
     }
 
@@ -3655,13 +3682,11 @@
       }
     }
 
-    animateExitRetreat(targetAltitude, duration, token) {
-      // Port of Mars Full Exploration's altitude stage: keep the live surface renderer
-      // running while the camera rises. Planet-scale recession is owned by VenusScene's
-      // dedicated fullDiveBlend, not faked by dragging the local terrain camera backward.
+    animateCameraAltitude(targetAltitude, duration, token) {
+      // Mars parity: keep the live exploration renderer running while the camera rises.
+      // The following planet-scale recession is driven by VenusScene.fullDiveBlend.
       if (!this.regionWorld || !this.camera) return Promise.resolve();
-      const groundNow = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
-      const startAltitude = Math.max(0, this.camera.position.y - groundNow);
+      const startAltitude = this.cameraAltitude;
       const start = performance.now();
       return new Promise(resolve => {
         const frame = now => {
@@ -3696,28 +3721,23 @@
 
       this.state = STATES.EXITING;
       const token = ++this.transitionToken;
-      // Mars is the exact lifecycle reference: first rise on the live surface, then
-      // reverse the dedicated planet full-dive while the surface fades over it.
       this.input.clear();
       this.input.unbind();
+      this.setActionsMenu(false);
       this.selector.hidden = true;
       if (this.qualityPanel) this.qualityPanel.hidden = true;
       this.tutorial.classList.remove("is-visible");
-      this.infoCard.classList.remove("is-visible");
-      this.infoCard.setAttribute("aria-hidden", "true");
-      this.infoToggle.hidden = true;
-      this.resetEducationUI();
       this.boundaryHint.classList.remove("is-visible");
       this.root.classList.add("is-exiting");
       document.getElementById("announcement").textContent = "Meninggalkan permukaan Venus dan kembali ke panorama orbit.";
+
+      // Critical Mars lifecycle rule: never stop the Full Exploration loop here.
+      // Terrain, atmosphere and camera continue rendering throughout the ascent/handoff.
       this.startLoop();
 
       if (this.regionWorld && this.camera) {
-        try {
-          const ground = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
-          const currentAltitude = Math.max(0, this.camera.position.y - ground);
-          await this.animateExitRetreat(Math.max(currentAltitude, 52), 1650, token);
-        } catch {}
+        try { await this.animateCameraAltitude(Math.max(this.cameraAltitude, 52), 1650, token); }
+        catch {}
       }
       if (token !== this.transitionToken) return;
 
@@ -3729,8 +3749,9 @@
           if (token !== this.transitionToken) return resolve();
           const raw = clamp((now - start) / duration, 0, 1);
           const eased = smootherstep(raw);
-          const surfaceFade = 1 - smoothstep(raw / 0.62);
-          this.root.style.setProperty("--surface-opacity", String(surfaceFade));
+          // Exact Mars handoff family: the surface remains live while the actual
+          // Venus sphere recedes from a near-planet framing toward panorama.
+          this.root.style.setProperty("--surface-opacity", String(1 - smoothstep(raw / 0.62)));
           this.venus.setFullExplorationTransition?.(1 - eased, this.region);
           if (raw < 1) requestAnimationFrame(frame);
           else resolve();
@@ -3746,11 +3767,17 @@
       if (document.fullscreenElement === this.root) document.exitFullscreen().catch(() => {});
       this.stopLoop();
       this.input.unbind();
+      // The handoff is visually complete at this point. Only now release the
+      // exploration world and its renderer resources.
       this.disposeRegion();
       this.disposeRenderer();
       this.venus.endFullExploration?.();
       this.venus.setFullExplorationTransition?.(0, this.region);
       this.venus.caption.inert = false;
+      this.resetEducationUI();
+      this.infoCard.classList.remove("is-visible");
+      this.infoCard.setAttribute("aria-hidden", "true");
+      this.infoToggle.hidden = true;
       this.state = STATES.IDLE;
       this.selectorOpenedFromRegion = false;
       this.root.className = "mars-full-exploration venus-full-exploration";
@@ -3759,7 +3786,6 @@
       this.root.setAttribute("aria-hidden", "true");
       this.root.style.removeProperty("--surface-opacity");
       this.root.style.removeProperty("--entry-progress");
-      this.root.style.removeProperty("--exit-lift");
       this.selector.hidden = false;
       if (this.qualityPanel) this.qualityPanel.hidden = true;
       this.loading.hidden = true;
@@ -3838,7 +3864,11 @@
       this.loadingStatus.textContent = status;
     }
 
-    mobileFov() { return window.innerWidth <= 760 ? 70 : 66; }
+    mobileFov() {
+      if (window.innerWidth <= 820) return 70;
+      if (window.innerWidth <= 1200 || window.innerHeight <= 760) return 68;
+      return 66;
+    }
 
     async toggleFullscreen() {
       if (!document.fullscreenElement) {
@@ -3852,16 +3882,13 @@
     updateFullscreenLabel() {
       const active = document.fullscreenElement === this.root;
       this.fullscreenButton.setAttribute("aria-pressed", String(active));
-      this.fullscreenButton.setAttribute("aria-label", active ? "Keluar layar penuh" : "Layar penuh");
-      const fullLabel = this.fullscreenButton.querySelector(".venus-action-label-full");
-      const compactLabel = this.fullscreenButton.querySelector(".venus-action-label-compact");
-      if (fullLabel) fullLabel.textContent = active ? "Keluar layar penuh" : "Layar penuh";
-      if (compactLabel) compactLabel.textContent = active ? "Keluar layar" : "Layar";
+      this.fullscreenButton.querySelector("span").textContent = active ? "Keluar layar penuh" : "Layar penuh";
       this.resize();
+      this.updateResponsiveUi();
     }
 
     resize(recalculateDpr = true) {
-      this.syncResponsiveUiState();
+      this.updateResponsiveUi();
       if (!this.renderer || !this.camera) return;
       const width = Math.max(1, this.viewport.clientWidth || window.innerWidth);
       const height = Math.max(1, this.viewport.clientHeight || window.innerHeight);

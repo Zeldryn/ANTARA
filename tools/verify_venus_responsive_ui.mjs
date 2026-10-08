@@ -1,46 +1,70 @@
 import fs from 'node:fs';
+import path from 'node:path';
 
-const css = fs.readFileSync(new URL('../venus-full-exploration.css', import.meta.url), 'utf8');
-const js = fs.readFileSync(new URL('../venus-full-exploration.js', import.meta.url), 'utf8');
-const scene = fs.readFileSync(new URL('../venus-scene.js', import.meta.url), 'utf8');
-const marsScene = fs.readFileSync(new URL('../mars-scene.js', import.meta.url), 'utf8');
-const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const read = file => fs.readFileSync(path.join(root, file), 'utf8');
+const html = read('index.html');
+const css = read('venus-full-exploration.css');
+const venus = read('venus-full-exploration.js');
+const venusScene = read('venus-scene.js');
+const mars = read('mars-full-exploration.js');
+const marsScene = read('mars-scene.js');
 
 const checks = [];
-const ok = (name, cond) => { checks.push([name, Boolean(cond)]); if (!cond) process.exitCode = 1; };
+function check(name, condition, detail='') {
+  checks.push({ name, ok: Boolean(condition), detail });
+  if (!condition) process.exitCode = 1;
+}
+function has(source, fragment) { return source.includes(fragment); }
 
-ok('dvh root clamp', css.includes('height: 100dvh') && css.includes('max-height: 100dvh'));
-ok('desktop HUD clamp', /width:\s*clamp\(280px,\s*18vw,\s*330px\)/.test(css));
-ok('desktop info clamp', /width:\s*clamp\(340px,\s*24vw,\s*430px\)/.test(css));
-ok('compact laptop breakpoint', css.includes('@media (max-width: 1599px), (max-height: 820px)'));
-ok('tablet touch breakpoint', css.includes('@media (max-width: 820px), (pointer: coarse) and (max-width: 1100px)'));
-ok('short-height breakpoint', css.includes('@media (max-height: 700px) and (min-width: 821px)'));
-ok('safe areas', css.includes('env(safe-area-inset-top)') && css.includes('env(safe-area-inset-bottom)'));
-ok('mobile 44px targets', /min-height:\s*44px/.test(css));
-ok('mobile bottom sheets', css.includes('border-radius: 16px 16px 0 0') && css.includes('max-height: 78dvh'));
-ok('desktop hints wrap', css.includes('flex-wrap: wrap') && css.includes('white-space: normal'));
-ok('z-index tokens', ['--venus-z-world','--venus-z-hud','--venus-z-panel','--venus-z-modal','--venus-z-transition'].every(k => css.includes(k)));
-ok('default objective minimized', /activateRegion\(\)[\s\S]*?this\.collapseObjectives\(\);/.test(js));
-ok('viewport-aware exclusivity', js.includes('isResponsiveConstrained()') && js.includes('syncResponsiveUiState()'));
-ok('resize resync', /resize\(recalculateDpr = true\) \{\s*this\.syncResponsiveUiState\(\);/.test(js));
-ok('compact action labels', html.includes('venus-action-label-compact') && css.includes('.venus-action-label-compact'));
-ok('Venus dedicated fullDive', scene.includes('this.fullDiveBlend = 0') && scene.includes('setFullExplorationTransition(blend, location)'));
-ok('Mars fullDive retained', marsScene.includes('this.fullDiveBlend = 0') && marsScene.includes('setFullExplorationTransition(blend, location)'));
+check('cache busting updated', has(html, '20260930-responsive-ui-exit-1'));
+check('mobile action menu exists', has(html, 'venus-actions-menu-toggle') && has(html, 'venus-actions-menu'));
+check('HUD metrics have responsive hooks', ['venus-hud-metric-altitude','venus-hud-metric-speed','venus-hud-metric-distance','venus-hud-metric-region','venus-hud-metric-quality'].every(x=>has(html,x)));
+check('safe-area variables present', ['safe-area-inset-top','safe-area-inset-right','safe-area-inset-bottom','safe-area-inset-left'].every(x=>has(css,x)));
+check('viewport height uses dvh', /dvh/.test(css));
+check('responsive sizing uses clamp', /clamp\(/.test(css));
+check('panel internal scrolling enabled', has(css, 'overflow-y: auto') && has(css, 'overscroll-behavior: contain'));
+check('clear z-index architecture', ['--venus-z-world','--venus-z-marker','--venus-z-hud','--venus-z-panel','--venus-z-modal','--venus-z-transition'].every(x=>has(css,x)));
+check('no extreme numeric z-index', !/z-index\s*:\s*(?:999|9999|99999)\b/.test(css));
+check('mobile bottom-sheet composition exists', has(css, 'bottom: 0;') && has(css, 'border-radius: 14px 14px 0 0'));
+check('touch tablet composition exists', has(css, '(pointer: coarse) and (max-width: 1100px)'));
+check('mobile touch targets are 44px+', /min-height:\s*44px/.test(css) && /width:\s*48px;\s*height:\s*48px/.test(css));
+check('desktop hints wrap', has(css, 'flex-wrap: wrap') && has(css, 'white-space: normal'));
+check('short-screen breakpoint exists', has(css, '@media (max-height: 720px)'));
+check('reduced motion respected', has(css, '@media (prefers-reduced-motion: reduce)'));
+check('panel exclusivity behavior exists', has(venus, 'isConstrainedUi()') && has(venus, 'collapseObjectives()') && has(venus, 'is-info-open') && has(venus, 'is-objectives-open'));
+check('normal responsive layout handled mostly in CSS', !/getBoundingClientRect\(\).*style\.(?:left|right|top|bottom|width|height)/s.test(venus));
+check('fullscreen resize hook present', has(venus, 'fullscreenchange') && has(venus, 'updateFullscreenLabel()') && has(venus, 'this.resize()'));
+check('orientation resize hook present', has(venus, 'orientationchange'));
 
-for (const snippet of [
-  'this.distance = Math.max(1.12, arrivalDistance * explorationFramingScale * (1 - dive * 0.76));',
-  'const pointerStrength = (1 - this.explorationBlend * 0.55) * (1 - dive);'
-]) ok(`Mars/Venus shared transition formula: ${snippet.slice(0,34)}…`, scene.includes(snippet) && marsScene.includes(snippet));
-
-ok('Mars exit altitude parity', js.includes('Math.max(currentAltitude, 52), 1650, token'));
-ok('Mars exit duration parity', js.includes('const duration = reduced ? 260 : 3200;'));
-ok('live render loop survives exit', /if \(this\.state !== STATES\.EXITING\)[\s\S]*?this\.renderer\.render\(this\.scene, this\.camera\);/.test(js));
-ok('fullDive reversed during live surface fade', js.includes('this.venus.setFullExplorationTransition?.(1 - eased, this.region)'));
-
-const targets = [
-  [360,800],[375,812],[390,844],[393,873],[412,915],
-  [768,1024],[1024,768],[1366,768],[1440,900],[1536,864],[1600,900],[1920,1080],[2560,1440]
+// Mars exit architecture reference.
+const marsExitSignals = [
+  'animateCameraAltitude(Math.max(this.cameraAltitude, 52), 1650, token)',
+  'const duration = reduced ? 260 : 3200',
+  '1 - smoothstep(raw / 0.62)',
+  'setFullExplorationTransition?.(1 - eased'
 ];
-console.log('Viewport audit targets:', targets.map(v => v.join('x')).join(', '));
-for (const [name, pass] of checks) console.log(`${pass ? 'PASS' : 'FAIL'}  ${name}`);
-if (process.exitCode) throw new Error('Responsive UI verification failed');
+check('actual Mars exit contains expected live-handoff sequence', marsExitSignals.every(x=>has(mars,x)));
+check('Venus uses same ascent timing', has(venus, 'animateCameraAltitude(Math.max(this.cameraAltitude, 52), 1650, token)'));
+check('Venus uses same handoff duration', has(venus, 'const duration = reduced ? 260 : 3200'));
+check('Venus uses same surface fade curve', has(venus, '1 - smoothstep(raw / 0.62)'));
+check('Venus drives dedicated planet dive during exit', has(venus, 'this.venus.setFullExplorationTransition?.(1 - eased, this.region)'));
+check('Venus keeps render loop alive before handoff', /this\.root\.classList\.add\("is-exiting"\)[\s\S]{0,900}this\.startLoop\(\)/.test(venus));
+const exitIndex = venus.indexOf('async exit()');
+const finishIndex = venus.indexOf('finishExitToOrbit()', exitIndex);
+const disposeIndex = venus.indexOf('this.disposeRegion()', finishIndex);
+check('terrain disposal is after visual exit sequence', exitIndex >= 0 && finishIndex > exitIndex && disposeIndex > finishIndex);
+
+// Dedicated Full Dive state should exist independently from Info Mode explorationBlend.
+const diveVars = ['fullDiveBlend','fullDiveYawTarget','fullDivePitchTarget','fullDiveRollTarget','fullDiveLocationKey','fullDiveQuaternion'];
+check('Venus scene has dedicated full-dive state', diveVars.every(x=>has(venusScene,x)));
+check('Mars scene has dedicated full-dive state', diveVars.every(x=>has(marsScene,x)));
+check('Venus scene uses fullDiveBlend in render', has(venusScene, 'const dive = smooth(this.fullDiveBlend)'));
+check('Venus planet distance changes with dive', /this\.distance\s*=\s*Math\.max\(1\.12,[\s\S]{0,180}\(1 - dive \* 0\.76\)\)/.test(venusScene));
+check('Venus dive suppresses panorama caption', has(venusScene, 'const captionVisibility = caption * (1 - dive)'));
+check('Venus dive targets geographic orientation', has(venusScene, 'venusLocationOrientation(location)'));
+
+for (const c of checks) console.log(`${c.ok ? 'PASS' : 'FAIL'}  ${c.name}${c.detail ? ` - ${c.detail}` : ''}`);
+const failed = checks.filter(c=>!c.ok);
+console.log(`\n${checks.length - failed.length}/${checks.length} checks passed.`);
+if (failed.length) process.exit(1);

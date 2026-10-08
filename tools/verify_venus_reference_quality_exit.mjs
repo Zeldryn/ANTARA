@@ -66,11 +66,11 @@ assert(venusScene.includes("const dive = smooth(this.fullDiveBlend)") && venusSc
 assert(!/setFullExplorationTransition\(blend, location\)[\s\S]{0,1200}this\.explorationBlend = nextBlend/.test(venusScene), "Full Exploration no longer reuses explorationBlend as its sole transition state");
 assert(REGIONS.every(item => item.space?.horizontalCompression >= 6 && item.space?.horizontalCompression <= 20), "all destinations use explicit 6x-20x scientific-to-render horizontal compression");
 assert(REGIONS.every(item => item.space?.verticalReliefScale > 1 && item.space?.verticalReliefScale < 1.3), "vertical relief is controlled independently from horizontal compression");
-assert(source.includes("animateExitRetreat("), "Venus exit includes a physical surface retreat stage");
-assert(source.includes("await this.animateExitRetreat(Math.max(currentAltitude, 18), 1650, token)"), "Venus exit keeps terrain visible during the Mars-family 1650 ms ascent stage");
+assert(source.includes("animateCameraAltitude(targetAltitude, duration, token)"), "Venus exit uses the same live-camera altitude architecture as Mars");
+assert(source.includes("await this.animateCameraAltitude(Math.max(this.cameraAltitude, 52), 1650, token)"), "Venus exit keeps terrain live during the exact Mars-family 52 km / 1650 ms ascent stage");
 assert(source.includes("const duration = reduced ? 260 : 3200"), "Venus exit uses the same primary full-dive blend duration family as Mars");
 assert(source.includes("this.input.unbind();") && source.includes("this.venus.setFullExplorationTransition?.(1 - eased, this.region)"), "exit locks input and blends into the existing Venus panorama");
-assert(source.indexOf("await this.animateExitRetreat") < source.indexOf("this.finishExitToOrbit();", source.indexOf("async exit()")), "world cleanup occurs after the visible retreat and blend");
+assert(source.indexOf("await this.animateCameraAltitude(Math.max(this.cameraAltitude, 52), 1650, token)") < source.indexOf("this.finishExitToOrbit();", source.indexOf("async exit()")), "world cleanup occurs after the live ascent and planet handoff");
 
 const maat = REGIONS.find(item => item.id === "maat");
 assert(maat && maat.fogDensity <= 0.0065, "Maat atmosphere no longer erases the far shield-volcano silhouette");
