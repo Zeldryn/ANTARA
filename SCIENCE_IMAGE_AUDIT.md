@@ -31,3 +31,21 @@ Observational imagery is used when a reputable mission/telescope image exists. N
 - NASA/JPL/Space Science Institute and NASA/JPL-Caltech/Space Science Institute: Cassini Saturn, rings, atmosphere, hexagon and Enceladus.
 - ESA/NASA/JPL/University of Arizona: Huygens Titan surface.
 - NASA/JPL: Voyager 2 Uranus, Uranian moons, Neptune, storms, clouds, rings and Triton.
+
+## Venus 2026-09 expansion audit
+
+- Venus information now contains 14 topics. Global atmosphere/greenhouse/pressure/rotation/radar/missions concepts use labelled diagrams or mission imagery instead of fake surface markers.
+- Global cloud imagery is identified as visible/UV cloud observation where applicable.
+- Surface products from Magellan are explicitly described as radar-derived or simulated-color visualizations, not ordinary visible-light photographs.
+- Maat Mons, Maxwell Montes, Alpha Regio, and Mead use mission/scientific imagery with supporting source links.
+- Full Exploration uses real IAU/USGS POI coordinates, NASA/JPL Magellan radar context, and attempts to sample NASA PDS Magellan GTDR topography for measured macro relief. Procedural geometry is limited to renderer micro detail or an explicitly labelled fallback when PDS data is unavailable.
+
+## Venus Full Exploration source labeling update (2026-09-27)
+
+Venus Full Exploration uses three visually distinct source categories:
+
+- **Topography**: NASA PDS Magellan GTDR framelets, sampled numerically for macro relief when available.
+- **Radar context**: NASA/JPL Magellan radar mosaics and location thumbnails. These are labelled as radar and, where applicable, simulated/false color rather than natural visible-light photographs.
+- **Renderer detail**: procedural micro texture, bump/normal response, roughness, and small-scale relief. These are visual enrichment and are never labelled measured Magellan topography.
+
+The educational location card includes direct source links and reports whether the active macro terrain is GTDR-derived or fallback.

@@ -262,3 +262,21 @@ Earth exploration now uses seven stops: an active-Earth introduction followed by
 The content intentionally distinguishes measurement definitions: Everest is highest above mean sea level, Mauna Kea is compared base-to-summit, and Challenger Deep is measured below sea level. Mariana imagery is bathymetry, not a fabricated optical trench photo.
 
 `REKOR & EKSTREM` is also used as a recurring kicker on one existing educational stop for the Sun, Mercury, Venus, Mars, Asteroid Belt, Jupiter, Saturn, Uranus, and Neptune without forcing identical physical feature categories.
+
+## Venus information + Full Exploration expansion
+
+Venus was extended without replacing the existing `VenusScene` architecture. Its information dataset now contains 14 stops. Global science topics use diagrams or mission imagery and no fake geographic marker; Maat Mons, Maxwell Montes, Alpha Regio, and Mead use real coordinates and the existing Venus marker/rotation pipeline.
+
+The Venus panorama now exposes the same two-level hero choice as Earth/Mars: `Jelajahi Venus` for normal information mode and `Eksplorasi Pengalaman Penuh` for the separate real-time exploration path. `venus-full-exploration.js` reuses ANTARA's established full-exploration interaction language: lazy Three.js setup, one reusable renderer, pointer lock, WASD/Q/E/Shift movement, Mars-style HUD, location menu, chunk LOD, frustum culling, FrontSide terrain, cinematic cloud entry/exit, and clean re-entry.
+
+Five named Venus POIs are registered in one renderer: Maat Mons, Maxwell Montes, Aphrodite Terra, Ishtar Terra, and Alpha Regio. Their IAU/USGS coordinates drive the global Venus orientation and HUD. The global surface context uses NASA/JPL Magellan radar-derived imagery, while NASA PDS Magellan GTDR framelets now drive measured macro relief when available. Procedural geometry is restricted to small-scale visual enrichment and an explicitly labelled fallback path.
+
+## Venus Full Exploration scientific/world-density rework (2026-09-27)
+
+Venus Full Exploration now uses a measured-data-first terrain path. NASA PDS Magellan GTDR sinusoidal framelets are lazy-loaded per active Venus POI and sampled directly into the flyable mesh. Measured topography controls macro relief when the archive is reachable; procedural terrain is retained only as an explicitly labelled runtime fallback and as micro-scale renderer enrichment.
+
+The fixed local terrain patch was replaced by a camera-centered streaming field with near/mid/far/horizon geometry tiers, Three.js frustum culling, a bounded geometry cache, and a wider low-cost safety ring. This keeps real surrounding terrain available beyond the primary POI without maintaining maximum detail everywhere.
+
+The former minimal Venus landmark label is now one reusable educational card. It updates on location changes, can collapse/close/reopen, exposes science/coordinate/topography sources, labels Magellan radar imagery honestly, and remains compatible with Pointer Lock.
+
+See `VENUS_SCIENCE_AUDIT.md` for the five-location data audit.

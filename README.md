@@ -27,13 +27,11 @@ Tidak ada video background atau poster karakter statis yang dipakai untuk menyam
 
 ## Planet exploration
 
-Sistem eksplorasi planet tetap memakai renderer, marker, image preview, lightbox, internal scrolling, audio, dan navigasi yang sudah ada. Bumi tetap memiliki **14 slide informasi** untuk mode edukasi normal, sementara **Eksplorasi Pengalaman Penuh** sekarang merupakan satu world eksplorasi terpadu yang mengikuti arsitektur inti Mars.
+Sistem eksplorasi planet tetap memakai renderer, marker, image preview, lightbox, internal scrolling, audio, dan navigasi yang sudah ada. Bumi kini memiliki **14 slide informasi** yang memisahkan konsep global dari lokasi nyata, serta mode **Eksplorasi Pengalaman Penuh** untuk lima wilayah terkurasi: Everest/Himalaya, Challenger Deep/Mariana, Mauna Kea, Grand Canyon, dan Antarktika.
 
-Earth Full Exploration langsung menjalankan approach bergaya Mars menuju satu streamed Earth terrain world. Di dalam mode yang sama, menu **Lokasi** menyediakan lima featured anchor: Everest / Himalaya, Challenger Deep / Mariana, Mauna Kea / Hawai‘i, Grand Canyon, dan Antarctica / Mount Vinson. Perpindahan lokasi tidak membuat renderer atau terrain engine baru: kamera naik, target DEM dipreload, terrain manager yang sama di-reanchor, lalu kamera turun kembali ke area eksplorasi.
+Earth Full Exploration sekarang selalu membuka **pemilih 5 destinasi terlebih dahulu** sebelum terrain dimuat. Tile elevasi Terrarium baru diminta setelah destinasi dipilih. Nilai elevasi tile membentuk geometry Three.js; material detail per-region memperkaya keterbacaan tanpa mengganti bentuk geografinya. Everest memakai snow/rock blending, Mariana memakai water + depth atmosphere, Mauna Kea memakai volcanic/coastal blending, Grand Canyon memakai canyon strata, dan Antarktika memakai ice-surface material. Terrain tetap dipecah menjadi chunk dengan LOD dan frustum culling. Mariana mempertahankan elevasi negatif sebagai bathymetry.
 
-Elevasi daratan memakai tile Terrarium real, sementara engine memuat chunk di sekitar kamera, melakukan LOD, frustum/view-dependent culling, look-ahead prefetch, serta pruning tile lama. Visual tiap anchor tetap Earth-specific melalui Blue Marble/albedo Bumi, material detail per lokasi, snow/ice, basalt, canyon strata, sea-level water, sky, dan aerial haze. Challenger Deep mendapat bathymetric fallback lokal ketika sumber Terrarium meratakan samudra ke sea level, sehingga eksplorasi hadal tidak berubah menjadi bidang laut kosong. Controls, pointer-lock, camera feel, entry/exit lifecycle, dan resource handling tetap mengikuti filosofi Mars tanpa mengubah implementasi Mars itu sendiri.
-
-Mode terrain nyata memerlukan koneksi internet untuk mengambil tile DEM Terrarium. Jika tile wajib gagal dimuat, ANTARA menampilkan error/rollback alih-alih meninggalkan terrain kosong. Detail sumber dan keterbatasan ada di `EARTH_FULL_EXPLORATION.md`. Fix kualitas Mars dan optimasi view-dependent Mars dari revisi sebelumnya tetap dipertahankan tanpa perubahan.
+Mode terrain nyata memerlukan koneksi internet untuk mengambil tile DEM/bathymetry. Jika sumber real gagal dimuat, ANTARA menampilkan error dan tidak menggantinya dengan terrain prosedural fiktif. Detail sumber dan keterbatasan ada di `EARTH_FULL_EXPLORATION.md`. Fix kualitas Mars dan optimasi view-dependent Mars dari revisi sebelumnya tetap dipertahankan tanpa perubahan.
 
 ## Audio
 
@@ -44,3 +42,13 @@ Audio lokal tetap opsional. Tombol speaker menyimpan preferensi mute dan perjala
 `prefers-reduced-motion` mengurangi camera shake, parallax agresif, dan idle motion besar, tetapi dialog, blink, mouth state, progres perjalanan, serta handoff ke Bumi tetap terbaca dan berfungsi.
 
 Laporan implementasi terbaru ada di `IMPLEMENTATION.md`.
+
+## Venus expansion
+
+Venus now has 14 educational stops using the existing ANTARA info architecture and a separate hero-level **Eksplorasi Pengalaman Penuh** CTA matching Earth/Mars hierarchy. Full Exploration uses one reusable Venus renderer with Maat Mons, Maxwell Montes, Aphrodite Terra, Ishtar Terra, and Alpha Regio as real-coordinate POIs. Dense haze, cloud entry, muted volcanic materials, radar macro context, chunked LOD terrain, pointer-lock controls, and clean exit/re-entry are Venus-specific while the interaction language remains shared with Earth/Mars. The current Full Exploration pipeline attempts to use NASA PDS Magellan GTDR topography for measured macro relief, with procedural detail restricted to micro-scale enrichment and an explicitly labelled fallback if the archive cannot be reached. See `VENUS_SCIENCE_AUDIT.md`.
+
+### Venus scientific terrain update
+
+Venus Full Exploration now attempts to derive its macro terrain from NASA PDS Magellan GTDR topography instead of using the earlier generic procedural feature profiles as the primary landform. A streaming chunk ring extends terrain around the camera, while the existing dense Venus atmosphere controls far visibility. One compact educational location card follows Maat Mons, Maxwell Montes, Aphrodite Terra, Ishtar Terra, and Alpha Regio and links to authoritative science/nomenclature/topography sources.
+
+If remote PDS topography is unavailable at runtime, ANTARA explicitly labels the terrain as a fallback visualization rather than reporting it as measured Magellan elevation.

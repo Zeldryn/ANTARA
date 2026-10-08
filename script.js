@@ -736,6 +736,7 @@ const mars = new MarsScene();
 const mercury = new MercuryScene();
 const sun = new SunScene();
 const venus = new VenusScene();
+const venusFull = new VenusFullExploration(venus);
 const asteroid = new AsteroidBeltScene();
 const jupiter = new JupiterScene();
 const saturn = new SaturnScene();
@@ -1034,7 +1035,7 @@ function travelToVenus() {
 }
 
 function travelVenusToMercury() {
-  if (venus.exploring || !beginPlanetTransition("venus", "venus-mercury-transition", venusPreviousButton, "mercury")) return;
+  if (venus.exploring || venus.fullExplorationActive || !beginPlanetTransition("venus", "venus-mercury-transition", venusPreviousButton, "mercury")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU MERKURIUS";
   announcement.textContent = "Meninggalkan Venus. Kamera bergeser menuju Merkurius.";
@@ -1133,7 +1134,7 @@ function travelMercuryToVenus() {
 }
 
 function travelVenusToEarth() {
-  if (venus.exploring || !beginPlanetTransition("venus", "venus-earth-transition", venusNextButton, "earth")) return;
+  if (venus.exploring || venus.fullExplorationActive || !beginPlanetTransition("venus", "venus-earth-transition", venusNextButton, "earth")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU BUMI";
   announcement.textContent = "Meninggalkan Venus. Kembali menuju Bumi.";
@@ -1446,6 +1447,7 @@ function travelNeptuneToUranus() {
 
 function resetMission() {
   earthFull.forceReset?.();
+  venusFull.forceReset?.();
   cancelAnimationFrame(animationFrame);
   sound.stop(1.1);
   phase = "idle";
@@ -1499,6 +1501,10 @@ document.addEventListener("keydown", event => {
   }
   if (phase === "mars" && mars.fullExplorationActive) {
     if (event.key === "Escape") { event.preventDefault(); mars.fullExploration?.exit(); }
+    return;
+  }
+  if (phase === "venus" && venus.fullExplorationActive) {
+    if (event.key === "Escape") { event.preventDefault(); venusFull.exit(); }
     return;
   }
   if (phase === "earth" && earth.exploring) {
@@ -1626,7 +1632,7 @@ document.addEventListener("click", event => {
   sound.uiClick();
 }, true);
 
-for (const button of [launchButton, earth.nextButton, earthPreviousButton, earthFull.entryButton, venusPreviousButton, venusNextButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, marsNextButton, mars.exploreButton, mars.fullExploration?.entryButton, asteroidPreviousButton, asteroidNextButton, asteroid.exploreButton, jupiterPreviousButton, jupiterNextButton, jupiter.exploreButton, saturnPreviousButton, saturnNextButton, saturn.exploreButton, uranusPreviousButton, uranusNextButton, uranus.exploreButton, neptunePreviousButton, neptune.exploreButton, audioToggle].filter(Boolean)) {
+for (const button of [launchButton, earth.nextButton, earthPreviousButton, earthFull.entryButton, venusPreviousButton, venusNextButton, venusFull.entryButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, marsNextButton, mars.exploreButton, mars.fullExploration?.entryButton, asteroidPreviousButton, asteroidNextButton, asteroid.exploreButton, jupiterPreviousButton, jupiterNextButton, jupiter.exploreButton, saturnPreviousButton, saturnNextButton, saturn.exploreButton, uranusPreviousButton, uranusNextButton, uranus.exploreButton, neptunePreviousButton, neptune.exploreButton, audioToggle].filter(Boolean)) {
   button.addEventListener("pointerenter", event => { if (event.pointerType === "mouse") sound.hover(); });
   button.addEventListener("focus", () => sound.hover());
 }

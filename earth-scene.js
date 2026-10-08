@@ -381,8 +381,6 @@ window.EarthScene = class EarthScene {
     this.tick = this.tick.bind(this);
     this.exploring = false;
     this.fullExploring = false;
-    this.fullDiveBlend = 0;
-    this.fullDiveAnchorKey = "";
     this.topicIndex = 0;
     this.pose = { yaw: 4.58, pitch: 0, roll: -0.18 };
     this.poseTarget = { ...this.pose };
@@ -519,36 +517,20 @@ window.EarthScene = class EarthScene {
     this.wake();
   }
 
-  setFullExplorationTransition(blend, anchor = null) {
-    const nextBlend = this.clamp(Number(blend) || 0);
-    if (anchor?.latitude != null && anchor?.longitude != null) {
-      const key = `${anchor.latitude.toFixed(4)},${anchor.longitude.toFixed(4)}`;
-      if (key !== this.fullDiveAnchorKey || this.fullDiveBlend < 0.001) {
-        const yaw = -Math.PI / 2 - anchor.longitude * Math.PI / 180;
-        const delta = Math.atan2(Math.sin(yaw - this.pose.yaw), Math.cos(yaw - this.pose.yaw));
-        this.poseTarget = { yaw: this.pose.yaw + delta, pitch: anchor.latitude * Math.PI / 180, roll: 0 };
-        this.fullDiveAnchorKey = key;
-      }
-    }
-    this.fullDiveBlend = nextBlend;
-    this.element.classList.toggle("is-full-diving", nextBlend > 0.001);
-    if (this.active) this.render();
-  }
-
-  beginFullExplorationFocus(anchor = null) {
+  beginFullExplorationFocus(region = null) {
     if (!this.active || this.travelMode) return;
     if (this.exploring) this.exitExploration(false);
     this.fullExploring = true;
     this.information.inert = true;
     this.element.classList.add("is-full-focus");
     this.element.classList.remove("is-full-surface-active");
-    if (anchor?.latitude != null && anchor?.longitude != null) {
-      this.setFullExplorationTransition(0, anchor);
+    if (region?.latitude != null && region?.longitude != null) {
+      const yaw = -Math.PI / 2 - region.longitude * Math.PI / 180;
+      const delta = Math.atan2(Math.sin(yaw - this.pose.yaw), Math.cos(yaw - this.pose.yaw));
+      this.poseTarget = { yaw: this.pose.yaw + delta, pitch: region.latitude * Math.PI / 180, roll: 0 };
       this.element.classList.add("is-full-descending");
     } else {
-      this.fullDiveBlend = 0;
-      this.fullDiveAnchorKey = "";
-      this.element.classList.remove("is-full-descending", "is-full-diving");
+      this.element.classList.remove("is-full-descending");
     }
     this.wake();
   }
@@ -559,11 +541,16 @@ window.EarthScene = class EarthScene {
     this.element.classList.remove("is-full-descending");
   }
 
+  returnFromFullExplorationToSelector() {
+    if (!this.fullExploring) return;
+    this.element.classList.remove("is-full-surface-active", "is-full-descending");
+    this.element.classList.add("is-full-focus");
+    this.wake();
+  }
+
   endFullExplorationFocus() {
     this.fullExploring = false;
-    this.fullDiveBlend = 0;
-    this.fullDiveAnchorKey = "";
-    this.element.classList.remove("is-full-focus", "is-full-descending", "is-full-surface-active", "is-full-diving");
+    this.element.classList.remove("is-full-focus", "is-full-descending", "is-full-surface-active");
     this.information.inert = false;
     this.wake();
   }
@@ -957,8 +944,8 @@ window.EarthScene = class EarthScene {
     this.cameraOffset.x += (this.pointer.x - this.cameraOffset.x) * damping;
     this.cameraOffset.y += (this.pointer.y - this.cameraOffset.y) * damping;
     const location = EARTH_EXPLORATION_STOPS[this.topicIndex].location;
-    if ((!this.exploring || !location) && !this.fullExploring) this.poseTarget = { yaw: this.pose.yaw + (this.motion.matches ? 0 : delta * .026), pitch: 0, roll: -.18 };
-    if ((!this.exploring || !location) && !this.fullExploring) this.pose.yaw = this.poseTarget.yaw;
+    if (!this.exploring || !location) this.poseTarget = { yaw: this.pose.yaw + (this.motion.matches ? 0 : delta * .026), pitch: 0, roll: -.18 };
+    if (!this.exploring || !location) this.pose.yaw = this.poseTarget.yaw;
     const easing = this.motion.matches ? 1 : 1 - Math.exp(-delta * 3.5);
     for (const key of ["yaw", "pitch", "roll"]) this.pose[key] += (this.poseTarget[key] - this.pose[key]) * easing;
     this.render();
@@ -1001,18 +988,16 @@ window.EarthScene = class EarthScene {
 
     const drift = this.motion.matches ? 0 : Math.sin(t * 0.32) * 0.025;
     const rotation = 4.58 + (this.motion.matches ? 0 : t * 0.026);
-    const dive = this.smooth(this.fullDiveBlend);
-    const orbitDistance = this.finalDistance * (0.52 + framing * 0.48);
-    const distance = Math.max(this.finalDistance * 0.22, orbitDistance * (1 - dive * 0.76));
+    const distance = this.finalDistance * (0.52 + framing * 0.48);
 
     if (this.mode === "webgl") {
       const layout = this.normalLayout();
       this.travelMarsGroup.visible = false;
       this.travelVenusGroup.visible = false;
       this.planetGroup.visible = true;
-      this.planetGroup.position.set(layout.x * framing * (1 - dive), (layout.y * framing + drift) * (1 - dive), 0);
+      this.planetGroup.position.set(layout.x * framing, layout.y * framing + drift, 0);
       this.applyEarthPose();
-      const pointerStrength = (1 - infoReveal * 0.35) * (1 - dive);
+      const pointerStrength = 1 - infoReveal * 0.35;
       this.camera.position.set(
         this.motion.matches ? 0 : this.cameraOffset.x * 0.10 * pointerStrength,
         this.motion.matches ? 0 : -this.cameraOffset.y * 0.07 * pointerStrength,
@@ -1024,16 +1009,14 @@ window.EarthScene = class EarthScene {
       this.renderer.render(this.scene, this.camera);
       this.updateMarker();
     } else if (this.mode === "canvas") {
-      this.drawCanvasEarth(framing, rotation, distance, drift, dive);
+      this.drawCanvasEarth(framing, rotation, distance, drift);
     } else if (this.mode === "css") {
       const planet = this.viewport.firstElementChild;
       if (!planet) return;
       const radius = this.finalRadius * this.finalDistance / distance;
-      const orbitLeft = this.mobile ? 50 : 50 + 14 * framing;
-      const orbitTop = this.mobile ? 36 - 5 * framing : 50 - 3 * framing;
       planet.style.width = planet.style.height = `${radius * 2}px`;
-      planet.style.left = `${orbitLeft * (1 - dive) + 50 * dive}%`;
-      planet.style.top = `${orbitTop * (1 - dive) + 50 * dive}%`;
+      planet.style.left = `${this.mobile ? 50 : 50 + 14 * framing}%`;
+      planet.style.top = `${this.mobile ? 36 - 5 * framing : 50 - 3 * framing}%`;
       planet.style.backgroundPositionX = `${rotation * -95}px`;
       planet.style.transform = "translate(-50%, -50%) rotate(-10.3deg)";
     }
@@ -1179,17 +1162,15 @@ window.EarthScene = class EarthScene {
     }
   }
 
-  drawCanvasEarth(framing, rotation, distance, drift, dive = 0) {
+  drawCanvasEarth(framing, rotation, distance, drift) {
     const ctx = this.ctx;
     const w = this.width;
     const h = this.height;
     ctx.clearRect(0, 0, w, h);
     this.drawStars();
     const radius = this.finalRadius * this.finalDistance / distance;
-    const orbitCx = w * (this.mobile ? 0.5 : 0.5 + 0.14 * framing);
-    const orbitCy = h * (this.mobile ? 0.36 - 0.05 * framing : 0.5 - 0.03 * framing) + drift * 18;
-    const cx = orbitCx * (1 - dive) + w * 0.5 * dive;
-    const cy = orbitCy * (1 - dive) + h * 0.5 * dive;
+    const cx = w * (this.mobile ? 0.5 : 0.5 + 0.14 * framing);
+    const cy = h * (this.mobile ? 0.36 - 0.05 * framing : 0.5 - 0.03 * framing) + drift * 18;
     const { yaw, pitch, roll } = this.pose;
     const cosYaw = Math.cos(yaw), sinYaw = Math.sin(yaw);
     const cosPitch = Math.cos(pitch), sinPitch = Math.sin(pitch);

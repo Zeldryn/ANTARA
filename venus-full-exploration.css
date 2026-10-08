@@ -1,0 +1,85 @@
+/* Venus Full Exploration extends the mature Mars Full Exploration layout. */
+.venus-caption .venus-full-explore-button{min-height:34px;padding:0 13px;border:1px solid #dfaa7370;border-radius:2px;font-size:6.5px;font-weight:650;letter-spacing:1.15px;text-transform:uppercase;white-space:nowrap;transition:background .24s ease,border-color .24s ease,color .24s ease,transform .24s ease;color:#f2d0a7;background:linear-gradient(180deg,#5e2c1ba6,#2b140fd6);box-shadow:inset 0 0 0 1px #f7d5a310,0 10px 34px #16070455}
+.venus-caption .venus-full-explore-button:disabled{opacity:.5;cursor:wait}
+.venus-caption .venus-full-explore-button:hover:not(:disabled){border-color:#ffd29bb3;color:#fff0d0;background:linear-gradient(180deg,#754022c7,#35170fe8)}
+
+.venus-full-exploration{--surface-opacity:0;background:#6a361f;color:#fff0d7;z-index:42}
+.venus-full-exploration::before{background:radial-gradient(circle at 50% 38%,#f5c28218 0,transparent 45%),linear-gradient(180deg,#d0874a24 0,#8a492c22 40%,#4a21178e 100%);opacity:.95}
+.venus-full-exploration::after{background:linear-gradient(180deg,#fff3c512 0,transparent 18%,transparent 66%,#2a0e0a52 100%);mix-blend-mode:screen}
+.venus-full-exploration .mars-full-viewport{background:linear-gradient(#b86b3d,#814629 52%,#4c2518)}
+.venus-full-exploration .mars-full-horizon{background:linear-gradient(180deg,#f2b86d1c,#cc7b4238 28%,#71361f75 72%,#32150fb8);filter:blur(2px)}
+.venus-full-exploration .mars-full-hud{border-color:#edb87945;background:linear-gradient(155deg,#2e1712e8,#1b0e0bdc);box-shadow:0 16px 55px #12070480,inset 0 0 28px #e2934320}
+.venus-full-exploration .mars-hud-kicker,.venus-full-exploration .mars-hud-mode,.venus-full-exploration .mars-hud-data{color:#e6b679}
+.venus-full-exploration .mars-hud-metric{border-color:#f2bd7730;background:#6e351629}
+.venus-full-exploration .mars-full-actions button,.venus-full-exploration .mars-location-menu{border-color:#edb87945;background:#2a140fe8;color:#f6ddbb}
+.venus-full-exploration .mars-full-actions button:hover{border-color:#ffd39b9c;background:#482317f2;color:#fff3d7}
+.venus-full-exploration .mars-location-menu button:hover,.venus-full-exploration .mars-location-menu button:focus-visible{background:#6b351dd9;color:#fff0d4}
+.venus-full-exploration .mars-control-hints b{color:#ffd19a}
+.venus-full-exploration .mars-landmark-card{border-color:#e9ad6c42;background:linear-gradient(150deg,#2d1710e8,#160b09df)}
+.venus-full-exploration .mars-landmark-card small,.venus-full-exploration .mars-landmark-source{color:#e9b579}
+.venus-full-exploration .mars-travel-veil{background:radial-gradient(circle at center,#de985c3d 0,#7a3c2992 42%,#2b100de9 100%)}
+.venus-full-exploration .mars-travel-label{color:#ffe4b8;text-shadow:0 0 25px #ffae5980}
+.venus-full-exploration .mars-full-loading,.venus-full-exploration .mars-full-error,.venus-full-exploration .mars-full-tutorial{border-color:#efb7764a;background:linear-gradient(145deg,#351a13f1,#190d0bed);box-shadow:0 25px 80px #1307049c}
+.venus-full-exploration .mars-full-loading-kicker,.venus-full-exploration .mars-full-tutorial-header span{color:#ebb97f}
+.venus-full-exploration .mars-loading-track{background:#341910}.venus-full-exploration .mars-loading-progress{background:linear-gradient(90deg,#b96134,#ffd397)}
+.venus-full-exploration .mars-mobile-dpad button,.venus-full-exploration .mars-mobile-altitude button{border-color:#efbc7b63;background:#3b1d16d9;color:#f3d6b0}
+.venus-full-exploration .mars-mobile-dpad button.is-held,.venus-full-exploration .mars-mobile-altitude button.is-held{background:#d68a4bcc;color:#2a100b}
+.venus-full-exploration .mars-mobile-altitude-label{color:#e1b786}
+
+.venus-full-exploration.is-preparing{--surface-opacity:.12}.venus-full-exploration.is-entering,.venus-full-exploration.is-active{--surface-opacity:1}
+.venus-full-exploration.is-exiting{opacity:0;transition:opacity .72s ease}
+.venus-full-exploration.is-entering .venus-cloud-entry{opacity:1;animation:venus-cloud-pass 1.15s ease forwards}.venus-full-exploration.is-active .venus-cloud-entry{opacity:0;pointer-events:none}
+.venus-cloud-entry{position:absolute;inset:-12%;z-index:8;pointer-events:none;opacity:.55;background:radial-gradient(ellipse at 28% 45%,#fff0bd9c 0,#e5b06e75 15%,transparent 42%),radial-gradient(ellipse at 72% 52%,#ffe4ac90 0,#c97d4f70 18%,transparent 44%),linear-gradient(180deg,#d9a05bbb,#a35d3aa6 45%,#6b321fb3);filter:blur(18px);transform:scale(1.08)}
+@keyframes venus-cloud-pass{0%{opacity:.9;transform:scale(1.04)}55%{opacity:.86;transform:scale(1.18)}100%{opacity:0;transform:scale(1.36)}}
+.venus-haze-vignette{position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(circle at 50% 42%,transparent 35%,#a85d3524 72%,#3b160f78 100%);mix-blend-mode:screen}
+.venus-full-exploration[data-location="maxwell"] .venus-haze-vignette{background:radial-gradient(circle at 50% 40%,transparent 28%,#d18b4b2d 68%,#3c170f7c 100%)}
+.venus-full-exploration[data-location="alpha"] .venus-haze-vignette{background:radial-gradient(circle at 50% 40%,transparent 33%,#c56a3c2b 70%,#38140f7a 100%)}
+.venus-full-exploration canvas{filter:saturate(.92) contrast(1.04) sepia(.08)}
+
+.venus-scene.is-full-exploring .venus-caption{opacity:0;transform:translateY(20px);pointer-events:none!important;transition:opacity .35s ease,transform .45s ease}
+.venus-scene.is-full-exploring .venus-credit{opacity:0}.venus-scene.is-full-exploring .venus-viewport{transform:scale(1.16);filter:saturate(1.1) brightness(1.08);transition:transform 1.15s cubic-bezier(.2,.72,.2,1),filter .7s ease}
+.mission.is-venus-full .masthead,.mission.is-venus-full .mission-footer{opacity:0!important;pointer-events:none!important;transition:opacity .3s ease}
+
+/* Mars' mobile geometry is reused, but the controller listens to data-venus-control. */
+.venus-full-exploration [data-venus-control="forward"]{left:51px;top:0}.venus-full-exploration [data-venus-control="left"]{left:0;top:51px}.venus-full-exploration [data-venus-control="right"]{right:0;top:51px}.venus-full-exploration [data-venus-control="backward"]{left:51px;bottom:0}.venus-full-exploration [data-venus-control="up"]{top:0}.venus-full-exploration [data-venus-control="down"]{bottom:0}
+@media(max-width:560px){.venus-full-exploration [data-venus-control="forward"]{left:45px}.venus-full-exploration [data-venus-control="left"]{top:45px}.venus-full-exploration [data-venus-control="right"]{top:45px}.venus-full-exploration [data-venus-control="backward"]{left:45px}}
+@media(prefers-reduced-motion:reduce){.venus-full-exploration *, .venus-full-exploration *::before,.venus-full-exploration *::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* Venus educational location card: one reusable compact card for all five POIs. */
+.venus-full-exploration .venus-location-card{
+  width:min(380px,36vw);max-height:min(72vh,620px);overflow:hidden;padding:14px 15px 13px;
+  pointer-events:auto;backdrop-filter:blur(14px) saturate(1.08);box-shadow:0 18px 54px #1206048a,inset 0 0 0 1px #ffd29a0b;
+}
+.venus-location-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.venus-location-card-head h4{margin-bottom:2px}
+.venus-location-card-tools{display:flex;gap:5px;flex:0 0 auto}
+.venus-location-card-tools button{display:grid;place-items:center;width:24px;height:24px;border:1px solid #e9ad6c45;border-radius:2px;background:#351912c7;color:#f4d6ae;font:500 14px/1 Arial,sans-serif;cursor:pointer;transition:background .18s ease,border-color .18s ease,color .18s ease}
+.venus-location-card-tools button:hover,.venus-location-card-tools button:focus-visible{background:#61321fd9;border-color:#ffd29a94;color:#fff2db;outline:none}
+.venus-location-card-body{max-height:calc(min(72vh,620px) - 66px);overflow:auto;padding-right:4px;scrollbar-width:thin;scrollbar-color:#b76e4190 transparent;transition:max-height .25s ease,opacity .2s ease,transform .25s ease}
+.venus-location-card.is-collapsed{max-height:66px}
+.venus-location-card.is-collapsed .venus-location-card-body{max-height:0;opacity:0;overflow:hidden;transform:translateY(-5px);pointer-events:none}
+.venus-radar-thumb{position:relative;margin:10px 0 10px;border:1px solid #e2a66a35;border-radius:3px;overflow:hidden;background:#160b08;aspect-ratio:16/8.8}
+.venus-radar-thumb img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.78) sepia(.18) contrast(1.07);opacity:.93}
+.venus-radar-thumb span{position:absolute;left:7px;bottom:6px;max-width:calc(100% - 14px);padding:4px 6px;border-radius:2px;background:#130a08cc;color:#f1cf9e;font-size:5.2px;letter-spacing:.65px;text-transform:uppercase}
+.venus-location-description{margin:8px 0 8px;color:#e4c4a1;font-size:8px;line-height:1.55;letter-spacing:.08px}
+.venus-location-facts{display:grid;gap:5px;margin:0;padding:0;list-style:none}
+.venus-location-facts li{position:relative;padding-left:12px;color:#cfaf8d;font-size:7px;line-height:1.48}
+.venus-location-facts li::before{content:"";position:absolute;left:1px;top:.63em;width:4px;height:1px;background:#e5aa6d}
+.venus-location-data-badge{margin-top:9px;padding:6px 8px;border:1px solid #e3a7662d;background:#6c351825;color:#e7b67d;font-size:5.4px;line-height:1.35;letter-spacing:.72px;text-transform:uppercase}
+.venus-location-sources{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:1px}
+.venus-location-sources .mars-landmark-source{margin-top:8px}
+.venus-location-info-open[hidden]{display:none!important}
+.venus-full-exploration .venus-location-info-open{border-color:#edb87945;background:#2a140fe8;color:#f6ddbb}
+.venus-full-exploration .venus-location-info-open:hover{border-color:#ffd39b9c;background:#482317f2;color:#fff3d7}
+.venus-full-exploration.is-pointer-locked .venus-location-card,.venus-full-exploration.is-pointer-locked .venus-location-info-open{pointer-events:none}
+
+@media(max-width:820px){
+  .venus-full-exploration .venus-location-card{width:min(340px,46vw);max-height:62vh}
+  .venus-location-card-body{max-height:calc(62vh - 66px)}
+}
+@media(max-width:560px){
+  .venus-full-exploration .venus-location-card{right:10px;bottom:82px;width:min(300px,calc(100vw - 20px));max-height:48vh;padding:11px 12px}
+  .venus-location-card-body{max-height:calc(48vh - 58px)}
+  .venus-location-description{font-size:7.5px}.venus-location-facts li{font-size:6.6px}
+  .venus-radar-thumb{aspect-ratio:16/7.7}
+}
