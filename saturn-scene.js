@@ -258,12 +258,20 @@ window.SaturnScene = class SaturnScene {
     const cameraZ=7.0*(1+1.5*state.pullback*(1-state.approach));
     const sourceAlpha=1-this.travelSmooth((state.progress-.70)/.25);
     const destinationAlpha=this.travelSmooth((state.progress-.20)/.28);
-    const saturnAlpha=reverse?sourceAlpha:destinationAlpha;
-    const jupiterAlpha=reverse?destinationAlpha:sourceAlpha;
+    let saturnAlpha=reverse?sourceAlpha:destinationAlpha;
+    let jupiterAlpha=reverse?destinationAlpha:sourceAlpha;
+    const saturnX=reverse?0:separation;
+    const jupiterX=reverse?separation:0;
+    const viewHalfWidth=Math.tan(17*Math.PI/180)*cameraZ*aspect;
+    const sourceX=0;
+    const sourceExtent=reverse?2.45:1.95;
+    const sourceDeparted=state.pullback>.98&&Math.abs(sourceX-cameraX)-sourceExtent>viewHalfWidth*1.01;
+    if(sourceDeparted){if(reverse)saturnAlpha=0;else jupiterAlpha=0;}
+    this.travelLifecycle=sourceDeparted?"CURRENT_DEPARTED":(state.pan>.02?"LATERAL_TRAVEL":"RECEDING_CURRENT");
+    if(state.approach>.04)this.travelLifecycle="APPROACHING_DESTINATION";
+    if(state.approach>.90)this.travelLifecycle="SETTLING";
     if(this.mode==="webgl"){
       this.planetGroup.visible=saturnAlpha>.003;this.travelJupiterGroup.visible=jupiterAlpha>.003;
-      const saturnX=reverse?0:separation;
-      const jupiterX=reverse?separation:0;
       this.planetGroup.position.set(saturnX,.01,0);this.planetGroup.scale.setScalar(1.0);
       this.planetMaterial.transparent=saturnAlpha<.999;this.planetMaterial.opacity=saturnAlpha;this.planetMaterial.depthWrite=saturnAlpha>.98;
       this.travelJupiterGroup.position.set(jupiterX,0,0);this.travelJupiterGroup.scale.setScalar(.96);this.travelJupiterMaterial.opacity=jupiterAlpha;
@@ -357,9 +365,16 @@ window.SaturnScene = class SaturnScene {
     const saturnLane=reverse?0:separation,jupiterLane=reverse?separation:0;
     const saturnHeroX=this.mobile?0:.66,saturnHeroY=this.mobile?-.03:.015,saturnHeroScale=this.mobile?.76:1.0;
     const jHeroX=this.mobile?0:.82,jHeroY=this.mobile?.13:.02,jHeroScale=this.mobile?.98:1.13,jRatio=7.0/6.4;
+    const sourceX=reverse?saturnHeroX:jHeroX*jRatio;
+    const sourceExtent=reverse?2.45*saturnHeroScale:2.0*jHeroScale*jRatio;
+    const viewHalfWidth=Math.tan(17*Math.PI/180)*cameraZ*aspect;
+    const sourceDeparted=state.pullback>.98&&Math.abs(sourceX-cameraX)-sourceExtent>viewHalfWidth*1.01;
+    this.travelLifecycle=sourceDeparted?"CURRENT_DEPARTED":(state.pan>.02?"LATERAL_TRAVEL":"RECEDING_CURRENT");
+    if(state.approach>.04)this.travelLifecycle="APPROACHING_DESTINATION";
+    if(state.approach>.90)this.travelLifecycle="SETTLING";
 
     if(this.mode==="webgl"){
-      this.planetGroup.visible=true;this.travelJupiterGroup.visible=true;
+      this.planetGroup.visible=reverse?!sourceDeparted:true;this.travelJupiterGroup.visible=reverse?true:!sourceDeparted;
       this.planetGroup.position.set(saturnLane+saturnHeroX,saturnHeroY,0);this.planetGroup.scale.setScalar(saturnHeroScale);this.planetGroup.rotation.x=-.28;this.planetGroup.rotation.z=-.14;
       this.planetMaterial.transparent=false;this.planetMaterial.opacity=1;this.planetMaterial.depthWrite=true;this.atmosphere.visible=true;this.ringShadow.visible=true;if(this.cloudLayer)this.cloudLayer.material.opacity=.105;if(this.ring?.material?.uniforms?.uOpacity)this.ring.material.uniforms.uOpacity.value=1;
       this.planet.rotation.y=2.2+this.time*.026;if(this.cloudLayer)this.cloudLayer.rotation.y=this.planet.rotation.y+this.time*.0035;this.ring.material.uniforms.uTime.value=this.time;

@@ -1179,10 +1179,12 @@ function travelMarsToAsteroid() {
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU SABUK ASTEROID";
   announcement.textContent = "Meninggalkan Mars. Memasuki wilayah sabuk asteroid utama.";
   prepareSharedJupiterVisuals({ includeSaturn:true });
-  sound.travel(reducedMotion.matches ? 0.5 : 7.0);
+  sound.travel(reducedMotion.matches ? 0.4 : 6.2);
   asteroid.beginTravelFromMars({
     direction: getCelestialDirection("mars", "asteroid"),
     marsRotation: mars.renderedRotation,
+    marsHeroDistance: mars.finalDistance,
+    marsHeroFov: mars.camera?.fov ?? 36,
     onCovered: () => {
       if (phase === "mars-asteroid-transition") mars.stop();
     },
@@ -1205,6 +1207,8 @@ function travelAsteroidToMars() {
   sound.travel(reducedMotion.matches ? 0.5 : 7.0);
   asteroid.beginTravelToMars({
     direction: getCelestialDirection("asteroid", "mars"),
+    marsHeroDistance: mars.finalDistance,
+    marsHeroFov: mars.camera?.fov ?? 36,
     onComplete: () => {
       if (phase !== "asteroid-mars-transition") return;
       mars.start({ settled: true });

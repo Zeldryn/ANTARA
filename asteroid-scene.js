@@ -440,11 +440,16 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     if(!this.exploring)return;this.exploring=false;this.focusTarget={x:0,y:0,z:8.4,lookX:0,lookY:0};this.focusReticle?.classList.remove("is-marker-visible");this.element.classList.remove("is-exploring");this.exploration.inert=true;this.caption.inert=false;window.ExplorationMedia?.closeLightbox?.({restoreFocus:false});document.getElementById("announcement").textContent="Kembali ke panorama Sabuk Asteroid.";requestAnimationFrame(()=>this.exploreButton.focus({preventScroll:true}));
   }
 
-  beginTravel(mode,{onCovered,onComplete,marsRotation=.7,direction=1}={}) {
+  beginTravel(mode,{onCovered,onComplete,marsRotation=.7,direction=1,marsHeroDistance=null,marsHeroFov=36}={}) {
     if(this.travelMode)return;
     this.active=true;this.exploring=false;this.travelMode=mode;this.travelDirection=direction>=0?1:-1;
-    this.travelCallbacks={onCovered,onComplete};this.travelStartedAt=0;this.time=0;this.travelDuration=this.motion.matches?.6:(mode.includes("jupiter")?7.8:7.0);
-    this.travelCoveredFired=false;this.travelCompleteFired=false;this.element.hidden=false;this.element.style.opacity="1";this.element.classList.add("is-leaving");this.element.classList.remove("is-exploring");this.caption.classList.remove("is-visible");this.caption.inert=true;this.exploration.inert=true;this.prepare();this.resize();if(this.travelMars)this.travelMars.rotation.y=marsRotation;cancelAnimationFrame(this.frame);this.previous=performance.now();this.tick(this.previous);
+    this.travelMarsHeroDistance=Number.isFinite(marsHeroDistance)?marsHeroDistance:null;
+    this.travelMarsHeroFov=Number.isFinite(marsHeroFov)?marsHeroFov:36;
+    this.travelMarsRotationStart=Number.isFinite(marsRotation)?marsRotation:.7;
+    // Mars -> Asteroid Belt intentionally uses the exact Earth -> Mars reference duration.
+    // The perceived rush came from projection/reveal mismatch, not from a short timer.
+    this.travelCallbacks={onCovered,onComplete};this.travelStartedAt=0;this.time=0;this.travelDuration=this.motion.matches?.4:(mode==="from-mars"?6.2:(mode.includes("jupiter")?7.8:7.0));
+    this.travelCoveredFired=false;this.travelCompleteFired=false;this.element.hidden=false;this.element.style.opacity="1";this.element.classList.add("is-leaving");this.element.classList.remove("is-exploring");this.caption.classList.remove("is-visible");this.caption.inert=true;this.exploration.inert=true;this.prepare();this.resize();if(this.travelMars)this.travelMars.rotation.set(.09,marsRotation,.12);cancelAnimationFrame(this.frame);this.previous=performance.now();this.tick(this.previous);
   }
   beginTravelFromMars(options={}){this.beginTravel("from-mars",options);}
   beginTravelToMars(options={}){this.beginTravel("to-mars",options);}
@@ -459,6 +464,7 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     if(!this.travelMode)return 1;
     const state=this.travelState();
     const fieldIsDestination=this.travelMode==="from-mars"||this.travelMode==="from-jupiter";
+    if(this.travelMode==="from-mars") return this.travelSmooth((state.progress-.28)/.20);
     return fieldIsDestination ? this.travelSmooth((state.progress-.18)/.30) : 1-this.travelSmooth((state.progress-.70)/.25);
   }
 
@@ -492,19 +498,31 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     const separationMagnitude=halfHeight*aspect*(this.mobile?3.9:3.25);
     const separation=separationMagnitude*direction;
     const cameraX=separation*state.pan;
-    const cameraZ=8.4*(1+1.45*state.pullback*(1-state.approach));
-    const sourceAlpha=1-this.travelSmooth((state.progress-.70)/.25);
-    const destinationAlpha=this.travelSmooth((state.progress-.20)/.28);
+    // Earth -> Mars uses a 1.55 pullback multiplier and reveals the destination
+    // around progress .28. Mirror that pacing for Mars -> Asteroid Belt.
+    const pullbackFactor=mode==="from-mars"?1.55:1.45;
+    const cameraZ=8.4*(1+pullbackFactor*state.pullback*(1-state.approach));
+    const sourceAlpha=mode==="from-mars"?1:1-this.travelSmooth((state.progress-.70)/.25);
+    const destinationAlpha=mode==="from-mars"?this.travelSmooth((state.progress-.28)/.20):this.travelSmooth((state.progress-.20)/.28);
     const fieldIsDestination=mode==="from-mars"||mode==="from-jupiter";
     const belt=fieldIsDestination?destinationAlpha:sourceAlpha;
     const sourceIsMars=mode==="from-mars";
     const destinationIsMars=mode==="to-mars";
     const sourceIsJupiter=mode==="from-jupiter";
     const destinationIsJupiter=mode==="to-jupiter";
+    const marsHeroX=halfHeight*aspect*(this.mobile?0:.28);
+    const marsHeroY=halfHeight*(this.mobile?.28:.10);
+    const marsHeroDistance=this.travelMarsHeroDistance;
+    const marsFov=(this.travelMarsHeroFov||36)*Math.PI/180;
+    const marsTravelScale=Number.isFinite(marsHeroDistance)&&marsHeroDistance>0
+      ? 8.4*Math.tan(19*Math.PI/180)/(marsHeroDistance*Math.tan(marsFov/2))
+      : 1.08;
+    const viewHalfWidth=Math.tan(19*Math.PI/180)*cameraZ*aspect;
+    const marsSourceOutside=sourceIsMars&&state.pullback>.98&&Math.abs(marsHeroX-cameraX)-marsTravelScale>viewHalfWidth*1.01;
 
     if(this.renderer){
       this.fieldGroup.visible=belt>.008;
-      this.travelMarsGroup.visible=sourceIsMars||destinationIsMars;
+      this.travelMarsGroup.visible=(sourceIsMars&&!marsSourceOutside)||destinationIsMars;
       this.travelJupiterGroup.visible=sourceIsJupiter||destinationIsJupiter;
       this.materials.forEach(mat=>mat.opacity=belt);this.ceresMaterial.opacity=belt;
       const fieldX=fieldIsDestination?separation:0;
@@ -513,25 +531,28 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
 
       if(sourceIsMars||destinationIsMars){
         const alpha=sourceIsMars?sourceAlpha:destinationAlpha;
-        this.travelMarsGroup.position.set(destinationIsMars?separation:0,-.03,0);
-        this.travelMarsGroup.scale.setScalar(1.08);
+        this.travelMarsGroup.position.set((destinationIsMars?separation:0)+marsHeroX,marsHeroY,0);
+        this.travelMarsGroup.scale.setScalar(marsTravelScale);
         this.travelMars.material.opacity=alpha;
       }
       if(sourceIsJupiter||destinationIsJupiter){
-        const alpha=sourceIsJupiter?sourceAlpha:destinationAlpha;
+        const jupiterExtent=1.16*1.92;
+        const jupiterOutside=sourceIsJupiter&&state.pullback>.98&&Math.abs(cameraX)-jupiterExtent>viewHalfWidth*1.01;
+        const alpha=jupiterOutside?0:(sourceIsJupiter?sourceAlpha:destinationAlpha);
+        this.travelJupiterGroup.visible=!jupiterOutside;
         this.travelJupiterGroup.position.set(destinationIsJupiter?separation:0,.02,0);
         this.travelJupiterGroup.scale.setScalar(1.16);
         this.travelJupiterMaterial.opacity=alpha;this.travelRingMaterial.opacity=.38*alpha;
       }
 
-      this.travelMars.rotation.y+=.0022;this.travelJupiter.rotation.y+=.0046;this.travelRing.rotation.z=.015+Math.sin(this.time*.14)*.006;
+      this.travelMars.rotation.y=this.travelMarsRotationStart+Math.max(0,this.time-this.travelStartedAt)*.024;this.travelJupiter.rotation.y+=.0046;this.travelRing.rotation.z=.015+Math.sin(this.time*.14)*.006;
       this.stars.position.x=cameraX*.94;
       this.stars.rotation.y=this.time*.0009;
       this.camera.position.set(cameraX,0,cameraZ);
       const lookOffset=Math.sin(state.pan*Math.PI)*separationMagnitude*.055*direction;
       this.camera.lookAt(cameraX+lookOffset,0,-1.4);
       this.renderer.render(this.scene,this.camera);
-    } else this.drawCanvasTravel(state,mode,belt,direction,sourceAlpha,destinationAlpha);
+    } else this.drawCanvasTravel(state,mode,belt,direction,marsSourceOutside&&sourceIsMars?0:sourceAlpha,destinationAlpha);
 
     if(!this.travelCoveredFired&&raw>.12){this.travelCoveredFired=true;this.travelCallbacks.onCovered?.();}
     if(raw>=.999&&!this.travelCompleteFired){
@@ -690,7 +711,14 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     const owner=this._jupiterVisualOwner,heroX=this.mobile?0:.82,heroY=this.mobile?.13:.02,heroScale=this.mobile?.98:1.13;
     const projectionRatio=(8.4*Math.tan(19*Math.PI/180))/(6.4*Math.tan(17*Math.PI/180));
     const lane=destinationIsJupiter?separation:0;
-    this.travelJupiterGroup.visible=true; this.travelJupiterGroup.position.set(lane+heroX*projectionRatio,heroY*projectionRatio,0); this.travelJupiterGroup.scale.setScalar(heroScale*projectionRatio);
+    const jupiterSourceX=heroX*projectionRatio;
+    const viewHalfWidth=Math.tan(19*Math.PI/180)*cameraZ*aspect;
+    const jupiterExtent=2.0*heroScale*projectionRatio;
+    const sourceDeparted=sourceIsJupiter&&state.pullback>.98&&Math.abs(jupiterSourceX-cameraX)-jupiterExtent>viewHalfWidth*1.01;
+    this.travelLifecycle=sourceDeparted?"CURRENT_DEPARTED":(state.pan>.02?"LATERAL_TRAVEL":"RECEDING_CURRENT");
+    if(state.approach>.04)this.travelLifecycle="APPROACHING_DESTINATION";
+    if(state.approach>.90)this.travelLifecycle="SETTLING";
+    this.travelJupiterGroup.visible=!sourceDeparted; this.travelJupiterGroup.position.set(lane+heroX*projectionRatio,heroY*projectionRatio,0); this.travelJupiterGroup.scale.setScalar(heroScale*projectionRatio);
     this.travelJupiterGroup.rotation.x=0;this.travelJupiterGroup.rotation.z=0;
     const elapsed=Math.max(0,this.time-this.travelStartedAt),visualTime=this._jupiterVisualTimeStart+elapsed,rotation=this._jupiterRotationStart+elapsed*.030;
     this._jupiterVisualTimeCurrent=visualTime;this.travelJupiter.rotation.y=rotation;
