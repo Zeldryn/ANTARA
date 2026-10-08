@@ -2,43 +2,30 @@
 
 The existing Mars orbit presentation and `Jelajahi Mars` information mode remain intact. `Eksplorasi Pengalaman Penuh` is a separate interaction state layered onto the existing `MarsScene`.
 
-## Scientific terrain and imagery pipeline
+## Rendering strategy
 
-The surface uses separate elevation and imagery sources instead of stretching the orbit texture across a huge mesh.
+The surface no longer behaves like one large texture stretched across one mesh. Full Exploration now uses a layered game-style terrain pipeline while keeping the existing scientific Mars identity:
 
-### Source audit from this project
+1. **Macro geography** from MOLA elevation.
+2. **Macro colour** from Viking MDIM 2.1.
+3. **Measured mid-frequency image detail** from THEMIS daytime IR where coverage exists.
+4. **Small sub-MOLA geometric relief** to fill spatial scales that the 128 px/degree elevation source cannot resolve.
+5. **World-space triplanar material detail** for close-range dust, grains, rock breakup, roughness and normal response.
 
-- Existing orbit/surface color fallback: `assets/textures/mars-surface-2k.jpg`, exactly 2048 x 1024 RGB.
-- Existing project has no dedicated high-resolution Mars surface normal map or roughness map.
-- Exploration elevation source: MOLA-derived geographic tiles, 128 x 128 samples for each 1 degree tile.
-- MOLA-derived object-space normals are generated from those measured height samples, not from procedural noise.
-- Real surface imagery LOD is therefore streamed separately instead of upscaling the 2K fallback.
+The synthetic layers are deliberately small-scale enhancements. They do not replace named terrain regions, MOLA macro topography, or Viking/THEMIS imagery, and they are not presented as measured rover-scale elevation.
 
-### Elevation
+## Scientific terrain and imagery sources
 
-- MGS Mars Orbiter Laser Altimeter (MOLA) topography derived from the NASA Planetary Data System.
-- Runtime default: `https://jaanga.github.io/mars-heightmaps-128p/`
-- Geographic 1 degree PNG tiles at 128 samples per degree.
-- Only terrain near the camera is loaded and cached.
-- Near-camera geometry now uses denser interpolation (up to 224 subdivisions per 1 degree chunk on HIGH) so the measured MOLA surface is shaded more smoothly at grazing angles. It does not claim extra measured elevation samples beyond MOLA.
+### Project source audit
 
-### Surface imagery
+- Existing orbit/surface colour fallback: `assets/textures/mars-surface-2k.jpg`, 2048 x 1024 RGB.
+- Exploration elevation: MOLA-derived geographic tiles, 128 x 128 samples per 1 degree tile.
+- Runtime MOLA default: `https://jaanga.github.io/mars-heightmaps-128p/`.
+- Viking MDIM 2.1 Colorized Global Mosaic, about 232 m/pixel, provides global surface colour.
+- THEMIS daytime infrared mosaic, about 100 m/pixel, contributes measured local luminance/detail at low and medium altitude.
+- The local 2K Mars texture remains an immediate fallback while scientific imagery is streamed.
 
-The original local `assets/textures/mars-surface-2k.jpg` remains only as an immediate fallback while scientific imagery tiles load.
-
-Runtime texture LOD uses NASA Trek geographic WMTS tiles:
-
-- Viking MDIM 2.1 Colorized Global Mosaic, about 232 m/pixel, as the real global color source.
-- THEMIS daytime infrared mosaic, about 100 m/pixel, as a restrained high-frequency detail source at low altitude where coverage is available.
-- Texture zoom increases as camera altitude decreases.
-- A lower texture LOD stays visible until the requested higher LOD finishes loading.
-- Scientific texture upgrades crossfade briefly instead of popping from blurry to sharp in one frame.
-- The system prefetches data in the current movement direction.
-- Mipmaps and the full renderer-supported anisotropic filtering tier are enabled for shallow viewing angles.
-- MOLA-derived object-space normals preserve measured macro relief.
-- A separate seamless micro-detail layer adds sub-tile dust/rock roughness for close-range readability. This layer is visual material detail only and does not replace MOLA geography or Viking/THEMIS imagery.
-
-Deployments can self-host compatible tile endpoints before `mars-full-exploration.js` runs:
+Deployments can self-host compatible endpoints before `mars-full-exploration.js` runs:
 
 ```html
 <script>
@@ -48,37 +35,100 @@ Deployments can self-host compatible tile endpoints before `mars-full-exploratio
 </script>
 ```
 
-The implementation does not replace missing scientific tiles with procedural geography. Existing lower LOD imagery stays visible when a sharper imagery request is unavailable. The micro-detail layer only affects fine material appearance and bump response, while large-scale colour and terrain shape remain scientific-source driven.
+## Chunked terrain and LOD
 
-## Chunking and seams
+Terrain remains split into geographic 1 degree chunks, but the geometry budget is now much more aggressively concentrated around the camera.
 
-- Terrain is divided into geographic 1 degree chunks.
-- Geometry density decreases with distance from the camera.
-- Terrain chunks include shallow skirts to hide cracks at LOD borders.
-- Unneeded chunks, materials, normal textures, and imagery textures are disposed.
-- Image, terrain, and generated patch caches are bounded.
+HIGH desktop tier:
+
+- centre chunk: 320 subdivisions
+- first ring: 176 subdivisions
+- second ring: 80 subdivisions
+- horizon ring: 36 subdivisions
+- radius: 3 chunks around the current tile
+
+MEDIUM and LOW use progressively lighter versions of the same ring strategy. This gives the near field substantially more geometry while preventing distant terrain from consuming the same vertex budget.
+
+Chunk edges use the same continuous height function at every LOD level, so changing ring density does not intentionally change the terrain height at boundaries. Shallow skirts remain as a secondary crack guard.
+
+## Sub-MOLA geometric relief
+
+MOLA remains the authoritative large-scale terrain shape. A deterministic, globally anchored relief field adds only small mid-scale variation below the source elevation resolution.
+
+- Maximum amplitude is intentionally small, around tens of metres on HIGH.
+- The function is continuous across neighbouring longitude/latitude chunks.
+- The same function is used by rendered geometry and terrain collision lookup, so the camera follows the visible ground rather than the unenhanced MOLA sheet.
+- Frequencies are kept large enough for distant LOD rings to represent them without turning the horizon into high-frequency spikes.
+
+This is visual/game-detail synthesis, not additional measured MOLA data.
+
+## Higher-resolution terrain normals
+
+The terrain normal field now combines sampled MOLA slopes with the sub-MOLA relief. HIGH builds a 256 x 256 normal field per 1 degree chunk, MEDIUM uses 192 x 192, and LOW stays at the source-scale 128 x 128 path.
+
+This does not invent new MOLA measurements. It gives the rendered interpolation and synthetic sub-MOLA relief a denser lighting representation so hills, ridges and depressions read more clearly.
+
+## Multi-scale surface material
+
+The close surface material uses three world-space detail frequencies:
+
+- broad material breakup
+- mid-frequency rocky/dust variation
+- fine grit/rock response near the camera
+
+Detail is sampled with **triplanar mapping** in world space rather than ordinary tile UVs. This avoids obvious texture stretching on steeper terrain and prevents detail phase from restarting at every geographic tile.
+
+Distance-aware blending automatically reduces high-frequency detail as geometry moves away from the camera, so low altitude stays crisp while high altitude returns to coherent macro terrain.
+
+## Normal and roughness response
+
+Three.js normally treats an object-space normal map and a bump map as alternative branches. Full Exploration explicitly keeps the MOLA-derived object-space normal first, then layers the world-space micro-height derivatives on top.
+
+The same multi-scale field also adds controlled roughness variation so the ground reads as dusty, dry, granular and rocky instead of flat plastic.
+
+## Imagery LOD and filtering
+
+- Viking colour LOD stays high farther into the mid-altitude band.
+- THEMIS z9 detail can remain active through the low-altitude range where source coverage permits it.
+- HIGH retains up to a 768 px assembled patch, close to the useful information available from a 1 degree THEMIS z9 footprint rather than blindly upscaling a giant bitmap.
+- Surrounding rings receive a smaller altitude penalty on HIGH so the near/mid terrain does not abruptly lose detail just outside the centre tile.
+- Scientific texture upgrades crossfade instead of popping.
+- Mipmaps remain enabled.
+- Anisotropic filtering uses the renderer-supported tier, up to 16x on HIGH.
+
+## Desktop render quality
+
+HIGH desktop quality now prioritizes a visibly denser presentation:
+
+- supersample target: 1.62 DPR when the device/pixel budget allows it
+- maximum DPR: 2.4
+- render pixel budget: 12 million pixels
+- 16x requested anisotropy, clamped to GPU capability
+- reduced full-exploration fog density for clearer terrain readability
+- ACES tone mapping retained with a small exposure adjustment
+
+Dynamic resolution is still active. Sustained low FPS can lower DPR without replacing the underlying geometry or texture source data.
 
 ## 30 km exploration ceiling
 
-Manual full-exploration navigation is terrain-relative and limited to 30 km above the local sampled MOLA surface.
+Manual navigation remains terrain-relative and limited to 30 km above the local sampled/enhanced ground.
 
 - Desktop `E` cannot exceed 30 km.
 - Shift boost cannot bypass the limit.
-- Mobile ascend controls use the same movement path and cannot bypass the limit.
-- As the camera approaches the ceiling, upward velocity is progressively reduced.
-- At 30 km the upward component becomes zero while horizontal flight stays available.
-- Landmark travel cruises below the ceiling.
-- Entry from orbit and exit back to orbit are cinematic states, so those transitions are allowed above 30 km while player controls are not active.
-- The HUD displays an understated altitude-limit status near 30 km.
+- Mobile ascend controls use the same movement path.
+- Near the ceiling, upward velocity is progressively reduced.
+- At 30 km, upward velocity becomes zero while horizontal flight remains available.
+- Landmark travel stays below the gameplay ceiling.
+- Entry/exit cinematics may pass above 30 km because manual controls are not active in those states.
 
 ## Architecture
 
 - `MarsScene`: existing orbit renderer and normal Mars interaction.
-- `MarsFullExploration`: lifecycle and explicit exploration states.
-- `MolaTileProvider`: MOLA tile addressing, loading, decoding, elevation sampling, cache.
-- `MarsImageryProvider`: NASA Trek imagery tile loading, texture LOD, patch assembly, directional prefetch, cache.
-- `TerrainManager`: chunk generation, geometry LOD, texture LOD, skirts, normal detail, collision lookup, cleanup.
-- `MarsInputManager`: scoped keyboard, pointer-lock mouse, and touch input.
+- `MarsFullExploration`: lifecycle and exploration states.
+- `MolaTileProvider`: MOLA addressing, loading, decoding, interpolation and cache.
+- `MarsImageryProvider`: NASA Trek imagery loading, scientific texture LOD, patch assembly and directional prefetch.
+- `TerrainManager`: chunk LOD, continuous sub-MOLA relief, normal generation, triplanar multi-scale material, texture LOD, collision and cleanup.
+- `MarsInputManager`: scoped keyboard, pointer-lock mouse and touch input.
 - States: `IDLE`, `PREPARING`, `ENTERING`, `EXPLORING`, `TRAVELLING_TO_LOCATION`, `EXITING`, `ERROR`.
 
 ## Controls
@@ -88,17 +138,17 @@ Desktop:
 - `W A S D`: camera-relative movement
 - click viewport: pointer-lock mouse look
 - `Q / E`: descend / ascend
-- `Shift`: temporary speed boost
+- `Shift`: speed boost
 - `Ctrl`: precision movement
-- `Esc`: release pointer lock first, then normal exploration exit behavior remains available
+- `Esc`: release pointer lock first
 
 Mobile:
 
-- lower-left D-pad: movement with hold and multi-touch support
-- drag open viewport: look around
+- lower-left D-pad: movement
+- drag viewport: look around
 - lower-right `+ / -`: altitude
-- location, fullscreen, and exit controls remain separate
+- location, fullscreen and exit controls remain unchanged
 
-## Performance and cleanup
+## Cleanup and fallback behaviour
 
-Quality tiers independently control geometry density, terrain radius, imagery LOD, texture size, micro-detail density, anisotropy, and render DPR. HIGH desktop quality preserves more THEMIS patch resolution, uses denser near terrain, and raises the DPR floor modestly. Dynamic resolution can still reduce renderer DPR after sustained low FPS without lowering the underlying terrain source data. Leaving Mars disposes the dedicated surface renderer, terrain geometry, generated textures, imagery caches, and input state.
+Image, terrain and generated-patch caches remain bounded. Unneeded meshes, materials, normal textures and imagery textures are disposed. If a higher scientific imagery LOD is unavailable, the current lower LOD stays visible rather than being replaced by fabricated geography. Leaving Full Exploration disposes the dedicated surface renderer and its terrain resources.

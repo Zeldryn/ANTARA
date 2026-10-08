@@ -292,24 +292,25 @@
 
     profileForAltitude(altitudeKm, latitude) {
       const altitude = clamp(altitudeKm, 0, MAX_EXPLORATION_ALTITUDE_KM);
-      let colorZoom = altitude > 22 ? 5 : altitude > 10 ? 6 : 7;
+      let colorZoom = altitude > 26 ? 5 : altitude > 14 ? 6 : 7;
       colorZoom = Math.min(colorZoom, this.layers.viking.maxZoom);
 
       let detailZoom = null;
       let detailStrength = 0;
-      if (latitude >= this.layers.themis.minLat && latitude <= this.layers.themis.maxLat && this.layers.themis.maxZoom >= 8 && altitude < 12) {
-        detailZoom = altitude <= 3.5 ? 9 : 8;
+      if (latitude >= this.layers.themis.minLat && latitude <= this.layers.themis.maxLat && this.layers.themis.maxZoom >= 8 && altitude < 15) {
+        detailZoom = altitude <= 5.0 ? 9 : 8;
         detailZoom = Math.min(detailZoom, this.layers.themis.maxZoom);
-        // THEMIS is real ~100 m/px scientific imagery. Keep more of its local luminance
-        // structure near the surface instead of washing it back into the Viking base.
-        detailStrength = altitude <= 0.75 ? 0.72 : altitude <= 1.75 ? 0.66 : altitude <= 3.5 ? 0.56 : altitude <= 8 ? 0.42 : 0.30;
+        // THEMIS is real ~100 m/px scientific imagery. Preserve its measured local
+        // luminance structure farther into the low/mid altitude band; the shader's
+        // synthetic detail only fills scales below the source data, never replaces it.
+        detailStrength = altitude <= 0.75 ? 0.80 : altitude <= 1.75 ? 0.74 : altitude <= 3.5 ? 0.66 : altitude <= 6 ? 0.56 : altitude <= 10 ? 0.44 : 0.32;
       }
 
-      const baseTextureSize = colorZoom >= 7 ? 320 : colorZoom === 6 ? 224 : colorZoom === 5 ? 160 : 112;
-      // A one-degree patch at THEMIS z9 contains roughly 700-800 useful source pixels.
-      // Going much beyond that only invents pixels, but 704 preserves more native detail
-      // than the old 640 cap before the GPU performs its own mip filtering.
-      const detailTextureSize = detailZoom === 9 ? 704 : detailZoom === 8 ? 448 : 0;
+      const baseTextureSize = colorZoom >= 7 ? 352 : colorZoom === 6 ? 240 : colorZoom === 5 ? 176 : 120;
+      // A one-degree THEMIS z9 footprint carries roughly 700-800 useful source pixels.
+      // 768 keeps essentially all available source information without pretending that
+      // a huge upscaled bitmap creates new geological data.
+      const detailTextureSize = detailZoom === 9 ? 768 : detailZoom === 8 ? 480 : 0;
       const textureSize = Math.min(this.quality.textureSize, Math.max(baseTextureSize, detailTextureSize));
       return {
         colorZoom,
@@ -562,7 +563,7 @@
 
     createMarsMicroDetailTexture() {
       const THREE = this.THREE;
-      const size = this.quality.name === "HIGH" ? 384 : this.quality.name === "MEDIUM" ? 320 : 256;
+      const size = this.quality.name === "HIGH" ? 512 : this.quality.name === "MEDIUM" ? 384 : 256;
       const canvas = document.createElement("canvas");
       canvas.width = size;
       canvas.height = size;
@@ -623,9 +624,10 @@
       texture.magFilter = THREE.LinearFilter;
       texture.generateMipmaps = true;
       texture.anisotropy = this.quality.anisotropy || 4;
-      // Integer repetition means neighboring geographic tiles meet without a phase seam.
-      const repeats = this.quality.name === "HIGH" ? 181 : this.quality.name === "MEDIUM" ? 137 : 97;
-      texture.repeat.set(repeats, repeats);
+      // Custom terrain shaders sample this texture in world-space triplanar coordinates.
+      // Keep the texture transform neutral; geographic continuity comes from world space,
+      // not from resetting a UV phase at every one-degree tile boundary.
+      texture.repeat.set(1, 1);
       texture.needsUpdate = true;
       return texture;
     }
@@ -633,39 +635,77 @@
     configureTerrainMaterial(material, tile) {
       if (!material || !tile) return material;
       const THREE = this.THREE;
-      material.bumpMap = this.detailTexture;
-      material.bumpScale = this.quality.name === "HIGH" ? 0.052 : this.quality.name === "MEDIUM" ? 0.044 : 0.034;
-      material.roughness = this.quality.name === "HIGH" ? 0.89 : 0.91;
 
-      // The base map is geographically correct but cannot resolve rover-scale grains.
-      // Blend a tiny, seamless Martian micro-variation in shader space while keeping
-      // the scientific macro colour untouched. It naturally mips away at altitude.
+      // Keep bumpMap attached so Three compiles its derivative helpers, but do not rely
+      // on the ordinary UV bump path. The actual near-field relief below is sampled in
+      // world-space triplanar coordinates, which prevents obvious stretching on slopes.
+      material.bumpMap = this.detailTexture;
+      material.bumpScale = 0.001;
+      material.roughness = this.quality.name === "HIGH" ? 0.885 : this.quality.name === "MEDIUM" ? 0.90 : 0.92;
+
       material.onBeforeCompile = shader => {
         shader.uniforms.uMarsMicroDetail = { value: this.detailTexture };
-        shader.uniforms.uMarsTileOrigin = { value: new THREE.Vector2(tile.lonWest, tile.latNorth - 1) };
-        shader.uniforms.uMarsAlbedoDetail = { value: this.quality.name === "HIGH" ? 0.16 : this.quality.name === "MEDIUM" ? 0.135 : 0.10 };
+        shader.uniforms.uMarsAlbedoDetail = { value: this.quality.name === "HIGH" ? 0.24 : this.quality.name === "MEDIUM" ? 0.19 : 0.13 };
+        shader.uniforms.uMarsNormalDetail = { value: this.quality.name === "HIGH" ? 7.2 : this.quality.name === "MEDIUM" ? 5.4 : 3.8 };
+
         shader.vertexShader = shader.vertexShader
-          .replace("#include <common>", "#include <common>\nvarying vec2 vMarsGeoUv;\nuniform vec2 uMarsTileOrigin;")
-          .replace("#include <uv_vertex>", "#include <uv_vertex>\nvMarsGeoUv = uMarsTileOrigin + vec2(uv.x, uv.y);");
+          .replace("#include <common>", "#include <common>\nvarying vec3 vMarsWorldPosition;")
+          .replace("#include <begin_vertex>", "#include <begin_vertex>\nvMarsWorldPosition = (modelMatrix * vec4(transformed, 1.0)).xyz;");
+
         shader.fragmentShader = shader.fragmentShader
-          .replace("#include <common>", "#include <common>\nvarying vec2 vMarsGeoUv;\nuniform sampler2D uMarsMicroDetail;\nuniform float uMarsAlbedoDetail;")
+          .replace("#include <common>", `#include <common>
+            varying vec3 vMarsWorldPosition;
+            uniform sampler2D uMarsMicroDetail;
+            uniform float uMarsAlbedoDetail;
+            uniform float uMarsNormalDetail;
+
+            float marsTriSample(sampler2D tex, vec3 p, vec3 n, float scale, vec3 phase) {
+              vec3 blend = pow(max(abs(n), vec3(0.0001)), vec3(5.0));
+              blend /= max(blend.x + blend.y + blend.z, 0.0001);
+              float sx = texture2D(tex, p.yz * scale + phase.yz).r;
+              float sy = texture2D(tex, p.xz * scale + phase.xz).r;
+              float sz = texture2D(tex, p.xy * scale + phase.xy).r;
+              return sx * blend.x + sy * blend.y + sz * blend.z;
+            }`)
           .replace("#include <map_fragment>", `#include <map_fragment>
-            float marsMicroA = texture2D(uMarsMicroDetail, vMarsGeoUv * 43.0).r - 0.5;
-            float marsMicroB = texture2D(uMarsMicroDetail, vMarsGeoUv * 173.0 + vec2(0.371, 0.193)).r - 0.5;
-            float marsMicro = marsMicroA * 0.64 + marsMicroB * 0.36;
-            diffuseColor.rgb *= clamp(1.0 + marsMicro * uMarsAlbedoDetail, 0.90, 1.10);`)
-          // Three.js normally treats an object-space normal map and bump map as
-          // mutually exclusive. Apply the micro bump *after* the MOLA normal so
-          // measured macro slopes and near-surface grains both affect lighting.
+            vec3 marsDx = dFdx(vMarsWorldPosition);
+            vec3 marsDy = dFdy(vMarsWorldPosition);
+            vec3 marsGeomNormal = normalize(cross(marsDx, marsDy));
+            if (!gl_FrontFacing) marsGeomNormal = -marsGeomNormal;
+
+            float marsViewDistance = length(cameraPosition - vMarsWorldPosition);
+            float marsNearWeight = 1.0 - smoothstep(1.25, 15.0, marsViewDistance);
+            float marsMidWeight = 1.0 - smoothstep(7.0, 46.0, marsViewDistance);
+
+            // Three spatial frequencies give the ground a game-style macro/mid/fine
+            // material hierarchy while retaining the scientific imagery underneath.
+            float marsBroad = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 0.18, vec3(0.17, 0.41, 0.73));
+            float marsFine = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 0.92, vec3(0.61, 0.13, 0.37));
+            float marsGrit = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 2.35, vec3(0.29, 0.83, 0.07));
+            float marsRock = smoothstep(0.68, 0.92, marsGrit);
+            float marsMicro = (marsBroad - 0.5) * 0.44 * marsMidWeight
+              + (marsFine - 0.5) * 0.40 * marsNearWeight
+              + (marsGrit - 0.5) * 0.16 * marsNearWeight
+              + marsRock * 0.08 * marsNearWeight;
+            float marsMicroHeight = ((marsBroad - 0.5) * 0.52 * marsMidWeight
+              + (marsFine - 0.5) * 0.34 * marsNearWeight
+              + (marsGrit - 0.5) * 0.14 * marsNearWeight);
+
+            diffuseColor.rgb *= clamp(1.0 + marsMicro * uMarsAlbedoDetail, 0.86, 1.14);`)
+          // Three normally chooses an object-space normal map OR a bump map. Preserve
+          // the MOLA-derived object-space normal, then layer triplanar micro-relief on
+          // top using screen-space derivatives of the world-space detail field.
           .replace("#include <normal_fragment_maps>", `#include <normal_fragment_maps>
             #ifdef USE_BUMPMAP
-              normal = perturbNormalArb(-vViewPosition, normal, dHdxy_fwd(), faceDirection);
+              vec2 marsMicroSlope = vec2(dFdx(marsMicroHeight), dFdy(marsMicroHeight));
+              normal = perturbNormalArb(-vViewPosition, normal, marsMicroSlope * uMarsNormalDetail, faceDirection);
             #endif`)
           .replace("#include <roughnessmap_fragment>", `#include <roughnessmap_fragment>
-            roughnessFactor = clamp(roughnessFactor + marsMicro * 0.055, 0.82, 0.98);`);
+            roughnessFactor = clamp(roughnessFactor + (0.5 - marsGrit) * 0.065 + marsRock * 0.035, 0.80, 0.985);`);
+
         material.userData.marsShader = shader;
       };
-      material.customProgramCacheKey = () => `antara-mars-terrain-detail-v3-${this.quality.name}`;
+      material.customProgramCacheKey = () => `antara-mars-terrain-triplanar-v5-${this.quality.name}`;
       material.needsUpdate = true;
       return material;
     }
@@ -692,6 +732,29 @@
       return { latitude, signedLongitude, longitudeEast: eastLongitude(signedLongitude) };
     }
 
+    subMolaDetailHeight(latitude, signedLongitude, strength = 1) {
+      if (strength <= 0) return 0;
+      // MOLA is the authoritative macro shape. This deterministic, globally anchored
+      // sub-MOLA field adds only small metre-scale/mid-scale relief that the ~128 px/°
+      // source cannot represent. Integer longitudinal harmonics keep the field seamless
+      // across the -180/+180 meridian and across adjacent terrain chunks.
+      const lat = latitude * DEG;
+      const lon = wrapLongitude(signedLongitude) * DEG;
+      const broad = Math.sin(lon * 4219 + lat * 2861) * Math.cos(lon * 2713 - lat * 5171);
+      const mid = Math.sin(lon * 6113 - lat * 4871) * Math.sin(lon * 4217 + lat * 7307);
+      const ridgeWave = Math.sin(lon * 7307 + lat * 5381);
+      const ridge = 1 - Math.abs(ridgeWave);
+      const basin = Math.cos(lon * 2377 + lat * 3541) * Math.cos(lon * 1699 - lat * 4073);
+      const amplitude = this.quality.name === "HIGH" ? 0.020 : this.quality.name === "MEDIUM" ? 0.013 : 0.007;
+      return amplitude * strength * (broad * 0.43 + mid * 0.28 + (ridge - 0.5) * 0.18 + basin * 0.11);
+    }
+
+    detailStrengthForSegments() {
+      // Keep chunk-edge heights identical across LOD rings. The LOD difference comes
+      // from tessellation density, not from changing the terrain function itself.
+      return 1;
+    }
+
     desiredRadius() {
       return this.quality.radius;
     }
@@ -700,7 +763,8 @@
       const ring = Math.max(Math.abs(dx), Math.abs(dy));
       if (ring === 0) return this.quality.nearSegments;
       if (ring === 1) return this.quality.midSegments;
-      return this.quality.farSegments;
+      if (ring === 2) return this.quality.farSegments;
+      return this.quality.horizonSegments || this.quality.farSegments;
     }
 
     async ensureAround(latitude, signedLongitude, { requiredRadius = 1, onProgress = null, textureAltitude = MAX_EXPLORATION_ALTITUDE_KM } = {}) {
@@ -810,26 +874,41 @@
       return texture;
     }
 
-    createMolaNormalMap(tile) {
+    createMolaNormalMap(tile, segments) {
       const THREE = this.THREE;
-      const size = TILE_SIZE;
+      // The source MOLA grid is 128 px/degree, but the visual normal field can be
+      // sampled more densely because the terrain also carries the deterministic
+      // sub-MOLA relief used by the geometry. This produces smoother macro gradients
+      // plus materially richer mid-scale light response on desktop.
+      const size = this.quality.name === "HIGH" ? 256 : this.quality.name === "MEDIUM" ? 192 : TILE_SIZE;
       const data = new Uint8Array(size * size * 4);
-      const heights = tile.heights;
+      const visualHeights = new Float32Array(size * size);
+      const detailScale = this.detailStrengthForSegments(segments);
+      for (let y = 0; y < size; y += 1) {
+        const fy = y / (size - 1);
+        const latitude = tile.latNorth - fy;
+        for (let x = 0; x < size; x += 1) {
+          const fx = x / (size - 1);
+          const signedLongitude = wrapLongitude(tile.lonWest + fx);
+          const mola = this.provider.sampleTile(tile, latitude, signedLongitude);
+          visualHeights[y * size + x] = mola + this.subMolaDetailHeight(latitude, signedLongitude, detailScale);
+        }
+      }
       const centerLat = tile.latNorth - 0.5;
-      const spacingX = Math.max(0.08, KM_PER_DEG_LAT * Math.cos(centerLat * DEG) / (size - 1));
+      const spacingX = Math.max(0.04, KM_PER_DEG_LAT * Math.cos(centerLat * DEG) / (size - 1));
       const spacingZ = KM_PER_DEG_LAT / (size - 1);
       let out = 0;
       for (let y = 0; y < size; y += 1) {
         for (let x = 0; x < size; x += 1) {
-          const left = heights[y * size + Math.max(0, x - 1)];
-          const right = heights[y * size + Math.min(size - 1, x + 1)];
-          const north = heights[Math.max(0, y - 1) * size + x];
-          const south = heights[Math.min(size - 1, y + 1) * size + x];
+          const left = visualHeights[y * size + Math.max(0, x - 1)];
+          const right = visualHeights[y * size + Math.min(size - 1, x + 1)];
+          const north = visualHeights[Math.max(0, y - 1) * size + x];
+          const south = visualHeights[Math.min(size - 1, y + 1) * size + x];
           const dx = (right - left) / Math.max(spacingX * 2, 0.001);
           const dz = (south - north) / Math.max(spacingZ * 2, 0.001);
-          let nx = -dx * 0.58;
+          let nx = -dx * 0.64;
           let ny = 1;
-          let nz = -dz * 0.58;
+          let nz = -dz * 0.64;
           const length = Math.hypot(nx, ny, nz) || 1;
           nx /= length;
           ny /= length;
@@ -950,7 +1029,8 @@
     async upgradeEntryTexture(entry, altitudeKm, ring = 0) {
       if (!entry?.mesh || !entry.tile || !this.imagery) return;
       const latitude = entry.latNorth - 0.5;
-      const visualAltitude = clamp(altitudeKm + ring * 7, 0, MAX_EXPLORATION_ALTITUDE_KM);
+      const ringPenalty = this.quality.name === "HIGH" ? 3.5 : this.quality.name === "MEDIUM" ? 5.0 : 7.0;
+      const visualAltitude = clamp(altitudeKm + ring * ringPenalty, 0, MAX_EXPLORATION_ALTITUDE_KM);
       const profile = this.imagery.profileForAltitude(visualAltitude, latitude);
       if (entry.textureProfile === profile.key || entry.textureLoading === profile.key) return;
       const requestToken = (entry.textureToken || 0) + 1;
@@ -972,7 +1052,8 @@
     async primeEntryTexture(entry, altitudeKm, ring = 0) {
       if (!entry?.mesh) return;
       const latitude = entry.latNorth - 0.5;
-      const desiredAltitude = clamp(altitudeKm + ring * 7, 0, MAX_EXPLORATION_ALTITUDE_KM);
+      const ringPenalty = this.quality.name === "HIGH" ? 3.5 : this.quality.name === "MEDIUM" ? 5.0 : 7.0;
+      const desiredAltitude = clamp(altitudeKm + ring * ringPenalty, 0, MAX_EXPLORATION_ALTITUDE_KM);
       const desiredProfile = this.imagery.profileForAltitude(desiredAltitude, latitude);
       const coarseProfile = this.imagery.profileForAltitude(MAX_EXPLORATION_ALTITUDE_KM, latitude);
       if (entry.textureProfile === "fallback" && coarseProfile.key !== desiredProfile.key) {
@@ -1018,7 +1099,9 @@
           const fx = ix / segments;
           const signedLongitude = wrapLongitude(tile.lonWest + fx);
           const world = this.worldFromGeo(latitude, signedLongitude);
-          const height = this.provider.sampleTile(tile, latitude, signedLongitude);
+          const baseHeight = this.provider.sampleTile(tile, latitude, signedLongitude);
+          const detailScale = this.detailStrengthForSegments(segments);
+          const height = baseHeight + this.subMolaDetailHeight(latitude, signedLongitude, detailScale);
           positions[p++] = world.x;
           positions[p++] = height;
           positions[p++] = world.z;
@@ -1091,7 +1174,7 @@
       geometry.computeBoundingSphere();
 
       const tileTexture = this.createFallbackAlbedo(tile);
-      const normalTexture = this.createMolaNormalMap(tile);
+      const normalTexture = this.createMolaNormalMap(tile, segments);
       const material = new THREE.MeshStandardMaterial({
         map: tileTexture,
         normalMap: normalTexture,
@@ -1137,7 +1220,9 @@
 
     getHeightAtWorld(x, z) {
       const geo = this.geoFromWorld(x, z);
-      return this.provider.sampleCached(geo.latitude, geo.signedLongitude);
+      const base = this.provider.sampleCached(geo.latitude, geo.signedLongitude);
+      if (base === null) return null;
+      return base + this.subMolaDetailHeight(geo.latitude, geo.signedLongitude, 1);
     }
 
     clearMeshes() {
@@ -1419,12 +1504,15 @@
       // its theoretical pixel count large. Quality selection is capability based;
       // the render-pixel budget below controls the actual resolution separately.
       if (coarse || width <= 760 || cores <= 4 || memory <= 3) {
-        return { name: "LOW", radius: 1, nearSegments: 88, midSegments: 48, farSegments: 26, maxDpr: 1.4, minDpr: 0.92, supersample: 1, pixelBudget: 2800000, anisotropy: 4, imageryMaxZ: 6, themisMaxZ: 8, textureSize: 320 };
+        return { name: "LOW", radius: 1, nearSegments: 96, midSegments: 52, farSegments: 28, horizonSegments: 22, maxDpr: 1.45, minDpr: 0.92, supersample: 1, pixelBudget: 3000000, anisotropy: 4, imageryMaxZ: 6, themisMaxZ: 8, textureSize: 336 };
       }
       if (cores >= 8 && memory >= 6) {
-        return { name: "HIGH", radius: 3, nearSegments: 224, midSegments: 144, farSegments: 64, maxDpr: 2.2, minDpr: 1.08, supersample: 1.35, pixelBudget: 10000000, anisotropy: 16, imageryMaxZ: 7, themisMaxZ: 9, textureSize: 704 };
+        // Spend the geometry budget where a game would: dense centre chunk, progressively
+        // lighter rings toward the horizon. This is materially sharper near the camera
+        // without multiplying every distant tile to the same cost.
+        return { name: "HIGH", radius: 3, nearSegments: 320, midSegments: 176, farSegments: 80, horizonSegments: 36, maxDpr: 2.4, minDpr: 1.10, supersample: 1.62, pixelBudget: 12000000, anisotropy: 16, imageryMaxZ: 7, themisMaxZ: 9, textureSize: 768 };
       }
-      return { name: "MEDIUM", radius: 2, nearSegments: 160, midSegments: 96, farSegments: 44, maxDpr: 1.9, minDpr: 0.98, supersample: 1.18, pixelBudget: 6000000, anisotropy: 8, imageryMaxZ: 7, themisMaxZ: 8, textureSize: 512 };
+      return { name: "MEDIUM", radius: 2, nearSegments: 192, midSegments: 112, farSegments: 48, horizonSegments: 32, maxDpr: 2.0, minDpr: 1.0, supersample: 1.30, pixelBudget: 7200000, anisotropy: 8, imageryMaxZ: 7, themisMaxZ: 8, textureSize: 544 };
     }
 
     calculateIdealDpr() {
@@ -1559,7 +1647,7 @@
         this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias: this.quality.name !== "LOW" });
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.02;
+        this.renderer.toneMappingExposure = 1.045;
         this.quality.anisotropy = Math.min(this.quality.anisotropy, this.renderer.capabilities.getMaxAnisotropy());
         this.idealDpr = this.calculateIdealDpr();
         this.currentDpr = this.idealDpr;
@@ -1568,7 +1656,7 @@
         this.viewport.replaceChildren(canvas);
 
         this.scene = new THREE.Scene();
-        const fogDensity = this.quality.name === "LOW" ? 0.00165 : this.quality.name === "MEDIUM" ? 0.00105 : 0.00072;
+        const fogDensity = this.quality.name === "LOW" ? 0.00155 : this.quality.name === "MEDIUM" ? 0.00092 : 0.00058;
         this.scene.fog = new THREE.FogExp2(0xa55f45, fogDensity);
         this.camera = new THREE.PerspectiveCamera(this.mobileFov(), 1, 0.035, 850);
         this.camera.rotation.order = "YXZ";
