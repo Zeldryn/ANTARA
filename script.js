@@ -582,6 +582,19 @@ const CHARACTER_SPRITES = Object.freeze({
   }
 });
 
+const ANIMATED_NARA_FRAMES = Object.freeze([
+  "assets/characters/nara/frames/NARA_frame_01.webp",
+  "assets/characters/nara/frames/NARA_frame_02.webp",
+  "assets/characters/nara/frames/NARA_frame_03.webp",
+  "assets/characters/nara/frames/NARA_frame_04.webp",
+  "assets/characters/nara/frames/NARA_frame_05.webp",
+  "assets/characters/nara/frames/NARA_frame_06.webp",
+  "assets/characters/nara/frames/NARA_frame_07.webp",
+  "assets/characters/nara/frames/NARA_frame_08.webp",
+  "assets/characters/nara/frames/NARA_frame_09.webp",
+  "assets/characters/nara/frames/NARA_frame_10.webp"
+]);
+
 class CockpitCompanions {
   constructor() {
     this.a = document.getElementById("companion-a");
@@ -596,7 +609,10 @@ class CockpitCompanions {
     this.talkTimer = 0;
     this.currentSprite = { A: "", B: "" };
     this.spriteTimers = { A: 0, B: 0 };
+    this.naraFrameTimer = 0;
+    this.naraFrameIndex = 0;
     this.preload();
+    this.startAnimatedNara();
   }
 
   preload() {
@@ -608,6 +624,50 @@ class CockpitCompanions {
         image.src = config.base + file;
       }
     }
+    for (const frame of ANIMATED_NARA_FRAMES) {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = frame;
+    }
+  }
+
+  startAnimatedNara() {
+    const image = this.images.A;
+    if (!image || !ANIMATED_NARA_FRAMES.length) return;
+
+    // These 10 assets are expression poses, not contiguous 24-fps motion.
+    // Give readable poses a longer hold and use shorter timings only between them.
+    const frameDurations = [
+      2200, // 01 calm / default pose
+       650, // 02 transition smile
+       750, // 03 softer expression
+      1700, // 04 closed-eye smile
+       650, // 05 transition
+       700, // 06 surprised / speaking
+      1250, // 07 attentive pose
+       900, // 08 calm transition
+      1450, // 09 wink / playful hold
+      1900  // 10 relaxed ending pose
+    ];
+
+    clearTimeout(this.naraFrameTimer);
+    this.naraFrameIndex = 0;
+    image.src = ANIMATED_NARA_FRAMES[0];
+    image.dataset.sprite = "animated-nara";
+    this.currentSprite.A = "animated-nara";
+
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const showNextFrame = () => {
+      const hold = frameDurations[this.naraFrameIndex] || 1000;
+      this.naraFrameTimer = window.setTimeout(() => {
+        this.naraFrameIndex = (this.naraFrameIndex + 1) % ANIMATED_NARA_FRAMES.length;
+        image.src = ANIMATED_NARA_FRAMES[this.naraFrameIndex];
+        showNextFrame();
+      }, hold);
+    };
+
+    showNextFrame();
   }
 
   spritePath(side, state) {
@@ -618,6 +678,12 @@ class CockpitCompanions {
   swapSprite(side, state, immediate = false) {
     const host = side === "A" ? this.a : this.b;
     const image = this.images[side];
+    if (side === "A" && ANIMATED_NARA_FRAMES.length) {
+      if (host) host.dataset.state = state;
+      if (image) image.dataset.sprite = state;
+      this.currentSprite.A = "animated-nara";
+      return;
+    }
     const next = this.spritePath(side, state);
     if (!image || this.currentSprite[side] === next) {
       if (host) host.dataset.state = state;
