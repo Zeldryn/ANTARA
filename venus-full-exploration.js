@@ -9,9 +9,12 @@
  * - Earth Full Exploration: choose a destination before terrain is loaded and
  *   return to the destination selector without leaving the planet.
  *
- * The rejected synthetic Venus macro-terrain renderer is not used.
- * Exactly one high-detail region is interactive at a time, while lower-LOD
- * scientific terrain continues far beyond the collision boundary.
+ * Scientific topography remains the base terrain. A restrained, explicitly
+ * reference-guided morphology layer reinforces destination-scale geological
+ * signatures where the available runtime dataset is too coarse to communicate
+ * them clearly. It is never labelled as measured elevation. Exactly one
+ * high-detail region is interactive at a time, while lower-LOD terrain
+ * continues far beyond the collision boundary.
  */
 
 (() => {
@@ -36,158 +39,523 @@
       id: "maat",
       name: "Maat Mons",
       short: "Maat Mons",
-      category: "VOLCANIC RISE",
+      category: "KAWASAN VULKANIK",
       latitude: 0.9,
       longitudeEast: 194.5,
       heading: 0,
-      pitch: -0.22,
-      spawn: { x: 0, z: 31, altitude: 2.7 },
-      featureCenter: { x: 0, z: -25 },
-      playRadius: 64,
-      softBoundaryStart: 52,
+      pitch: -0.08,
+      spawn: { x: -22, z: 72, altitude: 2.25 },
+      lookTarget: { x: 0, z: -38 },
+      featureCenter: { x: 0, z: -38 },
+      playRadius: 100,
+      softBoundaryStart: 84,
       source: "https://science.nasa.gov/photojournal/venus-3-d-perspective-view-of-maat-mons-2/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/3550",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00254/PIA00254.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
-      descriptor: "Gunung api perisai besar dengan lereng panjang, dataran retak, dan aliran lava yang memanjang ratusan kilometer.",
-      description: "Region ini menyusun komposisi seperti perspektif Magellan: dataran vulkanik berfraktur di depan, transisi aliran di tengah, dan tubuh Maat Mons yang dominan naik di kejauhan.",
+      descriptor: "Gunung api besar dengan lereng panjang, dataran retak, dan jejak aliran lava.",
+      description: "Wilayah Maat Mons menonjolkan bentang vulkanik Venus: lereng luas, dataran yang terdeformasi, serta pola aliran yang dapat dibandingkan dengan citra radar Magellan.",
       facts: [
-        "NASA/JPL menggambarkan Maat Mons sebagai gunung api sekitar 8 km di atas radius rata-rata Venus.",
-        "Perspektif Magellan memperlihatkan aliran lava memanjang ratusan kilometer melintasi dataran retak menuju kaki gunung.",
-        "Magellan merekam sebuah vent Maat Mons berubah bentuk dan membesar secara signifikan antara Februari dan Oktober 1991, bukti kuat aktivitas vulkanik saat itu.",
-        "Model ANTARA memprioritaskan edifice yang lebar dan lereng gradual, bukan pola radial berbentuk bintang."
+        "NASA/JPL menggambarkan Maat Mons sebagai gunung api besar yang menjulang sekitar 8 km di atas radius rata-rata Venus.",
+        "Citra Magellan menunjukkan aliran lava yang memanjang jauh dari tubuh gunung api menuju dataran di sekitarnya.",
+        "Analisis ulang citra Magellan menemukan sebuah lubang vulkanik di Maat Mons berubah bentuk dan membesar antara Februari dan Oktober 1991, bukti langsung aktivitas vulkanik pada Venus.",
+        "Relief ANTARA memakai topografi sebagai bentuk makro, lalu menambahkan detail kecil hanya pada skala yang tidak disediakan data sumber."
       ],
-      visualizationNote: "VISUALISASI AKTIVITAS VULKANIK · Rekonstruksi ilustratif berdasarkan perubahan vent Magellan 1991. Glow lokal bukan foto observasi langsung lava pijar saat ini.",
+      visualizationNote: "REFERENSI PIA00254 · Perspektif NASA/JPL memperbesar skala vertikal 22,5×. Full Exploration meniru bahasa morfologi Maat Mons tanpa menyalin pembesaran tinggi tersebut, dan tidak menampilkan lava aktif sebagai fakta.",
       palette: { low: 0x7b3f22, mid: 0xd39445, high: 0xf1c56c, accent: 0x64331d, rock: 0x45291b },
       fog: 0xa76537,
       fogDensity: 0.0100,
       sky: 0xb96d39,
       sun: 0xffdc96,
       hemi: 0xf2ad67,
-      exposure: 1.04
+      exposure: 1.04,
+      education: {
+        intro: "Jelajahi bentuk gunung api Venus, jejak aliran, bukti perubahan permukaan, dan kondisi lingkungan ekstrem di sekitar Maat Mons.",
+        objectives: [
+          { id: "lereng", label: "Amati bentuk lereng gunung api Venus", discovery: "maat-slope" },
+          { id: "aliran", label: "Temukan jejak morfologi aliran lava", discovery: "maat-flow" },
+          { id: "vent", label: "Pelajari bukti perubahan lubang vulkanik Maat Mons", discovery: "maat-vent" },
+          { id: "atmosfer", label: "Pahami suhu dan tekanan permukaan Venus", discovery: "maat-atmosphere" }
+        ],
+        observations: [
+          {
+            id: "maat-slope", type: "TEMUAN GEOLOGI", title: "Lereng Gunung Api yang Sangat Luas",
+            lead: "Di depan Anda, relief naik secara bertahap dan membentuk lereng yang jauh lebih luas daripada kerucut gunung api kecil di Bumi.",
+            sections: [
+              { heading: "YANG DILIHAT", text: "Perubahan ketinggian terjadi dalam jarak yang panjang. Bentuk seperti ini membantu kita membaca Maat Mons sebagai bangunan vulkanik besar, bukan bukit terisolasi." },
+              { heading: "CARA TERBENTUK", text: "Aliran lava yang berulang dapat membangun tubuh gunung api yang lebar. Pada Venus, morfologi vulkanik dipelajari terutama dari radar dan topografi karena awan tebal menutupi permukaan." }
+            ],
+            why: "Kemiringan dan skala lereng membantu ilmuwan menafsirkan bagaimana material vulkanik menumpuk dan menyebar dari pusat erupsi.",
+            deepDive: ["Bandingkan perubahan ketinggian di sekitar titik ini dengan dataran yang lebih jauh.", "Jangan menilai warna permukaan sebagai warna asli batuan. Visual ANTARA diberi pencahayaan dan warna untuk keterbacaan."],
+            sourceLabel: "NASA/JPL · Magellan · Maat Mons", source: "https://science.nasa.gov/photojournal/venus-3-d-perspective-view-of-maat-mons-2/",
+            anchor: { x: -24, z: -6 }, placement: "slope-medium"
+          },
+          {
+            id: "maat-flow", type: "TITIK PENGAMATAN", title: "Jejak Aliran Lava",
+            lead: "Pola relief yang memanjang dapat dibaca sebagai konteks aliran vulkanik yang menyebar dari kawasan Maat Mons menuju dataran sekitarnya.",
+            sections: [
+              { heading: "YANG DILIHAT", text: "Cari bagian permukaan yang lebih halus atau memanjang di antara relief yang lebih kasar. Pada citra radar, pola aliran dapat muncul berbeda karena kekasaran permukaan memengaruhi pantulan radar." },
+              { heading: "PENTING UNTUK DIINGAT", text: "Kecerahan radar bukan ketinggian. Permukaan yang terang pada radar dapat disebabkan kekasaran, geometri pengamatan, dan sifat material." }
+            ],
+            why: "Membaca pola aliran membantu merekonstruksi sejarah vulkanisme tanpa harus melihat erupsi secara langsung.",
+            deepDive: ["Magellan memetakan permukaan Venus dengan radar karena awan Venus menghalangi pengamatan biasa pada cahaya tampak.", "Topografi dan citra radar dipakai untuk pertanyaan yang berbeda dan tidak boleh dipertukarkan."],
+            sourceLabel: "NASA/JPL · Magellan", source: "https://science.nasa.gov/image-detail/venus-2/",
+            anchor: { x: 30, z: 28 }, placement: "flat"
+          },
+          {
+            id: "maat-vent", type: "TEMUAN GEOLOGI", title: "Lubang Vulkanik yang Berubah pada 1991",
+            lead: "Analisis citra Magellan dari dua waktu berbeda menunjukkan sebuah lubang vulkanik yang terkait dengan Maat Mons berubah bentuk dan membesar dalam delapan bulan.",
+            sections: [
+              { heading: "BUKTI PENGAMATAN", text: "Citra Februari dan Oktober 1991 memperlihatkan perubahan ukuran dan bentuk lubang vulkanik. Tim peneliti menafsirkan perubahan itu sebagai bukti langsung aktivitas vulkanik." },
+              { heading: "BATAS VISUALISASI", text: "Titik ini tidak mengklaim bahwa bentuk kecil yang Anda lihat adalah lubang vulkanik yang sama persis. ANTARA memakai lokasi ini sebagai ruang belajar untuk memahami bukti Magellan." }
+            ],
+            why: "Perubahan pada dua citra waktu berbeda memberi bukti kuat bahwa Venus bukan dunia geologi yang sepenuhnya mati.",
+            deepDive: ["Data lama dapat menghasilkan penemuan baru ketika dianalisis dengan metode dan pertanyaan yang lebih baik.", "Magellan mengamati permukaan dengan radar, bukan kamera cahaya tampak biasa."],
+            sourceLabel: "NASA/JPL · Analisis Magellan 1991", source: "https://www.jpl.nasa.gov/news/nasas-magellan-data-reveals-volcanic-activity-on-venus/",
+            anchor: { x: 3, z: -39 }, placement: "elevation-high"
+          },
+          {
+            id: "maat-atmosphere", type: "DATA LINGKUNGAN", title: "Panas dan Tekanan di Permukaan",
+            lead: "Permukaan Venus berada dalam lingkungan sekitar 467°C dengan tekanan atmosfer sekitar 93 kali tekanan permukaan laut Bumi.",
+            sections: [
+              { heading: "SUHU", text: "Atmosfer karbon dioksida yang sangat tebal mempertahankan panas melalui efek rumah kaca ekstrem. Venus menjadi planet dengan permukaan terpanas di Tata Surya." },
+              { heading: "TEKANAN", text: "Tekanan permukaan yang sangat tinggi adalah salah satu alasan wahana pendarat Venus harus dirancang untuk lingkungan yang jauh lebih keras daripada Bumi atau Mars." }
+            ],
+            why: "Geologi Venus tidak dapat dipisahkan dari lingkungannya. Suhu, tekanan, dan atmosfer memengaruhi cara permukaan dipelajari dan bagaimana wahana dapat bertahan.",
+            comparison: [{ label: "VENUS", value: "≈93 bar" }, { label: "BUMI", value: "≈1 bar" }],
+            deepDive: ["NASA mencantumkan suhu permukaan sekitar 467°C dan tekanan sekitar 93 kali tekanan laut Bumi.", "Awan Venus mengandung tetesan asam sulfat, tetapi kondisi dekat permukaan didominasi atmosfer karbon dioksida yang sangat padat."],
+            sourceLabel: "NASA Science · Fakta Venus", source: "https://science.nasa.gov/venus/venus-facts/",
+            anchor: { x: -66, z: 42 }, placement: "open"
+          },
+          {
+            id: "maat-magellan", type: "CARA ILMUWAN MENGETAHUI", title: "Mengapa Venus Dipetakan dengan Radar",
+            lead: "Awan tebal Venus menutupi permukaan pada cahaya tampak. Magellan memakai radar untuk memperoleh pandangan global terhadap bentang permukaan.",
+            sections: [
+              { heading: "RADAR", text: "Gelombang radar dapat menembus selimut awan dan dipantulkan kembali oleh permukaan. Pola pantulan membantu mengungkap struktur geologi." },
+              { heading: "BUKAN PETA KETINGGIAN LANGSUNG", text: "Pantulan radar yang terang tidak otomatis berarti tempat itu tinggi. Topografi memerlukan pengukuran ketinggian yang terpisah." }
+            ],
+            why: "Memahami cara data dibuat mencegah kita membaca citra radar seperti foto biasa atau menganggap kecerahan sebagai elevasi.",
+            deepDive: ["Magellan memetakan sebagian besar permukaan Venus pada awal 1990-an.", "ANTARA memisahkan penggunaan topografi untuk bentuk makro dan radar untuk konteks permukaan."],
+            sourceLabel: "NASA · Magellan", source: "https://science.nasa.gov/image-detail/venus-2/",
+            anchor: { x: 72, z: -42 }, placement: "open"
+          }
+        ]
+      }
     },
     {
       id: "maxwell",
       name: "Maxwell Montes",
       short: "Maxwell",
-      category: "MOUNTAIN BELT",
+      category: "SABUK PEGUNUNGAN",
       latitude: 65.0,
       longitudeEast: 6.0,
       heading: -0.12,
-      pitch: -0.24,
-      spawn: { x: -8, z: 34, altitude: 3.1 },
-      featureCenter: { x: 4, z: -16 },
-      playRadius: 62,
-      softBoundaryStart: 50,
+      pitch: -0.15,
+      spawn: { x: -26, z: 48, altitude: 2.85 },
+      lookTarget: { x: -6, z: -20 },
+      featureCenter: { x: -6, z: -20 },
+      playRadius: 96,
+      softBoundaryStart: 80,
       source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/3766",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00149/PIA00149.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
-      descriptor: "Massif tertinggi Venus dengan ridge memanjang, lembah terhubung, dan konteks dataran tinggi Ishtar.",
-      description: "Maxwell dibentuk sebagai sistem pegunungan memanjang. Relief utama berasal dari envelope massif dan ridge terarah, bukan pegunungan noise yang berdiri sendiri-sendiri.",
+      descriptor: "Dataran tinggi ekstrem dengan punggungan memanjang, lembah, dan relief kompresional.",
+      description: "Maxwell Montes dibaca sebagai sistem pegunungan terdeformasi. Punggungan dan lembahnya memberi konteks kompresi kerak, sementara dataran tinggi Venus menunjukkan hubungan yang menarik antara elevasi dan pantulan radar.",
       facts: [
-        "NASA/JPL menyebut Maxwell Montes sebagai pegunungan tertinggi di Venus, hampir 11 km di atas radius rata-rata planet.",
-        "Magellan memperlihatkan terrain Maxwell yang sangat terdeformasi berdampingan dengan dataran lava Lakshmi yang lebih halus.",
-        "Ridge pada region ini dipaksa mengikuti tren struktural regional agar siluetnya terbaca sebagai mountain belt."
+        "NASA menyebut Maxwell Montes sebagai pegunungan tertinggi di Venus, hampir 11 km di atas radius rata-rata planet.",
+        "Punggungan dan lembah Maxwell serta Fortuna Tessera ditafsirkan konsisten dengan deformasi kompresional.",
+        "Sebagian besar Maxwell sangat terang pada radar. Penyebab kimia tepat dari pantulan tinggi di dataran tinggi masih menjadi bidang penelitian."
       ],
+      visualizationNote: "REFERENSI PIA00149 · Citra Maxwell adalah radar Magellan. Kecerahan radar tidak diperlakukan sebagai elevasi; Full Exploration mengikuti sabuk punggungan-lembah, lereng barat yang curam, transisi ke Fortuna, dan skala Cleopatra.",
       palette: { low: 0x59402f, mid: 0x98734f, high: 0xddb27a, accent: 0x6b4934, rock: 0x3f3028 },
       fog: 0x80583e,
       fogDensity: 0.0090,
       sky: 0x8d6548,
       sun: 0xffd19a,
       hemi: 0xdba071,
-      exposure: 1.02
+      exposure: 1.02,
+      education: {
+        intro: "Baca Maxwell Montes sebagai pegunungan tinggi yang terdeformasi: punggungan, perubahan elevasi, pantulan radar, dan kondisi atmosfer yang berubah dengan ketinggian.",
+        objectives: [
+          { id: "ridge", label: "Temukan punggungan yang menunjukkan kompresi", discovery: "maxwell-ridges" },
+          { id: "height", label: "Amati perbedaan elevasi dataran tinggi", discovery: "maxwell-height" },
+          { id: "radar", label: "Pelajari pantulan radar dataran tinggi", discovery: "maxwell-radar" },
+          { id: "atmosphere", label: "Hubungkan elevasi dengan kondisi atmosfer", discovery: "maxwell-atmosphere" }
+        ],
+        observations: [
+          {
+            id: "maxwell-ridges", type: "TEMUAN GEOLOGI", title: "Punggungan dan Lembah Kompresional",
+            lead: "Relief linear yang berulang memberi petunjuk bahwa kerak di wilayah Maxwell mengalami deformasi kuat.",
+            sections: [
+              { heading: "POLA YANG DICARI", text: "Amati punggungan yang memanjang dan lembah di antaranya. Pada data Magellan, pola serupa mendominasi Maxwell dan Fortuna Tessera." },
+              { heading: "INTERPRETASI", text: "NASA menjelaskan bahwa punggungan dan lembah luas di Maxwell dan Fortuna konsisten dengan topografi yang terbentuk oleh kompresi." }
+            ],
+            why: "Bentuk relief dapat menyimpan catatan arah gaya yang pernah bekerja pada kerak planet.",
+            deepDive: ["Kompresi dapat melipat atau menebalkan kerak dan membangun pegunungan.", "Venus tidak memiliki sistem lempeng modern yang identik dengan Bumi, jadi mekanisme deformasinya tetap menjadi pertanyaan penting."],
+            sourceLabel: "NASA/JPL · Maxwell Montes", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
+            anchor: { x: -25, z: -10 }, placement: "slope-high"
+          },
+          {
+            id: "maxwell-height", type: "TITIK PENGAMATAN", title: "Dataran Tinggi Ekstrem",
+            lead: "Maxwell Montes adalah wilayah pegunungan tertinggi di Venus. Di sini, elevasi menjadi bagian utama cerita geologinya.",
+            sections: [
+              { heading: "SKALA", text: "NASA mencatat Maxwell hampir 11 km di atas radius rata-rata Venus. Relief seperti ini sangat besar untuk planet berbatu tanpa samudra modern." },
+              { heading: "BACA BENTANG", text: "Perhatikan bagaimana elevasi tinggi menyatu dengan punggungan dan lereng, bukan berdiri sebagai satu puncak tunggal yang sederhana." }
+            ],
+            why: "Perbedaan elevasi membantu membedakan dataran tinggi, sabuk pegunungan, dan dataran yang lebih rendah di sekitarnya.",
+            deepDive: ["Topografi berasal dari pengukuran ketinggian, bukan dari terang-gelap citra radar.", "Pada ANTARA, ketinggian kamera dan permukaan mengambil sumber topografi yang sama."],
+            sourceLabel: "NASA/JPL · Maxwell Montes", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
+            anchor: { x: -6, z: -42 }, placement: "elevation-high"
+          },
+          {
+            id: "maxwell-radar", type: "DATA RADAR", title: "Mengapa Maxwell Sangat Terang pada Radar?",
+            lead: "Sebagian besar Maxwell Montes memantulkan radar dengan sangat kuat, terutama pada elevasi tinggi.",
+            sections: [
+              { heading: "YANG DIKETAHUI", text: "Pantulan radar terang umum ditemukan pada dataran tinggi Venus. Kecerahan radar dipengaruhi sifat permukaan dan cara gelombang radar berinteraksi dengannya." },
+              { heading: "YANG MASIH DITELITI", text: "Penyebab kimia tepat dari material sangat reflektif di dataran tinggi belum sepenuhnya dipastikan. Beberapa penjelasan melibatkan mineral yang stabil hanya pada rentang kondisi tertentu." }
+            ],
+            why: "Contoh ini menunjukkan perbedaan antara data pengamatan dan interpretasi: ilmuwan dapat mengukur pantulan, tetapi penyebab fisiknya masih dapat diperdebatkan.",
+            deepDive: ["Jangan menyamakan area radar-terang dengan puncak tertinggi secara otomatis.", "Temperatur, tekanan, kimia atmosfer, kekasaran, dan geometri radar semuanya dapat memengaruhi sinyal."],
+            sourceLabel: "NASA/JPL · Maxwell Montes", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
+            anchor: { x: 30, z: -22 }, placement: "elevation-high"
+          },
+          {
+            id: "maxwell-atmosphere", type: "DATA LINGKUNGAN", title: "Atmosfer Berubah dengan Ketinggian",
+            lead: "Di Venus, temperatur, tekanan, dan kimia atmosfer berubah ketika elevasi meningkat. Maxwell memberi contoh kuat hubungan antara topografi dan lingkungan.",
+            sections: [
+              { heading: "ELEVASI", text: "Puncak dan lereng tinggi berada pada kondisi atmosfer yang berbeda dari dataran rendah, walaupun seluruh permukaan Venus tetap sangat panas dan bertekanan tinggi." },
+              { heading: "HUBUNGAN DENGAN RADAR", text: "NASA mencatat bahwa perubahan kondisi atmosfer dengan ketinggian mungkin berkaitan dengan material pemantul radar yang stabil pada rentang elevasi tertentu." }
+            ],
+            why: "Planet tidak hanya berupa batuan. Atmosfer dan topografi dapat berinteraksi dan menghasilkan pola pengamatan yang tidak langsung terlihat dari bentuk medan saja.",
+            deepDive: ["Penjelasan kimia untuk dataran tinggi yang sangat reflektif terhadap radar masih diteliti.", "Gunakan bahasa hipotesis ketika penyebab belum terbukti secara pasti."],
+            sourceLabel: "NASA/JPL · Maxwell Montes", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
+            anchor: { x: -58, z: 36 }, placement: "elevation-high"
+          },
+          {
+            id: "maxwell-context", type: "KONTEKS WILAYAH", title: "Maxwell di Tepi Lakshmi Planum",
+            lead: "Maxwell Montes berdiri di tepi timur dataran tinggi Ishtar dan berdekatan dengan Lakshmi Planum.",
+            sections: [
+              { heading: "KONTRAS BENTANG", text: "Lakshmi Planum relatif lebih halus dibanding sabuk pegunungan di sekelilingnya. Peralihan bentuk ini membantu membedakan dataran tinggi dari pegunungan batas." },
+              { heading: "SKALA REGIONAL", text: "Ishtar Terra sendiri merupakan dataran tinggi sangat luas, sedangkan Maxwell adalah komponen pegunungan yang menjulang di dalam sistem dataran tinggi itu." }
+            ],
+            why: "Membaca Maxwell dalam konteks Ishtar mencegah kita menganggap setiap relief tinggi sebagai bentang yang berdiri sendiri.",
+            deepDive: ["Pioneer Venus dan Magellan sama-sama berperan dalam membangun pemahaman topografi dan radar Venus.", "Perbandingan wilayah memperjelas hubungan antara dataran tinggi dan sabuk pegunungan."],
+            sourceLabel: "NASA/JPL/USGS · Ishtar Terra", source: "https://science.nasa.gov/photojournal/perspective-view-of-ishtar-terra/",
+            anchor: { x: 64, z: 48 }, placement: "relief"
+          }
+        ]
+      }
     },
     {
       id: "aphrodite",
       name: "Aphrodite Terra",
       short: "Aphrodite",
-      category: "TECTONIC HIGHLAND",
+      category: "DATARAN TINGGI TEKTONIK",
       latitude: -1.0,
       longitudeEast: 81.0,
       heading: 0.08,
-      pitch: -0.20,
-      spawn: { x: 4, z: 30, altitude: 2.8 },
-      featureCenter: { x: 0, z: -10 },
-      playRadius: 64,
-      softBoundaryStart: 52,
+      pitch: -0.18,
+      spawn: { x: -38, z: 28, altitude: 2.55 },
+      lookTarget: { x: 18, z: -18 },
+      featureCenter: { x: 4, z: -10 },
+      playRadius: 100,
+      softBoundaryStart: 84,
       source: "https://science.nasa.gov/photojournal/venus-interior-of-ovda-regio/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/317",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00218/PIA00218.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
-      descriptor: "Highland Ovda-style dengan fabric ridge-valley, fracture silang, rift, dan lava-filled lows.",
-      description: "Aphrodite menggunakan interior Ovda sebagai acuan morfologi: fabric ridge dan valley berarah NE–SW dipotong fracture NW–SE, disertai trough besar dan lowland yang lebih halus.",
+      descriptor: "Dataran tinggi ekuatorial dengan punggungan, lembah, retakan silang, dan sejarah deformasi panjang.",
+      description: "Aphrodite Terra memakai Ovda Regio sebagai jendela belajar: punggungan dan lembah berarah tertentu dipotong retakan dari episode deformasi lain, lalu beberapa bagian rendah diisi material yang kemungkinan lava.",
       facts: [
-        "NASA/JPL mendeskripsikan interior Ovda Regio sebagai block-fractured terrain hasil beberapa episode tektonik.",
-        "Ridge dan valley dasarnya berarah timur-laut ke barat-daya lalu dipotong fracture ekstensional berarah barat-laut ke tenggara.",
-        "Lembah besar pada referensi Magellan diisi material gelap yang kemungkinan lava."
+        "NASA/JPL mendeskripsikan interior Ovda Regio sebagai medan blok-retak yang dibentuk oleh beberapa peristiwa tektonik.",
+        "Punggungan dan lembah dasar berarah timur-laut ke barat-daya lalu dipotong retakan ekstensional berarah barat-laut ke tenggara.",
+        "Lembah besar pada citra Magellan terisi material gelap yang kemungkinan lava."
       ],
+      visualizationNote: "REFERENSI PIA00218 · Citra Ovda Regio adalah radar Magellan. Full Exploration mengikuti punggungan/lembah NE-SW, retakan yang memotongnya, dan lembah besar yang kemungkinan terisi lava, bukan menyalin terang-gelap radar sebagai tinggi.",
       palette: { low: 0x694126, mid: 0xa96e3c, high: 0xdca35f, accent: 0x5b3824, rock: 0x463025 },
       fog: 0x93603b,
       fogDensity: 0.0095,
       sky: 0xa4683c,
       sun: 0xffcc88,
       hemi: 0xe49c62,
-      exposure: 1.03
+      exposure: 1.03,
+      education: {
+        intro: "Ikuti jejak deformasi kerak di Aphrodite Terra: punggungan, retakan silang, lembah, dan cara radar Magellan membantu mengungkap permukaan di bawah awan.",
+        objectives: [
+          { id: "ridges", label: "Identifikasi punggungan dan lembah utama", discovery: "aphrodite-ridges" },
+          { id: "fractures", label: "Temukan retakan yang memotong struktur lama", discovery: "aphrodite-fractures" },
+          { id: "valley", label: "Pelajari lembah yang kemungkinan terisi lava", discovery: "aphrodite-valley" },
+          { id: "radar", label: "Pahami cara Magellan membaca permukaan Venus", discovery: "aphrodite-magellan" }
+        ],
+        observations: [
+          {
+            id: "aphrodite-ridges", type: "TEMUAN TEKTONIK", title: "Punggungan dan Lembah yang Terarah",
+            lead: "Di Ovda Regio, punggungan dan lembah tidak tersusun acak. Banyak struktur mengikuti arah yang sama dan menyimpan jejak deformasi kerak.",
+            sections: [
+              { heading: "POLA STRUKTURAL", text: "NASA menggambarkan fabric dasar Ovda sebagai punggungan dan lembah yang cenderung berarah timur-laut ke barat-daya." },
+              { heading: "ARTINYA", text: "Pola terarah memberi petunjuk bahwa gaya tektonik bekerja secara regional, bukan hanya pada satu retakan lokal." }
+            ],
+            why: "Arah struktur membantu ilmuwan merekonstruksi urutan dan orientasi deformasi yang pernah dialami kerak Venus.",
+            deepDive: ["Punggungan dapat terbentuk ketika kerak dipendekkan atau dilipat.", "Hubungan potong-memotong antarstruktur membantu menentukan struktur mana yang lebih tua atau lebih muda."],
+            sourceLabel: "NASA/JPL · Interior Ovda Regio", source: "https://science.nasa.gov/photojournal/venus-interior-of-ovda-regio/",
+            anchor: { x: -30, z: -8 }, placement: "slope-medium"
+          },
+          {
+            id: "aphrodite-fractures", type: "TEMUAN TEKTONIK", title: "Retakan yang Memotong Struktur Lama",
+            lead: "Retakan ekstensional memotong pola punggungan yang lebih tua, menunjukkan bahwa Aphrodite mengalami lebih dari satu episode deformasi.",
+            sections: [
+              { heading: "URUTAN PERISTIWA", text: "Jika satu struktur memotong struktur lain, struktur pemotong biasanya terbentuk kemudian. Prinsip sederhana ini membantu membaca sejarah geologi dari citra radar." },
+              { heading: "OVDA REGIO", text: "NASA mencatat retakan berarah barat-laut ke tenggara memotong fabric punggungan yang lebih tua di interior Ovda." }
+            ],
+            why: "Satu bentang dapat merekam banyak episode geologi. Menentukan urutannya adalah inti interpretasi tektonik.",
+            deepDive: ["Retakan tidak otomatis berarti lempeng tektonik seperti di Bumi.", "Aphrodite adalah dataran tinggi besar, bukan benua dalam pengertian geologi Bumi modern."],
+            sourceLabel: "NASA/JPL · Interior Ovda Regio", source: "https://science.nasa.gov/photojournal/venus-interior-of-ovda-regio/",
+            anchor: { x: 18, z: -14 }, placement: "slope-high"
+          },
+          {
+            id: "aphrodite-valley", type: "TITIK PENGAMATAN", title: "Lembah yang Kemungkinan Terisi Lava",
+            lead: "Sebagian lembah besar Ovda diisi material gelap pada radar yang oleh NASA ditafsirkan kemungkinan sebagai lava.",
+            sections: [
+              { heading: "BENTUK DAN MATERIAL", text: "Topografi memberi tahu kita di mana bagian rendah berada, sedangkan karakter radar membantu membandingkan tekstur dan sifat permukaannya." },
+              { heading: "INTERPRETASI", text: "Karena data radar bukan foto warna biasa, istilah 'gelap' dan 'terang' mengacu pada kekuatan pantulan radar, bukan warna batuan." }
+            ],
+            why: "Menggabungkan topografi dan radar memungkinkan ilmuwan membedakan bentuk permukaan dari sifat material yang menutupinya.",
+            deepDive: ["NASA menyebut material gelap di lembah besar Ovda kemungkinan lava.", "Kata 'kemungkinan' penting karena interpretasi geologi harus mengikuti kekuatan bukti."],
+            sourceLabel: "NASA/JPL · Interior Ovda Regio", source: "https://science.nasa.gov/photojournal/venus-interior-of-ovda-regio/",
+            anchor: { x: 42, z: 26 }, placement: "elevation-low"
+          },
+          {
+            id: "aphrodite-magellan", type: "CARA ILMUWAN MENGETAHUI", title: "Magellan Melihat Melalui Awan",
+            lead: "Permukaan Venus tidak mudah dipetakan dengan cahaya tampak dari orbit. Magellan menggunakan radar untuk memetakan bentang di bawah selimut awan.",
+            sections: [
+              { heading: "KENAPA RADAR", text: "Gelombang radar dapat melewati awan Venus dan kembali dari permukaan, menghasilkan informasi tentang bentuk dan sifat hamburan permukaan." },
+              { heading: "RADAR ≠ KETINGGIAN", text: "Area yang lebih terang pada radar tidak otomatis lebih tinggi. Ketinggian berasal dari data topografi, sedangkan kecerahan radar dipengaruhi kekasaran, geometri, dan sifat material." }
+            ],
+            why: "Mengetahui cara instrumen bekerja membuat kita lebih kritis ketika membaca peta planet yang tidak bisa difoto langsung dengan cara biasa.",
+            deepDive: ["Magellan memberi pandangan global pertama yang sangat rinci tentang permukaan di bawah awan Venus.", "ANTARA menggunakan topografi untuk relief makro dan radar sebagai konteks permukaan, bukan sebagai heightmap langsung."],
+            sourceLabel: "NASA · Magellan", source: "https://science.nasa.gov/image-detail/venus-2/",
+            anchor: { x: -66, z: 18 }, placement: "open"
+          },
+          {
+            id: "aphrodite-transition", type: "KONTEKS GEOLOGI", title: "Dari Dataran ke Dataran Tinggi",
+            lead: "Batas antara dataran rendah dan dataran tinggi Ovda menunjukkan bahwa Aphrodite bukan satu permukaan seragam.",
+            sections: [
+              { heading: "PERALIHAN", text: "Topografi Ovda naik beberapa kilometer di atas dataran sekitarnya. Di sepanjang batasnya, relief dan struktur berubah nyata." },
+              { heading: "SKALA", text: "Aphrodite Terra membentang sangat luas di sekitar ekuator Venus. Membaca peralihan lokal membantu memahami satu bagian dari sistem regional yang jauh lebih besar." }
+            ],
+            why: "Peralihan relief memberi konteks tentang bagaimana deformasi dan vulkanisme membentuk dataran tinggi besar Venus.",
+            deepDive: ["Ovda Regio adalah bagian barat Aphrodite Terra.", "Struktur besar tidak harus berarti benua yang terbentuk dengan proses sama seperti benua Bumi."],
+            sourceLabel: "NASA/JPL · Ovda Regio", source: "https://science.nasa.gov/photojournal/venus-ovda-regio/",
+            anchor: { x: 72, z: -50 }, placement: "relief"
+          }
+        ]
+      }
     },
     {
       id: "ishtar",
       name: "Ishtar Terra",
       short: "Ishtar",
-      category: "ELEVATED PLATEAU",
+      category: "DATARAN TINGGI",
       latitude: 65.0,
       longitudeEast: 0.0,
       heading: -0.08,
-      pitch: -0.18,
-      spawn: { x: -4, z: 30, altitude: 2.6 },
-      featureCenter: { x: -5, z: -2 },
-      playRadius: 63,
-      softBoundaryStart: 51,
+      pitch: -0.10,
+      spawn: { x: -34, z: 18, altitude: 2.45 },
+      lookTarget: { x: 58, z: -18 },
+      featureCenter: { x: 12, z: -4 },
+      playRadius: 98,
+      softBoundaryStart: 82,
       source: "https://science.nasa.gov/photojournal/perspective-view-of-ishtar-terra/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/2733",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00093/PIA00093.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
-      descriptor: "Plateau tinggi luas dengan interior lebih halus dan mountain-bounded margins.",
-      description: "Ishtar dibuat sebagai plateau regional yang jelas lebih tinggi dari lowland, dengan interior Lakshmi-like yang relatif halus dan sabuk pegunungan terdeformasi di batasnya.",
+      descriptor: "Dataran tinggi luas yang tinggi di atas dataran rendah dan dibatasi sabuk pegunungan.",
+      description: "Ishtar Terra memperlihatkan hubungan antara interior dataran tinggi yang relatif lebih halus, Lakshmi Planum, dan pegunungan di sekelilingnya. Perbedaan relief ini membuat Ishtar tidak sekadar terlihat sebagai pegunungan generik.",
       facts: [
-        "NASA/JPL menggambarkan Ishtar sebagai plateau besar sekitar 3.3 km di atas lowlands di sekitarnya.",
-        "Lakshmi Planum merupakan plateau tinggi yang dikelilingi mountain chains dan terrain yang sangat terdeformasi.",
-        "Model memisahkan interior plateau yang lebih halus dari margin pegunungan agar Ishtar tidak terbaca sebagai satu mesa generik."
+        "NASA/JPL/USGS menggambarkan Ishtar sebagai dataran tinggi besar sekitar 3,3 km di atas dataran rendah di sekitarnya.",
+        "Lakshmi Planum berada di dalam dataran tinggi Ishtar dan dibatasi sistem pegunungan seperti Akna, Freyja, dan Maxwell Montes.",
+        "Maxwell Montes di tepi timur Ishtar merupakan titik tertinggi Venus."
       ],
+      visualizationNote: "REFERENSI PIA00093 · Perspektif Ishtar berasal dari altimetri radar Pioneer Venus dan memakai warna untuk kode elevasi. Full Exploration mempertahankan komposisi Lakshmi Planum yang luas dengan pegunungan besar di tepinya, bukan warna palsu referensi.",
       palette: { low: 0x604a36, mid: 0xa3845b, high: 0xdabe83, accent: 0x735038, rock: 0x47392f },
       fog: 0x826047,
       fogDensity: 0.0091,
       sky: 0x916a4d,
       sun: 0xffd09a,
       hemi: 0xdca071,
-      exposure: 1.02
+      exposure: 1.02,
+      education: {
+        intro: "Pelajari Ishtar sebagai dataran tinggi besar: interior Lakshmi Planum, pegunungan batas, perubahan elevasi, dan hubungan antara topografi serta data radar.",
+        objectives: [
+          { id: "lakshmi", label: "Amati karakter Lakshmi Planum", discovery: "ishtar-lakshmi" },
+          { id: "margin", label: "Temukan peralihan menuju pegunungan batas", discovery: "ishtar-margin" },
+          { id: "relief", label: "Bandingkan dataran tinggi dengan dataran lebih rendah", discovery: "ishtar-relief" },
+          { id: "radar", label: "Pelajari hubungan dataran tinggi dan radar", discovery: "ishtar-radar" }
+        ],
+        observations: [
+          {
+            id: "ishtar-lakshmi", type: "TITIK PENGAMATAN", title: "Lakshmi Planum: Interior Dataran Tinggi",
+            lead: "Lakshmi Planum adalah bagian interior Ishtar yang relatif lebih halus dibanding pegunungan yang membatasinya.",
+            sections: [
+              { heading: "BENTUK", text: "Dataran tinggi bukan satu puncak. Ia adalah wilayah luas yang berada pada elevasi tinggi dengan permukaan interior yang dapat lebih halus daripada tepinya." },
+              { heading: "KONTEKS", text: "Lakshmi Planum dikelilingi sistem pegunungan, termasuk Akna Montes, Freyja Montes, dan Maxwell Montes." }
+            ],
+            why: "Membedakan dataran tinggi dari pegunungan membantu membaca skala regional, bukan hanya bentuk bukit di dekat kamera.",
+            deepDive: ["Ishtar kira-kira seukuran Australia menurut deskripsi NASA.", "Topografi berwarna pada citra referensi adalah representasi data ketinggian, bukan warna asli permukaan."],
+            sourceLabel: "NASA/JPL/USGS · Ishtar Terra", source: "https://science.nasa.gov/photojournal/perspective-view-of-ishtar-terra/",
+            anchor: { x: -18, z: 8 }, placement: "flat"
+          },
+          {
+            id: "ishtar-margin", type: "TEMUAN GEOLOGI", title: "Pegunungan di Batas Dataran Tinggi",
+            lead: "Di tepi Ishtar, relief meningkat menjadi sabuk pegunungan. Peralihan ini membentuk batas yang jauh lebih kompleks daripada tepi dataran biasa.",
+            sections: [
+              { heading: "PERALIHAN", text: "Bandingkan area relatif halus dengan lereng dan punggungan yang lebih kuat. Kontras itulah yang membantu mengenali batas dataran tinggi." },
+              { heading: "SISTEM PEGUNUNGAN", text: "Maxwell Montes berada di sisi timur Lakshmi Planum, sementara Akna dan Freyja membatasi bagian barat dan barat laut." }
+            ],
+            why: "Hubungan antara dataran tinggi dan pegunungan memberi petunjuk tentang deformasi kerak dalam skala sangat besar.",
+            deepDive: ["Ishtar menunjukkan bahwa topografi Venus memiliki provinsi geologi yang sangat berbeda dari dataran vulkanik luas.", "Batas tidak selalu simetris dan tidak boleh dibayangkan sebagai dinding melingkar."],
+            sourceLabel: "NASA/JPL/USGS · Ishtar Terra", source: "https://science.nasa.gov/photojournal/perspective-view-of-ishtar-terra/",
+            anchor: { x: 62, z: -18 }, placement: "slope-high"
+          },
+          {
+            id: "ishtar-relief", type: "KONTEKS GEOLOGI", title: "Dataran Tinggi 3,3 km di Atas Dataran Sekitar",
+            lead: "NASA menggambarkan Ishtar sebagai dataran tinggi sekitar 3,3 km di atas dataran rendah yang mengelilinginya.",
+            sections: [
+              { heading: "BACA SKALA", text: "Perubahan ketinggian beberapa kilometer tersebar di wilayah yang sangat luas. Itu berbeda dari satu gunung tunggal dengan kaki dan puncak yang jelas." },
+              { heading: "PETA TOPOGRAFI", text: "Data altimetri mengubah perbedaan ketinggian menjadi peta yang dapat dibandingkan dari satu wilayah ke wilayah lain." }
+            ],
+            why: "Elevasi regional adalah kunci untuk memahami mengapa Ishtar disebut dataran tinggi, bukan sekadar kumpulan pegunungan.",
+            deepDive: ["Pioneer Venus menyediakan altimetri penting sebelum Magellan memperluas pemetaan radar Venus.", "Dalam visualisasi ilmiah, skala vertikal kadang diperbesar untuk membuat relief lebih mudah dibaca. Selalu periksa keterangannya."],
+            sourceLabel: "NASA/JPL/USGS · Pioneer Venus", source: "https://science.nasa.gov/photojournal/perspective-view-of-ishtar-terra/",
+            anchor: { x: -62, z: -28 }, placement: "relief"
+          },
+          {
+            id: "ishtar-radar", type: "DATA RADAR", title: "Dataran Tinggi dan Pantulan Radar",
+            lead: "Banyak dataran tinggi Venus menunjukkan pantulan radar yang berbeda dari dataran rendah, tetapi kecerahan radar tidak boleh dibaca sebagai elevasi langsung.",
+            sections: [
+              { heading: "DUA DATA BERBEDA", text: "Topografi mengukur bentuk dan elevasi. Radar SAR merekam bagaimana permukaan memantulkan gelombang radar." },
+              { heading: "INTERPRETASI", text: "Pada Maxwell, NASA membahas material reflektif yang mungkin stabil pada kondisi elevasi tertentu. Penyebab kimia tepatnya masih menjadi penelitian." }
+            ],
+            why: "Memisahkan jenis data mencegah kesalahan umum: mengubah area terang radar menjadi gunung hanya karena terlihat terang.",
+            deepDive: ["Pantulan radar dipengaruhi kekasaran, geometri, dan sifat dielektrik material.", "Ketinggian perlu sumber topografi terpisah."],
+            sourceLabel: "NASA/JPL · Maxwell dan Ishtar", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
+            anchor: { x: 30, z: -62 }, placement: "elevation-high"
+          },
+          {
+            id: "ishtar-atmosphere", type: "DATA LINGKUNGAN", title: "Melihat Dataran Tinggi di Udara yang Sangat Padat",
+            lead: "Bahkan di dataran tinggi Ishtar, permukaan tetap berada di bawah atmosfer Venus yang sangat padat dan panas.",
+            sections: [
+              { heading: "KONTRAS DENGAN BUMI", text: "Naik beberapa kilometer di Bumi mengubah tekanan dan temperatur secara nyata. Venus juga berubah dengan elevasi, tetapi keseluruhan lingkungan permukaannya tetap ekstrem." },
+              { heading: "VISIBILITAS", text: "Selimut awan tebal membuat pemetaan orbit pada cahaya tampak biasa sulit. Radar menjadi alat utama untuk membaca permukaan secara global." }
+            ],
+            why: "Topografi dan atmosfer harus dibaca bersama ketika menjelaskan kondisi di permukaan planet lain.",
+            deepDive: ["Venus memiliki suhu permukaan sekitar 467°C dan tekanan sekitar 93 kali tekanan laut Bumi.", "Awan Venus mengandung asam sulfat dan menyelimuti planet secara global."],
+            sourceLabel: "NASA Science · Fakta Venus", source: "https://science.nasa.gov/venus/venus-facts/",
+            anchor: { x: 66, z: 44 }, placement: "open"
+          }
+        ]
+      }
     },
     {
       id: "alpha",
       name: "Alpha Regio",
       short: "Alpha",
-      category: "TESSERA UPLAND",
+      category: "DATARAN TESSERA",
       latitude: -25.0,
       longitudeEast: 4.0,
       heading: 0.18,
-      pitch: -0.22,
-      spawn: { x: 0, z: 28, altitude: 2.5 },
-      featureCenter: { x: 0, z: -6 },
-      playRadius: 62,
-      softBoundaryStart: 50,
+      pitch: -0.20,
+      spawn: { x: -6, z: 24, altitude: 2.30 },
+      lookTarget: { x: 30, z: -26 },
+      featureCenter: { x: 8, z: -10 },
+      playRadius: 96,
+      softBoundaryStart: 80,
       source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/203",
-      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00481/PIA00481.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
-      descriptor: "Tessera dengan dua keluarga ridge silang, trough, fault valley, block uplift, dan lava-filled local lows.",
-      description: "Alpha dibangun sebagai tessera: beberapa tren struktural saling memotong dan membentuk pola polygonal, dengan trough dan fault valley yang memisahkan block upland. Tidak ada dune field atau bukit bulat acak.",
+      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00481/PIA00481.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
+      descriptor: "Tessera dengan punggungan, palung, dan lembah sesar yang saling berpotongan.",
+      description: "Alpha Regio adalah salah satu contoh paling khas medan tessera Venus. Banyak tren struktur berpotongan membentuk pola kompleks, diselingi bagian rendah yang dapat terisi lava lebih halus.",
       facts: [
-        "NASA/JPL menyebut Alpha Regio sebagai upland sekitar 1,300 km dengan beberapa tren ridge, trough, dan flat-floored fault valleys yang saling berpotongan.",
-        "Local dark patches pada data Magellan adalah topographic lows yang terisi lava lebih halus.",
-        "Relief procedural hanya mengisi detail kecil; identitas utama region datang dari fabric tessera yang terarah."
+        "NASA/JPL menggambarkan Alpha Regio sebagai dataran tinggi topografis sekitar 1.300 km yang memiliki banyak set punggungan, palung, dan lembah sesar saling berpotongan.",
+        "Area gelap berbentuk bundar hingga memanjang pada radar dapat merupakan bagian rendah lokal yang terisi lava lebih halus.",
+        "Tessera dipelajari karena dapat menyimpan catatan geologi tua dan memberi petunjuk tentang sejarah awal permukaan Venus."
       ],
+      visualizationNote: "REFERENSI PIA00481 · Perspektif Alpha Regio memperbesar skala vertikal sekitar 23×. Full Exploration mempertahankan pola tessera, punggungan/palung silang, lembah sesar, dan blok poligonal tanpa menyalin pembesaran vertikal tersebut.",
       palette: { low: 0x653719, mid: 0xad7133, high: 0xe8b657, accent: 0x56301a, rock: 0x3f281b },
       fog: 0x975c32,
       fogDensity: 0.0100,
       sky: 0xa76735,
       sun: 0xffca7d,
       hemi: 0xe79a59,
-      exposure: 1.03
+      exposure: 1.03,
+      education: {
+        intro: "Alpha Regio adalah laboratorium tessera: cari punggungan silang, palung, blok tinggi, dan bagian rendah yang membantu ilmuwan membaca sejarah kerak Venus.",
+        objectives: [
+          { id: "tessera", label: "Kenali pola punggungan tessera yang berpotongan", discovery: "alpha-tessera" },
+          { id: "trough", label: "Temukan palung atau lembah sesar", discovery: "alpha-trough" },
+          { id: "low", label: "Pelajari bagian rendah yang terisi lava", discovery: "alpha-lava-low" },
+          { id: "history", label: "Pahami mengapa tessera penting bagi sejarah Venus", discovery: "alpha-history" }
+        ],
+        observations: [
+          {
+            id: "alpha-tessera", type: "TEMUAN GEOLOGI", title: "Tessera: Punggungan yang Saling Berpotongan",
+            lead: "Tessera bukan sekadar medan kasar. Ciri utamanya adalah beberapa set punggungan dan palung yang berpotongan membentuk pola kompleks.",
+            sections: [
+              { heading: "POLA", text: "Amati struktur dari lebih dari satu arah. Alpha Regio menunjukkan banyak tren punggungan, palung, dan lembah sesar yang membentuk pola poligonal." },
+              { heading: "DEFORMASI", text: "Pola silang menunjukkan bahwa kerak mengalami deformasi dalam lebih dari satu arah atau episode, sehingga permukaan menyimpan sejarah yang berlapis." }
+            ],
+            why: "Tessera adalah salah satu jenis medan paling khas Venus dan menjadi target penting untuk memahami evolusi kerak planet.",
+            deepDive: ["Istilah tessera digunakan untuk medan kompleks yang memiliki set struktur saling berpotongan.", "Tidak semua medan kasar di Venus adalah tessera."],
+            sourceLabel: "NASA/JPL · Alpha Regio", source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
+            anchor: { x: 4, z: -20 }, placement: "slope-high"
+          },
+          {
+            id: "alpha-trough", type: "TITIK PENGAMATAN", title: "Palung dan Lembah Sesar",
+            lead: "Di antara punggungan tessera terdapat palung dan lembah sesar berlantai relatif datar yang ikut membentuk pola Alpha Regio.",
+            sections: [
+              { heading: "BACA RELIEF", text: "Cari bagian rendah yang memanjang di antara relief lebih tinggi. Arah dan hubungan dengan punggungan memberi konteks deformasi." },
+              { heading: "BUKAN SUNGAI", text: "Bentuk memanjang tidak otomatis berarti erosi air. Pada Alpha, banyak lembah dikaitkan dengan struktur tektonik dan vulkanik." }
+            ],
+            why: "Membedakan lembah tektonik dari fitur erosi mencegah analogi Bumi diterapkan secara berlebihan pada Venus.",
+            deepDive: ["NASA mendeskripsikan lembah patahan berlantai datar sebagai salah satu struktur Alpha Regio.", "Interpretasi harus menggabungkan bentuk, hubungan antarstruktur, dan data radar."],
+            sourceLabel: "NASA/JPL · Alpha Regio", source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
+            anchor: { x: 36, z: 10 }, placement: "elevation-low"
+          },
+          {
+            id: "alpha-lava-low", type: "TEMUAN VULKANIK", title: "Bagian Rendah yang Terisi Lava",
+            lead: "Di Alpha Regio, beberapa bercak radar gelap yang bulat hingga memanjang berada pada bagian topografi rendah dan diisi lava yang lebih halus.",
+            sections: [
+              { heading: "KOMBINASI DATA", text: "Topografi mengidentifikasi bagian rendah, sementara radar membantu melihat perbedaan sifat permukaan di dalamnya." },
+              { heading: "LAVA LEBIH HALUS", text: "NASA menjelaskan bahwa bagian rendah lokal dapat terisi lava vulkanik yang lebih halus, sehingga respons radarnya berbeda dari tessera kasar di sekitarnya." }
+            ],
+            why: "Fitur ini menunjukkan bahwa aktivitas vulkanik dapat memodifikasi medan tektonik yang lebih tua tanpa menghapus seluruh pola tessera.",
+            deepDive: ["Hubungan saling menutupi dapat membantu menentukan urutan relatif proses geologi.", "Radar gelap tidak berarti batuannya berwarna hitam."],
+            sourceLabel: "NASA/JPL · Alpha Regio", source: "https://science.nasa.gov/photojournal/venus-false-color-image-of-alpha-regio/",
+            anchor: { x: -38, z: -34 }, placement: "elevation-low"
+          },
+          {
+            id: "alpha-history", type: "MENGAPA PENTING", title: "Tessera dan Sejarah Tua Venus",
+            lead: "Tessera menjadi target utama penelitian karena mungkin mempertahankan sebagian permukaan tua yang dapat menyimpan petunjuk tentang kondisi Venus di masa lalu.",
+            sections: [
+              { heading: "PERTANYAAN BESAR", text: "Ilmuwan ingin mengetahui bagaimana kerak Venus terbentuk dan berubah, serta apakah proses awal planet pernah berbeda dari keadaan sekarang." },
+              { heading: "BELUM SEMUA TERJAWAB", text: "Usia absolut dan cara pembentukan semua tessera belum diketahui dengan pasti. Misi seperti DAVINCI dan VERITAS dirancang untuk memperbaiki gambaran itu." }
+            ],
+            why: "Medan tua dapat bertindak seperti arsip. Jika riwayatnya dapat dibaca, tessera mungkin membantu menjelaskan mengapa Venus dan Bumi berevolusi sangat berbeda.",
+            deepDive: ["NASA menyebut Alpha Regio sebagai salah satu permukaan tertua yang menjadi target penting DAVINCI.", "Interpretasi tentang air purba, benua, atau proses pembentuk tessera masih berupa pertanyaan ilmiah yang sedang diuji."],
+            sourceLabel: "NASA · DAVINCI · Alpha Regio", source: "https://science.nasa.gov/missions/davinci/davincis-many-firsts-at-venus/",
+            anchor: { x: -64, z: 38 }, placement: "open"
+          },
+          {
+            id: "alpha-magellan", type: "CARA ILMUWAN MENGETAHUI", title: "Dari Radar Menjadi Peta Tiga Dimensi",
+            lead: "Visual perspektif Alpha Regio dibuat dengan menggabungkan data radar bukaan sintetis dan altimetri untuk membangun gambaran tiga dimensi permukaan.",
+            sections: [
+              { heading: "DUA LAPIS INFORMASI", text: "Radar SAR memberi pola pantulan permukaan, sedangkan altimetri memberi elevasi. Keduanya dapat digabungkan untuk memahami bentuk dan tekstur regional." },
+              { heading: "SKALA VERTIKAL", text: "Beberapa visual ilmiah memperbesar relief vertikal agar struktur lebih mudah dibaca. Karena itu, keterangan visualisasi selalu penting." }
+            ],
+            why: "Memahami bagaimana visual ilmiah dibuat membantu membedakan data mentah, pemrosesan, dan keputusan visualisasi.",
+            deepDive: ["Perspektif Alpha Regio NASA/JPL menggunakan radar dan altimetri Magellan.", "ANTARA juga menjaga pemisahan konsep: kecerahan radar tidak digunakan sebagai elevasi langsung."],
+            sourceLabel: "NASA/JPL · Magellan · Alpha Regio", source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
+            anchor: { x: 66, z: -46 }, placement: "open"
+          }
+        ]
+      }
     }
   ]);
 
@@ -246,7 +614,7 @@
       this.regionalGrid = null;
       this.regionalSize = VENUS_REGIONAL_TOPO_SIZE;
       this.regionalHalfExtentKm = VENUS_REGIONAL_TOPO_HALF_EXTENT_KM;
-      this.sourceLabel = "MAGELLAN TOPOGRAPHY · PDS GTDR 1°";
+      this.sourceLabel = "TOPOGRAFI MAGELLAN · PDS GTDR 1°";
       this.sourceUrl = null;
       this.local = false;
       this.emergencyApproximation = false;
@@ -279,7 +647,7 @@
         : VENUS_REGIONAL_TOPO_TEMPLATE.replace("{region}", this.region.id);
       const response = await this.fetchWithTimeout(url, 10000);
       this.regionalGrid = this.decodeRegionalFloat32(await response.arrayBuffer());
-      this.sourceLabel = "USGS MAGELLAN GTDR · 4.641 KM/PIX SOURCE";
+      this.sourceLabel = "USGS MAGELLAN GTDR · SUMBER 4,641 KM/PIKSEL";
       this.sourceUrl = url;
       this.local = !/^https?:/i.test(url);
       return true;
@@ -326,8 +694,8 @@
           this.grid = this.decodeImageBytes(await response.arrayBuffer());
           if (!this.regionalGrid) {
             this.sourceLabel = url === VENUS_PDS_TOPO_PROXY
-              ? "PDS MAGELLAN TOPOGRAPHY · 1° SERVER-CACHED"
-              : "PDS MAGELLAN TOPOGRAPHY · 1° FALLBACK";
+              ? "TOPOGRAFI MAGELLAN PDS · 1° · SIMPANAN SERVER"
+              : "TOPOGRAFI MAGELLAN PDS · 1° · CADANGAN";
             this.sourceUrl = url;
             this.local = !/^https?:/i.test(url);
           }
@@ -343,7 +711,7 @@
           const response = await this.fetchWithTimeout(url, 15000);
           this.grid = this.decodeAscii(await response.text());
           if (!this.regionalGrid) {
-            this.sourceLabel = "PDS MAGELLAN TOPOGRAPHY · 1° ASCII FALLBACK";
+            this.sourceLabel = "TOPOGRAFI MAGELLAN PDS · 1° · CADANGAN ASCII";
             this.sourceUrl = url;
             this.local = !/^https?:/i.test(url);
           }
@@ -360,7 +728,7 @@
       // fallbacks all fail. It keeps ANTARA usable without pretending that
       // generated relief is Magellan elevation data.
       this.emergencyApproximation = true;
-      this.sourceLabel = "OFFLINE PREVIEW · NON-SCIENTIFIC TOPOGRAPHY";
+      this.sourceLabel = "PRATINJAU LURING · TOPOGRAFI NONILMIAH";
       this.sourceUrl = null;
       this.local = true;
       console.warn("[ANTARA Venus] Scientific topography unavailable; using clearly-labelled offline preview terrain.", { regionalError, coarseError });
@@ -419,45 +787,13 @@
       const cosLat = Math.max(0.18, Math.cos(this.region.latitude * DEG));
       const x = deltaLon * KM_PER_DEG_LAT * cosLat;
       const z = (this.region.latitude - latitude) * KM_PER_DEG_LAT;
-      const r = Math.hypot(x, z);
-      const gauss = (cx, cz, sx, sz, amplitude) => {
-        const dx = (x - cx) / sx, dz = (z - cz) / sz;
-        return amplitude * Math.exp(-(dx * dx + dz * dz));
-      };
-      const oriented = (angle, longScale, shortScale, spacing, amplitude, seed) => {
-        const ca = Math.cos(angle), sa = Math.sin(angle);
-        const u = x * ca + z * sa;
-        const v = -x * sa + z * ca;
-        const envelope = Math.exp(-((u / longScale) ** 2 + (v / shortScale) ** 2));
-        return envelope * (0.45 + 0.55 * Math.cos(v / spacing + valueNoise(u * 0.012, v * 0.012, seed) * 0.8)) * amplitude;
-      };
-      const broad = valueNoise(x * 0.010, z * 0.010, 701) * 0.22 + valueNoise(x * 0.025, z * 0.025, 709) * 0.10;
-      let h = broad;
-      if (this.region.id === "maat") {
-        const shield = gauss(0, -34, 92, 82, 7.0);
-        const shoulder = gauss(-34, -8, 66, 50, 1.0) + gauss(42, -24, 72, 58, 0.8);
-        const caldera = gauss(0, -34, 14, 12, -0.48);
-        h += shield + shoulder + caldera;
-      } else if (this.region.id === "maxwell") {
-        h += gauss(2, -12, 108, 68, 6.4);
-        h += oriented(-0.34, 165, 72, 6.8, 1.65, 733);
-        h += oriented(-0.34, 145, 60, 12.5, 0.72, 739);
-      } else if (this.region.id === "aphrodite") {
-        h += gauss(-10, -8, 145, 88, 2.2);
-        h += oriented(0.70, 170, 95, 8.5, 0.78, 751);
-        h += oriented(-0.72, 150, 100, 11.5, 0.62, 757);
-        h -= gauss(42, 10, 58, 26, 0.75);
-      } else if (this.region.id === "ishtar") {
-        const plateau = 3.05 / (1 + Math.exp((r - 108) / 13));
-        const margin = Math.exp(-(((r - 103) / 28) ** 2)) * (0.42 + 0.58 * Math.abs(valueNoise(x * 0.028, z * 0.028, 773))) * 1.25;
-        h += plateau + margin + gauss(82, -34, 52, 78, 2.0);
-      } else if (this.region.id === "alpha") {
-        h += gauss(0, -4, 115, 105, 1.35);
-        h += oriented(0.78, 150, 112, 7.4, 0.83, 787);
-        h += oriented(-0.80, 150, 112, 8.6, 0.76, 797);
-        h -= gauss(-26, 24, 28, 48, 0.55);
-      }
-      return h;
+
+      // Emergency mode deliberately supplies only a subdued regional base.
+      // Destination identity is generated by VenusRegionWorld's explicit,
+      // region-specific morphology layer so the five worlds do not collapse
+      // back into one parameterized noise recipe.
+      return valueNoise(x * 0.010, z * 0.010, 701) * 0.16
+        + valueNoise(x * 0.026 + 4.7, z * 0.026 - 2.1, 709) * 0.07;
     }
 
     sample(latitude, longitudeEast) {
@@ -483,7 +819,7 @@
       this.quality = quality;
       this.texture = null;
       this.extentKm = 310;
-      this.sourceLabel = "USGS · MAGELLAN SAR FMAP";
+      this.sourceLabel = "USGS · CITRA RADAR SAR MAGELLAN";
     }
 
     buildWmsUrl() {
@@ -527,7 +863,7 @@
           loader.load(url, resolve, undefined, reject);
         }).catch(() => null);
         if (texture) {
-          this.sourceLabel = /^https?:/i.test(url) ? "USGS · MAGELLAN SAR FMAP" : "LOCAL · MAGELLAN SAR FMAP";
+          this.sourceLabel = /^https?:/i.test(url) ? "USGS · CITRA RADAR SAR MAGELLAN" : "LOCAL · MAGELLAN SAR FMAP";
           break;
         }
       }
@@ -569,9 +905,9 @@
       this.resources = [];
       this.referenceElevation = 0;
       this.cosLat = Math.max(0.18, Math.cos(region.latitude * DEG));
-      this.worldSpan = quality.name === "HIGH" ? 520 : quality.name === "MEDIUM" ? 460 : 400;
+      this.worldSpan = quality.name === "HIGH" ? 560 : quality.name === "MEDIUM" ? 500 : 440;
       this.tileSize = quality.tileSize || 24;
-      this.tileHalfCount = quality.name === "HIGH" ? 4 : quality.name === "MEDIUM" ? 3 : 3;
+      this.tileHalfCount = 4;
       this.tmpColor = new THREE.Color();
       this.lowColor = new THREE.Color(region.palette.low);
       this.midColor = new THREE.Color(region.palette.mid);
@@ -581,6 +917,10 @@
       this.detailTexture = this.createMicroDetailTexture();
       this.resources.push(this.detailTexture);
       this.frame = 0;
+      this.observationGroup = null;
+      this.observationMarkers = new Map();
+      this.observationTime = 0;
+      this.morphologyWeight = 0.82;
     }
 
     createMicroDetailTexture() {
@@ -642,35 +982,322 @@
       return this.topography.sample(geo.latitude, geo.longitudeEast) - this.referenceElevation;
     }
 
+    morphologySourceWeight() {
+      // The better the measured elevation source, the less synthetic reinforcement is allowed.
+      // High-resolution GTDR keeps morphology guidance subtle; the coarse 1-degree fallback needs more help.
+      if (this.topography.emergencyApproximation) return 1.0;
+      if (this.topography.regionalGrid) return 0.26;
+      if (this.topography.grid) return 0.60;
+      return 0.76;
+    }
+
+    rotateLocal(x, z, cx, cz, angle) {
+      const dx = x - cx, dz = z - cz;
+      const ca = Math.cos(angle), sa = Math.sin(angle);
+      return { u: dx * ca + dz * sa, v: -dx * sa + dz * ca };
+    }
+
+    ellipseGaussian(x, z, cx, cz, sx, sz, amplitude = 1) {
+      const dx = (x - cx) / sx, dz = (z - cz) / sz;
+      return Math.exp(-(dx * dx + dz * dz)) * amplitude;
+    }
+
+    curvedFold(u, v, offset, spacingPhase, width, amplitude, seed) {
+      const warp = Math.sin(u * 0.043 + spacingPhase) * 3.6
+        + valueNoise(u * 0.024 + seed * 0.13, u * 0.008 - seed * 0.07, seed) * 2.0;
+      const d = (v - offset - warp) / width;
+      return Math.exp(-(d * d)) * amplitude;
+    }
+
+    elongatedRange(x, z, cx, cz, angle, length, width, amplitude, seed) {
+      const { u, v } = this.rotateLocal(x, z, cx, cz, angle);
+      const envelope = Math.exp(-((u / length) ** 4 + (v / width) ** 2));
+      const folded = 0.52
+        + ridge(valueNoise(u * 0.050 + seed, v * 0.095 - seed, seed + 17)) * 0.34
+        + ridge(valueNoise(u * 0.024 - seed, v * 0.052 + seed, seed + 31)) * 0.14;
+      return envelope * folded * amplitude;
+    }
+
+    maatMorphologyAt(x, z) {
+      // Reference grammar: fractured plains -> long cooled lava flows -> one enormous broad shield edifice.
+      // The profile is intentionally non-Gaussian so Maat reads as a shield volcano rather than a cone or hill blob.
+      const cx = 0, cz = -38;
+      const dx = x - cx, dz = z - cz;
+      const radial = Math.hypot(dx / 108, dz / 94);
+      // A shield-volcano profile: a broad summit zone and long, shallow lower flanks.
+      // This piecewise profile avoids the bell-shaped silhouette of a Gaussian mountain.
+      const summitZone = 1 - smootherstep((radial - 0.18) / 0.18);
+      const flankZone = 1 - smootherstep((radial - 0.22) / 0.78);
+      const broadShield = flankZone * 3.55 + summitZone * 0.48;
+      const shoulderIrregularity = valueNoise(x * 0.010 + 2.1, z * 0.010 - 1.4, 1193) * flankZone * 0.10;
+      const upperShoulder = (1 - smootherstep((radial - 0.30) / 0.20)) * 0.18;
+
+      // Flatten the immediate summit slightly, then cut an irregular shallow depression into it.
+      const summitFlat = -(1 - smootherstep(radial / 0.24)) * 0.18;
+      const angle = Math.atan2(dz, dx);
+      const summitR = Math.hypot((x - 1.8) / 11.5, (z + 38.5) / 8.8);
+      const rimRadius = 1.02 + Math.sin(angle * 3.0 + 0.7) * 0.10 + valueNoise(x * 0.035, z * 0.035, 1201) * 0.07;
+      const irregularRim = Math.exp(-(((summitR - rimRadius) / 0.30) ** 2)) * 0.22;
+      const summitDepression = -Math.exp(-((summitR / 0.78) ** 2)) * 0.46;
+
+      // Cooled flow units extend northward from the edifice across lower fractured plains, matching the logic of PIA00254.
+      const northward = smootherstep((z + 20) / 28);
+      const flowPathA = x - (16 + Math.sin((z + 12) * 0.026) * 8.5);
+      const flowPathB = x - (-28 + Math.sin((z + 4) * 0.022 + 1.35) * 10.0);
+      const flowPathC = x - (42 + Math.sin((z + 18) * 0.019 - 0.8) * 7.0);
+      const flowA = Math.exp(-((flowPathA / 17) ** 2)) * Math.exp(-(((z - 32) / 92) ** 4)) * northward * 0.16;
+      const flowB = Math.exp(-((flowPathB / 21) ** 2)) * Math.exp(-(((z - 38) / 102) ** 4)) * northward * 0.13;
+      const flowC = Math.exp(-((flowPathC / 15) ** 2)) * Math.exp(-(((z - 26) / 82) ** 4)) * northward * 0.10;
+
+      // Subtle paired margins suggest levees without turning the flows into raised fantasy rivers.
+      const leveeA = Math.exp(-(((Math.abs(flowPathA) - 16) / 3.6) ** 2)) * Math.exp(-(((z - 30) / 90) ** 4)) * northward * 0.055;
+      const leveeB = Math.exp(-(((Math.abs(flowPathB) - 20) / 4.2) ** 2)) * Math.exp(-(((z - 38) / 98) ** 4)) * northward * 0.045;
+
+      // The foreground remains a low volcanic plain with fractures and low relief, not a field of random mountains.
+      const plainMask = clamp(1 - broadShield / 3.8, 0, 1);
+      const fracturedPlain = (ridge(valueNoise(x * 0.055 + z * 0.014, z * 0.031, 1229)) - 0.58) * plainMask * 0.11;
+      const oldFlowTexture = (ridge(valueNoise(x * 0.025 - z * 0.010, z * 0.044, 1237)) - 0.60) * plainMask * 0.07;
+
+      return broadShield + shoulderIrregularity + upperShoulder + summitFlat + irregularRim + summitDepression
+        + flowA + flowB + flowC + leveeA + leveeB + fracturedPlain + oldFlowTexture;
+    }
+
+    maxwellMorphologyAt(x, z) {
+      // Maxwell is a connected compressional mountain belt, not a central volcano.
+      const { u, v } = this.rotateLocal(x, z, -8, -14, -0.30);
+      const beltEnvelope = Math.exp(-((u / 142) ** 6 + (v / 72) ** 4));
+      const regionalUplift = beltEnvelope * 2.35;
+      const ridges = (
+        this.curvedFold(u, v, -46, 0.2, 5.8, 1.02, 1301)
+        + this.curvedFold(u, v, -30, 1.1, 5.0, 1.20, 1307)
+        + this.curvedFold(u, v, -14, 2.0, 4.7, 1.34, 1319)
+        + this.curvedFold(u, v, 3, 2.9, 4.5, 1.42, 1321)
+        + this.curvedFold(u, v, 21, 3.8, 5.0, 1.24, 1327)
+        + this.curvedFold(u, v, 39, 4.7, 5.7, 1.02, 1333)
+      ) * Math.exp(-((u / 138) ** 6));
+      const longitudinalValleys = -0.34 * beltEnvelope
+        * (0.45 + 0.55 * ridge(valueNoise(u * 0.038, v * 0.016, 1361)));
+
+      // The western flank is intentionally sharper, while the east descends more gradually.
+      const westEscarpment = this.ellipseGaussian(x, z, -58, -8, 24, 92, 1.10)
+        * (0.65 + 0.35 * ridge(valueNoise(z * 0.028, x * 0.018, 1367)));
+      const eastShoulder = this.ellipseGaussian(x, z, 42, -10, 60, 94, 0.58);
+
+      // Cleopatra is kept as a large double-ring basin in the eastern Maxwell frame.
+      const craterX = 45, craterZ = -36;
+      const craterR = Math.hypot(x - craterX, z - craterZ);
+      const outerRim = Math.exp(-(((craterR - 48) / 6.8) ** 2)) * 0.88;
+      const innerRim = Math.exp(-(((craterR - 27) / 5.2) ** 2)) * 0.30;
+      const basin = -(1 - smootherstep((craterR - 36) / 14)) * 1.18;
+      const channelLocal = this.rotateLocal(x, z, 64, -18, 0.72);
+      const channel = -Math.exp(-((channelLocal.v / 3.8) ** 2))
+        * Math.exp(-((channelLocal.u / 46) ** 4)) * 0.24;
+
+      return regionalUplift + ridges + longitudinalValleys + westEscarpment + eastShoulder
+        + outerRim + innerRim + basin + channel;
+    }
+
+    aphroditeMorphologyAt(x, z) {
+      // Ovda Regio grammar follows the NASA description: broad highland, NE-SW ridge/valley fabric,
+      // later NW-SE extension fractures, and large valleys locally filled by smoother volcanic material.
+      const highland = this.ellipseGaussian(x, z, -4, -8, 138, 98, 1.52)
+        + this.ellipseGaussian(x, z, -52, -2, 68, 52, 0.34)
+        + this.ellipseGaussian(x, z, 48, -22, 72, 60, 0.40);
+
+      // Broad irregular domes break the highland into tectonic blocks without turning it into a mountain range.
+      const domes = this.ellipseGaussian(x, z, -42, -18, 30, 24, 0.34)
+        + this.ellipseGaussian(x, z, 20, -38, 38, 28, 0.30)
+        + this.ellipseGaussian(x, z, 54, 18, 32, 25, 0.26);
+
+      // First deformation generation: curved NE-SW ridges spaced roughly 10-20 km apart.
+      const primary = this.rotateLocal(x, z, 0, -6, -0.78);
+      const primaryWarp = Math.sin(primary.u * 0.030) * 4.4
+        + valueNoise(primary.u * 0.015, primary.v * 0.010, 1409) * 3.2;
+      const primaryPhase = (primary.v + primaryWarp) * (Math.PI * 2 / 17.0);
+      const fabricEnvelope = Math.exp(-((primary.u / 160) ** 6 + (primary.v / 104) ** 6));
+      const primaryFabric = Math.cos(primaryPhase) * fabricEnvelope * 0.24;
+
+      // Second generation is represented chiefly as cross-cutting extension fractures, not another pile of peaks.
+      const secondary = this.rotateLocal(x, z, 4, -4, 0.58);
+      const secondaryWarp = Math.sin(secondary.u * 0.034 + 1.2) * 4.4
+        + valueNoise(secondary.u * 0.014, secondary.v * 0.010, 1423) * 4.0;
+      const fracturePhase = (secondary.v + secondaryWarp) * (Math.PI * 2 / 26.0)
+        + valueNoise(x * 0.017, z * 0.017, 1427) * 0.75;
+      const fractureBand = Math.pow(0.5 + 0.5 * Math.cos(fracturePhase + Math.PI), 7.0);
+      const crossCutFractures = -fractureBand
+        * Math.exp(-((secondary.u / 156) ** 6 + (secondary.v / 112) ** 6)) * 0.40;
+
+      // A later weak wrinkle family adds curved, cross-cut texture without dominating the older fabric.
+      const later = this.rotateLocal(x, z, -10, -8, 0.18);
+      const laterPhase = (later.v + Math.sin(later.u * 0.025) * 6.0) * (Math.PI * 2 / 31.0);
+      const laterRidges = Math.cos(laterPhase)
+        * Math.exp(-((later.u / 145) ** 6 + (later.v / 108) ** 6)) * 0.10;
+
+      // Flat-floored fault-controlled troughs. The main trough is close to the ~20 km scale described for Ovda.
+      const graben = this.rotateLocal(x, z, 18, -6, 0.66);
+      const grabenHalfWidth = 9.5;
+      const grabenCore = 1 - smoothstep((Math.abs(graben.v) - grabenHalfWidth) / 4.0);
+      const majorGraben = -grabenCore * Math.exp(-((graben.u / 108) ** 6)) * 0.56;
+
+      const curvedValley = this.rotateLocal(x, z, -30, 16, -0.52);
+      const valleyCenter = curvedValley.v - Math.sin(curvedValley.u * 0.031) * 7.5;
+      const broadValley = -(1 - smoothstep((Math.abs(valleyCenter) - 8.0) / 5.0))
+        * Math.exp(-((curvedValley.u / 96) ** 4)) * 0.38;
+
+      // Selected lows read smoother and slightly lower, suggesting volcanic infill against deformed upland.
+      const lavaLowA = -this.ellipseGaussian(x, z, 42, 26, 34, 20, 0.38);
+      const lavaLowB = -this.ellipseGaussian(x, z, -50, -36, 28, 18, 0.28);
+      return highland + domes + primaryFabric + crossCutFractures + laterRidges
+        + majorGraben + broadValley + lavaLowA + lavaLowB;
+    }
+
+    ishtarMorphologyAt(x, z) {
+      // Lakshmi Planum is a broad elevated interior, not an endless mountain field.
+      const dx = (x + 10) / 72;
+      const dz = (z + 2) / 58;
+      const superR = (Math.abs(dx) ** 5 + Math.abs(dz) ** 5) ** (1 / 5);
+      const plateauMask = 1 - smootherstep((superR - 0.78) / 0.24);
+      const plateau = plateauMask * 2.62;
+      const interiorUndulation = plateauMask * valueNoise(x * 0.020, z * 0.020, 1501) * 0.10;
+
+      // Distinct mountain systems occupy selected margins only, avoiding a fake circular wall.
+      const akna = this.elongatedRange(x, z, -70, -2, Math.PI / 2 - 0.10, 86, 18, 2.05, 1511);
+      const freyja = this.elongatedRange(x, z, -28, -66, 0.12, 78, 19, 2.25, 1523);
+      const maxwellEdge = this.elongatedRange(x, z, 70, -18, Math.PI / 2 + 0.18, 92, 20, 3.15, 1531);
+      const southwestScarp = this.elongatedRange(x, z, -42, 58, -0.10, 58, 15, 0.72, 1543);
+
+      // A steeper western boundary and a more open southern interior reinforce the plateau contrast.
+      const westernStep = this.ellipseGaussian(x, z, -63, 2, 20, 64, 0.54) * plateauMask;
+      return plateau + interiorUndulation + akna + freyja + maxwellEdge + southwestScarp + westernStep;
+    }
+
+    alphaMorphologyAt(x, z) {
+      // Alpha is identified by the fabric of the landscape itself: intersecting ridge/trough systems,
+      // polygonal blocks and flat-floored fault valleys. Intersections are blended, not summed into needle peaks.
+      const upland = this.ellipseGaussian(x, z, 4, -8, 122, 108, 0.98);
+      const envelope = Math.exp(-((x / 132) ** 6 + ((z + 6) / 122) ** 6));
+
+      const familyA = this.rotateLocal(x, z, 0, -6, 0.55);
+      const warpA = Math.sin(familyA.u * 0.039) * 5.0
+        + valueNoise(familyA.u * 0.014, familyA.v * 0.010, 1601) * 5.4;
+      const phaseA = (familyA.v + warpA) * (Math.PI * 2 / 18.5)
+        + valueNoise(x * 0.020, z * 0.020, 1607) * 0.95;
+      const waveA = Math.cos(phaseA);
+      const maskA = clamp(0.72 + valueNoise(x * 0.010 + 2.4, z * 0.012 - 1.8, 1609) * 0.42, 0.20, 1.0);
+
+      const familyB = this.rotateLocal(x, z, 6, -4, -0.72);
+      const warpB = Math.sin(familyB.u * 0.031 + 1.7) * 5.8
+        + valueNoise(familyB.u * 0.013, familyB.v * 0.010, 1613) * 5.0;
+      const phaseB = (familyB.v + warpB) * (Math.PI * 2 / 23.0)
+        + valueNoise(x * 0.017 - 3.0, z * 0.019 + 1.5, 1619) * 1.05;
+      const waveB = Math.cos(phaseB);
+      const maskB = clamp(0.70 + valueNoise(x * 0.011 - 1.2, z * 0.010 + 2.8, 1621) * 0.44, 0.18, 1.0);
+
+      // Two broken, warped structural families form irregular rhomboid/polygonal blocks rather than a perfect grid.
+      const tesseraFabric = (waveA * 0.22 * maskA + waveB * 0.20 * maskB + waveA * waveB * 0.035) * envelope;
+
+      // Broad block-scale irregularity makes the intersecting fabric read as tessera blocks rather than a perfect grid.
+      const blockRelief = (valueNoise(x * 0.014 + 1.7, z * 0.014 - 2.2, 1627) - 0.48) * envelope * 0.30;
+
+      // Several fault valleys interrupt and offset the fabric. Their floors are deliberately broad and relatively flat.
+      const faultA = this.rotateLocal(x, z, 14, -12, 0.18);
+      const faultACore = 1 - smoothstep((Math.abs(faultA.v) - 4.8) / 3.8);
+      const faultValleyA = -faultACore * Math.exp(-((faultA.u / 88) ** 4)) * 0.46;
+
+      const faultB = this.rotateLocal(x, z, -28, 18, -0.42);
+      const faultBCenter = faultB.v - Math.sin(faultB.u * 0.030) * 5.0;
+      const faultBCore = 1 - smoothstep((Math.abs(faultBCenter) - 5.5) / 4.2);
+      const faultValleyB = -faultBCore * Math.exp(-((faultB.u / 72) ** 4)) * 0.36;
+
+      // Volcanically resurfaced local lows interrupt the older tessera fabric.
+      const lowA = -this.ellipseGaussian(x, z, -38, -34, 29, 21, 0.48);
+      const lowB = -this.ellipseGaussian(x, z, 46, 24, 31, 22, 0.38);
+
+      // Eve lies directly south of the complex ridged terrain in the NASA reference. Keep it subdued and broad.
+      const eveLow = -this.ellipseGaussian(x, z, 10, 78, 38, 24, 0.30);
+      const eveRim = Math.exp(-(((Math.hypot((x - 10) / 38, (z - 78) / 24) - 1.0) / 0.18) ** 2)) * 0.08;
+
+      return upland + tesseraFabric + blockRelief + faultValleyA + faultValleyB
+        + lowA + lowB + eveLow + eveRim;
+    }
+
+    morphologyHeightAt(x, z) {
+      let morphology = 0;
+      if (this.region.id === "maat") morphology = this.maatMorphologyAt(x, z);
+      else if (this.region.id === "maxwell") morphology = this.maxwellMorphologyAt(x, z);
+      else if (this.region.id === "aphrodite") morphology = this.aphroditeMorphologyAt(x, z);
+      else if (this.region.id === "ishtar") morphology = this.ishtarMorphologyAt(x, z);
+      else if (this.region.id === "alpha") morphology = this.alphaMorphologyAt(x, z);
+      const sourceWeight = this.morphologyWeight ?? this.morphologySourceWeight();
+      const farRadius = this.worldSpan * 0.53;
+      const edgeFade = 1 - smoothstep((Math.hypot(x, z) - farRadius * 0.78) / Math.max(1, farRadius * 0.22));
+      return morphology * sourceWeight * clamp(edgeFade, 0.18, 1);
+    }
+
+    morphologyDetailScaleAt(x, z) {
+      if (this.region.id === "maat") {
+        const shieldR = Math.hypot(x / 94, (z + 38) / 82);
+        const flowA = Math.exp(-(((x - 17) / 17) ** 2)) * Math.exp(-(((z - 20) / 72) ** 2));
+        return clamp(1.12 - flowA * 0.34 - Math.max(0, 0.35 - shieldR) * 0.25, 0.68, 1.16);
+      }
+      if (this.region.id === "maxwell") {
+        const craterR = Math.hypot(x - 45, z + 36);
+        return craterR < 26 ? 0.82 : 1.13;
+      }
+      if (this.region.id === "aphrodite") {
+        const low = Math.max(
+          this.ellipseGaussian(x, z, 42, 26, 34, 21, 1),
+          this.ellipseGaussian(x, z, -48, -34, 27, 19, 1)
+        );
+        return clamp(1.14 - low * 0.58, 0.52, 1.16);
+      }
+      if (this.region.id === "ishtar") {
+        const dx = (x + 10) / 72, dz = (z + 2) / 58;
+        const superR = (Math.abs(dx) ** 5 + Math.abs(dz) ** 5) ** (1 / 5);
+        const interior = 1 - smootherstep((superR - 0.62) / 0.25);
+        return clamp(1.10 - interior * 0.58, 0.50, 1.14);
+      }
+      if (this.region.id === "alpha") {
+        const low = Math.max(
+          this.ellipseGaussian(x, z, -38, -34, 28, 22, 1),
+          this.ellipseGaussian(x, z, 46, 24, 32, 23, 1)
+        );
+        return clamp(1.24 - low * 0.76, 0.46, 1.25);
+      }
+      return 1;
+    }
+
     microHeightAt(x, z) {
       const r = Math.hypot(x, z);
       const detailFade = 1 - smoothstep((r - this.region.playRadius * 0.92) / Math.max(1, this.worldSpan * 0.42 - this.region.playRadius));
       const n1 = fbm(x * 0.080, z * 0.080, 31);
       const n2 = fbm(x * 0.19 + 7.1, z * 0.19 - 3.4, 73);
       const fractured = ridge(valueNoise(x * 0.12, z * 0.12, 109)) - 0.54;
-      let meso = n1 * 0.10 + n2 * 0.045;
+      let meso = n1 * 0.075 + n2 * 0.035 + fractured * 0.035;
+
+      // High-level identity lives in the dedicated morphology systems above.
+      // These terms only enrich close-range material and sub-data-scale relief.
       if (this.region.id === "maat") {
-        const flow = ridge(valueNoise(x * 0.045 + z * 0.011, z * 0.060, 151));
-        meso += (flow - 0.58) * 0.16 + fractured * 0.07;
+        const flowTexture = ridge(valueNoise(x * 0.050 + z * 0.012, z * 0.072, 151));
+        meso += (flowTexture - 0.58) * 0.075;
       } else if (this.region.id === "maxwell") {
-        const aligned = ridge(valueNoise((x * 0.82 + z * 0.36) * 0.075, (-x * 0.36 + z * 0.82) * 0.030, 191));
-        meso += (aligned - 0.56) * 0.34 + fractured * 0.10;
+        const aligned = ridge(valueNoise((x * 0.82 + z * 0.36) * 0.090, (-x * 0.36 + z * 0.82) * 0.038, 191));
+        meso += (aligned - 0.56) * 0.11;
       } else if (this.region.id === "aphrodite") {
-        const a = ridge(valueNoise((x + z) * 0.070, (z - x) * 0.022, 229));
-        const b = ridge(valueNoise((x - z) * 0.050, (x + z) * 0.030, 233));
-        meso += (a - 0.57) * 0.22 + (b - 0.60) * 0.16;
+        const broken = ridge(valueNoise((x + z) * 0.078, (z - x) * 0.032, 229));
+        meso += (broken - 0.57) * 0.085;
       } else if (this.region.id === "ishtar") {
-        meso += fractured * 0.08 + n2 * 0.05;
+        meso += n2 * 0.028;
       } else if (this.region.id === "alpha") {
-        const a = ridge(valueNoise((x + z) * 0.105, (z - x) * 0.036, 269));
-        const b = ridge(valueNoise((x - z) * 0.095, (x + z) * 0.031, 271));
-        meso += (a - 0.55) * 0.28 + (b - 0.56) * 0.23;
+        const a = ridge(valueNoise((x + z) * 0.115, (z - x) * 0.044, 269));
+        const b = ridge(valueNoise((x - z) * 0.105, (x + z) * 0.039, 271));
+        meso += (a - 0.55) * 0.095 + (b - 0.56) * 0.085;
       }
-      return meso * clamp(detailFade, 0, 1);
+      return meso * this.morphologyDetailScaleAt(x, z) * clamp(detailFade, 0, 1);
     }
 
     heightAt(x, z) {
-      return this.scientificHeightAt(x, z) + this.microHeightAt(x, z);
+      return this.scientificHeightAt(x, z) + this.morphologyHeightAt(x, z) + this.microHeightAt(x, z);
     }
 
     slopeAt(x, z, epsilon = 0.22) {
@@ -780,8 +1407,9 @@
         for (let ix = 0; ix <= segments; ix += 1) {
           const x = centerX - half + size * (ix / segments);
           const scientific = this.scientificHeightAt(x, z);
+          const morphology = this.morphologyHeightAt(x, z);
           const micro = background ? this.microHeightAt(x, z) * 0.18 : this.microHeightAt(x, z);
-          const y = scientific + micro - (background ? 0.028 : 0);
+          const y = scientific + morphology + micro - (background ? 0.028 : 0);
           const slope = background ? 0.08 : this.slopeAt(x, z, Math.max(0.18, size / segments * 0.72));
           const color = this.colorAt(x, z, y, slope);
           const farFade = background ? smoothstep(Math.hypot(x, z) / (this.worldSpan * 0.54)) : 0;
@@ -820,6 +1448,7 @@
       onProgress(0.01);
       await this.topography.load(value => onProgress(0.02 + value * 0.20));
       this.referenceElevation = this.topography.sample(this.region.latitude, this.region.longitudeEast);
+      this.morphologyWeight = this.morphologySourceWeight();
       onProgress(0.24);
       const radarTexture = await this.radar.load().catch(() => null);
       onProgress(0.34);
@@ -915,6 +1544,108 @@
       this.resources.push(geometry, material);
     }
 
+    resolveObservationPosition(observation) {
+      const anchor = observation.anchor || { x: 0, z: 0 };
+      const searchRadius = observation.searchRadius || 11;
+      const step = observation.searchStep || 2.75;
+      const limit = Math.max(8, this.region.playRadius - 8);
+      let best = null;
+      const evaluate = (x, z) => {
+        const radius = Math.hypot(x, z);
+        if (radius > limit) return;
+        const height = this.heightAt(x, z);
+        const slope = this.slopeAt(x, z, 0.45);
+        const localRelief = Math.max(
+          Math.abs(this.heightAt(x + 2.2, z) - height),
+          Math.abs(this.heightAt(x - 2.2, z) - height),
+          Math.abs(this.heightAt(x, z + 2.2) - height),
+          Math.abs(this.heightAt(x, z - 2.2) - height)
+        );
+        const offset = Math.hypot(x - anchor.x, z - anchor.z);
+        let score = -offset * 0.035;
+        switch (observation.placement) {
+          case "slope-high": score += slope * 5.3 + localRelief * 1.8; break;
+          case "slope-medium": score += 1.25 - Math.abs(slope - 0.18) * 4.1 + localRelief * 0.6; break;
+          case "elevation-high": score += height * 0.72 + localRelief * 0.45 - Math.max(0, slope - 0.75); break;
+          case "elevation-low": score += -height * 0.62 + Math.min(localRelief, 0.55) * 0.35 - Math.max(0, slope - 0.8); break;
+          case "relief": score += localRelief * 4.2 + slope * 0.8; break;
+          case "flat": score += 1.1 - slope * 3.8 + Math.min(localRelief, 0.18) * 0.25; break;
+          default: score += 0.85 - slope * 1.35; break;
+        }
+        if (!best || score > best.score) best = { x, z, y: height, score, slope, localRelief };
+      };
+      evaluate(anchor.x, anchor.z);
+      for (let dz = -searchRadius; dz <= searchRadius; dz += step) {
+        for (let dx = -searchRadius; dx <= searchRadius; dx += step) evaluate(anchor.x + dx, anchor.z + dz);
+      }
+      const chosen = best || { x: anchor.x, z: anchor.z, y: this.heightAt(anchor.x, anchor.z), slope: 0, localRelief: 0 };
+      const geo = this.geoFromWorld(chosen.x, chosen.z);
+      return { ...observation, x: chosen.x, y: chosen.y, z: chosen.z, slope: chosen.slope, localRelief: chosen.localRelief, geo };
+    }
+
+    createEducationalMarkers(observations = []) {
+      const T = this.THREE;
+      if (this.observationGroup) this.group.remove(this.observationGroup);
+      this.observationMarkers.clear();
+      const resolved = observations.map(observation => this.resolveObservationPosition(observation));
+      if (!resolved.length) return resolved;
+
+      this.observationGroup = new T.Group();
+      this.observationGroup.name = `venus-education-markers-${this.region.id}`;
+      this.group.add(this.observationGroup);
+      const ringGeometry = new T.TorusGeometry(0.34, 0.022, 7, 28);
+      const stemGeometry = new T.CylinderGeometry(0.012, 0.012, 0.48, 7);
+      const coreGeometry = new T.OctahedronGeometry(0.105, 0);
+      this.resources.push(ringGeometry, stemGeometry, coreGeometry);
+
+      resolved.forEach((observation, index) => {
+        const marker = new T.Group();
+        marker.name = `venus-observation-${observation.id}`;
+        marker.position.set(observation.x, observation.y + 0.035, observation.z);
+        marker.userData.observationId = observation.id;
+        marker.userData.phase = hash2(index + 1, 97, 131) * Math.PI * 2;
+
+        const ringMaterial = new T.MeshBasicMaterial({ color: 0xf1bd75, transparent: true, opacity: 0.48, depthWrite: false, fog: true });
+        const stemMaterial = new T.MeshBasicMaterial({ color: 0xf4c889, transparent: true, opacity: 0.24, depthWrite: false, fog: true });
+        const coreMaterial = new T.MeshBasicMaterial({ color: 0xffd99f, transparent: true, opacity: 0.82, depthWrite: false, fog: true });
+        this.resources.push(ringMaterial, stemMaterial, coreMaterial);
+
+        const ring = new T.Mesh(ringGeometry, ringMaterial);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = 0.025;
+        const stem = new T.Mesh(stemGeometry, stemMaterial);
+        stem.position.y = 0.27;
+        const core = new T.Mesh(coreGeometry, coreMaterial);
+        core.position.y = 0.56;
+        marker.add(ring, stem, core);
+        marker.userData.ring = ring;
+        marker.userData.stem = stem;
+        marker.userData.core = core;
+        marker.userData.materials = { ring: ringMaterial, stem: stemMaterial, core: coreMaterial };
+        this.observationGroup.add(marker);
+        this.observationMarkers.set(observation.id, marker);
+      });
+      return resolved;
+    }
+
+    updateObservationMarkers(activeId, discoveredIds, delta = 0) {
+      this.observationTime += delta;
+      for (const [id, marker] of this.observationMarkers) {
+        const active = id === activeId;
+        const discovered = discoveredIds?.has?.(id);
+        const { ring, core, materials } = marker.userData;
+        if (!ring || !core || !materials) continue;
+        const pulse = 1 + (active ? Math.sin(this.observationTime * 3.0 + marker.userData.phase) * 0.08 : 0);
+        marker.scale.setScalar(active ? 1.14 * pulse : discovered ? 0.86 : 1);
+        materials.ring.opacity = active ? 0.88 : discovered ? 0.20 : 0.48;
+        materials.stem.opacity = active ? 0.42 : discovered ? 0.10 : 0.24;
+        materials.core.opacity = active ? 1 : discovered ? 0.38 : 0.82;
+        materials.ring.color.setHex(active ? 0xffe0a6 : discovered ? 0xb38d62 : 0xf1bd75);
+        materials.core.color.setHex(active ? 0xffe7b9 : discovered ? 0xb9a17f : 0xffd99f);
+        core.rotation.y += delta * (active ? 1.35 : 0.42);
+      }
+    }
+
     updateVisibility(camera) {
       if (!camera) return;
       this.frame += 1;
@@ -950,6 +1681,8 @@
       this.background = null;
       this.props = null;
       this.particles = null;
+      this.observationGroup = null;
+      this.observationMarkers.clear();
       this.material = null;
       this.backgroundMaterial = null;
     }
@@ -1000,7 +1733,7 @@
       this.clear();
     }
 
-    interactive() { return this.controller.state === STATES.EXPLORING; }
+    interactive() { return this.controller.state === STATES.EXPLORING && !this.controller.isObservationCardOpen?.(); }
 
     onKeyDown(event) {
       if (!this.controller.active) return;
@@ -1010,16 +1743,27 @@
       event.stopImmediatePropagation();
       if (key === "escape") {
         if (event.repeat) return;
-        if (document.pointerLockElement === this.controller.viewport) {
-          document.exitPointerLock?.();
+        if (this.controller.isObservationCardOpen?.()) {
+          this.controller.closeObservationCard?.();
           this.clear();
           return;
         }
+        if (this.controller.isObjectivesExpanded?.()) {
+          this.controller.collapseObjectives?.();
+          this.clear();
+          return;
+        }
+        if (document.pointerLockElement === this.controller.viewport) document.exitPointerLock?.();
         if (this.controller.state === STATES.SELECTING && this.controller.regionWorld) this.controller.closeSelectorToRegion();
         else this.controller.exit();
         return;
       }
       if (!this.interactive()) return;
+      if (key === "e" && !event.repeat && this.controller.tryObserveNearby?.()) {
+        this.keys.delete("e");
+        this.controller.dismissTutorial();
+        return;
+      }
       this.keys.add(key);
       this.controller.dismissTutorial();
     }
@@ -1169,6 +1913,34 @@
       this.hudDistance = document.getElementById("venus-hud-distance");
       this.hudRegionType = document.getElementById("venus-hud-region-type");
       this.hudData = document.getElementById("venus-hud-data");
+      this.objectivesPanel = document.getElementById("venus-objectives-panel");
+      this.objectivesRegion = document.getElementById("venus-objectives-region");
+      this.objectivesIntro = document.getElementById("venus-objectives-intro");
+      this.objectivesList = document.getElementById("venus-objectives-list");
+      this.objectivesCollapse = document.getElementById("venus-objectives-collapse");
+      this.objectivesToggle = document.getElementById("venus-objectives-toggle");
+      this.discoveryCount = document.getElementById("venus-discovery-count");
+      this.discoveryBar = document.getElementById("venus-discovery-bar");
+      this.nextTarget = document.getElementById("venus-next-target");
+      this.nextTargetName = document.getElementById("venus-next-target-name");
+      this.nextTargetDistance = document.getElementById("venus-next-target-distance");
+      this.observationPrompt = document.getElementById("venus-observation-prompt");
+      this.observationPromptTitle = document.getElementById("venus-observation-prompt-title");
+      this.observeButton = document.getElementById("venus-observe-button");
+      this.observationCard = document.getElementById("venus-observation-card");
+      this.observationClose = document.getElementById("venus-observation-close");
+      this.observationType = document.getElementById("venus-observation-type");
+      this.observationStatus = document.getElementById("venus-observation-status");
+      this.observationTitle = document.getElementById("venus-observation-title");
+      this.observationMeta = document.getElementById("venus-observation-meta");
+      this.observationLead = document.getElementById("venus-observation-lead");
+      this.observationSections = document.getElementById("venus-observation-sections");
+      this.observationComparison = document.getElementById("venus-observation-comparison");
+      this.observationWhy = document.getElementById("venus-observation-why");
+      this.observationMore = document.getElementById("venus-observation-more");
+      this.observationDeep = document.getElementById("venus-observation-deep");
+      this.observationSourceNote = document.getElementById("venus-observation-source-note");
+      this.observationSource = document.getElementById("venus-observation-source");
 
       this.state = STATES.IDLE;
       this.region = REGIONS[0];
@@ -1201,6 +1973,12 @@
       this.selectorOpenedFromRegion = false;
       this.tutorialTimeout = null;
       this.hudClock = 0;
+      this.educationClock = 0;
+      this.resolvedObservations = [];
+      this.discovered = new Set();
+      this.nearbyObservation = null;
+      this.activeObservation = null;
+      this.selectedTarget = null;
       this.quality = this.detectQuality();
       this.input = new VenusInputManager(this);
       this.tick = this.tick.bind(this);
@@ -1240,7 +2018,7 @@
         button.type = "button";
         button.className = "venus-region-card";
         button.dataset.venusRegion = region.id;
-        button.innerHTML = `<span class="venus-region-preview venus-region-preview-${region.id}" aria-hidden="true"><i></i><b>${region.short}</b></span><span class="venus-region-index">${String(index + 1).padStart(2, "0")}</span><strong>${region.name}</strong><span class="venus-region-descriptor">${region.descriptor}</span><small>${formatCoordinate(region.latitude, region.longitudeEast)}</small><em>${region.category}</em><span class="venus-region-source">NASA/JPL · Magellan reference</span>`;
+        button.innerHTML = `<span class="venus-region-preview venus-region-preview-${region.id}" aria-hidden="true"><i></i><b>${region.short}</b></span><span class="venus-region-index">${String(index + 1).padStart(2, "0")}</span><strong>${region.name}</strong><span class="venus-region-descriptor">${region.descriptor}</span><small>${formatCoordinate(region.latitude, region.longitudeEast)}</small><em>${region.category}</em><span class="venus-region-source">NASA/JPL · referensi Magellan</span>`;
         fragment.append(button);
       });
       this.selectorGrid.replaceChildren(fragment);
@@ -1266,6 +2044,10 @@
       this.infoMinimize.addEventListener("click", event => { event.stopPropagation(); this.hideRegionInfo(); });
       this.infoToggle.addEventListener("click", event => { event.stopPropagation(); this.showRegionInfo(true); });
       this.infoMedia.addEventListener("click", event => { event.stopPropagation(); this.openReferenceImage(); });
+      this.objectivesCollapse?.addEventListener("click", () => this.collapseObjectives());
+      this.objectivesToggle?.addEventListener("click", () => this.expandObjectives(true));
+      this.observeButton?.addEventListener("click", () => this.tryObserveNearby());
+      this.observationClose?.addEventListener("click", () => this.closeObservationCard(true));
       document.addEventListener("fullscreenchange", () => this.updateFullscreenLabel());
       document.addEventListener("visibilitychange", () => {
         if (!this.active) return;
@@ -1295,11 +2077,13 @@
       this.root.style.setProperty("--surface-opacity", "0");
       this.root.style.setProperty("--entry-progress", "0");
       this.selector.hidden = false;
+      this.resetEducationUI();
       this.loading.hidden = true;
       this.errorPanel.hidden = true;
       this.infoCard.classList.remove("is-visible");
       this.infoCard.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = true;
+      this.resetEducationUI();
       document.getElementById("mission").classList.add("is-venus-full-selecting");
       document.getElementById("announcement").textContent = "Pilih destinasi Eksplorasi Pengalaman Penuh Venus.";
       requestAnimationFrame(() => this.selector.querySelector("[data-venus-region]")?.focus({ preventScroll: true }));
@@ -1319,6 +2103,7 @@
       this.infoCard.classList.remove("is-visible");
       this.infoCard.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = true;
+      this.resetEducationUI();
       this.errorPanel.hidden = true;
       this.state = switching ? STATES.SWITCHING : STATES.PREPARING;
       this.root.classList.remove("is-selecting", "is-active", "is-error");
@@ -1329,7 +2114,7 @@
       this.loading.hidden = false;
       this.travelLabel.textContent = `NAVIGASI · ${region.name.toUpperCase()}`;
       if (switching) this.travelVeil.classList.add("is-visible", "is-covered");
-      document.getElementById("announcement").textContent = `Menyiapkan region ${region.name}.`;
+      document.getElementById("announcement").textContent = `Menyiapkan wilayah ${region.name}.`;
 
       try {
         if (!this.venus.startFullExplorationTransition?.(region) && !this.venus.fullExplorationActive) throw new Error("Transisi Venus tidak tersedia.");
@@ -1339,11 +2124,14 @@
         this.applyRegionEnvironment(region);
         this.setLoading(0.10, `MEMUAT MAGELLAN GTDR · ${region.category}`);
         this.regionWorld = new VenusRegionWorld(this.THREE, this.scene, this.renderer, region, this.quality);
-        await this.regionWorld.build(progress => this.setLoading(0.10 + progress * 0.76, `MEMBANGUN TERRAIN GTDR · ${Math.round(progress * 100)}%`));
+        await this.regionWorld.build(progress => this.setLoading(0.10 + progress * 0.76, `MEMBANGUN MEDAN GTDR · ${Math.round(progress * 100)}%`));
         if (token !== this.transitionToken) return;
+        this.resolvedObservations = this.regionWorld.createEducationalMarkers(region.education?.observations || []);
+        this.loadDiscoveryState();
         this.setCameraForRegion(region, switching ? 12 : 24);
         this.updateRegionUI();
-        this.setLoading(1, "REGION SIAP");
+        this.setupEducationUI();
+        this.setLoading(1, "WILAYAH SIAP");
         await wait(this.venus.motion.matches ? 80 : 180);
         if (token !== this.transitionToken) return;
         if (switching) await this.runRegionSwitchTransition(token);
@@ -1360,9 +2148,9 @@
       const generation = this.resourceGeneration;
       const promise = (async () => {
         await this.venus.prepare();
-        if (generation !== this.resourceGeneration) throw new Error("Venus exploration preparation cancelled.");
+        if (generation !== this.resourceGeneration) throw new Error("Persiapan eksplorasi Venus dibatalkan.");
         const T = this.venus.THREE;
-        if (!T) throw new Error("Renderer 3D Venus tidak tersedia pada perangkat ini.");
+        if (!T) throw new Error("Sistem grafis 3D Venus tidak tersedia pada perangkat ini.");
         this.THREE = T;
         const canvas = document.createElement("canvas");
         canvas.className = "mars-full-canvas venus-full-canvas";
@@ -1417,7 +2205,13 @@
       this.lastGround = ground;
       this.cameraAltitude = altitude;
       this.camera.position.set(region.spawn.x, ground + altitude, region.spawn.z);
-      this.yaw = region.heading;
+      if (region.lookTarget) {
+        const dx = region.lookTarget.x - region.spawn.x;
+        const dz = region.lookTarget.z - region.spawn.z;
+        this.yaw = Math.atan2(-dx, -dz);
+      } else {
+        this.yaw = region.heading;
+      }
       this.pitch = region.pitch;
       this.lookYawTarget = this.yaw;
       this.lookPitchTarget = this.pitch;
@@ -1485,9 +2279,13 @@
       this.previous = performance.now();
       this.startLoop();
       this.showTutorial();
-      this.showRegionInfo();
+      this.infoCard.classList.remove("is-visible");
+      this.infoCard.setAttribute("aria-hidden", "true");
+      this.infoToggle.hidden = false;
+      this.expandObjectives(false);
       this.updateHUD();
-      document.getElementById("announcement").textContent = `Eksplorasi Venus aktif di ${this.region.name}.`;
+      this.updateEducation(0);
+      document.getElementById("announcement").textContent = `Eksplorasi Venus aktif di ${this.region.name}. Ikuti tujuan eksplorasi untuk menemukan fitur geologi.`;
     }
 
     openSelectorFromRegion() {
@@ -1500,7 +2298,11 @@
       this.infoCard.classList.remove("is-visible");
       this.infoCard.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = true;
-      document.getElementById("announcement").textContent = "Pilih region Venus lain untuk dijelajahi.";
+      this.objectivesPanel.hidden = true;
+      this.objectivesToggle.hidden = true;
+      this.observationPrompt.hidden = true;
+      this.closeObservationCard(false);
+      document.getElementById("announcement").textContent = "Pilih wilayah Venus lain untuk dijelajahi.";
       requestAnimationFrame(() => this.selector.querySelector(`[data-venus-region="${this.region.id}"]`)?.focus({ preventScroll: true }));
     }
 
@@ -1512,7 +2314,9 @@
       this.root.classList.remove("is-selecting");
       this.input.bind();
       this.startLoop();
-      this.showRegionInfo();
+      this.expandObjectives(false);
+      this.infoToggle.hidden = false;
+      this.updateEducation(0);
     }
 
     addLookDelta(dx, dy, source = "mouse") {
@@ -1559,10 +2363,275 @@
         if (this.hudClock >= 0.10) {
           this.hudClock = 0;
           this.updateHUD();
+          this.updateEducation(0.10);
         }
       }
       this.adaptResolution();
       this.frame = requestAnimationFrame(this.tick);
+    }
+
+    isObservationCardOpen() {
+      return Boolean(this.observationCard && !this.observationCard.hidden && this.observationCard.getAttribute("aria-hidden") !== "true");
+    }
+
+    isObjectivesExpanded() {
+      return Boolean(this.objectivesPanel && !this.objectivesPanel.hidden);
+    }
+
+    discoveryStorageKey() {
+      return `antara-venus-discoveries-${this.region?.id || "venus"}-v1`;
+    }
+
+    loadDiscoveryState() {
+      const valid = new Set(this.resolvedObservations.map(item => item.id));
+      let saved = [];
+      try {
+        saved = JSON.parse(sessionStorage.getItem(this.discoveryStorageKey()) || "[]");
+      } catch (_) {
+        saved = [];
+      }
+      this.discovered = new Set(Array.isArray(saved) ? saved.filter(id => valid.has(id)) : []);
+    }
+
+    saveDiscoveryState() {
+      try {
+        sessionStorage.setItem(this.discoveryStorageKey(), JSON.stringify([...this.discovered]));
+      } catch (_) {
+        // Progres tetap hidup untuk sesi aktif jika penyimpanan browser tidak tersedia.
+      }
+    }
+
+    resetEducationUI() {
+      this.educationClock = 0;
+      this.resolvedObservations = [];
+      this.discovered = new Set();
+      this.nearbyObservation = null;
+      this.activeObservation = null;
+      this.selectedTarget = null;
+      if (this.objectivesPanel) this.objectivesPanel.hidden = true;
+      if (this.objectivesToggle) this.objectivesToggle.hidden = true;
+      if (this.observationPrompt) this.observationPrompt.hidden = true;
+      if (this.nextTarget) this.nextTarget.hidden = true;
+      if (this.observationCard) {
+        this.observationCard.hidden = true;
+        this.observationCard.setAttribute("aria-hidden", "true");
+      }
+      if (this.observationMore) this.observationMore.open = false;
+      this.root?.classList.remove("is-observation-open");
+    }
+
+    setupEducationUI() {
+      const education = this.region?.education;
+      if (!education) return;
+      this.objectivesRegion.textContent = this.region.name;
+      this.objectivesIntro.textContent = education.intro || "Temukan dan amati fitur geologi di wilayah ini.";
+      this.renderObjectives();
+      this.updateDiscoveryUI();
+      this.objectivesPanel.hidden = true;
+      this.objectivesToggle.hidden = true;
+      this.observationPrompt.hidden = true;
+      this.observationCard.hidden = true;
+      this.observationCard.setAttribute("aria-hidden", "true");
+      this.root.classList.remove("is-observation-open");
+      this.updateEducation(0);
+    }
+
+    renderObjectives() {
+      const objectives = this.region?.education?.objectives || [];
+      const fragment = document.createDocumentFragment();
+      for (const objective of objectives) {
+        const item = document.createElement("li");
+        item.dataset.discovery = objective.discovery || "";
+        item.textContent = objective.label;
+        if (objective.discovery && this.discovered.has(objective.discovery)) item.classList.add("is-complete");
+        fragment.append(item);
+      }
+      this.objectivesList.replaceChildren(fragment);
+    }
+
+    updateDiscoveryUI() {
+      const total = this.resolvedObservations.length;
+      const completed = this.resolvedObservations.reduce((count, item) => count + (this.discovered.has(item.id) ? 1 : 0), 0);
+      if (this.discoveryCount) this.discoveryCount.textContent = `${completed} / ${total}`;
+      if (this.discoveryBar) this.discoveryBar.style.transform = `scaleX(${total ? completed / total : 0})`;
+      if (this.objectivesToggle) this.objectivesToggle.textContent = `Tujuan · ${completed} / ${total}`;
+      for (const item of this.objectivesList?.querySelectorAll?.("li") || []) {
+        item.classList.toggle("is-complete", Boolean(item.dataset.discovery && this.discovered.has(item.dataset.discovery)));
+      }
+    }
+
+    collapseObjectives() {
+      if (!this.objectivesPanel) return;
+      this.objectivesPanel.hidden = true;
+      this.objectivesToggle.hidden = this.state !== STATES.EXPLORING;
+    }
+
+    expandObjectives(focus = false) {
+      if (!this.objectivesPanel || !this.region?.education) return;
+      if (this.isObservationCardOpen()) this.closeObservationCard(false);
+      this.infoCard?.classList.remove("is-visible");
+      this.infoCard?.setAttribute("aria-hidden", "true");
+      if (this.infoToggle) this.infoToggle.hidden = false;
+      this.objectivesPanel.hidden = false;
+      this.objectivesToggle.hidden = true;
+      if (focus) requestAnimationFrame(() => this.objectivesCollapse?.focus({ preventScroll: true }));
+    }
+
+    updateEducation(delta = 0) {
+      if (this.state !== STATES.EXPLORING || !this.regionWorld || !this.resolvedObservations.length || !this.camera) {
+        if (this.observationPrompt) this.observationPrompt.hidden = true;
+        return;
+      }
+
+      const px = this.camera.position.x;
+      const pz = this.camera.position.z;
+      let nearest = null;
+      let nearestDistance = Infinity;
+      let nearestUndiscovered = null;
+      let nearestUndiscoveredDistance = Infinity;
+
+      for (const observation of this.resolvedObservations) {
+        const distance = Math.hypot(observation.x - px, observation.z - pz);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearest = observation;
+        }
+        if (!this.discovered.has(observation.id) && distance < nearestUndiscoveredDistance) {
+          nearestUndiscoveredDistance = distance;
+          nearestUndiscovered = observation;
+        }
+      }
+
+      const interactionRadius = nearest?.interactRadius || 2.6;
+      this.nearbyObservation = nearest && nearestDistance <= interactionRadius ? nearest : null;
+      this.selectedTarget = nearestUndiscovered || nearest;
+
+      if (this.nearbyObservation && !this.isObservationCardOpen()) {
+        this.observationPromptTitle.textContent = this.nearbyObservation.title;
+        this.observationPrompt.hidden = false;
+      } else {
+        this.observationPrompt.hidden = true;
+      }
+
+      if (this.selectedTarget && this.nextTarget) {
+        const targetDistance = Math.hypot(this.selectedTarget.x - px, this.selectedTarget.z - pz);
+        this.nextTargetName.textContent = this.selectedTarget.title;
+        this.nextTargetDistance.textContent = `${targetDistance < 10 ? targetDistance.toFixed(1) : targetDistance.toFixed(0)} km`;
+        this.nextTarget.hidden = false;
+      } else if (this.nextTarget) {
+        this.nextTarget.hidden = true;
+      }
+
+      const activeId = this.nearbyObservation?.id || this.selectedTarget?.id || null;
+      this.regionWorld.updateObservationMarkers(activeId, this.discovered, delta);
+      this.updateDiscoveryUI();
+    }
+
+    tryObserveNearby() {
+      if (this.state !== STATES.EXPLORING || !this.nearbyObservation) return false;
+      this.openObservationCard(this.nearbyObservation);
+      return true;
+    }
+
+    markDiscovery(observation) {
+      if (!observation || this.discovered.has(observation.id)) return false;
+      this.discovered.add(observation.id);
+      this.saveDiscoveryState();
+      this.renderObjectives();
+      this.updateDiscoveryUI();
+      document.getElementById("announcement").textContent = `Temuan tercatat: ${observation.title}.`;
+      return true;
+    }
+
+    openObservationCard(observation) {
+      if (!observation || !this.observationCard) return;
+      const wasNew = this.markDiscovery(observation);
+      this.activeObservation = observation;
+      this.input.clear();
+      if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+      this.infoCard?.classList.remove("is-visible");
+      this.infoCard?.setAttribute("aria-hidden", "true");
+      this.collapseObjectives();
+      if (this.objectivesToggle) this.objectivesToggle.hidden = true;
+
+      this.observationType.textContent = observation.type || "TITIK PENGAMATAN";
+      this.observationStatus.textContent = wasNew ? "TEMUAN BARU" : "SUDAH DIAMATI";
+      this.observationTitle.textContent = observation.title;
+      const distance = Math.hypot(observation.x - this.camera.position.x, observation.z - this.camera.position.z);
+      this.observationMeta.textContent = `${formatCoordinate(observation.geo.latitude, observation.geo.longitudeEast)} · ${distance < 1 ? Math.round(distance * 1000) + " m" : distance.toFixed(1) + " km"} dari posisi Anda`;
+      this.observationLead.textContent = observation.lead || "";
+
+      const sections = document.createDocumentFragment();
+      for (const section of observation.sections || []) {
+        const wrap = document.createElement("section");
+        wrap.className = "venus-observation-section";
+        const heading = document.createElement("small");
+        heading.textContent = section.heading || "PENGAMATAN";
+        const text = document.createElement("p");
+        text.textContent = section.text || "";
+        wrap.append(heading, text);
+        sections.append(wrap);
+      }
+      this.observationSections.replaceChildren(sections);
+
+      if (Array.isArray(observation.comparison) && observation.comparison.length) {
+        const comparison = document.createDocumentFragment();
+        for (const item of observation.comparison) {
+          const cell = document.createElement("div");
+          const label = document.createElement("small");
+          const value = document.createElement("strong");
+          label.textContent = item.label;
+          value.textContent = item.value;
+          cell.append(label, value);
+          comparison.append(cell);
+        }
+        this.observationComparison.replaceChildren(comparison);
+        this.observationComparison.hidden = false;
+      } else {
+        this.observationComparison.replaceChildren();
+        this.observationComparison.hidden = true;
+      }
+
+      this.observationWhy.textContent = observation.why || "";
+      const deep = document.createDocumentFragment();
+      for (const paragraph of observation.deepDive || []) {
+        const text = document.createElement("p");
+        text.textContent = paragraph;
+        deep.append(text);
+      }
+      this.observationDeep.replaceChildren(deep);
+      this.observationMore.hidden = !observation.deepDive?.length;
+      this.observationMore.open = false;
+
+      const topography = this.regionWorld?.topography;
+      if (topography?.emergencyApproximation) {
+        this.observationSourceNote.textContent = "Catatan visualisasi: relief lokal sedang memakai pratinjau luring nonilmiah karena data topografi Magellan tidak tersedia. Penjelasan sains tetap mengikuti sumber di bawah.";
+      } else {
+        this.observationSourceNote.textContent = `Relief dasar: ${topography?.sourceLabel || "topografi Magellan"}. Morfologi regional dipertegas secara terbatas berdasarkan referensi NASA/JPL agar ciri geologi yang dibahas tetap terbaca tanpa mengubah data radar menjadi elevasi.`;
+      }
+      this.observationSource.textContent = `Sumber: ${observation.sourceLabel || "NASA"} ↗`;
+      this.observationSource.href = observation.source || "https://science.nasa.gov/venus/";
+
+      this.observationCard.hidden = false;
+      this.observationCard.setAttribute("aria-hidden", "false");
+      this.root.classList.add("is-observation-open");
+      this.observationPrompt.hidden = true;
+      this.updateEducation(0);
+      requestAnimationFrame(() => this.observationClose?.focus({ preventScroll: true }));
+    }
+
+    closeObservationCard(focus = false) {
+      if (!this.observationCard) return;
+      this.observationCard.hidden = true;
+      this.observationCard.setAttribute("aria-hidden", "true");
+      this.root.classList.remove("is-observation-open");
+      this.activeObservation = null;
+      if (this.observationMore) this.observationMore.open = false;
+      if (this.state === STATES.EXPLORING) {
+        if (this.objectivesToggle && this.objectivesPanel?.hidden) this.objectivesToggle.hidden = false;
+        this.updateEducation(0);
+        if (focus && !this.observationPrompt.hidden) requestAnimationFrame(() => this.observeButton?.focus({ preventScroll: true }));
+      }
     }
 
     updateMovement(delta) {
@@ -1629,7 +2698,7 @@
       const finalRadius = Math.hypot(nextX, nextZ);
       const boundaryVisible = finalRadius > this.region.softBoundaryStart - 4;
       this.boundaryHint.classList.toggle("is-visible", boundaryVisible);
-      if (boundaryVisible) this.boundaryHint.textContent = finalRadius > this.region.playRadius - 1 ? "BATAS GERAK · TERRAIN VISUAL BERLANJUT" : "MENDEKATI BATAS GERAK";
+      if (boundaryVisible) this.boundaryHint.textContent = finalRadius > this.region.playRadius - 1 ? "BATAS EKSPLORASI · DUNIA VISUAL TETAP BERLANJUT" : "MENDEKATI BATAS EKSPLORASI";
     }
 
     updateHUD() {
@@ -1650,7 +2719,7 @@
       this.hudRegionType.textContent = this.region.category;
       {
         const topo = this.regionWorld?.topography?.sourceLabel || "MAGELLAN GTDR";
-        this.hudData.textContent = this.regionWorld?.radar?.texture ? `${topo} + SAR` : `${topo} · SAR TIDAK TERMUAT`;
+        this.hudData.textContent = this.regionWorld?.radar?.texture ? `${topo} + SAR` : `${topo} · CITRA SAR TIDAK TERMUAT`;
       }
     }
 
@@ -1662,7 +2731,7 @@
       this.hudRegionType.textContent = region.category;
       {
         const topo = this.regionWorld?.topography?.sourceLabel || "MAGELLAN GTDR";
-        this.hudData.textContent = this.regionWorld?.radar?.texture ? `${topo} + SAR` : `${topo} · SAR TIDAK TERMUAT`;
+        this.hudData.textContent = this.regionWorld?.radar?.texture ? `${topo} + SAR` : `${topo} · CITRA SAR TIDAK TERMUAT`;
       }
       this.infoName.textContent = region.name;
       this.infoType.textContent = `${region.category} · ${region.descriptor}`;
@@ -1672,7 +2741,7 @@
       this.infoMedia.setAttribute("aria-label", `Perbesar citra referensi Magellan untuk ${region.name}`);
       this.infoDescription.textContent = region.description;
       this.infoFacts.replaceChildren(...region.facts.map(fact => { const li = document.createElement("li"); li.textContent = fact; return li; }));
-      this.infoBadge.textContent = `${this.regionWorld?.topography?.sourceLabel || "MAGELLAN GTDR"} · ${region.category} · VISUAL WORLD BERLANJUT`;
+      this.infoBadge.textContent = `${this.regionWorld?.topography?.sourceLabel || "MAGELLAN GTDR"} · MORFOLOGI REFERENSI NASA/JPL · ${region.category}`;
       this.infoVisualizationNote.hidden = !region.visualizationNote;
       this.infoVisualizationNote.textContent = region.visualizationNote || "";
       this.infoSource.href = region.source;
@@ -1681,17 +2750,21 @@
     }
 
     showRegionInfo(focus = false) {
+      this.closeObservationCard(false);
+      this.collapseObjectives();
+      if (this.objectivesToggle) this.objectivesToggle.hidden = true;
       this.infoCard.classList.add("is-visible");
       this.infoCard.setAttribute("aria-hidden", "false");
       this.infoToggle.hidden = true;
       if (focus) requestAnimationFrame(() => this.infoMinimize.focus({ preventScroll: true }));
     }
 
-    hideRegionInfo() {
+    hideRegionInfo(focusToggle = true) {
       this.infoCard.classList.remove("is-visible");
       this.infoCard.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = false;
-      this.infoToggle.focus({ preventScroll: true });
+      if (this.objectivesToggle && this.objectivesPanel?.hidden && this.state === STATES.EXPLORING) this.objectivesToggle.hidden = false;
+      if (focusToggle) this.infoToggle.focus({ preventScroll: true });
     }
 
     openReferenceImage() {
@@ -1788,6 +2861,7 @@
       this.infoCard.classList.remove("is-visible");
       this.infoCard.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = true;
+      this.resetEducationUI();
       this.boundaryHint.classList.remove("is-visible");
       this.root.classList.add("is-exiting");
       document.getElementById("announcement").textContent = "Meninggalkan permukaan Venus dan kembali ke panorama orbit.";
@@ -1856,7 +2930,7 @@
       this.state = STATES.ERROR;
       this.loading.hidden = true;
       this.errorPanel.hidden = false;
-      this.errorMessage.textContent = error?.message || "Region Venus tidak dapat dibangun.";
+      this.errorMessage.textContent = error?.message || "Wilayah Venus tidak dapat dibangun.";
       this.root.classList.add("is-error");
       this.entryButton.disabled = false;
       document.getElementById("announcement").textContent = "Eksplorasi penuh Venus gagal dimuat. Panorama Venus tetap aman.";
@@ -1873,6 +2947,7 @@
       this.input.unbind();
       this.disposeRegion();
       this.disposeRenderer();
+      this.resetEducationUI();
       this.state = STATES.IDLE;
       this.root.hidden = true;
       this.root.inert = true;
@@ -1890,6 +2965,10 @@
       this.infoCard.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = true;
       this.boundaryHint.classList.remove("is-visible");
+      this.resolvedObservations = [];
+      this.nearbyObservation = null;
+      this.activeObservation = null;
+      this.selectedTarget = null;
     }
 
     disposeRenderer() {

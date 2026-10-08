@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="mercury-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="sun-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="venus-scene.css?v=20260927-venusscience-2">
-  <link rel="stylesheet" href="venus-full-exploration.css?v=20260929-reference-fidelity-1">
+  <link rel="stylesheet" href="venus-full-exploration.css?v=20260929-education-world-1">
   <link rel="stylesheet" href="asteroid-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="jupiter-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="saturn-scene.css?v=20260927-venusscience-2">
@@ -32,8 +32,8 @@
   <script src="mars-full-exploration.js?v=20260927-venusscience-2" defer></script>
   <script src="mercury-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="sun-scene.js?v=20260927-venusscience-2" defer></script>
-  <script src="venus-scene.js?v=20260928-marsblueprint-2" defer></script>
-  <script src="venus-full-exploration.js?v=20260929-gtdr-rebuild-1" defer></script>
+  <script src="venus-scene.js?v=20260929-id-education-1" defer></script>
+  <script src="venus-full-exploration.js?v=20260929-education-world-1" defer></script>
   <script src="asteroid-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="jupiter-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="saturn-scene.js?v=20260927-venusscience-2" defer></script>
@@ -549,47 +549,91 @@
 
 
       <section class="mars-full-exploration venus-full-exploration" id="venus-full-exploration" aria-label="Eksplorasi penuh permukaan Venus" aria-hidden="true" hidden>
-        <div class="mars-full-viewport" id="venus-full-viewport" aria-label="Region Venus tiga dimensi yang dapat dijelajahi"></div>
+        <div class="mars-full-viewport" id="venus-full-viewport" aria-label="Wilayah Venus tiga dimensi yang dapat dijelajahi"></div>
         <div class="mars-full-horizon venus-full-horizon" aria-hidden="true"></div>
         <div class="venus-cloud-entry" aria-hidden="true"></div>
         <div class="venus-haze-vignette" aria-hidden="true"></div>
         <div class="venus-heat-shimmer" aria-hidden="true"></div>
 
         <section class="venus-region-selector" id="venus-region-selector" aria-labelledby="venus-region-selector-title">
-          <div class="venus-region-selector-topline"><span>ANTARA · VENUS MAGELLAN REGIONS</span><button id="venus-region-selector-close" type="button" aria-label="Tutup pemilih destinasi Venus">×</button></div>
+          <div class="venus-region-selector-topline"><span>ANTARA · WILAYAH MAGELLAN VENUS</span><button id="venus-region-selector-close" type="button" aria-label="Tutup pemilih destinasi Venus">×</button></div>
           <h3 id="venus-region-selector-title">Pilih Destinasi Venus</h3>
-          <p>Pilih satu region sebelum turun ke permukaan. ANTARA akan menyiapkan terrain dari topografi Magellan, lalu membawa kamera masuk melalui atmosfer Venus.</p>
+          <p>Pilih satu wilayah sebelum turun ke permukaan. ANTARA akan menyiapkan medan dari topografi Magellan, lalu membawa kamera masuk melalui atmosfer Venus.</p>
           <div class="venus-region-grid" id="venus-region-grid"></div>
           <div class="venus-region-provenance">
             <strong>REFERENSI MORFOLOGI</strong>
             <span>NASA / JPL · Magellan · IAU / USGS</span>
-            <small>Macro terrain mengikuti topografi ilmiah Magellan. Detail prosedural hanya memperkaya skala yang lebih kecil, sementara dunia visual terus berlanjut di luar batas gerak.</small>
+            <small>Topografi makro mengikuti data ilmiah Magellan. Detail prosedural hanya memperkaya skala yang lebih kecil, sementara dunia visual terus berlanjut jauh di luar zona yang dapat dijelajahi.</small>
           </div>
         </section>
 
         <aside class="mars-full-hud" data-venus-ui aria-label="Informasi penerbangan Venus">
           <div class="mars-hud-kicker">VENUS</div>
           <h3>Eksplorasi</h3>
-          <div class="mars-hud-mode">MAGELLAN TERRAIN · FULL EXPLORATION</div>
+          <div class="mars-hud-mode">MEDAN MAGELLAN · EKSPLORASI PENUH</div>
           <div class="mars-hud-location" id="venus-hud-location">Pilih destinasi</div>
           <div class="mars-hud-coordinates" id="venus-hud-coordinates">--</div>
           <div class="mars-hud-metrics">
             <div class="mars-hud-metric mars-hud-altitude-metric"><small>Ketinggian</small><strong id="venus-hud-altitude">--</strong><span id="venus-hud-altitude-limit" class="mars-hud-altitude-limit" hidden></span></div>
             <div class="mars-hud-metric"><small>Kecepatan</small><strong id="venus-hud-speed">0 M/S</strong></div>
             <div class="mars-hud-metric"><small>Jarak ke fitur</small><strong id="venus-hud-distance">--</strong></div>
-            <div class="mars-hud-metric"><small>Region</small><strong id="venus-hud-region-type">--</strong></div>
+            <div class="mars-hud-metric"><small>Wilayah</small><strong id="venus-hud-region-type">--</strong></div>
           </div>
-          <div class="mars-hud-data" id="venus-hud-data">MAGELLAN GTDR · SCIENTIFIC TERRAIN</div>
+          <div class="mars-hud-data" id="venus-hud-data">MAGELLAN GTDR · TOPOGRAFI ILMIAH</div>
+        </aside>
+
+        <aside class="venus-objectives-panel" id="venus-objectives-panel" data-venus-ui aria-label="Tujuan eksplorasi Venus" aria-live="polite">
+          <div class="venus-objectives-head">
+            <div><small>TUJUAN EKSPLORASI</small><strong id="venus-objectives-region">Venus</strong></div>
+            <button id="venus-objectives-collapse" type="button" aria-label="Minimalkan tujuan eksplorasi">Minimalkan</button>
+          </div>
+          <p id="venus-objectives-intro"></p>
+          <div class="venus-discovery-progress">
+            <div><span>PROGRES TEMUAN</span><strong id="venus-discovery-count">0 / 0</strong></div>
+            <div class="venus-discovery-track" aria-hidden="true"><i id="venus-discovery-bar"></i></div>
+          </div>
+          <ol id="venus-objectives-list" class="venus-objectives-list"></ol>
+          <div class="venus-next-target" id="venus-next-target" hidden>
+            <small>TEMUAN TERDEKAT</small>
+            <strong id="venus-next-target-name">-</strong>
+            <span id="venus-next-target-distance">-</span>
+          </div>
+        </aside>
+        <button class="venus-objectives-toggle" id="venus-objectives-toggle" type="button" data-venus-ui hidden>Tujuan · 0 / 0</button>
+
+        <div class="venus-observation-prompt" id="venus-observation-prompt" data-venus-ui hidden>
+          <span class="venus-observation-key">E</span>
+          <div><small>TITIK PENGAMATAN</small><strong id="venus-observation-prompt-title">Amati</strong></div>
+          <button id="venus-observe-button" type="button">AMATI</button>
+        </div>
+
+        <aside class="venus-observation-card" id="venus-observation-card" data-venus-ui aria-live="polite" aria-hidden="true" hidden>
+          <div class="venus-observation-card-head">
+            <div><small id="venus-observation-type">TEMUAN GEOLOGI</small><span id="venus-observation-status">BARU</span></div>
+            <button id="venus-observation-close" type="button" aria-label="Tutup informasi pengamatan">×</button>
+          </div>
+          <h4 id="venus-observation-title">Temuan Venus</h4>
+          <p class="venus-observation-meta" id="venus-observation-meta"></p>
+          <p class="venus-observation-lead" id="venus-observation-lead"></p>
+          <div class="venus-observation-sections" id="venus-observation-sections"></div>
+          <div class="venus-observation-comparison" id="venus-observation-comparison" hidden></div>
+          <div class="venus-observation-why"><small>MENGAPA PENTING?</small><p id="venus-observation-why"></p></div>
+          <details class="venus-observation-more" id="venus-observation-more">
+            <summary>Pelajari lebih lanjut</summary>
+            <div id="venus-observation-deep"></div>
+          </details>
+          <div class="venus-observation-source-note" id="venus-observation-source-note"></div>
+          <a class="venus-observation-source" id="venus-observation-source" href="https://science.nasa.gov/venus/" target="_blank" rel="noopener noreferrer">Sumber data: NASA ↗</a>
         </aside>
 
         <div class="mars-full-actions" data-venus-ui>
-          <button id="venus-location-toggle" type="button">Lokasi</button>
+          <button id="venus-location-toggle" type="button">Wilayah</button>
           <button id="venus-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button>
           <button class="mars-full-exit" id="venus-full-exit" type="button">Keluar dari Eksplorasi</button>
         </div>
 
         <div class="mars-control-hints" aria-hidden="true">
-          <span><b>WASD</b> Bergerak</span><span><b>Klik + Mouse</b> Lihat sekitar</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Percepat</span><span><b>ESC</b> Lepas kursor</span>
+          <span><b>WASD</b> Bergerak</span><span><b>Klik + Mouse</b> Lihat sekitar</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Percepat</span><span><b>E</b> Amati saat dekat temuan</span><span><b>ESC</b> Tutup panel / keluar</span>
         </div>
 
         <div class="mars-mobile-controls" data-venus-ui aria-label="Kontrol eksplorasi Venus">
@@ -602,7 +646,7 @@
           </div>
           <div class="mars-mobile-altitude" aria-label="Kontrol ketinggian">
             <button type="button" data-venus-control="up" aria-label="Naik">＋</button>
-            <span class="mars-mobile-altitude-label">ALT</span>
+            <span class="mars-mobile-altitude-label">TINGGI</span>
             <button type="button" data-venus-control="down" aria-label="Turun">−</button>
           </div>
         </div>
@@ -610,7 +654,7 @@
         <div class="venus-boundary-hint" id="venus-boundary-hint" aria-live="polite"></div>
 
         <div class="mars-full-loading" id="venus-full-loading" data-venus-ui hidden>
-          <div class="mars-full-loading-kicker">ANTARA · VENUS MAGELLAN TERRAIN</div>
+          <div class="mars-full-loading-kicker">ANTARA · MEDAN MAGELLAN VENUS</div>
           <h3>Menembus Atmosfer Venus</h3>
           <div class="mars-full-loading-status" id="venus-full-loading-status">MENYIAPKAN DESTINASI</div>
           <div class="mars-loading-track"><div class="mars-loading-progress" id="venus-full-loading-progress"></div></div>
@@ -618,7 +662,7 @@
 
         <div class="mars-full-error" id="venus-full-error" data-venus-ui hidden>
           <h3>Eksplorasi Belum Tersedia</h3>
-          <p id="venus-full-error-message">Region Venus tidak dapat dimuat.</p>
+          <p id="venus-full-error-message">Wilayah Venus tidak dapat dimuat.</p>
           <button id="venus-full-error-return" type="button">Kembali ke Venus</button>
         </div>
 
@@ -631,7 +675,7 @@
             <div class="mars-tutorial-item"><b>SHIFT</b><span>Percepat</span></div>
           </div>
           <div class="mars-full-tutorial-grid mars-tutorial-mobile">
-            <div class="mars-tutorial-item"><b>ARROW</b><span>Bergerak</span></div>
+            <div class="mars-tutorial-item"><b>PANAH</b><span>Bergerak</span></div>
             <div class="mars-tutorial-item"><b>GESER</b><span>Lihat sekitar</span></div>
             <div class="mars-tutorial-item"><b>＋ / −</b><span>Ketinggian</span></div>
           </div>
@@ -641,7 +685,7 @@
 
         <aside class="mars-landmark-card venus-location-card" id="venus-landmark-card" data-venus-ui aria-live="polite" aria-hidden="true">
           <div class="venus-location-card-head">
-            <small>VENUS SCIENTIFIC REGION · MAGELLAN DATA</small>
+            <small>WILAYAH ILMIAH VENUS · DATA MAGELLAN</small>
             <button class="venus-location-minimize" id="venus-landmark-minimize" type="button" aria-label="Minimalkan informasi lokasi">Sembunyikan</button>
           </div>
           <h4 id="venus-landmark-name">Venus</h4>
@@ -654,7 +698,7 @@
           <p class="venus-location-description" id="venus-landmark-description"></p>
           <ul class="venus-location-facts" id="venus-landmark-facts"></ul>
           <div class="venus-location-visualization-note" id="venus-landmark-visualization-note" hidden></div>
-          <div class="venus-location-data-badge" id="venus-landmark-data-badge">MAGELLAN GTDR · SCIENTIFIC MACRO TERRAIN</div>
+          <div class="venus-location-data-badge" id="venus-landmark-data-badge">MAGELLAN GTDR · TOPOGRAFI MAKRO ILMIAH</div>
           <div class="venus-location-sources">
             <a class="mars-landmark-source" id="venus-landmark-source" href="https://science.nasa.gov/venus/" target="_blank" rel="noopener noreferrer">Referensi morfologi: NASA/JPL ↗</a>
             <a class="mars-landmark-source" id="venus-landmark-coordinate-source" href="https://planetarynames.wr.usgs.gov/" target="_blank" rel="noopener noreferrer">Koordinat: IAU/USGS ↗</a>
@@ -774,7 +818,7 @@
           </div>
           <div class="mars-mobile-altitude" aria-label="Kontrol ketinggian">
             <button type="button" data-mars-control="up" aria-label="Naik">＋</button>
-            <span class="mars-mobile-altitude-label">ALT</span>
+            <span class="mars-mobile-altitude-label">TINGGI</span>
             <button type="button" data-mars-control="down" aria-label="Turun">−</button>
           </div>
         </div>
@@ -801,7 +845,7 @@
             <div class="mars-tutorial-item"><b>SHIFT</b><span>Percepat</span></div>
           </div>
           <div class="mars-tutorial-grid mars-tutorial-mobile">
-            <div class="mars-tutorial-item"><b>ARROW</b><span>Bergerak</span></div>
+            <div class="mars-tutorial-item"><b>PANAH</b><span>Bergerak</span></div>
             <div class="mars-tutorial-item"><b>GESER</b><span>Lihat sekitar</span></div>
             <div class="mars-tutorial-item"><b>＋ / −</b><span>Ketinggian</span></div>
           </div>

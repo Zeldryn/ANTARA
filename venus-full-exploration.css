@@ -242,7 +242,11 @@
 .venus-full-exploration.is-selecting .mars-control-hints,
 .venus-full-exploration.is-selecting .mars-mobile-controls,
 .venus-full-exploration.is-selecting .mars-landmark-card,
-.venus-full-exploration.is-selecting .mars-orientation-hint { opacity: 0 !important; pointer-events: none !important; }
+.venus-full-exploration.is-selecting .mars-orientation-hint,
+.venus-full-exploration.is-selecting .venus-objectives-panel,
+.venus-full-exploration.is-selecting .venus-objectives-toggle,
+.venus-full-exploration.is-selecting .venus-observation-prompt,
+.venus-full-exploration.is-selecting .venus-observation-card { opacity: 0 !important; pointer-events: none !important; }
 .venus-full-exploration.is-selecting .mars-full-viewport { filter: brightness(.54) saturate(.78); }
 
 /* Soft region boundary. No hard wall UI flash. */
@@ -340,6 +344,119 @@
 }
 .venus-location-info-toggle:hover, .venus-location-info-toggle:focus-visible { border-color: rgba(249, 211, 158, .78); background: rgba(66, 31, 22, .94); color: #ffe0ac; outline: none; }
 
+
+/* Educational exploration layer. Compact, contextual, and deliberately not game-like. */
+.venus-objectives-panel {
+  position: absolute;
+  z-index: 13;
+  left: clamp(18px, 3.5vw, 52px);
+  bottom: 72px;
+  width: min(360px, 35vw);
+  max-height: min(58vh, 560px);
+  overflow: auto;
+  padding: 16px 17px 15px;
+  border: 1px solid rgba(239, 193, 128, .28);
+  background: linear-gradient(145deg, rgba(20, 9, 8, .88), rgba(44, 22, 17, .80));
+  box-shadow: 0 18px 54px rgba(14, 5, 4, .35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #ead8c2;
+  transition: opacity .22s ease, transform .22s ease;
+}
+.venus-objectives-panel[hidden] { display: none; }
+.venus-objectives-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.venus-objectives-head > div { display: grid; gap: 4px; }
+.venus-objectives-head small { color: #c2936e; font: 650 6.5px/1.2 system-ui, sans-serif; letter-spacing: 1.5px; }
+.venus-objectives-head strong { color: #ffe2b5; font: 650 13px/1.2 system-ui, sans-serif; letter-spacing: .25px; }
+.venus-objectives-head button {
+  min-height: 28px; padding: 0 9px; border: 1px solid rgba(239, 193, 128, .25); border-radius: 999px;
+  background: rgba(35, 18, 14, .66); color: #cfad88; font: 650 6.5px/1 system-ui, sans-serif; letter-spacing: .8px;
+  text-transform: uppercase; cursor: pointer;
+}
+.venus-objectives-head button:hover, .venus-objectives-head button:focus-visible { border-color: rgba(245, 207, 151, .60); color: #ffe0ad; outline: none; }
+#venus-objectives-intro { margin: 11px 0 12px; color: rgba(239, 218, 196, .78); font-size: 9.6px; line-height: 1.55; }
+.venus-discovery-progress { margin: 0 0 11px; }
+.venus-discovery-progress > div:first-child { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.venus-discovery-progress span { color: #a9856c; font: 650 6px/1 system-ui, sans-serif; letter-spacing: 1.1px; }
+.venus-discovery-progress strong { color: #efc98f; font: 700 8px/1 system-ui, sans-serif; }
+.venus-discovery-track { height: 2px; margin-top: 7px; overflow: hidden; background: rgba(235, 190, 128, .12); }
+.venus-discovery-track i { display: block; width: 100%; height: 100%; transform: scaleX(0); transform-origin: left center; background: linear-gradient(90deg, #b97748, #f0c37f); transition: transform .32s ease; }
+.venus-objectives-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.venus-objectives-list li {
+  position: relative; min-height: 26px; padding: 6px 7px 6px 28px; border: 1px solid rgba(236, 190, 128, .10);
+  background: rgba(25, 12, 10, .32); color: rgba(239, 220, 199, .78); font-size: 8.8px; line-height: 1.45;
+}
+.venus-objectives-list li::before {
+  content: ""; position: absolute; left: 9px; top: 10px; width: 8px; height: 8px; border: 1px solid rgba(237, 191, 130, .52); border-radius: 50%;
+}
+.venus-objectives-list li.is-complete { color: rgba(230, 211, 186, .54); }
+.venus-objectives-list li.is-complete::before { background: #d3a46f; box-shadow: 0 0 0 2px rgba(211, 164, 111, .13); }
+.venus-next-target { display: grid; grid-template-columns: 1fr auto; gap: 3px 12px; margin-top: 11px; padding-top: 10px; border-top: 1px solid rgba(236, 190, 128, .12); }
+.venus-next-target small { grid-column: 1 / -1; color: #9d7e68; font-size: 5.8px; letter-spacing: 1.15px; }
+.venus-next-target strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #e8c79e; font-size: 8.4px; }
+.venus-next-target span { color: #f3ba72; font-size: 8.2px; }
+.venus-objectives-toggle {
+  position: absolute; z-index: 13; left: clamp(18px, 3.5vw, 52px); bottom: 72px; min-height: 36px; padding: 0 13px;
+  border: 1px solid rgba(239, 193, 128, .42); border-radius: 999px; background: rgba(27, 14, 11, .88); color: #ebc68f;
+  box-shadow: 0 12px 32px rgba(15, 5, 3, .30); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  font: 650 7px/1 system-ui, sans-serif; letter-spacing: .9px; text-transform: uppercase; cursor: pointer;
+}
+.venus-objectives-toggle:hover, .venus-objectives-toggle:focus-visible { border-color: rgba(249, 211, 158, .78); background: rgba(66, 31, 22, .94); color: #ffe0ac; outline: none; }
+
+.venus-observation-prompt {
+  position: absolute; z-index: 17; left: 50%; bottom: 94px; transform: translate(-50%, 6px);
+  display: flex; align-items: center; gap: 10px; min-width: 260px; max-width: min(520px, calc(100vw - 30px));
+  padding: 9px 10px; border: 1px solid rgba(248, 202, 137, .38); background: rgba(25, 12, 10, .86);
+  box-shadow: 0 16px 42px rgba(12, 4, 3, .34); backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
+  color: #f0d6b2;
+}
+.venus-observation-prompt[hidden] { display: none; }
+.venus-observation-key { display: grid; place-items: center; width: 29px; height: 29px; border: 1px solid rgba(246, 204, 147, .48); color: #ffdba2; font: 700 10px/1 system-ui, sans-serif; }
+.venus-observation-prompt > div { min-width: 0; display: grid; gap: 2px; flex: 1; }
+.venus-observation-prompt small { color: #a88469; font-size: 5.5px; letter-spacing: 1.1px; }
+.venus-observation-prompt strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 9px; font-weight: 650; }
+#venus-observe-button { min-height: 30px; padding: 0 11px; border: 1px solid rgba(249, 211, 158, .52); background: rgba(95, 47, 31, .68); color: #ffe0ad; font: 700 6.5px/1 system-ui, sans-serif; letter-spacing: 1px; cursor: pointer; }
+#venus-observe-button:hover, #venus-observe-button:focus-visible { background: rgba(124, 63, 39, .82); outline: none; }
+
+.venus-observation-card {
+  position: absolute; z-index: 19; right: clamp(18px, 3.5vw, 52px); top: 50%; transform: translateY(-50%);
+  width: min(460px, 42vw); max-height: min(78vh, 760px); overflow: auto; padding: 19px 20px 20px;
+  border: 1px solid rgba(241, 194, 132, .36); background: linear-gradient(150deg, rgba(20, 9, 8, .96), rgba(48, 23, 17, .94));
+  box-shadow: 0 30px 90px rgba(12, 3, 3, .55); backdrop-filter: blur(13px); -webkit-backdrop-filter: blur(13px); color: #f3ddc4;
+}
+.venus-observation-card[hidden] { display: none; }
+.venus-observation-card-head { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; }
+.venus-observation-card-head > div { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.venus-observation-card-head small { color: #d19e70; font: 700 6.6px/1.2 system-ui, sans-serif; letter-spacing: 1.5px; }
+#venus-observation-status { padding: 4px 6px; border: 1px solid rgba(237, 188, 124, .22); border-radius: 999px; color: #b89271; font: 650 5.5px/1 system-ui, sans-serif; letter-spacing: .9px; }
+.venus-observation-card-head button { width: 30px; height: 30px; border: 1px solid rgba(239, 193, 128, .25); background: rgba(37, 18, 14, .65); color: #e6c8a2; font-size: 18px; cursor: pointer; }
+.venus-observation-card-head button:hover, .venus-observation-card-head button:focus-visible { border-color: rgba(247, 210, 157, .62); color: #ffe3b5; outline: none; }
+.venus-observation-card h4 { margin: 12px 0 6px; color: #fff0d8; font: 400 clamp(24px, 2.8vw, 34px)/1.05 Georgia, "Times New Roman", serif; }
+.venus-observation-meta { margin: 0 0 12px; color: #ab8b73; font-size: 7.5px; letter-spacing: .55px; }
+.venus-observation-lead { margin: 0 0 14px; color: rgba(255, 237, 215, .91); font-size: 12.2px; line-height: 1.68; }
+.venus-observation-sections { display: grid; gap: 10px; }
+.venus-observation-section { padding: 10px 11px; border: 1px solid rgba(238, 191, 129, .13); background: rgba(21, 10, 8, .36); }
+.venus-observation-section small { display: block; margin-bottom: 5px; color: #c8976a; font-size: 6px; letter-spacing: 1.15px; }
+.venus-observation-section p { margin: 0; color: rgba(237, 218, 197, .80); font-size: 10.4px; line-height: 1.62; }
+.venus-observation-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 11px; }
+.venus-observation-comparison > div { padding: 9px; border: 1px solid rgba(236, 189, 128, .14); background: rgba(90, 43, 27, .20); }
+.venus-observation-comparison small { display: block; color: #997b68; font-size: 5.5px; letter-spacing: 1px; }
+.venus-observation-comparison strong { display: block; margin-top: 4px; color: #f0c389; font-size: 11px; }
+.venus-observation-why { margin-top: 12px; padding: 11px 12px; border-left: 2px solid rgba(232, 165, 94, .62); background: rgba(100, 45, 28, .18); }
+.venus-observation-why small { color: #d3a06f; font-size: 6px; letter-spacing: 1.2px; }
+.venus-observation-why p { margin: 5px 0 0; color: rgba(247, 226, 203, .86); font-size: 10.3px; line-height: 1.58; }
+.venus-observation-more { margin-top: 11px; border-top: 1px solid rgba(235, 190, 128, .13); border-bottom: 1px solid rgba(235, 190, 128, .13); }
+.venus-observation-more summary { padding: 10px 0; color: #e2b785; font-size: 8.2px; letter-spacing: .45px; cursor: pointer; }
+#venus-observation-deep { display: grid; gap: 7px; padding: 0 0 11px; }
+#venus-observation-deep p { margin: 0; color: rgba(220, 202, 183, .72); font-size: 9.4px; line-height: 1.55; }
+.venus-observation-source-note { margin-top: 11px; color: #8f7565; font-size: 7.4px; line-height: 1.5; }
+.venus-observation-source { display: inline-block; margin-top: 7px; color: #c9a47e; font-size: 8px; line-height: 1.4; letter-spacing: .4px; text-decoration: none; }
+.venus-observation-source:hover { color: #f0c994; }
+
+.venus-full-exploration.is-observation-open .mars-full-actions,
+.venus-full-exploration.is-observation-open .mars-control-hints,
+.venus-full-exploration.is-observation-open .venus-observation-prompt { opacity: .26; pointer-events: none; }
+
 /* Mars mobile layout targets data-mars-control. Map the same positions to Venus. */
 .venus-full-exploration .mars-mobile-dpad [data-venus-control="forward"] { left: 51px; top: 0; }
 .venus-full-exploration .mars-mobile-dpad [data-venus-control="left"] { left: 0; top: 51px; }
@@ -394,6 +511,23 @@
   .venus-full-exploration .mars-mobile-dpad [data-venus-control="left"] { top: 45px; }
   .venus-full-exploration .mars-mobile-dpad [data-venus-control="right"] { top: 45px; }
   .venus-full-exploration .mars-mobile-dpad [data-venus-control="backward"] { left: 45px; }
+}
+
+@media (pointer: coarse), (max-width: 760px) {
+  .venus-objectives-panel { left: 10px; bottom: 80px; width: min(330px, 46vw); max-height: 52vh; padding: 13px 14px; }
+  .venus-objectives-toggle { left: 10px; bottom: 18px; }
+  .venus-observation-key { display: none; }
+  .venus-observation-prompt { bottom: 82px; min-width: 0; width: min(360px, calc(100vw - 24px)); }
+  #venus-observe-button { display: block; }
+  .venus-observation-card { right: 10px; width: min(410px, 58vw); max-height: 72vh; padding: 16px 17px; }
+}
+@media (max-width: 560px) {
+  .venus-objectives-panel { left: 10px; right: 10px; bottom: 72px; width: auto; max-height: 48vh; }
+  .venus-observation-prompt { bottom: 74px; }
+  .venus-observation-card { left: 10px; right: 10px; top: auto; bottom: 70px; width: auto; max-height: 68vh; transform: none; }
+  .venus-observation-card h4 { font-size: 25px; }
+  .venus-observation-lead { font-size: 11.3px; }
+  .venus-observation-section p { font-size: 9.8px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .venus-full-exploration *,
