@@ -3177,3 +3177,463 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 #uranus-explore-button{background:linear-gradient(120deg,#9adce0,#5eaeb7)!important;border-color:#b2e8e9!important;color:#07191d!important}
 #neptune-explore-button{background:linear-gradient(120deg,#426bb4,#2b4f9f)!important;border-color:#7299e1!important;color:#f8fbff!important}
 #sun-explore-button:hover,#mercury-explore-button:hover,#venus-explore-button:hover,#earth-explore-button:hover,#mars-explore-button:hover,#asteroid-explore-button:hover,#jupiter-explore-button:hover,#saturn-explore-button:hover,#uranus-explore-button:hover,#neptune-explore-button:hover{filter:brightness(1.08)}
+
+/* ==============================================================
+   ANTARA CREW PROFILE HUD
+   Integrated into the upper cockpit identification rail.
+   ============================================================== */
+.cockpit-profile-hud {
+  --profile-gold: #d9af68;
+  --profile-gold-soft: rgba(217,175,104,.42);
+  --profile-cyan: #72b8da;
+  --profile-cyan-soft: rgba(114,184,218,.34);
+  --profile-ink: rgba(3,10,18,.92);
+  position: absolute;
+  z-index: 20;
+  left: 50%;
+  top: 7.95%;
+  width: clamp(340px, 30vw, 490px);
+  height: clamp(58px, 6.4vh, 72px);
+  transform: translateX(-50%) translate3d(var(--cam-x),var(--cam-y),0) rotate(var(--cam-tilt));
+  transform-origin: 50% 84%;
+  pointer-events: auto;
+  isolation: isolate;
+  opacity: 1;
+  transition: opacity .35s ease, filter .35s ease;
+}
+
+.cockpit-profile-hud::before,
+.cockpit-profile-hud::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.cockpit-profile-hud::before {
+  inset: 3px 0;
+  clip-path: polygon(4% 0,96% 0,100% 26%,97% 78%,92% 100%,8% 100%,3% 78%,0 26%);
+  background:
+    linear-gradient(90deg,transparent 0 4%,rgba(119,184,215,.12) 12%,transparent 25%,rgba(219,178,105,.08) 50%,transparent 75%,rgba(119,184,215,.12) 88%,transparent 96%),
+    linear-gradient(180deg,rgba(15,31,46,.96),rgba(4,12,21,.96));
+  border-top: 1px solid rgba(133,191,220,.16);
+  border-bottom: 1px solid rgba(220,179,106,.2);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.025),
+    inset 0 -8px 18px rgba(0,0,0,.16),
+    0 9px 22px rgba(0,0,0,.23);
+}
+
+.cockpit-profile-hud::after {
+  left: 13%;
+  right: 13%;
+  bottom: 2px;
+  height: 1px;
+  background: linear-gradient(90deg,transparent,var(--profile-gold-soft) 18%,var(--profile-cyan-soft) 50%,var(--profile-gold-soft) 82%,transparent);
+  opacity: .74;
+}
+
+.profile-hud-trigger {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  align-items: center;
+  gap: clamp(10px,1vw,16px);
+  width: 100%;
+  height: 100%;
+  padding: 0 clamp(17px,1.4vw,23px) 0 clamp(10px,1vw,14px);
+  border: 0;
+  color: #eef4f8;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  pointer-events: auto;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.profile-hud-trigger:focus-visible {
+  outline: 1px solid rgba(235,198,129,.82);
+  outline-offset: 4px;
+}
+
+.profile-hud-rail {
+  position: absolute;
+  top: 50%;
+  width: min(20vw,260px);
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg,transparent,rgba(112,180,214,.32),rgba(222,181,108,.42));
+  opacity: .74;
+}
+.profile-hud-rail::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--profile-gold);
+  box-shadow: 0 0 8px rgba(217,175,104,.45);
+}
+.profile-hud-rail-left { right: calc(100% - 10px); transform: translateY(-50%); }
+.profile-hud-rail-left::after { right: 0; }
+.profile-hud-rail-right { left: calc(100% - 10px); transform: translateY(-50%) scaleX(-1); }
+.profile-hud-rail-right::after { right: 0; }
+
+.profile-avatar-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(54px,5.25vw,68px);
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 7px 12px rgba(0,0,0,.3));
+  transform: translateY(0);
+  transition: transform .26s cubic-bezier(.2,.75,.2,1), filter .26s ease;
+}
+
+.profile-avatar-tech {
+  position: absolute;
+  inset: -8%;
+  width: 116%;
+  height: 116%;
+  overflow: visible;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform-origin: 50% 50%;
+  animation: profile-ring-idle 24s linear infinite;
+}
+.profile-ring-base { stroke: rgba(106,163,194,.42); stroke-width: 1.25; }
+.profile-ring-dash {
+  stroke-width: 1.15;
+  stroke-dasharray: 9 7 3 12;
+  transform-origin: 50% 50%;
+}
+.profile-ring-dash-a { stroke: rgba(219,177,103,.78); }
+.profile-ring-dash-b { stroke: rgba(102,180,217,.48); stroke-dasharray: 3 15 13 9; transform: rotate(17deg); }
+.profile-ring-segment { stroke: rgba(234,197,128,.88); stroke-width: 1.7; }
+.profile-ring-blade { stroke: rgba(98,157,190,.72); stroke-width: 2; }
+
+.profile-avatar-orbit {
+  position: absolute;
+  width: 118%;
+  height: 52%;
+  left: -9%;
+  top: 24%;
+  border: 1px solid rgba(217,175,104,.45);
+  border-left-color: transparent;
+  border-right-color: rgba(108,184,218,.26);
+  border-radius: 50%;
+  transform: rotate(-20deg);
+  pointer-events: none;
+}
+.profile-avatar-orbit-b {
+  width: 110%;
+  height: 38%;
+  left: -5%;
+  top: 31%;
+  border-color: rgba(107,180,215,.3) transparent rgba(218,177,103,.26);
+  transform: rotate(24deg);
+}
+.profile-avatar-orbit-a::after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  right: 5%;
+  top: 10%;
+  border-radius: 50%;
+  background: #e6bf78;
+  box-shadow: 0 0 8px rgba(230,191,120,.48);
+}
+
+.profile-avatar-core {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 68%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 1px solid rgba(141,196,223,.34);
+  background:
+    radial-gradient(circle at 50% 35%,rgba(82,136,169,.16),transparent 55%),
+    linear-gradient(180deg,#142638,#07111d);
+  box-shadow:
+    inset 0 0 0 2px rgba(3,10,17,.62),
+    inset 0 0 14px rgba(80,145,177,.12),
+    0 0 0 1px rgba(218,177,104,.08);
+}
+.profile-avatar-core::after {
+  content: "";
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  border-top: 1px solid rgba(225,190,124,.44);
+  border-right: 1px solid transparent;
+  transform: rotate(-28deg);
+  pointer-events: none;
+}
+.profile-avatar-core img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.profile-login-glyph {
+  width: 52%;
+  height: 52%;
+  fill: none;
+  stroke: rgba(225,235,242,.84);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 5px rgba(113,183,217,.18));
+}
+.profile-login-mark { stroke: var(--profile-gold); }
+.profile-avatar-initials {
+  color: #eef3f6;
+  font: 600 clamp(10px,1vw,14px)/1 system-ui,sans-serif;
+  letter-spacing: .08em;
+  text-indent: .08em;
+}
+.profile-avatar-status {
+  position: absolute;
+  right: 8%;
+  bottom: 8%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid #09131f;
+  background: var(--profile-gold);
+  box-shadow: 0 0 8px rgba(217,175,104,.56);
+}
+.cockpit-profile-hud[data-profile-state="logged-in"] .profile-avatar-status {
+  background: #83c4dc;
+  box-shadow: 0 0 8px rgba(112,190,220,.62);
+}
+
+.profile-hud-copy {
+  min-width: 0;
+  display: grid;
+  align-content: center;
+  gap: 2px;
+}
+.profile-hud-kicker {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: rgba(161,191,208,.72);
+  font-size: clamp(5px,.47vw,7px);
+  font-weight: 600;
+  letter-spacing: .23em;
+  white-space: nowrap;
+}
+.profile-hud-kicker i {
+  width: 15px;
+  height: 1px;
+  flex: 0 0 auto;
+  background: linear-gradient(90deg,var(--profile-gold),transparent);
+  box-shadow: 0 0 5px rgba(217,175,104,.24);
+}
+.profile-hud-copy strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #f1f4f6;
+  font: 500 clamp(10px,.9vw,13px)/1.12 Georgia,"Times New Roman",serif;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px rgba(0,0,0,.48);
+}
+.profile-hud-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgba(218,226,233,.54);
+  font-size: clamp(5px,.44vw,6.5px);
+  font-weight: 600;
+  letter-spacing: .16em;
+}
+
+.profile-hud-action {
+  display: grid;
+  grid-template-columns: auto 18px;
+  align-items: center;
+  gap: 8px;
+  padding-left: 10px;
+  border-left: 1px solid rgba(115,174,204,.14);
+  color: rgba(157,195,215,.52);
+  font-size: 5px;
+  letter-spacing: .14em;
+}
+.profile-hud-action svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--profile-gold);
+  stroke-width: 1.4;
+  transition: transform .22s ease;
+}
+
+.profile-hud-scan {
+  position: absolute;
+  z-index: 4;
+  top: 8%;
+  bottom: 8%;
+  left: 11%;
+  width: 1px;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg,transparent,rgba(141,211,238,.72),rgba(229,192,122,.45),transparent);
+  box-shadow: 0 0 8px rgba(119,190,219,.28);
+}
+.profile-hud-node {
+  position: absolute;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 50%;
+  background: #6aaed0;
+  box-shadow: 0 0 7px rgba(106,174,208,.58);
+  pointer-events: none;
+  animation: profile-node-pulse 3.8s ease-in-out infinite;
+}
+.profile-hud-node-a { left: 2.7%; }
+.profile-hud-node-b { right: 2.7%; animation-delay: -1.8s; background: #d8ae67; box-shadow: 0 0 7px rgba(216,174,103,.5); }
+
+/* Boot sequence. The entire module powers on quickly and then becomes quiet. */
+.mission[data-experience="home"] .cockpit-profile-hud {
+  animation: profile-hud-deploy .75s cubic-bezier(.2,.76,.18,1) both;
+}
+.mission[data-experience="home"] .profile-avatar-frame {
+  animation: profile-avatar-deploy .72s .28s cubic-bezier(.2,.8,.2,1) both;
+}
+.mission[data-experience="home"] .profile-hud-copy {
+  animation: profile-copy-reveal .58s .62s ease both;
+}
+.mission[data-experience="home"] .profile-hud-scan {
+  animation: profile-boot-scan 1.15s .38s cubic-bezier(.22,.62,.2,1) both;
+}
+
+.profile-hud-trigger:hover .profile-avatar-frame,
+.profile-hud-trigger:focus-visible .profile-avatar-frame {
+  transform: translateY(-1px) scale(1.018);
+  filter: drop-shadow(0 8px 13px rgba(0,0,0,.34)) drop-shadow(0 0 5px rgba(100,181,216,.12));
+}
+.profile-hud-trigger:hover .profile-hud-action svg,
+.profile-hud-trigger:focus-visible .profile-hud-action svg { transform: translateX(3px); }
+.profile-hud-trigger:hover ~ .profile-hud-scan,
+.profile-hud-trigger:focus-visible ~ .profile-hud-scan { animation: profile-hover-scan .68s ease both; }
+.profile-hud-trigger:hover .profile-hud-copy strong,
+.profile-hud-trigger:focus-visible .profile-hud-copy strong { color: #fff7e7; }
+
+.mission[data-experience="launch"] .cockpit-profile-hud {
+  opacity: .42;
+  filter: saturate(.76);
+  pointer-events: none;
+}
+.mission[data-experience="planet"] .cockpit-profile-hud { display: none; }
+
+@keyframes profile-hud-deploy {
+  0% { opacity: 0; transform: translateX(-50%) translate3d(var(--cam-x),var(--cam-y),0) rotate(var(--cam-tilt)) translateY(-7px) scaleX(.82); filter: brightness(.62); }
+  55% { opacity: 1; transform: translateX(-50%) translate3d(var(--cam-x),var(--cam-y),0) rotate(var(--cam-tilt)) translateY(0) scaleX(1.015); }
+  100% { opacity: 1; transform: translateX(-50%) translate3d(var(--cam-x),var(--cam-y),0) rotate(var(--cam-tilt)) translateY(0) scaleX(1); filter: brightness(1); }
+}
+@keyframes profile-avatar-deploy {
+  from { opacity: 0; transform: scale(.76) rotate(-7deg); }
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+@keyframes profile-copy-reveal {
+  from { opacity: 0; transform: translateX(-8px); clip-path: inset(0 100% 0 0); }
+  to { opacity: 1; transform: translateX(0); clip-path: inset(0 0 0 0); }
+}
+@keyframes profile-boot-scan {
+  0% { left: 9%; opacity: 0; }
+  14% { opacity: .8; }
+  80% { opacity: .72; }
+  100% { left: 91%; opacity: 0; }
+}
+@keyframes profile-hover-scan {
+  0% { left: 14%; opacity: 0; }
+  18% { opacity: .62; }
+  100% { left: 88%; opacity: 0; }
+}
+@keyframes profile-ring-idle { to { transform: rotate(360deg); } }
+@keyframes profile-node-pulse { 0%,72%,100%{opacity:.3} 80%,90%{opacity:1} }
+
+/* Responsive simplification preserves the same cockpit identity without scaling the whole HUD. */
+@media (max-width: 1100px) {
+  .cockpit-profile-hud { width: clamp(320px,34vw,410px); height: clamp(54px,6.1vh,64px); top: 7.9%; }
+  .profile-hud-trigger { padding-right: 15px; gap: 10px; }
+  .profile-avatar-frame { width: clamp(50px,5.1vw,59px); }
+  .profile-hud-action span { display: none; }
+  .profile-hud-action { grid-template-columns: 16px; padding-left: 8px; }
+}
+
+@media (max-width: 900px) {
+  .cockpit-profile-hud { width: clamp(280px,43vw,350px); top: 7.7%; }
+  .profile-hud-secondary { display: none; }
+  .profile-hud-copy small { display: none; }
+  .profile-hud-kicker { letter-spacing: .18em; }
+  .profile-hud-rail { width: 16vw; }
+}
+
+@media (max-width: 700px) {
+  .cockpit-profile-hud {
+    top: 7.2%;
+    width: clamp(190px,61vw,245px);
+    height: 49px;
+  }
+  .cockpit-profile-hud::before { inset: 2px 0; }
+  .profile-hud-trigger {
+    grid-template-columns: 42px minmax(0,1fr) 15px;
+    gap: 8px;
+    padding: 0 12px 0 8px;
+  }
+  .profile-avatar-frame { width: 42px; }
+  .profile-hud-kicker,
+  .profile-hud-copy small,
+  .profile-hud-action span { display: none; }
+  .profile-hud-copy strong {
+    font-size: 9px;
+    letter-spacing: .09em;
+  }
+  .profile-hud-action { border-left: 0; padding-left: 0; grid-template-columns: 15px; }
+  .profile-hud-action svg { width: 15px; height: 15px; }
+  .profile-hud-rail { width: 11vw; opacity: .5; }
+  .profile-hud-node { display: none; }
+}
+
+@media (max-height: 700px) and (min-width: 701px) {
+  .cockpit-profile-hud {
+    top: 6.5%;
+    height: 50px;
+    width: clamp(300px,31vw,390px);
+  }
+  .profile-avatar-frame { width: 48px; }
+  .profile-hud-copy small { display: none; }
+}
+
+@media (max-height: 560px) {
+  .cockpit-profile-hud { top: 5.5%; height: 45px; }
+  .profile-avatar-frame { width: 42px; }
+  .profile-hud-kicker { display: none; }
+  .profile-hud-copy strong { font-size: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cockpit-profile-hud,
+  .profile-avatar-frame,
+  .profile-hud-copy,
+  .profile-hud-scan,
+  .profile-avatar-tech,
+  .profile-hud-node {
+    animation: none !important;
+    transition-duration: .01ms !important;
+  }
+}

@@ -10,7 +10,7 @@
   <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, Sabuk Asteroid, Jupiter, Saturnus, Uranus, Neptunus, dan keajaiban Tata Surya.">
   <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/orbit.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20260927-venusscience-2">
+  <link rel="stylesheet" href="styles.css?v=20260930-profilehud-1">
   <link rel="stylesheet" href="exploration-media.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="earth-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="earth-full-exploration.css?v=20260927-venusscience-2">
@@ -39,7 +39,7 @@
   <script src="saturn-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="uranus-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="neptune-scene.js?v=20260927-venusscience-2" defer></script>
-  <script src="script.js?v=20260928-marsblueprint-2" defer></script>
+  <script src="script.js?v=20260930-profilehud-1" defer></script>
 </head>
 <body>
   <main class="mission" id="mission">
@@ -126,6 +126,7 @@
           <span class="window-depth-right"></span>
           <span class="window-depth-bottom"></span>
         </div>
+
         <div class="cockpit-side-module side-module-left"><i></i><i></i><i></i></div>
         <div class="cockpit-side-module side-module-right"><i></i><i></i><i></i></div>
         <div class="cockpit-roof">
@@ -206,6 +207,49 @@
           <div class="dashboard-screen"><span id="flight-status">SIAP BERANGKAT • BUMI</span><b></b></div>
         </div>
       </div>
+
+      <section class="cockpit-profile-hud" id="cockpit-profile-hud" data-profile-state="logged-out" aria-label="Identitas penjelajah ANTARA">
+          <span class="profile-hud-rail profile-hud-rail-left" aria-hidden="true"></span>
+          <span class="profile-hud-rail profile-hud-rail-right" aria-hidden="true"></span>
+          <button class="profile-hud-trigger" id="profile-hud-trigger" type="button" aria-label="Masuk ke ANTARA">
+            <span class="profile-avatar-frame" aria-hidden="true">
+              <svg class="profile-avatar-tech" viewBox="0 0 100 100" focusable="false">
+                <circle class="profile-ring-base" cx="50" cy="50" r="37"></circle>
+                <circle class="profile-ring-dash profile-ring-dash-a" cx="50" cy="50" r="43"></circle>
+                <circle class="profile-ring-dash profile-ring-dash-b" cx="50" cy="50" r="47"></circle>
+                <path class="profile-ring-segment" d="M14 43 6 50l8 7M86 43l8 7-8 7M43 14l7-8 7 8M43 86l7 8 7-8"></path>
+                <path class="profile-ring-blade" d="M25 19 33 10 40 16M60 16l7-6 8 9M19 75l8 9 11-5M62 79l11 5 8-9"></path>
+              </svg>
+              <span class="profile-avatar-orbit profile-avatar-orbit-a"></span>
+              <span class="profile-avatar-orbit profile-avatar-orbit-b"></span>
+              <span class="profile-avatar-core">
+                <img id="profile-avatar-image" alt="" hidden>
+                <svg class="profile-login-glyph" id="profile-login-glyph" viewBox="0 0 48 48" focusable="false">
+                  <circle cx="24" cy="17" r="7"></circle>
+                  <path d="M11 37c1.7-7.1 6.2-10.7 13-10.7S35.3 29.9 37 37"></path>
+                  <path class="profile-login-mark" d="M34 14h9m-3.5-3.5L43 14l-3.5 3.5"></path>
+                </svg>
+                <span class="profile-avatar-initials" id="profile-avatar-initials" hidden></span>
+              </span>
+              <span class="profile-avatar-status"></span>
+            </span>
+
+            <span class="profile-hud-copy">
+              <span class="profile-hud-kicker"><i></i><span id="profile-hud-kicker">IDENTITAS PENJELAJAH</span></span>
+              <strong id="profile-hud-primary">MASUK KE ANTARA</strong>
+              <small id="profile-hud-secondary">CREW ACCESS · STANDBY</small>
+            </span>
+
+            <span class="profile-hud-action" aria-hidden="true">
+              <span>01</span>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5"></path></svg>
+            </span>
+          </button>
+          <span class="profile-hud-scan" aria-hidden="true"></span>
+          <span class="profile-hud-node profile-hud-node-a" aria-hidden="true"></span>
+          <span class="profile-hud-node profile-hud-node-b" aria-hidden="true"></span>
+      </section>
+
 
       <div class="speech-bubble speaker-a" id="speech-bubble" role="status" aria-live="polite">
         <strong id="speech-speaker">Nara</strong>

@@ -700,8 +700,151 @@ const DIALOGUE_TIMELINE = Object.freeze([
   { at: 28.05, phase: "approach", speaker: "B", text: "Itu Bumi! Rumah kita.", emotion: "surprised", sprite: "surprised", otherSprite: "pointing", duration: 3000 }
 ]);
 
+class CockpitProfileHUD {
+  constructor() {
+    this.root = document.getElementById("cockpit-profile-hud");
+    this.trigger = document.getElementById("profile-hud-trigger");
+    this.avatarImage = document.getElementById("profile-avatar-image");
+    this.loginGlyph = document.getElementById("profile-login-glyph");
+    this.initials = document.getElementById("profile-avatar-initials");
+    this.kicker = document.getElementById("profile-hud-kicker");
+    this.primary = document.getElementById("profile-hud-primary");
+    this.secondary = document.getElementById("profile-hud-secondary");
+    this.user = null;
+
+    if (!this.root || !this.trigger) return;
+
+    this.trigger.addEventListener("click", () => this.activate());
+    this.avatarImage?.addEventListener("error", () => {
+      if (!this.user) return;
+      this.avatarImage.hidden = true;
+      this.avatarImage.removeAttribute("src");
+      this.initials.textContent = this.makeInitials(this.user.name);
+      this.initials.hidden = false;
+    });
+    window.addEventListener("antara:auth-change", event => {
+      this.setUser(event.detail?.user ?? event.detail ?? null);
+    });
+
+    this.refreshFromExistingAuth();
+
+    window.ANTARAProfileHUD = Object.freeze({
+      setUser: user => this.setUser(user),
+      clearUser: () => this.setUser(null),
+      refresh: () => this.refreshFromExistingAuth()
+    });
+  }
+
+  getAuthApi() {
+    return window.ANTARAAuth || window.AntaraAuth || null;
+  }
+
+  refreshFromExistingAuth() {
+    const api = this.getAuthApi();
+    let candidate = null;
+    try {
+      candidate = api?.getCurrentUser?.() ?? api?.currentUser ?? window.ANTARA_USER ?? null;
+    } catch {
+      candidate = null;
+    }
+
+    if (candidate && typeof candidate.then === "function") {
+      candidate.then(user => this.setUser(user)).catch(() => this.setUser(null));
+      return;
+    }
+    this.setUser(candidate);
+  }
+
+  normalizeUser(user) {
+    if (!user || typeof user !== "object") return null;
+    const name = String(user.name ?? user.displayName ?? user.username ?? "").trim();
+    if (!name) return null;
+    return {
+      raw: user,
+      name,
+      avatar: String(user.avatar ?? user.avatarUrl ?? user.photoURL ?? user.photo ?? "").trim(),
+      label: String(user.role ?? user.rank ?? user.subtitle ?? "PENJELAJAH ANTARA").trim() || "PENJELAJAH ANTARA"
+    };
+  }
+
+  makeInitials(name) {
+    return name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(part => part[0]?.toUpperCase() || "")
+      .join("");
+  }
+
+  setUser(user) {
+    if (!this.root) return;
+    this.user = this.normalizeUser(user);
+
+    if (!this.user) {
+      this.root.dataset.profileState = "logged-out";
+      this.kicker.textContent = "IDENTITAS PENJELAJAH";
+      this.primary.textContent = "MASUK KE ANTARA";
+      this.secondary.textContent = "CREW ACCESS · STANDBY";
+      this.trigger.setAttribute("aria-label", "Masuk ke ANTARA");
+      this.trigger.removeAttribute("aria-expanded");
+      this.avatarImage.hidden = true;
+      this.avatarImage.removeAttribute("src");
+      this.avatarImage.alt = "";
+      this.initials.hidden = true;
+      this.initials.textContent = "";
+      this.loginGlyph.hidden = false;
+      return;
+    }
+
+    this.root.dataset.profileState = "logged-in";
+    this.kicker.textContent = "ANTARA ID · CREW";
+    this.primary.textContent = this.user.name;
+    this.secondary.textContent = this.user.label;
+    this.trigger.setAttribute("aria-label", `Buka profil ${this.user.name}`);
+    this.loginGlyph.hidden = true;
+
+    if (this.user.avatar) {
+      this.avatarImage.src = this.user.avatar;
+      this.avatarImage.alt = `Foto profil ${this.user.name}`;
+      this.avatarImage.hidden = false;
+      this.initials.hidden = true;
+      this.initials.textContent = "";
+    } else {
+      this.avatarImage.hidden = true;
+      this.avatarImage.removeAttribute("src");
+      this.avatarImage.alt = "";
+      this.initials.textContent = this.makeInitials(this.user.name);
+      this.initials.hidden = false;
+    }
+  }
+
+  activate() {
+    const api = this.getAuthApi();
+
+    if (this.user) {
+      if (typeof api?.openProfile === "function") {
+        api.openProfile(this.user.raw);
+        return;
+      }
+      window.dispatchEvent(new CustomEvent("antara:profile-request", {
+        detail: { user: this.user.raw, source: "cockpit-profile-hud" }
+      }));
+      return;
+    }
+
+    if (typeof api?.openLogin === "function") {
+      api.openLogin();
+      return;
+    }
+    window.dispatchEvent(new CustomEvent("antara:login-request", {
+      detail: { source: "cockpit-profile-hud" }
+    }));
+  }
+}
+
 const mission = document.getElementById("mission");
 const launchButton = document.getElementById("launch-button");
+const profileHudButton = document.getElementById("profile-hud-trigger");
 const earthPreviousButton = document.getElementById("earth-prev-planet");
 const marsPreviousButton = document.getElementById("mars-prev-planet");
 const marsNextButton = document.getElementById("mars-next-planet");
@@ -728,6 +871,7 @@ const flightStatus = document.getElementById("flight-status");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const flight = new LaunchVisual();
 const companions = new CockpitCompanions();
+const profileHUD = new CockpitProfileHUD();
 companions.setJourneyPhase("idle");
 companions.setDialogue(DIALOGUE_TIMELINE[0], true);
 const earth = new EarthScene({ onNext: travelToMars });
@@ -1632,7 +1776,7 @@ document.addEventListener("click", event => {
   sound.uiClick();
 }, true);
 
-for (const button of [launchButton, earth.nextButton, earthPreviousButton, earthFull.entryButton, venusPreviousButton, venusNextButton, venusFull.entryButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, marsNextButton, mars.exploreButton, mars.fullExploration?.entryButton, asteroidPreviousButton, asteroidNextButton, asteroid.exploreButton, jupiterPreviousButton, jupiterNextButton, jupiter.exploreButton, saturnPreviousButton, saturnNextButton, saturn.exploreButton, uranusPreviousButton, uranusNextButton, uranus.exploreButton, neptunePreviousButton, neptune.exploreButton, audioToggle].filter(Boolean)) {
+for (const button of [launchButton, profileHudButton, earth.nextButton, earthPreviousButton, earthFull.entryButton, venusPreviousButton, venusNextButton, venusFull.entryButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, marsNextButton, mars.exploreButton, mars.fullExploration?.entryButton, asteroidPreviousButton, asteroidNextButton, asteroid.exploreButton, jupiterPreviousButton, jupiterNextButton, jupiter.exploreButton, saturnPreviousButton, saturnNextButton, saturn.exploreButton, uranusPreviousButton, uranusNextButton, uranus.exploreButton, neptunePreviousButton, neptune.exploreButton, audioToggle].filter(Boolean)) {
   button.addEventListener("pointerenter", event => { if (event.pointerType === "mouse") sound.hover(); });
   button.addEventListener("focus", () => sound.hover());
 }
