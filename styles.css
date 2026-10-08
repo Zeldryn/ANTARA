@@ -3644,3 +3644,148 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 .profile-hud-trigger { max-width: 350px; }
 .profile-hud-rail-right,
 .cockpit-profile-hud::after { display: none !important; }
+
+/* 2026-09-30 sharp main-container restoration
+   Keep the original long black trapezoid as the ONLY major top container.
+   Identity/profile module lives inside it, compact and left-aligned. */
+.cockpit-profile-hud {
+  left: 9.8% !important;
+  right: 9.8% !important;
+  top: 7.55% !important;
+  height: clamp(50px,5.8vh,60px) !important;
+  pointer-events: none;
+}
+
+.cockpit-profile-hud::before {
+  z-index: -3 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 50% !important;
+  height: clamp(50px,5.8vh,60px) !important;
+  transform: translateY(-50%) !important;
+  /* Long, sharp cockpit bar matching the reference silhouette. */
+  clip-path: polygon(
+    3.9% 0,
+    96.1% 0,
+    100% 100%,
+    0 100%
+  ) !important;
+  background:
+    linear-gradient(180deg,rgba(9,23,36,.98) 0%,rgba(3,11,19,.985) 100%) !important;
+  border-top: 1px solid rgba(96,153,183,.15) !important;
+  border-bottom: 1px solid rgba(218,176,102,.22) !important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.018),
+    inset 0 -8px 16px rgba(0,0,0,.17),
+    0 8px 18px rgba(0,0,0,.18) !important;
+}
+
+/* No second long rail/background inside the sharp main container. */
+.cockpit-profile-hud::after,
+.profile-hud-rail,
+.profile-hud-node,
+.profile-hud-scan {
+  display: none !important;
+}
+
+.profile-hud-trigger {
+  position: absolute !important;
+  left: clamp(30px,3.15vw,52px) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: clamp(255px,25vw,330px) !important;
+  max-width: 330px !important;
+  height: clamp(40px,4.7vh,48px) !important;
+  grid-template-columns: auto clamp(10px,.9vw,14px) minmax(0,1fr) !important;
+  pointer-events: auto;
+}
+
+.profile-avatar-frame {
+  width: clamp(38px,3.5vw,46px) !important;
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,.2)) !important;
+}
+
+.profile-avatar-tech {
+  inset: -5% !important;
+  width: 110% !important;
+  height: 110% !important;
+}
+
+.profile-avatar-orbit {
+  width: 102% !important;
+  left: -1% !important;
+}
+
+.profile-avatar-frame::before {
+  inset: 11% 0 !important;
+}
+
+.profile-login-frame {
+  height: clamp(34px,4vh,40px) !important;
+  min-width: 0 !important;
+  padding: 0 8px 0 10px !important;
+  grid-template-columns: minmax(0,1fr) auto !important;
+  gap: 6px !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Keep the sci-fi text frame short. It ends at the login copy/action. */
+.profile-login-frame::before,
+.profile-login-frame::after {
+  left: 0 !important;
+  right: 0 !important;
+}
+
+.profile-hud-copy strong {
+  font-size: clamp(9px,.74vw,11px) !important;
+  letter-spacing: .105em !important;
+}
+.profile-hud-kicker {
+  font-size: clamp(4.8px,.4vw,6px) !important;
+  letter-spacing: .2em !important;
+}
+.profile-hud-copy small {
+  font-size: clamp(4.2px,.34vw,5.2px) !important;
+}
+.profile-hud-action {
+  padding-left: 7px !important;
+  gap: 5px !important;
+}
+.profile-hud-action span { display:none !important; }
+.profile-hud-action svg { width:15px !important; height:15px !important; }
+
+@media (max-width: 1366px) {
+  .cockpit-profile-hud { left:9.2% !important; right:9.2% !important; }
+  .profile-hud-trigger { left:clamp(26px,2.9vw,40px) !important; width:clamp(245px,27vw,310px) !important; }
+}
+
+@media (max-width: 900px) {
+  .cockpit-profile-hud { left:8% !important; right:8% !important; }
+  .profile-hud-trigger { left:clamp(20px,2.6vw,30px) !important; width:min(72%,290px) !important; }
+}
+
+@media (max-width: 700px) {
+  .cockpit-profile-hud {
+    left:6.5% !important;
+    right:6.5% !important;
+    top:6.65% !important;
+    height:44px !important;
+  }
+  .cockpit-profile-hud::before {
+    height:44px !important;
+    clip-path:polygon(5.5% 0,94.5% 0,100% 100%,0 100%) !important;
+  }
+  .profile-hud-trigger {
+    left:18px !important;
+    width:min(calc(100% - 36px),255px) !important;
+    height:36px !important;
+    grid-template-columns:34px 9px minmax(0,1fr) !important;
+  }
+  .profile-avatar-frame { width:34px !important; }
+  .profile-login-frame { height:31px !important; padding:0 6px 0 8px !important; }
+  .profile-hud-kicker,.profile-hud-copy small { display:none !important; }
+  .profile-hud-copy strong { font-size:8.5px !important; letter-spacing:.08em !important; }
+}
