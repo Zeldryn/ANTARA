@@ -901,12 +901,14 @@ if (profileMoreTrigger && profileNavSuite) {
   const closeProfileMore = () => {
     profileMoreTrigger.setAttribute("aria-expanded", "false");
     profileNavSuite.classList.remove("is-open");
+    mission?.classList.remove("profile-more-open");
   };
   profileMoreTrigger.addEventListener("click", event => {
     event.stopPropagation();
     const open = profileMoreTrigger.getAttribute("aria-expanded") === "true";
     profileMoreTrigger.setAttribute("aria-expanded", String(!open));
     profileNavSuite.classList.toggle("is-open", !open);
+    mission?.classList.toggle("profile-more-open", !open);
   });
   profileNavSuite.addEventListener("click", event => {
     if (event.target.closest("a")) closeProfileMore();

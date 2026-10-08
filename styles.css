@@ -5654,3 +5654,370 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .hud-nav-icon::before,
   .hud-nav-pulse { animation:none !important; }
 }
+
+
+/* ========================================================================
+   2026-10-01 NAV BALANCE + MOBILE MORE / LOWER HUD REFINEMENT
+   Scope is intentionally limited to the top ANTARA navigation, mobile hero
+   spacing while MORE is open, and the mobile cockpit dashboard spacing.
+   ======================================================================== */
+
+/* Desktop/laptop: treat profile -> game as ONE centered instrument cluster. */
+@media (min-width: 901px) {
+  .cockpit-profile-hud,
+  .mission[data-experience="home"] .cockpit-profile-hud,
+  .mission[data-experience="launch"] .cockpit-profile-hud {
+    --nav-avatar: clamp(40px,3.35vw,46px);
+    --nav-avatar-login-gap: clamp(20px,1.35vw,26px);
+    --nav-login-width: clamp(182px,14.2vw,212px);
+    --nav-module-gap: clamp(9px,.72vw,13px);
+    --nav-bridge-width: clamp(18px,1.35vw,24px);
+    --nav-height: clamp(36px,4.1vh,42px);
+  }
+
+  /* Center the complete suite without changing the main header container. */
+  .cockpit-profile-hud .profile-avatar-module {
+    left: calc(50% - clamp(455px,35vw,560px)) !important;
+  }
+  .cockpit-profile-hud .profile-login-trigger {
+    left: calc(50% - clamp(455px,35vw,560px) + var(--nav-avatar) + var(--nav-avatar-login-gap)) !important;
+  }
+  .profile-nav-bridge {
+    left: calc(50% - clamp(455px,35vw,560px) + var(--nav-avatar) + var(--nav-avatar-login-gap) + var(--nav-login-width) + var(--nav-module-gap)) !important;
+  }
+  .profile-nav-suite {
+    left: calc(50% - clamp(455px,35vw,560px) + var(--nav-avatar) + var(--nav-avatar-login-gap) + var(--nav-login-width) + var(--nav-module-gap) + var(--nav-bridge-width) + var(--nav-module-gap)) !important;
+    gap: var(--nav-module-gap) !important;
+  }
+
+  /* Bigger navigation plates: enough visual weight to use the long container. */
+  .hud-nav-module {
+    height: var(--nav-height) !important;
+    grid-template-columns: 31px minmax(0,1fr) !important;
+    gap: 7px !important;
+    padding: 0 11px 0 8px !important;
+  }
+  .hud-nav-leaderboard { width: clamp(154px,11.3vw,178px) !important; }
+  .hud-nav-progress { width: clamp(136px,9.7vw,156px) !important; }
+  .hud-nav-achievement { width: clamp(152px,11vw,176px) !important; }
+  .hud-nav-game { width: clamp(142px,10.2vw,164px) !important; }
+  .hud-nav-icon { width:29px !important;height:28px !important; }
+  .hud-nav-icon svg { width:21px !important;height:21px !important; }
+  .hud-nav-copy small { font-size:5px !important; }
+  .hud-nav-copy strong { font-size:clamp(7.2px,.57vw,9px) !important; letter-spacing:.105em !important; }
+}
+
+/* Slightly tighter centered cluster on common 1366px laptops. */
+@media (min-width:901px) and (max-width:1450px) {
+  .cockpit-profile-hud .profile-avatar-module { left: calc(50% - 520px) !important; }
+  .cockpit-profile-hud .profile-login-trigger { left: calc(50% - 520px + var(--nav-avatar) + var(--nav-avatar-login-gap)) !important; }
+  .profile-nav-bridge { left: calc(50% - 520px + var(--nav-avatar) + var(--nav-avatar-login-gap) + var(--nav-login-width) + var(--nav-module-gap)) !important; }
+  .profile-nav-suite { left: calc(50% - 520px + var(--nav-avatar) + var(--nav-avatar-login-gap) + var(--nav-login-width) + var(--nav-module-gap) + var(--nav-bridge-width) + var(--nav-module-gap)) !important; }
+  .hud-nav-leaderboard { width:146px !important; }
+  .hud-nav-progress { width:128px !important; }
+  .hud-nav-achievement { width:144px !important; }
+  .hud-nav-game { width:134px !important; }
+}
+
+/* Game: controller socket + split gold/cyan perimeter, distinct from the other three. */
+.hud-nav-game {
+  --module-gold: rgba(224,184,108,.78);
+  --module-cyan: rgba(113,195,226,.86);
+}
+.hud-nav-game::before {
+  clip-path: polygon(0 8px,8px 0,40% 0,44% 3px,70% 3px,74% 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,60% 100%,56% calc(100% - 3px),20% calc(100% - 3px),16% 100%,0 100%);
+  background:
+    linear-gradient(90deg,var(--module-cyan),rgba(113,195,226,.18),transparent 70%) top left/73% 1px no-repeat,
+    linear-gradient(270deg,var(--module-gold),rgba(224,184,108,.18),transparent 72%) bottom right/76% 1px no-repeat,
+    linear-gradient(180deg,var(--module-cyan),transparent 72%) left top/1px 62% no-repeat,
+    linear-gradient(180deg,transparent 18%,var(--module-gold)) right bottom/1px 66% no-repeat;
+}
+.hud-nav-game .hud-nav-icon { color:#88c9e5; }
+.hud-nav-game .hud-nav-icon::before {
+  border-color:rgba(121,197,228,.34);
+  border-radius:3px;
+  transform:rotate(0deg);
+  animation:antara-game-socket 4.8s ease-in-out infinite;
+}
+.hud-nav-game .hud-nav-pulse { animation-delay:-2.6s; }
+@keyframes antara-game-socket { 0%,100%{transform:scale(.88);opacity:.45}50%{transform:scale(1);opacity:.82} }
+
+/* Mobile/tablet: keep profile/login/MORE comfortable, and put a 2x2 drawer
+   directly below the header. The hero is moved down ONLY while the drawer is open. */
+@media (max-width:700px) {
+  .intro h1 {
+    top:16.7% !important;
+    width:86vw !important;
+    font-size:clamp(27px,8.2vw,35px) !important;
+    line-height:1.06 !important;
+  }
+  .intro-kicker {
+    top:27.8% !important;
+    width:76vw !important;
+    font-size:5px !important;
+    letter-spacing:.29em !important;
+  }
+
+  .profile-nav-suite {
+    left: 5% !important;
+    right: 5% !important;
+    top: calc(100% + 6px) !important;
+    width: auto !important;
+    padding: 8px !important;
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 6px !important;
+    transform: translateY(-5px) !important;
+  }
+  .profile-nav-suite.is-open {
+    transform: translateY(0) !important;
+  }
+  .profile-nav-suite::before {
+    content:"ANTARA // NAV" !important;
+    right:10px !important;
+    top:-5px !important;
+    font-size:3.7px !important;
+  }
+  .profile-nav-suite .hud-nav-module {
+    height:32px !important;
+    grid-template-columns:22px 1fr !important;
+    gap:5px !important;
+    padding:0 7px !important;
+  }
+  .profile-nav-suite .hud-nav-icon { width:20px !important;height:20px !important; }
+  .profile-nav-suite .hud-nav-icon svg { width:16px !important;height:16px !important; }
+  .profile-nav-suite .hud-nav-copy { gap:0 !important; }
+  .profile-nav-suite .hud-nav-copy small {
+    display:block !important;
+    font-size:3.5px !important;
+    letter-spacing:.13em !important;
+  }
+  .profile-nav-suite .hud-nav-copy strong {
+    font-size:5.9px !important;
+    letter-spacing:.075em !important;
+  }
+
+  /* When MORE is open, the title is deliberately moved below the drawer. */
+  .mission.profile-more-open .intro h1 { top:30.2% !important; }
+  .mission.profile-more-open .intro-kicker { top:41.5% !important; }
+
+  /* Bottom dashboard: equal panel rhythm + more air above it. */
+  .cockpit-dashboard {
+    height:24.5% !important;
+    bottom:-2.5% !important;
+  }
+  .console-left,.console-center,.console-right {
+    display:block !important;
+    top:36% !important;
+    width:29.5% !important;
+    height:50% !important;
+  }
+  .console-left { left:2.25% !important; }
+  .console-center { left:35.25% !important; }
+  .console-right { right:2.25% !important; }
+  .cockpit-brand { top:20% !important; left:50% !important; transform:translateX(-50%) !important; }
+  .dashboard-lights { left:8% !important; top:22% !important; }
+  .mission-footer { bottom:10px !important; right:4.5% !important; left:auto !important; }
+  .audio-control { min-height:34px !important; padding:5px 0 5px 8px !important; font-size:5.2px !important; gap:5px !important; }
+}
+
+@media (max-width:430px) {
+  .intro h1 { font-size:clamp(26px,8vw,32px) !important; width:88vw !important; }
+  .intro-kicker { font-size:4.5px !important; width:82vw !important; }
+  .profile-nav-suite { left:4% !important; right:4% !important; padding:7px !important; gap:5px !important; }
+  .profile-nav-suite .hud-nav-module { height:30px !important; grid-template-columns:20px 1fr !important; padding:0 6px !important; }
+  .profile-nav-suite .hud-nav-copy strong { font-size:5.5px !important; }
+  .profile-nav-suite .hud-nav-copy small { font-size:3.2px !important; }
+  .mission.profile-more-open .intro h1 { top:29.5% !important; }
+  .mission.profile-more-open .intro-kicker { top:40.2% !important; }
+  .cockpit-dashboard { height:23.5% !important; bottom:-2% !important; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .hud-nav-game .hud-nav-icon::before { animation:none !important; }
+}
+
+
+/* ========================================================================
+   FINAL CENTERING PASS: the interactive header controls are centered as one
+   physical cluster. This supersedes older absolute left-offset patches only.
+   ======================================================================== */
+.profile-primary-cluster {
+  position:absolute;
+  z-index:35;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  display:flex;
+  align-items:center;
+  pointer-events:auto !important;
+  white-space:nowrap;
+}
+
+@media (min-width:901px) {
+  .profile-primary-cluster { gap:0; }
+  .profile-primary-cluster .profile-avatar-module,
+  .profile-primary-cluster .profile-login-trigger,
+  .profile-primary-cluster .profile-nav-bridge,
+  .profile-primary-cluster .profile-nav-suite {
+    position:relative !important;
+    left:auto !important;
+    right:auto !important;
+    top:auto !important;
+    bottom:auto !important;
+    transform:none !important;
+  }
+  .profile-primary-cluster .profile-avatar-module {
+    flex:0 0 var(--nav-avatar) !important;
+    width:var(--nav-avatar) !important;
+    height:var(--nav-avatar) !important;
+    margin-right:var(--nav-avatar-login-gap) !important;
+  }
+  .profile-primary-cluster .profile-login-trigger {
+    flex:0 0 var(--nav-login-width) !important;
+    width:var(--nav-login-width) !important;
+    height:var(--nav-height) !important;
+    margin-right:var(--nav-module-gap) !important;
+  }
+  .profile-primary-cluster .profile-nav-bridge {
+    flex:0 0 var(--nav-bridge-width) !important;
+    width:var(--nav-bridge-width) !important;
+    margin-right:var(--nav-module-gap) !important;
+  }
+  .profile-primary-cluster .profile-nav-suite {
+    display:flex !important;
+    align-items:center !important;
+    gap:var(--nav-module-gap) !important;
+  }
+}
+
+@media (max-width:700px) {
+  .profile-primary-cluster {
+    width:auto;
+    max-width:92%;
+    gap:0;
+  }
+  .profile-primary-cluster .profile-avatar-module,
+  .profile-primary-cluster .profile-login-trigger,
+  .profile-primary-cluster .profile-more-trigger {
+    position:relative !important;
+    left:auto !important;
+    right:auto !important;
+    top:auto !important;
+    bottom:auto !important;
+    transform:none !important;
+  }
+  .profile-primary-cluster .profile-avatar-module {
+    flex:0 0 var(--nav-avatar) !important;
+    width:var(--nav-avatar) !important;
+    height:var(--nav-avatar) !important;
+    margin-right:var(--nav-avatar-login-gap) !important;
+  }
+  .profile-primary-cluster .profile-login-trigger {
+    flex:0 0 var(--nav-login-width) !important;
+    width:var(--nav-login-width) !important;
+    height:var(--nav-height) !important;
+    margin-right:7px !important;
+  }
+  .profile-primary-cluster .profile-more-trigger {
+    flex:0 0 54px;
+    min-width:54px !important;
+    height:31px !important;
+    margin:0 !important;
+  }
+  .profile-primary-cluster .profile-nav-suite {
+    position:absolute !important;
+    z-index:50 !important;
+    left:50% !important;
+    right:auto !important;
+    top:calc(100% + 11px) !important;
+    width:min(340px,90vw) !important;
+    transform:translate(-50%,-5px) !important;
+  }
+  .profile-primary-cluster .profile-nav-suite.is-open {
+    transform:translate(-50%,0) !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+  }
+}
+
+@media (max-width:430px) {
+  .profile-primary-cluster .profile-login-trigger { margin-right:6px !important; }
+  .profile-primary-cluster .profile-more-trigger { flex-basis:50px;min-width:50px !important; }
+}
+
+/* Large-monitor fill: retain centered breathing room without leaving the bar hollow. */
+@media (min-width:1451px) {
+  .hud-nav-leaderboard { width:clamp(178px,10.6vw,194px) !important; }
+  .hud-nav-progress { width:clamp(154px,9vw,170px) !important; }
+  .hud-nav-achievement { width:clamp(176px,10.4vw,192px) !important; }
+  .hud-nav-game { width:clamp(164px,9.6vw,180px) !important; }
+}
+
+/* Transition widths: use MORE instead of squeezing the full suite into a narrow bar. */
+@media (min-width:701px) and (max-width:1199px) {
+  .profile-primary-cluster {
+    width:auto;
+    max-width:88%;
+    gap:0;
+  }
+  .profile-primary-cluster .profile-avatar-module,
+  .profile-primary-cluster .profile-login-trigger,
+  .profile-primary-cluster .profile-more-trigger {
+    position:relative !important;
+    left:auto !important;
+    right:auto !important;
+    top:auto !important;
+    bottom:auto !important;
+    transform:none !important;
+  }
+  .profile-primary-cluster .profile-avatar-module {
+    flex:0 0 36px !important;
+    width:36px !important;
+    height:36px !important;
+    margin-right:16px !important;
+  }
+  .profile-primary-cluster .profile-login-trigger {
+    flex:0 0 168px !important;
+    width:168px !important;
+    height:32px !important;
+    margin-right:9px !important;
+  }
+  .profile-primary-cluster .profile-nav-bridge { display:none !important; }
+  .profile-primary-cluster .profile-more-trigger {
+    display:flex !important;
+    position:relative !important;
+    flex:0 0 60px;
+    min-width:60px !important;
+    height:32px !important;
+    margin:0 !important;
+  }
+  .profile-primary-cluster .profile-nav-suite {
+    position:absolute !important;
+    z-index:50 !important;
+    left:50% !important;
+    right:auto !important;
+    top:calc(100% + 10px) !important;
+    width:min(420px,70vw) !important;
+    padding:8px !important;
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:7px !important;
+    transform:translate(-50%,-5px) !important;
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+  }
+  .profile-primary-cluster .profile-nav-suite.is-open {
+    transform:translate(-50%,0) !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-module {
+    width:100% !important;
+    height:34px !important;
+  }
+  .mission.profile-more-open .intro h1 { top:28% !important; }
+  .mission.profile-more-open .intro-kicker { top:39% !important; }
+}
