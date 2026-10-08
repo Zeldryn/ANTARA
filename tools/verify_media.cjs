@@ -23,11 +23,14 @@ const path = require('path');
     // The CI sandbox has no outbound network. Remote images are independently verified
     // by source metadata; route them to valid local image bytes so UI/load behavior can
     // still be tested end-to-end without changing their actual src values in the app.
-    const fallback = fs.readFileSync(path.join(root, 'assets/exploration/taj-mahal.webp'));
+    const fallback = fs.readFileSync(path.join(root, 'assets/exploration/olympus-mons.webp'));
     for (const pattern of [
       'https://upload.wikimedia.org/**',
       'https://thumb.wikimedia.org/**',
-      'https://assets.science.nasa.gov/**'
+      'https://assets.science.nasa.gov/**',
+      'https://omao.noaa.gov/**',
+      'https://d9-wret.s3.us-west-2.amazonaws.com/**',
+      'https://www.nps.gov/**'
     ]) {
       await p.route(pattern, route => route.fulfill({ status: 200, contentType: 'image/webp', body: fallback }));
     }
@@ -61,6 +64,24 @@ const path = require('path');
         const frames = [...document.querySelectorAll(`#${prefix}-marker-media .exploration-marker-frame`)];
         return frames.length > 0 && frames.every(frame => !frame.disabled);
       }, prefix);
+    }
+
+    async function verifyEarthVisual(i) {
+      await settle('earth', i);
+      const data = await p.evaluate(() => {
+        const frames = [...document.querySelectorAll('#earth-marker-media .exploration-marker-frame')];
+        return frames.map(frame => ({ src: frame.querySelector('img').src, alt: frame.querySelector('img').alt }));
+      });
+      assert.equal(data.length, 1, `earth ${i} should have exactly 1 usable scientific/reference image`);
+      assert(data[0].alt, `earth ${i} alt text missing`);
+      const frame = p.locator('#earth-marker-media .exploration-marker-frame').nth(0);
+      await frame.click();
+      await p.waitForFunction(() => !document.querySelector('.exploration-lightbox').hidden);
+      const lightboxSrc = await p.locator('.exploration-lightbox-image').getAttribute('src');
+      assert.equal(new URL(lightboxSrc, 'http://127.0.0.1:8780').href, data[0].src);
+      assert.equal(await p.locator('.exploration-lightbox-prev').isHidden(), true);
+      assert.equal(await p.locator('.exploration-lightbox-next').isHidden(), true);
+      await p.keyboard.press('Escape');
     }
 
     async function verifyTwoUnique(prefix, i) {
@@ -119,16 +140,16 @@ const path = require('path');
     }).map(item => item.src));
     assert.deepEqual(dedup, ['assets/test.webp?one=1', 'assets/other.webp']);
 
-    // Earth: all seven modern wonders.
-    for (let i = 4; i < 11; i++) await verifyTwoUnique('earth', i);
+    // Earth: six mapped natural extremes, one authentic scientific/reference image each.
+    for (let i = 1; i < 7; i++) await verifyEarthVisual(i);
     assert.equal(await p.locator('#earth-exploration .exploration-marker-frame').count(), 0);
-    assert.equal(await p.locator('#earth-exploration img:not(.earth-country-flag)').count(), 0);
+    assert.equal(await p.locator('#earth-exploration img').count(), 0);
     await p.screenshot({ path: path.join(tmp, 'media-earth-marker-desktop.png') });
 
     // Old state must be cleared when changing selections.
-    await settle('earth', 5);
+    await settle('earth', 1);
     const oldSrc = await p.locator('#earth-marker-media img').nth(0).getAttribute('src');
-    await settle('earth', 10);
+    await settle('earth', 6);
     const newSrc = await p.locator('#earth-marker-media img').nth(0).getAttribute('src');
     assert.notEqual(oldSrc, newSrc, 'Earth preview stayed stale after selection change');
     assert.equal(await p.locator('.exploration-lightbox').getAttribute('aria-hidden'), 'true');

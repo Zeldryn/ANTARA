@@ -45,7 +45,7 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
     images: [{ src: "./assets/asteroid-belt/formation.svg", alt: "Diagram pembentukan sabuk asteroid", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/resource/fact-sheet-dawn-to-the-asteroid-belt/", caption: "Material awal Tata Surya yang tidak menjadi satu planet.", fit: "contain" }]
   },
   {
-    kicker: "CERES DAN OBJEK BESAR",
+    kicker: "REKOR & EKSTREM",
     title: "Ceres, Vesta, dan Tetangga Besarnya",
     subtitle: "Objek menonjol di antara jutaan benda kecil",
     summary: "Ceres adalah objek terbesar di sabuk asteroid dan diklasifikasikan sebagai planet katai. Vesta adalah salah satu benda paling masif berikutnya dan memperlihatkan sejarah geologi yang kompleks.",

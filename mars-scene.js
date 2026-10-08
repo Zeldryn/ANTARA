@@ -143,7 +143,7 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       }
     ],
     title: "Olympus Mons",
-    kicker: "GUNUNG API RAKSASA",
+    kicker: "REKOR & EKSTREM",
     subtitle: "Gunung api raksasa yang menjulang di dunia Mars",
     summary: "Olympus Mons bukan sekadar gunung besar. Ini adalah gunung api perisai raksasa yang tumbuh sangat lama dan menjadi salah satu pemandangan paling ekstrem di dunia Mars.",
     facts: [

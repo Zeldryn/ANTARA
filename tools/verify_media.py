@@ -166,15 +166,16 @@ def main():
 
         # Every real Earth/Mars entry exposes exactly two distinct source identities.
         dataset = browser.evaluate("""(() => ({
-          earth: EARTH_EXPLORATION_STOPS.slice(4).map(stop => ({ title: stop.title, images: ExplorationMedia.getImages(stop).map(x => x.src) })),
+          earth: EARTH_EXPLORATION_STOPS.slice(1).map(stop => ({ title: stop.title, images: ExplorationMedia.getImages(stop).map(x => x.src) })),
           mars: MARS_EXPLORATION_STOPS.map(stop => ({ title: stop.title, images: ExplorationMedia.getImages(stop).map(x => x.src) }))
         }))()""")
-        assert len(dataset["earth"]) == 7
+        assert len(dataset["earth"]) == 6
         assert len(dataset["mars"]) == 6
         for group in ("earth", "mars"):
             for item in dataset[group]:
-                assert len(item["images"]) == 2, item
-                assert item["images"][0] != item["images"][1], item
+                assert len(item["images"]) == (1 if group == "earth" else 2), item
+                if group == "mars":
+                    assert item["images"][0] != item["images"][1], item
                 assert not any("-alt.webp" in src for src in item["images"]), item
 
         # Canonical de-duplication rejects same path with query/hash variants.
@@ -190,34 +191,34 @@ def main():
           earth.start({settled:true}); earth.element.style.opacity='1'; earth.enterExploration();
         })()""")
         time.sleep(.4)
-        browser.evaluate("earth.setExplorationStop(10); earth.pose={...earth.poseTarget}; earth.render()")
+        browser.evaluate("earth.setExplorationStop(6); earth.pose={...earth.poseTarget}; earth.render()")
         wait_for(browser, "document.querySelectorAll('#earth-marker-media .exploration-marker-frame').length >= 1")
         earth_bounds = browser.evaluate("""(()=>{const r=document.getElementById('earth-marker-media').getBoundingClientRect();return {l:r.left,t:r.top,r:r.right,b:r.bottom,w:innerWidth,h:innerHeight}})()""")
         assert earth_bounds["l"] >= -1 and earth_bounds["t"] >= -1 and earth_bounds["r"] <= earth_bounds["w"] + 1 and earth_bounds["b"] <= earth_bounds["h"] + 1, earth_bounds
         assert browser.evaluate("document.querySelectorAll('#earth-exploration .exploration-marker-frame').length === 0")
-        assert browser.evaluate("document.querySelectorAll('#earth-exploration img:not(.earth-country-flag)').length === 0")
+        assert browser.evaluate("document.querySelectorAll('#earth-exploration img').length === 0")
 
         # Test the shared lightbox with two distinct LOCAL real project images so the sandbox network is irrelevant.
         browser.evaluate("""ExplorationMedia.render('earth',{title:'Uji Lightbox',images:[
-          {src:'assets/exploration/petra.webp',alt:'Petra',caption:'Petra 01'},
-          {src:'assets/exploration/taj-mahal.webp',alt:'Taj Mahal',caption:'Taj Mahal 02'}
+          {src:'assets/exploration/olympus-mons.webp',alt:'Olympus Mons',caption:'Mars 01'},
+          {src:'assets/exploration/jezero.webp',alt:'Jezero',caption:'Mars 02'}
         ]})""")
         wait_for(browser, "document.querySelectorAll('#earth-marker-media .exploration-marker-frame:not(:disabled)').length===2")
         browser.click("#earth-marker-media .exploration-marker-frame:nth-child(1)")
         wait_for(browser, "!document.querySelector('.exploration-lightbox').hidden")
-        assert browser.evaluate("document.querySelector('.exploration-lightbox-image').getAttribute('src')") == "assets/exploration/petra.webp"
+        assert browser.evaluate("document.querySelector('.exploration-lightbox-image').getAttribute('src')") == "assets/exploration/olympus-mons.webp"
         assert browser.evaluate("document.querySelector('.exploration-lightbox-counter').textContent") == "01 / 02"
         assert browser.evaluate("document.querySelector('.exploration-lightbox-prev').disabled && !document.querySelector('.exploration-lightbox-next').disabled")
         browser.click(".exploration-lightbox-next")
-        assert browser.evaluate("document.querySelector('.exploration-lightbox-image').getAttribute('src')") == "assets/exploration/taj-mahal.webp"
+        assert browser.evaluate("document.querySelector('.exploration-lightbox-image').getAttribute('src')") == "assets/exploration/jezero.webp"
         assert browser.evaluate("document.querySelector('.exploration-lightbox-counter').textContent") == "02 / 02"
         browser.click(".exploration-lightbox-prev")
-        assert browser.evaluate("document.querySelector('.exploration-lightbox-image').getAttribute('src')") == "assets/exploration/petra.webp"
+        assert browser.evaluate("document.querySelector('.exploration-lightbox-image').getAttribute('src')") == "assets/exploration/olympus-mons.webp"
         browser.key("Escape", "Escape", 27)
         assert browser.evaluate("document.querySelector('.exploration-lightbox').hidden")
 
         browser.click("#earth-marker-media .exploration-marker-frame:nth-child(2)")
-        assert browser.evaluate("document.querySelector('.exploration-lightbox-image').getAttribute('src')") == "assets/exploration/taj-mahal.webp"
+        assert browser.evaluate("document.querySelector('.exploration-lightbox-image').getAttribute('src')") == "assets/exploration/jezero.webp"
         browser.click(".exploration-lightbox-close")
         assert browser.evaluate("document.querySelector('.exploration-lightbox').hidden")
 
@@ -226,7 +227,7 @@ def main():
         assert browser.evaluate("document.querySelector('.exploration-lightbox').hidden")
 
         # Single image: no pointless arrows.
-        browser.evaluate("ExplorationMedia.render('earth',{title:'Single',images:[{src:'assets/exploration/petra.webp',alt:'Petra'}]})")
+        browser.evaluate("ExplorationMedia.render('earth',{title:'Single',images:[{src:'assets/exploration/olympus-mons.webp',alt:'single scientific image'}]})")
         wait_for(browser, "document.querySelectorAll('#earth-marker-media .exploration-marker-frame:not(:disabled)').length===1")
         browser.click("#earth-marker-media .exploration-marker-frame")
         assert browser.evaluate("document.querySelector('.exploration-lightbox-prev').hidden && document.querySelector('.exploration-lightbox-next').hidden")
@@ -234,16 +235,16 @@ def main():
 
         # Broken second image gets removed, not replaced by image 1.
         browser.evaluate("""ExplorationMedia.render('earth',{title:'Broken',images:[
-          {src:'assets/exploration/petra.webp',alt:'valid'}, {src:'assets/missing-nope.webp',alt:'missing'}
+          {src:'assets/exploration/olympus-mons.webp',alt:'valid'}, {src:'assets/missing-nope.webp',alt:'missing'}
         ]})""")
         wait_for(browser, "document.querySelectorAll('#earth-marker-media .exploration-marker-frame').length===1")
         assert browser.evaluate("document.querySelectorAll('#earth-marker-media img').length===1")
 
         # Changing selection clears old preview/modal state.
-        browser.evaluate("earth.setExplorationStop(5); earth.pose={...earth.poseTarget}; earth.render()")
+        browser.evaluate("earth.setExplorationStop(1); earth.pose={...earth.poseTarget}; earth.render()")
         wait_for(browser, "document.querySelectorAll('#earth-marker-media .exploration-marker-frame').length>=1")
         old_src = browser.evaluate("document.querySelector('#earth-marker-media img').getAttribute('src')")
-        browser.evaluate("earth.setExplorationStop(10); earth.pose={...earth.poseTarget}; earth.render()")
+        browser.evaluate("earth.setExplorationStop(6); earth.pose={...earth.poseTarget}; earth.render()")
         wait_for(browser, "document.querySelectorAll('#earth-marker-media .exploration-marker-frame').length>=1")
         new_src = browser.evaluate("document.querySelector('#earth-marker-media img').getAttribute('src')")
         assert old_src != new_src

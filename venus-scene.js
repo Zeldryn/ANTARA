@@ -57,7 +57,7 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
       }
     ],
     title: "Dunia Paling Panas",
-    kicker: "SUHU EKSTREM",
+    kicker: "REKOR & EKSTREM",
     subtitle: "Panasnya bahkan mengalahkan Merkurius",
     summary: "Dari jauh Venus tampak tenang, tetapi permukaannya luar biasa panas. Atmosfer karbon dioksida yang sangat tebal memerangkap panas begitu kuat sehingga siang dan malam sama-sama ekstrem.",
     facts: [

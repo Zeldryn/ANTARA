@@ -67,7 +67,6 @@ Refinement ini memindahkan visual eksplorasi dari board kiri ke annotation marke
 - `IMPLEMENTATION.md`
 
 ### Perilaku baru
-- Figure gambar besar di card Earth Seven Wonders dihapus.
 - Figure gambar besar di card Mars juga dihapus.
 - `#earth-marker-media` menempel pada marker landmark Bumi.
 - `#mars-marker-media` menempel pada reticle titik eksplorasi Mars.
@@ -114,7 +113,6 @@ Foto berada di awal area scroll yang sudah ada, di bawah judul/lokasi. Header, s
 Tujuh wonder Bumi dan enam topik Mars mendapat field `image`, `imageAlt`, `imageCaption`, `imageCredit`, `imageSource`, `imageLicense`, `imageLicenseUrl`, `imageFit`, `imageWidth`, `imageHeight`. Field sejarah, fakta, negara, koordinat, dan sumber sebelumnya dipertahankan. Empat topik sains Bumi tetap tanpa foto tambahan.
 
 ## Gambar asli
-Semua gambar disimpan lokal. Tidak ada placeholder atau gambar generatif. Foto Seven Wonders berasal dari Wikimedia Commons dengan kredit/lisensi per gambar. Citra Mars berasal dari NASA: Olympus Mons (Viking), Valles Marineris (Viking), delta Jezero (MRO, warna olahan), tudung es utara (Viking), senja Gale (Curiosity, warna diproses), dan perbandingan badai debu Juni/Juli 2001 (MGS). Daftar sumber lengkap di `assets/exploration/sources.json`.
 
 ## CSS
 Selector baru: `.exploration-media`, `.exploration-media-frame`, `.exploration-media-status`, `.exploration-media figcaption`, tautan kredit serta state `[hidden]` dan `:focus-visible`. Media query menyesuaikan gambar pada lebar ≤700 px atau tinggi ≤700 px. Warna navy, aksen emas, serif, garis tipis, dan gaya navigasi sebelumnya dipertahankan.
@@ -141,7 +139,6 @@ Proyek lengkap beserta aset lokal, dokumentasi, dan skrip verifikasi. Cache brow
 
 Bumi kini membuka intro `Bumi.` dan `Si Planet Biru.`. Kartu fakta baru muncul
 setelah tombol `Jelajahi Bumi` ditekan. Ada 11 topik: empat fakta sains dan tujuh
-keajaiban dunia modern pilihan New7Wonders 2007. Tombol Venus tetap nonaktif
 karena planet tersebut belum tersedia dalam proyek sumber.
 
 ## Berkas dan sistem yang digunakan
@@ -177,13 +174,7 @@ latitude positif ke utara, longitude positif ke timur.
 
 | Lokasi | Latitude | Longitude |
 | --- | ---: | ---: |
-| Tembok Besar Tiongkok, Badaling | 40.354 | 116.006 |
-| Petra | 30.3285 | 35.4444 |
 | Kristus Penebus | -22.9519 | -43.2105 |
-| Machu Picchu | -13.1631 | -72.5450 |
-| Chichén Itzá | 20.6843 | -88.5678 |
-| Colosseum | 41.8902 | 12.4922 |
-| Taj Mahal | 27.1751 | 78.0421 |
 
 Tekstur asli menggunakan pemetaan equirectangular standar, dengan Greenwich di
 tengah. Setelah diubah ke radian, titik lokal pada SphereGeometry adalah
@@ -208,13 +199,7 @@ sejauh ini diketahui. Sumber tampil kecil di bawah isi kartu dan tetap terlihat.
 
 - Sains Bumi: https://science.nasa.gov/earth/facts/
 - Daftar tujuh keajaiban: https://world.new7wonders.com/lisbon-on-07-07-2007/
-- Tembok Besar: https://whc.unesco.org/en/list/438/
-- Petra: https://whc.unesco.org/en/list/326/
 - Kristus Penebus: https://world.new7wonders.com/wonders/cristo-redentor-1931-rio-de-janeiro-brazil/
-- Machu Picchu: https://whc.unesco.org/en/list/274/
-- Chichén Itzá: https://whc.unesco.org/en/list/483/
-- Colosseum: https://colosseo.it/en/area/the-colosseum/
-- Taj Mahal: https://whc.unesco.org/en/list/252/
 
 ## Validasi
 
@@ -250,51 +235,31 @@ Fallback CSS paling akhir juga digunakan jika gambar atau Canvas tidak tersedia.
 ZIP hasil memuat proyek lengkap beserta asetnya. Cache browser dan screenshot
 sementara dari ZIP sumber tidak disertakan karena tidak digunakan website.
 
-## Penyempurnaan label dan sejarah tujuh keajaiban
+## Rekor & Ekstrem Bumi
 
-Berkas diubah: `index.html`, `earth-scene.js`, `earth-scene.css`, dan laporan ini.
-Aset baru: tujuh SVG dalam `assets/flags/`, beserta README dan lisensi MIT
-flag-icons 7.5.0. Tidak ada framework, dependensi runtime, atau permintaan CDN baru.
+Earth exploration kini memakai tujuh stop bertema **Rekor & Ekstrem**: satu intro
+planet aktif dan enam lokasi alam yang dapat dipetakan pada globe. Cabang landmark
+buatan manusia dihapus dari data, marker, UI, listener, manifest media, dan aset.
 
-Data tiap keajaiban kini menambahkan `displayCountry`, `cityOrRegion`, `history`,
-dan `flag`. `summary` tetap menjadi overview; koordinat tetap berada di `location`.
-Masing-masing kartu memuat tiga fakta singkat. Negara pada globe memakai bahasa
-Indonesia: Tiongkok, Yordania, Brasil, Peru, Meksiko, Italia, India.
+Arsitektur Earth yang sudah matang tetap dipakai: globe 3D, rotasi halus menuju
+koordinat, marker terjangkar, callout, panel informasi, media pendukung, lightbox,
+serta transisi panorama dan eksplorasi.
 
-Label globe memiliki titik, cincin, garis penghubung, nama tempat, dan nama negara.
-Label muncul setelah rotasi selesai mendekati tujuan, disembunyikan langsung saat
-berpindah tujuan, dan diletakkan di atas titik pada ponsel. Bendera hanya tampil
-kecil di samping lokasi dalam kartu, bukan pada globe. Bendera menggunakan SVG
-lokal agar konsisten di Windows dan tidak bergantung pada dukungan emoji.
+Stop yang dipakai adalah Mount Everest, Challenger Deep, Mauna Kea, Vostok,
+Furnace Creek, dan Danau Baikal. Setiap kartu menjelaskan definisi rekornya agar
+perbandingan tidak menyesatkan. Challenger Deep memakai visual batimetri, bukan
+foto optik dasar laut.
 
-Sejarah yang ditambahkan:
+Media Earth memakai foto, citra satelit, atau visual ilmiah autentik dengan sumber
+dan kredit. Label **REKOR & EKSTREM** juga dipakai secara selektif pada satu topik
+ekstrem yang sudah ada di Sun, Mercury, Venus, Mars, Asteroid Belt, Jupiter,
+Saturn, Uranus, dan Neptune tanpa mengubah jumlah slide atau sistem interaksi
+masing-masing objek.
 
-| Tempat | Latar sejarah dalam kartu |
-| --- | --- |
-| Tembok Besar Tiongkok | Penyatuan benteng oleh Qin Shi Huang, pembangunan lintas dinasti sampai Ming, fungsi pertahanan. |
-| Petra | Ibu kota Nabatea dan jaringan perdagangan kafilah pada masa Helenistik dan Romawi. |
-| Kristus Penebus | Pembangunan 1922–1931, Paul Landowski dan Heitor da Silva Costa, makna keagamaan dan budaya. |
-| Machu Picchu | Pembangunan Inka abad ke-15, ruang upacara, hunian, pertanian, dan teknik tata ruang. |
-| Chichén Itzá | Asal kota Maya periode Klasik, perkembangan bangunan abad ke-6 sampai ke-10 dan pengaruh Meksiko tengah. |
-| Colosseum | Dinasti Flavia abad pertama Masehi, pertarungan gladiator, pertunjukan publik dan teknik Romawi. |
-| Taj Mahal | Shah Jahan dan Mumtaz Mahal, makam selesai 1648, bangunan pelengkap sampai 1653. |
+## Earth: Rekor & Ekstrem Bumi
 
-Sumber institusional tetap terdapat pada setiap kartu. Tautan sumber di bagian
-sebelumnya digunakan untuk memeriksa sejarah dan fakta tambahan.
+Earth exploration now uses seven stops: an active-Earth introduction followed by Mount Everest, Challenger Deep, Mauna Kea, Vostok Antarctica, Furnace Creek, and Lake Baikal. The existing globe rotation, latitude/longitude marker anchoring, callout, marker-side media, zoom lightbox, and panorama/info transitions are reused.
 
-CSS baru: `.earth-topic-meta`, `.earth-country-flag`, `.earth-history`,
-`.earth-content-heading`, `.earth-location-ring`, `.earth-location-line`,
-`.earth-location-label`, `.earth-location-title`, `.earth-location-country`.
-`.earth-location-dot` mendapatkan state `.is-relocating` dan `.is-left`.
+The content intentionally distinguishes measurement definitions: Everest is highest above mean sea level, Mauna Kea is compared base-to-summit, and Challenger Deep is measured below sea level. Mariana imagery is bathymetry, not a fabricated optical trench photo.
 
-JavaScript: `setExplorationStop` mengisi metadata, sejarah, fakta, dan label;
-`positionMarker` menyatukan penempatan anotasi WebGL/Canvas;
-`updateMarker` dan `drawCanvasEarth` memakainya. Pemilihan reduced motion
-menerapkan orientasi langsung. ResizeObserver menjaga ukuran renderer sesuai
-kotak scene setelah perubahan ukuran viewport. Rumus koordinat, aset planet,
-renderer utama, navigasi dan animasi perjalanan dipertahankan.
-
-Validasi browser mencakup ketujuh pasangan nama/negara, pemuatan bendera,
-sejarah, jumlah fakta, normal/reduced motion, pergantian target, scroll internal,
-Canvas fallback, dan navigasi menuju eksplorasi Mars. Identitas navy/emas,
-ukuran kartu, tipografi, dan komposisi desktop dipertahankan.
+`REKOR & EKSTREM` is also used as a recurring kicker on one existing educational stop for the Sun, Mercury, Venus, Mars, Asteroid Belt, Jupiter, Saturn, Uranus, and Neptune without forcing identical physical feature categories.

@@ -14,7 +14,7 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
     images:[{src:"https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/1/PIA18182-1.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1720&w=1720",alt:"Citra global Uranus dari Voyager 2",credit:"NASA/JPL",source:"https://science.nasa.gov/uranus/facts/",caption:"Uranus · raksasa es yang hampir berputar menyamping",fit:"contain",type:"CITRA WAHANA"}]
   },
   {
-    kicker:"KEMIRINGAN 97.77 DERAJAT", title:"Dunia yang Hampir Menggelinding", subtitle:"Sumbu rotasi hampir sejajar dengan bidang orbit",
+    kicker:"REKOR & EKSTREM", title:"Dunia yang Hampir Menggelinding", subtitle:"Sumbu rotasi hampir sejajar dengan bidang orbit",
     summary:"Kemiringan sumbu Uranus mencapai sekitar 97,77 derajat. Planet ini seolah berputar sambil berbaring, berbeda sangat jauh dari orientasi Jupiter dan Saturnus.",
     facts:["Kemiringan 97,77 derajat adalah salah satu ciri paling khas Uranus.","Cincin dan orbit bulan-bulan utama mengikuti ekuator Uranus yang sangat miring.","Orientasi ekstrem ini kemungkinan berkaitan dengan sejarah pembentukan Uranus yang sangat dinamis."],
     source:"https://science.nasa.gov/uranus/facts/", semantic:"axis",

@@ -152,3 +152,61 @@ Mobile:
 ## Cleanup and fallback behaviour
 
 Image, terrain and generated-patch caches remain bounded. Unneeded meshes, materials, normal textures and imagery textures are disposed. If a higher scientific imagery LOD is unavailable, the current lower LOD stays visible rather than being replaced by fabricated geography. Leaving Full Exploration disposes the dedicated surface renderer and its terrain resources.
+
+## View-dependent performance overhaul
+
+The GAME-QUALITY terrain now keeps the near-camera visual path intact while reducing work that cannot materially contribute to the current frame.
+
+### Camera/frustum activation
+
+- Terrain remains spatially split into geographic chunks.
+- `THREE.Frustum` is evaluated against every loaded chunk before the frame is rendered.
+- Chunks intersecting the camera frustum stay active.
+- A conservative side/near-camera safety buffer stays prepared so a fast 180 degree turn does not reveal empty terrain.
+- Deep rear/off-screen chunks are marked inactive and stop requesting expensive scientific imagery upgrades.
+- Terrain materials are explicitly `THREE.FrontSide`; no unnecessary double-sided terrain rasterization is enabled.
+
+### View-dependent material cost
+
+The premium triplanar material now has four runtime detail tiers without changing the near-field appearance:
+
+- Tier 3: broad + fine + grit triplanar detail, micro-normal and roughness response.
+- Tier 2: broad + fine detail for visible mid-distance terrain.
+- Tier 1: broad material breakup only for visible far/horizon terrain, and for high-altitude views only after the original fine/grit shader weights have already faded to zero.
+- Tier 0: no triplanar micro-detail sampling for off-screen/inactive chunks.
+
+Low-altitude terrain directly in view therefore keeps the same full material path. The optimization removes expensive samples where those frequencies are already sub-pixel or invisible.
+
+### Altitude-aware geometry LOD
+
+The existing distance-ring geometry remains at full low-altitude density. At higher altitude, only visible chunks are allowed to swap to a lighter geometry tier:
+
+- below 24 km: original GAME-QUALITY ring densities are preserved
+- 24 to 30 km: center and surrounding visible rings use progressively lighter tessellation because metre-scale relief is sub-pixel from that height
+
+The deterministic height function is identical across LODs and skirts remain active, reducing the chance of visible cracks at boundaries.
+
+### Chunk reuse and streaming
+
+Terrain identity is now based on the geographic tile rather than `tile + segment count`. Crossing a tile boundary therefore reuses the existing material, scientific imagery and normal texture. Geometry variants are swapped and cached instead of destroying/recreating the whole terrain resource. Only two geometry variants are retained per tile to prevent traversal from growing memory indefinitely.
+
+The old safety ring is also retained until replacement background chunks are ready, so streaming should not expose black squares or missing terrain edges.
+
+### Visibility-aware imagery
+
+Outer background chunks begin with the existing fallback albedo and are not automatically sent through the most expensive Viking/THEMIS upgrade path. Visible chunks request the appropriate scientific LOD, side-buffer chunks are warmed conservatively, and deep rear chunks do no imagery refresh work until needed.
+
+Movement-direction prefetch remains active.
+
+### Optional performance diagnostics
+
+Normal users see no debug UI. Add `?marsTerrainDebug=1` to the page URL during development to log approximately once per second:
+
+- FPS / frame time
+- renderer draw calls
+- rendered triangle count
+- DPR
+- visible / buffered / culled terrain chunk counts
+- active material-detail tiers
+
+This instrumentation is disabled by default and does not alter the normal ANTARA interface.

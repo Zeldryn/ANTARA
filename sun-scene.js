@@ -65,7 +65,7 @@ const SUN_INFO_STOPS = Object.freeze([
   },
   {
     title: "Medan Magnet & Letupan",
-    kicker: "AKTIVITAS SURYA",
+    kicker: "REKOR & EKSTREM",
     subtitle: "Medan magnet yang kusut menyimpan energi untuk flare, prominence, dan CME",
     summary: "Plasma bermuatan membawa dan membengkokkan medan magnet Matahari. Ketika konfigurasi magnetik berubah cepat, energi dapat dilepaskan sebagai flare. Struktur magnetik juga menopang prominence dan dapat melontarkan awan plasma besar sebagai coronal mass ejection.",
     facts: [

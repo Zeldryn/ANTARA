@@ -1,7 +1,5 @@
-# Kredit foto dan citra
+# Exploration media
 
-Ketiga belas gambar adalah foto/citra nyata, bukan gambar generatif atau placeholder. Metadata sumber, atribusi, lisensi, URL unduhan, dan dimensi tercatat di `sources.json`. Kredit dan tautan lisensi juga tersedia dalam setiap kartu.
+Earth exploration now uses the **Rekor & Ekstrem Bumi** sequence. Its mapped visuals are authentic scientific/reference media from Wikimedia Commons, NOAA, USGS, NASA Earth Observatory, and the U.S. National Park Service. Challenger Deep deliberately uses bathymetry rather than a fake satellite view of the trench.
 
-File dikonversi ke WebP (kualitas 84), dimensi maksimal 1000 × 800 piksel, tanpa peregangan atau pewarnaan ulang. Lisensi Creative Commons setiap foto tetap berlaku bagi file hasil konversi. Citra NASA mengikuti kebijakan gambar NASA yang ditautkan.
-
-Citra Jezero memakai warna olahan untuk memperjelas komposisi permukaan; citra senja Gale diproses oleh tim misi. Mosaik kutub Viking memiliki area tanpa data berwarna hitam. Perbandingan badai menunjukkan Juni dan Juli 2001. Semua citra ilmiah ditampilkan utuh (`object-fit: contain`) agar konteks tidak terpotong.
+Mars local media remains unchanged. Attribution/source metadata is kept in `sources.json`; curated runtime pair metadata is kept in `image-pairs.json`.

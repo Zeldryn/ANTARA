@@ -547,6 +547,19 @@
       this.scene.add(this.group);
       this.detailTexture = this.createMarsMicroDetailTexture();
 
+      // View-dependent terrain manager state. Three.js already performs mesh-level
+      // frustum culling, but we also keep an explicit visibility state so expensive
+      // texture upgrades and terrain shader detail are spent only where the camera
+      // can actually benefit from them.
+      this.frustum = new THREE.Frustum();
+      this.projectionScreenMatrix = new THREE.Matrix4();
+      this.cameraForward = new THREE.Vector3();
+      this.chunkCenter = new THREE.Vector3();
+      this.chunkVector = new THREE.Vector3();
+      this.visibilityStats = { visible: 0, buffered: 0, culled: 0, high: 0, medium: 0, low: 0 };
+      this.debugEnabled = typeof location !== "undefined" && new URLSearchParams(location.search).get("marsTerrainDebug") === "1";
+      this.lastDebugLog = 0;
+
       // The orbit renderer only has a 2K global color map, so it is retained as
       // a continuity placeholder only. Scientific surface color is upgraded per
       // geographic tile from NASA Trek Viking imagery, with THEMIS IR contributing
@@ -634,19 +647,21 @@
 
     configureTerrainMaterial(material, tile) {
       if (!material || !tile) return material;
-      const THREE = this.THREE;
 
-      // Keep bumpMap attached so Three compiles its derivative helpers, but do not rely
-      // on the ordinary UV bump path. The actual near-field relief below is sampled in
-      // world-space triplanar coordinates, which prevents obvious stretching on slopes.
+      // Keep bumpMap attached so Three compiles derivative helpers, but use a
+      // view-dependent uniform to decide how many triplanar layers are worth
+      // sampling for this chunk. Tier 3 is the exact premium near-field path;
+      // lower tiers only remove detail that is sub-pixel at that distance.
       material.bumpMap = this.detailTexture;
       material.bumpScale = 0.001;
       material.roughness = this.quality.name === "HIGH" ? 0.885 : this.quality.name === "MEDIUM" ? 0.90 : 0.92;
+      material.userData.marsDetailTier = material.userData.marsDetailTier ?? 3;
 
       material.onBeforeCompile = shader => {
         shader.uniforms.uMarsMicroDetail = { value: this.detailTexture };
         shader.uniforms.uMarsAlbedoDetail = { value: this.quality.name === "HIGH" ? 0.24 : this.quality.name === "MEDIUM" ? 0.19 : 0.13 };
         shader.uniforms.uMarsNormalDetail = { value: this.quality.name === "HIGH" ? 7.2 : this.quality.name === "MEDIUM" ? 5.4 : 3.8 };
+        shader.uniforms.uMarsDetailTier = { value: material.userData.marsDetailTier };
 
         shader.vertexShader = shader.vertexShader
           .replace("#include <common>", "#include <common>\nvarying vec3 vMarsWorldPosition;")
@@ -658,6 +673,7 @@
             uniform sampler2D uMarsMicroDetail;
             uniform float uMarsAlbedoDetail;
             uniform float uMarsNormalDetail;
+            uniform float uMarsDetailTier;
 
             float marsTriSample(sampler2D tex, vec3 p, vec3 n, float scale, vec3 phase) {
               vec3 blend = pow(max(abs(n), vec3(0.0001)), vec3(5.0));
@@ -677,12 +693,25 @@
             float marsNearWeight = 1.0 - smoothstep(1.25, 15.0, marsViewDistance);
             float marsMidWeight = 1.0 - smoothstep(7.0, 46.0, marsViewDistance);
 
-            // Three spatial frequencies give the ground a game-style macro/mid/fine
-            // material hierarchy while retaining the scientific imagery underneath.
-            float marsBroad = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 0.18, vec3(0.17, 0.41, 0.73));
-            float marsFine = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 0.92, vec3(0.61, 0.13, 0.37));
-            float marsGrit = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 2.35, vec3(0.29, 0.83, 0.07));
-            float marsRock = smoothstep(0.68, 0.92, marsGrit);
+            float marsBroad = 0.5;
+            float marsFine = 0.5;
+            float marsGrit = 0.5;
+            float marsRock = 0.0;
+
+            // Uniform branches let horizon / distant chunks skip expensive texture
+            // samples. Visible terrain near the camera still executes all three
+            // triplanar frequencies exactly as before.
+            if (uMarsDetailTier > 0.5) {
+              marsBroad = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 0.18, vec3(0.17, 0.41, 0.73));
+            }
+            if (uMarsDetailTier > 1.5) {
+              marsFine = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 0.92, vec3(0.61, 0.13, 0.37));
+            }
+            if (uMarsDetailTier > 2.5) {
+              marsGrit = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 2.35, vec3(0.29, 0.83, 0.07));
+              marsRock = smoothstep(0.68, 0.92, marsGrit);
+            }
+
             float marsMicro = (marsBroad - 0.5) * 0.44 * marsMidWeight
               + (marsFine - 0.5) * 0.40 * marsNearWeight
               + (marsGrit - 0.5) * 0.16 * marsNearWeight
@@ -692,22 +721,134 @@
               + (marsGrit - 0.5) * 0.14 * marsNearWeight);
 
             diffuseColor.rgb *= clamp(1.0 + marsMicro * uMarsAlbedoDetail, 0.86, 1.14);`)
-          // Three normally chooses an object-space normal map OR a bump map. Preserve
-          // the MOLA-derived object-space normal, then layer triplanar micro-relief on
-          // top using screen-space derivatives of the world-space detail field.
           .replace("#include <normal_fragment_maps>", `#include <normal_fragment_maps>
             #ifdef USE_BUMPMAP
-              vec2 marsMicroSlope = vec2(dFdx(marsMicroHeight), dFdy(marsMicroHeight));
-              normal = perturbNormalArb(-vViewPosition, normal, marsMicroSlope * uMarsNormalDetail, faceDirection);
+              if (uMarsDetailTier > 0.5) {
+                vec2 marsMicroSlope = vec2(dFdx(marsMicroHeight), dFdy(marsMicroHeight));
+                normal = perturbNormalArb(-vViewPosition, normal, marsMicroSlope * uMarsNormalDetail, faceDirection);
+              }
             #endif`)
           .replace("#include <roughnessmap_fragment>", `#include <roughnessmap_fragment>
-            roughnessFactor = clamp(roughnessFactor + (0.5 - marsGrit) * 0.065 + marsRock * 0.035, 0.80, 0.985);`);
+            if (uMarsDetailTier > 2.5) {
+              roughnessFactor = clamp(roughnessFactor + (0.5 - marsGrit) * 0.065 + marsRock * 0.035, 0.80, 0.985);
+            }`);
 
         material.userData.marsShader = shader;
       };
-      material.customProgramCacheKey = () => `antara-mars-terrain-triplanar-v5-${this.quality.name}`;
+      material.customProgramCacheKey = () => `antara-mars-terrain-triplanar-viewlod-v6-${this.quality.name}`;
       material.needsUpdate = true;
       return material;
+    }
+
+    setEntryDetailTier(entry, tier) {
+      if (!entry?.mesh?.material) return;
+      const clampedTier = clamp(Math.round(tier), 0, 3);
+      if (entry.detailTier === clampedTier) return;
+      entry.detailTier = clampedTier;
+      const material = entry.mesh.material;
+      material.userData.marsDetailTier = clampedTier;
+      const shader = material.userData.marsShader;
+      if (shader?.uniforms?.uMarsDetailTier) shader.uniforms.uMarsDetailTier.value = clampedTier;
+      const transitionMaterial = entry.textureTransition?.overlay?.material;
+      if (transitionMaterial) {
+        transitionMaterial.userData.marsDetailTier = clampedTier;
+        const overlayShader = transitionMaterial.userData.marsShader;
+        if (overlayShader?.uniforms?.uMarsDetailTier) overlayShader.uniforms.uMarsDetailTier.value = clampedTier;
+      }
+    }
+
+    entryRingFromCamera(entry, cameraGeo) {
+      if (!entry || !cameraGeo) return 99;
+      const center = this.provider.tileForLocation(cameraGeo.latitude, cameraGeo.signedLongitude);
+      const dx = Math.abs(shortestLongitudeDelta(center.lonWest, entry.lonWest));
+      const dy = Math.abs(center.latNorth - entry.latNorth);
+      return Math.max(dx, dy);
+    }
+
+    updateViewDependent(camera, altitudeKm, velocity = null, now = performance.now()) {
+      if (!camera || !this.meshes.size) return this.visibilityStats;
+
+      camera.updateMatrixWorld();
+      this.group.updateMatrixWorld(true);
+      this.projectionScreenMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+      this.frustum.setFromProjectionMatrix(this.projectionScreenMatrix);
+      camera.getWorldDirection(this.cameraForward).normalize();
+      const cameraGeo = this.geoFromWorld(camera.position.x, camera.position.z);
+      // Fine/grit shader weights already reach zero at ~15 km view distance. Only
+      // after that point do we cap visible chunks to the broad-detail tier, so this
+      // removes wasted samples rather than changing a contribution the user can see.
+      const maxTierForAltitude = altitudeKm >= 15 ? 1 : 3;
+      const speed = velocity ? Math.hypot(velocity.x || 0, velocity.y || 0, velocity.z || 0) : 0;
+      const stats = { visible: 0, buffered: 0, culled: 0, high: 0, medium: 0, low: 0 };
+
+      for (const entry of this.meshes.values()) {
+        const mesh = entry.mesh;
+        const sphere = mesh.geometry.boundingSphere;
+        if (!sphere) mesh.geometry.computeBoundingSphere();
+        const bounds = mesh.geometry.boundingSphere;
+        this.chunkCenter.copy(bounds.center).applyMatrix4(mesh.matrixWorld);
+        this.chunkVector.copy(this.chunkCenter).sub(camera.position);
+        const centerDistance = Math.max(0.0001, this.chunkVector.length());
+        const surfaceDistance = Math.max(0, centerDistance - bounds.radius);
+        const facing = this.chunkVector.dot(this.cameraForward) / centerDistance;
+        const inFrustum = this.frustum.intersectsObject(mesh);
+
+        // Safety buffer keeps nearby / side chunks alive so a fast 180-degree turn
+        // never exposes a void. Only the deep rear sector is deactivated entirely.
+        const bufferDistance = Math.max(52, 34 + altitudeKm * 2.4 + speed * 1.5);
+        const inSafetyBuffer = !inFrustum && facing > -0.62 && surfaceDistance < bufferDistance;
+        const active = inFrustum || inSafetyBuffer;
+        mesh.visible = active;
+        entry.frustumVisible = inFrustum;
+        entry.bufferVisible = inSafetyBuffer;
+        entry.lastSurfaceDistance = surfaceDistance;
+
+        const ring = this.entryRingFromCamera(entry, cameraGeo);
+        if (inFrustum) {
+          const desiredSegments = this.segmentsForAltitudeRing(ring, altitudeKm);
+          this.swapEntryGeometry(entry, desiredSegments);
+        }
+
+        let detailTier = 0;
+        if (inFrustum) {
+          const nearLimit = this.quality.name === "HIGH" ? 28 : this.quality.name === "MEDIUM" ? 22 : 16;
+          const midLimit = this.quality.name === "HIGH" ? 82 : this.quality.name === "MEDIUM" ? 64 : 48;
+          detailTier = surfaceDistance <= nearLimit ? 3 : surfaceDistance <= midLimit ? 2 : 1;
+          detailTier = Math.min(detailTier, maxTierForAltitude);
+        }
+        this.setEntryDetailTier(entry, detailTier);
+
+        if (inFrustum) {
+          stats.visible += 1;
+          if (detailTier === 3) stats.high += 1;
+          else if (detailTier === 2) stats.medium += 1;
+          else stats.low += 1;
+        } else if (inSafetyBuffer) {
+          stats.buffered += 1;
+        } else {
+          stats.culled += 1;
+        }
+
+        // Texture streaming is visibility-aware. The current / visible terrain can
+        // still request the full scientific profile, while buffered chunks are only
+        // warmed conservatively and deep rear chunks do zero imagery work.
+        const elapsed = now - (entry.lastViewTextureRequest || 0);
+        if (inFrustum && elapsed > 650) {
+          entry.lastViewTextureRequest = now;
+          const textureRing = detailTier >= 3 ? ring : ring + (detailTier === 2 ? 1 : 2);
+          this.upgradeEntryTexture(entry, altitudeKm, textureRing).catch(() => {});
+        } else if (inSafetyBuffer && elapsed > 1800 && ring <= 2) {
+          entry.lastViewTextureRequest = now;
+          this.upgradeEntryTexture(entry, Math.max(altitudeKm, 12), ring + 2).catch(() => {});
+        }
+      }
+
+      this.visibilityStats = stats;
+      if (this.debugEnabled && now - this.lastDebugLog > 1000) {
+        this.lastDebugLog = now;
+        console.debug("[ANTARA Mars terrain]", { ...stats, altitudeKm: Number(altitudeKm.toFixed(2)), chunks: this.meshes.size });
+      }
+      return stats;
     }
 
     setOrigin(latitude, longitudeEast) {
@@ -759,12 +900,27 @@
       return this.quality.radius;
     }
 
-    segmentsForOffset(dx, dy) {
-      const ring = Math.max(Math.abs(dx), Math.abs(dy));
+    segmentsForRing(ring) {
       if (ring === 0) return this.quality.nearSegments;
       if (ring === 1) return this.quality.midSegments;
       if (ring === 2) return this.quality.farSegments;
       return this.quality.horizonSegments || this.quality.farSegments;
+    }
+
+    segmentsForOffset(dx, dy) {
+      return this.segmentsForRing(Math.max(Math.abs(dx), Math.abs(dy)));
+    }
+
+    segmentsForAltitudeRing(ring, altitudeKm) {
+      // Geometry LOD is conservative at low altitude. At higher altitude the fine
+      // tessellation is sub-pixel, so reduce only those rings where it is visually
+      // redundant. The same deterministic height function + skirts keeps seams stable.
+      if (altitudeKm >= 24) {
+        if (ring === 0) return this.quality.midSegments;
+        if (ring === 1) return this.quality.farSegments;
+        return this.quality.horizonSegments || this.quality.farSegments;
+      }
+      return this.segmentsForRing(ring);
     }
 
     async ensureAround(latitude, signedLongitude, { requiredRadius = 1, onProgress = null, textureAltitude = MAX_EXPLORATION_ALTITUDE_KM } = {}) {
@@ -781,7 +937,9 @@
           const latNorth = center.latNorth - dy;
           if (latNorth > 88 || latNorth < -87) continue;
           const segments = this.segmentsForOffset(dx, dy);
-          const key = `${this.provider.tileKey(lonWest, latNorth)}@${segments}`;
+          // Tile identity is independent from LOD. Moving across a boundary now reuses
+          // the existing tile material / textures and only swaps geometry when needed.
+          const key = this.provider.tileKey(lonWest, latNorth);
           const entry = { key, lonWest, latNorth, segments, dx, dy };
           desired.set(key, entry);
           if (Math.max(Math.abs(dx), Math.abs(dy)) <= requiredRadius) mandatory.push(entry);
@@ -789,14 +947,34 @@
         }
       }
 
-      this.prune(desired);
+      // Keep the previous safety ring alive until replacement chunks are ready.
+      // This avoids one-frame black/missing squares while crossing tile boundaries.
       let completed = 0;
       const total = Math.max(1, mandatory.length);
+      const makeRecord = (entry, tile, mesh) => ({
+        mesh,
+        tile,
+        lonWest: entry.lonWest,
+        latNorth: entry.latNorth,
+        segments: entry.segments,
+        geometryCache: new Map([[entry.segments, mesh.geometry]]),
+        textureProfile: "fallback",
+        textureLoading: "",
+        textureToken: 0,
+        detailTier: 3,
+        frustumVisible: undefined,
+        bufferVisible: false,
+        lastViewTextureRequest: 0
+      });
+
       const loadEntry = async entry => {
         if (generation !== this.requestGeneration) return;
+        const ring = Math.max(Math.abs(entry.dx), Math.abs(entry.dy));
         if (this.meshes.has(entry.key)) {
           const existing = this.meshes.get(entry.key);
-          const ring = Math.max(Math.abs(entry.dx), Math.abs(entry.dy));
+          this.swapEntryGeometry(existing, entry.segments);
+          // Mandatory chunks are either the camera tile or its immediate safety ring,
+          // so keep their scientific imagery current. Materials/textures are reused.
           await this.upgradeEntryTexture(existing, textureAltitude, ring);
           completed += 1;
           onProgress?.(completed / total);
@@ -806,9 +984,8 @@
         if (generation !== this.requestGeneration) return;
         const mesh = this.createTileMesh(tile, entry.segments);
         this.group.add(mesh);
-        const record = { mesh, tile, lonWest: entry.lonWest, latNorth: entry.latNorth, segments: entry.segments, textureProfile: "fallback", textureLoading: "", textureToken: 0 };
+        const record = makeRecord(entry, tile, mesh);
         this.meshes.set(entry.key, record);
-        const ring = Math.max(Math.abs(entry.dx), Math.abs(entry.dy));
         await this.primeEntryTexture(record, textureAltitude, ring);
         completed += 1;
         onProgress?.(completed / total);
@@ -818,19 +995,28 @@
       if (generation !== this.requestGeneration) return;
       this.lastCenterTile = this.provider.tileKey(center.lonWest, center.latNorth);
 
-      // Outer LOD tiles are intentionally background work. They improve the horizon
-      // without blocking the user from entering the experience.
+      // Outer coverage is created with a fallback albedo but is NOT immediately sent
+      // through the expensive THEMIS/Viking upgrade path. View-dependent streaming
+      // promotes only chunks entering the camera/frustum safety region.
       Promise.allSettled(optional.map(async entry => {
-        if (generation !== this.requestGeneration || this.meshes.has(entry.key)) return;
+        if (generation !== this.requestGeneration) return;
+        const existing = this.meshes.get(entry.key);
+        if (existing) {
+          this.swapEntryGeometry(existing, entry.segments);
+          return;
+        }
         const tile = await this.provider.load(entry.lonWest, entry.latNorth);
         if (generation !== this.requestGeneration) return;
         const mesh = this.createTileMesh(tile, entry.segments);
         this.group.add(mesh);
-        const record = { mesh, tile, lonWest: entry.lonWest, latNorth: entry.latNorth, segments: entry.segments, textureProfile: "fallback", textureLoading: "", textureToken: 0 };
+        const record = makeRecord(entry, tile, mesh);
         this.meshes.set(entry.key, record);
-        const ring = Math.max(Math.abs(entry.dx), Math.abs(entry.dy));
-        this.primeEntryTexture(record, textureAltitude, ring).catch(() => {});
-      }));
+        // Start background chunks at shader tier 0. The first visibility pass before
+        // rendering promotes visible chunks synchronously, so this cannot create holes.
+        this.setEntryDetailTier(record, 0);
+      })).then(() => {
+        if (generation === this.requestGeneration) this.prune(desired);
+      });
     }
 
     maybeStream(latitude, signedLongitude, altitudeKm) {
@@ -976,6 +1162,7 @@
         roughness: mesh.material.roughness,
         metalness: 0,
         color: 0xffffff,
+        side: THREE.FrontSide,
         transparent: true,
         opacity: 0,
         depthWrite: false,
@@ -984,6 +1171,7 @@
         polygonOffsetUnits: -1,
         dithering: true
       });
+      overlayMaterial.userData.marsDetailTier = entry.detailTier ?? 0;
       this.configureTerrainMaterial(overlayMaterial, entry.tile);
       const overlay = new THREE.Mesh(mesh.geometry, overlayMaterial);
       overlay.frustumCulled = mesh.frustumCulled;
@@ -1064,11 +1252,21 @@
 
     refreshTextureLOD(altitudeKm, latitude, signedLongitude) {
       const center = this.provider.tileForLocation(latitude, signedLongitude);
+      const now = performance.now();
       for (const entry of this.meshes.values()) {
         const dx = Math.abs(shortestLongitudeDelta(center.lonWest, entry.lonWest));
         const dy = Math.abs(center.latNorth - entry.latNorth);
         const ring = Math.max(dx, dy);
-        this.upgradeEntryTexture(entry, altitudeKm, ring).catch(() => {});
+
+        // Never run a full imagery refresh over the deep rear/off-screen field.
+        // The camera tile is always allowed; other tiles are refreshed only if the
+        // previous visibility pass marked them visible or in the safety buffer.
+        const shouldRefresh = ring === 0 || entry.frustumVisible === true || entry.bufferVisible === true;
+        if (!shouldRefresh) continue;
+        if (now - (entry.lastViewTextureRequest || 0) < 480) continue;
+        entry.lastViewTextureRequest = now;
+        const penalty = entry.frustumVisible === true ? 0 : 2;
+        this.upgradeEntryTexture(entry, altitudeKm, ring + penalty).catch(() => {});
       }
     }
 
@@ -1081,7 +1279,7 @@
       if (profile.key !== coarse.key) this.imagery.prefetch(address.lonWest, address.latNorth, profile);
     }
 
-    createTileMesh(tile, segments) {
+    createTileGeometry(tile, segments) {
       const THREE = this.THREE;
       const verticesPerSide = segments + 1;
       const topVertexCount = verticesPerSide * verticesPerSide;
@@ -1173,6 +1371,12 @@
       geometry.computeVertexNormals();
       geometry.computeBoundingSphere();
 
+      return geometry;
+    }
+
+    createTileMesh(tile, segments) {
+      const THREE = this.THREE;
+      const geometry = this.createTileGeometry(tile, segments);
       const tileTexture = this.createFallbackAlbedo(tile);
       const normalTexture = this.createMolaNormalMap(tile, segments);
       const material = new THREE.MeshStandardMaterial({
@@ -1182,6 +1386,7 @@
         roughness: 0.90,
         metalness: 0,
         color: 0xffffff,
+        side: THREE.FrontSide,
         dithering: true
       });
       this.configureTerrainMaterial(material, tile);
@@ -1191,6 +1396,44 @@
       mesh.userData.surfaceTexture = tileTexture;
       mesh.userData.normalTexture = normalTexture;
       return mesh;
+    }
+
+    swapEntryGeometry(entry, segments) {
+      if (!entry?.mesh || !entry.tile || !segments || entry.segments === segments) return;
+      entry.geometryCache = entry.geometryCache || new Map([[entry.segments, entry.mesh.geometry]]);
+      let geometry = entry.geometryCache.get(segments);
+      if (!geometry) {
+        geometry = this.createTileGeometry(entry.tile, segments);
+        entry.geometryCache.set(segments, geometry);
+      }
+      entry.mesh.geometry = geometry;
+      for (const child of entry.mesh.children) {
+        if (child?.isMesh) child.geometry = geometry;
+      }
+      entry.segments = segments;
+
+      // Keep at most two geometry variants per tile. This avoids rebuilding every
+      // frame while also preventing a long traversal from accumulating every LOD.
+      if (entry.geometryCache.size > 2) {
+        for (const [cachedSegments, cachedGeometry] of entry.geometryCache) {
+          if (cachedSegments === segments || cachedGeometry === entry.mesh.geometry) continue;
+          cachedGeometry.dispose?.();
+          entry.geometryCache.delete(cachedSegments);
+          break;
+        }
+      }
+    }
+
+    disposeEntry(entry) {
+      if (!entry?.mesh) return;
+      const activeGeometry = entry.mesh.geometry;
+      if (entry.geometryCache) {
+        for (const geometry of entry.geometryCache.values()) {
+          if (geometry !== activeGeometry) geometry.dispose?.();
+        }
+        entry.geometryCache.clear();
+      }
+      this.disposeMesh(entry.mesh);
     }
 
     disposeMesh(mesh) {
@@ -1213,7 +1456,7 @@
         if (desired.has(key)) continue;
         this.cancelTextureTransition(entry);
         this.group.remove(entry.mesh);
-        this.disposeMesh(entry.mesh);
+        this.disposeEntry(entry);
         this.meshes.delete(key);
       }
     }
@@ -1230,7 +1473,7 @@
       for (const entry of this.meshes.values()) {
         this.cancelTextureTransition(entry);
         this.group.remove(entry.mesh);
-        this.disposeMesh(entry.mesh);
+        this.disposeEntry(entry);
       }
       this.meshes.clear();
       this.lastCenterTile = "";
@@ -1467,6 +1710,8 @@
       this.streamClock = 0;
       this.statsClock = 0;
       this.statsFrames = 0;
+      this.debugFrames = 0;
+      this.debugWindowStart = 0;
       this.lowFpsWindows = 0;
       this.highFpsWindows = 0;
       this.lastGround = 0;
@@ -1855,7 +2100,34 @@
       if (this.state === STATES.EXPLORING) this.updateLook(delta);
       this.camera.rotation.set(this.pitch, this.yaw, 0);
       if (this.state === STATES.EXPLORING) this.updateMovement(delta);
+
+      // Resolve chunk visibility/material LOD after the final camera movement for
+      // this frame and before rendering. A fast turn therefore promotes the newly
+      // visible terrain immediately, while the old rear sector can stop costing GPU.
+      const viewAltitude = Math.max(0, this.camera.position.y - this.lastGround);
+      this.terrain.updateViewDependent(this.camera, viewAltitude, this.velocity, now);
       this.renderer.render(this.scene, this.camera);
+
+      if (this.terrain.debugEnabled) {
+        if (!this.debugWindowStart) this.debugWindowStart = now;
+        this.debugFrames += 1;
+        const debugElapsed = now - this.debugWindowStart;
+        if (debugElapsed >= 1000) {
+          const renderInfo = this.renderer.info.render;
+          console.debug("[ANTARA Mars render]", {
+            fps: Number((this.debugFrames * 1000 / debugElapsed).toFixed(1)),
+            frameMs: Number((debugElapsed / this.debugFrames).toFixed(2)),
+            calls: renderInfo.calls,
+            triangles: renderInfo.triangles,
+            lines: renderInfo.lines,
+            points: renderInfo.points,
+            dpr: Number(this.currentDpr.toFixed(2)),
+            chunks: { ...this.terrain.visibilityStats }
+          });
+          this.debugFrames = 0;
+          this.debugWindowStart = now;
+        }
+      }
       this.updateHUD();
       this.adaptResolution();
       this.frame = requestAnimationFrame(this.tick);

@@ -139,11 +139,10 @@
   .earth-caption, .earth-location-dot { transition-duration: .01ms; }
 }
 
-/* Seven Wonders: restrained country metadata, history and geographic callouts. */
+/* Earth Rekor & Ekstrem: restrained scientific context and geographic callouts. */
 .earth-topic-meta { flex: 0 0 auto; display: flex; align-items: flex-start; gap: 8px; margin-bottom: 17px; }
 .earth-topic-meta .mars-topic-subtitle { margin: 0; }
-.earth-country-flag { display: block; flex: 0 0 auto; width: 16px; height: 12px; margin-top: 1px; opacity: .8; border: 1px solid #d8c29633; object-fit: cover; }
-.earth-country-flag[hidden], .earth-history[hidden], .earth-content-heading[hidden] { display: none; }
+.earth-context[hidden], .earth-content-heading[hidden] { display: none; }
 .earth-exploration .earth-content-heading { margin: 19px 0 8px; font-size: 8px; font-weight: 500; letter-spacing: 1.8px; color: #d5be91; text-transform: uppercase; }
 .earth-exploration .earth-content-heading + .mars-topic-facts { margin-top: 0; }
 .earth-location-dot { box-shadow: none; }
@@ -152,17 +151,16 @@
 .earth-location-line { position: absolute; left: 15px; top: 3px; width: 35px; height: 1px; background: #edc57e70; }
 .earth-location-label { position: absolute; left: 58px; top: -6px; width: 172px; display: grid; gap: 6px; text-transform: uppercase; text-shadow: 0 1px 4px #030812; }
 .earth-location-title { font-size: 9px; font-weight: 500; line-height: 1.5; letter-spacing: 1.3px; color: #e4cd9f; }
-.earth-location-country { font-size: 7px; line-height: 1.5; letter-spacing: 2px; color: #a4adba; }
+.earth-location-region { font-size: 7px; line-height: 1.5; letter-spacing: 2px; color: #a4adba; }
 .earth-location-dot.is-left .earth-location-line { left: auto; right: 15px; }
 .earth-location-dot.is-left .earth-location-label { left: auto; right: 58px; text-align: right; }
 @media (max-width: 700px) {
   .earth-topic-meta { gap: 7px; margin-bottom: 8px; }
-  .earth-country-flag { width: 14px; height: 10.5px; margin-top: 0; }
   .earth-exploration .earth-content-heading { margin-top: 14px; font-size: 7px; }
   .earth-location-line { left: 3px; top: auto; bottom: 15px; width: 1px; height: 23px; }
   .earth-location-label { left: calc(3px + var(--label-shift, 0px)); top: auto; bottom: 45px; width: min(200px, calc(100vw - 32px)); transform: translateX(-50%); text-align: center; gap: 3px; }
   .earth-location-title { font-size: 8px; letter-spacing: 1px; }
-  .earth-location-country { font-size: 7px; letter-spacing: 1.6px; }
+  .earth-location-region { font-size: 7px; letter-spacing: 1.6px; }
 }
 
 /* Marker-linked visual preview: text stays in the board, imagery stays with the globe. */

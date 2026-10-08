@@ -122,7 +122,7 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
       }
     ],
     title: "Panas dan Dingin Ekstrem",
-    kicker: "SUHU PERMUKAAN",
+    kicker: "REKOR & EKSTREM",
     subtitle: "Tanpa atmosfer tebal untuk menahan dan menyebarkan panas",
     summary: "Kedekatannya dengan Matahari membuat sisi siang Merkurius sangat panas, tetapi malamnya bisa membeku ekstrem. Perbedaan ini terjadi karena Merkurius hampir tidak memiliki atmosfer tebal yang mampu menyimpan panas.",
     facts: [

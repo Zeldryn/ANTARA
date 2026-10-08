@@ -1,143 +1,64 @@
 {
   "earth": {
-    "great-wall.webp": [
+    "everest": [
       {
-        "src": "assets/exploration/great-wall.webp",
-        "alt": "Foto Tembok Besar Tiongkok mengikuti punggung pegunungan di Badaling",
-        "credit": "Ktausz",
-        "source": "https://commons.wikimedia.org/wiki/File:Great_wall_panorama.jpg",
-        "license": "CC BY-SA 3.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-        "caption": "Panorama Tembok Besar di Badaling"
-      },
-      {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/6/6f/GreatWallTower.jpg",
-        "alt": "Foto bagian Tembok Besar di dekat Menara Utara keempat, Badaling",
-        "credit": "Leonard G.",
-        "source": "https://commons.wikimedia.org/wiki/File:GreatWallTower.jpg",
-        "license": "CC SA 1.0",
-        "licenseUrl": "https://creativecommons.org/licenses/sa/1.0/",
-        "caption": "Sudut berbeda Tembok Besar di Badaling"
-      }
-    ],
-    "petra.webp": [
-      {
-        "src": "assets/exploration/petra.webp",
-        "alt": "Foto fasad Al-Khazneh yang dipahat pada tebing batu di Petra, Yordania",
-        "credit": "Markv; koreksi perspektif: Berthold Werner",
-        "source": "https://commons.wikimedia.org/wiki/File:Treasury_Petra.jpg",
-        "license": "CC BY-SA 3.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-        "caption": "Al-Khazneh / Treasury, Petra"
-      },
-      {
-        "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Ad-Deir.jpg/1280px-Ad-Deir.jpg",
-        "alt": "Foto Ad-Deir atau Monastery di Petra, Yordania",
-        "credit": "Kruppsdaddy",
-        "source": "https://commons.wikimedia.org/wiki/File:Ad-Deir.jpg",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "caption": "Ad-Deir / Monastery, Petra"
-      }
-    ],
-    "christ-redeemer.webp": [
-      {
-        "src": "assets/exploration/christ-redeemer.webp",
-        "alt": "Foto patung Christ the Redeemer dengan kedua lengan terbuka di Rio de Janeiro, Brasil",
-        "credit": "acediscovery",
-        "source": "https://commons.wikimedia.org/wiki/File:Christ-Redeemer-Rio-de-Janeiro.jpg",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/1/13/Everest%2C_South_Col%2C_Himalayas.jpg",
+        "alt": "Foto Mount Everest dari arah South Col di Himalaya",
+        "credit": "Vyacheslav Argenberg",
+        "source": "https://commons.wikimedia.org/wiki/File:Everest,_South_Col,_Himalayas.jpg",
         "license": "CC BY 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-        "caption": "Christ the Redeemer, Corcovado"
-      },
-      {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Aerial_view_of_Cristo_Redentor%2C_Rio_de_Janeiro.jpg",
-        "alt": "Foto udara Christ the Redeemer dan Gunung Corcovado di Rio de Janeiro",
-        "credit": "Florent Pécassou",
-        "source": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_Cristo_Redentor,_Rio_de_Janeiro.jpg",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "caption": "Pemandangan udara Christ the Redeemer"
+        "caption": "Mount Everest · Himalaya"
       }
     ],
-    "machu-picchu.webp": [
+    "challenger-deep": [
       {
-        "src": "assets/exploration/machu-picchu.webp",
-        "alt": "Foto teras dan bangunan batu Machu Picchu di pegunungan Andes, Peru",
-        "credit": "Martin St-Amant (S23678)",
-        "source": "https://commons.wikimedia.org/wiki/File:Machu_Picchu_D%C3%A9cembre_2006_-_Panorama_1.jpg",
-        "license": "CC BY 3.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
-        "caption": "Panorama Machu Picchu"
-      },
-      {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/d/d2/Terraces_at_Machu_Picchu.jpg",
-        "alt": "Foto teras pertanian dan jalur batu di Machu Picchu, Peru",
-        "credit": "Gedankenstuecke",
-        "source": "https://commons.wikimedia.org/wiki/File:Terraces_at_Machu_Picchu.jpg",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "caption": "Teras Machu Picchu dari sudut berbeda"
+        "src": "https://omao.noaa.gov/sites/default/files/2025-12/survey%20area.png",
+        "alt": "Peta batimetri ilmiah wilayah Mariana dan Guam dari NOAA",
+        "credit": "Shannon Hoy, NOAA",
+        "source": "https://omao.noaa.gov/marine-operations/news-media/image/mariana-trench-survey-area",
+        "caption": "Batimetri wilayah Mariana",
+        "type": "PETA BATIMETRI"
       }
     ],
-    "chichen-itza.webp": [
+    "mauna-kea": [
       {
-        "src": "assets/exploration/chichen-itza.webp",
-        "alt": "Foto piramida El Castillo di Chichén Itzá, Meksiko",
-        "credit": "Daniel Schwen",
-        "source": "https://commons.wikimedia.org/wiki/File:Chichen_Itza_3.jpg",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "caption": "El Castillo, Chichén Itzá"
-      },
-      {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Temple_of_the_warriors_chichen_itza.jpg",
-        "alt": "Foto Temple of the Warriors di Chichén Itzá, Meksiko",
-        "credit": "André Möller",
-        "source": "https://commons.wikimedia.org/wiki/File:Temple_of_the_warriors_chichen_itza.jpg",
-        "license": "CC BY-SA 3.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
-        "caption": "Temple of the Warriors, Chichén Itzá"
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/thumbnails/image/maunakea2.jpg",
+        "alt": "Foto Mauna Kea di Hawaiʻi",
+        "credit": "Scot K. Izuka, USGS",
+        "source": "https://www.usgs.gov/media/images/mauna-kea-0",
+        "license": "Public Domain",
+        "caption": "Mauna Kea · Hawaiʻi"
       }
     ],
-    "colosseum.webp": [
+    "vostok-antarctica": [
       {
-        "src": "assets/exploration/colosseum.webp",
-        "alt": "Foto bagian luar Colosseum di Roma, Italia",
-        "credit": "DAVID ILIFF",
-        "source": "https://commons.wikimedia.org/wiki/File:Colosseum_in_Rome%2C_Italy_-_April_2007.jpg",
-        "license": "CC BY-SA 2.5",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5/",
-        "caption": "Eksterior Colosseum, Roma"
-      },
-      {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Rome_Colosseum_interior_view.jpg",
-        "alt": "Foto interior arena dan tribun Colosseum di Roma, Italia",
-        "credit": "Nicholas Hartmann",
-        "source": "https://commons.wikimedia.org/wiki/File:Rome_Colosseum_interior_view.jpg",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "caption": "Interior Colosseum, Roma"
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/36000/36839/Antarctica_AMO_2009027_lrg.jpg?crop=faces%2Cfocalpoint&fit=clip&h=6144&w=6144",
+        "alt": "Mosaik satelit MODIS Antarktika dari NASA Earth Observatory",
+        "credit": "NASA MODIS Rapid Response Team, GSFC",
+        "source": "https://science.nasa.gov/earth/earth-observatory/antarctica-36839/",
+        "caption": "Antarktika · mosaik MODIS",
+        "type": "CITRA SATELIT"
       }
     ],
-    "taj-mahal.webp": [
+    "furnace-creek": [
       {
-        "src": "assets/exploration/taj-mahal.webp",
-        "alt": "Foto Taj Mahal dan taman di depannya di Agra, India",
-        "credit": "Sidheeq",
-        "source": "https://commons.wikimedia.org/wiki/File:Taj_Mahal_complete_clear_view.jpg",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "caption": "Taj Mahal dari sisi selatan"
-      },
+        "src": "https://www.nps.gov/deva/learn/news/images/130-F-54-C-thermometer_IMG_7890.jpg",
+        "alt": "Termometer luar ruang di Furnace Creek Visitor Center menunjukkan panas ekstrem",
+        "credit": "NPS / J. Jurado",
+        "source": "https://www.nps.gov/deva/learn/news/summer-2020-heat-records.htm",
+        "caption": "Furnace Creek · dokumentasi panas ekstrem",
+        "type": "FOTO DOKUMENTASI"
+      }
+    ],
+    "lake-baikal": [
       {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/e/e1/View_of_Taj_Mahal_from_Mehtab_Bagh.jpg",
-        "alt": "Foto Taj Mahal dari Mehtab Bagh di sisi utara Sungai Yamuna",
-        "credit": "Idiem1119",
-        "source": "https://commons.wikimedia.org/wiki/File:View_of_Taj_Mahal_from_Mehtab_Bagh.jpg",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "caption": "Taj Mahal dari Mehtab Bagh"
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/77000/77871/Russia_amo_2012125_lrg.jpg?crop=faces%2Cfocalpoint&fit=clip&h=4000&w=3200",
+        "alt": "Citra satelit MODIS Danau Baikal dan wilayah Siberia di sekitarnya",
+        "credit": "NASA Earth Observatory / Jeff Schmaltz",
+        "source": "https://science.nasa.gov/earth/earth-observatory/ice-melting-on-lake-baikal-77871/",
+        "caption": "Danau Baikal · citra MODIS",
+        "type": "CITRA SATELIT"
       }
     ]
   },

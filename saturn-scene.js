@@ -18,7 +18,7 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
     images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia05/pia05425/PIA05425.jpg?crop=faces%2Cfocalpoint&fit=clip&h=649&w=1166", alt: "Citra Saturnus dan sistem cincinnya dari Cassini", credit: "NASA/JPL/Space Science Institute", source: "https://science.nasa.gov/saturn/facts/", caption: "Saturnus · raksasa gas keenam dari Matahari", fit: "contain" , type: "CITRA WAHANA" }]
   },
   {
-    kicker: "CINCIN SATURNUS",
+    kicker: "REKOR & EKSTREM",
     title: "Arsitektur Es dan Debu",
     subtitle: "Sistem cincin luas dengan celah dan struktur radial yang rumit",
     summary: "Cincin Saturnus tersusun dari sangat banyak partikel es, material batuan, dan debu. Struktur cincinnya terbagi menjadi pita-pita dengan kepadatan berbeda, termasuk celah gelap Cassini Division yang memisahkan cincin A dan B.",

@@ -2,7 +2,6 @@
 
 ## Scope
 
-This update is limited to the opening cockpit experience, its companion character system, and the supporting intro UI. Earth, Venus, Mars, Seven Wonders, exploration media, and planet rendering files were not modified.
 
 ## Intro composition
 

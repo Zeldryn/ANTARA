@@ -32,7 +32,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
     images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9A3VN7VYXN5H6Z1GDG93.tif?w=2000", alt: "Peta atmosfer global Jupiter dari Hubble", credit: "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)", source: "https://science.nasa.gov/jupiter/jupiter-facts/", caption: "Zona, sabuk, dan badai atmosfer Jupiter", fit: "contain" , type: "CITRA TELESKOP" }]
   },
   {
-    kicker: "BADAI RAKSASA",
+    kicker: "REKOR & EKSTREM",
     title: "Bintik Merah Besar",
     subtitle: "Antisiklon raksasa di belahan selatan Jupiter",
     summary: "Bintik Merah Besar adalah badai berumur panjang yang menjadi salah satu ciri paling mudah dikenali pada Jupiter. Struktur awannya berputar berlawanan arah jarum jam dan ukurannya masih lebih besar daripada Bumi.",

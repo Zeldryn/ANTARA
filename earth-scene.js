@@ -6,275 +6,182 @@ const MARS_TRAVEL_TEXTURE = "assets/textures/mars-surface-2k.jpg";
 
 const EARTH_EXPLORATION_STOPS = [
   {
-    "title": "Rumah Kita",
-    "subtitle": "Dunia Biru yang Jadi Rumah Kita",
-    "summary": "Inilah rumah kita di luar angkasa: dunia berbatu dengan lautan luas, udara pelindung, dan satu-satunya tempat yang sejauh ini kita tahu memiliki kehidupan.",
-    "facts": [
-      "Sekitar 71% permukaannya tertutup air.",
-      "Atmosfer dekat permukaan terutama terdiri dari nitrogen dan oksigen.",
-      "Bumi memiliki satu satelit alami: Bulan."
+    title: "Bumi, Dunia yang Aktif",
+    kicker: "REKOR & EKSTREM BUMI",
+    subtitle: "Satu planet, dari puncak tertinggi sampai jurang samudra terdalam",
+    summary: "Bumi bukan sekadar rumah kita. Tektonik, air, es, atmosfer, dan waktu geologi membentuk bentang alam dengan skala ekstrem yang bisa kita petakan langsung pada globe.",
+    context: "Urutan ini memakai definisi rekornya secara eksplisit. Everest dibahas berdasarkan elevasi di atas muka laut, Mauna Kea berdasarkan tinggi dari dasar ke puncak, sementara Challenger Deep memakai kedalaman terhadap muka laut.",
+    facts: [
+      "Sekitar 71% permukaan Bumi tertutup air.",
+      "Litosfer Bumi terpecah menjadi lempeng tektonik yang terus bergerak.",
+      "Rekor alam dapat berubah makna jika cara pengukurannya berbeda."
     ],
-    "source": "https://science.nasa.gov/earth/facts/",
-    "sourceName": "NASA Science",
-    "location": null
+    source: "https://science.nasa.gov/earth/facts/",
+    sourceName: "NASA Science",
+    location: null
   },
   {
-    "title": "Laut & Daratan",
-    "subtitle": "Dunia Biru yang Penuh Lautan",
-    "summary": "Kalau Bumi dilihat dari jauh, warna birunya langsung mencuri perhatian. Lautan menutupi sebagian besar permukaan, sementara daratan membentuk benua dan pulau tempat beragam ekosistem hidup.",
-    "facts": [
-      "Sekitar 29% permukaan Bumi berupa daratan.",
-      "Air cair di permukaan membedakan Bumi dari planet lain yang telah kita amati."
+    title: "Mount Everest",
+    kicker: "REKOR & EKSTREM",
+    subtitle: "Puncak tertinggi di atas muka laut",
+    region: "Himalaya · Nepal / Tiongkok",
+    summary: "Mount Everest adalah titik dengan elevasi tertinggi di Bumi ketika ketinggian diukur terhadap muka laut rata-rata global.",
+    context: "Definisi ini penting. Everest memegang rekor elevasi tertinggi di atas muka laut, tetapi bukan gunung dengan jarak dasar-ke-puncak terbesar. Perbandingan itu muncul pada Mauna Kea.",
+    facts: [
+      "Elevasi resmi yang disepakati Nepal dan Tiongkok pada 2020 adalah 8.848,86 meter.",
+      "Puncaknya berada pada perbatasan Nepal dan Tiongkok di Himalaya.",
+      "Ketinggian di sini memakai acuan muka laut, bukan jarak dari pusat Bumi."
     ],
-    "source": "https://science.nasa.gov/earth/facts/",
-    "sourceName": "NASA Science",
-    "location": null
-  },
-  {
-    "title": "Atmosfer",
-    "subtitle": "Selimut Udara yang Menjaga Rumah Kita",
-    "summary": "Bumi punya selimut udara yang tampak tipis dari luar angkasa, tetapi perannya besar: membantu menjaga suhu dan melindungi permukaan dari banyak meteoroid.",
-    "facts": [
-      "Udara dekat permukaan mengandung sekitar 78% nitrogen dan 21% oksigen.",
-      "Sekitar 1% sisanya berupa gas lain; jumlah uap air bervariasi."
-    ],
-    "source": "https://science.nasa.gov/earth/facts/",
-    "sourceName": "NASA Science",
-    "location": null
-  },
-  {
-    "title": "Kehidupan",
-    "subtitle": "Satu-satunya Rumah yang Kita Kenal",
-    "summary": "Sejauh yang kita ketahui, belum ada dunia lain yang terbukti memiliki kehidupan seperti Bumi. Air cair dan kondisi lingkungannya membuat rumah kita benar-benar istimewa.",
-    "facts": [
-      "Belum ada kehidupan di luar Bumi yang terkonfirmasi.",
-      "Lanjutkan perjalanan untuk mengenal tujuh karya manusia pilihan New7Wonders tahun 2007."
-    ],
-    "source": "https://science.nasa.gov/earth/facts/",
-    "sourceName": "NASA Science",
-    "location": null
-  },
-  {
-    "title": "Tembok Besar Tiongkok",
-    "subtitle": "Badaling, Tiongkok",
-    "summary": "Jaringan pertahanan yang dibangun lintas dinasti di wilayah utara Tiongkok.",
-    "facts": [
-      "Terdiri dari tembok, menara pengawas, benteng, dan jalur di atas dinding.",
-      "Strukturnya mengikuti punggung bukit dan medan pegunungan.",
-      "Titik pada globe menandai Badaling, salah satu bagian yang terkenal."
-    ],
-    "source": "https://whc.unesco.org/en/list/438/",
-    "sourceName": "UNESCO",
-    "location": {
-      "latitude": 40.354,
-      "longitude": 116.006
-    },
-    "displayCountry": "Tiongkok",
-    "cityOrRegion": "Badaling",
-    "flag": "assets/flags/cn.svg",
-    "history": "Sekitar 220 SM, Qin Shi Huang menyatukan bagian-bagian benteng yang lebih tua. Pembangunannya berlanjut lintas dinasti hingga masa Ming (1368–1644) untuk memperkuat pertahanan di utara Tiongkok.",
+    source: "https://www.tourismdepartment.gov.np/files/statistics/46.pdf",
+    sourceName: "Department of Tourism Nepal",
+    location: { latitude: 27.9881, longitude: 86.9253 },
     images: [
       {
-        src: "https://upload.wikimedia.org/wikipedia/commons/6/6f/GreatWallTower.jpg",
-        alt: "Foto bagian Tembok Besar di dekat Menara Utara keempat, Badaling",
-        credit: "Leonard G.",
-        source: "https://commons.wikimedia.org/wiki/File:GreatWallTower.jpg",
-        license: "CC SA 1.0",
-        licenseUrl: "https://creativecommons.org/licenses/sa/1.0/",
-        caption: "Sudut berbeda Tembok Besar di Badaling",
-        fit: "cover"
+        src: "https://upload.wikimedia.org/wikipedia/commons/1/13/Everest%2C_South_Col%2C_Himalayas.jpg",
+        alt: "Foto Mount Everest dari arah South Col di Himalaya",
+        credit: "Vyacheslav Argenberg",
+        source: "https://commons.wikimedia.org/wiki/File:Everest,_South_Col,_Himalayas.jpg",
+        license: "CC BY 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+        caption: "Mount Everest · Himalaya",
+        fit: "cover",
+        type: "FOTO REFERENSI"
       }
     ]
   },
   {
-    "title": "Petra",
-    "subtitle": "Wadi Musa, Yordania",
-    "summary": "Kota Nabatea yang memadukan bangunan pahatan batu dengan bentang gurun.",
-    "facts": [
-      "Sebagian bangunannya dipahat langsung pada tebing batu.",
-      "Saluran, bendungan, dan penampungan air membantu kehidupan di gurun.",
-      "Arsitekturnya memadukan tradisi setempat dengan pengaruh Helenistik."
+    title: "Challenger Deep",
+    kicker: "REKOR & EKSTREM",
+    subtitle: "Titik terdalam yang diketahui di samudra Bumi",
+    region: "Palung Mariana · Pasifik Barat",
+    summary: "Challenger Deep berada di bagian selatan Palung Mariana. Lokasinya tidak terlihat sebagai celah raksasa dari foto satelit biasa, jadi visual pendukung memakai data batimetri yang memang memetakan dasar laut.",
+    context: "Kedalaman laut diukur terhadap muka laut dan ditentukan dengan kombinasi survei sonar, tekanan, serta koreksi oseanografi. Pengukuran modern memberi estimasi terdalam sekitar 10.935 meter.",
+    facts: [
+      "Estimasi NOAA untuk Challenger Deep sekitar 10.935 meter di bawah muka laut.",
+      "Kedalamannya lebih besar daripada elevasi Everest di atas muka laut.",
+      "Peta warna pada visual adalah batimetri ilmiah, bukan foto optik dasar samudra."
     ],
-    "source": "https://whc.unesco.org/en/list/326/",
-    "sourceName": "UNESCO",
-    "location": {
-      "latitude": 30.3285,
-      "longitude": 35.4444
-    },
-    "displayCountry": "Yordania",
-    "cityOrRegion": "Wadi Musa",
-    "flag": "assets/flags/jo.svg",
-    "history": "Petra berkembang sebagai ibu kota kerajaan Nabatea dan pusat perdagangan pada masa Helenistik serta Romawi. Kota ini menghubungkan jalur kafilah dari Arabia, Mesir, dan kawasan Mediterania.",
+    source: "https://oceanservice.noaa.gov/facts/oceandepth.html",
+    sourceName: "NOAA Ocean Service",
+    location: { latitude: 11.35, longitude: 142.20 },
     images: [
       {
-        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Ad-Deir.jpg/1280px-Ad-Deir.jpg",
-        alt: "Foto Ad-Deir atau Monastery di Petra, Yordania",
-        credit: "Kruppsdaddy",
-        source: "https://commons.wikimedia.org/wiki/File:Ad-Deir.jpg",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-        caption: "Ad-Deir / Monastery, Petra",
-        fit: "cover"
+        src: "https://omao.noaa.gov/sites/default/files/2025-12/survey%20area.png",
+        alt: "Peta batimetri ilmiah wilayah Mariana dan Guam dari NOAA",
+        credit: "Shannon Hoy, NOAA",
+        source: "https://omao.noaa.gov/marine-operations/news-media/image/mariana-trench-survey-area",
+        caption: "Batimetri wilayah Mariana · warna menunjukkan bentuk dasar laut",
+        fit: "cover",
+        type: "PETA BATIMETRI"
       }
     ]
   },
   {
-    "title": "Kristus Penebus",
-    "subtitle": "Rio de Janeiro, Brasil",
-    "summary": "Patung Art Deco di puncak Corcovado yang menjadi ikon kota Rio de Janeiro.",
-    "facts": [
-      "Tinggi patung sekitar 30 meter, di atas alas setinggi 8 meter.",
-      "Bentangan kedua lengannya sekitar 28 meter.",
-      "Terbuat dari beton bertulang dengan lapisan batu sabun."
+    title: "Mauna Kea",
+    kicker: "REKOR & EKSTREM",
+    subtitle: "Raksasa yang sebagian besar tersembunyi di bawah laut",
+    region: "Hawaiʻi · Samudra Pasifik",
+    summary: "Mauna Kea menunjukkan kenapa kata tertinggi dan tertinggi dari dasar tidak selalu berarti hal yang sama. Sebagian besar tubuh gunung ini berada di bawah Samudra Pasifik.",
+    context: "USGS memperkirakan Mauna Kea sekitar 4.205 meter di atas muka laut dan memanjang sekitar 6.000 meter lagi sampai dasar samudra. Total dasar-ke-puncaknya hampir 10.211 meter.",
+    facts: [
+      "Puncaknya sekitar 4,2 kilometer di atas muka laut.",
+      "Dari dasar samudra ke puncak, total tingginya hampir 10,2 kilometer.",
+      "Everest tetap memegang rekor elevasi di atas muka laut."
     ],
-    "source": "https://world.new7wonders.com/wonders/cristo-redentor-1931-rio-de-janeiro-brazil/",
-    "sourceName": "New7Wonders",
-    "location": {
-      "latitude": -22.9519,
-      "longitude": -43.2105
-    },
-    "displayCountry": "Brasil",
-    "cityOrRegion": "Rio de Janeiro",
-    "flag": "assets/flags/br.svg",
-    "history": "Dibangun pada 1922–1931 sebagai monumen Kristen, patung ini melibatkan pematung Paul Landowski dan insinyur Heitor da Silva Costa. Sosok berlengan terbuka itu kemudian menjadi lambang budaya Rio de Janeiro.",
+    source: "https://www.usgs.gov/faqs/how-big-are-hawaiian-volcanoes",
+    sourceName: "U.S. Geological Survey",
+    location: { latitude: 19.8207, longitude: -155.4681 },
     images: [
       {
-        src: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Aerial_view_of_Cristo_Redentor%2C_Rio_de_Janeiro.jpg",
-        alt: "Foto udara Christ the Redeemer dan Gunung Corcovado di Rio de Janeiro",
-        credit: "Florent Pécassou",
-        source: "https://commons.wikimedia.org/wiki/File:Aerial_view_of_Cristo_Redentor,_Rio_de_Janeiro.jpg",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-        caption: "Pemandangan udara Christ the Redeemer",
-        fit: "cover"
+        src: "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/thumbnails/image/maunakea2.jpg",
+        alt: "Foto Mauna Kea di Hawaiʻi",
+        credit: "Scot K. Izuka, USGS",
+        source: "https://www.usgs.gov/media/images/mauna-kea-0",
+        license: "Public Domain",
+        caption: "Mauna Kea · gunung perisai Hawaiʻi",
+        fit: "cover",
+        type: "FOTO USGS"
       }
     ]
   },
   {
-    "title": "Machu Picchu",
-    "subtitle": "Cusco, Peru",
-    "summary": "Situs Inka yang menyatu dengan lereng curam Pegunungan Andes.",
-    "facts": [
-      "Berada pada ketinggian sekitar 2.430 meter.",
-      "Sekitar 200 struktur tersusun mengikuti punggung pegunungan.",
-      "Teras pertanian dan saluran irigasi menyatu dengan lingkungan alam."
+    title: "Vostok, Antarktika",
+    kicker: "REKOR & EKSTREM",
+    subtitle: "Rekor suhu terendah dari pengukuran langsung di permukaan",
+    region: "Dataran Tinggi Antarktika Timur",
+    summary: "Antarktika adalah laboratorium alam untuk dingin ekstrem. Rekor suhu udara terendah yang diakui WMO dari pengukuran langsung di permukaan tercatat di Stasiun Vostok.",
+    context: "WMO membedakan pengukuran stasiun di permukaan dari estimasi suhu permukaan es berbasis satelit. Rekor stasiun yang diakui adalah -89,2 °C pada 21 Juli 1983.",
+    facts: [
+      "Rekor pengukuran darat WMO: -89,2 °C.",
+      "Tercatat di Stasiun Vostok pada 21 Juli 1983.",
+      "Lokasi berada jauh di interior Antarktika dan pada elevasi tinggi."
     ],
-    "source": "https://whc.unesco.org/en/list/274/",
-    "sourceName": "UNESCO",
-    "location": {
-      "latitude": -13.1631,
-      "longitude": -72.545
-    },
-    "displayCountry": "Peru",
-    "cityOrRegion": "Cusco",
-    "flag": "assets/flags/pe.svg",
-    "history": "Dibangun oleh peradaban Inka pada abad ke-15, Machu Picchu memadukan ruang upacara, hunian, dan pertanian di punggung Andes. Situs ini menjadi salah satu peninggalan penting kemampuan tata ruang dan teknik bangunan Inka.",
+    source: "https://wmo.int/media/news/wmo-concludes-evaluation-of-possible-new-record-antarctic-temperature",
+    sourceName: "World Meteorological Organization",
+    location: { latitude: -78.4667, longitude: 106.8000 },
     images: [
       {
-        src: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Terraces_at_Machu_Picchu.jpg",
-        alt: "Foto teras pertanian dan jalur batu di Machu Picchu, Peru",
-        credit: "Gedankenstuecke",
-        source: "https://commons.wikimedia.org/wiki/File:Terraces_at_Machu_Picchu.jpg",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-        caption: "Teras Machu Picchu dari sudut berbeda",
-        fit: "cover"
+        src: "https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/36000/36839/Antarctica_AMO_2009027_lrg.jpg?crop=faces%2Cfocalpoint&fit=clip&h=6144&w=6144",
+        alt: "Mosaik satelit MODIS Antarktika dari NASA Earth Observatory",
+        credit: "NASA MODIS Rapid Response Team, GSFC",
+        source: "https://science.nasa.gov/earth/earth-observatory/antarctica-36839/",
+        caption: "Antarktika · mosaik MODIS, bukan foto khusus Stasiun Vostok",
+        fit: "cover",
+        type: "CITRA SATELIT"
       }
     ]
   },
   {
-    "title": "Chichén Itzá",
-    "subtitle": "Yucatán, Meksiko",
-    "summary": "Salah satu pusat penting peradaban Maya di Semenanjung Yucatán.",
-    "facts": [
-      "El Castillo juga dikenal sebagai Kuil Kukulkan.",
-      "El Caracol merupakan bangunan bundar yang dikaitkan dengan pengamatan astronomi.",
-      "Cenote, lubang alami berisi air, menjadi sumber air penting bagi kota."
+    title: "Furnace Creek",
+    kicker: "REKOR & EKSTREM",
+    subtitle: "Lokasi rekor panas resmi WMO",
+    region: "Death Valley · California, Amerika Serikat",
+    summary: "Furnace Creek berada di Death Valley, cekungan gurun yang sangat panas dan rendah. WMO masih mencantumkan pengukuran 56,7 °C pada 10 Juli 1913 sebagai rekor suhu udara tertinggi resmi.",
+    context: "Sebagian peneliti sejarah cuaca mempertanyakan akurasi sejumlah rekor lama. Karena itu ANTARA menampilkan statusnya secara jujur: 56,7 °C adalah rekor yang masih diakui WMO, bukan klaim bahwa perdebatan ilmiah sudah tertutup.",
+    facts: [
+      "Rekor resmi WMO: 56,7 °C pada 10 Juli 1913.",
+      "Furnace Creek berada di Death Valley, California.",
+      "Rekor lama ini tetap tercatat WMO sambil terbuka terhadap evaluasi bukti baru."
     ],
-    "source": "https://whc.unesco.org/en/list/483/",
-    "sourceName": "UNESCO",
-    "location": {
-      "latitude": 20.6843,
-      "longitude": -88.5678
-    },
-    "displayCountry": "Meksiko",
-    "cityOrRegion": "Yucatán",
-    "flag": "assets/flags/mx.svg",
-    "history": "Chichén Itzá tumbuh sebagai kota Maya pada periode Klasik. Bangunan awalnya berkembang pada abad ke-6 hingga ke-10, lalu memperlihatkan perpaduan tradisi Maya dan pengaruh dari Meksiko tengah.",
+    source: "https://public.wmo.int/media/news/wmo-verifies-3rd-and-4th-hottest-temperature-recorded-earth",
+    sourceName: "World Meteorological Organization",
+    location: { latitude: 36.4667, longitude: -116.8500 },
     images: [
       {
-        src: "https://upload.wikimedia.org/wikipedia/commons/b/bf/Temple_of_the_warriors_chichen_itza.jpg",
-        alt: "Foto Temple of the Warriors di Chichén Itzá, Meksiko",
-        credit: "André Möller",
-        source: "https://commons.wikimedia.org/wiki/File:Temple_of_the_warriors_chichen_itza.jpg",
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
-        caption: "Temple of the Warriors, Chichén Itzá",
-        fit: "cover"
+        src: "https://www.nps.gov/deva/learn/news/images/130-F-54-C-thermometer_IMG_7890.jpg",
+        alt: "Termometer luar ruang di Furnace Creek Visitor Center menunjukkan panas ekstrem",
+        credit: "NPS / J. Jurado",
+        source: "https://www.nps.gov/deva/learn/news/summer-2020-heat-records.htm",
+        caption: "Furnace Creek · dokumentasi panas ekstrem 2020",
+        fit: "cover",
+        type: "FOTO DOKUMENTASI"
       }
     ]
   },
   {
-    "title": "Colosseum",
-    "subtitle": "Roma, Italia",
-    "summary": "Amfiteater besar peninggalan Romawi yang juga dikenal sebagai Amfiteater Flavia.",
-    "facts": [
-      "Nama aslinya adalah Amfiteater Flavia.",
-      "Arena dilengkapi sistem panggung dan ruang pelayanan yang rumit.",
-      "Pada masa berikutnya, sebagian bangunannya dipakai sebagai hunian dan sumber bahan bangunan."
+    title: "Danau Baikal",
+    kicker: "REKOR & EKSTREM",
+    subtitle: "Danau terdalam di dunia",
+    region: "Siberia · Rusia",
+    summary: "Danau Baikal membentuk cekungan air tawar yang sangat dalam di Siberia. Kedalamannya mencapai sekitar 1,7 kilometer dan menjadikannya danau terdalam di dunia.",
+    context: "Baikal juga sangat tua secara geologi. Citra satelit memperlihatkan bentuk danau memanjang di antara pegunungan, sementara angka kedalamannya berasal dari pengukuran batimetri, bukan dari warna foto.",
+    facts: [
+      "Kedalaman maksimum sekitar 1,7 kilometer.",
+      "NASA menyebut Baikal sebagai danau terdalam di dunia.",
+      "Danau ini terbentuk sekitar 25 juta tahun lalu menurut rujukan UNESCO yang dikutip NASA."
     ],
-    "source": "https://colosseo.it/en/area/the-colosseum/",
-    "sourceName": "Parco archeologico del Colosseo",
-    "location": {
-      "latitude": 41.8902,
-      "longitude": 12.4922
-    },
-    "displayCountry": "Italia",
-    "cityOrRegion": "Roma",
-    "flag": "assets/flags/it.svg",
-    "history": "Dibangun pada abad pertama Masehi oleh dinasti Flavia, Colosseum menjadi tempat pertarungan gladiator dan pertunjukan publik. Bangunannya memperlihatkan kemampuan teknik serta penyelenggaraan acara besar dalam masyarakat Romawi.",
+    source: "https://science.nasa.gov/earth/earth-observatory/lake-baikal-at-night-153110/",
+    sourceName: "NASA Earth Observatory",
+    location: { latitude: 53.50, longitude: 108.00 },
     images: [
       {
-        src: "https://upload.wikimedia.org/wikipedia/commons/e/e9/Rome_Colosseum_interior_view.jpg",
-        alt: "Foto interior arena dan tribun Colosseum di Roma, Italia",
-        credit: "Nicholas Hartmann",
-        source: "https://commons.wikimedia.org/wiki/File:Rome_Colosseum_interior_view.jpg",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-        caption: "Interior Colosseum, Roma",
-        fit: "cover"
-      }
-    ]
-  },
-  {
-    "title": "Taj Mahal",
-    "subtitle": "Agra, India",
-    "summary": "Mausoleum marmer abad ke-17 yang dibangun atas perintah Kaisar Mughal Shah Jahan.",
-    "facts": [
-      "Terletak di tepi Sungai Yamuna.",
-      "Empat menara mengapit bangunan makam pada sudut pelatarannya.",
-      "Hiasannya memadukan kaligrafi dan tatahan batu pada marmer."
-    ],
-    "source": "https://whc.unesco.org/en/list/252/",
-    "sourceName": "UNESCO",
-    "location": {
-      "latitude": 27.1751,
-      "longitude": 78.0421
-    },
-    "displayCountry": "India",
-    "cityOrRegion": "Agra",
-    "flag": "assets/flags/in.svg",
-    "history": "Shah Jahan memerintahkan pembangunan kompleks ini pada abad ke-17 untuk mengenang istrinya, Mumtaz Mahal. Makam utamanya selesai pada 1648, sementara bangunan pelengkap diselesaikan hingga 1653.",
-    images: [
-      {
-        src: "https://upload.wikimedia.org/wikipedia/commons/e/e1/View_of_Taj_Mahal_from_Mehtab_Bagh.jpg",
-        alt: "Foto Taj Mahal dari Mehtab Bagh di sisi utara Sungai Yamuna",
-        credit: "Idiem1119",
-        source: "https://commons.wikimedia.org/wiki/File:View_of_Taj_Mahal_from_Mehtab_Bagh.jpg",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-        caption: "Taj Mahal dari Mehtab Bagh",
-        fit: "cover"
+        src: "https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/77000/77871/Russia_amo_2012125_lrg.jpg?crop=faces%2Cfocalpoint&fit=clip&h=4000&w=3200",
+        alt: "Citra satelit MODIS Danau Baikal dan wilayah Siberia di sekitarnya",
+        credit: "NASA Earth Observatory / Jeff Schmaltz",
+        source: "https://science.nasa.gov/earth/earth-observatory/ice-melting-on-lake-baikal-77871/",
+        caption: "Danau Baikal · citra MODIS saat es musim semi mencair",
+        fit: "cover",
+        type: "CITRA SATELIT"
       }
     ]
   }
@@ -397,19 +304,15 @@ window.EarthScene = class EarthScene {
     window.ExplorationMedia.render("earth", stop);
     const get = name => document.getElementById(`earth-topic-${name}`);
     get("title").textContent = stop.title;
-    get("kicker").textContent = stop.location ? "TUJUH KEAJAIBAN DUNIA MODERN" : "MENGENAL BUMI";
-    get("subtitle").textContent = stop.cityOrRegion ? `${stop.cityOrRegion}, ${stop.displayCountry}` : stop.subtitle;
-    const flag = get("flag");
-    flag.hidden = !stop.flag;
-    if (stop.flag) flag.src = stop.flag;
-    else flag.removeAttribute("src");
-    get("history-section").hidden = !stop.history;
-    get("history").textContent = stop.history || "";
-    get("facts-heading").hidden = !stop.location;
+    get("kicker").textContent = stop.kicker || "REKOR & EKSTREM";
+    get("subtitle").textContent = stop.region || stop.subtitle;
+    get("context-section").hidden = !stop.context;
+    get("context").textContent = stop.context || "";
+    get("facts-heading").hidden = false;
     this.marker.classList.add("is-relocating");
     this.marker.style.opacity = "0";
     document.getElementById("earth-marker-title").textContent = stop.location ? stop.title : "";
-    document.getElementById("earth-marker-country").textContent = stop.displayCountry || "";
+    document.getElementById("earth-marker-region").textContent = stop.region || "";
     get("summary").textContent = stop.summary;
     get("facts").replaceChildren(...stop.facts.map(text => { const li = document.createElement("li"); li.textContent = text; return li; }));
     get("scroll").scrollTop = 0;
