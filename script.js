@@ -780,6 +780,32 @@ let planetTransitionLocked = false;
 let activePlanetNavButton = null;
 const CELESTIAL_NAV_ORDER = Object.freeze(["sun", "mercury", "venus", "earth", "mars", "asteroid", "jupiter", "saturn", "uranus", "neptune"]);
 
+// Shared panorama interaction lifecycle. Planet renderers own the physical motion,
+// while this layer owns whether panorama UI is interactive during travel. Keeping
+// that responsibility here mirrors the existing global transition lock and avoids
+// per-planet timeout patches.
+const CELESTIAL_SCENE_INSTANCES = Object.freeze({
+  sun, mercury, venus, earth, mars, asteroid, jupiter, saturn, uranus, neptune
+});
+
+function lockTransitionSceneInteraction(sourcePhase, destinationPhase) {
+  for (const name of [sourcePhase, destinationPhase]) {
+    const scene = CELESTIAL_SCENE_INSTANCES[name];
+    if (scene?.element) scene.element.inert = true;
+  }
+}
+
+function unlockPanoramaInteraction(activePhase) {
+  const scene = CELESTIAL_SCENE_INSTANCES[activePhase];
+  if (scene?.element) scene.element.inert = false;
+}
+
+function resetPanoramaInteractionLocks() {
+  for (const scene of Object.values(CELESTIAL_SCENE_INSTANCES)) {
+    if (scene?.element) scene.element.inert = false;
+  }
+}
+
 function getCelestialDirection(from, to) {
   const fromIndex = CELESTIAL_NAV_ORDER.indexOf(from);
   const toIndex = CELESTIAL_NAV_ORDER.indexOf(to);
@@ -800,6 +826,9 @@ function beginPlanetTransition(expectedPhase, transitionPhase, triggerButton = n
   if (destinationPhase) {
     const direction = getCelestialDirection(expectedPhase, destinationPhase);
     mission.dataset.transitionDirection = direction > 0 ? "next" : "previous";
+    lockTransitionSceneInteraction(expectedPhase, destinationPhase);
+  } else {
+    lockTransitionSceneInteraction(expectedPhase, null);
   }
   activePlanetNavButton = triggerButton;
   if (triggerButton) {
@@ -817,6 +846,7 @@ function finishPlanetTransition(nextPhase) {
   delete mission.dataset.transitionDirection;
   if (activePlanetNavButton) activePlanetNavButton.removeAttribute("aria-busy");
   activePlanetNavButton = null;
+  unlockPanoramaInteraction(nextPhase);
 
   // Mars can be rendered behind the final part of the Earth -> Mars handoff before
   // the shared transition lock is released. The caption is therefore allowed to be
@@ -1434,6 +1464,7 @@ function resetMission() {
   neptune.stop();
   planetTransitionLocked = false;
   activePlanetNavButton = null;
+  resetPanoramaInteractionLocks();
   mission.classList.remove("is-earth", "is-mars", "is-venus", "is-mercury", "is-sun", "is-asteroid", "is-jupiter", "is-saturn", "is-uranus", "is-neptune", "is-preparing", "is-planet-transitioning");
   setExperienceState("home");
   launchButton.disabled = false;

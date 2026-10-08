@@ -288,6 +288,60 @@ h1 span { color: #f3d29a; }
   pointer-events: none !important;
 }
 
+/* Global panorama hero lifecycle. The mission transition state starts on the same
+   click that starts physical recede. From that moment until final settle, no
+   planet/object hero UI may ride along with the camera. This intentionally copies
+   the compact Earth exit language: fast fade + small translated retreat. */
+.mission.is-planet-transitioning :is(
+  .earth-information,
+  .mars-caption,
+  .venus-caption,
+  .mercury-caption,
+  .sun-caption,
+  .asteroid-caption,
+  .jupiter-caption,
+  .saturn-caption,
+  .uranus-caption,
+  .neptune-caption
+) {
+  opacity: 0 !important;
+  transform: translate3d(-8px, 5px, 0) !important;
+  pointer-events: none !important;
+  transition: opacity .45s ease, transform .55s ease !important;
+}
+
+.mission.is-planet-transitioning :is(
+  .mars-credit,
+  .venus-credit,
+  .mercury-credit,
+  .sun-credit,
+  .jupiter-credit,
+  .saturn-credit,
+  .uranus-credit,
+  .neptune-credit
+) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity .3s ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mission.is-planet-transitioning :is(
+    .earth-information,
+    .mars-caption,
+    .venus-caption,
+    .mercury-caption,
+    .sun-caption,
+    .asteroid-caption,
+    .jupiter-caption,
+    .saturn-caption,
+    .uranus-caption,
+    .neptune-caption
+  ) {
+    transition-duration: .01ms !important;
+  }
+}
+
 /* ================================================================
    OPENING EXPERIENCE V2
    Hand-built vector scene + staged launch. The planet systems below
