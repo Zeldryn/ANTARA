@@ -571,11 +571,13 @@
     async build(onProgress = () => {}) {
       this.material = this.createMaterial();
       this.horizonMaterial = this.material.clone();
-      this.horizonMaterial.map = null;
-      this.horizonMaterial.normalMap = null;
-      this.horizonMaterial.roughnessMap = null;
+      // Reuse the SAME already-loaded terrain textures for the visual continuation.
+      // This adds no new texture allocation, but prevents the outer world from
+      // collapsing into a flat vertex-color polygon. Detail strength is reduced
+      // because this mesh is non-playable and progressively hidden by atmosphere.
       this.horizonMaterial.vertexColors = true;
-      this.horizonMaterial.roughness = 0.97;
+      this.horizonMaterial.roughness = Math.min(1, this.material.roughness + 0.035);
+      this.horizonMaterial.normalScale.multiplyScalar(0.58);
       this.horizonMaterial.needsUpdate = true;
 
       const tileSize = this.quality.tileSize;
@@ -846,33 +848,79 @@
 
     createHorizon() {
       const T = this.THREE;
-      const radial = 8;
-      const angular = this.quality.horizonSegments;
-      const inner = this.region.playRadius * 0.76;
-      const outer = 150;
+      const radial = 12;
+      const angular = Math.max(96, Math.round(this.quality.horizonSegments * 1.35));
+      const inner = this.region.playRadius * 0.72;
+      const outer = 205;
       const vertices = [];
-      const normals = [];
       const colors = [];
+      const uvs = [];
       const indices = [];
       const fogColor = new T.Color(this.region.fog);
+
+      // One continuous non-playable continuation surface now replaces the former
+      // horizon + distant-shell overlap. The mesh begins underneath the outer
+      // playable tiles, crosses the real exploration boundary seamlessly, then
+      // becomes progressively coarser-looking through geometry shape + fog rather
+      // than through an abrupt terrain cutoff. It is visual only: movement remains
+      // clamped to region.playRadius in updateMovement().
       for (let r = 0; r <= radial; r += 1) {
         const rt = r / radial;
-        const radius = lerp(inner, outer, rt);
+        // More rings close to the playable boundary, fewer rings far away.
+        const radius = lerp(inner, outer, Math.pow(rt, 1.46));
+        const outsideT = smoothstep((radius - this.region.playRadius * 0.94) / Math.max(1, outer - this.region.playRadius * 0.94));
+        const farT = smoothstep((radius - this.region.playRadius) / Math.max(1, outer - this.region.playRadius));
+
         for (let a = 0; a <= angular; a += 1) {
           const angle = a / angular * Math.PI * 2;
+          const directionNoise = valueNoise(Math.cos(angle) * 3.6, Math.sin(angle) * 3.6, 251);
+          const warpedAngle = angle + directionNoise * 0.035 * outsideT;
+
+          // Near the boundary, sample the actual world coordinate so the terrain
+          // meets the playable region naturally. Further out, progressively reuse
+          // the region's edge morphology instead of evaluating a huge open world.
+          const sourceRadius = radius <= this.region.playRadius
+            ? radius
+            : this.region.playRadius * lerp(0.99, 0.83, farT);
+          const sourceX = Math.cos(warpedAngle) * sourceRadius;
+          const sourceZ = Math.sin(warpedAngle) * sourceRadius;
+          const base = this.heightAt(sourceX, sourceZ);
+
+          const localReliefT = clamp((radius - this.region.playRadius * 0.86) / Math.max(1, 112 - this.region.playRadius * 0.86), 0, 1);
+          const localRelief = this.distantRelief(warpedAngle, localReliefT);
+          const massif = this.distantMassifProfile(warpedAngle);
+          const massifEnvelope = smoothstep(farT) * lerp(0.92, 0.48, farT);
+          const radialBreakup = valueNoise(
+            Math.cos(warpedAngle) * 4.4 + radius * 0.018,
+            Math.sin(warpedAngle) * 4.4 - radius * 0.014,
+            263
+          ) * 0.26 * outsideT;
+
+          // Keep the immediate exterior at almost the same vertical language as
+          // the playable terrain. Only the distant world is gently compressed.
+          const heightScale = lerp(1.0, 0.46, farT);
+          const farFloor = this.region.id === "maat" ? -0.10 : -0.26;
+          const y = base * heightScale
+            + localRelief * lerp(0.86, 0.34, farT)
+            + massif * massifEnvelope
+            + radialBreakup
+            + farFloor * farT;
+
           const x = Math.cos(angle) * radius;
           const z = Math.sin(angle) * radius;
-          const sourceX = x * Math.min(1, this.region.playRadius / Math.max(radius, 0.001));
-          const sourceZ = z * Math.min(1, this.region.playRadius / Math.max(radius, 0.001));
-          const base = this.heightAt(sourceX, sourceZ);
-          const y = lerp(base, base * 0.28 - 0.8, smoothstep(rt)) + this.distantRelief(angle, rt);
-          const color = this.colorFor(sourceX, sourceZ, base, 0.08);
-          color.lerp(fogColor, smoothstep(rt) * 0.54).multiplyScalar(lerp(0.80, 0.54, rt));
+          const color = this.colorFor(sourceX, sourceZ, base, 0.10);
+          // Three.js fog already attenuates this mesh. Keep the baked fade mild so
+          // nearby exterior terrain still reads as real ground instead of a matte.
+          const bakedFog = clamp(0.035 + farT * 0.40, 0, 0.44);
+          color.lerp(fogColor, bakedFog).multiplyScalar(lerp(0.98, 0.76, farT));
           vertices.push(x, y, z);
-          normals.push(0, 1, 0);
           colors.push(color.r, color.g, color.b);
+          // Match the world-space projection used by playable tiles, so the same
+          // material texture continues naturally past the exploration boundary.
+          uvs.push(x / 7, z / 7);
         }
       }
+
       const row = angular + 1;
       for (let r = 0; r < radial; r += 1) {
         for (let a = 0; a < angular; a += 1) {
@@ -880,13 +928,16 @@
           indices.push(i, i + row, i + 1, i + 1, i + row, i + row + 1);
         }
       }
+
       const geometry = new T.BufferGeometry();
       geometry.setAttribute("position", new T.Float32BufferAttribute(vertices, 3));
-      geometry.setAttribute("normal", new T.Float32BufferAttribute(normals, 3));
       geometry.setAttribute("color", new T.Float32BufferAttribute(colors, 3));
+      geometry.setAttribute("uv", new T.Float32BufferAttribute(uvs, 2));
       geometry.setIndex(indices);
+      geometry.computeVertexNormals();
       geometry.computeBoundingSphere();
       const mesh = new T.Mesh(geometry, this.horizonMaterial);
+      mesh.name = `venus-outer-continuation-${this.region.id}`;
       mesh.frustumCulled = false;
       mesh.renderOrder = -1;
       return mesh;
@@ -915,71 +966,11 @@
     }
 
     createDistantTerrain() {
-      const T = this.THREE;
-      const radial = 4;
-      const angular = Math.max(36, Math.round(this.quality.horizonSegments * 0.68));
-      const inner = 92;
-      const outer = 190;
-      const vertices = [];
-      const colors = [];
-      const indices = [];
-      const fogColor = new T.Color(this.region.fog);
-      const sourceRadius = this.region.playRadius * 0.90;
-
-      // One extremely cheap, non-playable shell extends the visual geology beyond
-      // the bounded region. It is intentionally fog-heavy and uses only broad
-      // silhouettes, so the world feels wider without creating a second play area.
-      for (let r = 0; r <= radial; r += 1) {
-        const rt = r / radial;
-        const radius = lerp(inner, outer, rt);
-        const band = Math.sin(Math.PI * rt);
-        for (let a = 0; a <= angular; a += 1) {
-          const angle = a / angular * Math.PI * 2;
-          const x = Math.cos(angle) * radius;
-          const z = Math.sin(angle) * radius;
-          const sourceX = Math.cos(angle) * sourceRadius;
-          const sourceZ = Math.sin(angle) * sourceRadius;
-          const edgeHeight = this.heightAt(sourceX, sourceZ);
-          const profile = this.distantMassifProfile(angle);
-          const radialBreakup = valueNoise(
-            Math.cos(angle) * 4.2 + rt * 2.1,
-            Math.sin(angle) * 4.2 - rt * 1.7,
-            263
-          ) * 0.28;
-          const distantFloor = this.region.id === "maat" ? -0.72 : -1.25;
-          const y = edgeHeight * 0.13 + distantFloor + band * (profile + radialBreakup) * lerp(0.72, 1.0, rt);
-          const color = this.colorFor(sourceX, sourceZ, edgeHeight, 0.10);
-          color.lerp(fogColor, 0.46 + rt * 0.22).multiplyScalar(lerp(0.78, 0.54, rt));
-          vertices.push(x, y, z);
-          colors.push(color.r, color.g, color.b);
-        }
-      }
-
-      const row = angular + 1;
-      for (let r = 0; r < radial; r += 1) {
-        for (let a = 0; a < angular; a += 1) {
-          const i = r * row + a;
-          indices.push(i, i + row, i + 1, i + 1, i + row, i + row + 1);
-        }
-      }
-
-      const geometry = new T.BufferGeometry();
-      geometry.setAttribute("position", new T.Float32BufferAttribute(vertices, 3));
-      geometry.setAttribute("color", new T.Float32BufferAttribute(colors, 3));
-      geometry.setIndex(indices);
-      geometry.computeVertexNormals();
-      geometry.computeBoundingSphere();
-      this.distantMaterial = new T.MeshBasicMaterial({
-        vertexColors: true,
-        fog: true,
-        depthWrite: true,
-        toneMapped: true
-      });
-      const mesh = new T.Mesh(geometry, this.distantMaterial);
-      mesh.name = `venus-distant-terrain-${this.region.id}`;
-      mesh.frustumCulled = false;
-      mesh.renderOrder = -2;
-      return mesh;
+      // The old second shell overlapped the horizon from roughly 92-150 km and
+      // produced visible layered/angular exterior geometry. The continuation is
+      // now a single mesh built by createHorizon(), so there is no overlapping
+      // terrain surface and no depth-fighting seam outside the playable region.
+      return null;
     }
 
     createSurfaceAccents() {
