@@ -17,7 +17,7 @@ function check(name, condition, detail='') {
 }
 function has(source, fragment) { return source.includes(fragment); }
 
-check('cache busting updated', has(html, '20260930-responsive-ui-exit-1'));
+check('cache busting updated', has(html, '20260930-venus-exit-ui-rebuild-2'));
 check('mobile action menu exists', has(html, 'venus-actions-menu-toggle') && has(html, 'venus-actions-menu'));
 check('HUD metrics have responsive hooks', ['venus-hud-metric-altitude','venus-hud-metric-speed','venus-hud-metric-distance','venus-hud-metric-region','venus-hud-metric-quality'].every(x=>has(html,x)));
 check('safe-area variables present', ['safe-area-inset-top','safe-area-inset-right','safe-area-inset-bottom','safe-area-inset-left'].every(x=>has(css,x)));
@@ -51,9 +51,13 @@ check('Venus uses same surface fade curve', has(venus, '1 - smoothstep(raw / 0.6
 check('Venus drives dedicated planet dive during exit', has(venus, 'this.venus.setFullExplorationTransition?.(1 - eased, this.region)'));
 check('Venus keeps render loop alive before handoff', /this\.root\.classList\.add\("is-exiting"\)[\s\S]{0,900}this\.startLoop\(\)/.test(venus));
 const exitIndex = venus.indexOf('async exit()');
-const finishIndex = venus.indexOf('finishExitToOrbit()', exitIndex);
-const disposeIndex = venus.indexOf('this.disposeRegion()', finishIndex);
-check('terrain disposal is after visual exit sequence', exitIndex >= 0 && finishIndex > exitIndex && disposeIndex > finishIndex);
+const finishIndex = venus.indexOf('this.finishExit();', exitIndex);
+const finishMethodIndex = venus.indexOf('finishExit() {', exitIndex);
+const disposeIndex = venus.indexOf('this.disposeRegion()', finishMethodIndex);
+check('terrain disposal is after visual exit sequence', exitIndex >= 0 && finishIndex > exitIndex && finishMethodIndex > finishIndex && disposeIndex > finishMethodIndex);
+check('obsolete Venus exit helper removed', !has(venus, 'finishExitToOrbit'));
+check('Venus exploration root is transparent during planet handoff', /\.venus-full-exploration\s*\{[\s\S]*?background:\s*transparent;/.test(css));
+check('surface fallback color is owned by fading viewport', /\.venus-full-exploration \.mars-full-viewport\s*\{[\s\S]*?background:/.test(css));
 
 // Dedicated Full Dive state should exist independently from Info Mode explorationBlend.
 const diveVars = ['fullDiveBlend','fullDiveYawTarget','fullDivePitchTarget','fullDiveRollTarget','fullDiveLocationKey','fullDiveQuaternion'];

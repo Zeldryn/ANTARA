@@ -2882,7 +2882,7 @@
     }
 
     isConstrainedUi() {
-      return window.matchMedia?.("(max-width: 1499px), (max-height: 819px), (pointer: coarse)")?.matches || false;
+      return window.matchMedia?.("(max-width: 1599px), (max-height: 860px), (pointer: coarse)")?.matches || false;
     }
 
     isInfoOpen() {
@@ -3719,10 +3719,11 @@
         return;
       }
 
+      // Mars parity: EXITING locks movement through state, but the bound input and
+      // live render loop are left intact until the visual handoff has completed.
       this.state = STATES.EXITING;
       const token = ++this.transitionToken;
       this.input.clear();
-      this.input.unbind();
       this.setActionsMenu(false);
       this.selector.hidden = true;
       if (this.qualityPanel) this.qualityPanel.hidden = true;
@@ -3731,8 +3732,8 @@
       this.root.classList.add("is-exiting");
       document.getElementById("announcement").textContent = "Meninggalkan permukaan Venus dan kembali ke panorama orbit.";
 
-      // Critical Mars lifecycle rule: never stop the Full Exploration loop here.
-      // Terrain, atmosphere and camera continue rendering throughout the ascent/handoff.
+      // Normally the loop is already alive, just like Mars. This is only a safety
+      // restart after visibility changes; startLoop() cannot create a duplicate RAF.
       this.startLoop();
 
       if (this.regionWorld && this.camera) {
@@ -3741,6 +3742,8 @@
       }
       if (token !== this.transitionToken) return;
 
+      // This is the Mars surface-to-planet handoff architecture: the exploration
+      // world continues to render while the real Venus scene reverses fullDiveBlend.
       const reduced = this.venus.motion.matches;
       const duration = reduced ? 260 : 3200;
       const start = performance.now();
@@ -3749,8 +3752,6 @@
           if (token !== this.transitionToken) return resolve();
           const raw = clamp((now - start) / duration, 0, 1);
           const eased = smootherstep(raw);
-          // Exact Mars handoff family: the surface remains live while the actual
-          // Venus sphere recedes from a near-planet framing toward panorama.
           this.root.style.setProperty("--surface-opacity", String(1 - smoothstep(raw / 0.62)));
           this.venus.setFullExplorationTransition?.(1 - eased, this.region);
           if (raw < 1) requestAnimationFrame(frame);
@@ -3759,33 +3760,33 @@
         requestAnimationFrame(frame);
       });
       if (token !== this.transitionToken) return;
-      this.finishExitToOrbit();
+      this.finishExit();
     }
 
-    finishExitToOrbit() {
-      this.transitionToken += 1;
+    finishExit() {
       if (document.fullscreenElement === this.root) document.exitFullscreen().catch(() => {});
+
+      // Match Mars cleanup order. The transition has already reached normal panorama
+      // framing before the exploration renderer is stopped or any terrain is disposed.
+      this.state = STATES.IDLE;
       this.stopLoop();
       this.input.unbind();
-      // The handoff is visually complete at this point. Only now release the
-      // exploration world and its renderer resources.
-      this.disposeRegion();
-      this.disposeRenderer();
-      this.venus.endFullExploration?.();
-      this.venus.setFullExplorationTransition?.(0, this.region);
-      this.venus.caption.inert = false;
-      this.resetEducationUI();
-      this.infoCard.classList.remove("is-visible");
-      this.infoCard.setAttribute("aria-hidden", "true");
-      this.infoToggle.hidden = true;
-      this.state = STATES.IDLE;
-      this.selectorOpenedFromRegion = false;
       this.root.className = "mars-full-exploration venus-full-exploration";
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");
       this.root.style.removeProperty("--surface-opacity");
       this.root.style.removeProperty("--entry-progress");
+
+      this.venus.endFullExploration?.();
+      this.venus.setFullExplorationTransition?.(0, this.region);
+      this.venus.caption.inert = false;
+
+      this.resetEducationUI();
+      this.infoCard.classList.remove("is-visible");
+      this.infoCard.setAttribute("aria-hidden", "true");
+      this.infoToggle.hidden = true;
+      this.selectorOpenedFromRegion = false;
       this.selector.hidden = false;
       if (this.qualityPanel) this.qualityPanel.hidden = true;
       this.loading.hidden = true;
@@ -3793,6 +3794,11 @@
       this.entryButton.disabled = false;
       document.getElementById("mission").classList.remove("is-venus-full", "is-venus-full-selecting");
       document.getElementById("announcement").textContent = "Kembali ke panorama Venus.";
+
+      // Terrain/renderer cleanup happens only after the Full Exploration root is hidden
+      // and the normal Venus panorama is already the visible scene.
+      this.disposeRegion();
+      this.disposeRenderer();
       this.entryButton.focus({ preventScroll: true });
     }
 
@@ -3810,8 +3816,10 @@
     }
 
     failBackToOrbit() {
+      // Emergency return shares the same final cleanup path. There is no second,
+      // timer-based Venus exit architecture left behind.
       this.transitionToken += 1;
-      this.finishExitToOrbit();
+      this.finishExit();
     }
 
     onVenusStop() {

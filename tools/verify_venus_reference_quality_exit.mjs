@@ -69,8 +69,9 @@ assert(REGIONS.every(item => item.space?.verticalReliefScale > 1 && item.space?.
 assert(source.includes("animateCameraAltitude(targetAltitude, duration, token)"), "Venus exit uses the same live-camera altitude architecture as Mars");
 assert(source.includes("await this.animateCameraAltitude(Math.max(this.cameraAltitude, 52), 1650, token)"), "Venus exit keeps terrain live during the exact Mars-family 52 km / 1650 ms ascent stage");
 assert(source.includes("const duration = reduced ? 260 : 3200"), "Venus exit uses the same primary full-dive blend duration family as Mars");
-assert(source.includes("this.input.unbind();") && source.includes("this.venus.setFullExplorationTransition?.(1 - eased, this.region)"), "exit locks input and blends into the existing Venus panorama");
-assert(source.indexOf("await this.animateCameraAltitude(Math.max(this.cameraAltitude, 52), 1650, token)") < source.indexOf("this.finishExitToOrbit();", source.indexOf("async exit()")), "world cleanup occurs after the live ascent and planet handoff");
+assert(source.includes("this.state = STATES.EXITING") && source.includes("this.input.clear();") && source.includes("this.venus.setFullExplorationTransition?.(1 - eased, this.region)"), "exit locks movement by state while keeping the live renderer and blends into the existing Venus panorama");
+assert(source.indexOf("await this.animateCameraAltitude(Math.max(this.cameraAltitude, 52), 1650, token)") < source.indexOf("this.finishExit();", source.indexOf("async exit()")), "world cleanup occurs after the live ascent and planet handoff");
+assert(!source.includes("finishExitToOrbit"), "obsolete Venus-specific exit helper has been removed");
 
 const maat = REGIONS.find(item => item.id === "maat");
 assert(maat && maat.fogDensity <= 0.0065, "Maat atmosphere no longer erases the far shield-volcano silhouette");
