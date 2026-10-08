@@ -582,18 +582,22 @@ const CHARACTER_SPRITES = Object.freeze({
   }
 });
 
-const ANIMATED_NARA_FRAMES = Object.freeze([
-  "assets/characters/nara/frames/NARA_frame_01.webp",
-  "assets/characters/nara/frames/NARA_frame_02.webp",
-  "assets/characters/nara/frames/NARA_frame_03.webp",
-  "assets/characters/nara/frames/NARA_frame_04.webp",
-  "assets/characters/nara/frames/NARA_frame_05.webp",
-  "assets/characters/nara/frames/NARA_frame_06.webp",
-  "assets/characters/nara/frames/NARA_frame_07.webp",
-  "assets/characters/nara/frames/NARA_frame_08.webp",
-  "assets/characters/nara/frames/NARA_frame_09.webp",
-  "assets/characters/nara/frames/NARA_frame_10.webp"
-]);
+const NARA_ANIMATION_FRAMES = Object.freeze({
+  idleOpen: "assets/characters/nara/frames/NARA_IDLE_OPEN.png",
+  idleHalf: "assets/characters/nara/frames/NARA_IDLE_HALF.png",
+  idleClosed: "assets/characters/nara/frames/NARA_IDLE_CLOSED.png",
+  talkClosed: "assets/characters/nara/frames/NARA_TALK_CLOSED.png",
+  talkSmall: "assets/characters/nara/frames/NARA_TALK_SMALL.png",
+  talkOpen: "assets/characters/nara/frames/NARA_TALK_OPEN.png",
+  happyOpen: "assets/characters/nara/frames/NARA_HAPPY_OPEN.png",
+  happyClosed: "assets/characters/nara/frames/NARA_HAPPY_CLOSED.png",
+  listening: "assets/characters/nara/frames/NARA_LISTENING.png",
+  thinking: "assets/characters/nara/frames/NARA_THINKING.png",
+  surprised: "assets/characters/nara/frames/NARA_SURPRISED.png",
+  excited: "assets/characters/nara/frames/NARA_EXCITED.png",
+  wink: "assets/characters/nara/frames/NARA_WINK.png",
+  softSmile: "assets/characters/nara/frames/NARA_SOFT_SMILE.png"
+});
 
 class CockpitCompanions {
   constructor() {
@@ -610,64 +614,137 @@ class CockpitCompanions {
     this.currentSprite = { A: "", B: "" };
     this.spriteTimers = { A: 0, B: 0 };
     this.naraFrameTimer = 0;
-    this.naraFrameIndex = 0;
+    this.naraBlinkTimer = 0;
+    this.naraAnimationToken = 0;
     this.preload();
-    this.startAnimatedNara();
+    this.startNaraIdle();
   }
 
   preload() {
-    for (const config of Object.values(CHARACTER_SPRITES)) {
-      const files = new Set(Object.values(config.states));
-      for (const file of files) {
-        const image = new Image();
-        image.decoding = "async";
-        image.src = config.base + file;
-      }
+    const soraConfig = CHARACTER_SPRITES.B;
+    const soraFiles = new Set(Object.values(soraConfig.states));
+    for (const file of soraFiles) {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = soraConfig.base + file;
     }
-    for (const frame of ANIMATED_NARA_FRAMES) {
+    for (const frame of Object.values(NARA_ANIMATION_FRAMES)) {
       const image = new Image();
       image.decoding = "async";
       image.src = frame;
     }
   }
 
-  startAnimatedNara() {
-    const image = this.images.A;
-    if (!image || !ANIMATED_NARA_FRAMES.length) return;
-
-    // These 10 assets are expression poses, not contiguous 24-fps motion.
-    // Give readable poses a longer hold and use shorter timings only between them.
-    const frameDurations = [
-      2200, // 01 calm / default pose
-       650, // 02 transition smile
-       750, // 03 softer expression
-      1700, // 04 closed-eye smile
-       650, // 05 transition
-       700, // 06 surprised / speaking
-      1250, // 07 attentive pose
-       900, // 08 calm transition
-      1450, // 09 wink / playful hold
-      1900  // 10 relaxed ending pose
-    ];
-
+  clearNaraAnimation() {
+    this.naraAnimationToken += 1;
     clearTimeout(this.naraFrameTimer);
-    this.naraFrameIndex = 0;
-    image.src = ANIMATED_NARA_FRAMES[0];
-    image.dataset.sprite = "animated-nara";
-    this.currentSprite.A = "animated-nara";
+    clearTimeout(this.naraBlinkTimer);
+    this.naraFrameTimer = 0;
+    this.naraBlinkTimer = 0;
+  }
 
+  setNaraFrame(frameKey) {
+    const image = this.images.A;
+    const next = NARA_ANIMATION_FRAMES[frameKey] || NARA_ANIMATION_FRAMES.idleOpen;
+    if (!image) return;
+    const current = image.getAttribute("src") || "";
+    if (current === next) return;
+    image.src = next;
+    image.dataset.sprite = frameKey;
+    this.currentSprite.A = next;
+  }
+
+  startNaraIdle() {
+    this.clearNaraAnimation();
+    const token = this.naraAnimationToken;
+    this.setNaraFrame("idleOpen");
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const showNextFrame = () => {
-      const hold = frameDurations[this.naraFrameIndex] || 1000;
-      this.naraFrameTimer = window.setTimeout(() => {
-        this.naraFrameIndex = (this.naraFrameIndex + 1) % ANIMATED_NARA_FRAMES.length;
-        image.src = ANIMATED_NARA_FRAMES[this.naraFrameIndex];
-        showNextFrame();
-      }, hold);
+    const scheduleBlink = () => {
+      if (token !== this.naraAnimationToken) return;
+      const wait = 2800 + Math.random() * 2600;
+      this.naraBlinkTimer = window.setTimeout(() => {
+        if (token !== this.naraAnimationToken) return;
+        this.setNaraFrame("idleHalf");
+        this.naraFrameTimer = window.setTimeout(() => {
+          if (token !== this.naraAnimationToken) return;
+          this.setNaraFrame("idleClosed");
+          this.naraFrameTimer = window.setTimeout(() => {
+            if (token !== this.naraAnimationToken) return;
+            this.setNaraFrame("idleHalf");
+            this.naraFrameTimer = window.setTimeout(() => {
+              if (token !== this.naraAnimationToken) return;
+              this.setNaraFrame("idleOpen");
+              scheduleBlink();
+            }, 85);
+          }, 105);
+        }, 85);
+      }, wait);
     };
+    scheduleBlink();
+  }
 
-    showNextFrame();
+  naraReactionFrame(state) {
+    const reactions = {
+      idle: "idleOpen",
+      happy: "happyOpen",
+      smile: "happyOpen",
+      confident: "softSmile",
+      supportive: "softSmile",
+      listening: "listening",
+      curious: "listening",
+      thinking: "thinking",
+      surprised: "surprised",
+      excited: "excited",
+      pointing: "excited",
+      wink: "wink",
+      talking: "softSmile",
+      explaining: "softSmile"
+    };
+    return reactions[state] || "softSmile";
+  }
+
+  setNaraState(state) {
+    if (state === "idle") {
+      this.startNaraIdle();
+      return;
+    }
+    this.clearNaraAnimation();
+    this.setNaraFrame(this.naraReactionFrame(state));
+  }
+
+  startNaraTalking(reactionState, duration = 3000) {
+    this.clearNaraAnimation();
+    const token = this.naraAnimationToken;
+    const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      this.setNaraFrame("talkSmall");
+      return;
+    }
+
+    const sequence = [
+      ["talkClosed", 190],
+      ["talkSmall", 125],
+      ["talkOpen", 145],
+      ["talkSmall", 120],
+      ["talkClosed", 230]
+    ];
+    const endAt = performance.now() + Math.max(650, duration - 180);
+    let index = 0;
+
+    const step = () => {
+      if (token !== this.naraAnimationToken) return;
+      if (performance.now() >= endAt) {
+        this.setNaraFrame(this.naraReactionFrame(reactionState));
+        return;
+      }
+      const [frame, hold] = sequence[index];
+      this.setNaraFrame(frame);
+      index = (index + 1) % sequence.length;
+      const naturalPause = frame === "talkClosed" ? Math.random() * 90 : 0;
+      this.naraFrameTimer = window.setTimeout(step, hold + naturalPause);
+    };
+    step();
   }
 
   spritePath(side, state) {
@@ -678,10 +755,9 @@ class CockpitCompanions {
   swapSprite(side, state, immediate = false) {
     const host = side === "A" ? this.a : this.b;
     const image = this.images[side];
-    if (side === "A" && ANIMATED_NARA_FRAMES.length) {
+    if (side === "A") {
       if (host) host.dataset.state = state;
-      if (image) image.dataset.sprite = state;
-      this.currentSprite.A = "animated-nara";
+      this.setNaraState(state);
       return;
     }
     const next = this.spritePath(side, state);
@@ -707,8 +783,6 @@ class CockpitCompanions {
   }
 
   setJourneyPhase(phase) {
-    // Flight phase may change physical cockpit motion, but it must never overwrite
-    // the sprite/expression selected by the current 3-second dialogue cue.
     if (this.a) this.a.dataset.flightPhase = phase;
     if (this.b) this.b.dataset.flightPhase = phase;
   }
@@ -737,12 +811,15 @@ class CockpitCompanions {
       otherEl.dataset.role = "listening";
       speakerEl.dataset.expression = entry.emotion || entry.sprite || "neutral";
       otherEl.dataset.expression = entry.otherEmotion || "neutral";
-      this.swapSprite(speakerSide, entry.sprite || "talking", immediate);
-      if (entry.otherSprite) this.swapSprite(otherSide, entry.otherSprite, immediate);
       const duration = Math.max(3000, entry.duration || Math.min(3400, Math.max(3000, 1050 + entry.text.length * 32)));
+      if (speakerSide === "A") this.startNaraTalking(entry.sprite || entry.emotion || "talking", duration);
+      else this.swapSprite(speakerSide, entry.sprite || "talking", immediate);
+      if (otherSide === "A") this.setNaraState(entry.otherSprite || "listening");
+      else if (entry.otherSprite) this.swapSprite(otherSide, entry.otherSprite, immediate);
       this.talkTimer = setTimeout(() => {
         speakerEl.classList.remove("is-talking");
         speakerEl.classList.add("is-focused");
+        if (speakerSide === "A") this.setNaraFrame(this.naraReactionFrame(entry.sprite || entry.emotion || "softSmile"));
       }, duration);
     };
     if (immediate) apply();
