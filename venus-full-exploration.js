@@ -56,7 +56,7 @@
         "Model ANTARA memprioritaskan edifice yang lebar dan lereng gradual, bukan pola radial berbentuk bintang."
       ],
       visualizationNote: "VISUALISASI AKTIVITAS VULKANIK · Rekonstruksi ilustratif berdasarkan perubahan vent Magellan 1991. Glow lokal bukan foto observasi langsung lava pijar saat ini.",
-      palette: { low: 0xa35b2a, mid: 0xd18a3d, high: 0xefb85f, accent: 0x743a21, rock: 0x4b2c1d },
+      palette: { low: 0x7b3f22, mid: 0xd39445, high: 0xf1c56c, accent: 0x64331d, rock: 0x45291b },
       fog: 0xa76537,
       fogDensity: 0.0100,
       sky: 0xb96d39,
@@ -87,7 +87,7 @@
         "Magellan memperlihatkan terrain Maxwell yang sangat terdeformasi berdampingan dengan dataran lava Lakshmi yang lebih halus.",
         "Ridge pada region ini dipaksa mengikuti tren struktural regional agar siluetnya terbaca sebagai mountain belt."
       ],
-      palette: { low: 0x6a472f, mid: 0x9b6b43, high: 0xd1a06a, accent: 0x7b4c31, rock: 0x4b3327 },
+      palette: { low: 0x59402f, mid: 0x98734f, high: 0xddb27a, accent: 0x6b4934, rock: 0x3f3028 },
       fog: 0x80583e,
       fogDensity: 0.0090,
       sky: 0x8d6548,
@@ -118,7 +118,7 @@
         "Ridge dan valley dasarnya berarah timur-laut ke barat-daya lalu dipotong fracture ekstensional berarah barat-laut ke tenggara.",
         "Lembah besar pada referensi Magellan diisi material gelap yang kemungkinan lava."
       ],
-      palette: { low: 0x7b4a2b, mid: 0xaa6d3b, high: 0xd49a58, accent: 0x72452b, rock: 0x5b3828 },
+      palette: { low: 0x694126, mid: 0xa96e3c, high: 0xdca35f, accent: 0x5b3824, rock: 0x463025 },
       fog: 0x93603b,
       fogDensity: 0.0095,
       sky: 0xa4683c,
@@ -149,7 +149,7 @@
         "Lakshmi Planum merupakan plateau tinggi yang dikelilingi mountain chains dan terrain yang sangat terdeformasi.",
         "Model memisahkan interior plateau yang lebih halus dari margin pegunungan agar Ishtar tidak terbaca sebagai satu mesa generik."
       ],
-      palette: { low: 0x755238, mid: 0xa27a52, high: 0xd2ad78, accent: 0x855938, rock: 0x544034 },
+      palette: { low: 0x604a36, mid: 0xa3845b, high: 0xdabe83, accent: 0x735038, rock: 0x47392f },
       fog: 0x826047,
       fogDensity: 0.0091,
       sky: 0x916a4d,
@@ -180,7 +180,7 @@
         "Local dark patches pada data Magellan adalah topographic lows yang terisi lava lebih halus.",
         "Relief procedural hanya mengisi detail kecil; identitas utama region datang dari fabric tessera yang terarah."
       ],
-      palette: { low: 0x75431f, mid: 0xae6b2f, high: 0xdfa14d, accent: 0x885024, rock: 0x4b2d1d },
+      palette: { low: 0x653719, mid: 0xad7133, high: 0xe8b657, accent: 0x56301a, rock: 0x3f281b },
       fog: 0x975c32,
       fogDensity: 0.0100,
       sky: 0xa76735,
@@ -232,153 +232,228 @@
   const smoothBand = (value, inner, outer) => 1 - smoothstep((Math.abs(value) - inner) / Math.max(0.0001, outer - inner));
 
   function maatFlowFields(x, z) {
-    // PIA00254 shows coherent dark flow fields crossing the foreground plain,
-    // separated by brighter channels. Use broad lobes plus meandering feeders,
-    // not three hard procedural stripes.
-    const travel = clamp((z + 22) / 68, 0, 1);
-    const envelope = smoothstep((z + 23) / 8) * (1 - smoothstep((z - 49) / 12));
+    // PIA00254 foreground: broad, irregular cooled-flow fields with lighter
+    // channels between them. The masks deliberately avoid bilateral symmetry.
+    const travel = clamp((z + 24) / 72, 0, 1);
+    const envelope = smoothstep((z + 27) / 11) * (1 - smoothstep((z - 51) / 12));
     const ribbon = (distance, width) => Math.exp(-Math.pow(distance / Math.max(0.1, width), 4));
-    const pathA = -5.5 - travel * 8.0 + Math.sin((z + 18) * 0.070) * 2.4 + Math.sin(z * 0.027) * 1.7;
-    const pathB = 7.5 + travel * 8.8 + Math.sin((z + 9) * 0.061 + 1.2) * 2.7;
-    const pathC = 1.5 - travel * 1.7 + Math.sin((z + 5) * 0.086 - 0.7) * 1.4;
-    const a = ribbon(x - pathA, 3.3 + travel * 6.4) * envelope;
-    const b = ribbon(x - pathB, 3.7 + travel * 6.8) * envelope;
-    const c = ribbon(x - pathC, 2.1 + travel * 3.4) * envelope;
-    const westLobes = Math.max(
-      rotatedGaussian(x, z, -19, 17, 17, 25, -0.09),
-      rotatedGaussian(x, z, -31, 39, 23, 18, 0.10)
-    ) * envelope;
-    const eastLobes = Math.max(
-      rotatedGaussian(x, z, 18, 14, 16, 26, 0.08),
-      rotatedGaussian(x, z, 31, 38, 21, 20, -0.08)
-    ) * envelope;
-    const breakup = 0.90 + valueNoise(x * 0.045, z * 0.045, 101) * 0.10;
-    const goldenChannelPath = 0.8 + Math.sin((z + 11) * 0.055) * 2.1;
-    const goldenChannel = ribbon(x - goldenChannelPath, 3.1 + travel * 2.0) * envelope;
-    const rawFlow = Math.max(a * 0.66, b * 0.68, c * 0.36, westLobes * 0.90, eastLobes * 0.88) * breakup;
-    const combined = clamp(rawFlow * (1 - goldenChannel * 0.76), 0, 1);
-    const edge = clamp((a * (1 - a) + b * (1 - b) + westLobes * (1 - westLobes) + eastLobes * (1 - eastLobes)) * 2.2, 0, 1);
-    return { a, b, c, combined, edge, travel };
+    const bendA = -11.0 - travel * 8.0 + Math.sin((z + 17) * 0.050) * 4.0 + Math.sin(z * 0.019) * 2.0;
+    const bendB = 12.0 + travel * 7.0 + Math.sin((z + 3) * 0.047 + 1.4) * 4.2 + Math.sin(z * 0.021) * 1.5;
+    const feederA = ribbon(x - bendA, 4.8 + travel * 7.5);
+    const feederB = ribbon(x - bendB, 4.4 + travel * 7.0);
+    const west = Math.max(
+      rotatedGaussian(x, z, -22, 14, 22, 24, -0.13),
+      rotatedGaussian(x, z, -33, 37, 27, 18, 0.18),
+      rotatedGaussian(x, z, -12, 35, 17, 20, -0.05)
+    );
+    const east = Math.max(
+      rotatedGaussian(x, z, 20, 11, 18, 24, 0.13),
+      rotatedGaussian(x, z, 34, 39, 22, 18, -0.12),
+      rotatedGaussian(x, z, 13, 34, 15, 21, 0.07)
+    );
+    const localPatch = Math.max(
+      rotatedGaussian(x, z, -5, 8, 12, 8, 0.22),
+      rotatedGaussian(x, z, 8, 23, 10, 12, -0.18)
+    );
+    const regionalWarp = 0.88 + 0.12 * valueNoise(x * 0.035, z * 0.035, 101);
+    const radial = Math.hypot((x + 0.8) / 34.5, (z + 26) / 29.5);
+    const apronMask = smoothstep((radial - 0.60) / 0.38);
+    const broad = Math.max(west * 0.94, east * 0.90, feederA * 0.56, feederB * 0.58, localPatch * 0.42) * envelope * regionalWarp * apronMask;
+    const channelPath = 1.5 + Math.sin((z + 8) * 0.044) * 3.4 + Math.sin(z * 0.016 + 0.7) * 1.4;
+    const centralLight = ribbon(x - channelPath, 3.8 + travel * 2.4) * envelope * apronMask;
+    const sideChannel = ribbon(x + 11 - Math.sin(z * 0.041) * 2.5, 2.8 + travel * 1.7) * envelope * apronMask * 0.55;
+    const combined = clamp(broad * (1 - centralLight * 0.74) * (1 - sideChannel * 0.42), 0, 1);
+    const edge = clamp(4.2 * combined * (1 - combined), 0, 1);
+    const internalLineation = Math.max(
+      ridgeWave(x * 0.107 + z * 0.045 + 0.46 * Math.sin(z * 0.031) + valueNoise(x * 0.025, z * 0.025, 133) * 0.6, 13),
+      ridgeWave(-x * 0.068 + z * 0.096 + 0.34 * Math.sin(x * 0.028) + valueNoise(x * 0.021, z * 0.021, 139) * 0.5, 14)
+    ) * combined;
+    return { combined, edge, internalLineation, travel, centralLight, sideChannel };
   }
 
   function maatHeight(x, z) {
-    const dx = x;
-    const dz = z + 25;
-    const radial = Math.hypot(dx / 31.5, dz / 27.0);
+    // Broad shield-volcano morphology derived from PIA00254. The edifice is
+    // intentionally wider than it is steep; small lineation rides on top of the
+    // macro shape instead of defining it.
+    const dx = x + 0.8;
+    const dz = z + 26;
+    const radial = Math.hypot(dx / 34.5, dz / 29.5);
     const angular = Math.atan2(dz, dx);
-    const radialWarp = radial * (1 + 0.055 * Math.sin(angular * 3 + 0.4) + 0.035 * Math.sin(angular * 5 - 0.8));
-    const broadBase = 5.75 * Math.exp(-1.03 * Math.pow(radialWarp, 1.46));
-    const upperEdifice = 0.96 * Math.exp(-3.15 * Math.pow(radialWarp, 2.20));
-    const asymmetricShoulder = 0.74 * rotatedGaussian(x, z, -10, -17, 35, 27, 0.12)
-      + 0.34 * rotatedGaussian(x, z, 14, -18, 29, 26, -0.10);
+    const radialWarp = radial * (1 + 0.045 * Math.sin(angular * 3 + 0.3) + 0.025 * Math.sin(angular * 5 - 0.9));
+    const broadBase = 5.35 * Math.exp(-1.08 * Math.pow(radialWarp, 2.35));
+    const upperEdifice = 0.92 * Math.exp(-3.00 * Math.pow(radialWarp, 3.10));
+    const asymmetricShoulder = 0.66 * rotatedGaussian(x, z, -11, -18, 38, 29, 0.10)
+      + 0.30 * rotatedGaussian(x, z, 15, -18, 31, 27, -0.10);
 
-    // The summit is broad and irregular. Depressions are integrated into the
-    // upper edifice instead of forming a perfect game-like crater ring.
-    const summitBench = 0.82 * rotatedGaussian(x, z, -0.8, -24.8, 9.5, 7.3, 0.16)
-      + 0.22 * rotatedGaussian(x, z, -3.8, -24.0, 5.4, 4.5, -0.10)
-      + 0.18 * rotatedGaussian(x, z, 4.0, -25.6, 4.8, 4.1, 0.12);
-    const ventPrimary = -0.46 * rotatedGaussian(x, z, 1.5, -25.8, 3.8, 2.8, 0.28);
-    const ventSecondary = -0.18 * rotatedGaussian(x, z, -2.0, -23.7, 2.4, 1.8, -0.34);
-    const brokenRim = 0.13 * rotatedGaussian(x, z, 0.0, -25.0, 5.6, 4.2, 0.20)
-      * (0.58 + 0.42 * ridgeWave(x * 0.58 + z * 0.23 + 0.35 * Math.sin(z * 0.24), 7));
-    const summitChannel = -0.085 * Math.exp(-Math.pow((x - 0.18 * (z + 25) - 1.0) / 1.45, 2))
-      * rotatedGaussian(x, z, 1.0, -18, 7.5, 15, 0.04);
-    // A subordinate volcanic dome/shelf in the midground echoes the layered
-    // relief visible in the opened PIA00254 perspective without becoming a prop.
-    const foregroundDome = 1.05 * rotatedGaussian(x, z, -8.5, -5.5, 11.5, 9.0, -0.08)
-      + 0.32 * rotatedGaussian(x, z, -11.0, -3.0, 6.2, 5.0, 0.12);
+    const summitBench = 0.86 * rotatedGaussian(x, z, -1.0, -25.5, 11.8, 9.0, 0.13)
+      + 0.20 * rotatedGaussian(x, z, -4.2, -24.5, 5.5, 4.5, -0.08)
+      + 0.16 * rotatedGaussian(x, z, 4.0, -26.0, 5.0, 4.0, 0.12);
+    const ventPrimary = -0.43 * rotatedGaussian(x, z, 1.4, -26.0, 4.0, 2.9, 0.28);
+    const ventSecondary = -0.15 * rotatedGaussian(x, z, -2.3, -23.8, 2.6, 1.9, -0.30);
+    const brokenRim = 0.11 * rotatedGaussian(x, z, 0.2, -25.4, 6.0, 4.6, 0.18)
+      * (0.54 + 0.46 * ridgeWave(x * 0.54 + z * 0.21 + 0.30 * Math.sin(z * 0.22), 8));
+
+    // PIA00254 contains layered foreground and midground volcanic relief. Keep
+    // this subordinate so it supports, rather than hides, the main edifice.
+    const foregroundShelf = 0.58 * rotatedGaussian(x, z, -9.0, -5.0, 12.5, 8.5, -0.08)
+      + 0.22 * rotatedGaussian(x, z, -12.0, -2.0, 6.5, 4.8, 0.10);
 
     const flows = maatFlowFields(x, z);
-    // Cooled flow units are low-relief lobes. Their identity is primarily tonal,
-    // as in the opened Magellan/Venera-hued reference, not tall glowing ridges.
-    const flowRelief = flows.combined * (0.09 + 0.045 * valueNoise(x * 0.08, z * 0.08, 113));
-    const flowLevees = flows.edge * 0.055;
-    const fractureFabric = (ridgeWave(x * 0.17 + z * 0.055 + 0.35 * Math.sin(z * 0.038), 11)
-      + ridgeWave(-x * 0.10 + z * 0.19 + 0.25 * Math.sin(x * 0.041), 12)) * 0.055;
-    const plainUndulation = 0.10 * fbm(x * 0.045, z * 0.045, 11, 3);
+    const flowRelief = flows.combined * (0.065 + 0.032 * valueNoise(x * 0.075, z * 0.075, 113));
+    const flowLevees = flows.edge * 0.045;
+
+    // Low-relief lineation is confined to the slopes and plains. It is subtle
+    // enough to read as surface flow / fracture language rather than starburst ridges.
+    const edificeEnvelope = clamp(1 - radial / 1.15, 0, 1);
+    const slopeLineA = ridgeWave((x * 0.105 + z * 0.040 + 0.30 * Math.sin(z * 0.034)), 13);
+    const slopeLineB = ridgeWave((-x * 0.072 + z * 0.092 + 0.22 * Math.sin(x * 0.030)), 14);
+    const slopeLineation = (slopeLineA * 0.55 + slopeLineB * 0.45) * edificeEnvelope * smoothstep((radial - 0.20) / 0.60) * 0.060;
+    const flowGrooves = flows.internalLineation * 0.028;
+    const plainFracture = Math.max(
+      ridgeWave(x * 0.145 + z * 0.050 + 0.20 * Math.sin(z * 0.035), 14),
+      ridgeWave(-x * 0.092 + z * 0.165 + 0.16 * Math.sin(x * 0.035), 15)
+    ) * (1 - edificeEnvelope) * 0.035;
+    const plainUndulation = 0.075 * fbm(x * 0.043, z * 0.043, 11, 3);
 
     return broadBase + upperEdifice + asymmetricShoulder + summitBench + ventPrimary + ventSecondary
-      + brokenRim + summitChannel + foregroundDome + flowRelief + flowLevees + fractureFabric + plainUndulation;
+      + brokenRim + foregroundShelf + flowRelief + flowLevees + slopeLineation + flowGrooves + plainFracture + plainUndulation;
+  }
+
+  function maxwellStructure(x, z) {
+    const warp = valueNoise(x * 0.024, z * 0.024, 23) * 4.4;
+    const massif = rotatedGaussian(x, z, 8, -18, 31, 55, -0.06);
+    // Lakshmi is a broad smooth plain west of Maxwell, not an oval depression.
+    const westFade = smoothstep((-x + z * 0.11 - 1 + valueNoise(x * 0.018, z * 0.018, 151) * 6.5) / 31);
+    const northSouth = smoothstep((z + 61) / 14) * (1 - smoothstep((z - 55) / 14));
+    const lakshmi = clamp(westFade * northSouth * (1 - massif * 0.72), 0, 1);
+    const ridgeA = ridgeWave((x + warp + 1.2 * Math.sin(z * 0.055)) * 0.315 + z * 0.048, 8) * massif;
+    const ridgeB = ridgeWave((x - warp * 0.58 + 1.0 * Math.sin(z * 0.043 + 0.8)) * 0.205 - z * 0.061 + 0.7, 10) * massif;
+    const ridgeFine = ridgeWave((x + warp * 0.35 + 1.1 * Math.sin(z * 0.067)) * 0.49 + z * 0.027 + 1.2, 14) * massif;
+    const craterX = 17.5, craterZ = -25.0;
+    const craterR = Math.hypot(x - craterX, z - craterZ);
+    const cleopatraBowl = Math.exp(-Math.pow(craterR / 5.1, 2));
+    const cleopatraOuter = Math.exp(-Math.pow((craterR - 7.0) / 1.55, 2));
+    const cleopatraInner = Math.exp(-Math.pow((craterR - 3.3) / 0.95, 2));
+    const channelCenter = z + 22 + 0.22 * (x - craterX) + 1.2 * Math.sin((x - craterX) * 0.11);
+    const channel = Math.exp(-Math.pow(channelCenter / 2.5, 2)) * smoothstep((x - 15) / 22) * gaussian(x, z, 27, -18, 29, 25);
+    return { warp, massif, lakshmi, ridgeA, ridgeB, ridgeFine, cleopatraBowl, cleopatraOuter, cleopatraInner, channel };
   }
 
   function maxwellHeight(x, z) {
-    const warp = valueNoise(x * 0.026, z * 0.026, 23) * 4.2;
-    const envelope = rotatedGaussian(x, z, 4, -16, 31, 55, -0.08);
-    const massif = 7.45 * envelope + 1.72 * rotatedGaussian(x, z, 16, -30, 18, 31, 0.10);
-    const ridgeA = ridgeWave((x + warp) * 0.30 + z * 0.052 + 0.38 * Math.sin(z * 0.046), 7) * envelope * 2.05;
-    const ridgeB = ridgeWave((x - warp * 0.55) * 0.19 - z * 0.068 + 0.8, 9) * envelope * 0.92;
-    const ridgeC = ridgeWave(x * 0.39 + z * 0.020 + 1.3 + 0.18 * Math.sin(z * 0.08), 10) * envelope * 0.46;
-    const valleys = -0.92 * ridgeWave(x * 0.145 + z * 0.062 + 1.0 + warp * 0.025, 10) * envelope;
-    const westernScarp = -0.95 * smoothBand(x + 24 + z * 0.05, 0, 7.5) * gaussian(x, z, -21, -6, 29, 50);
-    const lakshmi = -1.28 * smoothstep((x + 22) / 18) * gaussian(x, z, -30, 0, 36, 60);
-    const micro = 0.12 * fbm(x * 0.058, z * 0.058, 23, 3);
-    return Math.max(-1.4, massif + ridgeA + ridgeB + ridgeC + valleys + westernScarp + lakshmi + micro);
+    const s = maxwellStructure(x, z);
+    const broadMassif = 7.10 * s.massif + 1.45 * rotatedGaussian(x, z, 17, -32, 18, 30, 0.08);
+    const ridges = s.ridgeA * 1.30 + s.ridgeB * 0.62 + s.ridgeFine * 0.24;
+    const valleys = -0.58 * ridgeWave(x * 0.145 + z * 0.060 + 0.9 + s.warp * 0.023, 10) * s.massif;
+    const westTransition = -1.05 * s.lakshmi;
+    const cleopatra = -1.18 * s.cleopatraBowl + 0.42 * s.cleopatraOuter + 0.22 * s.cleopatraInner - 0.28 * s.channel;
+    const micro = 0.085 * fbm(x * 0.057, z * 0.057, 23, 3);
+    return Math.max(-1.5, broadMassif + ridges + valleys + westTransition + cleopatra + micro);
+  }
+
+  function aphroditeStructure(x, z) {
+    const envelope = gaussian(x, z, 0, -9, 64, 50);
+    const warp = valueNoise(x * 0.027, z * 0.027, 37) * 5.2;
+    const fabricNE = ridgeWave((x + z * 0.72 + warp + 1.8 * Math.sin(z * 0.050)) * 0.225, 10) * envelope;
+    const fabricNW = ridgeWave((x - z * 0.90 - warp * 0.55 + 1.4 * Math.sin(x * 0.047)) * 0.292 + 0.6, 13) * envelope;
+    const fineNE = ridgeWave((x + z * 0.69 + warp * 0.55 + 1.2 * Math.sin(z * 0.073)) * 0.41 + 0.9, 16) * envelope;
+    // A broad meandering lava-filled valley dominates the reference, with a less
+    // prominent secondary branch. Curvature removes the artificial V shape.
+    const mainCenter = x - z * 0.29 - 5.5 + 6.0 * Math.sin((z + 10) * 0.030) + warp * 0.12;
+    const mainValley = Math.exp(-Math.pow(mainCenter / 7.2, 2)) * gaussian(x, z, 2, -4, 72, 56);
+    const branchCenter = x + z * 0.16 + 26 + 3.5 * Math.sin((z - 4) * 0.040) + warp * 0.08;
+    const branchValley = Math.exp(-Math.pow(branchCenter / 5.3, 2)) * gaussian(x, z, -14, -1, 58, 46);
+    const broadValley = Math.exp(-Math.pow((x + z * 0.50 + 16 + 2.0 * Math.sin(z * 0.035)) / 9.5, 2)) * gaussian(x, z, -8, -4, 64, 50);
+    const blockMask = smoothstep((fbm(x * 0.045, z * 0.045, 57, 2) + 0.62) / 1.18) * envelope;
+    return { envelope, warp, fabricNE, fabricNW, fineNE, mainValley, branchValley, broadValley, blockMask };
   }
 
   function aphroditeHeight(x, z) {
-    const envelope = gaussian(x, z, 0, -9, 64, 50);
-    const warp = valueNoise(x * 0.028, z * 0.028, 37) * 4.8;
-    const upland = 3.20 * gaussian(x, z, 0, -10, 58, 44) + 0.82 * gaussian(x, z, -20, -18, 32, 26);
-    const neSw = ridgeWave((x + z * 0.72 + warp) * 0.215, 8) * envelope * 0.86;
-    const nwSe = ridgeWave((x - z * 0.88 - warp * 0.55) * 0.275 + 0.6, 11) * envelope * 0.48;
-    const foldedBand = ridgeWave((x + z * 0.30) * 0.155 + 0.48 * Math.sin(z * 0.052), 9) * envelope * 0.31;
-    const rift = -1.34 * Math.exp(-Math.pow((x - z * 0.34 - 7 - warp * 0.18) / 5.8, 2)) * gaussian(x, z, 0, -5, 70, 55);
-    const riftBranch = -0.50 * Math.exp(-Math.pow((x + z * 0.18 + 24 + warp * 0.12) / 4.2, 2)) * gaussian(x, z, -12, -2, 60, 48);
-    const broadValley = -0.70 * Math.exp(-Math.pow((x + z * 0.55 + 15) / 8.5, 2)) * gaussian(x, z, -8, -4, 66, 52);
-    const blocks = 0.15 * fbm(x * 0.058, z * 0.058, 37, 3);
-    return upland + neSw + nwSe + foldedBand + rift + riftBranch + broadValley + blocks;
+    const s = aphroditeStructure(x, z);
+    const upland = 2.85 * gaussian(x, z, 0, -10, 58, 44) + 0.72 * gaussian(x, z, -20, -18, 32, 26);
+    const fabrics = s.fabricNE * 0.76 + s.fabricNW * 0.43 + s.fineNE * 0.18;
+    const blockRelief = s.blockMask * 0.28;
+    const valleys = -0.68 * s.mainValley - 0.18 * s.branchValley - 0.15 * s.broadValley;
+    const fractureGrooves = -0.10 * ridgeWave((x - z * 0.90 - s.warp * 0.55) * 0.305 + 0.6, 18) * s.envelope;
+    const micro = 0.080 * fbm(x * 0.060, z * 0.060, 37, 3);
+    return upland + fabrics + blockRelief + valleys + fractureGrooves + micro;
   }
 
   function ishtarPlateauMask(x, z) {
-    // Ishtar/Lakshmi should read as a broad regional plateau, not a rounded box.
-    // Overlapping low-frequency lobes create an irregular natural outline while
-    // preserving the elevated interior and mountain-bounded margins.
-    const core = gaussian(x, z, -6, -2, 58, 42);
-    const west = gaussian(x, z, -26, 4, 39, 31);
-    const east = gaussian(x, z, 20, -10, 37, 32);
-    const north = gaussian(x, z, -4, -22, 48, 29);
-    const boundaryWarp = valueNoise(x * 0.027, z * 0.027, 97) * 0.08;
-    return smoothstep((clamp(core * 0.72 + west * 0.28 + east * 0.24 + north * 0.18 + boundaryWarp, 0, 1) - 0.28) / 0.58);
+    const core = gaussian(x, z, -7, 2, 58, 42);
+    const west = gaussian(x, z, -28, 5, 38, 31);
+    const east = gaussian(x, z, 18, -7, 39, 31);
+    const north = gaussian(x, z, -8, -23, 47, 29);
+    const south = gaussian(x, z, 0, 22, 44, 30);
+    const southeastNotch = gaussian(x, z, 39, 24, 24, 19);
+    const boundaryWarp = valueNoise(x * 0.024, z * 0.024, 97) * 0.11 + valueNoise(x * 0.052, z * 0.052, 109) * 0.035;
+    const field = core * 0.62 + west * 0.28 + east * 0.23 + north * 0.21 + south * 0.13 - southeastNotch * 0.12 + boundaryWarp;
+    return smoothstep((clamp(field, 0, 1) - 0.27) / 0.58);
+  }
+
+  function ishtarStructure(x, z) {
+    const plateau = ishtarPlateauMask(x, z);
+    // Three principal boundary massifs echo the PIA00093 composition: Akna/Freyja
+    // on the west/northwest and Maxwell on the east.
+    const maxwell = rotatedGaussian(x, z, 27, -10, 13, 31, -0.05);
+    const akna = rotatedGaussian(x, z, -30, -2, 13, 29, 0.08);
+    const freyja = rotatedGaussian(x, z, -10, -29, 28, 10, 0.04);
+    const eastHills = gaussian(x, z, 47, -2, 24, 44);
+    const warp = valueNoise(x * 0.031, z * 0.031, 41) * 3.0;
+    return { plateau, maxwell, akna, freyja, eastHills, warp };
   }
 
   function ishtarHeight(x, z) {
-    // A broad Lakshmi-like plateau with sharper regional boundaries. The interior
-    // stays comparatively smooth while deformation is concentrated at the margins.
-    const plateauMask = ishtarPlateauMask(x, z);
-    const plateau = 2.72 * plateauMask + 0.30 * gaussian(x, z, -18, 5, 34, 28);
-    const easternMargin = gaussian(x, z, 39, -10, 17, 46);
-    const westernMargin = gaussian(x, z, -43, -4, 17, 43);
-    const northernMargin = gaussian(x, z, -4, -39, 47, 14);
-    const warp = valueNoise(x * 0.031, z * 0.031, 41) * 3.0;
-    const mountainEast = easternMargin * (3.52 + ridgeWave((x + warp) * 0.34 + z * 0.05, 7) * 1.92);
-    const mountainWest = westernMargin * (1.90 + ridgeWave((x - warp) * 0.27 - z * 0.045, 8) * 1.10);
-    const mountainNorth = northernMargin * (1.28 + ridgeWave(x * 0.21 + z * 0.04 + warp * 0.02, 9) * 0.82);
-    const interiorFlow = 0.07 * ridgeWave(x * 0.066 + z * 0.031 + 0.24 * Math.sin(x * 0.028), 14) * plateauMask;
-    const marginFractures = 0.17 * ridgeWave(x * 0.10 + z * 0.22 + warp * 0.02, 11) * (easternMargin + westernMargin) * 0.65;
-    const southernLowland = -0.56 * gaussian(x, z, 5, 55, 72, 28);
-    const micro = 0.065 * fbm(x * 0.052, z * 0.052, 41, 3);
-    return plateau + mountainEast + mountainWest + mountainNorth + interiorFlow + marginFractures + southernLowland + micro;
+    const s = ishtarStructure(x, z);
+    const plateauRelief = 3.05 * s.plateau + 0.24 * gaussian(x, z, -18, 6, 34, 28);
+    const maxwell = s.maxwell * (4.55 + ridgeWave((x + s.warp) * 0.36 + z * 0.045, 8) * 1.65);
+    const akna = s.akna * (2.05 + ridgeWave((x - s.warp) * 0.29 - z * 0.040, 9) * 0.92);
+    const freyja = s.freyja * (1.72 + ridgeWave(x * 0.22 + z * 0.045 + s.warp * 0.022, 9) * 0.72);
+    const easternHills = s.eastHills * (0.62 + ridgeWave(x * 0.16 - z * 0.08, 11) * 0.32);
+    const interiorLineation = ridgeWave(x * 0.072 + z * 0.032 + 0.22 * Math.sin(x * 0.027), 15) * s.plateau * 0.052;
+    const marginFractures = ridgeWave(x * 0.11 + z * 0.21 + s.warp * 0.02, 13) * (s.maxwell + s.akna + s.freyja) * 0.11;
+    const southernLowland = -0.62 * gaussian(x, z, 6, 55, 72, 28);
+    const micro = 0.050 * fbm(x * 0.052, z * 0.052, 41, 3);
+    return plateauRelief + maxwell + akna + freyja + easternHills + interiorLineation + marginFractures + southernLowland + micro;
+  }
+
+  function alphaStructure(x, z) {
+    const warpA = valueNoise(x * 0.028, z * 0.028, 59) * 8.2;
+    const warpB = valueNoise(x * 0.023 + 11, z * 0.023 - 7, 71) * 7.0;
+    const core = gaussian(x, z, 2, -8, 43, 36);
+    const west = gaussian(x, z, -27, -5, 25, 33);
+    const north = gaussian(x, z, 7, -29, 34, 21);
+    const east = gaussian(x, z, 31, -3, 23, 30);
+    const south = gaussian(x, z, 0, 20, 29, 18);
+    const regionalNoise = valueNoise(x * 0.024, z * 0.024, 83) * 0.11;
+    const tesseraMask = smoothstep((clamp(core * 0.68 + west * 0.29 + north * 0.21 + east * 0.19 + south * 0.10 + regionalNoise, 0, 1) - 0.27) / 0.50);
+    const localWarpA = warpA + 2.8 * Math.sin(z * 0.072) + 1.4 * Math.sin((x + z) * 0.038);
+    const localWarpB = warpB + 2.4 * Math.sin(x * 0.067) - 1.6 * Math.sin((x - z) * 0.035);
+    const blockMod = 0.68 + 0.32 * smoothstep((fbm(x * 0.050, z * 0.050, 89, 2) + 0.70) / 1.25);
+    const packetA = 0.46 + 0.54 * smoothstep((valueNoise(x * 0.034, z * 0.034, 157) + 0.62) / 1.20);
+    const packetB = 0.44 + 0.56 * smoothstep((valueNoise(x * 0.031 + 8, z * 0.031 - 5, 173) + 0.60) / 1.18);
+    const ridgeA = ridgeWave((x + z * 0.55 + localWarpA) * 0.285, 10) * tesseraMask * blockMod * packetA;
+    const ridgeB = ridgeWave((-x * 0.52 + z + localWarpB) * 0.278, 10) * tesseraMask * (1.08 - blockMod * 0.20) * packetB;
+    const ridgeFine = ridgeWave((x * 0.18 - z * 0.28 + localWarpA * 0.22 + 1.2) * 0.95, 14) * tesseraMask * (0.62 + packetA * 0.38);
+    const faultA = Math.exp(-Math.pow((x - z * 0.42 - 8 - localWarpB * 0.10) / 3.4, 2)) * tesseraMask;
+    const faultB = Math.exp(-Math.pow((x + z * 0.58 + 13 + localWarpA * 0.08) / 3.8, 2)) * tesseraMask;
+    const faultC = Math.exp(-Math.pow((x - z * 0.08 + 24 + 1.5 * Math.sin(z * 0.05)) / 2.9, 2)) * tesseraMask;
+    const lowA = gaussian(x, z, 24, 13, 11, 8);
+    const lowB = gaussian(x, z, -27, -4, 10, 12);
+    const lowC = gaussian(x, z, 5, 24, 12, 9);
+    const boundary = clamp(4 * tesseraMask * (1 - tesseraMask), 0, 1);
+    return { warpA, warpB, tesseraMask, ridgeA, ridgeB, ridgeFine, faultA, faultB, faultC, lowA, lowB, lowC, boundary };
   }
 
   function alphaHeight(x, z) {
-    // Alpha is an irregular tessera upland. Cross-cutting ridge fabrics are warped
-    // and confined to uplifted blocks so the region does not read as infinite sine stripes.
-    const warpA = valueNoise(x * 0.030, z * 0.030, 59) * 7.0;
-    const warpB = valueNoise(x * 0.024 + 11, z * 0.024 - 7, 71) * 5.8;
-    const envelope = gaussian(x, z, 0, -6, 58, 49);
-    const blockField = smoothstep((fbm(x * 0.035, z * 0.035, 83, 2) + 0.55) / 1.10);
-    const upland = (1.45 + blockField * 0.85) * envelope + 0.38 * gaussian(x, z, -18, -18, 31, 28);
-    const ridgeA = ridgeWave((x + z * 0.55 + warpA) * 0.285, 8) * 0.88;
-    const ridgeB = ridgeWave((-x * 0.52 + z + warpB) * 0.270, 8) * 0.80;
-    const ridgeC = ridgeWave((x * 0.18 - z * 0.28 + warpA * 0.22) + 1.2, 11) * 0.24;
-    const faultA = -0.82 * Math.exp(-Math.pow((x - z * 0.42 - 8 - warpB * 0.12) / 3.2, 2));
-    const faultB = -0.62 * Math.exp(-Math.pow((x + z * 0.58 + 13 + warpA * 0.10) / 3.6, 2));
-    const faultC = -0.34 * Math.exp(-Math.pow((x - z * 0.08 + 24) / 2.6, 2));
-    const lavaLowA = -0.88 * gaussian(x, z, 24, 13, 11, 8);
-    const lavaLowB = -0.66 * gaussian(x, z, -27, -4, 10, 12);
-    const micro = 0.12 * fbm(x * 0.070, z * 0.070, 59, 3);
-    return upland + (ridgeA + ridgeB + ridgeC) * envelope
-      + (faultA + faultB + faultC) * envelope + lavaLowA + lavaLowB + micro;
+    const s = alphaStructure(x, z);
+    const upland = 1.70 * s.tesseraMask + 0.34 * gaussian(x, z, -17, -18, 30, 27);
+    const ridges = s.ridgeA * 0.56 + s.ridgeB * 0.50 + s.ridgeFine * 0.13;
+    const scarps = s.boundary * 0.30;
+    const faults = -(s.faultA * 0.48 + s.faultB * 0.38 + s.faultC * 0.20);
+    const lavaLows = -(s.lowA * 0.84 + s.lowB * 0.64 + s.lowC * 0.42);
+    const outsidePlain = 0.045 * fbm(x * 0.040, z * 0.040, 91, 2) * (1 - s.tesseraMask);
+    const micro = 0.070 * fbm(x * 0.070, z * 0.070, 59, 3) * (0.35 + s.tesseraMask * 0.65);
+    return upland + ridges + scarps + faults + lavaLows + outsidePlain + micro;
   }
 
   const HEIGHT_FUNCTIONS = Object.freeze({
@@ -395,38 +470,40 @@
 
   function surfaceClass(region, x, z, height, slope) {
     if (region.id === "maat") {
-      const r = Math.hypot(x / 31.5, (z + 25) / 27.0);
+      const r = Math.hypot((x + 0.8) / 34.5, (z + 26) / 29.5);
       const flows = maatFlowFields(x, z);
-      if (r < 0.24) return "summit";
-      if (flows.combined > 0.62 && z > -20) return "lava"; // cooled flow unit, not exposed molten lava
-      if (r < 0.95 && (height > 2.0 || slope > 0.30)) return "rugged";
-      if (slope > 0.34) return "fracture";
+      if (r < 0.25) return "summit";
+      if (flows.combined > 0.55 && z > -22) return "lava"; // cooled flow unit
+      if (r < 1.02 && (height > 1.8 || slope > 0.27)) return "rugged";
+      if (flows.internalLineation > 0.48 || slope > 0.32) return "fracture";
       return "plain";
     }
     if (region.id === "maxwell") {
-      if (height > 7.0 || slope > 0.52) return "rugged";
-      if (height < 1.55 && slope < 0.18) return "plain";
+      const s = maxwellStructure(x, z);
+      if (s.cleopatraBowl > 0.42) return "fracture";
+      if (s.lakshmi > 0.52 && height < 1.9 && slope < 0.20) return "plain";
+      if (height > 7.1 || slope > 0.46 || s.ridgeFine > 0.56) return "rugged";
       return "highland";
     }
     if (region.id === "aphrodite") {
-      const warp = valueNoise(x * 0.028, z * 0.028, 37) * 4.8;
-      const rift = Math.abs(x - z * 0.34 - 7 - warp * 0.18);
-      const envelope = gaussian(x, z, 0, -9, 64, 50);
-      if ((rift < 6.5 && envelope > 0.40) || (height < 0.55 && envelope > 0.42)) return "lava";
-      if (height > 3.25) return "highland";
-      if (slope > 0.30) return "fracture";
+      const s = aphroditeStructure(x, z);
+      if (s.mainValley > 0.58 && s.envelope > 0.34) return "lava";
+      if (height > 3.0 || Math.max(s.fabricNE, s.fabricNW) > 0.70) return "highland";
+      if (s.fabricNW > 0.54 || slope > 0.28) return "fracture";
       return "rugged";
     }
     if (region.id === "ishtar") {
-      const plateauInterior = ishtarPlateauMask(x, z) > 0.56;
-      if (plateauInterior && slope < 0.20) return "plain";
-      if (Math.abs(x) > 31 || z < -31 || slope > 0.42) return "rugged";
+      const s = ishtarStructure(x, z);
+      if (s.plateau > 0.58 && slope < 0.18 && Math.max(s.maxwell, s.akna, s.freyja) < 0.32) return "plain";
+      if (Math.max(s.maxwell, s.akna, s.freyja) > 0.28 || slope > 0.38) return "rugged";
       return "highland";
     }
     if (region.id === "alpha") {
-      if (height < 0.72) return "lava";
-      if (slope > 0.26 || height > 1.9) return "tessera";
-      return "fracture";
+      const s = alphaStructure(x, z);
+      if (Math.max(s.lowA, s.lowB, s.lowC) > 0.52 && height < 1.10) return "lava";
+      if (s.tesseraMask > 0.46 && (Math.max(s.ridgeA, s.ridgeB) > 0.30 || height > 1.55)) return "tessera";
+      if (s.tesseraMask > 0.22) return "fracture";
+      return "plain";
     }
     return "plain";
   }
@@ -537,92 +614,93 @@
       const accent = new T.Color(p.accent);
       const rock = new T.Color(p.rock);
 
-      // Reference-driven zoning is intentionally stronger than random noise.
-      // Random variation is retained only at micro scale so large dark/bright
-      // fields stay coherent when compared with the opened scientific image.
+      // Macro/mid tonal distribution comes from the same region structures that
+      // shape the terrain. Noise is deliberately limited to subtle micro breakup.
       if (this.region.id === "maat") {
         const flows = maatFlowFields(x, z);
-        const radial = Math.hypot(x / 31.5, (z + 25) / 27.0);
-        const mountainMask = clamp(1 - radial / 1.18, 0, 1);
-        const ventHeat = rotatedGaussian(x, z, 1.5, -25.7, 5.4, 3.8, 0.24);
-        const fracture = clamp((ridgeWave(x * 0.17 + z * 0.055, 11) + ridgeWave(-x * 0.10 + z * 0.19, 12)) * 0.62, 0, 1);
+        const radial = Math.hypot((x + 0.8) / 34.5, (z + 26) / 29.5);
+        const mountainMask = clamp(1 - radial / 1.20, 0, 1);
+        const ventHeat = rotatedGaussian(x, z, 1.4, -26.0, 5.2, 3.7, 0.24);
+        const flankLine = Math.max(
+          ridgeWave(x * 0.105 + z * 0.040 + 0.30 * Math.sin(z * 0.034), 13),
+          ridgeWave(-x * 0.072 + z * 0.092 + 0.22 * Math.sin(x * 0.030), 14)
+        ) * mountainMask;
 
-        // PIA00254 color language: golden edifice and plains, coherent dark flow
-        // units in the foreground, with only the tiny illustrative vent allowed
-        // to approach molten yellow.
-        color.copy(mid);
-        color.lerp(high, clamp(mountainMask * 0.72 + Math.max(0, height - 3.5) * 0.05, 0, 0.88));
-        if (flows.combined > 0.16) {
-          color.lerp(accent, clamp(0.18 + flows.combined * 0.52, 0, 0.67));
-          const flowFracture = Math.max(
-            ridgeWave(x * 0.115 + z * 0.043 + 0.42 * Math.sin(z * 0.034), 10),
-            ridgeWave(-x * 0.082 + z * 0.128 + 0.31 * Math.sin(x * 0.037), 12)
-          );
-          color.lerp(mid, clamp(flowFracture * flows.combined * 0.22, 0, 0.22));
+        // PIA00254: golden/yellow-orange edifice and plains, coherent burnt-brown
+        // foreground flow fields, thin lighter channels and restrained hot vent.
+        color.copy(mid).lerp(high, clamp(mountainMask * 0.76 + Math.max(0, height - 3.8) * 0.035, 0, 0.90));
+        if (flows.combined > 0.10) {
+          color.lerp(accent, clamp(0.20 + flows.combined * 0.60, 0, 0.76));
+          color.lerp(mid, clamp(flows.internalLineation * 0.20, 0, 0.20));
         }
-        if (cls === "fracture") color.lerp(rock, 0.40 + fracture * 0.18);
-        if (cls === "rugged") color.lerp(high, 0.22);
-        if (cls === "summit") color.lerp(high, 0.30);
-        if (ventHeat > 0.28) {
-          this.thermalColor.setHex(ventHeat > 0.72 ? 0xffd95a : 0xf4a536);
-          color.lerp(this.thermalColor, (ventHeat - 0.28) * 0.28);
+        if (flows.centralLight > 0.24) color.lerp(high, flows.centralLight * 0.18);
+        if (cls === "fracture") color.lerp(rock, 0.30 + clamp(flows.internalLineation, 0, 1) * 0.20);
+        if (cls === "rugged") color.lerp(high, 0.16 + flankLine * 0.11);
+        if (cls === "summit") color.lerp(high, 0.26);
+        if (ventHeat > 0.36) {
+          this.thermalColor.setHex(ventHeat > 0.74 ? 0xffd75d : 0xf0a33c);
+          color.lerp(this.thermalColor, (ventHeat - 0.36) * 0.23);
         }
-
-        const coherent = valueNoise(x * 0.055, z * 0.055, 111);
-        const micro = valueNoise(x * 0.34, z * 0.34, 127);
-        const tone = 0.96 + coherent * 0.045 + micro * 0.018 + flows.edge * 0.035;
-        color.multiplyScalar(clamp(tone * (0.98 + slope * 0.08), 0.84, 1.12));
+        const coherent = valueNoise(x * 0.050, z * 0.050, 111);
+        const micro = valueNoise(x * 0.30, z * 0.30, 127);
+        const tone = 0.985 + coherent * 0.030 + micro * 0.012 + flows.edge * 0.022 + flankLine * 0.018;
+        color.multiplyScalar(clamp(tone * (1.015 + slope * 0.050), 0.90, 1.12));
         return color;
       }
 
       if (this.region.id === "maxwell") {
-        const envelope = rotatedGaussian(x, z, 4, -16, 32, 55, -0.08);
-        const ridge = Math.max(
-          ridgeWave(x * 0.30 + z * 0.052 + 0.38 * Math.sin(z * 0.046), 7),
-          ridgeWave(x * 0.19 - z * 0.068 + 0.8, 9)
-        ) * envelope;
-        color.copy(cls === "plain" ? low : mid);
-        if (cls === "highland") color.lerp(high, 0.34 + ridge * 0.20);
-        if (cls === "rugged") color.copy(high).lerp(rock, 0.18 + clamp(slope, 0, 0.7) * 0.18);
-        color.multiplyScalar(clamp(0.96 + ridge * 0.10 + valueNoise(x * 0.12, z * 0.12, 29) * 0.025, 0.84, 1.14));
+        const s = maxwellStructure(x, z);
+        const ridgeStrength = Math.max(s.ridgeA, s.ridgeB, s.ridgeFine);
+        const brightnessBand = smoothstep((height - 2.6) / 3.0) * (1 - 0.34 * smoothstep((height - 8.5) / 1.6));
+        color.copy(mid);
+        if (s.lakshmi > 0.30) color.lerp(low, clamp(0.14 + s.lakshmi * 0.42, 0, 0.54));
+        if (cls === "highland") color.lerp(high, 0.30 + ridgeStrength * 0.24 + brightnessBand * 0.12);
+        if (cls === "rugged") color.copy(high).lerp(rock, 0.12 + clamp(slope, 0, 0.75) * 0.16);
+        if (s.cleopatraBowl > 0.18) color.lerp(accent, clamp(s.cleopatraBowl * 0.44, 0, 0.38));
+        if (s.cleopatraOuter > 0.34) color.lerp(high, s.cleopatraOuter * 0.18);
+        const micro = valueNoise(x * 0.16, z * 0.16, 29) * 0.015;
+        color.multiplyScalar(clamp(0.95 + ridgeStrength * 0.085 + brightnessBand * 0.07 + micro, 0.83, 1.16));
         return color;
       }
 
       if (this.region.id === "aphrodite") {
-        const warp = valueNoise(x * 0.028, z * 0.028, 37) * 4.8;
-        const fabricA = ridgeWave((x + z * 0.72 + warp) * 0.215, 8);
-        const fabricB = ridgeWave((x - z * 0.88 - warp * 0.55) * 0.275 + 0.6, 11);
-        const riftMask = Math.exp(-Math.pow((x - z * 0.34 - 7 - warp * 0.18) / 6.2, 2)) * gaussian(x, z, 0, -9, 64, 50);
+        const s = aphroditeStructure(x, z);
+        const fabric = Math.max(s.fabricNE, s.fabricNW, s.fineNE * 0.8);
+        const valley = Math.max(s.mainValley, s.branchValley * 0.46, s.broadValley * 0.30);
         color.copy(mid);
-        if (cls === "highland") color.lerp(high, 0.42 + Math.max(fabricA, fabricB) * 0.18);
-        if (cls === "fracture") color.lerp(rock, 0.44);
-        if (cls === "lava") color.lerp(accent, 0.38 + riftMask * 0.16);
-        if (cls === "rugged") color.lerp(high, 0.20);
-        color.multiplyScalar(clamp(0.95 + Math.max(fabricA, fabricB) * 0.065 + valueNoise(x * 0.11, z * 0.11, 43) * 0.025, 0.84, 1.13));
+        if (cls === "highland") color.lerp(high, 0.36 + fabric * 0.24);
+        if (cls === "fracture") color.lerp(rock, 0.28 + s.fabricNW * 0.20);
+        if (cls === "lava") color.lerp(accent, 0.40 + valley * 0.20);
+        else if (s.branchValley > 0.52) color.lerp(accent, s.branchValley * 0.16);
+        if (cls === "rugged") color.lerp(high, fabric * 0.13);
+        const micro = valueNoise(x * 0.15, z * 0.15, 43) * 0.014;
+        color.multiplyScalar(clamp(0.95 + fabric * 0.080 - valley * 0.055 + micro, 0.84, 1.14));
         return color;
       }
 
       if (this.region.id === "ishtar") {
-        const plateau = ishtarPlateauMask(x, z);
-        const margin = Math.max(gaussian(x, z, 39, -10, 17, 46), gaussian(x, z, -43, -4, 17, 43), gaussian(x, z, -4, -39, 47, 14));
-        color.copy(cls === "plain" ? mid : low);
-        if (cls === "highland") color.copy(mid).lerp(high, 0.30 + plateau * 0.20);
-        if (cls === "rugged") color.copy(high).lerp(rock, 0.24 + margin * 0.12);
-        color.multiplyScalar(clamp(0.97 + plateau * 0.035 + margin * 0.06 + valueNoise(x * 0.10, z * 0.10, 47) * 0.02, 0.87, 1.12));
+        const s = ishtarStructure(x, z);
+        const massif = Math.max(s.maxwell, s.akna, s.freyja);
+        const altitudeTone = clamp((height + 0.6) / 10.0, 0, 1);
+        color.copy(low).lerp(mid, clamp(s.plateau * 0.72 + altitudeTone * 0.18, 0, 0.86));
+        color.lerp(high, clamp(altitudeTone * 0.26 + massif * 0.16, 0, 0.38));
+        if (cls === "rugged") color.lerp(rock, 0.08 + clamp(slope, 0, 0.7) * 0.11);
+        // PIA00093 is color-coded altimetry. Preserve relative elevation and
+        // plateau-vs-massif contrast in Venus hues, not literal blue/green.
+        color.multiplyScalar(clamp(0.99 + altitudeTone * 0.10 + valueNoise(x * 0.12, z * 0.12, 47) * 0.010, 0.91, 1.16));
         return color;
       }
 
       if (this.region.id === "alpha") {
-        const warpA = valueNoise(x * 0.030, z * 0.030, 59) * 7.0;
-        const warpB = valueNoise(x * 0.024 + 11, z * 0.024 - 7, 71) * 5.8;
-        const ridgeA = ridgeWave((x + z * 0.55 + warpA) * 0.285, 8);
-        const ridgeB = ridgeWave((-x * 0.52 + z + warpB) * 0.270, 8);
-        const tessera = Math.max(ridgeA, ridgeB);
-        color.copy(mid);
-        if (cls === "tessera") color.lerp(high, 0.36 + tessera * 0.20);
-        if (cls === "fracture") color.lerp(rock, 0.32);
-        if (cls === "lava") color.lerp(accent, 0.74);
-        color.multiplyScalar(clamp(0.94 + tessera * 0.10 + valueNoise(x * 0.12, z * 0.12, 61) * 0.025, 0.82, 1.14));
+        const s = alphaStructure(x, z);
+        const tessera = Math.max(s.ridgeA, s.ridgeB, s.ridgeFine * 0.8);
+        const localLow = Math.max(s.lowA, s.lowB, s.lowC);
+        color.copy(low).lerp(mid, 0.16 + s.tesseraMask * 0.64);
+        if (cls === "tessera") color.lerp(high, 0.30 + tessera * 0.18 + s.boundary * 0.10);
+        if (cls === "fracture") color.lerp(rock, 0.14 + Math.max(s.faultA, s.faultB, s.faultC) * 0.14);
+        if (cls === "lava") color.copy(accent).lerp(mid, 0.12);
+        if (localLow > 0.30) color.lerp(accent, localLow * 0.40);
+        color.multiplyScalar(clamp(0.94 + tessera * 0.065 + s.boundary * 0.05 + valueNoise(x * 0.15, z * 0.15, 61) * 0.012, 0.84, 1.14));
         return color;
       }
 
@@ -1101,23 +1179,51 @@
       const T = this.THREE;
       const size = this.quality.name === "HIGH" ? 160 : 128;
       const materialProfiles = {
-        maat:      { repeat: 8.5,  normal: 0.44, roughness: 0.88, roughSpread: 42, tint: [1.035, 1.00, 0.93] },
-        maxwell:   { repeat: 10.0, normal: 0.50, roughness: 0.95, roughSpread: 32, tint: [1.025, 1.00, 0.96] },
-        aphrodite: { repeat: 9.5,  normal: 0.48, roughness: 0.92, roughSpread: 38, tint: [1.030, 0.99, 0.94] },
-        ishtar:    { repeat: 8.0,  normal: 0.39, roughness: 0.93, roughSpread: 34, tint: [1.020, 1.00, 0.97] },
-        alpha:     { repeat: 10.5, normal: 0.53, roughness: 0.95, roughSpread: 40, tint: [1.030, 0.99, 0.93] }
+        maat:      { repeat: 8.0, normal: 0.48, roughness: 0.88, roughSpread: 38, anisotropy: 0.22 },
+        maxwell:   { repeat: 9.5, normal: 0.56, roughness: 0.95, roughSpread: 30, anisotropy: 0.36 },
+        aphrodite: { repeat: 9.0, normal: 0.54, roughness: 0.92, roughSpread: 34, anisotropy: 0.33 },
+        ishtar:    { repeat: 7.5, normal: 0.40, roughness: 0.93, roughSpread: 30, anisotropy: 0.12 },
+        alpha:     { repeat: 9.5, normal: 0.60, roughness: 0.95, roughSpread: 34, anisotropy: 0.40 }
       };
       const profile = materialProfiles[this.region.id] || materialProfiles.maat;
       const detail = new Float32Array(size * size);
       const seed = this.region.id.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
+      const TAU = Math.PI * 2;
+
+      // Region-specific micro language. These periodic signals are intentionally
+      // subtle and seamless; they support the reference morphology but never
+      // determine the macro terrain design.
+      const microSignal = (u, v) => {
+        const base = 0.50 * valueNoise(u * 22, v * 22, seed)
+          + 0.28 * valueNoise(u * 54, v * 54, seed + 17)
+          + 0.14 * valueNoise(u * 112, v * 112, seed + 31);
+        if (this.region.id === "maat") {
+          const lineA = Math.sin(TAU * (u * 5 + v * 2 + 0.12 * Math.sin(TAU * v * 2)));
+          const lineB = Math.sin(TAU * (-u * 3 + v * 6 + 0.08 * Math.sin(TAU * u * 3)));
+          return base * 0.78 + (lineA * 0.13 + lineB * 0.09) * profile.anisotropy;
+        }
+        if (this.region.id === "maxwell") {
+          const folds = Math.sin(TAU * (u * 9 + v * 2 + 0.10 * Math.sin(TAU * v * 2)));
+          return base * 0.70 + folds * profile.anisotropy;
+        }
+        if (this.region.id === "aphrodite") {
+          const a = Math.sin(TAU * (u * 7 + v * 5));
+          const b = Math.sin(TAU * (u * 5 - v * 7));
+          return base * 0.68 + (a + b) * 0.5 * profile.anisotropy;
+        }
+        if (this.region.id === "alpha") {
+          const a = Math.sin(TAU * (u * 8 + v * 5));
+          const b = Math.sin(TAU * (-u * 6 + v * 9));
+          return base * 0.64 + (a + b) * 0.5 * profile.anisotropy;
+        }
+        const plateau = Math.sin(TAU * (u * 3 + v * 2));
+        return base * 0.90 + plateau * profile.anisotropy * 0.35;
+      };
 
       for (let y = 0; y < size; y += 1) {
         for (let x = 0; x < size; x += 1) {
           const u = x / size, v = y / size;
-          const n = 0.52 * valueNoise(u * 22, v * 22, seed)
-            + 0.30 * valueNoise(u * 54, v * 54, seed + 17)
-            + 0.18 * valueNoise(u * 112, v * 112, seed + 31);
-          detail[y * size + x] = n;
+          detail[y * size + x] = clamp(microSignal(u, v), -1, 1);
         }
       }
 
@@ -1139,10 +1245,12 @@
           const i = y * size + x;
           const p = i * 4;
           const n = detail[i];
-          const base = clamp(184 + n * 42, 158, 228);
-          albedoImage.data[p] = Math.round(clamp(base * profile.tint[0], 0, 255));
-          albedoImage.data[p + 1] = Math.round(clamp(base * profile.tint[1], 0, 255));
-          albedoImage.data[p + 2] = Math.round(clamp(base * profile.tint[2], 0, 255));
+          // Keep albedo essentially neutral so macro region colors come from the
+          // world-space reference masks, not from a generic orange texture.
+          const base = clamp(188 + n * 28, 164, 220);
+          albedoImage.data[p] = Math.round(base);
+          albedoImage.data[p + 1] = Math.round(base);
+          albedoImage.data[p + 2] = Math.round(base);
           albedoImage.data[p + 3] = 255;
 
           const rough = Math.round(clamp(profile.roughness * 255 + (0.5 - n) * profile.roughSpread, 150, 250));
@@ -1509,12 +1617,12 @@
       const memory = navigator.deviceMemory || 4;
       const coarse = window.matchMedia("(pointer: coarse)").matches;
       if (coarse || width <= 760 || cores <= 4 || memory <= 3) {
-        return { name: "LOW", tileSize: 24, nearSegments: 26, midSegments: 16, farSegments: 10, horizonSegments: 56, maxDpr: 1.25, minDpr: 0.88, supersample: 1, pixelBudget: 2400000, anisotropy: 4, accentCount: 14 };
+        return { name: "LOW", tileSize: 24, nearSegments: 26, midSegments: 16, farSegments: 10, horizonSegments: 56, maxDpr: 1.25, minDpr: 0.88, supersample: 1, pixelBudget: 2400000, anisotropy: 4, accentCount: 8 };
       }
       if (cores >= 8 && memory >= 6) {
-        return { name: "HIGH", tileSize: 24, nearSegments: 52, midSegments: 32, farSegments: 18, horizonSegments: 80, maxDpr: 1.65, minDpr: 0.95, supersample: 1.10, pixelBudget: 5200000, anisotropy: 8, accentCount: 36 };
+        return { name: "HIGH", tileSize: 24, nearSegments: 52, midSegments: 32, farSegments: 18, horizonSegments: 80, maxDpr: 1.65, minDpr: 0.95, supersample: 1.10, pixelBudget: 5200000, anisotropy: 8, accentCount: 18 };
       }
-      return { name: "MEDIUM", tileSize: 24, nearSegments: 38, midSegments: 24, farSegments: 14, horizonSegments: 72, maxDpr: 1.45, minDpr: 0.92, supersample: 1.05, pixelBudget: 4200000, anisotropy: 6, accentCount: 24 };
+      return { name: "MEDIUM", tileSize: 24, nearSegments: 38, midSegments: 24, farSegments: 14, horizonSegments: 72, maxDpr: 1.45, minDpr: 0.92, supersample: 1.05, pixelBudget: 4200000, anisotropy: 6, accentCount: 12 };
     }
 
     calculateIdealDpr() {
