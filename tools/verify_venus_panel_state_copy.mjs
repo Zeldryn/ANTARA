@@ -27,7 +27,7 @@ test('discovery reason label is friendly', html.includes('KENAPA INI MENARIK?'))
 test('discovery status is friendlier', js.includes('BARU KAMU TEMUKAN') && js.includes('SUDAH KAMU LIHAT'));
 test('discovery announcement is not robotic', js.includes('Kamu menemukan sesuatu yang menarik'));
 
-const friendlyTypes=['TAHUKAH KAMU?','COBA PERHATIKAN!','COBA LIHAT SEKITAR!','LIHAT DEH!','TERNYATA...','UNIKNYA...','KENAPA BISA BEGINI?'];
+const friendlyTypes=['TAHUKAH KAMU?','COBA PERHATIKAN!','COBA LIHAT SEKITAR!','LIHAT DEH!','TERNYATA...','UNIKNYA...','KENAPA BISA BEGINI?','PANAS BANGET, YA?'];
 const typeMatches=[...js.matchAll(/id:\s*"(?:maat|maxwell|aphrodite|ishtar|alpha)-[^"]+"[\s\S]{0,180}?type:\s*"([^"]+)"/g)].map(m=>m[1]);
 test('all 25 observation cards found', typeMatches.length===25);
 test('all observation card eyebrows use friendly discovery language', typeMatches.every(t=>friendlyTypes.includes(t)));
