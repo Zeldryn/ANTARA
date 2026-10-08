@@ -25,6 +25,7 @@
       maxClearance: 14,
       pitch: -0.22,
       yaw: 0.02,
+      descriptor: "Punggungan bersalju, batu alpine, dan horizon tertinggi di Bumi.",
       educational: ["Everest summit", "Lhotse", "Pembentukan Himalaya akibat tumbukan India–Eurasia"]
     },
     {
@@ -44,6 +45,7 @@
       maxClearance: 12,
       pitch: -0.16,
       yaw: 0.08,
+      descriptor: "Turun menembus kolom air menuju bathymetry Challenger Deep.",
       educational: ["Challenger Deep", "Sumbu Palung Mariana", "Konteks subduksi Lempeng Pasifik"]
     },
     {
@@ -62,6 +64,7 @@
       maxClearance: 13,
       pitch: -0.24,
       yaw: -0.05,
+      descriptor: "Gunung api samudra dengan lereng basalt dan konteks pulau Hawaiʻi.",
       educational: ["Puncak Mauna Kea", "Garis muka laut", "Hubungan tubuh gunung dengan dasar samudra"]
     },
     {
@@ -80,6 +83,7 @@
       maxClearance: 10,
       pitch: -0.24,
       yaw: 0.18,
+      descriptor: "Lapisan batuan merah-cokelat dan relief ngarai yang terukir erosi.",
       educational: ["Koridor Grand Canyon", "Colorado River", "Relief dan erosi batuan berlapis"]
     },
     {
@@ -98,9 +102,18 @@
       maxClearance: 12,
       pitch: -0.15,
       yaw: -0.12,
+      descriptor: "Bentang es polar cerah dengan variasi biru-putih dan atmosfer dingin.",
       educational: ["Permukaan es Antarktika Timur", "Konteks Stasiun Vostok", "Perbedaan ice surface dan bedrock subglacial"]
     }
   ]);
+
+  const REGION_VISUALS = Object.freeze({
+    everest: { skyTop: 0x5f89a9, skyHorizon: 0xd9e6ed, fog: 0xc7d8e2, fogDensity: 0.0027, hemiSky: 0xe7f5ff, hemiGround: 0x4a4540, sun: 0xfff4df, sunIntensity: 3.05, exposure: 1.15 },
+    mariana: { skyTop: 0x061925, skyHorizon: 0x163c50, fog: 0x082d3d, fogDensity: 0.028, hemiSky: 0x5d91a8, hemiGround: 0x07131b, sun: 0x79b8cf, sunIntensity: 0.72, exposure: 0.92 },
+    maunakea: { skyTop: 0x4c8cba, skyHorizon: 0xc5e4ed, fog: 0xa8c7d1, fogDensity: 0.0034, hemiSky: 0xe9f8ff, hemiGround: 0x3d352f, sun: 0xffe8c6, sunIntensity: 2.85, exposure: 1.10 },
+    grandcanyon: { skyTop: 0x6495bd, skyHorizon: 0xe2c5a6, fog: 0xcdb7a1, fogDensity: 0.0030, hemiSky: 0xf3e7d6, hemiGround: 0x5b3627, sun: 0xffd9aa, sunIntensity: 3.20, exposure: 1.08 },
+    antarctica: { skyTop: 0x7ca9c8, skyHorizon: 0xecf7fb, fog: 0xe0edf2, fogDensity: 0.0042, hemiSky: 0xf7fdff, hemiGround: 0x7c9cab, sun: 0xf5fbff, sunIntensity: 2.45, exposure: 1.20 }
+  });
 
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -253,84 +266,185 @@
       this.centerYFloat = this.centerAddress.yFloat;
       this.material = this.createMaterial();
       this.water = null;
+      this.sky = null;
+      this.particles = null;
+      this.environmentTime = 0;
     }
 
-    createDetailTexture() {
+    createSurfaceTexture(kind = "detail") {
       const T = this.THREE;
+      const size = this.quality.name === "LOW" ? 128 : 256;
       const canvas = document.createElement("canvas");
-      canvas.width = canvas.height = 192;
+      canvas.width = canvas.height = size;
       const ctx = canvas.getContext("2d");
-      const image = ctx.createImageData(192, 192);
+      const image = ctx.createImageData(size, size);
       const seed = this.region.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-      for (let y = 0; y < 192; y += 1) {
-        for (let x = 0; x < 192; x += 1) {
-          const p = (y * 192 + x) * 4;
-          const wave = Math.sin((x + seed) * 0.31) * Math.cos((y - seed) * 0.27);
-          const grain = Math.sin((x * 17.13 + y * 9.71 + seed) * 1.77);
-          const value = Math.round(clamp(132 + wave * 22 + grain * 16, 70, 190));
-          image.data[p] = image.data[p + 1] = image.data[p + 2] = value;
-          image.data[p + 3] = 255;
+      const style = this.region.terrainStyle;
+      const palette = {
+        alpine: [232, 235, 233], abyss: [196, 210, 215], volcanic: [216, 210, 202], canyon: [229, 205, 188], ice: [238, 248, 252]
+      }[style] || [225, 225, 220];
+      for (let y = 0; y < size; y += 1) {
+        const py = y / size * Math.PI * 2;
+        for (let x = 0; x < size; x += 1) {
+          const px = x / size * Math.PI * 2;
+          const p = (y * size + x) * 4;
+          const broad = Math.sin(px * 3 + seed * 0.013) * Math.cos(py * 4 - seed * 0.017);
+          const mid = Math.sin(px * 11 + py * 7 + seed * 0.021) * 0.55 + Math.cos(px * 8 - py * 13) * 0.45;
+          const fine = Math.sin(px * 31 + py * 23 + seed) * Math.cos(px * 19 - py * 29 - seed) * 0.5;
+          const n = clamp(broad * 0.34 + mid * 0.42 + fine * 0.24, -1, 1);
+          let r, g, b;
+          if (kind === "bump") {
+            const v = Math.round(clamp(128 + n * 76, 22, 234));
+            r = g = b = v;
+          } else if (kind === "roughness") {
+            const base = style === "ice" ? 178 : style === "abyss" ? 220 : style === "volcanic" ? 236 : 224;
+            const v = Math.round(clamp(base + n * 23, 120, 252));
+            r = g = b = v;
+          } else {
+            const strength = style === "canyon" ? 0.14 : style === "volcanic" ? 0.12 : 0.09;
+            const factor = 1 + n * strength;
+            r = Math.round(clamp(palette[0] * factor, 160, 255));
+            g = Math.round(clamp(palette[1] * factor, 160, 255));
+            b = Math.round(clamp(palette[2] * factor, 160, 255));
+          }
+          image.data[p] = r; image.data[p + 1] = g; image.data[p + 2] = b; image.data[p + 3] = 255;
         }
       }
       ctx.putImageData(image, 0, 0);
       const texture = new T.CanvasTexture(canvas);
       texture.wrapS = texture.wrapT = T.RepeatWrapping;
-      texture.repeat.set(this.region.id === "mariana" ? 28 : 20, this.region.id === "mariana" ? 28 : 20);
-      texture.colorSpace = T.SRGBColorSpace;
+      texture.colorSpace = kind === "detail" ? T.SRGBColorSpace : T.NoColorSpace;
       texture.anisotropy = Math.min(this.quality.anisotropy, this.renderer.capabilities.getMaxAnisotropy());
+      texture.needsUpdate = true;
       return texture;
+    }
+
+    configureTerrainMaterial(material, textures) {
+      const style = this.region.terrainStyle;
+      const detailScale = style === "ice" ? 0.70 : style === "abyss" ? 0.45 : style === "canyon" ? 0.82 : 0.95;
+      const fineScale = style === "canyon" ? 3.4 : style === "ice" ? 2.0 : 2.8;
+      const microStrength = this.quality.name === "HIGH" ? 0.22 : this.quality.name === "MEDIUM" ? 0.17 : 0.11;
+      material.bumpMap = textures.bump;
+      material.bumpScale = 0.001;
+      material.onBeforeCompile = shader => {
+        shader.uniforms.uEarthDetail = { value: textures.detail };
+        shader.uniforms.uEarthBump = { value: textures.bump };
+        shader.uniforms.uEarthRough = { value: textures.roughness };
+        shader.uniforms.uEarthDetailScale = { value: detailScale };
+        shader.uniforms.uEarthFineScale = { value: fineScale };
+        shader.uniforms.uEarthMicroStrength = { value: microStrength };
+        shader.vertexShader = shader.vertexShader
+          .replace("#include <common>", "#include <common>\nvarying vec3 vEarthWorldPosition;")
+          .replace("#include <begin_vertex>", "#include <begin_vertex>\nvEarthWorldPosition = (modelMatrix * vec4(transformed, 1.0)).xyz;");
+        shader.fragmentShader = shader.fragmentShader
+          .replace("#include <common>", `#include <common>
+            varying vec3 vEarthWorldPosition;
+            uniform sampler2D uEarthDetail;
+            uniform sampler2D uEarthBump;
+            uniform sampler2D uEarthRough;
+            uniform float uEarthDetailScale;
+            uniform float uEarthFineScale;
+            uniform float uEarthMicroStrength;
+            float earthTriSample(sampler2D tex, vec3 p, vec3 n, float scale, vec3 phase) {
+              vec3 blend = pow(max(abs(n), vec3(0.0001)), vec3(5.0));
+              blend /= max(blend.x + blend.y + blend.z, 0.0001);
+              float sx = texture2D(tex, p.yz * scale + phase.yz).r;
+              float sy = texture2D(tex, p.xz * scale + phase.xz).r;
+              float sz = texture2D(tex, p.xy * scale + phase.xy).r;
+              return sx * blend.x + sy * blend.y + sz * blend.z;
+            }`)
+          .replace("#include <map_fragment>", `#include <map_fragment>
+            vec3 earthDx = dFdx(vEarthWorldPosition);
+            vec3 earthDy = dFdy(vEarthWorldPosition);
+            vec3 earthGeomNormal = normalize(cross(earthDx, earthDy));
+            if (!gl_FrontFacing) earthGeomNormal = -earthGeomNormal;
+            float earthViewDistance = length(cameraPosition - vEarthWorldPosition);
+            float earthNear = 1.0 - smoothstep(8.0, 48.0, earthViewDistance);
+            float earthBroad = earthTriSample(uEarthDetail, vEarthWorldPosition, earthGeomNormal, uEarthDetailScale, vec3(0.17,0.43,0.71));
+            float earthFine = earthTriSample(uEarthDetail, vEarthWorldPosition, earthGeomNormal, uEarthFineScale, vec3(0.63,0.11,0.29));
+            float earthMicro = (earthBroad - 0.5) * 0.68 + (earthFine - 0.5) * 0.32 * earthNear;
+            diffuseColor.rgb *= clamp(1.0 + earthMicro * uEarthMicroStrength, 0.84, 1.16);`)
+          .replace("#include <normal_fragment_maps>", `#include <normal_fragment_maps>
+            #ifdef USE_BUMPMAP
+              float earthBumpBroad = earthTriSample(uEarthBump, vEarthWorldPosition, earthGeomNormal, uEarthDetailScale * 1.25, vec3(0.31,0.59,0.07));
+              float earthBumpFine = earthTriSample(uEarthBump, vEarthWorldPosition, earthGeomNormal, uEarthFineScale * 1.35, vec3(0.79,0.23,0.47));
+              float earthMicroHeight = (earthBumpBroad - 0.5) * 0.55 + (earthBumpFine - 0.5) * 0.45 * earthNear;
+              vec2 earthMicroSlope = vec2(dFdx(earthMicroHeight), dFdy(earthMicroHeight));
+              normal = perturbNormalArb(-vViewPosition, normal, earthMicroSlope * (4.2 + 2.4 * earthNear), faceDirection);
+            #endif`)
+          .replace("#include <roughnessmap_fragment>", `#include <roughnessmap_fragment>
+            float earthRoughSample = earthTriSample(uEarthRough, vEarthWorldPosition, earthGeomNormal, uEarthDetailScale * 0.9, vec3(0.41,0.19,0.83));
+            roughnessFactor = clamp(roughnessFactor + (earthRoughSample - 0.5) * 0.18, 0.55, 0.99);`);
+        material.userData.earthShader = shader;
+      };
+      material.customProgramCacheKey = () => `antara-earth-region-material-v3-${this.region.id}-${this.quality.name}`;
+      material.needsUpdate = true;
+      return material;
     }
 
     createMaterial() {
       const T = this.THREE;
-      const detail = this.createDetailTexture();
-      const colors = {
-        alpine: 0x9b978b,
-        abyss: 0x3b5360,
-        volcanic: 0x51463f,
-        canyon: 0x9c6347,
-        ice: 0xd7e8ef
+      const textures = {
+        detail: this.createSurfaceTexture("detail"),
+        bump: this.createSurfaceTexture("bump"),
+        roughness: this.createSurfaceTexture("roughness")
       };
+      const baseRoughness = { alpine: 0.84, abyss: 0.93, volcanic: 0.91, canyon: 0.88, ice: 0.68 }[this.region.terrainStyle] ?? 0.88;
       const material = new T.MeshStandardMaterial({
-        color: colors[this.region.terrainStyle] || 0x887663,
-        map: detail,
-        bumpMap: detail,
-        bumpScale: this.region.terrainStyle === "ice" ? 0.018 : this.region.terrainStyle === "abyss" ? 0.035 : 0.07,
-        roughness: this.region.terrainStyle === "ice" ? 0.72 : 0.90,
+        color: 0xffffff,
+        roughness: baseRoughness,
         metalness: 0,
         vertexColors: true,
         side: T.FrontSide
       });
-      material.userData.detailTexture = detail;
-      return material;
+      material.userData.surfaceTextures = textures;
+      return this.configureTerrainMaterial(material, textures);
     }
 
-    colorForElevation(heightKm) {
+    colorForElevation(heightKm, slope = 0, x = 0, z = 0) {
       const T = this.THREE;
+      const mix = (a, b, t) => new T.Color(a).lerp(new T.Color(b), clamp(t, 0, 1));
+      const variation = Math.sin(x * 0.19 + z * 0.13) * 0.5 + Math.cos(x * 0.07 - z * 0.17) * 0.5;
       if (this.region.terrainStyle === "alpine") {
-        if (heightKm > 6.1) return new T.Color(0xe9eef0);
-        if (heightKm > 4.6) return new T.Color(0xb9b7ad);
-        if (heightKm > 3.0) return new T.Color(0x81786a);
-        return new T.Color(0x59665a);
+        const low = mix(0x566052, 0x726f63, smoothstep((heightKm - 2.8) / 1.8));
+        const rock = mix(0x77746d, 0xa7a7a2, smoothstep((heightKm - 4.1) / 1.6));
+        let base = low.lerp(rock, smoothstep((heightKm - 3.7) / 1.4));
+        const snow = clamp(smoothstep((heightKm - 4.65) / 1.35) * (1 - slope * 0.48) + smoothstep((heightKm - 6.5) / 0.8) * 0.42, 0, 1);
+        base.lerp(new T.Color(0xf3f7f8), snow);
+        if (slope > 0.58) base.lerp(new T.Color(0x676765), (slope - 0.58) * 0.48);
+        return base.multiplyScalar(0.96 + variation * 0.035);
       }
       if (this.region.terrainStyle === "volcanic") {
-        if (heightKm > 2.5) return new T.Color(0x7b7067);
-        if (heightKm > 0) return new T.Color(0x554942);
-        if (heightKm > -2.5) return new T.Color(0x263e43);
-        return new T.Color(0x142c36);
+        if (heightKm < -0.05) {
+          const depth = clamp((-heightKm) / 5.2, 0, 1);
+          return mix(0x2a6976, 0x123448, depth);
+        }
+        if (heightKm < 0.16) return mix(0x6b7056, 0x76664f, heightKm / 0.16);
+        if (heightKm < 1.6) return mix(0x39533f, 0x514b3e, heightKm / 1.6);
+        if (heightKm < 3.0) return mix(0x4b443d, 0x67584d, (heightKm - 1.6) / 1.4);
+        return mix(0x655a52, 0x83786e, smoothstep((heightKm - 3.0) / 1.2));
       }
       if (this.region.terrainStyle === "canyon") {
-        if (heightKm > 2.0) return new T.Color(0xb47b5c);
-        if (heightKm > 1.1) return new T.Color(0x92563f);
-        return new T.Color(0x6b3d31);
+        const normalized = clamp((heightKm - 0.4) / 2.6, 0, 1);
+        const stripe = 0.5 + 0.5 * Math.sin(heightKm * 21 + variation * 2.4);
+        let base = mix(0x6f392d, 0xc37a4e, normalized);
+        base.lerp(new T.Color(stripe > 0.52 ? 0xd39768 : 0x7f4736), 0.18 + stripe * 0.11);
+        if (slope > 0.52) base.lerp(new T.Color(0x63352b), (slope - 0.52) * 0.55);
+        return base.multiplyScalar(0.97 + variation * 0.03);
       }
       if (this.region.terrainStyle === "ice") {
-        if (heightKm > 3.2) return new T.Color(0xf4fbff);
-        if (heightKm > 1.5) return new T.Color(0xd9ecf3);
-        return new T.Color(0xb9d6df);
+        let base = mix(0xb9d9e7, 0xf7fcff, smoothstep((heightKm - 0.8) / 2.8));
+        base.lerp(new T.Color(0x9fc7da), clamp(slope * 0.34, 0, 0.34));
+        const windScour = smoothstep((variation + 1) * 0.5) * 0.12;
+        base.lerp(new T.Color(0xe0f2f8), windScour);
+        return base;
       }
-      const depth = clamp((-heightKm - 2) / 9, 0, 1);
-      return new T.Color().setRGB(lerp(0.25, 0.06, depth), lerp(0.36, 0.15, depth), lerp(0.40, 0.20, depth));
+      const depth = clamp((-heightKm - 2.0) / 9.0, 0, 1);
+      let base = mix(0x435e67, 0x172d3a, depth);
+      const sediment = clamp((variation + 1) * 0.5, 0, 1);
+      base.lerp(new T.Color(0x52615d), sediment * 0.12 * (1 - depth));
+      if (slope > 0.55) base.lerp(new T.Color(0x293c43), (slope - 0.55) * 0.28);
+      return base;
     }
 
     tileCenterWorld(tile) {
@@ -353,28 +467,49 @@
       const geometry = new T.PlaneGeometry(1, 1, segments, segments);
       const position = geometry.attributes.position;
       const colors = new Float32Array(position.count * 3);
+      const count = segments + 1;
+      const heights = new Float32Array(count * count);
+      const xs = new Float32Array(count * count);
+      const zs = new Float32Array(count * count);
       const cos = Math.max(0.08, Math.cos(this.region.latitude * DEG));
       let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+
       for (let row = 0; row <= segments; row += 1) {
         const v = row / segments;
         const tileY = entry.tile.y + v;
         const lat = this.provider.latitudeForY(tileY, entry.tile.z);
         for (let col = 0; col <= segments; col += 1) {
           const u = col / segments;
-          const index = row * (segments + 1) + col;
+          const index = row * count + col;
           const lon = this.provider.longitudeForX(entry.tile.x + u, entry.tile.z);
           const height = this.provider.sampleTile(entry.tile, u, v);
           const x = wrapLongitude(lon - this.region.longitude) * KM_PER_DEG_LAT * cos;
           const z = -(lat - this.region.latitude) * KM_PER_DEG_LAT;
+          heights[index] = height; xs[index] = x; zs[index] = z;
           position.setXYZ(index, x, height, z);
-          const c = this.colorForElevation(height);
-          colors[index * 3] = c.r;
-          colors[index * 3 + 1] = c.g;
-          colors[index * 3 + 2] = c.b;
           minX = Math.min(minX, x); maxX = Math.max(maxX, x);
           minZ = Math.min(minZ, z); maxZ = Math.max(maxZ, z);
         }
       }
+
+      const sampleHeight = (row, col) => heights[clamp(row, 0, segments) * count + clamp(col, 0, segments)];
+      for (let row = 0; row <= segments; row += 1) {
+        for (let col = 0; col <= segments; col += 1) {
+          const index = row * count + col;
+          const left = sampleHeight(row, col - 1), right = sampleHeight(row, col + 1);
+          const up = sampleHeight(row - 1, col), down = sampleHeight(row + 1, col);
+          const dx = Math.max(0.03, Math.abs(xs[row * count + Math.min(segments, col + 1)] - xs[row * count + Math.max(0, col - 1)]));
+          const dz = Math.max(0.03, Math.abs(zs[Math.min(segments, row + 1) * count + col] - zs[Math.max(0, row - 1) * count + col]));
+          const gx = (right - left) / dx;
+          const gz = (down - up) / dz;
+          const slope = clamp(Math.hypot(gx, gz) * 2.15, 0, 1);
+          const c = this.colorForElevation(heights[index], slope, xs[index], zs[index]);
+          colors[index * 3] = c.r;
+          colors[index * 3 + 1] = c.g;
+          colors[index * 3 + 2] = c.b;
+        }
+      }
+
       geometry.setAttribute("color", new T.BufferAttribute(colors, 3));
       position.needsUpdate = true;
       geometry.computeVertexNormals();
@@ -390,9 +525,9 @@
     }
 
     segmentSet() {
-      if (this.quality.name === "HIGH") return { high: 72, medium: 42, low: 22 };
-      if (this.quality.name === "MEDIUM") return { high: 52, medium: 32, low: 18 };
-      return { high: 34, medium: 22, low: 14 };
+      if (this.quality.name === "HIGH") return { high: 144, medium: 72, low: 30 };
+      if (this.quality.name === "MEDIUM") return { high: 96, medium: 52, low: 24 };
+      return { high: 56, medium: 32, low: 18 };
     }
 
     desiredSegments(entry, camera) {
@@ -450,6 +585,7 @@
         onProgress?.((i + 1) / coords.length);
       }
       this.ensureWater();
+      this.ensureEnvironment();
     }
 
     async loadExtended() {
@@ -462,26 +598,98 @@
       this.resizeWater();
     }
 
+    createWaterTexture() {
+      const T = this.THREE;
+      const size = 192;
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = size;
+      const ctx = canvas.getContext("2d");
+      const image = ctx.createImageData(size, size);
+      for (let y = 0; y < size; y += 1) {
+        const py = y / size * Math.PI * 2;
+        for (let x = 0; x < size; x += 1) {
+          const px = x / size * Math.PI * 2;
+          const p = (y * size + x) * 4;
+          const wave = Math.sin(px * 6 + py * 2) * 0.46 + Math.sin(px * 11 - py * 7) * 0.29 + Math.cos(px * 3 + py * 13) * 0.25;
+          const v = Math.round(clamp(128 + wave * 54, 55, 205));
+          image.data[p] = image.data[p + 1] = image.data[p + 2] = v;
+          image.data[p + 3] = 255;
+        }
+      }
+      ctx.putImageData(image, 0, 0);
+      const texture = new T.CanvasTexture(canvas);
+      texture.wrapS = texture.wrapT = T.RepeatWrapping;
+      texture.repeat.set(this.region.mode === "underwater" ? 11 : 18, this.region.mode === "underwater" ? 11 : 18);
+      texture.colorSpace = T.NoColorSpace;
+      texture.anisotropy = Math.min(8, this.renderer.capabilities.getMaxAnisotropy());
+      return texture;
+    }
+
     ensureWater() {
-      if (!['underwater', 'coastal'].includes(this.region.mode)) return;
+      if (!["underwater", "coastal"].includes(this.region.mode)) return;
       const T = this.THREE;
       const width = Math.max(120, this.bounds.maxX - this.bounds.minX + 20);
       const depth = Math.max(120, this.bounds.maxZ - this.bounds.minZ + 20);
-      const geometry = new T.PlaneGeometry(width, depth, 1, 1);
+      const geometry = new T.PlaneGeometry(width, depth, 48, 48);
       geometry.rotateX(-Math.PI / 2);
+      const waves = this.createWaterTexture();
       const material = new T.MeshPhysicalMaterial({
-        color: this.region.mode === "underwater" ? 0x0a3951 : 0x125b75,
+        color: this.region.mode === "underwater" ? 0x0a506e : 0x197f9c,
         transparent: true,
-        opacity: this.region.mode === "underwater" ? 0.58 : 0.46,
-        roughness: 0.20,
+        opacity: this.region.mode === "underwater" ? 0.50 : 0.66,
+        roughness: this.region.mode === "underwater" ? 0.24 : 0.16,
         metalness: 0,
-        transmission: 0.05,
+        transmission: this.region.mode === "underwater" ? 0.08 : 0.16,
+        clearcoat: this.region.mode === "underwater" ? 0.18 : 0.46,
+        clearcoatRoughness: 0.22,
+        bumpMap: waves,
+        bumpScale: this.region.mode === "underwater" ? 0.055 : 0.035,
         depthWrite: false,
         side: T.DoubleSide
       });
+      material.userData.waveTexture = waves;
       this.water = new T.Mesh(geometry, material);
       this.water.position.y = 0;
+      this.water.renderOrder = 3;
       this.scene.add(this.water);
+    }
+
+    ensureEnvironment() {
+      const T = this.THREE;
+      const visual = REGION_VISUALS[this.region.id] || REGION_VISUALS.maunakea;
+      const geometry = new T.SphereGeometry(430, 32, 18);
+      const material = new T.ShaderMaterial({
+        side: T.BackSide,
+        depthWrite: false,
+        fog: false,
+        uniforms: {
+          uTop: { value: new T.Color(visual.skyTop) },
+          uHorizon: { value: new T.Color(visual.skyHorizon) },
+          uUnderwater: { value: this.region.mode === "underwater" ? 1 : 0 }
+        },
+        vertexShader: `varying vec3 vSkyPos; void main(){ vSkyPos=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
+        fragmentShader: `varying vec3 vSkyPos; uniform vec3 uTop; uniform vec3 uHorizon; uniform float uUnderwater; void main(){ float h=clamp(normalize(vSkyPos).y*0.5+0.5,0.0,1.0); h=smoothstep(0.12,0.92,h); vec3 col=mix(uHorizon,uTop,h); if(uUnderwater>0.5){ col*=mix(0.48,0.82,h); } gl_FragColor=vec4(col,1.0); }`
+      });
+      this.sky = new T.Mesh(geometry, material);
+      this.sky.renderOrder = -20;
+      this.scene.add(this.sky);
+
+      if (this.region.mode === "underwater") {
+        const count = this.quality.name === "LOW" ? 260 : 520;
+        const positions = new Float32Array(count * 3);
+        let state = 1847;
+        const rand = () => { state = (state * 1664525 + 1013904223) >>> 0; return state / 4294967296; };
+        for (let i = 0; i < count; i += 1) {
+          positions[i * 3] = (rand() - 0.5) * 90;
+          positions[i * 3 + 1] = -0.3 - rand() * 11;
+          positions[i * 3 + 2] = (rand() - 0.5) * 90;
+        }
+        const pointsGeometry = new T.BufferGeometry();
+        pointsGeometry.setAttribute("position", new T.BufferAttribute(positions, 3));
+        const pointsMaterial = new T.PointsMaterial({ color:0xa8c6cf, size:this.quality.name === "LOW" ? 0.035 : 0.025, transparent:true, opacity:0.24, depthWrite:false, sizeAttenuation:true });
+        this.particles = new T.Points(pointsGeometry, pointsMaterial);
+        this.scene.add(this.particles);
+      }
     }
 
     resizeWater() {
@@ -489,8 +697,23 @@
       const width = Math.max(120, this.bounds.maxX - this.bounds.minX + 20);
       const depth = Math.max(120, this.bounds.maxZ - this.bounds.minZ + 20);
       this.water.geometry.dispose();
-      this.water.geometry = new this.THREE.PlaneGeometry(width, depth, 1, 1);
+      this.water.geometry = new this.THREE.PlaneGeometry(width, depth, 48, 48);
       this.water.geometry.rotateX(-Math.PI / 2);
+    }
+
+    updateEnvironment(dt, camera) {
+      this.environmentTime += dt;
+      if (this.water?.material?.userData?.waveTexture) {
+        const wave = this.water.material.userData.waveTexture;
+        wave.offset.x = (wave.offset.x + dt * 0.006) % 1;
+        wave.offset.y = (wave.offset.y + dt * 0.0035) % 1;
+      }
+      if (this.sky && camera) this.sky.position.copy(camera.position);
+      if (this.particles && camera) {
+        this.particles.position.x += (camera.position.x - this.particles.position.x) * Math.min(1, dt * 0.65);
+        this.particles.position.z += (camera.position.z - this.particles.position.z) * Math.min(1, dt * 0.65);
+        this.particles.rotation.y += dt * 0.012;
+      }
     }
 
     geoAtWorld(x, z) {
@@ -541,10 +764,24 @@
       if (this.water) {
         this.scene.remove(this.water);
         this.water.geometry.dispose();
+        this.water.material.userData.waveTexture?.dispose?.();
         this.water.material.dispose();
         this.water = null;
       }
-      this.material.userData.detailTexture?.dispose();
+      if (this.sky) {
+        this.scene.remove(this.sky);
+        this.sky.geometry.dispose();
+        this.sky.material.dispose();
+        this.sky = null;
+      }
+      if (this.particles) {
+        this.scene.remove(this.particles);
+        this.particles.geometry.dispose();
+        this.particles.material.dispose();
+        this.particles = null;
+      }
+      const textures = this.material.userData.surfaceTextures || {};
+      Object.values(textures).forEach(texture => texture?.dispose?.());
       this.material.dispose();
     }
   }
@@ -566,12 +803,26 @@
         if (["KeyW", "KeyA", "KeyS", "KeyD", "KeyQ", "KeyE", "ShiftLeft", "ShiftRight"].includes(event.code)) {
           event.preventDefault(); this.keys.add(event.code);
         }
-        if (event.code === "Escape" && document.pointerLockElement === this.controller.viewport) document.exitPointerLock?.();
+        if (event.code === "Escape") {
+          event.preventDefault();
+          if (document.pointerLockElement === this.controller.viewport) document.exitPointerLock?.();
+          this.controller.exit();
+        }
       });
       document.addEventListener("keyup", event => this.keys.delete(event.code));
       this.controller.viewport.addEventListener("click", () => {
         if (!this.controller.active || window.matchMedia("(pointer: coarse)").matches) return;
         this.controller.viewport.requestPointerLock?.();
+      });
+      document.addEventListener("pointerlockchange", () => {
+        if (document.pointerLockElement === this.controller.viewport) {
+          this.hadEarthPointerLock = true;
+          return;
+        }
+        if (this.hadEarthPointerLock && this.controller.active) {
+          this.hadEarthPointerLock = false;
+          this.controller.exit();
+        }
       });
       document.addEventListener("mousemove", event => {
         if (!this.controller.active || document.pointerLockElement !== this.controller.viewport) return;
@@ -648,6 +899,9 @@
       this.renderer = null;
       this.scene = null;
       this.camera = null;
+      this.hemiLight = null;
+      this.sunLight = null;
+      this.fillLight = null;
       this.frame = null;
       this.previous = 0;
       this.yaw = 0;
@@ -685,7 +939,7 @@
         button.type = "button";
         button.className = "earth-region-card";
         button.dataset.earthRegion = region.id;
-        button.innerHTML = `<span class="earth-region-index">${String(REGIONS.indexOf(region) + 1).padStart(2, "0")}</span><strong>${region.name}</strong><small>${formatLatLon(region.latitude, region.longitude)}</small><em>${region.mode === "underwater" ? "BATHYMETRY" : region.mode === "coastal" ? "LAND + OCEAN" : "REAL DEM"}</em><span class="earth-region-source">${region.sourceLabel}</span>`;
+        button.innerHTML = `<span class="earth-region-preview earth-region-preview-${region.id}" aria-hidden="true"><i></i><b>${region.short}</b></span><span class="earth-region-index">${String(REGIONS.indexOf(region) + 1).padStart(2, "0")}</span><strong>${region.name}</strong><span class="earth-region-descriptor">${region.descriptor}</span><small>${formatLatLon(region.latitude, region.longitude)}</small><em>${region.mode === "underwater" ? "BATHYMETRY" : region.mode === "coastal" ? "LAND + OCEAN" : "REAL DEM"}</em><span class="earth-region-source">${region.sourceLabel}</span>`;
         fragment.append(button);
       });
       this.selectorGrid.replaceChildren(fragment);
@@ -705,6 +959,13 @@
       this.fullscreenButton.addEventListener("click", () => this.toggleFullscreen());
       this.errorReturn.addEventListener("click", () => this.failBack());
       this.tutorialClose.addEventListener("click", () => this.tutorial.classList.add("is-dismissed"));
+      document.addEventListener("keydown", event => {
+        if (event.code !== "Escape") return;
+        if (this.state === STATES.SELECTING || this.state === STATES.PREPARING) {
+          event.preventDefault();
+          this.exit();
+        }
+      });
       document.addEventListener("fullscreenchange", () => this.updateFullscreenLabel());
       window.addEventListener("resize", () => this.resize());
       document.addEventListener("visibilitychange", () => {
@@ -716,14 +977,18 @@
     enter() {
       if (!this.earth.active || this.earth.travelMode || this.state !== STATES.IDLE) return;
       this.entryButton.disabled = true;
+      this.state = STATES.SELECTING;
       this.root.hidden = false;
       this.root.inert = false;
       this.root.setAttribute("aria-hidden", "false");
-      this.selector.hidden = true;
+      this.root.className = "earth-full-exploration is-selecting";
+      this.selector.hidden = false;
       this.errorPanel.hidden = true;
       this.loading.hidden = true;
-      document.getElementById("announcement").textContent = `Memulai Eksplorasi Pengalaman Penuh Bumi di ${this.region.name}.`;
-      this.enterRegion(this.region);
+      document.getElementById("mission").classList.add("is-earth-full-selecting");
+      this.earth.beginFullExplorationFocus?.(null);
+      document.getElementById("announcement").textContent = "Pilih destinasi untuk Eksplorasi Pengalaman Penuh Bumi.";
+      requestAnimationFrame(() => this.selector.querySelector("[data-earth-region]")?.focus({ preventScroll:true }));
     }
 
     setLoading(progress, text) {
@@ -789,9 +1054,9 @@
       this.scene.fog = new T.FogExp2(0x9bb5c3, 0.006);
       this.camera = new T.PerspectiveCamera(this.mobileFov(), 1, 0.02, 650);
       this.camera.rotation.order = "YXZ";
-      this.scene.add(new T.HemisphereLight(0xd9edff, 0x3d322b, 0.78));
-      const sun = new T.DirectionalLight(0xfff0d2, 2.6); sun.position.set(-45, 70, 35); this.scene.add(sun);
-      const fill = new T.DirectionalLight(0x91b9dc, 0.24); fill.position.set(45, 20, -30); this.scene.add(fill);
+      this.hemiLight = new T.HemisphereLight(0xd9edff, 0x3d322b, 0.78); this.scene.add(this.hemiLight);
+      this.sunLight = new T.DirectionalLight(0xfff0d2, 2.6); this.sunLight.position.set(-45, 70, 35); this.scene.add(this.sunLight);
+      this.fillLight = new T.DirectionalLight(0x91b9dc, 0.24); this.fillLight.position.set(45, 20, -30); this.scene.add(this.fillLight);
       this.move = new T.Vector3(); this.forward = new T.Vector3(); this.right = new T.Vector3();
       this.resize();
     }
@@ -825,6 +1090,7 @@
 
     updateRegionUI() {
       const region = this.region;
+      this.applyRegionLighting();
       this.hudLocation.textContent = region.name;
       this.hudCoordinates.textContent = formatLatLon(region.latitude, region.longitude);
       this.hudQuality.textContent = this.quality.name;
@@ -835,6 +1101,28 @@
       this.landmarkSource.href = "https://www.mapzen.com/blog/terrain-tile-service/";
       this.landmarkSource.textContent = "Provenance terrain: Mapzen / Amazon Public Dataset ↗";
       this.root.dataset.region = region.id;
+    }
+
+    applyRegionLighting() {
+      if (!this.scene || !this.renderer) return;
+      const visual = REGION_VISUALS[this.region.id] || REGION_VISUALS.maunakea;
+      this.scene.fog.color.set(visual.fog);
+      this.scene.fog.density = visual.fogDensity;
+      this.renderer.toneMappingExposure = visual.exposure;
+      this.renderer.setClearColor(visual.skyHorizon, 1);
+      if (this.hemiLight) {
+        this.hemiLight.color.set(visual.hemiSky);
+        this.hemiLight.groundColor.set(visual.hemiGround);
+        this.hemiLight.intensity = this.region.id === "mariana" ? 0.48 : this.region.id === "antarctica" ? 0.92 : 0.82;
+      }
+      if (this.sunLight) {
+        this.sunLight.color.set(visual.sun);
+        this.sunLight.intensity = visual.sunIntensity;
+        if (this.region.id === "grandcanyon") this.sunLight.position.set(-52, 44, 28);
+        else if (this.region.id === "everest") this.sunLight.position.set(-38, 78, 24);
+        else this.sunLight.position.set(-45, 66, 35);
+      }
+      if (this.fillLight) this.fillLight.intensity = this.region.id === "mariana" ? 0.10 : 0.27;
     }
 
     activateRegion() {
@@ -903,23 +1191,25 @@
       }
       this.speed = this.move.length() * speed;
       this.terrain.update(this.camera);
+      this.terrain.updateEnvironment(dt, this.camera);
       this.updateEnvironment();
       this.updateHUD();
     }
 
     updateEnvironment() {
       if (!this.scene?.fog) return;
+      const visual = REGION_VISUALS[this.region.id] || REGION_VISUALS.maunakea;
       const underwater = this.region.id === "mariana" && this.camera.position.y < -0.05;
       if (underwater) {
-        this.scene.fog.color.set(0x052637);
-        this.scene.fog.density = 0.035;
-        this.renderer.setClearColor(0x031b29, 1);
+        const depth = clamp(Math.abs(this.camera.position.y) / 10.5, 0, 1);
+        this.scene.fog.color.set(0x082c3c).lerp(new this.THREE.Color(0x03151f), depth * 0.72);
+        this.scene.fog.density = lerp(0.018, 0.052, depth);
+        this.renderer.setClearColor(new this.THREE.Color(0x0c3a4d).lerp(new this.THREE.Color(0x02111a), depth * 0.78), 1);
         this.root.classList.add("is-underwater");
       } else {
-        const fogColors = { everest: 0xb8cad5, maunakea: 0x91a8b0, grandcanyon: 0xc7a58f, antarctica: 0xd9e7ec, mariana: 0x7ca0af };
-        this.scene.fog.color.set(fogColors[this.region.id] || 0xaabcc7);
-        this.scene.fog.density = this.region.id === "antarctica" ? 0.009 : 0.006;
-        this.renderer.setClearColor(this.region.id === "grandcanyon" ? 0xa9bac5 : 0x789cad, 1);
+        this.scene.fog.color.set(visual.fog);
+        this.scene.fog.density = visual.fogDensity;
+        this.renderer.setClearColor(visual.skyHorizon, 1);
         this.root.classList.remove("is-underwater");
       }
     }

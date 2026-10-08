@@ -34,13 +34,25 @@ Mosaik sumber Terrarium menggabungkan dataset terbuka menurut cakupan, termasuk 
 ## Pipeline runtime
 
 1. Dari panorama Bumi, user memilih `Eksplorasi Pengalaman Penuh` sebagai CTA terpisah tepat di bawah `Jelajahi Bumi`, mengikuti hierarchy panorama Mars.
-2. CTA tersebut langsung memulai Full Exploration pada region aktif/default tanpa harus membuka mode informasi Bumi terlebih dahulu.
-3. Globe menghadap koordinat region menggunakan pose system Earth yang sudah ada.
-4. Renderer lokal disiapkan tanpa memuat semua region sekaligus.
-5. 3×3 core tile real dimuat lebih dulu.
-6. Setelah core siap, terrain lokal mengambil alih visual dan kontrol aktif.
-7. Ring luar dimuat lazy untuk safety buffer. Region selector tetap tersedia melalui `Ganti Wilayah` setelah Full Exploration aktif.
-8. Saat user kembali ke selector/keluar, terrain, texture, provider cache, dan renderer lokal dibersihkan.
+2. ANTARA membuka **destination selector terlebih dahulu**. Tidak ada lagi auto-entry ke Everest/default region.
+3. User memilih Everest, Mariana, Mauna Kea, Grand Canyon, atau Antarktika.
+4. Globe menghadap koordinat region menggunakan pose system Earth yang sudah ada dan memulai descent cinematic.
+5. Renderer lokal disiapkan tanpa memuat semua region sekaligus.
+6. 3×3 core tile real dimuat lebih dulu.
+7. Setelah core siap, terrain lokal mengambil alih visual dan kontrol aktif.
+8. Ring luar dimuat lazy untuk safety buffer. `Ganti Wilayah` mengembalikan user ke selector yang sama.
+9. Saat user kembali ke selector/keluar, terrain, texture, provider cache, dan renderer lokal dibersihkan.
+
+## Rendering visual per destinasi
+
+- Geometry makro tetap berasal dari DEM/bathymetry nyata. Material tidak mengubah bentuk geografi.
+- Everest memakai snow/rock blending berbasis elevasi + slope agar ridge tinggi terbaca sebagai Himalaya, bukan gunung cokelat generik.
+- Mariana memakai depth-aware seabed color, water material terpisah, underwater fog berdasarkan kedalaman, dan suspended particles yang halus.
+- Mauna Kea membedakan bathymetry, shoreline, lower volcanic slopes, basalt, dan summit terrain.
+- Grand Canyon memakai stratifikasi warna berbasis elevasi, slope darkening, dan rocky micro-detail.
+- Antarktika memakai variasi ice-blue/white, slope shading, dan cold-haze, bukan putih polos.
+- Micro-detail diproyeksikan world-space/triplanar agar detail tidak meregang pada slope curam.
+- Water memakai animated bump/detail sehingga surface tidak terlihat seperti plane biru statis.
 
 ## Rendering dan performa
 
@@ -54,7 +66,7 @@ Mosaik sumber Terrarium menggabungkan dataset terbuka menurut cakupan, termasuk 
 
 ## Kontrol
 
-Desktop mempertahankan filosofi Mars: WASD bergerak, mouse-look, Q/E turun/naik, Shift boost, fullscreen, region selector, dan exit. Mobile memakai drag-look dan kontrol layar.
+Desktop mempertahankan filosofi Mars: WASD bergerak, mouse-look, Q/E turun/naik, Shift boost, **ESC untuk keluar**, fullscreen, region selector, dan exit. Mobile memakai drag-look dan kontrol layar.
 
 ## Batasan
 
