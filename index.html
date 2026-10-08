@@ -843,8 +843,8 @@
             <span>Jelajahi Uranus</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
-          <button class="uranus-planet-nav uranus-planet-next" id="uranus-next-planet" type="button" aria-label="Planet selanjutnya: Neptunus">
-            <span><small>Planet selanjutnya</small><strong>Neptunus</strong></span>
+          <button class="uranus-planet-nav uranus-planet-next" id="uranus-next-planet" type="button" aria-label="Planet berikutnya: Neptunus">
+            <span><small>Planet berikutnya</small><strong>Neptunus</strong></span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
         </div>
@@ -891,7 +891,7 @@
 
     <section class="neptune-scene" id="neptune-scene" aria-labelledby="neptune-title" hidden>
       <div class="neptune-space-haze" aria-hidden="true"></div>
-      <div class="neptune-viewport" id="neptune-viewport" role="img" aria-label="Neptunus, raksasa es biru tua dengan pita atmosfer, badai gelap, awan terang, dan cincin sangat redup."></div>
+      <div class="neptune-viewport" id="neptune-viewport" role="img" aria-label="Neptunus, raksasa es biru tua dengan pita atmosfer, awan terang, sistem badai, dan cincin redup yang tipis."></div>
       <div class="neptune-edge-shade" aria-hidden="true"></div>
 
       <div class="neptune-caption">
@@ -907,32 +907,19 @@
             <span>Jelajahi Neptunus</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
-          <button class="neptune-planet-nav neptune-planet-next" id="neptune-next-planet" type="button" disabled aria-label="Akhir perjalanan planet">
-            <span><small>Berikutnya</small><strong>Akhir Perjalanan Planet</strong></span>
+          <button class="neptune-planet-nav neptune-planet-next" id="neptune-next-planet" type="button" disabled aria-label="Akhir perjalanan delapan planet mayor">
+            <span><small>Berikutnya</small><strong>Akhir Planet</strong></span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </button>
         </div>
       </div>
 
-      <div class="neptune-flow-overlay" id="neptune-flow-overlay" aria-hidden="true" hidden>
-        <span class="neptune-flow-line"></span><span class="neptune-flow-line"></span><span class="neptune-flow-line"></span>
-      </div>
-
-      <div class="neptune-focus-reticle" id="neptune-focus-reticle" aria-hidden="true">
-        <span class="neptune-focus-ring"></span>
-        <span class="neptune-focus-dot"></span>
-        <span class="neptune-focus-line"></span>
-        <span class="neptune-focus-label">
-          <span class="neptune-focus-title" id="neptune-focus-label"></span>
-          <span class="neptune-focus-context" id="neptune-focus-context"></span>
-        </span>
-      </div>
-
       <div class="neptune-ring-annotation" id="neptune-ring-annotation" aria-hidden="true" hidden>
-        <span class="ring-label adams">ADAMS RING</span>
-        <span class="ring-label leverrier">LE VERRIER</span>
-        <span class="ring-label arcs">RING ARCS</span>
+        <span class="ring-label adams">ADAMS</span><span class="ring-label leverrier">LEVERRIER</span><span class="ring-label arcs">BUSUR</span>
       </div>
+      <div class="neptune-storm-annotation" id="neptune-storm-annotation" aria-hidden="true" hidden><span>SISTEM BADAI</span></div>
+      <div class="neptune-wind-overlay" id="neptune-wind-overlay" aria-hidden="true" hidden><i></i><i></i><i></i></div>
+      <div class="neptune-end-badge" id="neptune-end-badge" aria-hidden="true" hidden>Planet mayor ke-8 · wilayah trans-Neptunus berlanjut di luar orbit</div>
 
       <div class="exploration-marker-media neptune-context-media" id="neptune-context-media" hidden></div>
 
@@ -941,7 +928,7 @@
           <span class="neptune-topic-kicker" id="neptune-topic-kicker">IDENTITAS NEPTUNUS</span>
           <span class="neptune-topic-count"><span id="neptune-topic-current">01</span> / <span id="neptune-topic-total">11</span></span>
         </div>
-        <h3 id="neptune-topic-title" tabindex="-1">Raksasa Biru di Batas Jauh</h3>
+        <h3 id="neptune-topic-title" tabindex="-1">Dunia Biru di Batas Planet</h3>
         <p class="neptune-topic-subtitle" id="neptune-topic-subtitle"></p>
         <div class="neptune-topic-scroll">
           <p class="neptune-topic-summary" id="neptune-topic-summary"></p>
@@ -960,7 +947,7 @@
         <button class="neptune-exploration-close return-panorama-button" id="neptune-exploration-close" type="button">Kembali ke panorama Neptunus</button>
       </aside>
 
-      <a class="neptune-credit" href="https://science.nasa.gov/neptune/neptune-facts/" target="_blank" rel="noopener noreferrer">Visual: ANTARA · referensi NASA Science / Voyager 2</a>
+      <a class="neptune-credit" href="https://science.nasa.gov/neptune/" target="_blank" rel="noopener noreferrer">Visualisasi atmosfer: ANTARA · referensi NASA Science / Voyager 2</a>
     </section>
     <p class="sr-only" id="announcement" role="status" aria-live="polite"></p>
     <noscript><p class="noscript-note">Aktifkan JavaScript untuk memulai persiapan misi dan audio.</p></noscript>

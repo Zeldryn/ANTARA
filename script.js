@@ -1321,7 +1321,7 @@ function travelSaturnToUranus() {
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU URANUS";
   announcement.textContent = "Saturnus menjauh. Uranus yang pucat dan miring mulai muncul di jalur berikutnya.";
   prepareUranusConnection();
-  neptune.prepare().then(bindSharedUranusVisualsIfReady).catch(()=>{});
+  prepareNeptuneConnection();
   sound.travel(reducedMotion.matches ? 0.5 : 8.0);
   uranus.beginTravelFromSaturn({
     direction: getCelestialDirection("saturn", "uranus"),
@@ -1361,12 +1361,11 @@ function travelUranusToSaturn() {
   });
 }
 
-
 function travelUranusToNeptune() {
   if (uranus.exploring || !beginPlanetTransition("uranus", "uranus-neptune-transition", uranusNextButton, "neptune")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU NEPTUNUS";
-  announcement.textContent = "Uranus menjauh. Dunia biru yang lebih gelap mulai muncul di jalur terluar.";
+  announcement.textContent = "Uranus menjauh. Neptunus yang lebih biru dan bergejolak mulai muncul di jalur berikutnya.";
   prepareNeptuneConnection();
   sound.travel(reducedMotion.matches ? 0.5 : 8.0);
   neptune.beginTravelFromUranus({
@@ -1380,7 +1379,7 @@ function travelUranusToNeptune() {
       mission.classList.add("is-neptune");
       finishPlanetTransition("neptune");
       if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT NEPTUNUS";
-      announcement.textContent = "Tiba di Neptunus, planet utama terjauh dengan atmosfer biru yang sangat aktif.";
+      announcement.textContent = "Tiba di Neptunus. Pita atmosfer, awan terang, badai, dan cincin redupnya kini terlihat.";
     }
   });
 }
@@ -1389,7 +1388,7 @@ function travelNeptuneToUranus() {
   if (neptune.exploring || !beginPlanetTransition("neptune", "neptune-uranus-transition", neptunePreviousButton, "uranus")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "KEMBALI MENUJU URANUS";
-  announcement.textContent = "Neptunus menjauh. Uranus kembali muncul dari jalur bagian dalam.";
+  announcement.textContent = "Neptunus menjauh. Uranus yang lebih pucat kembali muncul dari sisi kiri.";
   prepareNeptuneConnection();
   sound.travel(reducedMotion.matches ? 0.5 : 8.0);
   neptune.beginTravelToUranus({
@@ -1406,7 +1405,6 @@ function travelNeptuneToUranus() {
     }
   });
 }
-
 
 function resetMission() {
   cancelAnimationFrame(animationFrame);
@@ -1579,7 +1577,7 @@ document.addEventListener("click", event => {
   if (control.dataset.uiSound === "manual") return;
 
   // These actions already have their own intentional audio and must not double-fire.
-  if (control === launchButton || control === earth.nextButton || control === earthPreviousButton || control === venusPreviousButton || control === venusNextButton || control === mercuryPreviousButton || control === mercuryNextButton || control === sunNextButton || control === marsPreviousButton || control === marsNextButton || control === asteroidPreviousButton || control === asteroidNextButton || control === jupiterPreviousButton || control === jupiterNextButton || control === saturnPreviousButton || control === saturnNextButton || control === uranusPreviousButton || control === uranusNextButton || control === neptunePreviousButton || control === audioToggle) return;
+  if (control === launchButton || control === earth.nextButton || control === earthPreviousButton || control === venusPreviousButton || control === venusNextButton || control === mercuryPreviousButton || control === mercuryNextButton || control === sunNextButton || control === marsPreviousButton || control === marsNextButton || control === asteroidPreviousButton || control === asteroidNextButton || control === jupiterPreviousButton || control === jupiterNextButton || control === saturnPreviousButton || control === audioToggle) return;
 
   sound.uiClick();
 }, true);
