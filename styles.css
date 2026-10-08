@@ -3891,3 +3891,114 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .cockpit-profile-hud .profile-hud-copy strong { font-size:8px !important; }
   .cockpit-profile-hud .profile-hud-action svg { width:12px !important; height:12px !important; }
 }
+
+
+/* 2026-09-30 identity micro-refinement
+   Keep the profile border alive, remove the logged-out kicker,
+   center the login action, and keep the arrow close to the copy. */
+.cockpit-profile-hud .profile-hud-trigger {
+  width: max-content !important;
+  max-width: none !important;
+  grid-template-columns: auto clamp(7px,.55vw,9px) auto !important;
+}
+
+.cockpit-profile-hud[data-profile-state="logged-out"] .profile-hud-kicker,
+.cockpit-profile-hud[data-profile-state="logged-out"] .profile-hud-copy small {
+  display: none !important;
+}
+
+.cockpit-profile-hud[data-profile-state="logged-out"] .profile-login-frame {
+  width: max-content !important;
+  min-width: 0 !important;
+  grid-template-columns: auto auto !important;
+  justify-content: start !important;
+  align-items: center !important;
+  gap: 2px !important;
+  padding: 0 7px 0 9px !important;
+}
+
+.cockpit-profile-hud[data-profile-state="logged-out"] .profile-hud-copy {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  align-content: center !important;
+  gap: 0 !important;
+}
+
+.cockpit-profile-hud[data-profile-state="logged-out"] .profile-hud-copy strong {
+  display: block !important;
+  text-align: center !important;
+  line-height: 1 !important;
+}
+
+.cockpit-profile-hud[data-profile-state="logged-out"] .profile-hud-action {
+  grid-template-columns: 12px !important;
+  padding-left: 2px !important;
+  margin-left: 0 !important;
+  gap: 0 !important;
+  border-left: 0 !important;
+}
+
+.cockpit-profile-hud[data-profile-state="logged-out"] .profile-hud-action svg {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+/* Idle motion stays on the profile border. Stroke motion is cheap and subtle. */
+.cockpit-profile-hud .profile-ring-dash-a {
+  animation: profile-ring-dash-flow-a 7.5s linear infinite !important;
+}
+.cockpit-profile-hud .profile-ring-dash-b {
+  animation: profile-ring-dash-flow-b 9.5s linear infinite !important;
+}
+.cockpit-profile-hud .profile-avatar-orbit-a {
+  animation: profile-orbit-idle-a 5.8s ease-in-out infinite alternate !important;
+}
+.cockpit-profile-hud .profile-avatar-orbit-b {
+  animation: profile-orbit-idle-b 7.2s ease-in-out infinite alternate !important;
+}
+
+@keyframes profile-ring-dash-flow-a {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -48; }
+}
+@keyframes profile-ring-dash-flow-b {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 52; }
+}
+@keyframes profile-orbit-idle-a {
+  from { transform: rotate(-20deg) scaleX(.99); opacity: .72; }
+  to { transform: rotate(-15deg) scaleX(1.015); opacity: 1; }
+}
+@keyframes profile-orbit-idle-b {
+  from { transform: rotate(24deg) scaleX(1); opacity: .55; }
+  to { transform: rotate(19deg) scaleX(.985); opacity: .82; }
+}
+
+@media (max-width: 700px) {
+  .cockpit-profile-hud .profile-hud-trigger {
+    width: max-content !important;
+    grid-template-columns: 30px 6px auto !important;
+  }
+  .cockpit-profile-hud[data-profile-state="logged-out"] .profile-login-frame {
+    padding: 0 5px 0 7px !important;
+    gap: 1px !important;
+  }
+  .cockpit-profile-hud[data-profile-state="logged-out"] .profile-hud-action {
+    grid-template-columns: 11px !important;
+    padding-left: 1px !important;
+  }
+  .cockpit-profile-hud[data-profile-state="logged-out"] .profile-hud-action svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cockpit-profile-hud .profile-ring-dash-a,
+  .cockpit-profile-hud .profile-ring-dash-b,
+  .cockpit-profile-hud .profile-avatar-orbit-a,
+  .cockpit-profile-hud .profile-avatar-orbit-b {
+    animation: none !important;
+  }
+}

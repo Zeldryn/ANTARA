@@ -782,7 +782,7 @@ class CockpitProfileHUD {
 
     if (!this.user) {
       this.root.dataset.profileState = "logged-out";
-      this.kicker.textContent = "IDENTITAS PENJELAJAH";
+      this.kicker.textContent = "";
       this.primary.textContent = "MASUK KE ANTARA";
       this.secondary.textContent = "CREW ACCESS · STANDBY";
       this.trigger.setAttribute("aria-label", "Masuk ke ANTARA");
