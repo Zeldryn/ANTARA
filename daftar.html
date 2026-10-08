@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111d">
+  <meta name="description" content="Daftar identitas penjelajah ANTARA, Antariksa Nusantara.">
+  <title>Daftar Identitas | ANTARA</title>
+  <link rel="icon" href="assets/orbit.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="daftar.css?v=20260930-1">
+  <script src="daftar.js?v=20260930-1" defer></script>
+</head>
+<body>
+  <main class="auth-shell">
+    <div class="space-background" aria-hidden="true">
+      <div class="nebula nebula-a"></div>
+      <div class="nebula nebula-b"></div>
+      <div class="star-field stars-far"></div>
+      <div class="star-field stars-near"></div>
+      <div class="planet-glow"></div>
+      <div class="horizon-grid"></div>
+    </div>
+
+    <header class="auth-nav">
+      <a class="antara-brand" href="index.html" aria-label="Kembali ke ANTARA">
+        <svg viewBox="0 0 46 46" aria-hidden="true">
+          <circle cx="23" cy="23" r="10"></circle>
+          <ellipse cx="23" cy="23" rx="20" ry="7.5" transform="rotate(-35 23 23)"></ellipse>
+          <circle class="brand-dot" cx="33.7" cy="10.8" r="2.4"></circle>
+        </svg>
+        <span class="brand-copy"><b>ANTARA</b><small>ANTARIKSA NUSANTARA</small></span>
+      </a>
+      <div class="nav-status" aria-label="Status sistem">
+        <span class="status-dot"></span>
+        <span>IDENTITY SYSTEM</span>
+        <b>ONLINE</b>
+      </div>
+    </header>
+
+    <section class="registration-layout" aria-labelledby="registration-title">
+      <aside class="mission-brief">
+        <div class="brief-index"><span>01</span> / CREW REGISTRY</div>
+        <p class="eyebrow">IDENTITAS PENJELAJAH</p>
+        <h1 id="registration-title">Daftar untuk memulai perjalananmu bersama ANTARA.</h1>
+        <p class="brief-copy">Satu identitas untuk menyimpan progres eksplorasi, pencapaian, dan perjalananmu di Tata Surya.</p>
+
+        <div class="orbit-display" aria-hidden="true">
+          <div class="orbit-core">
+            <svg viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="9"></circle>
+              <ellipse cx="32" cy="32" rx="27" ry="10" transform="rotate(-25 32 32)"></ellipse>
+              <circle cx="51" cy="18" r="2.8"></circle>
+            </svg>
+          </div>
+          <span class="orbit-line orbit-line-a"></span>
+          <span class="orbit-line orbit-line-b"></span>
+          <span class="orbit-node node-a"></span>
+          <span class="orbit-node node-b"></span>
+        </div>
+
+        <div class="brief-data">
+          <div><small>AKSES</small><strong>CREW / EXPLORER</strong></div>
+          <div><small>SISTEM</small><strong>ANTARA ID</strong></div>
+          <div><small>STATUS</small><strong class="ready">SIAP DAFTAR</strong></div>
+        </div>
+      </aside>
+
+      <section class="registration-console" aria-label="Form pendaftaran ANTARA">
+        <span class="console-corner corner-tl" aria-hidden="true"></span>
+        <span class="console-corner corner-tr" aria-hidden="true"></span>
+        <span class="console-corner corner-bl" aria-hidden="true"></span>
+        <span class="console-corner corner-br" aria-hidden="true"></span>
+        <span class="console-scan" aria-hidden="true"></span>
+
+        <div class="console-head">
+          <div>
+            <p>ANTARA ID // REGISTRATION</p>
+            <h2>Buat Identitas Penjelajah</h2>
+          </div>
+          <div class="console-code"><span></span>A-01</div>
+        </div>
+
+        <form class="registration-form" id="registration-form" novalidate>
+          <div class="field-row field-row-two">
+            <label class="field-group">
+              <span class="field-label"><b>NAMA PENJELAJAH</b><i>01</i></span>
+              <span class="input-frame">
+                <input id="full-name" name="fullName" type="text" autocomplete="name" placeholder="Nama lengkap" required maxlength="60">
+                <span class="field-node"></span>
+              </span>
+              <small class="field-error" data-error-for="full-name"></small>
+            </label>
+
+            <label class="field-group">
+              <span class="field-label"><b>USERNAME</b><i>02</i></span>
+              <span class="input-frame">
+                <input id="username" name="username" type="text" autocomplete="username" placeholder="Nama panggilan" required minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+">
+                <span class="field-node"></span>
+              </span>
+              <small class="field-error" data-error-for="username"></small>
+            </label>
+          </div>
+
+          <label class="field-group">
+            <span class="field-label"><b>EMAIL</b><i>03</i></span>
+            <span class="input-frame">
+              <input id="email" name="email" type="email" autocomplete="email" placeholder="nama@email.com" required>
+              <span class="field-node"></span>
+            </span>
+            <small class="field-error" data-error-for="email"></small>
+          </label>
+
+          <div class="field-row field-row-two">
+            <label class="field-group">
+              <span class="field-label"><b>KATA SANDI</b><i>04</i></span>
+              <span class="input-frame password-frame">
+                <input id="password" name="password" type="password" autocomplete="new-password" placeholder="Minimal 8 karakter" required minlength="8">
+                <button class="password-toggle" type="button" data-toggle-password="password" aria-label="Tampilkan kata sandi">LIHAT</button>
+              </span>
+              <small class="field-error" data-error-for="password"></small>
+            </label>
+
+            <label class="field-group">
+              <span class="field-label"><b>KONFIRMASI</b><i>05</i></span>
+              <span class="input-frame password-frame">
+                <input id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" placeholder="Ulangi kata sandi" required minlength="8">
+                <button class="password-toggle" type="button" data-toggle-password="confirm-password" aria-label="Tampilkan konfirmasi kata sandi">LIHAT</button>
+              </span>
+              <small class="field-error" data-error-for="confirm-password"></small>
+            </label>
+          </div>
+
+          <label class="consent-row">
+            <input id="terms" name="terms" type="checkbox" required>
+            <span class="check-ui" aria-hidden="true"></span>
+            <span>Saya setuju membuat identitas penjelajah ANTARA dan menggunakan data ini untuk akun saya.</span>
+          </label>
+          <small class="field-error terms-error" data-error-for="terms"></small>
+
+          <button class="register-button" type="submit">
+            <span class="button-leading"><i></i>AKTIFKAN IDENTITAS</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"></path></svg>
+          </button>
+
+          <p class="form-note" id="form-note">Form ini menyiapkan antarmuka pendaftaran. Penyimpanan akun dapat dihubungkan ke backend ANTARA berikutnya.</p>
+        </form>
+
+        <div class="console-footer">
+          <a href="index.html"><span>←</span> KEMBALI KE KOKPIT</a>
+          <span>SECURE CHANNEL // ANTARA</span>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

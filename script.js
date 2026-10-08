@@ -844,13 +844,7 @@ class CockpitProfileHUD {
       return;
     }
 
-    if (typeof api?.openLogin === "function") {
-      api.openLogin();
-      return;
-    }
-    window.dispatchEvent(new CustomEvent("antara:login-request", {
-      detail: { source: "cockpit-profile-hud" }
-    }));
+    window.location.href = "daftar.html";
   }
 }
 
