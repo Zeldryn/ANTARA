@@ -1,89 +1,114 @@
-# ANTARA Home Profile HUD Rework
+# ANTARA Home Profile HUD Rework V2
 
 ## Scope
 
-This pass only adds the explorer identity / login HUD to the existing homepage cockpit. The title, START button, Nara, Sora, cockpit frame, launch timeline, planet scenes, Venus systems, and mission flow are not redesigned.
+This pass only refines the existing top login / explorer identity area on the ANTARA homepage. The hero title, subtitle, START button, Nara, Sora, dialogue bubble, cockpit background, lower dashboard, launch flow, planet scenes, and Venus exploration systems are intentionally left structurally unchanged.
 
-## Existing authentication audit
+## What changed
 
-The current project does not contain an authentication, login, account, avatar, or profile backend. Because of that, the homepage defaults to a logged-out `MASUK KE ANTARA` state and does not fabricate an account.
+The previous identity HUD was visually strong but behaved like a compact centered module. The new requirement calls for the profile frame to begin at the left side of the existing long upper rail and for the login copy to feel mechanically connected to it.
 
-The HUD is ready to connect to a real account system later through either:
+The identity system is now composed as one continuous rail:
 
-- `window.ANTARAAuth` / `window.AntaraAuth` with `getCurrentUser()`, `openLogin()`, and/or `openProfile()` methods.
-- `window.ANTARA_USER` for an already-resolved user object.
-- `antara:auth-change` events with `{ user }` in `event.detail`.
-- `window.ANTARAProfileHUD.setUser(user)` and `clearUser()`.
-- `antara:login-request` and `antara:profile-request` events when no concrete auth UI is connected yet.
+1. left explorer identity socket
+2. short segmented mechanical connector
+3. angular `IDENTITAS PENJELAJAH / MASUK KE ANTARA` frame
+4. continuation line that merges into the existing top cockpit strip
 
-No fake user data and no fake authentication persistence were added.
+The result avoids the appearance of a floating profile card or a badge pasted over the cockpit.
 
-## Cockpit integration
+## Visual language
 
-The new module is positioned in the existing upper-center window housing. It uses the same dark navy / blue-black structure already present in the cockpit with restrained cyan illumination and ANTARA gold accents.
+The frame keeps ANTARA's established palette and material language:
 
-The avatar area is intentionally more engineered than a simple circle. It contains layered rings, segmented arcs, angular cardinal extensions, crossing orbital lines, a local status light, and a nested portrait viewport. The supplied profile-frame reference guided this geometry, while the color system was adapted to ANTARA.
+- deep navy / near-black cockpit body
+- warm champagne-gold primary lines
+- restrained cyan secondary accents
+- interrupted technical strokes
+- beveled / angular corner cuts
+- small status nodes
+- sparse metallic detail with preserved negative space
 
-## States
+No RGB neon, purple/green/red gaming accents, oversized glow rings, or dense decorative hexagon fields were introduced.
 
-### Logged out
+## Profile socket
 
-- IDENTITAS PENJELAJAH
-- MASUK KE ANTARA
-- CREW ACCESS · STANDBY
-- technical user symbol inside the framed portrait position
+The existing login / avatar location is reused. The circular avatar core now sits inside a more angular mechanical cradle so it reads as an explorer identity socket rather than a standalone circle.
 
-### Logged in
+The system still supports:
 
-When real user data is supplied:
+- logged-out login glyph
+- real avatar image when supplied
+- initials fallback
+- logged-in status treatment
 
-- actual display name is shown
-- actual avatar URL is used when supplied
-- initials are used when no avatar exists
-- role / rank / subtitle is used when supplied
-- otherwise the neutral UI label `PENJELAJAH ANTARA` is used
+No duplicate login control was created.
 
-## Motion
+## Login frame
 
-Initial load uses a short cockpit initialization sequence:
+`IDENTITAS PENJELAJAH` remains the small technical label and `MASUK KE ANTARA` remains the primary action.
 
-1. housing deploys
-2. frame appears
-3. one scan line crosses the module
-4. avatar frame resolves
-5. identity text reveals
+The copy now lives inside its own clipped angular frame with:
 
-After boot the HUD stays quiet. Continuous motion is restricted to a slow technical ring and tiny status pulses. Hover only adds a small frame lift, arrow movement, and one short scan pass.
+- thin gold top edge
+- subtle cyan lower edge
+- dark translucent interior
+- small top / bottom bracket strokes
+- restrained status marker geometry
+- an interaction arrow separated by a fine divider
 
-`prefers-reduced-motion` disables the boot / idle animation layer.
+The frame is physically bridged to the profile socket by a short segmented connector.
+
+## Motion and interaction
+
+Motion remains cheap and restrained:
+
+- short deployment / line-reveal sequence
+- one scan pass during initialization
+- slow small-angle avatar technical ring movement
+- very slow status-node pulses
+- hover brightens the login frame slightly and advances the arrow
+- click briefly activates the connector and frame before the existing auth/profile flow continues
+
+Continuous large blur or animated box-shadow effects were not added.
+
+`prefers-reduced-motion` still disables the non-essential animation layer.
+
+## Authentication behavior
+
+The project still does not fabricate authentication data.
+
+The HUD continues to support:
+
+- `window.ANTARAAuth` / `window.AntaraAuth`
+- `getCurrentUser()`
+- `openLogin()`
+- `openProfile()`
+- `window.ANTARA_USER`
+- `antara:auth-change`
+- `antara:login-request`
+- `antara:profile-request`
+- `window.ANTARAProfileHUD`
+
+A 120 ms visual activation cue is applied before the existing login/profile action is dispatched.
 
 ## Responsive behavior
 
-The component does not use `transform: scale()` as its responsive strategy.
+The desktop and laptop layouts stay left-anchored inside the current top rail while shortening connector and ornament lengths as space decreases.
 
-- large desktop: complete identity HUD, secondary status and technical marks
-- laptop: reduced width, slightly tighter spacing
-- tablet: secondary status is removed first
-- mobile: compact framed icon + primary identity label + interaction arrow
-- short browser windows: reduced height and ornament density
+At mobile width the composition becomes a compact equivalent:
 
-The main title and START control remain visually stronger than the profile HUD.
+`[ PROFILE SOCKET ] [ CONNECTOR ] [ MASUK KE ANTARA ]`
 
-## Visual audit
+It does not shrink the full desktop rail into an unreadable miniature. Secondary status copy and nonessential ornaments are removed first.
 
-A layout audit was run against representative viewport sizes including:
+## Verification
 
-- 2560x1440
-- 1920x1080
-- 1600x900
-- 1440x900
-- 1366x768
-- 1366x620
-- 1024x768
-- 768x1024
-- 412x915
-- 390x844
-- 375x812
-- 360x800
+- JavaScript syntax check passed.
+- `tools/verify_home_profile_hud.mjs`: 20/20 checks passed.
+- The profile root and trigger remain unique.
+- Existing real-auth discovery hooks remain present.
+- No fake auth persistence was introduced.
+- Mobile and short-height responsive rules are present.
 
-The profile HUD remained inside the viewport and did not collide with the main title in the audit harness.
+The repository's full Chromium browser harness could not complete inside the current container because Chromium denied localStorage access in that harness environment. This is an environment limitation rather than a claimed visual pass, so no full browser-harness success is reported here.

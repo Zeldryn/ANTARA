@@ -10,7 +10,7 @@
   <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, Sabuk Asteroid, Jupiter, Saturnus, Uranus, Neptunus, dan keajaiban Tata Surya.">
   <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/orbit.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20260930-profilehud-1">
+  <link rel="stylesheet" href="styles.css?v=20260930-profilehud-2">
   <link rel="stylesheet" href="exploration-media.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="earth-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="earth-full-exploration.css?v=20260927-venusscience-2">
@@ -39,7 +39,7 @@
   <script src="saturn-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="uranus-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="neptune-scene.js?v=20260927-venusscience-2" defer></script>
-  <script src="script.js?v=20260930-profilehud-1" defer></script>
+  <script src="script.js?v=20260930-profilehud-2" defer></script>
 </head>
 <body>
   <main class="mission" id="mission">
@@ -234,15 +234,23 @@
               <span class="profile-avatar-status"></span>
             </span>
 
-            <span class="profile-hud-copy">
-              <span class="profile-hud-kicker"><i></i><span id="profile-hud-kicker">IDENTITAS PENJELAJAH</span></span>
-              <strong id="profile-hud-primary">MASUK KE ANTARA</strong>
-              <small id="profile-hud-secondary">CREW ACCESS · STANDBY</small>
+            <span class="profile-hud-connector" aria-hidden="true">
+              <i></i><b></b><i></i>
             </span>
 
-            <span class="profile-hud-action" aria-hidden="true">
-              <span>01</span>
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5"></path></svg>
+            <span class="profile-login-frame">
+              <span class="profile-login-bracket profile-login-bracket-top" aria-hidden="true"></span>
+              <span class="profile-login-bracket profile-login-bracket-bottom" aria-hidden="true"></span>
+              <span class="profile-hud-copy">
+                <span class="profile-hud-kicker"><i></i><span id="profile-hud-kicker">IDENTITAS PENJELAJAH</span></span>
+                <strong id="profile-hud-primary">MASUK KE ANTARA</strong>
+                <small id="profile-hud-secondary">CREW ACCESS · STANDBY</small>
+              </span>
+
+              <span class="profile-hud-action" aria-hidden="true">
+                <span>01</span>
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5"></path></svg>
+              </span>
             </span>
           </button>
           <span class="profile-hud-scan" aria-hidden="true"></span>

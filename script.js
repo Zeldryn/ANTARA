@@ -819,6 +819,18 @@ class CockpitProfileHUD {
   }
 
   activate() {
+    if (this.activationPending) return;
+    this.activationPending = true;
+    this.root?.classList.add("is-activating");
+
+    window.setTimeout(() => {
+      this.root?.classList.remove("is-activating");
+      this.activationPending = false;
+      this.performActivation();
+    }, 120);
+  }
+
+  performActivation() {
     const api = this.getAuthApi();
 
     if (this.user) {
