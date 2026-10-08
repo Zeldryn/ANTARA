@@ -1459,6 +1459,7 @@
       const indices = [];
       let p = 0;
       let uv = 0;
+      const detailScale = this.detailStrengthForSegments(segments);
 
       for (let iz = 0; iz <= segments; iz += 1) {
         const fz = iz / segments;
@@ -1468,7 +1469,6 @@
           const signedLongitude = wrapLongitude(tile.lonWest + fx);
           const world = this.worldFromGeo(latitude, signedLongitude);
           const baseHeight = this.provider.sampleTile(tile, latitude, signedLongitude);
-          const detailScale = this.detailStrengthForSegments(segments);
           const height = baseHeight + this.subMagellanDetailHeight(latitude, signedLongitude, detailScale);
           positions[p++] = world.x;
           positions[p++] = height;
