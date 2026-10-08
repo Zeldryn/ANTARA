@@ -20,7 +20,7 @@ The surface uses separate elevation and imagery sources instead of stretching th
 - Runtime default: `https://jaanga.github.io/mars-heightmaps-128p/`
 - Geographic 1 degree PNG tiles at 128 samples per degree.
 - Only terrain near the camera is loaded and cached.
-- Near-camera geometry uses up to 128 subdivisions per 1 degree chunk, matching the available MOLA sample density instead of inventing extra height detail.
+- Near-camera geometry now uses denser interpolation (up to 224 subdivisions per 1 degree chunk on HIGH) so the measured MOLA surface is shaded more smoothly at grazing angles. It does not claim extra measured elevation samples beyond MOLA.
 
 ### Surface imagery
 
@@ -34,8 +34,9 @@ Runtime texture LOD uses NASA Trek geographic WMTS tiles:
 - A lower texture LOD stays visible until the requested higher LOD finishes loading.
 - Scientific texture upgrades crossfade briefly instead of popping from blurry to sharp in one frame.
 - The system prefetches data in the current movement direction.
-- Mipmaps and renderer-supported anisotropic filtering are enabled for shallow viewing angles.
-- MOLA-derived object-space normal detail improves terrain readability without procedural noise.
+- Mipmaps and the full renderer-supported anisotropic filtering tier are enabled for shallow viewing angles.
+- MOLA-derived object-space normals preserve measured macro relief.
+- A separate seamless micro-detail layer adds sub-tile dust/rock roughness for close-range readability. This layer is visual material detail only and does not replace MOLA geography or Viking/THEMIS imagery.
 
 Deployments can self-host compatible tile endpoints before `mars-full-exploration.js` runs:
 
@@ -47,7 +48,7 @@ Deployments can self-host compatible tile endpoints before `mars-full-exploratio
 </script>
 ```
 
-The implementation does not replace missing scientific tiles with procedural terrain. Existing lower LOD imagery stays visible when a sharper imagery request is unavailable.
+The implementation does not replace missing scientific tiles with procedural geography. Existing lower LOD imagery stays visible when a sharper imagery request is unavailable. The micro-detail layer only affects fine material appearance and bump response, while large-scale colour and terrain shape remain scientific-source driven.
 
 ## Chunking and seams
 
@@ -100,4 +101,4 @@ Mobile:
 
 ## Performance and cleanup
 
-Quality tiers independently control geometry density, terrain radius, imagery LOD, texture size, anisotropy, and render DPR. Dynamic resolution can reduce renderer DPR after sustained low FPS without lowering the underlying terrain source data. Leaving Mars disposes the dedicated surface renderer, terrain geometry, generated textures, imagery caches, and input state.
+Quality tiers independently control geometry density, terrain radius, imagery LOD, texture size, micro-detail density, anisotropy, and render DPR. HIGH desktop quality preserves more THEMIS patch resolution, uses denser near terrain, and raises the DPR floor modestly. Dynamic resolution can still reduce renderer DPR after sustained low FPS without lowering the underlying terrain source data. Leaving Mars disposes the dedicated surface renderer, terrain geometry, generated textures, imagery caches, and input state.

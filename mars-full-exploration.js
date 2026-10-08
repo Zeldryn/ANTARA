@@ -268,7 +268,7 @@
       this.pendingPatches = new Map();
       this.generation = 0;
       this.maxImageCache = quality.name === "HIGH" ? 220 : quality.name === "MEDIUM" ? 150 : 90;
-      this.maxPatchCache = quality.name === "HIGH" ? 96 : quality.name === "MEDIUM" ? 64 : 40;
+      this.maxPatchCache = quality.name === "HIGH" ? 72 : quality.name === "MEDIUM" ? 56 : 36;
       this.sourceLabel = "MOLA elevation · NASA Trek Viking 232 m · THEMIS 100 m";
       this.layers = {
         viking: {
@@ -300,11 +300,16 @@
       if (latitude >= this.layers.themis.minLat && latitude <= this.layers.themis.maxLat && this.layers.themis.maxZoom >= 8 && altitude < 12) {
         detailZoom = altitude <= 3.5 ? 9 : 8;
         detailZoom = Math.min(detailZoom, this.layers.themis.maxZoom);
-        detailStrength = altitude <= 1.25 ? 0.58 : altitude <= 3.5 ? 0.48 : altitude <= 8 ? 0.36 : 0.26;
+        // THEMIS is real ~100 m/px scientific imagery. Keep more of its local luminance
+        // structure near the surface instead of washing it back into the Viking base.
+        detailStrength = altitude <= 0.75 ? 0.72 : altitude <= 1.75 ? 0.66 : altitude <= 3.5 ? 0.56 : altitude <= 8 ? 0.42 : 0.30;
       }
 
-      const baseTextureSize = colorZoom >= 7 ? 256 : colorZoom === 6 ? 192 : colorZoom === 5 ? 128 : 96;
-      const detailTextureSize = detailZoom === 9 ? 640 : detailZoom === 8 ? 384 : 0;
+      const baseTextureSize = colorZoom >= 7 ? 320 : colorZoom === 6 ? 224 : colorZoom === 5 ? 160 : 112;
+      // A one-degree patch at THEMIS z9 contains roughly 700-800 useful source pixels.
+      // Going much beyond that only invents pixels, but 704 preserves more native detail
+      // than the old 640 cap before the GPU performs its own mip filtering.
+      const detailTextureSize = detailZoom === 9 ? 704 : detailZoom === 8 ? 448 : 0;
       const textureSize = Math.min(this.quality.textureSize, Math.max(baseTextureSize, detailTextureSize));
       return {
         colorZoom,
@@ -472,8 +477,8 @@
         for (let i = 0; i < pixels.length; i += 4) {
           const detailLum = detailPixels[i] * 0.299 + detailPixels[i + 1] * 0.587 + detailPixels[i + 2] * 0.114;
           const lowLum = blurredPixels[i] * 0.299 + blurredPixels[i + 1] * 0.587 + blurredPixels[i + 2] * 0.114;
-          const highPass = clamp((detailLum - lowLum) / 255, -0.24, 0.24);
-          const gain = clamp(1 + highPass * strength * 2.1, 0.82, 1.18);
+          const highPass = clamp((detailLum - lowLum) / 255, -0.30, 0.30);
+          const gain = clamp(1 + highPass * strength * 2.55, 0.78, 1.24);
           pixels[i] = clamp(pixels[i] * gain, 0, 255);
           pixels[i + 1] = clamp(pixels[i + 1] * gain, 0, 255);
           pixels[i + 2] = clamp(pixels[i + 2] * gain, 0, 255);
@@ -539,6 +544,7 @@
       this.lastTextureProfile = "";
       this.group = new THREE.Group();
       this.scene.add(this.group);
+      this.detailTexture = this.createMarsMicroDetailTexture();
 
       // The orbit renderer only has a 2K global color map, so it is retained as
       // a continuity placeholder only. Scientific surface color is upgraded per
@@ -552,6 +558,116 @@
       this.sourcePixels = sourceContext.getImageData(0, 0, this.sourceCanvas.width, this.sourceCanvas.height).data;
       this.sourceWidth = this.sourceCanvas.width;
       this.sourceHeight = this.sourceCanvas.height;
+    }
+
+    createMarsMicroDetailTexture() {
+      const THREE = this.THREE;
+      const size = this.quality.name === "HIGH" ? 384 : this.quality.name === "MEDIUM" ? 320 : 256;
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      const image = context.createImageData(size, size);
+      const data = image.data;
+
+      // Periodic value noise keeps the texture seamless when repeated across
+      // adjacent one-degree terrain tiles. This is deliberately micro-detail only:
+      // geographic identity still comes from Viking/THEMIS and elevation from MOLA.
+      const hash = (x, y, seed) => {
+        let h = Math.imul((x + seed * 17) | 0, 374761393) ^ Math.imul((y - seed * 29) | 0, 668265263);
+        h = Math.imul(h ^ (h >>> 13), 1274126177);
+        return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
+      };
+      const fade = t => t * t * (3 - 2 * t);
+      const wrapCell = (value, cells) => ((value % cells) + cells) % cells;
+      const periodicNoise = (u, v, cells, seed) => {
+        const px = u * cells;
+        const py = v * cells;
+        const x0 = Math.floor(px);
+        const y0 = Math.floor(py);
+        const tx = fade(px - x0);
+        const ty = fade(py - y0);
+        const a = hash(wrapCell(x0, cells), wrapCell(y0, cells), seed);
+        const b = hash(wrapCell(x0 + 1, cells), wrapCell(y0, cells), seed);
+        const c = hash(wrapCell(x0, cells), wrapCell(y0 + 1, cells), seed);
+        const d = hash(wrapCell(x0 + 1, cells), wrapCell(y0 + 1, cells), seed);
+        return lerp(lerp(a, b, tx), lerp(c, d, tx), ty);
+      };
+
+      for (let y = 0; y < size; y += 1) {
+        const v = y / size;
+        for (let x = 0; x < size; x += 1) {
+          const u = x / size;
+          const broad = periodicNoise(u, v, 7, 11);
+          const mid = periodicNoise(u, v, 17, 23);
+          const fine = periodicNoise(u, v, 43, 47);
+          const grit = periodicNoise(u, v, 91, 71);
+          const ridge = 1 - Math.abs(mid * 2 - 1);
+          const sparseRock = Math.max(0, (grit - 0.78) / 0.22);
+          const height = clamp(0.43 + (broad - 0.5) * 0.26 + (mid - 0.5) * 0.24 + (fine - 0.5) * 0.16 + ridge * 0.08 + sparseRock * 0.13, 0.08, 0.94);
+          const value = Math.round(height * 255);
+          const i = (y * size + x) * 4;
+          data[i] = value;
+          data[i + 1] = value;
+          data[i + 2] = value;
+          data[i + 3] = 255;
+        }
+      }
+      context.putImageData(image, 0, 0);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.NoColorSpace;
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.generateMipmaps = true;
+      texture.anisotropy = this.quality.anisotropy || 4;
+      // Integer repetition means neighboring geographic tiles meet without a phase seam.
+      const repeats = this.quality.name === "HIGH" ? 181 : this.quality.name === "MEDIUM" ? 137 : 97;
+      texture.repeat.set(repeats, repeats);
+      texture.needsUpdate = true;
+      return texture;
+    }
+
+    configureTerrainMaterial(material, tile) {
+      if (!material || !tile) return material;
+      const THREE = this.THREE;
+      material.bumpMap = this.detailTexture;
+      material.bumpScale = this.quality.name === "HIGH" ? 0.052 : this.quality.name === "MEDIUM" ? 0.044 : 0.034;
+      material.roughness = this.quality.name === "HIGH" ? 0.89 : 0.91;
+
+      // The base map is geographically correct but cannot resolve rover-scale grains.
+      // Blend a tiny, seamless Martian micro-variation in shader space while keeping
+      // the scientific macro colour untouched. It naturally mips away at altitude.
+      material.onBeforeCompile = shader => {
+        shader.uniforms.uMarsMicroDetail = { value: this.detailTexture };
+        shader.uniforms.uMarsTileOrigin = { value: new THREE.Vector2(tile.lonWest, tile.latNorth - 1) };
+        shader.uniforms.uMarsAlbedoDetail = { value: this.quality.name === "HIGH" ? 0.16 : this.quality.name === "MEDIUM" ? 0.135 : 0.10 };
+        shader.vertexShader = shader.vertexShader
+          .replace("#include <common>", "#include <common>\nvarying vec2 vMarsGeoUv;\nuniform vec2 uMarsTileOrigin;")
+          .replace("#include <uv_vertex>", "#include <uv_vertex>\nvMarsGeoUv = uMarsTileOrigin + vec2(uv.x, uv.y);");
+        shader.fragmentShader = shader.fragmentShader
+          .replace("#include <common>", "#include <common>\nvarying vec2 vMarsGeoUv;\nuniform sampler2D uMarsMicroDetail;\nuniform float uMarsAlbedoDetail;")
+          .replace("#include <map_fragment>", `#include <map_fragment>
+            float marsMicroA = texture2D(uMarsMicroDetail, vMarsGeoUv * 43.0).r - 0.5;
+            float marsMicroB = texture2D(uMarsMicroDetail, vMarsGeoUv * 173.0 + vec2(0.371, 0.193)).r - 0.5;
+            float marsMicro = marsMicroA * 0.64 + marsMicroB * 0.36;
+            diffuseColor.rgb *= clamp(1.0 + marsMicro * uMarsAlbedoDetail, 0.90, 1.10);`)
+          // Three.js normally treats an object-space normal map and bump map as
+          // mutually exclusive. Apply the micro bump *after* the MOLA normal so
+          // measured macro slopes and near-surface grains both affect lighting.
+          .replace("#include <normal_fragment_maps>", `#include <normal_fragment_maps>
+            #ifdef USE_BUMPMAP
+              normal = perturbNormalArb(-vViewPosition, normal, dHdxy_fwd(), faceDirection);
+            #endif`)
+          .replace("#include <roughnessmap_fragment>", `#include <roughnessmap_fragment>
+            roughnessFactor = clamp(roughnessFactor + marsMicro * 0.055, 0.82, 0.98);`);
+        material.userData.marsShader = shader;
+      };
+      material.customProgramCacheKey = () => `antara-mars-terrain-detail-v3-${this.quality.name}`;
+      material.needsUpdate = true;
+      return material;
     }
 
     setOrigin(latitude, longitudeEast) {
@@ -689,7 +805,7 @@
       texture.minFilter = THREE.LinearMipmapLinearFilter;
       texture.magFilter = THREE.LinearFilter;
       texture.generateMipmaps = true;
-      texture.anisotropy = Math.min(this.quality.anisotropy || 4, 8);
+      texture.anisotropy = this.quality.anisotropy || 4;
       texture.needsUpdate = true;
       return texture;
     }
@@ -730,7 +846,7 @@
       texture.minFilter = THREE.LinearMipmapLinearFilter;
       texture.magFilter = THREE.LinearFilter;
       texture.generateMipmaps = true;
-      texture.anisotropy = Math.min(this.quality.anisotropy || 4, 8);
+      texture.anisotropy = this.quality.anisotropy || 4;
       texture.needsUpdate = true;
       return texture;
     }
@@ -789,6 +905,7 @@
         polygonOffsetUnits: -1,
         dithering: true
       });
+      this.configureTerrainMaterial(overlayMaterial, entry.tile);
       const overlay = new THREE.Mesh(mesh.geometry, overlayMaterial);
       overlay.frustumCulled = mesh.frustumCulled;
       overlay.renderOrder = 1;
@@ -979,11 +1096,12 @@
         map: tileTexture,
         normalMap: normalTexture,
         normalMapType: THREE.ObjectSpaceNormalMap,
-        roughness: 0.93,
+        roughness: 0.90,
         metalness: 0,
         color: 0xffffff,
         dithering: true
       });
+      this.configureTerrainMaterial(material, tile);
       const mesh = new THREE.Mesh(geometry, material);
       mesh.frustumCulled = true;
       mesh.userData.molaTile = `${tile.lonWest},${tile.latNorth}`;
@@ -1037,6 +1155,8 @@
     dispose() {
       this.clearMeshes();
       this.group.removeFromParent();
+      this.detailTexture?.dispose?.();
+      this.detailTexture = null;
       this.sourcePixels = null;
       this.sourceCanvas = null;
     }
@@ -1299,12 +1419,12 @@
       // its theoretical pixel count large. Quality selection is capability based;
       // the render-pixel budget below controls the actual resolution separately.
       if (coarse || width <= 760 || cores <= 4 || memory <= 3) {
-        return { name: "LOW", radius: 1, nearSegments: 72, midSegments: 40, farSegments: 22, maxDpr: 1.35, minDpr: 0.9, supersample: 1, pixelBudget: 2500000, anisotropy: 4, imageryMaxZ: 6, themisMaxZ: 8, textureSize: 256 };
+        return { name: "LOW", radius: 1, nearSegments: 88, midSegments: 48, farSegments: 26, maxDpr: 1.4, minDpr: 0.92, supersample: 1, pixelBudget: 2800000, anisotropy: 4, imageryMaxZ: 6, themisMaxZ: 8, textureSize: 320 };
       }
       if (cores >= 8 && memory >= 6) {
-        return { name: "HIGH", radius: 3, nearSegments: 128, midSegments: 96, farSegments: 48, maxDpr: 2, minDpr: 1, supersample: 1.24, pixelBudget: 8400000, anisotropy: 16, imageryMaxZ: 7, themisMaxZ: 9, textureSize: 640 };
+        return { name: "HIGH", radius: 3, nearSegments: 224, midSegments: 144, farSegments: 64, maxDpr: 2.2, minDpr: 1.08, supersample: 1.35, pixelBudget: 10000000, anisotropy: 16, imageryMaxZ: 7, themisMaxZ: 9, textureSize: 704 };
       }
-      return { name: "MEDIUM", radius: 2, nearSegments: 112, midSegments: 64, farSegments: 32, maxDpr: 1.8, minDpr: 0.94, supersample: 1.12, pixelBudget: 5000000, anisotropy: 8, imageryMaxZ: 7, themisMaxZ: 8, textureSize: 384 };
+      return { name: "MEDIUM", radius: 2, nearSegments: 160, midSegments: 96, farSegments: 44, maxDpr: 1.9, minDpr: 0.98, supersample: 1.18, pixelBudget: 6000000, anisotropy: 8, imageryMaxZ: 7, themisMaxZ: 8, textureSize: 512 };
     }
 
     calculateIdealDpr() {
@@ -1448,7 +1568,7 @@
         this.viewport.replaceChildren(canvas);
 
         this.scene = new THREE.Scene();
-        const fogDensity = this.quality.name === "LOW" ? 0.0018 : this.quality.name === "MEDIUM" ? 0.00125 : 0.0009;
+        const fogDensity = this.quality.name === "LOW" ? 0.00165 : this.quality.name === "MEDIUM" ? 0.00105 : 0.00072;
         this.scene.fog = new THREE.FogExp2(0xa55f45, fogDensity);
         this.camera = new THREE.PerspectiveCamera(this.mobileFov(), 1, 0.035, 850);
         this.camera.rotation.order = "YXZ";
