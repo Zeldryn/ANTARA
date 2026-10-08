@@ -10,7 +10,7 @@
   <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, Sabuk Asteroid, Jupiter, Saturnus, Uranus, Neptunus, dan keajaiban Tata Surya.">
   <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/orbit.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20260930-profilehud-2">
+  <link rel="stylesheet" href="styles.css?v=20260930-register-clickfix-1">
   <link rel="stylesheet" href="exploration-media.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="earth-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="earth-full-exploration.css?v=20260927-venusscience-2">
@@ -39,7 +39,7 @@
   <script src="saturn-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="uranus-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="neptune-scene.js?v=20260927-venusscience-2" defer></script>
-  <script src="script.js?v=20260930-profilehud-2" defer></script>
+  <script src="script.js?v=20260930-register-clickfix-1" defer></script>
 </head>
 <body>
   <main class="mission" id="mission">
@@ -211,7 +211,7 @@
       <section class="cockpit-profile-hud" id="cockpit-profile-hud" data-profile-state="logged-out" aria-label="Identitas penjelajah ANTARA">
           <span class="profile-hud-rail profile-hud-rail-left" aria-hidden="true"></span>
           <span class="profile-hud-rail profile-hud-rail-right" aria-hidden="true"></span>
-          <button class="profile-hud-trigger" id="profile-hud-trigger" type="button" aria-label="Masuk ke ANTARA">
+          <a class="profile-hud-trigger" id="profile-hud-trigger" href="daftar.html" aria-label="Masuk ke ANTARA">
             <span class="profile-avatar-frame" aria-hidden="true">
               <svg class="profile-avatar-tech" viewBox="0 0 100 100" focusable="false">
                 <circle class="profile-ring-base" cx="50" cy="50" r="37"></circle>
@@ -252,7 +252,7 @@
                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5"></path></svg>
               </span>
             </span>
-          </button>
+          </a>
           <span class="profile-hud-scan" aria-hidden="true"></span>
           <span class="profile-hud-node profile-hud-node-a" aria-hidden="true"></span>
           <span class="profile-hud-node profile-hud-node-b" aria-hidden="true"></span>

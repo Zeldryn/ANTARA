@@ -4000,3 +4000,23 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     animation: none !important;
   }
 }
+
+/* Registration click reliability: the identity trigger is a real link so navigation works
+   even if an unrelated scene script throws. Keep its existing HUD appearance unchanged. */
+.profile-hud-trigger {
+  text-decoration: none;
+  pointer-events: auto !important;
+  touch-action: manipulation;
+}
+.cockpit-profile-hud {
+  pointer-events: auto;
+}
+.cockpit-profile-hud::before,
+.cockpit-profile-hud::after,
+.cockpit-profile-hud > :not(.profile-hud-trigger) {
+  pointer-events: none;
+}
+.mission[data-experience="launch"] .profile-hud-trigger,
+.mission[data-experience="planet"] .profile-hud-trigger {
+  pointer-events: none !important;
+}

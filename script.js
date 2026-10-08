@@ -714,7 +714,17 @@ class CockpitProfileHUD {
 
     if (!this.root || !this.trigger) return;
 
-    this.trigger.addEventListener("click", () => this.activate());
+    this.trigger.addEventListener("click", event => {
+      // Logged-out navigation uses the anchor's native href as a resilient fallback.
+      // This keeps registration reachable even if another scene script fails later.
+      if (!this.user) {
+        this.root?.classList.add("is-activating");
+        return;
+      }
+
+      event.preventDefault();
+      this.activate();
+    });
     this.avatarImage?.addEventListener("error", () => {
       if (!this.user) return;
       this.avatarImage.hidden = true;
@@ -844,7 +854,7 @@ class CockpitProfileHUD {
       return;
     }
 
-    window.location.href = "daftar.html";
+    window.location.assign(this.trigger?.getAttribute("href") || "daftar.html");
   }
 }
 
