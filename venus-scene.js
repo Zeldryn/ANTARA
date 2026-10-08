@@ -263,6 +263,10 @@ window.VenusScene = class VenusScene {
       this.pointer.y = (event.clientY - rect.top) / rect.height - 0.5;
     });
     this.element.addEventListener("pointerleave", () => { this.pointer.x = this.pointer.y = 0; });
+
+    // Match MarsScene ownership: the planet scene owns its Full Exploration
+    // controller so stop()/reset has a direct cleanup path.
+    this.fullExploration = window.VenusFullExploration ? new window.VenusFullExploration(this) : null;
   }
 
   setExplorationStop(index, { immediate = false, announce = true } = {}) {
@@ -379,27 +383,44 @@ window.VenusScene = class VenusScene {
     this.exploreButton.focus({ preventScroll: true });
   }
 
-  beginFullExploration(location) {
+  startFullExplorationTransition(location) {
     if (!this.active || this.exploring || this.fullExplorationActive) return false;
     this.fullExplorationActive = true;
-    const orientation = venusLocationOrientation(location || { latitude: 0.5, longitudeEast: 194.6 });
-    this.topicYaw = this.renderedRotation;
-    this.topicPitch = 0.09;
-    this.topicRoll = VENUS_EXPLORATION_ROLL;
-    this.topicYawTarget = unwrapVenusAngleNear(orientation.yaw, this.topicYaw);
-    this.topicPitchTarget = orientation.pitch;
-    this.topicRollTarget = orientation.roll ?? VENUS_EXPLORATION_ROLL;
-    this.topicShiftTarget = { x: 0, y: 0 };
-    this.explorationBlendTarget = 1;
-    this.element.classList.add("is-full-exploring");
     this.caption.inert = true;
     this.exploration.inert = true;
+    this.setFullExplorationTransition(0, location || { latitude: 0.5, longitudeEast: 194.6 });
+    return true;
+  }
+
+  setFullExplorationTransition(blend, location) {
+    const nextBlend = Math.max(0, Math.min(1, Number(blend) || 0));
+    if (location && Number.isFinite(location.latitude) && Number.isFinite(location.longitudeEast)) {
+      const orientation = venusLocationOrientation(location);
+      this.topicYawTarget = unwrapVenusAngleNear(orientation.yaw, this.renderedRotation);
+      this.topicPitchTarget = orientation.pitch;
+      this.topicRollTarget = orientation.roll ?? VENUS_EXPLORATION_ROLL;
+      this.topicShiftTarget = { x: 0, y: 0 };
+      if (nextBlend <= .001) {
+        this.topicYaw = this.renderedRotation;
+        this.topicPitch = .09;
+        this.topicRoll = VENUS_EXPLORATION_ROLL;
+      } else {
+        this.topicYaw = this.topicYawTarget;
+        this.topicPitch = this.topicPitchTarget;
+        this.topicRoll = this.topicRollTarget;
+      }
+    }
+    this.explorationBlend = nextBlend;
+    this.explorationBlendTarget = nextBlend;
+    this.element.classList.toggle("is-full-exploring", this.fullExplorationActive || nextBlend > .001);
+    if (this.active) this.render();
+  }
+
+  beginFullExploration(location) {
+    if (!this.startFullExplorationTransition(location)) return false;
+    this.explorationBlendTarget = 1;
     if (this.motion.matches) {
-      this.explorationBlend = 1;
-      this.topicYaw = this.topicYawTarget;
-      this.topicPitch = this.topicPitchTarget;
-      this.topicRoll = this.topicRollTarget;
-      this.render();
+      this.setFullExplorationTransition(1, location);
     } else if (!this.frame) {
       this.previous = performance.now();
       this.tick(this.previous);
@@ -408,13 +429,18 @@ window.VenusScene = class VenusScene {
   }
 
   endFullExploration() {
-    if (!this.fullExplorationActive) return;
+    if (!this.fullExplorationActive && this.explorationBlend <= .001) return;
     this.fullExplorationActive = false;
     this.explorationBlendTarget = 0;
     this.element.classList.remove("is-full-exploring");
     this.caption.inert = false;
-    if (this.motion.matches) { this.explorationBlend = 0; this.render(); }
-    else if (!this.frame) { this.previous = performance.now(); this.tick(this.previous); }
+    if (this.motion.matches) {
+      this.explorationBlend = 0;
+      this.render();
+    } else if (!this.frame) {
+      this.previous = performance.now();
+      this.tick(this.previous);
+    }
   }
 
   prepare() {
@@ -631,6 +657,7 @@ window.VenusScene = class VenusScene {
     this.active = false;
     cancelAnimationFrame(this.frame);
     this.frame = null;
+    this.fullExploration?.onVenusStop?.();
     this.element.hidden = true;
     this.element.style.opacity = "0";
     this.element.classList.remove("is-exploring");

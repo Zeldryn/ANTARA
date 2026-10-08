@@ -1,89 +1,61 @@
 # ANTARA Venus Full Exploration
 
-Venus Full Exploration remains part of the same exploration family as Earth and Mars. The existing Venus panorama, info mode, planet transitions, HUD language, pointer-lock controls, and hero lifecycle are retained.
+Venus Full Exploration is now a Venus-specific implementation of the **Mars Full Exploration framework**. The rejected custom Venus world renderer is not used underneath this system.
 
-## Current exploration architecture
+## Architecture
 
-The Full Exploration entry stays beside `Jelajahi Venus` in the Venus hero stack. Entry passes through the existing cloud-layer transition, activates one Venus renderer, and supports five POIs without creating five separate scenes:
+The surface experience follows Mars for:
 
-1. Maat Mons
-2. Maxwell Montes
-3. Aphrodite Terra
-4. Ishtar Terra
-5. Alpha Regio
+- one-degree geographic terrain chunks
+- camera-centered active terrain radius
+- mandatory near-ring loading and asynchronous outer-ring streaming
+- distance geometry LOD
+- explicit frustum + camera-direction culling
+- near-rear safety buffer for fast turns
+- geometry/material reuse and bounded caches
+- delta-time camera-relative movement
+- Pointer Lock lifecycle
+- HUD, top actions, location menu, fullscreen, mobile controls
+- entry, location travel, exit, cleanup and re-entry state flow
 
-`Lokasi` changes the active scientific region while keeping the same renderer alive. Exit releases controls, removes the HUD, reverses the Venus exploration lifecycle, and restores the Venus panorama.
+There is one surface render loop and one active chunk manager.
 
-## Science-driven terrain pipeline
+## No fixed square world
 
-Macro terrain first attempts to load official NASA PDS Magellan GTDR sinusoidal topography framelets at about 4.64 km/pixel. The active frame is lazy-loaded only when Venus Full Exploration or a new POI needs it. Maat and Alpha additionally preload the adjacent archive frame needed to cross an equator/prime-meridian frame boundary cleanly.
+There is no single Full Exploration `PlaneGeometry`. Each visible region is assembled from streamed geographic chunks around the current player tile. Moving into another tile streams the new ring while the previous safety ring remains until replacement chunks are ready.
 
-When GTDR is available:
+The terrain function is evaluated in shared geographic/world coordinates. Adjacent chunks therefore share the same border heights and geological structures. Surface normals are also derived from a world-coordinate gradient so lighting does not reset at chunk borders.
 
-`Magellan measured topography -> macro shape -> procedural micro detail -> material/normal/roughness enrichment`
+Venus' dense atmosphere provides the far-horizon attenuation layer. On HIGH quality the Mars-style radius-3 ring covers roughly 740 km across on Venus; the far boundary is attenuated into the atmospheric clear/fog color rather than exposing a black or rectangular void.
 
-When the remote PDS product cannot be loaded, the renderer falls back to the older feature-class relief so gameplay remains functional, but the HUD and educational card explicitly report `FALLBACK` rather than claiming measured Magellan topography.
+## Scientific terrain pipeline
 
-The global surface color context remains a NASA/JPL Magellan radar-derived mosaic. This is labelled as radar/simulated-color context, not visible-light photography.
+Macro relief:
 
-## Continuous local world
+`Magellan GTDR / NASA PDS -> geographic one-degree chunks`
 
-The old fixed terrain square is replaced by camera-centered chunk streaming:
+If the remote GTDR frame cannot be reached, the HUD explicitly reports a science-informed fallback rather than presenting procedural relief as measured data.
 
-- highest useful geometry close to the camera
-- medium detail in neighboring terrain
-- low-cost terrain toward the horizon
-- Three.js frustum culling for out-of-view chunks
-- bounded geometry cache
-- safety ring that follows the camera
-- dense Venus haze for atmospheric attenuation, not for hiding a missing world
+Regional detail:
 
-This means the user can move forward/backward/left/right and rotate 360 degrees without the intended play area being a tiny isolated terrain island.
+`Magellan macro relief + region-specific structural model + micro material detail`
 
-## Educational location card
+The structural model is deterministic in geographic coordinates and is subordinate to measured macro relief. It exists to communicate morphology below GTDR's roughly 4.6 km/pixel sampling scale.
 
-A single reusable compact card appears on entry and after location changes. It updates with:
+Radar/material context:
 
-- location name
-- category/type
-- real IAU/USGS coordinates
-- short explanation
-- three important facts
-- current terrain-data status
-- Magellan radar thumbnail where available
-- NASA/JPL/USGS/PDS source links
+`NASA/JPL Magellan radar-derived surface context -> streamed per-chunk albedo -> Venus material profile`
 
-The card can be collapsed or closed. `Info Lokasi` reopens it. It does not duplicate per-location DOM components.
+## Five rebuilt regions
 
-## Controls
+- **Maat Mons**: broad volcanic edifice, fractured plains and long flow-like structures.
+- **Maxwell Montes**: directional mountain belt, organized ridges and valleys, with smoother Lakshmi context.
+- **Aphrodite Terra**: broad highland field with older ridge/valley fabric cut by younger extensional fractures and lava-filled lows.
+- **Ishtar Terra**: elevated plateau context with smoother interior sectors and rugged mountain/deformation margins.
+- **Alpha Regio**: tessera terrain with multiple crossing ridge families, troughs, fault-valley structure, irregular blocks and smoother volcanic lows.
 
-Desktop remains aligned with Earth/Mars:
-- WASD movement
-- click + mouse look / Pointer Lock
-- Q / E descend / ascend
-- Shift boost
-- ESC releases Pointer Lock first, then exits when pressed again while unlocked
+These are regions that continue through surrounding chunks, not isolated features placed in the middle of empty terrain.
 
-Mobile keeps the established ANTARA directional and altitude controls.
+## Educational card
 
-## Scientific scope
-
-See `VENUS_SCIENCE_AUDIT.md` for the required location-by-location comparison of the previous procedural implementation against Magellan/PDS/USGS/NASA references and the fixes applied.
-
-## 2026-09-27 morphology accuracy pass
-
-The flyable Venus world now separates three scales explicitly:
-
-- **Macro**: Magellan GTDR measured elevation whenever the archived PDS frame is available.
-- **Regional / meso morphology**: deterministic, radar-informed structural visualization used to restore ridge, trough, graben, flow and tessera character below GTDR's ~4.64 km/pixel sampling. It is not labelled as directly measured elevation.
-- **Micro**: triplanar detail, bump/normal response and roughness breakup.
-
-Regional profiles are no longer one universal Venus background:
-
-- Maat Mons: broad asymmetric shield + flow/fractured plains context.
-- Maxwell Montes: elongated massif transition + parallel compressional ridge character.
-- Aphrodite Terra: broad deformed highland + multiple structural generations + graben + smoother flooded lows.
-- Ishtar Terra: smoother plateau/highland interior + deformed mountain-margin transition.
-- Alpha Regio: multiple cross-cutting ridge fields + fault/trough network + irregular blocks + smoother local volcanic lows.
-
-Atmospheric fog was reduced enough to preserve nearby geological contrast while keeping a dense Venus horizon. Lighting is now location-tuned and more directional so structural relief reads through haze. The existing educational card, GTDR fallback labels, chunk streaming, LOD, frustum culling, pointer lock and re-entry lifecycle remain in place.
+The location card uses the same Mars landmark-card slot in the exploration HUD. It retains the Venus educational content, radar image, coordinate source, science reference and Magellan topography source without introducing a second Venus-specific top-control system.
