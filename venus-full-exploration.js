@@ -39,24 +39,24 @@
   const QUALITY_PROFILES = Object.freeze({
     LOW: Object.freeze({
       name: "LOW", label: "RENDAH", description: "Performa terbaik",
-      tileSize: 32, tileHalfCount: 3, nearSegments: 64, midSegments: 38, farSegments: 22, backgroundSegments: 52,
+      tileSize: 10, tileHalfCount: 3, nearSegments: 58, midSegments: 34, farSegments: 20, backgroundSegments: 48,
       maxDpr: 1.18, minDpr: 0.78, supersample: 1.0, pixelBudget: 2250000, anisotropy: 3,
       accentCount: 6, propMultiplier: 5, particleCount: 82, microTextureSize: 192, shaderDetailTier: 2, radarSize: 576,
-      visibleDistance: 142, coreVisibleDistance: 54, atmosphereParticles: 82
+      visibleDistance: 54, coreVisibleDistance: 21, atmosphereParticles: 72, worldSpan: 96
     }),
     MEDIUM: Object.freeze({
       name: "MEDIUM", label: "SEDANG", description: "Seimbang",
-      tileSize: 26, tileHalfCount: 4, nearSegments: 96, midSegments: 58, farSegments: 30, backgroundSegments: 76,
+      tileSize: 9, tileHalfCount: 4, nearSegments: 86, midSegments: 50, farSegments: 28, backgroundSegments: 68,
       maxDpr: 1.45, minDpr: 0.86, supersample: 1.05, pixelBudget: 4100000, anisotropy: 7,
       accentCount: 10, propMultiplier: 6, particleCount: 145, microTextureSize: 320, shaderDetailTier: 3, radarSize: 896,
-      visibleDistance: 168, coreVisibleDistance: 68, atmosphereParticles: 145
+      visibleDistance: 68, coreVisibleDistance: 29, atmosphereParticles: 128, worldSpan: 116
     }),
     HIGH: Object.freeze({
       name: "HIGH", label: "TINGGI", description: "Visual terbaik",
-      tileSize: 24, tileHalfCount: 4, nearSegments: 142, midSegments: 86, farSegments: 42, backgroundSegments: 98,
+      tileSize: 8, tileHalfCount: 4, nearSegments: 122, midSegments: 72, farSegments: 36, backgroundSegments: 88,
       maxDpr: 1.72, minDpr: 0.92, supersample: 1.12, pixelBudget: 5900000, anisotropy: 12,
       accentCount: 15, propMultiplier: 6, particleCount: 220, microTextureSize: 448, shaderDetailTier: 3, radarSize: 1280,
-      visibleDistance: 182, coreVisibleDistance: 78, atmosphereParticles: 220
+      visibleDistance: 82, coreVisibleDistance: 36, atmosphereParticles: 190, worldSpan: 134
     })
   });
   const copyQualityProfile = name => ({ ...(QUALITY_PROFILES[name] || QUALITY_PROFILES.MEDIUM) });
@@ -64,6 +64,7 @@
   const REGIONS = Object.freeze([
     {
       id: "maat",
+      space: { horizontalCompression: 7.5, verticalReliefScale: 1.16, radarExtentKm: 330, movementScale: 0.72 },
       name: "Maat Mons",
       short: "Maat Mons",
       category: "KAWASAN VULKANIK",
@@ -74,8 +75,8 @@
       spawn: { x: -24, z: 82, altitude: 0.72 },
       lookTarget: { x: 0, z: -46 },
       featureCenter: { x: 0, z: -46 },
-      playRadius: 100,
-      softBoundaryStart: 84,
+      playRadius: 30,
+      softBoundaryStart: 25,
       source: "https://science.nasa.gov/photojournal/venus-3-d-perspective-view-of-maat-mons-2/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/3550",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00254/PIA00254.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
@@ -170,6 +171,7 @@
     },
     {
       id: "maxwell",
+      space: { horizontalCompression: 6.5, verticalReliefScale: 1.12, radarExtentKm: 360, movementScale: 0.74 },
       name: "Maxwell Montes",
       short: "Maxwell",
       category: "SABUK PEGUNUNGAN",
@@ -180,8 +182,8 @@
       spawn: { x: -54, z: 18, altitude: 0.62 },
       lookTarget: { x: 12, z: -24 },
       featureCenter: { x: -4, z: -18 },
-      playRadius: 96,
-      softBoundaryStart: 80,
+      playRadius: 34,
+      softBoundaryStart: 29,
       source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/3766",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00149/PIA00149.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
@@ -274,6 +276,7 @@
     },
     {
       id: "aphrodite",
+      space: { horizontalCompression: 8.0, verticalReliefScale: 1.10, radarExtentKm: 350, movementScale: 0.70 },
       name: "Aphrodite Terra",
       short: "Aphrodite",
       category: "DATARAN TINGGI TEKTONIK",
@@ -284,8 +287,8 @@
       spawn: { x: -26, z: 34, altitude: 0.58 },
       lookTarget: { x: 34, z: -18 },
       featureCenter: { x: 6, z: -8 },
-      playRadius: 100,
-      softBoundaryStart: 84,
+      playRadius: 30,
+      softBoundaryStart: 25,
       source: "https://science.nasa.gov/photojournal/venus-interior-of-ovda-regio/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/317",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00218/PIA00218.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
@@ -378,6 +381,7 @@
     },
     {
       id: "ishtar",
+      space: { horizontalCompression: 7.0, verticalReliefScale: 1.08, radarExtentKm: 360, movementScale: 0.72 },
       name: "Ishtar Terra",
       short: "Ishtar",
       category: "DATARAN TINGGI",
@@ -388,8 +392,8 @@
       spawn: { x: -18, z: 24, altitude: 0.68 },
       lookTarget: { x: 92, z: -14 },
       featureCenter: { x: 18, z: -4 },
-      playRadius: 98,
-      softBoundaryStart: 82,
+      playRadius: 33,
+      softBoundaryStart: 28,
       source: "https://science.nasa.gov/photojournal/perspective-view-of-ishtar-terra/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/2733",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00093/PIA00093.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
@@ -482,6 +486,7 @@
     },
     {
       id: "alpha",
+      space: { horizontalCompression: 9.0, verticalReliefScale: 1.13, radarExtentKm: 340, movementScale: 0.68 },
       name: "Alpha Regio",
       short: "Alpha",
       category: "DATARAN TESSERA",
@@ -492,8 +497,8 @@
       spawn: { x: -8, z: 28, altitude: 0.52 },
       lookTarget: { x: 34, z: -24 },
       featureCenter: { x: 8, z: -8 },
-      playRadius: 96,
-      softBoundaryStart: 80,
+      playRadius: 28,
+      softBoundaryStart: 23,
       source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/203",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00481/PIA00481.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
@@ -845,7 +850,7 @@
       this.region = region;
       this.quality = quality;
       this.texture = null;
-      this.extentKm = 310;
+      this.extentKm = region.space?.radarExtentKm || 330;
       this.sourceLabel = "USGS · CITRA RADAR SAR MAGELLAN";
     }
 
@@ -932,7 +937,12 @@
       this.resources = [];
       this.referenceElevation = 0;
       this.cosLat = Math.max(0.18, Math.cos(region.latitude * DEG));
-      this.worldSpan = quality.name === "HIGH" ? 560 : quality.name === "MEDIUM" ? 520 : 470;
+      // Render space is deliberately compact. Source geography is sampled through
+      // a separate per-destination transform so the visual world remains scientifically
+      // anchored without requiring near-1:1 traversal distances.
+      this.horizontalCompression = Math.max(1, region.space?.horizontalCompression || 1);
+      this.verticalReliefScale = Math.max(0.5, region.space?.verticalReliefScale || 1);
+      this.worldSpan = quality.worldSpan || (quality.name === "HIGH" ? 134 : quality.name === "MEDIUM" ? 116 : 96);
       this.tileSize = quality.tileSize || 26;
       this.tileHalfCount = quality.tileHalfCount ?? 4;
       this.tmpColor = new THREE.Color();
@@ -997,16 +1007,25 @@
       return texture;
     }
 
+    sourceKmFromWorld(x, z) {
+      return { x: x * this.horizontalCompression, z: z * this.horizontalCompression };
+    }
+
+    worldPointFromReference(point = { x: 0, z: 0 }) {
+      return { ...point, x: (Number(point.x) || 0) / this.horizontalCompression, z: (Number(point.z) || 0) / this.horizontalCompression };
+    }
+
     geoFromWorld(x, z) {
+      const source = this.sourceKmFromWorld(x, z);
       return {
-        latitude: clamp(this.region.latitude - z / KM_PER_DEG_LAT, -89.49, 89.49),
-        longitudeEast: wrapLongitudeEast(this.region.longitudeEast + x / (KM_PER_DEG_LAT * this.cosLat))
+        latitude: clamp(this.region.latitude - source.z / KM_PER_DEG_LAT, -89.49, 89.49),
+        longitudeEast: wrapLongitudeEast(this.region.longitudeEast + source.x / (KM_PER_DEG_LAT * this.cosLat))
       };
     }
 
     scientificHeightAt(x, z) {
       const geo = this.geoFromWorld(x, z);
-      return this.topography.sample(geo.latitude, geo.longitudeEast) - this.referenceElevation;
+      return (this.topography.sample(geo.latitude, geo.longitudeEast) - this.referenceElevation) * this.verticalReliefScale;
     }
 
     morphologySourceWeight() {
@@ -1301,12 +1320,14 @@
     }
 
     morphologyHeightAt(x, z) {
+      const source = this.sourceKmFromWorld(x, z);
+      const sx = source.x, sz = source.z;
       let morphology = 0;
-      if (this.region.id === "maat") morphology = this.maatMorphologyAt(x, z);
-      else if (this.region.id === "maxwell") morphology = this.maxwellMorphologyAt(x, z);
-      else if (this.region.id === "aphrodite") morphology = this.aphroditeMorphologyAt(x, z);
-      else if (this.region.id === "ishtar") morphology = this.ishtarMorphologyAt(x, z);
-      else if (this.region.id === "alpha") morphology = this.alphaMorphologyAt(x, z);
+      if (this.region.id === "maat") morphology = this.maatMorphologyAt(sx, sz);
+      else if (this.region.id === "maxwell") morphology = this.maxwellMorphologyAt(sx, sz);
+      else if (this.region.id === "aphrodite") morphology = this.aphroditeMorphologyAt(sx, sz);
+      else if (this.region.id === "ishtar") morphology = this.ishtarMorphologyAt(sx, sz);
+      else if (this.region.id === "alpha") morphology = this.alphaMorphologyAt(sx, sz);
       const sourceWeight = this.morphologyWeight ?? this.morphologySourceWeight();
       const farRadius = this.worldSpan * 0.53;
       const edgeFade = 1 - smoothstep((Math.hypot(x, z) - farRadius * 0.78) / Math.max(1, farRadius * 0.22));
@@ -1371,7 +1392,8 @@
         const b = ridge(valueNoise((x - z) * 0.105, (x + z) * 0.039, 271));
         meso += (a - 0.55) * 0.095 + (b - 0.56) * 0.085;
       }
-      return meso * this.morphologyDetailScaleAt(x, z) * clamp(detailFade, 0, 1);
+      const source = this.sourceKmFromWorld(x, z);
+      return meso * this.morphologyDetailScaleAt(source.x, source.z) * clamp(detailFade, 0, 1);
     }
 
     heightAt(x, z) {
@@ -1494,8 +1516,9 @@
           if (background) color.lerp(this.fogColor, farFade * 0.26).multiplyScalar(1 - farFade * 0.12);
           positions[p++] = x; positions[p++] = y; positions[p++] = z;
           colors[c++] = color.r; colors[c++] = color.g; colors[c++] = color.b;
-          uvs[uv++] = clamp((x + radarExtent) / (radarExtent * 2), 0, 1);
-          uvs[uv++] = clamp((radarExtent - z) / (radarExtent * 2), 0, 1);
+          const source = this.sourceKmFromWorld(x, z);
+          uvs[uv++] = clamp((source.x + radarExtent) / (radarExtent * 2), 0, 1);
+          uvs[uv++] = clamp((radarExtent - source.z) / (radarExtent * 2), 0, 1);
         }
       }
       for (let iz = 0; iz < segments; iz += 1) {
@@ -1580,7 +1603,8 @@
       let written = 0;
       for (let i = 0; i < count * 5 && written < count; i += 1) {
         const angle = hash2(i, 7, 19) * Math.PI * 2;
-        const radius = 8 + Math.sqrt(hash2(i, 11, 23)) * (this.region.playRadius - 12);
+        const minRadius = Math.min(2.5, this.region.playRadius * 0.12);
+        const radius = minRadius + Math.sqrt(hash2(i, 11, 23)) * Math.max(1, this.region.playRadius - minRadius - 1.5);
         const x = Math.cos(angle) * radius, z = Math.sin(angle) * radius;
         const slope = this.slopeAt(x, z, 0.35);
         const geologyGate = this.region.id === "maxwell" || this.region.id === "alpha" ? 0.11 : 0.07;
@@ -1608,7 +1632,7 @@
       const positions = new Float32Array(count * 3);
       for (let i = 0; i < count; i += 1) {
         const angle = hash2(i, 31, 71) * Math.PI * 2;
-        const radius = 20 + Math.sqrt(hash2(i, 37, 73)) * 120;
+        const radius = 8 + Math.sqrt(hash2(i, 37, 73)) * Math.max(48, this.worldSpan * 0.52);
         positions[i * 3] = Math.cos(angle) * radius;
         positions[i * 3 + 1] = 3 + hash2(i, 41, 79) * 21;
         positions[i * 3 + 2] = Math.sin(angle) * radius;
@@ -1623,10 +1647,11 @@
     }
 
     resolveObservationPosition(observation) {
-      const anchor = observation.anchor || { x: 0, z: 0 };
-      const searchRadius = observation.searchRadius || 11;
-      const step = observation.searchStep || 2.75;
-      const limit = Math.max(8, this.region.playRadius - 8);
+      const authoredAnchor = observation.anchor || { x: 0, z: 0 };
+      const anchor = this.worldPointFromReference(authoredAnchor);
+      const searchRadius = (observation.searchRadius || 11) / this.horizontalCompression;
+      const step = Math.max(0.28, (observation.searchStep || 2.75) / this.horizontalCompression);
+      const limit = Math.max(6, this.region.playRadius - 3);
       let best = null;
       const evaluate = (x, z) => {
         const radius = Math.hypot(x, z);
@@ -1634,10 +1659,10 @@
         const height = this.heightAt(x, z);
         const slope = this.slopeAt(x, z, 0.45);
         const localRelief = Math.max(
-          Math.abs(this.heightAt(x + 2.2, z) - height),
-          Math.abs(this.heightAt(x - 2.2, z) - height),
-          Math.abs(this.heightAt(x, z + 2.2) - height),
-          Math.abs(this.heightAt(x, z - 2.2) - height)
+          Math.abs(this.heightAt(x + 0.55, z) - height),
+          Math.abs(this.heightAt(x - 0.55, z) - height),
+          Math.abs(this.heightAt(x, z + 0.55) - height),
+          Math.abs(this.heightAt(x, z - 0.55) - height)
         );
         const offset = Math.hypot(x - anchor.x, z - anchor.z);
         let score = -offset * 0.035;
@@ -2314,7 +2339,7 @@
         if (token !== this.transitionToken) return;
         this.resolvedObservations = this.regionWorld.createEducationalMarkers(region.education?.observations || []);
         this.loadDiscoveryState();
-        this.setCameraForRegion(region, switching ? 12 : 24);
+        this.setCameraForRegion(region, switching ? 4.8 : 8.5);
         this.updateRegionUI();
         this.setupEducationUI();
         this.setLoading(1, "WILAYAH SIAP");
@@ -2387,13 +2412,15 @@
     }
 
     setCameraForRegion(region, altitude = 2.7) {
-      const ground = this.regionWorld.heightAt(region.spawn.x, region.spawn.z);
+      const spawn = this.regionWorld.worldPointFromReference(region.spawn);
+      const target = region.lookTarget ? this.regionWorld.worldPointFromReference(region.lookTarget) : null;
+      const ground = this.regionWorld.heightAt(spawn.x, spawn.z);
       this.lastGround = ground;
       this.cameraAltitude = altitude;
-      this.camera.position.set(region.spawn.x, ground + altitude, region.spawn.z);
-      if (region.lookTarget) {
-        const dx = region.lookTarget.x - region.spawn.x;
-        const dz = region.lookTarget.z - region.spawn.z;
+      this.camera.position.set(spawn.x, ground + altitude, spawn.z);
+      if (target) {
+        const dx = target.x - spawn.x;
+        const dz = target.z - spawn.z;
         this.yaw = Math.atan2(-dx, -dz);
       } else {
         this.yaw = region.heading;
@@ -2414,7 +2441,7 @@
       const duration = this.venus.motion.matches ? 360 : 3800;
       const start = performance.now();
       const startAltitude = this.cameraAltitude;
-      const targetAltitude = this.region.spawn.altitude;
+      const targetAltitude = clamp(this.region.spawn.altitude * 0.62, 0.28, 0.48);
       await new Promise(resolve => {
         const frame = now => {
           if (token !== this.transitionToken || this.state !== STATES.ENTERING) return resolve();
@@ -2828,7 +2855,7 @@
       const baseSpeed = clearance < 0.35 ? 0.16 : clearance < 2 ? lerp(0.16, 1.2, (clearance - 0.35) / 1.65) : clearance < 8 ? lerp(1.2, 3.8, (clearance - 2) / 6) : 5.8;
       const boost = this.input.boost() ? 2.7 : 1;
       const precision = this.input.precision() ? 0.30 : 1;
-      const targetSpeed = baseSpeed * boost * precision;
+      const targetSpeed = baseSpeed * boost * precision * (this.region.space?.movementScale || 0.72);
       let forward = axes.forward, strafe = axes.strafe;
       const mag = Math.hypot(forward, strafe);
       if (mag > 1) { forward /= mag; strafe /= mag; }
@@ -3008,37 +3035,22 @@
     }
 
     animateExitRetreat(targetAltitude, duration, token) {
+      // Port of Mars Full Exploration's altitude stage: keep the live surface renderer
+      // running while the camera rises. Planet-scale recession is owned by VenusScene's
+      // dedicated fullDiveBlend, not faked by dragging the local terrain camera backward.
       if (!this.regionWorld || !this.camera) return Promise.resolve();
       const groundNow = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
       const startAltitude = Math.max(0, this.camera.position.y - groundNow);
-      const startX = this.camera.position.x;
-      const startZ = this.camera.position.z;
-      const startPitch = this.pitch;
-      const startFov = this.camera.fov;
-      const startFogDensity = this.scene?.fog?.density ?? this.region?.fogDensity ?? 0.008;
-      const backwardX = Math.sin(this.yaw);
-      const backwardZ = Math.cos(this.yaw);
-      const retreatDistance = 18;
-      const targetPitch = clamp(startPitch - 0.10, -0.34, -0.08);
-      const targetFov = Math.min(74, startFov + 6);
       const start = performance.now();
       return new Promise(resolve => {
         const frame = now => {
           if (token !== this.transitionToken) return resolve();
-          const raw = clamp((now - start) / (this.venus.motion.matches ? 140 : duration), 0, 1);
+          const raw = clamp((now - start) / (this.venus.motion.matches ? 120 : duration), 0, 1);
           const eased = smootherstep(raw);
-          const x = lerp(startX, startX + backwardX * retreatDistance, eased);
-          const z = lerp(startZ, startZ + backwardZ * retreatDistance, eased);
-          const ground = this.regionWorld.heightAt(x, z);
+          const ground = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
           this.lastGround = ground;
           this.cameraAltitude = lerp(startAltitude, targetAltitude, eased);
-          this.camera.position.set(x, ground + this.cameraAltitude, z);
-          this.pitch = lerp(startPitch, targetPitch, eased);
-          this.lookPitchTarget = this.pitch;
-          this.camera.rotation.set(this.pitch, this.yaw, 0, "YXZ");
-          this.camera.fov = lerp(startFov, targetFov, eased);
-          this.camera.updateProjectionMatrix();
-          if (this.scene?.fog) this.scene.fog.density = lerp(startFogDensity, startFogDensity * 0.58, eased);
+          this.camera.position.y = ground + this.cameraAltitude;
           this.root.style.setProperty("--exit-lift", String(eased));
           if (raw < 1) requestAnimationFrame(frame);
           else resolve();
@@ -3064,8 +3076,8 @@
 
       this.state = STATES.EXITING;
       const token = ++this.transitionToken;
-      // Mars is the lifecycle reference. Venus adds only a longer visible retreat so
-      // the terrain remains present while the camera physically leaves the surface.
+      // Mars is the exact lifecycle reference: first rise on the live surface, then
+      // reverse the dedicated planet full-dive while the surface fades over it.
       this.input.clear();
       this.input.unbind();
       this.selector.hidden = true;
@@ -3084,39 +3096,23 @@
         try {
           const ground = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
           const currentAltitude = Math.max(0, this.camera.position.y - ground);
-          await this.animateExitRetreat(Math.max(currentAltitude, 58), 1900, token);
+          await this.animateExitRetreat(Math.max(currentAltitude, 18), 1650, token);
         } catch {}
       }
       if (token !== this.transitionToken) return;
 
       const reduced = this.venus.motion.matches;
-      const duration = reduced ? 280 : 3400;
+      const duration = reduced ? 260 : 3200;
       const start = performance.now();
-      const phaseX = this.camera?.position.x ?? 0;
-      const phaseZ = this.camera?.position.z ?? 0;
-      const phaseAltitude = this.cameraAltitude;
-      const backwardX = Math.sin(this.yaw);
-      const backwardZ = Math.cos(this.yaw);
-      const phaseFogDensity = this.scene?.fog?.density ?? this.region?.fogDensity ?? 0.008;
       await new Promise(resolve => {
         const frame = now => {
           if (token !== this.transitionToken) return resolve();
           const raw = clamp((now - start) / duration, 0, 1);
           const eased = smootherstep(raw);
-          const surfaceFade = 1 - smootherstep((raw - 0.10) / 0.72);
+          const surfaceFade = 1 - smoothstep(raw / 0.62);
           this.root.style.setProperty("--surface-opacity", String(surfaceFade));
           this.root.style.setProperty("--entry-progress", String(1 - eased));
           this.root.style.setProperty("--exit-lift", String(1));
-
-          if (this.camera && this.regionWorld) {
-            const recede = smootherstep(raw) * 16;
-            const x = phaseX + backwardX * recede;
-            const z = phaseZ + backwardZ * recede;
-            const ground = this.regionWorld.heightAt(x, z);
-            this.cameraAltitude = lerp(phaseAltitude, Math.max(phaseAltitude, 78), smootherstep(raw));
-            this.camera.position.set(x, ground + this.cameraAltitude, z);
-            if (this.scene?.fog) this.scene.fog.density = lerp(phaseFogDensity, phaseFogDensity * 0.42, eased);
-          }
 
           this.venus.setFullExplorationTransition?.(1 - eased, this.region);
           if (raw < 1) requestAnimationFrame(frame);

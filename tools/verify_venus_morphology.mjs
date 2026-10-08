@@ -49,7 +49,11 @@ for (const region of REGIONS) {
   worlds.set(region.id, world);
 }
 
-const H = (id, x, z) => worlds.get(id).morphologyHeightAt(x, z);
+const H = (id, x, z) => {
+  const world = worlds.get(id);
+  const point = world.worldPointFromReference({ x, z });
+  return world.morphologyHeightAt(point.x, point.z);
+};
 const assert = (condition, message) => {
   if (!condition) throw new Error(`FAIL: ${message}`);
   console.log(`PASS: ${message}`);
@@ -84,8 +88,12 @@ const samples = new Map();
 for (const region of REGIONS) {
   const world = worlds.get(region.id);
   const values = [];
-  for (let z = -120; z <= 120; z += 4) {
-    for (let x = -120; x <= 120; x += 4) values.push(world.morphologyHeightAt(x, z));
+  for (let iz = -30; iz <= 30; iz += 1) {
+    for (let ix = -30; ix <= 30; ix += 1) {
+      const x = (ix / 30) * region.playRadius * 0.92;
+      const z = (iz / 30) * region.playRadius * 0.92;
+      values.push(world.morphologyHeightAt(x, z));
+    }
   }
   const mean = values.reduce((a, b) => a + b, 0) / values.length;
   const centered = values.map(value => value - mean);

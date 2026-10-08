@@ -61,9 +61,14 @@ const triangleEstimate = profile => {
 const triLow = triangleEstimate(low), triMedium = triangleEstimate(medium), triHigh = triangleEstimate(high);
 assert(triLow < triMedium && triMedium < triHigh, `quality materially changes terrain triangle budget (${triLow} / ${triMedium} / ${triHigh})`);
 
+assert(venusScene.includes("this.fullDiveBlend = 0") && venusScene.includes("this.fullDiveQuaternion = new THREE.Quaternion()"), "Venus scene owns dedicated full-dive state separate from explorationBlend");
+assert(venusScene.includes("const dive = smooth(this.fullDiveBlend)") && venusScene.includes("this.fullDiveYawTarget"), "Venus render path applies full-dive distance and geographic orientation");
+assert(!/setFullExplorationTransition\(blend, location\)[\s\S]{0,1200}this\.explorationBlend = nextBlend/.test(venusScene), "Full Exploration no longer reuses explorationBlend as its sole transition state");
+assert(REGIONS.every(item => item.space?.horizontalCompression >= 6 && item.space?.horizontalCompression <= 20), "all destinations use explicit 6x-20x scientific-to-render horizontal compression");
+assert(REGIONS.every(item => item.space?.verticalReliefScale > 1 && item.space?.verticalReliefScale < 1.3), "vertical relief is controlled independently from horizontal compression");
 assert(source.includes("animateExitRetreat("), "Venus exit includes a physical surface retreat stage");
-assert(source.includes("await this.animateExitRetreat(Math.max(currentAltitude, 58), 1900, token)"), "Venus exit keeps terrain visible during a Mars-family altitude retreat");
-assert(source.includes("const duration = reduced ? 280 : 3400"), "Venus exit uses a deliberate cinematic blend duration");
+assert(source.includes("await this.animateExitRetreat(Math.max(currentAltitude, 18), 1650, token)"), "Venus exit keeps terrain visible during the Mars-family 1650 ms ascent stage");
+assert(source.includes("const duration = reduced ? 260 : 3200"), "Venus exit uses the same primary full-dive blend duration family as Mars");
 assert(source.includes("this.input.unbind();") && source.includes("this.venus.setFullExplorationTransition?.(1 - eased, this.region)"), "exit locks input and blends into the existing Venus panorama");
 assert(source.indexOf("await this.animateExitRetreat") < source.indexOf("this.finishExitToOrbit();", source.indexOf("async exit()")), "world cleanup occurs after the visible retreat and blend");
 
