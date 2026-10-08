@@ -504,7 +504,7 @@
       softBoundaryStart: 23,
       source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/203",
-      image: "assets/venus-alpha-regio-reference.svg",
+      image: "assets/venus-alpha-regio-pia00481.jpg",
       descriptor: "Tessera dengan punggungan, palung, dan lembah sesar yang saling berpotongan.",
       description: "Alpha Regio adalah salah satu contoh paling khas medan tessera Venus. Banyak tren struktur berpotongan membentuk pola kompleks, diselingi bagian rendah yang dapat terisi lava lebih halus.",
       facts: [
@@ -1494,53 +1494,78 @@
     }
 
     alphaMorphologyAt(x, z) {
-      // PIA00481: Alpha is a province-wide tessera fabric. There is no enclosing
-      // basin and no single mountain landmark. Two warped structural families cross
-      // almost the whole region, interrupted by fault valleys and smoother lows.
-      const broadUpland = 0.70
-        + valueNoise(x * 0.0055 + 1.7, z * 0.0055 - 2.2, 1627) * 0.17
-        + valueNoise(x * 0.010 - 3.1, z * 0.010 + 1.5, 1629) * 0.07;
-      const fabricMask = clamp(0.78 + valueNoise(x * 0.0048, z * 0.0048, 1631) * 0.28, 0.42, 1.0);
+      // PIA00481 morphology target: Alpha is a province-wide tessera fabric, not a
+      // woven grid and not a bowl surrounded by walls. The structural families below
+      // are anisotropic, warped and intermittently gated so spacing, length and
+      // persistence vary naturally instead of repeating as evenly spaced sine waves.
+      const broadUpland = 0.68
+        + valueNoise(x * 0.0052 + 1.7, z * 0.0050 - 2.2, 1627) * 0.18
+        + valueNoise(x * 0.0107 - 3.1, z * 0.0096 + 1.5, 1629) * 0.075;
 
-      const familyA = this.rotateLocal(x, z, 0, -6, 0.54);
-      const warpA = Math.sin(familyA.u * 0.022) * 7.0
-        + Math.sin(familyA.u * 0.008 + 1.2) * 4.0
-        + valueNoise(familyA.u * 0.009, familyA.v * 0.006, 1601) * 5.0;
-      const phaseA = (familyA.v + warpA) * (Math.PI * 2 / 24.0)
-        + valueNoise(x * 0.012, z * 0.012, 1607) * 0.58;
-      const cosA = Math.cos(phaseA);
-      const ridgeA = Math.pow(clamp((cosA + 0.32) / 1.32, 0, 1), 2.0) * 0.25;
-      const troughA = -Math.pow(clamp((-cosA + 0.36) / 1.36, 0, 1), 2.1) * 0.16;
-      const maskA = clamp(0.72 + valueNoise(x * 0.008 + 2.4, z * 0.009 - 1.8, 1609) * 0.34, 0.22, 1.0);
+      const structuralFamily = (angle, seed, alongScale, crossScale, amplitude, sparsity = 1.0) => {
+        const local = this.rotateLocal(x, z, 0, 0, angle);
+        const warpAlong = valueNoise(local.u * 0.0068 + seed * 0.031, local.v * 0.0052 - seed * 0.017, seed + 3) * 10.5;
+        const warpCross = valueNoise(local.u * 0.0049 - seed * 0.023, local.v * 0.0073 + seed * 0.019, seed + 7) * 8.0;
+        const u = local.u + warpCross;
+        const v = local.v + warpAlong;
 
-      const familyB = this.rotateLocal(x, z, 8, -2, -0.76);
-      const warpB = Math.sin(familyB.u * 0.020 + 1.7) * 7.2
-        + Math.sin(familyB.u * 0.007 - 0.5) * 4.6
-        + valueNoise(familyB.u * 0.009, familyB.v * 0.006, 1613) * 5.4;
-      const phaseB = (familyB.v + warpB) * (Math.PI * 2 / 29.0)
-        + valueNoise(x * 0.011 - 3.0, z * 0.012 + 1.5, 1619) * 0.62;
-      const cosB = Math.cos(phaseB);
-      const ridgeB = Math.pow(clamp((cosB + 0.30) / 1.30, 0, 1), 2.0) * 0.23;
-      const troughB = -Math.pow(clamp((-cosB + 0.38) / 1.38, 0, 1), 2.1) * 0.15;
-      const maskB = clamp(0.70 + valueNoise(x * 0.009 - 1.2, z * 0.008 + 2.8, 1621) * 0.36, 0.20, 1.0);
+        const primary = ridge(valueNoise(u * alongScale, v * crossScale, seed + 11));
+        const secondary = ridge(valueNoise(u * alongScale * 0.56 + 4.7, v * crossScale * 1.37 - 2.9, seed + 17));
+        const breakup = clamp(0.57
+          + valueNoise(local.u * 0.010 + seed, local.v * 0.008 - seed, seed + 23) * 0.55
+          + valueNoise(local.u * 0.004 - 1.3, local.v * 0.004 + 2.1, seed + 29) * 0.18, 0, 1);
+        const patchGate = clamp((breakup - (1.0 - sparsity) * 0.40) / Math.max(sparsity, 0.12), 0, 1);
 
-      const tesseraFabric = ((ridgeA + troughA) * maskA + (ridgeB + troughB) * maskB) * fabricMask;
-      const blockRelief = (ridge(valueNoise(x * 0.020 + 1.2, z * 0.019 - 2.1, 1637)) - 0.54) * 0.10 * fabricMask;
+        // Thresholded ridged fields create broken, finite lineations with irregular
+        // spacing and length. The shallow companion trough helps the tessera read in
+        // silhouette without turning every intersection into a mountain spike.
+        const crest = Math.pow(clamp((primary * 0.72 + secondary * 0.28 - 0.52) / 0.48, 0, 1), 1.65);
+        const trough = Math.pow(clamp((0.46 - primary) / 0.46, 0, 1), 1.55);
+        return (crest * amplitude - trough * amplitude * 0.42) * patchGate;
+      };
 
-      const faultA = this.rotateLocal(x, z, 18, -10, 0.17);
-      const faultACenter = faultA.v - Math.sin(faultA.u * 0.019) * 5.0;
-      const faultValleyA = -(1 - smoothstep((Math.abs(faultACenter) - 5.8) / 4.6))
-        * Math.exp(-((faultA.u / 108) ** 6)) * 0.30;
-      const faultB = this.rotateLocal(x, z, -42, 32, -0.40);
-      const faultBCenter = faultB.v - Math.sin(faultB.u * 0.020 + 0.8) * 5.8;
-      const faultValleyB = -(1 - smoothstep((Math.abs(faultBCenter) - 6.8) / 5.0))
-        * Math.exp(-((faultB.u / 92) ** 6)) * 0.26;
+      // Three structural direction families. A and B dominate; C is intentionally
+      // patchier so Alpha never degenerates into a checkerboard/cross-hatch wallpaper.
+      const familyA = structuralFamily(0.48, 1601, 0.0062, 0.050, 0.34, 0.92);
+      const familyB = structuralFamily(-0.82, 1613, 0.0056, 0.043, 0.31, 0.86);
+      const familyC = structuralFamily(1.17, 1621, 0.0072, 0.057, 0.18, 0.48);
 
-      const lowA = -this.ellipseGaussian(x, z, -54, -42, 36, 28, 0.29);
-      const lowB = -this.ellipseGaussian(x, z, 58, 34, 40, 30, 0.25);
-      const eveLow = -this.ellipseGaussian(x, z, 12, 96, 48, 34, 0.22);
-      return broadUpland + tesseraFabric + blockRelief + faultValleyA + faultValleyB
-        + lowA + lowB + eveLow;
+      const blockField = ridge(valueNoise(x * 0.018 + 1.2, z * 0.017 - 2.1, 1637));
+      const blockGate = clamp(0.48 + valueNoise(x * 0.0064 - 2.7, z * 0.0069 + 3.4, 1641) * 0.55, 0, 1);
+      const fracturedBlocks = (blockField - 0.54) * 0.13 * blockGate;
+
+      // Irregular, non-periodic fault valleys. Each has a distinct orientation,
+      // curvature, width and finite extent, echoing PIA00481's flat-floored valleys
+      // without arranging them on a regular lattice.
+      const faultValley = (cx, cz, angle, length, width, depth, seed) => {
+        const local = this.rotateLocal(x, z, cx, cz, angle);
+        const curve = valueNoise(local.u * 0.012 + seed * 0.017, local.u * 0.004 - seed * 0.011, seed) * 8.0
+          + valueNoise(local.u * 0.025 - 1.7, seed * 0.031, seed + 5) * 2.8;
+        const d = Math.abs(local.v - curve);
+        const cross = Math.exp(-((d / width) ** 2));
+        const along = Math.exp(-((local.u / length) ** 6));
+        const floor = 0.74 + valueNoise(local.u * 0.020, local.v * 0.015, seed + 9) * 0.18;
+        return -cross * along * depth * floor;
+      };
+
+      const faultA = faultValley(18, -12, 0.13, 116, 6.8, 0.30, 1661);
+      const faultB = faultValley(-44, 34, -0.43, 98, 7.5, 0.27, 1669);
+      const faultC = faultValley(52, 66, 0.91, 72, 5.6, 0.20, 1677);
+      const faultD = faultValley(-76, -58, -1.08, 68, 5.2, 0.17, 1683);
+
+      // Smoother local lows interrupt the tessera fabric instead of forming one
+      // enclosed basin. Tessera relief is actually subdued inside these patches,
+      // rather than merely placing an orange depression under unchanged ridges.
+      const lowMaskA = this.ellipseGaussian(x, z, -58, -38, 34, 27, 1);
+      const lowMaskB = this.ellipseGaussian(x, z, 62, 31, 43, 29, 1);
+      const lowMaskC = this.ellipseGaussian(x, z, 10, 94, 47, 33, 1);
+      const lowMaskD = this.ellipseGaussian(x, z, 88, -71, 31, 24, 1);
+      const resurfaceMask = clamp(Math.max(lowMaskA, lowMaskB, lowMaskC, lowMaskD) * 0.82, 0, 0.82);
+      const tesseraRelief = (familyA + familyB + familyC + fracturedBlocks) * (1 - resurfaceMask);
+      const resurfacedLows = -(lowMaskA * 0.39 + lowMaskB * 0.27 + lowMaskC * 0.35 + lowMaskD * 0.16);
+
+      return broadUpland + tesseraRelief
+        + faultA + faultB + faultC + faultD + resurfacedLows;
     }
 
     continuationMorphologyAt(x, z) {
@@ -1663,35 +1688,34 @@
       }
 
       if (this.region.id === "alpha") {
-        const a = this.rotateLocal(x, z, 0, 0, 0.54);
-        const b = this.rotateLocal(x, z, 0, 0, -0.76);
-        const regionalMask = clamp(0.70
-          + valueNoise(x * 0.0055 + 2.0, z * 0.0052 - 1.0, 1981) * 0.34
-          + valueNoise(x * 0.012 - 3.0, z * 0.011 + 2.0, 1987) * 0.12, 0.24, 1.0);
-        const offsetsA = [-146, -106, -62, -20, 28, 76, 126, 166];
-        const offsetsB = [-154, -101, -48, 8, 62, 116, 166];
-        let fabric = 0;
-        for (let i = 0; i < offsetsA.length; i += 1) {
-          const warp = Math.sin(a.u * (0.027 + (i % 2) * 0.003) + i * 0.74) * (5.0 + (i % 3) * 1.8)
-            + valueNoise(a.u * 0.016 + i, a.v * 0.009, 1993 + i) * 4.4;
-          const center = a.v - offsetsA[i] - warp;
-          const mask = clamp(0.44 + valueNoise(x * 0.013 + i, z * 0.012 - i, 2003 + i) * 0.62, 0.02, 1.0);
-          fabric += Math.exp(-((center / (6.8 + (i % 3) * 1.2)) ** 2)) * mask * 0.15;
-          fabric -= Math.exp(-(((center - 10) / 7.8) ** 2)) * mask * 0.075;
-        }
-        for (let i = 0; i < offsetsB.length; i += 1) {
-          const warp = Math.sin(b.u * (0.025 + (i % 3) * 0.002) + i * 0.83) * (5.4 + (i % 2) * 2.0)
-            + valueNoise(b.u * 0.016 - i, b.v * 0.009, 2017 + i) * 4.6;
-          const center = b.v - offsetsB[i] - warp;
-          const mask = clamp(0.43 + valueNoise(x * 0.012 - i, z * 0.013 + i, 2027 + i) * 0.63, 0.02, 1.0);
-          fabric += Math.exp(-((center / (7.2 + (i % 2) * 1.5)) ** 2)) * mask * 0.135;
-          fabric -= Math.exp(-(((center + 10) / 8.2) ** 2)) * mask * 0.070;
-        }
+        // Distant Alpha keeps the same irregular tessera grammar as the playable
+        // world. It intentionally avoids evenly spaced line arrays so far LOD cannot
+        // collapse into a woven grid or checkerboard.
+        const outerFamily = (angle, seed, alongScale, crossScale, amplitude, density) => {
+          const local = this.rotateLocal(x, z, 0, 0, angle);
+          const warpU = valueNoise(local.u * 0.0048 + seed * 0.019, local.v * 0.0041, seed + 3) * 13.0;
+          const warpV = valueNoise(local.u * 0.0040, local.v * 0.0052 - seed * 0.013, seed + 7) * 10.0;
+          const field = ridge(valueNoise((local.u + warpV) * alongScale, (local.v + warpU) * crossScale, seed + 11));
+          const companion = ridge(valueNoise((local.u - warpV * 0.35) * alongScale * 0.58 + 3.2, (local.v + warpU * 0.45) * crossScale * 1.31, seed + 17));
+          const persistence = clamp(0.52
+            + valueNoise(local.u * 0.0064 + seed, local.v * 0.0057 - seed, seed + 23) * 0.60, 0, 1);
+          const gate = clamp((persistence - (1 - density) * 0.46) / Math.max(density, 0.14), 0, 1);
+          const crest = Math.pow(clamp((field * 0.76 + companion * 0.24 - 0.54) / 0.46, 0, 1), 1.55);
+          const trough = Math.pow(clamp((0.43 - field) / 0.43, 0, 1), 1.45);
+          return (crest * amplitude - trough * amplitude * 0.38) * gate;
+        };
+
+        const familyA = outerFamily(0.49, 1981, 0.0048, 0.036, 0.26, 0.88);
+        const familyB = outerFamily(-0.81, 1993, 0.0044, 0.032, 0.24, 0.82);
+        const familyC = outerFamily(1.20, 2003, 0.0055, 0.041, 0.14, 0.44);
+        const regionalBlocks = (ridge(valueNoise(x * 0.012, z * 0.011, 2017)) - 0.53)
+          * clamp(0.48 + valueNoise(x * 0.0052 - 2.0, z * 0.0049 + 1.5, 2027) * 0.54, 0, 1) * 0.10;
         const smoothLowA = -this.ellipseGaussian(x, z, -112, 78, 54, 42, 0.18);
         const smoothLowB = -this.ellipseGaussian(x, z, 116, -88, 60, 44, 0.16);
-        return 0.34 + fabric * regionalMask
-          + valueNoise(x * 0.012, z * 0.012, 2039) * 0.08
-          + smoothLowA + smoothLowB;
+        const smoothLowC = -this.ellipseGaussian(x, z, 32, 146, 52, 38, 0.12);
+        return 0.34 + familyA + familyB + familyC + regionalBlocks
+          + valueNoise(x * 0.010, z * 0.010, 2039) * 0.07
+          + smoothLowA + smoothLowB + smoothLowC;
       }
       return 0;
     }

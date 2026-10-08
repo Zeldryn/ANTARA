@@ -66,11 +66,11 @@ Major regional silhouettes and morphology are preserved by the existing region-s
 
 The broken remote Alpha Regio hotlink was removed from both Venus Info Mode and the Full Exploration destination selector.
 
-The project now ships a local fallback asset:
+The project now ships the locally bundled Alpha Regio scientific reference supplied for this build:
 
-`assets/venus-alpha-regio-reference.svg`
+`assets/venus-alpha-regio-pia00481.jpg`
 
-It is explicitly labelled as an ANTARA morphology diagram based on the NASA/JPL Magellan PIA00481 scientific description, **not as an original NASA image**. This makes the UI self-contained and prevents another CORS/hotlink failure.
+The previous custom schematic has been removed completely. Venus Info Mode and Full Exploration both load this local JPEG, so there is no runtime CORS or hotlink dependency.
 
 The official scientific reference remains:
 

@@ -151,7 +151,7 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
   },
   {
     images: [
-      { src: "assets/venus-alpha-regio-reference.svg", alt: "Diagram lokal morfologi Alpha Regio berdasarkan deskripsi NASA/JPL PIA00481", credit: "ANTARA · berdasarkan NASA/JPL PIA00481", source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/", license: "Referensi ilmiah NASA/JPL", licenseUrl: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/", caption: "Alpha Regio · diagram tessera berdasarkan PIA00481", fit: "cover" }
+      { src: "assets/venus-alpha-regio-pia00481.jpg", alt: "Perspektif tiga dimensi Alpha Regio dari data radar dan altimetri Magellan, NASA/JPL PIA00481", credit: "NASA/JPL · Magellan · PIA00481", source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/", license: "NASA/JPL scientific imagery", licenseUrl: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/", caption: "Alpha Regio · perspektif tiga dimensi Magellan · PIA00481", fit: "cover" }
     ],
     title: "Medan Tessera", kicker: "ALPHA REGIO", subtitle: "Punggungan, rekahan, dan lembah patahan saling berpotongan",
     summary: "Tesserae adalah salah satu medan paling kompleks di Venus. Alpha Regio memperlihatkan jaringan punggungan, palung, dan struktur patahan yang saling memotong, mencatat sejarah deformasi permukaan yang panjang.",

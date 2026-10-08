@@ -68,8 +68,12 @@ assert(maxNormal < 1e-5, `neighboring chunk edge normals are world-sampled consi
 left.dispose(); right.dispose(); world.dispose();
 
 const sceneSource = fs.readFileSync(new URL("../venus-scene.js", import.meta.url), "utf8");
-const alphaAsset = new URL("../assets/venus-alpha-regio-reference.svg", import.meta.url);
+const alphaAsset = new URL("../assets/venus-alpha-regio-pia00481.jpg", import.meta.url);
 assert(fs.existsSync(alphaAsset), "Alpha Regio has a local reference asset");
-assert(sceneSource.includes('src: "assets/venus-alpha-regio-reference.svg"'), "Venus Info Mode uses the local Alpha reference instead of a remote hotlink");
-assert(source.includes('image: "assets/venus-alpha-regio-reference.svg"'), "Full Exploration selector uses the same local Alpha reference");
+assert(sceneSource.includes('src: "assets/venus-alpha-regio-pia00481.jpg"'), "Venus Info Mode uses the local Alpha reference instead of a remote hotlink");
+assert(source.includes('image: "assets/venus-alpha-regio-pia00481.jpg"'), "Full Exploration selector uses the same local Alpha reference");
+const alphaBytes = fs.readFileSync(alphaAsset);
+assert(alphaBytes.length > 100000, "Alpha Regio local reference is a real image asset, not a tiny placeholder");
+assert(alphaBytes[0] === 0xff && alphaBytes[1] === 0xd8, "Alpha Regio local reference is a JPEG");
+assert(!fs.existsSync(new URL("../assets/venus-alpha-regio-reference.svg", import.meta.url)), "obsolete Alpha schematic has been removed");
 console.log("Venus material/tile pipeline verification complete.");
