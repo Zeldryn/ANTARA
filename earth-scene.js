@@ -382,7 +382,7 @@ window.EarthScene = class EarthScene {
     this.exploring = false;
     this.fullExploring = false;
     this.fullDiveBlend = 0;
-    this.fullDiveRegionKey = "";
+    this.fullDiveAnchorKey = "";
     this.topicIndex = 0;
     this.pose = { yaw: 4.58, pitch: 0, roll: -0.18 };
     this.poseTarget = { ...this.pose };
@@ -519,15 +519,15 @@ window.EarthScene = class EarthScene {
     this.wake();
   }
 
-  setFullExplorationTransition(blend, region = null) {
+  setFullExplorationTransition(blend, anchor = null) {
     const nextBlend = this.clamp(Number(blend) || 0);
-    if (region?.latitude != null && region?.longitude != null) {
-      const key = `${region.latitude.toFixed(4)},${region.longitude.toFixed(4)}`;
-      if (key !== this.fullDiveRegionKey || this.fullDiveBlend < 0.001) {
-        const yaw = -Math.PI / 2 - region.longitude * Math.PI / 180;
+    if (anchor?.latitude != null && anchor?.longitude != null) {
+      const key = `${anchor.latitude.toFixed(4)},${anchor.longitude.toFixed(4)}`;
+      if (key !== this.fullDiveAnchorKey || this.fullDiveBlend < 0.001) {
+        const yaw = -Math.PI / 2 - anchor.longitude * Math.PI / 180;
         const delta = Math.atan2(Math.sin(yaw - this.pose.yaw), Math.cos(yaw - this.pose.yaw));
-        this.poseTarget = { yaw: this.pose.yaw + delta, pitch: region.latitude * Math.PI / 180, roll: 0 };
-        this.fullDiveRegionKey = key;
+        this.poseTarget = { yaw: this.pose.yaw + delta, pitch: anchor.latitude * Math.PI / 180, roll: 0 };
+        this.fullDiveAnchorKey = key;
       }
     }
     this.fullDiveBlend = nextBlend;
@@ -535,19 +535,19 @@ window.EarthScene = class EarthScene {
     if (this.active) this.render();
   }
 
-  beginFullExplorationFocus(region = null) {
+  beginFullExplorationFocus(anchor = null) {
     if (!this.active || this.travelMode) return;
     if (this.exploring) this.exitExploration(false);
     this.fullExploring = true;
     this.information.inert = true;
     this.element.classList.add("is-full-focus");
     this.element.classList.remove("is-full-surface-active");
-    if (region?.latitude != null && region?.longitude != null) {
-      this.setFullExplorationTransition(0, region);
+    if (anchor?.latitude != null && anchor?.longitude != null) {
+      this.setFullExplorationTransition(0, anchor);
       this.element.classList.add("is-full-descending");
     } else {
       this.fullDiveBlend = 0;
-      this.fullDiveRegionKey = "";
+      this.fullDiveAnchorKey = "";
       this.element.classList.remove("is-full-descending", "is-full-diving");
     }
     this.wake();
@@ -559,17 +559,10 @@ window.EarthScene = class EarthScene {
     this.element.classList.remove("is-full-descending");
   }
 
-  returnFromFullExplorationToSelector() {
-    if (!this.fullExploring) return;
-    this.element.classList.remove("is-full-surface-active", "is-full-descending");
-    this.element.classList.add("is-full-focus");
-    this.wake();
-  }
-
   endFullExplorationFocus() {
     this.fullExploring = false;
     this.fullDiveBlend = 0;
-    this.fullDiveRegionKey = "";
+    this.fullDiveAnchorKey = "";
     this.element.classList.remove("is-full-focus", "is-full-descending", "is-full-surface-active", "is-full-diving");
     this.information.inert = false;
     this.wake();

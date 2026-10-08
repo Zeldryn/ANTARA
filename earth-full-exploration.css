@@ -1,7 +1,6 @@
-/* Earth Full Exploration: real DEM / bathymetry terrain, scoped to Earth only.
-   The panorama entry intentionally reuses Mars' .mars-explore-stack and
-   .mars-full-explore-button geometry so both worlds expose Full Exploration
-   with the same hierarchy and responsive behavior. Only the Earth accent differs. */
+/* Earth Full Exploration. Structure/lifecycle intentionally follows Mars Full Exploration.
+   Earth-specific colour, atmosphere and water treatment remain isolated to Earth. */
+
 .mars-caption.earth-caption .earth-full-explore-button {
   border-color:#80b9e266;
   background:#07141dcc;
@@ -12,79 +11,212 @@
   background:#0d2230e8;
   color:#effbff;
 }
+.mars-caption.earth-caption .earth-full-explore-button:disabled { opacity:.5; cursor:wait; }
 
-.earth-scene.is-full-focus .earth-caption { opacity:0 !important; pointer-events:none !important; transition:opacity .35s ease; }
-/* The actual globe dive is driven by EarthScene.setFullExplorationTransition so WebGL,
-   Canvas and CSS fallbacks share one lifecycle instead of a one-off CSS zoom. */
+.earth-scene.is-full-focus .earth-caption {
+  opacity:0 !important;
+  pointer-events:none !important;
+  transition:opacity .35s ease;
+}
 .earth-scene.is-full-descending .earth-viewport,
 .earth-scene.is-full-surface-active .earth-viewport { filter:none; transform:none; }
 
-.earth-full-exploration { --surface:0; --entry-progress:0; position:absolute; inset:0; z-index:30; overflow:hidden; isolation:isolate; color:#eef8fb; background:transparent; }
+.earth-full-exploration {
+  --surface:0;
+  --entry-progress:0;
+  position:absolute;
+  inset:0;
+  z-index:30;
+  overflow:hidden;
+  isolation:isolate;
+  color:#eef8fb;
+  background:transparent;
+}
 .earth-full-exploration[hidden] { display:none; }
-.earth-full-exploration.is-active { background:transparent; }
-.earth-full-exploration.is-preparing,.earth-full-exploration.is-entering,.earth-full-exploration.is-exiting { background:transparent; }
-.earth-full-viewport { position:absolute; inset:0; z-index:1; opacity:var(--surface); background:linear-gradient(#6f9aaf 0 36%, #6e7167 58%, #38433f 100%); transition:opacity .15s linear; touch-action:none; }
+.earth-full-exploration::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  opacity:var(--surface);
+  background:
+    linear-gradient(180deg,#b8d9e51b 0%,transparent 38%,#87aeb41c 58%,#04121cba 100%),
+    radial-gradient(ellipse at 50% 66%,transparent 0 30%,#4d718027 60%,#020a10a8 100%);
+}
+.earth-full-exploration::after {
+  content:"";
+  position:absolute;
+  left:-12%; right:-12%; top:45%; height:28%;
+  z-index:3;
+  pointer-events:none;
+  opacity:calc(var(--surface) * .46);
+  background:linear-gradient(180deg,#d8eef51f,#8fb6c20d 42%,transparent 88%);
+  filter:blur(4px);
+  transform:translateY(calc((1 - var(--entry-progress)) * 18px));
+}
+
+.earth-full-viewport {
+  position:absolute;
+  inset:0;
+  z-index:2;
+  overflow:hidden;
+  opacity:var(--surface);
+  background:
+    radial-gradient(circle at 72% 25%,#dbeff525,transparent 35%),
+    linear-gradient(180deg,#79a8be 0%,#bdd6de 38%,#6b8178 62%,#35423e 100%);
+  transition:opacity .15s linear;
+  touch-action:none;
+}
 .earth-full-canvas { display:block; width:100%; height:100%; }
-.earth-full-exploration.is-active { --surface:1; }
-.earth-full-exploration.is-preparing { --surface:0; }
-.earth-full-exploration.is-entering .earth-full-viewport,
-.earth-full-exploration.is-exiting .earth-full-viewport { touch-action:none; }
-.earth-full-exploration:not(.is-active) .earth-full-actions,
-.earth-full-exploration:not(.is-active) .earth-mobile-controls { pointer-events:none; }
-.earth-full-exploration.is-underwater .earth-full-viewport { filter:saturate(.86) contrast(1.05); }
-.earth-full-atmosphere { position:absolute; inset:0; z-index:2; pointer-events:none; opacity:var(--surface); background:linear-gradient(180deg,#b9d2df16,transparent 42%,#0e2d3c18 75%,#03101866 100%); }
+.earth-full-exploration.is-active .earth-full-viewport { cursor:crosshair; }
+.earth-full-exploration.is-pointer-locked .earth-full-viewport { cursor:none; }
+.earth-full-atmosphere {
+  position:absolute;
+  inset:0;
+  z-index:4;
+  pointer-events:none;
+  opacity:calc(var(--surface) * .82);
+  background:
+    radial-gradient(ellipse at 50% 45%,transparent 0 44%,#7fb2c213 72%,#03101854 100%),
+    linear-gradient(180deg,#dff5ff17,transparent 44%,#0a304018 78%,#02101854 100%);
+  transform:translateY(calc((1 - var(--entry-progress)) * 10px));
+}
 
-.earth-region-selector { position:absolute; z-index:40; left:50%; top:50%; width:min(1040px,calc(100vw - 48px)); max-height:min(82vh,760px); overflow:auto; transform:translate(-50%,-50%); padding:28px; border:1px solid #a9d9ea3d; background:linear-gradient(145deg,#07111be8,#0d1e2bd9); box-shadow:0 34px 120px #01070c99; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
-.earth-region-selector[hidden] { display:none; }
-.earth-full-exploration.is-selecting { background:radial-gradient(circle at center,#10293a22,transparent 55%); }
-.earth-full-exploration.is-selecting .earth-full-viewport, .earth-full-exploration.is-selecting .earth-full-atmosphere { opacity:0; }
-.earth-region-selector-topline { display:flex; align-items:center; justify-content:space-between; gap:20px; color:#7ea9bd; font-size:6px; letter-spacing:2.2px; }
-.earth-region-selector-topline button { width:32px; height:32px; border:1px solid #9ecfe13d; background:transparent; color:#c7eaf6; font-size:20px; }
-.earth-region-selector h3 { margin:12px 0 8px; color:#f0fbff; font:400 clamp(31px,4vw,54px)/1 Georgia,"Times New Roman",serif; letter-spacing:-1px; }
-.earth-region-selector>p { max-width:760px; margin:0; color:#96afbd; font-size:10px; line-height:1.7; }
-.earth-region-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin-top:24px; }
-.earth-region-card { min-height:180px; display:grid; align-content:start; gap:8px; padding:16px; text-align:left; border:1px solid #9bcce338; background:linear-gradient(160deg,#0c1d28d9,#07121bd9); color:#d9eff8; transition:transform .22s ease,border-color .22s ease,background .22s ease; }
-.earth-region-card:hover { transform:translateY(-3px); border-color:#8ed9f49a; background:#102a39e8; }
-.earth-region-index { color:#6b8b9b; font-size:6px; letter-spacing:1.5px; }
-.earth-region-card strong { font:400 20px/1.08 Georgia,"Times New Roman",serif; color:#eefbff; }
-.earth-region-card small { color:#9bb6c3; font-size:6.2px; line-height:1.5; }
-.earth-region-card em { width:max-content; padding:4px 6px; border:1px solid #8cc8df3b; color:#aee0ef; font-style:normal; font-size:5.3px; letter-spacing:1.15px; }
-.earth-region-source { margin-top:auto; color:#668492; font-size:5.3px; line-height:1.45; }
-.earth-region-provenance { display:grid; grid-template-columns:auto 1fr; gap:3px 14px; margin-top:18px; padding-top:14px; border-top:1px solid #9ecce522; }
-.earth-region-provenance strong { grid-row:1/3; color:#8cc8dc; font-size:6px; letter-spacing:1.3px; }
-.earth-region-provenance span { color:#b6cfda; font-size:7px; }
-.earth-region-provenance small { color:#6f8995; font-size:5.7px; line-height:1.55; }
+.earth-full-hud,
+.earth-full-actions,
+.earth-mobile-controls,
+.earth-control-hints,
+.earth-full-tutorial,
+.earth-orientation-hint {
+  position:absolute;
+  z-index:12;
+}
 
-.earth-full-hud,.earth-full-actions,.earth-control-hints,.earth-mobile-controls,.earth-full-loading,.earth-full-error,.earth-full-tutorial,.earth-landmark-card { position:absolute; z-index:12; }
-.earth-full-hud { left:clamp(16px,3.2vw,48px); top:clamp(18px,4.5vh,52px); width:min(340px,43vw); padding:16px 18px; border:1px solid #b8dfeb2e; border-left-color:#8ed7ed8c; background:linear-gradient(145deg,#06141cd9,#0a2430a8); box-shadow:0 18px 60px #0110185c; backdrop-filter:blur(11px); -webkit-backdrop-filter:blur(11px); opacity:var(--surface); pointer-events:none; }
-.earth-hud-kicker { color:#8dc9dc; font-size:6px; letter-spacing:2.5px; }
-.earth-full-hud h3 { margin:7px 0 2px; font:400 clamp(25px,3vw,39px)/1 Georgia,"Times New Roman",serif; }
-.earth-hud-mode { color:#6c94a4; font-size:5.7px; letter-spacing:1.6px; }
-.earth-hud-location { margin-top:13px; color:#d9f4fb; font-size:8px; letter-spacing:1.2px; text-transform:uppercase; }
-.earth-hud-coordinates { margin-top:4px; color:#a2bac6; font-size:7px; font-variant-numeric:tabular-nums; }
-.earth-hud-metrics { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-top:12px; }
-.earth-hud-metrics div { padding-top:8px; border-top:1px solid #9bcde122; }
-.earth-hud-metrics small { display:block; color:#688390; font-size:5.2px; letter-spacing:1.05px; text-transform:uppercase; }
-.earth-hud-metrics strong { display:block; margin-top:4px; color:#dceff5; font-size:8.2px; font-weight:550; letter-spacing:.3px; }
+.earth-full-hud {
+  left:clamp(18px,3.5vw,52px);
+  top:clamp(22px,5vh,58px);
+  width:min(338px,43vw);
+  padding:17px 18px 16px;
+  border:1px solid #b8dfeb2e;
+  border-left-color:#8ed7ed8c;
+  background:linear-gradient(145deg,#06141cd9,#0a2430a8);
+  box-shadow:0 18px 60px #0110185c;
+  backdrop-filter:blur(11px);
+  -webkit-backdrop-filter:blur(11px);
+  opacity:var(--surface);
+  transform:translateY(calc((1 - var(--surface)) * -8px));
+  pointer-events:none;
+}
+.earth-hud-kicker { display:flex; align-items:center; gap:8px; color:#8dc9dc; font-size:7px; letter-spacing:2.5px; }
+.earth-hud-kicker::before { content:""; width:24px; height:1px; background:#9bdded99; }
+.earth-full-hud h3 { margin:8px 0 1px; font:400 clamp(25px,3vw,39px)/1 Georgia,"Times New Roman",serif; letter-spacing:-.8px; }
+.earth-hud-mode { color:#6c94a4; font-size:6.2px; letter-spacing:1.7px; text-transform:uppercase; }
+.earth-hud-location { margin:14px 0 4px; color:#d9f4fb; font-size:8px; letter-spacing:1.2px; text-transform:uppercase; }
+.earth-hud-coordinates { color:#a2bac6; font-size:8px; letter-spacing:1px; font-variant-numeric:tabular-nums; }
+.earth-hud-metrics { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; margin-top:12px; }
+.earth-hud-metric { padding-top:8px; border-top:1px solid #9bcde122; }
+.earth-hud-metric small { display:block; color:#688390; font-size:5.5px; letter-spacing:1.15px; text-transform:uppercase; }
+.earth-hud-metric strong { display:block; margin-top:4px; color:#dceff5; font-size:9px; font-weight:550; letter-spacing:.4px; font-variant-numeric:tabular-nums; }
+.earth-hud-altitude-limit { display:block; margin-top:4px; color:#f0d09a; font-size:5.2px; letter-spacing:1px; text-transform:uppercase; }
 .earth-hud-data { display:grid; gap:3px; margin-top:10px; padding-top:8px; border-top:1px solid #9bcde11b; }
 .earth-hud-data small { color:#5e7a87; font-size:5px; letter-spacing:1px; }
 .earth-hud-data span { color:#8eaab7; font-size:5.8px; line-height:1.45; }
 
-.earth-full-actions { right:clamp(16px,3.2vw,48px); top:clamp(18px,4.5vh,52px); display:flex; gap:7px; opacity:var(--surface); }
-.earth-full-actions button { min-height:37px; padding:0 12px; border:1px solid #b5ddea3c; background:#06161ec2; color:#c3dee8; font-size:5.8px; letter-spacing:.9px; text-transform:uppercase; backdrop-filter:blur(10px); }
+.earth-full-exploration:not(.is-active) .earth-full-actions,
+.earth-full-exploration:not(.is-active) .earth-mobile-controls { pointer-events:none; }
+
+.earth-full-actions {
+  right:clamp(18px,3.5vw,52px);
+  top:clamp(22px,5vh,58px);
+  display:flex;
+  gap:7px;
+  opacity:var(--surface);
+}
+.earth-full-actions button {
+  min-height:37px;
+  padding:0 12px;
+  border:1px solid #b5ddea3c;
+  background:#06161ec2;
+  color:#c3dee8;
+  font-size:5.8px;
+  letter-spacing:.9px;
+  text-transform:uppercase;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
 .earth-full-actions button:hover { border-color:#9bdcf398; background:#0c2937e5; color:#effcff; }
 .earth-full-exit { border-color:#cce6ec66 !important; color:#e7f8fb !important; }
 
-.earth-control-hints { left:50%; bottom:25px; display:flex; gap:18px; transform:translateX(-50%); color:#a9bdc6; font-size:5.8px; letter-spacing:.8px; text-transform:uppercase; opacity:calc(var(--surface)*.78); white-space:nowrap; pointer-events:none; }
+.earth-control-hints {
+  left:50%;
+  bottom:27px;
+  display:flex;
+  gap:16px;
+  transform:translateX(-50%);
+  padding:8px 11px;
+  border:1px solid #b4dce41c;
+  background:#03101852;
+  backdrop-filter:blur(6px);
+  color:#a9bdc6;
+  font-size:5.8px;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+  opacity:calc(var(--surface) * .78);
+  white-space:nowrap;
+  pointer-events:none;
+}
 .earth-control-hints b { color:#d7eef5; }
+.earth-control-hints .earth-exit-hint { color:#d8e9ee; }
+.earth-control-hints .earth-exit-hint b { color:#f4d8b2; }
 
-.earth-landmark-card { right:clamp(16px,3.2vw,48px); bottom:67px; width:min(320px,38vw); padding:15px 17px; border:1px solid #b8dfeb2c; border-right-color:#8ed7ed77; background:#061720c4; box-shadow:0 16px 55px #0110185e; backdrop-filter:blur(10px); opacity:var(--surface); }
-.earth-landmark-card small { color:#7296a5; font-size:5.2px; letter-spacing:1.3px; }
-.earth-landmark-card h4 { margin:6px 0; color:#e8f8fc; font:400 21px/1.05 Georgia,"Times New Roman",serif; }
-.earth-landmark-card p { margin:5px 0; color:#91a9b4; font-size:6.3px; line-height:1.5; }
-.earth-landmark-card a { display:inline-block; margin-top:8px; color:#79a9ba; font-size:5.3px; letter-spacing:.55px; text-decoration:none; text-transform:uppercase; }
+.earth-mobile-controls { display:none; inset:0; pointer-events:none; opacity:var(--surface); }
+.earth-mobile-dpad { position:absolute; left:22px; bottom:24px; width:150px; height:150px; }
+.earth-mobile-dpad button,
+.earth-mobile-altitude button {
+  position:absolute;
+  width:48px;
+  height:48px;
+  border:1px solid #b7dfea48;
+  border-radius:50%;
+  background:#061720b5;
+  color:#d9f4fb;
+  pointer-events:auto;
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:none;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.earth-mobile-dpad button.is-held,
+.earth-mobile-altitude button.is-held { background:#8ecfe2c9; color:#06202b; transform:scale(.94); }
+.earth-mobile-dpad [data-earth-control="forward"] { left:51px; top:0; }
+.earth-mobile-dpad [data-earth-control="left"] { left:0; top:51px; }
+.earth-mobile-dpad [data-earth-control="right"] { right:0; top:51px; }
+.earth-mobile-dpad [data-earth-control="backward"] { left:51px; bottom:0; }
+.earth-mobile-dpad span { position:absolute; left:65px; top:65px; width:20px; height:20px; border:1px solid #9ecdd94a; border-radius:50%; }
+.earth-mobile-altitude { position:absolute; right:24px; bottom:31px; width:54px; height:124px; }
+.earth-mobile-altitude button { left:3px; }
+.earth-mobile-altitude [data-earth-control="up"] { top:0; }
+.earth-mobile-altitude [data-earth-control="down"] { bottom:0; }
+.earth-mobile-altitude span { position:absolute; top:55px; width:100%; text-align:center; color:#83a2af; font-size:5.3px; letter-spacing:1px; }
 
-.earth-full-loading,.earth-full-error { left:50%; top:50%; width:min(440px,calc(100vw - 42px)); transform:translate(-50%,-50%); padding:28px 30px; border:1px solid #acd9e83b; background:#06141de8; box-shadow:0 28px 100px #0109108c; backdrop-filter:blur(16px); text-align:center; z-index:35; }
+.earth-full-loading,
+.earth-full-error {
+  position:absolute;
+  z-index:35;
+  left:50%;
+  top:50%;
+  width:min(440px,calc(100vw - 42px));
+  transform:translate(-50%,-50%);
+  padding:28px 30px;
+  border:1px solid #acd9e83b;
+  background:#06141de8;
+  box-shadow:0 28px 100px #0109108c;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  text-align:center;
+}
 .earth-full-loading[hidden],.earth-full-error[hidden] { display:none; }
 .earth-full-loading-kicker { color:#7094a3; font-size:5.8px; letter-spacing:2.2px; }
 .earth-full-loading h3,.earth-full-error h3 { margin:10px 0 8px; font:400 28px/1.1 Georgia,"Times New Roman",serif; color:#e9f8fc; }
@@ -93,148 +225,66 @@
 .earth-loading-progress { width:100%; height:100%; transform:scaleX(0); transform-origin:left; background:#8ed8ef; box-shadow:0 0 14px #79c9e88c; transition:transform .18s linear; }
 .earth-full-error button { margin-top:18px; padding:10px 16px; border:1px solid #a7d9e870; background:transparent; color:#d8f3fa; font-size:6.5px; letter-spacing:1.1px; text-transform:uppercase; }
 
-.earth-full-tutorial { left:50%; top:50%; width:min(560px,calc(100vw - 44px)); transform:translate(-50%,-50%); padding:22px 24px; border:1px solid #aedbe936; background:#061720df; box-shadow:0 24px 90px #0109107a; backdrop-filter:blur(14px); opacity:1; transition:opacity .25s ease; }
-.earth-full-tutorial.is-dismissed { opacity:0; pointer-events:none; }
+.earth-full-tutorial {
+  left:50%;
+  top:50%;
+  width:min(590px,calc(100vw - 44px));
+  transform:translate(-50%,-46%);
+  padding:22px 24px 20px;
+  border:1px solid #aedbe936;
+  background:#061720e8;
+  box-shadow:0 24px 90px #0109107a;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s;
+}
+.earth-full-tutorial.is-visible { opacity:1; visibility:visible; pointer-events:auto; transform:translate(-50%,-50%); transition-delay:0s; }
 .earth-tutorial-header { display:flex; justify-content:space-between; align-items:center; }
 .earth-tutorial-header span { color:#93c5d6; font-size:6px; letter-spacing:2px; text-transform:uppercase; }
 .earth-tutorial-header button { width:28px; height:28px; border:1px solid #a9d3df38; background:transparent; color:#c7e6ee; }
-.earth-tutorial-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:18px; }
+.earth-tutorial-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:18px; }
 .earth-tutorial-grid div { padding-top:10px; border-top:1px solid #acd4df25; }
-.earth-tutorial-grid b { display:block; color:#d8f3fa; font-size:7.5px; }
+.earth-tutorial-grid b { display:block; color:#d8f3fa; font-size:7.2px; }
 .earth-tutorial-grid span { display:block; margin-top:4px; color:#7895a1; font-size:5.6px; text-transform:uppercase; }
 .earth-tutorial-mobile { display:none; }
 
-.earth-mobile-controls { display:none; inset:0; pointer-events:none; opacity:var(--surface); }
-.earth-mobile-dpad { position:absolute; left:20px; bottom:22px; width:146px; height:146px; }
-.earth-mobile-dpad button,.earth-mobile-altitude button { position:absolute; width:46px; height:46px; border:1px solid #b7dfea48; border-radius:50%; background:#061720b5; color:#d9f4fb; pointer-events:auto; touch-action:none; }
-.earth-mobile-dpad [data-earth-control="forward"] { left:50px; top:0; }
-.earth-mobile-dpad [data-earth-control="left"] { left:0; top:50px; }
-.earth-mobile-dpad [data-earth-control="right"] { right:0; top:50px; }
-.earth-mobile-dpad [data-earth-control="backward"] { left:50px; bottom:0; }
-.earth-mobile-dpad span { position:absolute; left:63px; top:63px; width:20px; height:20px; border:1px solid #9ecdd94a; border-radius:50%; }
-.earth-mobile-altitude { position:absolute; right:22px; bottom:28px; width:52px; height:122px; }
-.earth-mobile-altitude button { left:3px; }
-.earth-mobile-altitude [data-earth-control="up"] { top:0; }
-.earth-mobile-altitude [data-earth-control="down"] { bottom:0; }
-.earth-mobile-altitude span { position:absolute; top:54px; width:100%; text-align:center; color:#83a2af; font-size:5.3px; letter-spacing:1px; }
+.earth-orientation-hint {
+  display:none;
+  left:50%;
+  bottom:10px;
+  transform:translateX(-50%);
+  color:#87a7b3;
+  font-size:5.5px;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+  opacity:calc(var(--surface) * .8);
+}
 
-.mission.is-earth-full .masthead,.mission.is-earth-full .mission-footer,.mission.is-earth-full-selecting .mission-footer { opacity:0 !important; pointer-events:none !important; transition:opacity .3s ease; }
+.mission.is-earth-full .masthead,
+.mission.is-earth-full .mission-footer { opacity:0 !important; pointer-events:none !important; transition:opacity .3s ease; }
 
-@media (max-width:1000px) { .earth-region-grid { grid-template-columns:repeat(3,1fr); } }
 @media (pointer:coarse),(max-width:760px) {
   .earth-control-hints { display:none; }
   .earth-mobile-controls { display:block; }
-  .earth-full-hud { left:12px; top:12px; width:min(270px,55vw); padding:12px; }
+  .earth-full-hud { left:12px; top:12px; width:min(275px,56vw); padding:12px; }
   .earth-full-hud h3 { font-size:24px; }
-  .earth-full-actions { right:12px; top:12px; max-width:42vw; flex-wrap:wrap; justify-content:flex-end; }
+  .earth-hud-location { font-size:6.6px; }
+  .earth-full-actions { right:12px; top:12px; max-width:40vw; flex-wrap:wrap; justify-content:flex-end; }
   .earth-full-actions button { min-height:33px; padding:0 9px; font-size:5px; }
-  .earth-landmark-card { right:12px; bottom:18px; width:min(265px,48vw); }
-  .earth-region-selector { width:calc(100vw - 24px); max-height:88vh; padding:18px; }
-  .earth-region-grid { grid-template-columns:repeat(2,1fr); }
-  .earth-region-card { min-height:145px; padding:12px; }
-  .earth-region-card strong { font-size:17px; }
   .earth-tutorial-desktop { display:none; }
   .earth-tutorial-mobile { display:grid; grid-template-columns:repeat(3,1fr); }
+  .earth-orientation-hint { display:block; }
 }
 @media (max-width:520px) {
-  .earth-region-grid { grid-template-columns:1fr; }
-  .earth-region-card { min-height:120px; }
-  .earth-full-hud { width:min(230px,61vw); }
+  .earth-full-hud { width:min(235px,63vw); }
   .earth-hud-metrics { grid-template-columns:1fr 1fr; }
-  .earth-landmark-card { display:none; }
+  .earth-hud-data { display:none; }
 }
-@media (prefers-reduced-motion:reduce) { .earth-full-exploration *, .earth-full-exploration *::before, .earth-full-exploration *::after { transition-duration:.01ms !important; animation-duration:.01ms !important; } }
-
-/* Destination-first Earth Full Exploration polish. The selector is intentionally
-   visual, not a generic list, while terrain geometry remains sourced from DEM. */
-.earth-full-exploration.is-selecting {
-  background:
-    radial-gradient(circle at 50% 45%,#75b7d018 0 18%,transparent 48%),
-    linear-gradient(180deg,#02080daa,#041018cc);
-}
-.earth-region-selector {
-  border-color:#b6deed4a;
-  background:linear-gradient(145deg,#061019f2,#0b1d29ee 62%,#07141de8);
-}
-.earth-region-grid { grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; }
-.earth-region-card {
-  min-height:286px;
-  padding:0 14px 14px;
-  overflow:hidden;
-  border-color:#9bcce33a;
-  background:linear-gradient(180deg,#0b1c27ed,#07131ce8);
-  box-shadow:0 12px 38px #01070d44;
-}
-.earth-region-card:hover,.earth-region-card:focus-visible {
-  transform:translateY(-4px);
-  outline:none;
-  border-color:#9fe2f6a8;
-  box-shadow:0 20px 52px #01070d70,0 0 0 1px #8bdcf030 inset;
-}
-.earth-region-preview {
-  position:relative;
-  display:block;
-  height:105px;
-  margin:0 -14px 3px;
-  overflow:hidden;
-  border-bottom:1px solid #a9dbe82c;
-  background:#0d2530;
-}
-.earth-region-preview::before,.earth-region-preview::after,.earth-region-preview i { content:""; position:absolute; inset:0; pointer-events:none; }
-.earth-region-preview b {
-  position:absolute; left:10px; bottom:8px; z-index:3;
-  color:#f3fbff; font:600 6px/1.1 system-ui,sans-serif; letter-spacing:1.25px; text-transform:uppercase;
-  text-shadow:0 2px 10px #000c;
-}
-.earth-region-preview-everest {
-  background:linear-gradient(180deg,#6c9dbd 0 44%,#d9e9ef 45% 52%,#7b8280 53% 100%);
-}
-.earth-region-preview-everest::before {
-  clip-path:polygon(0 100%,22% 58%,34% 77%,53% 27%,72% 68%,84% 51%,100% 100%);
-  background:linear-gradient(150deg,#f7fbfc 0 27%,#aeb7b8 28% 48%,#5f6562 49% 100%);
-  filter:drop-shadow(0 -6px 14px #dff5ff55);
-}
-.earth-region-preview-everest::after { background:linear-gradient(180deg,#ffffff10,transparent 45%,#07121c33); }
-.earth-region-preview-mariana { background:linear-gradient(180deg,#2b7790 0 12%,#0e485f 13% 42%,#062635 43% 72%,#03141d 100%); }
-.earth-region-preview-mariana::before { background:radial-gradient(ellipse at 52% 78%,#4d798166 0 8%,transparent 9%),linear-gradient(160deg,transparent 0 48%,#1f3d44 49% 58%,#0c252d 59% 100%); clip-path:polygon(0 35%,100% 28%,100% 100%,0 100%); }
-.earth-region-preview-mariana::after { background:repeating-radial-gradient(circle at 30% 20%,#bfe4eb44 0 1px,transparent 1px 14px); opacity:.32; }
-.earth-region-preview-maunakea { background:linear-gradient(180deg,#67a9c9 0 45%,#2c88a1 46% 70%,#174f63 71% 100%); }
-.earth-region-preview-maunakea::before { clip-path:polygon(0 78%,18% 73%,38% 64%,54% 33%,69% 62%,84% 71%,100% 78%,100% 100%,0 100%); background:linear-gradient(160deg,#4d6550 0 34%,#443f36 35% 62%,#292b29 63% 100%); }
-.earth-region-preview-maunakea::after { background:linear-gradient(180deg,transparent 55%,#7ed1db22 56% 65%,transparent 66%); }
-.earth-region-preview-grandcanyon { background:linear-gradient(180deg,#78a6bf 0 40%,#d79c70 41% 100%); }
-.earth-region-preview-grandcanyon::before { clip-path:polygon(0 42%,24% 50%,34% 65%,45% 55%,55% 83%,66% 59%,76% 68%,100% 47%,100% 100%,0 100%); background:repeating-linear-gradient(180deg,#b96745 0 10px,#d1875a 10px 19px,#8f4837 19px 28px,#c6764f 28px 36px); }
-.earth-region-preview-grandcanyon::after { background:linear-gradient(145deg,transparent 0 55%,#4f2b2444 56% 100%); }
-.earth-region-preview-antarctica { background:linear-gradient(180deg,#8ebbd2 0 45%,#eff9fd 46% 100%); }
-.earth-region-preview-antarctica::before { clip-path:polygon(0 82%,16% 66%,27% 72%,45% 48%,59% 68%,72% 52%,100% 78%,100% 100%,0 100%); background:linear-gradient(160deg,#ffffff 0 45%,#c9e4ef 46% 72%,#99c7d9 73% 100%); }
-.earth-region-preview-antarctica::after { background:linear-gradient(120deg,transparent 0 47%,#8ed0e744 48% 52%,transparent 53% 100%); }
-.earth-region-descriptor { min-height:47px; color:#b4cbd5; font-size:6.4px; line-height:1.55; }
-.earth-region-card small { color:#8ba8b5; }
-.earth-region-source { font-size:5px; line-height:1.4; }
-
-.earth-control-hints { gap:16px; padding:8px 11px; border:1px solid #b4dce41c; background:#03101852; backdrop-filter:blur(6px); }
-.earth-control-hints .earth-exit-hint { color:#d8e9ee; }
-.earth-control-hints .earth-exit-hint b { color:#f4d8b2; }
-.earth-tutorial-desktop { grid-template-columns:repeat(5,1fr); }
-
-/* Earth-specific atmosphere treatment. These overlays are intentionally subtle;
-   the DEM and Three.js material system still carry the terrain itself. */
-.earth-full-exploration[data-region="everest"] .earth-full-atmosphere { background:linear-gradient(180deg,#dff3ff24 0,#dceaf218 34%,transparent 58%,#7d97a311 100%); }
-.earth-full-exploration[data-region="maunakea"] .earth-full-atmosphere { background:linear-gradient(180deg,#d9f5ff21 0,transparent 45%,#0d758922 78%,#073b4a45 100%); }
-.earth-full-exploration[data-region="grandcanyon"] .earth-full-atmosphere { background:linear-gradient(180deg,#f8dfc522 0,transparent 47%,#a8643a18 78%,#512a1c3c 100%); }
-.earth-full-exploration[data-region="antarctica"] .earth-full-atmosphere { background:linear-gradient(180deg,#ffffff2e 0,#dff5ff22 38%,transparent 64%,#b8dce833 100%); }
-.earth-full-exploration[data-region="mariana"] .earth-full-atmosphere { background:linear-gradient(180deg,#71c6df1f 0,#1e718b20 22%,#0a405729 55%,#0318247a 100%); }
-.earth-full-exploration.is-underwater::after {
-  content:""; position:absolute; inset:0; z-index:3; pointer-events:none;
-  background:radial-gradient(circle at 50% -8%,#72c7dd25 0,transparent 38%),linear-gradient(180deg,#1a78931a,#04131e58 78%);
-  mix-blend-mode:screen;
-}
-
-@media (max-width:1000px) {
-  .earth-region-card { min-height:250px; }
-  .earth-region-preview { height:90px; }
-}
-@media (pointer:coarse),(max-width:760px) {
-  .earth-region-card { min-height:205px; }
-  .earth-region-preview { height:76px; }
-  .earth-region-descriptor { min-height:0; }
+@media (prefers-reduced-motion:reduce) {
+  .earth-full-exploration *,
+  .earth-full-exploration *::before,
+  .earth-full-exploration *::after { transition-duration:.01ms !important; animation-duration:.01ms !important; }
 }
