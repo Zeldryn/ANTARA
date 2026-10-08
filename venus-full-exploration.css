@@ -4,6 +4,37 @@
  * Venus-specific atmosphere, palette and the integrated educational card.
  */
 
+
+/* Venus overview reuses the exact Mars secondary-action geometry. The Mars rule is
+   scoped under .mars-caption, so Venus needs its own selector rather than falling
+   through to the browser's default button appearance. */
+.venus-caption .venus-full-explore-button {
+  min-height: 34px;
+  padding: 0 13px;
+  border: 1px solid rgba(240, 182, 108, .42);
+  border-radius: 2px;
+  background: rgba(7, 16, 26, .78);
+  color: #e1cba8;
+  font-size: 6.5px;
+  font-weight: 650;
+  letter-spacing: 1.15px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .24s ease, border-color .24s ease, color .24s ease, transform .24s ease;
+}
+.venus-caption .venus-full-explore-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(246, 197, 124, .72);
+  background: rgba(34, 24, 24, .91);
+  color: #f6d79f;
+}
+.venus-caption .venus-full-explore-button:focus-visible {
+  outline: 1px solid rgba(246, 205, 143, .90);
+  outline-offset: 3px;
+}
+.venus-caption .venus-full-explore-button:disabled { opacity: .5; cursor: wait; }
+
 .venus-full-exploration {
   --venus-accent: #f0b66c;
   --venus-accent-soft: rgba(240, 182, 108, .22);
@@ -53,9 +84,15 @@
   background:
     linear-gradient(180deg, rgba(240, 170, 113, .16), transparent 34%, transparent 72%, rgba(37, 17, 14, .18)),
     radial-gradient(circle at center, transparent 56%, rgba(66, 31, 24, .20) 100%);
-  opacity: .72;
-  mix-blend-mode: screen;
+  opacity: .54;
+  mix-blend-mode: normal;
 }
+
+.venus-full-exploration.is-active .venus-cloud-entry {
+  opacity: .06;
+  filter: blur(4px);
+}
+.venus-full-exploration.is-active .venus-haze-vignette { opacity: .46; }
 
 .venus-full-exploration .mars-full-hud,
 .venus-full-exploration .mars-full-actions > button,
@@ -68,10 +105,16 @@
 
 .venus-full-exploration .mars-full-hud,
 .venus-full-exploration .mars-location-menu,
-.venus-full-exploration .mars-full-tutorial,
 .venus-full-exploration .mars-landmark-card {
-  background: var(--venus-panel);
-  backdrop-filter: blur(18px) saturate(1.1);
+  background: linear-gradient(145deg, rgba(28, 15, 12, .82), rgba(48, 25, 18, .68));
+  box-shadow: 0 18px 60px rgba(27, 9, 8, .30);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.venus-full-exploration .mars-full-tutorial {
+  background: rgba(29, 16, 12, .88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .venus-full-exploration .mars-hud-kicker,
@@ -90,8 +133,27 @@
   background: rgba(173, 101, 59, .28);
 }
 
+.venus-full-exploration .mars-full-actions {
+  align-items: flex-start;
+}
+.venus-full-exploration .mars-full-actions > button,
+.venus-full-exploration .mars-location-wrap > button {
+  min-height: 37px;
+  padding: 0 12px;
+  border-radius: 0;
+  font-size: 6px;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+.venus-full-exploration .mars-control-hints {
+  color: rgba(229, 210, 190, .78);
+}
+.venus-full-exploration .mars-control-hints b {
+  color: #f0c981;
+}
 .venus-full-exploration .mars-full-exit {
-  border-color: rgba(255, 170, 118, .42) !important;
+  color: #f3cc91 !important;
+  border-color: rgba(239, 175, 104, .50) !important;
 }
 
 .venus-full-exploration .mars-loading-progress {
@@ -106,8 +168,8 @@
 
 /* Educational content is integrated into Mars' landmark-card slot. */
 .venus-location-card {
-  width: min(390px, calc(100vw - 32px));
-  max-height: min(74vh, 680px);
+  width: min(320px, 38vw);
+  max-height: min(66vh, 590px);
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(240, 182, 108, .45) transparent;
@@ -134,8 +196,8 @@
 .venus-location-description {
   margin: 10px 0;
   color: rgba(255, 239, 219, .88);
-  font-size: .82rem;
-  line-height: 1.55;
+  font-size: 8px;
+  line-height: 1.58;
 }
 
 .venus-location-facts {
@@ -144,8 +206,8 @@
   margin: 0 0 11px;
   padding-left: 17px;
   color: rgba(255, 234, 209, .72);
-  font-size: .75rem;
-  line-height: 1.45;
+  font-size: 7px;
+  line-height: 1.5;
 }
 
 .venus-location-data-badge {
@@ -155,8 +217,8 @@
   border-radius: 9px;
   background: rgba(240, 182, 108, .07);
   color: rgba(255, 209, 153, .86);
-  font-size: .64rem;
-  letter-spacing: .08em;
+  font-size: 5.5px;
+  letter-spacing: .9px;
 }
 
 .venus-location-sources {
@@ -164,12 +226,28 @@
   gap: 5px;
 }
 
+@media (max-width: 900px) {
+  .venus-caption .venus-full-explore-button {
+    white-space: normal;
+    line-height: 1.25;
+    min-height: 38px;
+  }
+}
+
 @media (max-width: 760px) {
   .venus-location-card {
-    width: min(340px, calc(100vw - 24px));
+    width: min(300px, calc(100vw - 28px));
     max-height: 54vh;
   }
   .venus-landmark-media { aspect-ratio: 2 / 1; }
+}
+
+@media (max-width: 700px) {
+  .venus-caption .venus-full-explore-button {
+    padding: 0 8px;
+    font-size: 5.4px;
+    letter-spacing: .75px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

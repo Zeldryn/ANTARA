@@ -647,6 +647,7 @@
         const image = context.createImageData(size, size);
         const palette = this.paletteFor(this.region.profile);
         const data = image.data;
+        const rowsPerYield = this.quality.name === "HIGH" ? 12 : this.quality.name === "MEDIUM" ? 16 : 24;
 
         for (let y = 0; y < size; y += 1) {
           const fy = y / Math.max(1, size - 1);
@@ -677,7 +678,7 @@
             }
             data[i + 3] = 255;
           }
-          if (y > 0 && y % 48 === 0) await new Promise(resolve => window.setTimeout(resolve, 0));
+          if (y > 0 && y % rowsPerYield === 0) await new Promise(resolve => window.setTimeout(resolve, 0));
         }
         context.putImageData(image, 0, 0);
         if (generation !== this.generation) return null;
@@ -973,6 +974,10 @@
       const maxTierForAltitude = altitudeKm >= 15 ? 1 : 3;
       const speed = velocity ? Math.hypot(velocity.x || 0, velocity.y || 0, velocity.z || 0) : 0;
       const stats = { visible: 0, buffered: 0, culled: 0, high: 0, medium: 0, low: 0 };
+      // Preserve the existing LOD rules, but do not synchronously rebuild every newly
+      // visible geometry in the same frame. Two swaps per frame is enough to converge
+      // quickly while avoiding the sharp camera-turn hitch seen on Venus.
+      let geometrySwapsRemaining = 2;
 
       for (const entry of this.meshes.values()) {
         const mesh = entry.mesh;
@@ -999,7 +1004,10 @@
         const ring = this.entryRingFromCamera(entry, cameraGeo);
         if (inFrustum) {
           const desiredSegments = this.segmentsForAltitudeRing(ring, altitudeKm);
-          this.swapEntryGeometry(entry, desiredSegments);
+          if (entry.segments !== desiredSegments && geometrySwapsRemaining > 0) {
+            this.swapEntryGeometry(entry, desiredSegments);
+            geometrySwapsRemaining -= 1;
+          }
         }
 
         let detailTier = 0;
@@ -1176,27 +1184,32 @@
       this.lastCenterTile = this.provider.tileKey(center.lonWest, center.latNorth);
 
       // Outer coverage is created with a fallback albedo but is NOT immediately sent
-      // through the expensive high-resolution radar/material path. View-dependent streaming
-      // promotes only chunks entering the camera/frustum safety region.
-      Promise.allSettled(optional.map(async entry => {
-        if (generation !== this.requestGeneration) return;
-        const existing = this.meshes.get(entry.key);
-        if (existing) {
-          this.swapEntryGeometry(existing, entry.segments);
-          return;
+      // through the expensive high-resolution radar/material path. Venus terrain creation
+      // is substantially more CPU-heavy than Mars because each vertex carries regional
+      // geology. Stream optional chunks one per animation frame so crossing a tile boundary
+      // cannot bunch dozens of geometry builds / LOD swaps into one long main-thread spike.
+      const streamOptional = async () => {
+        for (const entry of optional) {
+          if (generation !== this.requestGeneration) return;
+          const existing = this.meshes.get(entry.key);
+          if (existing) {
+            this.swapEntryGeometry(existing, entry.segments);
+          } else {
+            const tile = await this.provider.load(entry.lonWest, entry.latNorth);
+            if (generation !== this.requestGeneration) return;
+            const mesh = this.createTileMesh(tile, entry.segments);
+            this.group.add(mesh);
+            const record = makeRecord(entry, tile, mesh);
+            this.meshes.set(entry.key, record);
+            // Start background chunks at shader tier 0. The next visibility pass promotes
+            // only terrain that actually enters the camera or its safety buffer.
+            this.setEntryDetailTier(record, 0);
+          }
+          await new Promise(resolve => window.requestAnimationFrame(() => resolve()));
         }
-        const tile = await this.provider.load(entry.lonWest, entry.latNorth);
-        if (generation !== this.requestGeneration) return;
-        const mesh = this.createTileMesh(tile, entry.segments);
-        this.group.add(mesh);
-        const record = makeRecord(entry, tile, mesh);
-        this.meshes.set(entry.key, record);
-        // Start background chunks at shader tier 0. The first visibility pass before
-        // rendering promotes visible chunks synchronously, so this cannot create holes.
-        this.setEntryDetailTier(record, 0);
-      })).then(() => {
         if (generation === this.requestGeneration) this.prune(desired);
-      });
+      };
+      streamOptional().catch(() => {});
     }
 
     maybeStream(latitude, signedLongitude, altitudeKm) {
@@ -1249,21 +1262,33 @@
       const centerLat = tile.latNorth - 0.5;
       const spacingX = Math.max(0.04, stepDeg * KM_PER_DEG_LAT * Math.cos(centerLat * DEG));
       const spacingZ = Math.max(0.04, stepDeg * KM_PER_DEG_LAT);
+      const sampleStride = size + 2;
+      const sampledHeights = new Float32Array(sampleStride * sampleStride);
       let out = 0;
 
-      // Sample beyond the tile border in world coordinates. Adjacent chunks therefore
-      // derive exactly the same slope at their shared boundary instead of clamping each
-      // normal map to its own edge, eliminating the lighting seam of the rejected world.
-      for (let y = 0; y < size; y += 1) {
+      // Build one shared height field including a one-sample border. The previous
+      // version evaluated surfaceHeight four times for every normal texel, which is
+      // especially expensive for Venus because each call includes Magellan sampling
+      // plus region geology/fBM. One expanded grid preserves the exact same central
+      // difference and cross-tile border continuity with roughly a quarter of those calls.
+      for (let y = -1; y <= size; y += 1) {
         const fy = y / Math.max(1, size - 1);
-        const latitude = tile.latNorth - fy;
-        for (let x = 0; x < size; x += 1) {
+        const latitude = clamp(tile.latNorth - fy, MIN_DATA_LAT, MAX_DATA_LAT);
+        for (let x = -1; x <= size; x += 1) {
           const fx = x / Math.max(1, size - 1);
           const lon = wrapLongitude(tile.lonWest + fx);
-          const left = this.provider.surfaceHeight(latitude, wrapLongitude(lon - stepDeg), detailScale);
-          const right = this.provider.surfaceHeight(latitude, wrapLongitude(lon + stepDeg), detailScale);
-          const north = this.provider.surfaceHeight(clamp(latitude + stepDeg, MIN_DATA_LAT, MAX_DATA_LAT), lon, detailScale);
-          const south = this.provider.surfaceHeight(clamp(latitude - stepDeg, MIN_DATA_LAT, MAX_DATA_LAT), lon, detailScale);
+          sampledHeights[(y + 1) * sampleStride + (x + 1)] = this.provider.surfaceHeight(latitude, lon, detailScale);
+        }
+      }
+
+      for (let y = 0; y < size; y += 1) {
+        const row = y + 1;
+        for (let x = 0; x < size; x += 1) {
+          const col = x + 1;
+          const left = sampledHeights[row * sampleStride + col - 1];
+          const right = sampledHeights[row * sampleStride + col + 1];
+          const north = sampledHeights[(row - 1) * sampleStride + col];
+          const south = sampledHeights[(row + 1) * sampleStride + col];
           const dx = (right - left) / Math.max(spacingX * 2, 0.001);
           const dz = (south - north) / Math.max(spacingZ * 2, 0.001);
           let nx = -dx * 0.64, ny = 1, nz = -dz * 0.64;
@@ -1456,9 +1481,11 @@
       const skirtVertexCount = verticesPerSide * 8;
       const positions = new Float32Array((topVertexCount + skirtVertexCount) * 3);
       const uvs = new Float32Array((topVertexCount + skirtVertexCount) * 2);
+      const topHeights = new Float32Array(topVertexCount);
       const indices = [];
       let p = 0;
       let uv = 0;
+      let heightCursor = 0;
       const detailScale = this.detailStrengthForSegments(segments);
 
       for (let iz = 0; iz <= segments; iz += 1) {
@@ -1470,6 +1497,7 @@
           const world = this.worldFromGeo(latitude, signedLongitude);
           const baseHeight = this.provider.sampleTile(tile, latitude, signedLongitude);
           const height = baseHeight + this.subMagellanDetailHeight(latitude, signedLongitude, detailScale);
+          topHeights[heightCursor++] = height;
           positions[p++] = world.x;
           positions[p++] = height;
           positions[p++] = world.z;
@@ -1540,10 +1568,13 @@
       geometry.setIndex(indices);
       geometry.computeVertexNormals();
 
-      // Override top-surface normals with a deterministic world-space gradient. The
-      // same geographic vertex gets the same normal from either neighboring chunk.
+      // Reuse the already-generated height grid for terrain normals. The rejected
+      // implementation called the expensive Venus surfaceHeight pipeline four more
+      // times for every vertex. Interior vertices now use their immediate grid
+      // neighbours; only the outer border samples one step beyond the tile so adjacent
+      // chunks still calculate matching shared-edge normals.
       const normals = geometry.getAttribute("normal");
-      const normalStep = 1 / Math.max(96, segments);
+      const normalStep = 1 / Math.max(1, segments);
       const spacingLat = Math.max(0.04, normalStep * KM_PER_DEG_LAT);
       const spacingLon = Math.max(0.04, normalStep * KM_PER_DEG_LAT * Math.cos((tile.latNorth - 0.5) * DEG));
       let topIndex = 0;
@@ -1551,10 +1582,18 @@
         const latitude = tile.latNorth - iz / segments;
         for (let ix = 0; ix <= segments; ix += 1, topIndex += 1) {
           const lon = wrapLongitude(tile.lonWest + ix / segments);
-          const hL = this.provider.surfaceHeight(latitude, wrapLongitude(lon - normalStep), detailScale);
-          const hR = this.provider.surfaceHeight(latitude, wrapLongitude(lon + normalStep), detailScale);
-          const hN = this.provider.surfaceHeight(clamp(latitude + normalStep, MIN_DATA_LAT, MAX_DATA_LAT), lon, detailScale);
-          const hS = this.provider.surfaceHeight(clamp(latitude - normalStep, MIN_DATA_LAT, MAX_DATA_LAT), lon, detailScale);
+          const hL = ix > 0
+            ? topHeights[topIndex - 1]
+            : this.provider.surfaceHeight(latitude, wrapLongitude(lon - normalStep), detailScale);
+          const hR = ix < segments
+            ? topHeights[topIndex + 1]
+            : this.provider.surfaceHeight(latitude, wrapLongitude(lon + normalStep), detailScale);
+          const hN = iz > 0
+            ? topHeights[topIndex - verticesPerSide]
+            : this.provider.surfaceHeight(clamp(latitude + normalStep, MIN_DATA_LAT, MAX_DATA_LAT), lon, detailScale);
+          const hS = iz < segments
+            ? topHeights[topIndex + verticesPerSide]
+            : this.provider.surfaceHeight(clamp(latitude - normalStep, MIN_DATA_LAT, MAX_DATA_LAT), lon, detailScale);
           let nx = -(hR - hL) / Math.max(spacingLon * 2, 0.001);
           let ny = 1;
           let nz = -(hS - hN) / Math.max(spacingLat * 2, 0.001);
