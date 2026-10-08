@@ -3069,7 +3069,7 @@
       this.infoCard.classList.remove("is-visible");
       this.infoCard.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = false;
-      this.expandObjectives(false);
+      this.collapseObjectives();
       this.updateHUD();
       this.updateEducation(0);
       document.getElementById("announcement").textContent = `Eksplorasi Venus aktif di ${this.region.name}. Ikuti tujuan eksplorasi untuk menemukan fitur geologi.`;
@@ -3101,7 +3101,7 @@
       this.root.classList.remove("is-selecting");
       this.input.bind();
       this.startLoop();
-      this.expandObjectives(false);
+      this.collapseObjectives();
       this.infoToggle.hidden = false;
       this.updateEducation(0);
     }
@@ -3142,8 +3142,12 @@
         this.camera.rotation.set(this.pitch, this.yaw, 0, "YXZ");
         this.updateMovement(delta);
       }
-      this.regionWorld.updateVisibility(this.camera, delta);
-      this.regionWorld.updateAmbient(delta);
+      // Keep the live world rendering during exit, but freeze nonessential LOD/ambient
+      // decisions so the Mars-family handoff gets the frame budget.
+      if (this.state !== STATES.EXITING) {
+        this.regionWorld.updateVisibility(this.camera, delta);
+        this.regionWorld.updateAmbient(delta);
+      }
       this.renderer.render(this.scene, this.camera);
       if (this.state === STATES.EXPLORING) {
         this.hudClock += delta;
@@ -3163,6 +3167,35 @@
 
     isObjectivesExpanded() {
       return Boolean(this.objectivesPanel && !this.objectivesPanel.hidden);
+    }
+
+    isResponsiveConstrained() {
+      return window.matchMedia("(max-width: 1500px), (max-height: 850px), (pointer: coarse)").matches;
+    }
+
+    syncResponsiveUiState() {
+      if (!this.root) return;
+      const constrained = this.isResponsiveConstrained();
+      const infoOpen = Boolean(this.infoCard?.classList.contains("is-visible"));
+      const objectivesOpen = this.isObjectivesExpanded();
+      const observationOpen = this.isObservationCardOpen();
+      this.root.classList.toggle("is-ui-constrained", constrained);
+      this.root.classList.toggle("is-info-open", infoOpen);
+      this.root.classList.toggle("is-objectives-open", objectivesOpen);
+      this.root.classList.toggle("is-observation-open", observationOpen);
+
+      // Constrained layouts intentionally allow only one large reading surface at a time.
+      if (constrained && infoOpen && objectivesOpen) {
+        this.objectivesPanel.hidden = true;
+        if (this.objectivesToggle) this.objectivesToggle.hidden = this.state !== STATES.EXPLORING;
+        this.root.classList.remove("is-objectives-open");
+      }
+      if (observationOpen) {
+        this.infoCard?.classList.remove("is-visible");
+        this.infoCard?.setAttribute("aria-hidden", "true");
+        if (this.objectivesPanel) this.objectivesPanel.hidden = true;
+        this.root.classList.remove("is-info-open", "is-objectives-open");
+      }
     }
 
     discoveryStorageKey() {
@@ -3251,16 +3284,22 @@
       if (!this.objectivesPanel) return;
       this.objectivesPanel.hidden = true;
       this.objectivesToggle.hidden = this.state !== STATES.EXPLORING;
+      this.root?.classList.remove("is-objectives-open");
     }
 
     expandObjectives(focus = false) {
       if (!this.objectivesPanel || !this.region?.education) return;
       if (this.isObservationCardOpen()) this.closeObservationCard(false);
-      this.infoCard?.classList.remove("is-visible");
-      this.infoCard?.setAttribute("aria-hidden", "true");
-      if (this.infoToggle) this.infoToggle.hidden = false;
+      if (this.isResponsiveConstrained()) {
+        this.infoCard?.classList.remove("is-visible");
+        this.infoCard?.setAttribute("aria-hidden", "true");
+        this.root?.classList.remove("is-info-open");
+        if (this.infoToggle) this.infoToggle.hidden = false;
+      }
       this.objectivesPanel.hidden = false;
       this.objectivesToggle.hidden = true;
+      this.root?.classList.add("is-objectives-open");
+      this.syncResponsiveUiState();
       if (focus) requestAnimationFrame(() => this.objectivesCollapse?.focus({ preventScroll: true }));
     }
 
@@ -3402,6 +3441,7 @@
       this.observationCard.hidden = false;
       this.observationCard.setAttribute("aria-hidden", "false");
       this.root.classList.add("is-observation-open");
+      this.syncResponsiveUiState();
       this.observationPrompt.hidden = true;
       this.updateEducation(0);
       requestAnimationFrame(() => this.observationClose?.focus({ preventScroll: true }));
@@ -3413,6 +3453,7 @@
       this.observationCard.setAttribute("aria-hidden", "true");
       this.root.classList.remove("is-observation-open");
       this.activeObservation = null;
+      this.syncResponsiveUiState();
       if (this.observationMore) this.observationMore.open = false;
       if (this.state === STATES.EXPLORING) {
         if (this.objectivesToggle && this.objectivesPanel?.hidden) this.objectivesToggle.hidden = false;
@@ -3540,11 +3581,15 @@
 
     showRegionInfo(focus = false) {
       this.closeObservationCard(false);
-      this.collapseObjectives();
-      if (this.objectivesToggle) this.objectivesToggle.hidden = true;
+      if (this.isResponsiveConstrained()) {
+        this.collapseObjectives();
+        if (this.objectivesToggle) this.objectivesToggle.hidden = true;
+      }
       this.infoCard.classList.add("is-visible");
       this.infoCard.setAttribute("aria-hidden", "false");
       this.infoToggle.hidden = true;
+      this.root?.classList.add("is-info-open");
+      this.syncResponsiveUiState();
       if (focus) requestAnimationFrame(() => this.infoMinimize.focus({ preventScroll: true }));
     }
 
@@ -3552,7 +3597,9 @@
       this.infoCard.classList.remove("is-visible");
       this.infoCard.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = false;
+      this.root?.classList.remove("is-info-open");
       if (this.objectivesToggle && this.objectivesPanel?.hidden && this.state === STATES.EXPLORING) this.objectivesToggle.hidden = false;
+      this.syncResponsiveUiState();
       if (focusToggle) this.infoToggle.focus({ preventScroll: true });
     }
 
@@ -3625,7 +3672,6 @@
           this.lastGround = ground;
           this.cameraAltitude = lerp(startAltitude, targetAltitude, eased);
           this.camera.position.y = ground + this.cameraAltitude;
-          this.root.style.setProperty("--exit-lift", String(eased));
           if (raw < 1) requestAnimationFrame(frame);
           else resolve();
         };
@@ -3670,7 +3716,7 @@
         try {
           const ground = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
           const currentAltitude = Math.max(0, this.camera.position.y - ground);
-          await this.animateExitRetreat(Math.max(currentAltitude, 18), 1650, token);
+          await this.animateExitRetreat(Math.max(currentAltitude, 52), 1650, token);
         } catch {}
       }
       if (token !== this.transitionToken) return;
@@ -3685,9 +3731,6 @@
           const eased = smootherstep(raw);
           const surfaceFade = 1 - smoothstep(raw / 0.62);
           this.root.style.setProperty("--surface-opacity", String(surfaceFade));
-          this.root.style.setProperty("--entry-progress", String(1 - eased));
-          this.root.style.setProperty("--exit-lift", String(1));
-
           this.venus.setFullExplorationTransition?.(1 - eased, this.region);
           if (raw < 1) requestAnimationFrame(frame);
           else resolve();
@@ -3809,11 +3852,16 @@
     updateFullscreenLabel() {
       const active = document.fullscreenElement === this.root;
       this.fullscreenButton.setAttribute("aria-pressed", String(active));
-      this.fullscreenButton.querySelector("span").textContent = active ? "Keluar layar penuh" : "Layar penuh";
+      this.fullscreenButton.setAttribute("aria-label", active ? "Keluar layar penuh" : "Layar penuh");
+      const fullLabel = this.fullscreenButton.querySelector(".venus-action-label-full");
+      const compactLabel = this.fullscreenButton.querySelector(".venus-action-label-compact");
+      if (fullLabel) fullLabel.textContent = active ? "Keluar layar penuh" : "Layar penuh";
+      if (compactLabel) compactLabel.textContent = active ? "Keluar layar" : "Layar";
       this.resize();
     }
 
     resize(recalculateDpr = true) {
+      this.syncResponsiveUiState();
       if (!this.renderer || !this.camera) return;
       const width = Math.max(1, this.viewport.clientWidth || window.innerWidth);
       const height = Math.max(1, this.viewport.clientHeight || window.innerHeight);
