@@ -313,8 +313,11 @@ class LaunchVisual {
     this.commReadout = document.getElementById("comm-readout");
     this.guidanceReadout = document.getElementById("guidance-readout");
     try { this.ctx = this.canvas.getContext("2d", { alpha: true }); } catch { this.ctx = null; }
+    this.mobilePerformanceMode = window.matchMedia("(max-width: 700px), (pointer: coarse)").matches;
+    this.lastTelemetryPaint = -Infinity;
+    this.lastParticlePaint = -Infinity;
     const random = n => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
-    this.stars = Array.from({ length: 115 }, (_, i) => ({
+    this.stars = Array.from({ length: this.mobilePerformanceMode ? 72 : 115 }, (_, i) => ({
       x: random(i), y: random(i + 100), size: 0.35 + random(i + 200) * 1.25, drift: .3 + random(i + 300) * .9
     }));
     this.lastPhase = "idle";
@@ -326,7 +329,7 @@ class LaunchVisual {
   resize() {
     this.width = this.stage.clientWidth || innerWidth;
     this.height = this.stage.clientHeight || innerHeight;
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const dpr = Math.min(window.devicePixelRatio || 1, this.mobilePerformanceMode ? 1 : 1.5);
     this.canvas.width = Math.round(this.width * dpr);
     this.canvas.height = Math.round(this.height * dpr);
     this.ctx?.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -459,8 +462,15 @@ class LaunchVisual {
     this.cloudNear.style.setProperty("--cloud-near-opacity", String(Math.min(.74, passDensity * .9 + deckDensity * .28)));
     this.arrivalEarth.style.backgroundPosition = `${50 + Math.sin(t * .16) * 2.4}% center`;
 
-    this.updateTelemetry(t, phase, ascent);
-    if (this.ctx) this.drawParticles(t, ascent, starOpacity, phase);
+    const phaseChanged = phase !== this.lastPhase;
+    if (!this.mobilePerformanceMode || phaseChanged || t - this.lastTelemetryPaint >= 1 / 30) {
+      this.updateTelemetry(t, phase, ascent);
+      this.lastTelemetryPaint = t;
+    }
+    if (this.ctx && (!this.mobilePerformanceMode || phaseChanged || t - this.lastParticlePaint >= 1 / 30)) {
+      this.drawParticles(t, ascent, starOpacity, phase);
+      this.lastParticlePaint = t;
+    }
     this.lastPhase = phase;
     return phase;
   }
@@ -473,9 +483,12 @@ class LaunchVisual {
     const altitude = 120 * Math.pow(altitudeProgress, 1.18);
     const climbRate = altitudeProgress <= 0 ? 0 : .35 + 7.65 * Math.pow(altitudeProgress, .88);
 
-    if (this.altitudeValue) this.altitudeValue.textContent = `${altitude.toFixed(altitude < 10 ? 1 : 0)} KM`;
-    if (this.climbValue) this.climbValue.textContent = `+${climbRate.toFixed(2)} KM/S`;
-    if (this.journeyPercent) this.journeyPercent.textContent = `${Math.round(journey * 100)}%`;
+    const altitudeText = `${altitude.toFixed(altitude < 10 ? 1 : 0)} KM`;
+    const climbText = `+${climbRate.toFixed(2)} KM/S`;
+    const journeyText = `${Math.round(journey * 100)}%`;
+    if (this.altitudeValue && this.altitudeValue.textContent !== altitudeText) this.altitudeValue.textContent = altitudeText;
+    if (this.climbValue && this.climbValue.textContent !== climbText) this.climbValue.textContent = climbText;
+    if (this.journeyPercent && this.journeyPercent.textContent !== journeyText) this.journeyPercent.textContent = journeyText;
     if (this.rocketProgress) this.rocketProgress.style.left = `${8 + journey * 84}%`;
 
     if (this.altitudeChartLine && this.altitudeChartDot) {
@@ -511,11 +524,11 @@ class LaunchVisual {
       approach: ["APPROACH", "ORBIT", "COMMS OK", "ORBIT LOCK", "EARTH HANDOFF"]
     };
     const data = labels[phase] || labels.idle;
-    if (this.phaseReadout) this.phaseReadout.textContent = data[0];
-    if (this.modeReadout) this.modeReadout.textContent = data[1];
-    if (this.commReadout) this.commReadout.textContent = data[2];
-    if (this.guidanceReadout) this.guidanceReadout.textContent = data[3];
-    if (this.missionStageText) this.missionStageText.textContent = data[4];
+    if (this.phaseReadout && this.phaseReadout.textContent !== data[0]) this.phaseReadout.textContent = data[0];
+    if (this.modeReadout && this.modeReadout.textContent !== data[1]) this.modeReadout.textContent = data[1];
+    if (this.commReadout && this.commReadout.textContent !== data[2]) this.commReadout.textContent = data[2];
+    if (this.guidanceReadout && this.guidanceReadout.textContent !== data[3]) this.guidanceReadout.textContent = data[3];
+    if (this.missionStageText && this.missionStageText.textContent !== data[4]) this.missionStageText.textContent = data[4];
   }
 
   drawParticles(t, ascent, starOpacity, phase) {
@@ -972,7 +985,49 @@ let activeFlightPhase = "idle";
 let earthHandoffStarted = false;
 let planetTransitionLocked = false;
 let activePlanetNavButton = null;
+const MOBILE_PERFORMANCE_MODE = window.matchMedia("(max-width: 700px), (pointer: coarse)").matches;
+let launchScenePrewarmTimer = 0;
 const CELESTIAL_NAV_ORDER = Object.freeze(["sun", "mercury", "venus", "earth", "mars", "asteroid", "jupiter", "saturn", "uranus", "neptune"]);
+
+function connectVenusTravelSurface() {
+  return venus.prepare().then(() => {
+    earth.setVenusTravelSurface(venus.surface);
+    mercury.setVenusTravelSurface(venus.surface);
+  }).catch(() => {});
+}
+
+function prewarmLaunchPlanetScenes() {
+  window.clearTimeout(launchScenePrewarmTimer);
+
+  if (!MOBILE_PERFORMANCE_MODE) {
+    earth.prepare();
+    mars.prepare();
+    sun.prepare();
+    connectVenusTravelSurface();
+    return;
+  }
+
+  // Phones have much less CPU/GPU headroom. Building four WebGL worlds while the
+  // cockpit is animating causes compilation spikes and dropped frames. Prewarm the
+  // same scenes later, one at a time, after the cloud-heavy opening has passed.
+  const beginMobilePrewarm = () => {
+    if (phase !== "preparing") return;
+    Promise.resolve()
+      .then(() => earth.prepare())
+      .catch(() => {})
+      .then(() => mars.prepare())
+      .catch(() => {})
+      .then(() => connectVenusTravelSurface())
+      .then(() => sun.prepare())
+      .catch(() => {});
+  };
+
+  const delay = Math.max(0, (LAUNCH_TIMING.aboveClouds + 0.35) * 1000);
+  launchScenePrewarmTimer = window.setTimeout(() => {
+    if ("requestIdleCallback" in window) requestIdleCallback(beginMobilePrewarm, { timeout: 900 });
+    else beginMobilePrewarm();
+  }, delay);
+}
 
 // Shared panorama interaction lifecycle. Planet renderers own the physical motion,
 // while this layer owns whether panorama UI is interactive during travel. Keeping
@@ -1180,13 +1235,7 @@ launchButton.addEventListener("click", () => {
   flight.start();
   companions.setJourneyPhase("prelaunch");
   companions.setDialogue(DIALOGUE_TIMELINE[0], true);
-  earth.prepare();
-  mars.prepare();
-  sun.prepare();
-  venus.prepare().then(() => {
-    earth.setVenusTravelSurface(venus.surface);
-    mercury.setVenusTravelSurface(venus.surface);
-  }).catch(() => {});
+  prewarmLaunchPlanetScenes();
   mission.classList.add("is-preparing");
   if (flightStatus) flightStatus.textContent = "SIAP BERANGKAT";
   announcement.textContent = "Nara: Hai! Sudah Siap menjelajah Tata Surya Kita?";
