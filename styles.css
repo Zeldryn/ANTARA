@@ -6127,3 +6127,64 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     font-size:clamp(22px,7vw,27px) !important;
   }
 }
+
+
+/* ========================================================================
+   2026-10-01 DESKTOP / LAPTOP LOWER-HUD ALIGNMENT
+   Scope: only the lower cockpit dashboard on non-mobile layouts.
+   The dashboard previously used a negative bottom offset, which made its
+   lower edge fall outside the viewport. Keep the same visual language, but
+   seat the complete HUD inside the screen with a cleaner vertical rhythm.
+   ======================================================================== */
+@media (min-width:701px) {
+  .mission[data-experience="home"] .cockpit-dashboard,
+  .mission[data-experience="launch"] .cockpit-dashboard {
+    bottom: 0 !important;
+    height: 21.5% !important;
+  }
+
+  .mission[data-experience="home"] .console-bank,
+  .mission[data-experience="launch"] .console-bank {
+    top: 31% !important;
+    height: 58% !important;
+  }
+
+  .mission[data-experience="home"] .cockpit-brand,
+  .mission[data-experience="launch"] .cockpit-brand {
+    top: 18% !important;
+  }
+
+  .mission[data-experience="home"] .dashboard-lights,
+  .mission[data-experience="launch"] .dashboard-lights {
+    top: 19% !important;
+  }
+
+  .mission[data-experience="home"] .dashboard-screen,
+  .mission[data-experience="launch"] .dashboard-screen {
+    top: 17% !important;
+  }
+
+  .mission[data-experience="home"] .mission-footer,
+  .mission[data-experience="launch"] .mission-footer {
+    bottom: 18px !important;
+  }
+}
+
+/* Common 1366/1536 laptop heights need a little extra lift without making
+   the dashboard taller or allowing it to cover the crew. */
+@media (min-width:701px) and (max-height:820px) {
+  .mission[data-experience="home"] .cockpit-dashboard,
+  .mission[data-experience="launch"] .cockpit-dashboard {
+    bottom: .7% !important;
+    height: 20.8% !important;
+  }
+  .mission[data-experience="home"] .console-bank,
+  .mission[data-experience="launch"] .console-bank {
+    top: 30% !important;
+    height: 58% !important;
+  }
+  .mission[data-experience="home"] .mission-footer,
+  .mission[data-experience="launch"] .mission-footer {
+    bottom: 15px !important;
+  }
+}
