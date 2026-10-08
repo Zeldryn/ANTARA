@@ -5073,7 +5073,7 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .cockpit-profile-hud .profile-login-trigger .profile-hud-copy { inset:0 12px !important; }
   .cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong { font-size:6.5px !important; }
   .cockpit-profile-hud .profile-login-trigger .profile-hud-kicker { font-size:3.5px !important; letter-spacing:.12em !important; }
-  .leaderboard-hud-frame strong { font-size:5.1px !important; letter-spacing:.045em !important; text-indent:.045em !important; }
+  .leaderboard-hud-frame strong { font-size:5.8px !important; letter-spacing:.045em !important; text-indent:.045em !important; }
 }
 
 /* ========================================================================
@@ -5626,7 +5626,7 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .profile-nav-suite .hud-nav-icon { width:24px;height:24px; }
   .profile-nav-suite .hud-nav-icon svg { width:19px;height:19px; }
   .profile-nav-suite .hud-nav-copy small { display:block !important;font-size:4.6px !important; }
-  .profile-nav-suite .hud-nav-copy strong { font-size:7.2px !important;letter-spacing:.10em !important; }
+  .profile-nav-suite .hud-nav-copy strong { font-size:8.2px !important;letter-spacing:.10em !important; }
 }
 
 @media (max-width:430px) {
@@ -5792,7 +5792,7 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     letter-spacing:.13em !important;
   }
   .profile-nav-suite .hud-nav-copy strong {
-    font-size:5.9px !important;
+    font-size:6.6px !important;
     letter-spacing:.075em !important;
   }
 
@@ -6186,5 +6186,150 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .mission[data-experience="home"] .mission-footer,
   .mission[data-experience="launch"] .mission-footer {
     bottom: 15px !important;
+  }
+}
+
+/* ========================================================================
+   2026-10-01 MOBILE LOWER HUD READABILITY FIX
+   Scope: portrait mobile home / launch cockpit telemetry only.
+   Goal: stop squeezing ALTITUDE, route progress, and FLIGHT STATUS into
+   three tiny equal-width cards. Desktop and landscape geometry are untouched.
+   ======================================================================== */
+@media (max-width:700px) and (orientation:portrait) {
+  .mission[data-experience="home"] .cockpit-dashboard,
+  .mission[data-experience="launch"] .cockpit-dashboard {
+    bottom:0 !important;
+    height:25.5% !important;
+  }
+
+  /* Two readable telemetry cards on the main row. */
+  .mission[data-experience="home"] .console-left,
+  .mission[data-experience="launch"] .console-left,
+  .mission[data-experience="home"] .console-right,
+  .mission[data-experience="launch"] .console-right {
+    display:block !important;
+    top:31% !important;
+    width:42% !important;
+    height:42% !important;
+  }
+  .mission[data-experience="home"] .console-left,
+  .mission[data-experience="launch"] .console-left {
+    left:5.5% !important;
+  }
+  .mission[data-experience="home"] .console-right,
+  .mission[data-experience="launch"] .console-right {
+    right:5.5% !important;
+  }
+
+  /* Route progress becomes a full-width lower strip instead of a cramped tile. */
+  .mission[data-experience="home"] .console-center,
+  .mission[data-experience="launch"] .console-center {
+    display:block !important;
+    left:5.5% !important;
+    right:auto !important;
+    top:76% !important;
+    width:89% !important;
+    height:17% !important;
+  }
+
+  .mission[data-experience="home"] .panel-heading,
+  .mission[data-experience="launch"] .panel-heading {
+    left:7.5% !important;
+    right:7.5% !important;
+    top:8% !important;
+    font-size:6.1px !important;
+    letter-spacing:.11em !important;
+  }
+  .mission[data-experience="home"] .panel-heading b,
+  .mission[data-experience="launch"] .panel-heading b {
+    font-size:8.2px !important;
+    letter-spacing:.04em !important;
+  }
+
+  .mission[data-experience="home"] .altitude-chart,
+  .mission[data-experience="launch"] .altitude-chart {
+    left:7.5% !important;
+    right:7.5% !important;
+    top:29% !important;
+    width:85% !important;
+    height:41% !important;
+  }
+  .mission[data-experience="home"] .climb-readout,
+  .mission[data-experience="launch"] .climb-readout {
+    left:7.5% !important;
+    right:7.5% !important;
+    bottom:7% !important;
+  }
+  .mission[data-experience="home"] .climb-readout small,
+  .mission[data-experience="launch"] .climb-readout small {
+    font-size:5.8px !important;
+    letter-spacing:.12em !important;
+  }
+  .mission[data-experience="home"] .climb-readout strong,
+  .mission[data-experience="launch"] .climb-readout strong {
+    font-size:7.6px !important;
+  }
+
+  .mission[data-experience="home"] .flight-data-grid,
+  .mission[data-experience="launch"] .flight-data-grid {
+    left:7.5% !important;
+    right:7.5% !important;
+    top:31% !important;
+    column-gap:8px !important;
+    row-gap:6px !important;
+  }
+  .mission[data-experience="home"] .flight-data-grid span,
+  .mission[data-experience="launch"] .flight-data-grid span {
+    font-size:5.4px !important;
+    letter-spacing:.105em !important;
+  }
+  .mission[data-experience="home"] .flight-data-grid strong,
+  .mission[data-experience="launch"] .flight-data-grid strong {
+    font-size:6.6px !important;
+  }
+
+  .mission[data-experience="home"] .mission-progress-panel .mission-track,
+  .mission[data-experience="launch"] .mission-progress-panel .mission-track {
+    left:4.5% !important;
+    right:4.5% !important;
+    top:50% !important;
+    height:28px !important;
+  }
+  .mission[data-experience="home"] .mission-progress-panel .track-line,
+  .mission[data-experience="launch"] .mission-progress-panel .track-line {
+    left:3% !important;
+    right:3% !important;
+  }
+  .mission[data-experience="home"] .mission-progress-panel .rocket-marker,
+  .mission[data-experience="launch"] .mission-progress-panel .rocket-marker {
+    width:38px !important;
+  }
+
+  /* Keep decorative labels out of the telemetry cards' breathing room. */
+  .mission[data-experience="home"] .cockpit-brand,
+  .mission[data-experience="launch"] .cockpit-brand {
+    top:20% !important;
+  }
+  .mission[data-experience="home"] .dashboard-lights,
+  .mission[data-experience="launch"] .dashboard-lights {
+    top:21% !important;
+  }
+}
+
+@media (max-width:380px) and (orientation:portrait) {
+  .mission[data-experience="home"] .console-left,
+  .mission[data-experience="launch"] .console-left,
+  .mission[data-experience="home"] .console-right,
+  .mission[data-experience="launch"] .console-right {
+    width:42.5% !important;
+  }
+  .mission[data-experience="home"] .console-left,
+  .mission[data-experience="launch"] .console-left { left:4.5% !important; }
+  .mission[data-experience="home"] .console-right,
+  .mission[data-experience="launch"] .console-right { right:4.5% !important; }
+  .mission[data-experience="home"] .console-center,
+  .mission[data-experience="launch"] .console-center {
+    left:4.5% !important;
+    width:91% !important;
   }
 }
