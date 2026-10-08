@@ -43,7 +43,7 @@ The UI now responds to the actual CSS viewport rather than assuming fullscreen h
 - Short desktop windows place contextual observation cards below the toolbar instead of vertically centering into it.
 - Short-height layouts reduce vertical density without transform-scaling the interface.
 - Mobile/touch-tablet composition remains bottom-sheet based.
-- Panel exclusivity remains active on constrained viewports.
+- Objective and location-information panels retain independent state. Desktop/laptop may keep both open; mobile temporarily presents the most recently used sheet without resetting the other.
 - Fullscreen and normal browser mode share the same responsive architecture.
 
 ## Viewport audit

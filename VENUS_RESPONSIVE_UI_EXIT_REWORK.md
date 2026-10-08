@@ -26,7 +26,7 @@ Default exploration state keeps the world clear:
 - desktop hints visible only where appropriate
 - touch controls shown on phone / touch tablet
 
-On constrained screens, opening location information collapses objectives. Expanding objectives closes the large location panel. Observation cards take priority over both. On large desktops, information can coexist where the viewport has enough room.
+Objective and location-information panels now keep independent user-controlled state. Desktop/laptop may show both simultaneously; mobile presents the most recently used sheet while remembering the other panel state. ESC closes the most recently interacted secondary panel first.
 
 ## Mobile / touch-tablet behavior
 
@@ -34,7 +34,7 @@ Desktop sidebars are not squeezed onto touch layouts. Location information, obje
 
 ## Resize / fullscreen
 
-The responsive state is refreshed on normal resize, orientation change, fullscreen entry, and fullscreen exit. Layout remains CSS-driven; JavaScript is used only for behavior such as panel exclusivity and the mobile action menu.
+The responsive state is refreshed on normal resize, orientation change, fullscreen entry, and fullscreen exit. Layout remains CSS-driven; JavaScript is used only for behavior such as preserving panel state, mobile sheet ordering, ESC priority, and the mobile action menu.
 
 ## Mars exit parity
 
@@ -53,7 +53,7 @@ Reduced-motion users receive a shortened version of the same conceptual transiti
 
 ## Validation performed
 
-Syntax and source-level checks cover the responsive layout hooks, safe-area handling, panel exclusivity, fullscreen/orientation behavior, touch target rules, z-index architecture, dedicated `fullDiveBlend` state, Mars timing/curve parity, live render-loop handoff, and post-transition cleanup order.
+Syntax and source-level checks cover the responsive layout hooks, safe-area handling, user-controlled panel state, fullscreen/orientation behavior, touch target rules, z-index architecture, dedicated `fullDiveBlend` state, Mars timing/curve parity, live render-loop handoff, and post-transition cleanup order.
 
 A browser layout harness using the project's actual HTML and CSS was rendered at:
 

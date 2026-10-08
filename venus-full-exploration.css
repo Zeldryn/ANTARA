@@ -689,6 +689,43 @@
 }
 
 /* Tablet landscape / narrow laptops. Keep desktop composition, but make panels overlays. */
+
+/* User-controlled secondary panels: desktop/laptop may keep both open.
+   Reflow them instead of silently mutating state. */
+.venus-full-exploration.is-info-open.is-objectives-open .venus-objectives-panel {
+  max-height: min(50dvh, calc(100dvh - var(--venus-safe-top) - var(--venus-safe-bottom) - 160px));
+}
+
+@media (min-width: 821px) and (max-width: 1599px) {
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-location-card {
+    width: clamp(292px, 23vw, 342px);
+  }
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-objectives-panel {
+    width: clamp(252px, 20vw, 292px);
+  }
+}
+
+@media (min-width: 821px) and (max-width: 1100px) {
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-location-card {
+    width: clamp(276px, 31vw, 308px);
+  }
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-objectives-panel {
+    width: clamp(224px, 26vw, 258px);
+    max-height: min(46dvh, calc(100dvh - 148px));
+  }
+}
+
+@media (min-width: 821px) and (max-height: 720px) {
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-objectives-panel {
+    max-height: min(42dvh, calc(100dvh - 136px));
+    padding-block: 9px;
+  }
+  .venus-full-exploration.is-info-open.is-objectives-open #venus-objectives-intro {
+    margin-block: 6px 7px;
+  }
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-objectives-list { gap: 4px; }
+}
+
 @media (min-width: 821px) and (max-width: 1100px) {
   .venus-full-exploration .mars-full-hud { width: clamp(238px, 27vw, 272px); }
   .venus-full-exploration .mars-full-hud h3 { font-size: 24px; }

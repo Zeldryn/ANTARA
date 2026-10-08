@@ -17,7 +17,7 @@ function check(name, condition, detail='') {
 }
 function has(source, fragment) { return source.includes(fragment); }
 
-check('cache busting updated', has(html, '20260930-venus-exit-ui-rebuild-2'));
+check('cache busting updated', has(html, '20260930-venus-panel-copy-3'));
 check('mobile action menu exists', has(html, 'venus-actions-menu-toggle') && has(html, 'venus-actions-menu'));
 check('HUD metrics have responsive hooks', ['venus-hud-metric-altitude','venus-hud-metric-speed','venus-hud-metric-distance','venus-hud-metric-region','venus-hud-metric-quality'].every(x=>has(html,x)));
 check('safe-area variables present', ['safe-area-inset-top','safe-area-inset-right','safe-area-inset-bottom','safe-area-inset-left'].every(x=>has(css,x)));
@@ -32,7 +32,9 @@ check('mobile touch targets are 44px+', /min-height:\s*44px/.test(css) && /width
 check('desktop hints wrap', has(css, 'flex-wrap: wrap') && has(css, 'white-space: normal'));
 check('short-screen breakpoint exists', has(css, '@media (max-height: 720px)'));
 check('reduced motion respected', has(css, '@media (prefers-reduced-motion: reduce)'));
-check('panel exclusivity behavior exists', has(venus, 'isConstrainedUi()') && has(venus, 'collapseObjectives()') && has(venus, 'is-info-open') && has(venus, 'is-objectives-open'));
+check('user-controlled panel state exists', ['objectiveOpen','infoOpen','secondaryPanelOrder','syncSecondaryPanels','getTopSecondaryPanel'].every(x=>has(venus,x)));
+const showInfoMethod = venus.slice(venus.indexOf('showRegionInfo(focus = false) {'), venus.indexOf('hideRegionInfo(focusToggle = true) {'));
+check('desktop info does not auto-collapse objectives', !showInfoMethod.includes('collapseObjectives('));
 check('normal responsive layout handled mostly in CSS', !/getBoundingClientRect\(\).*style\.(?:left|right|top|bottom|width|height)/s.test(venus));
 check('fullscreen resize hook present', has(venus, 'fullscreenchange') && has(venus, 'updateFullscreenLabel()') && has(venus, 'this.resize()'));
 check('orientation resize hook present', has(venus, 'orientationchange'));
