@@ -4020,3 +4020,819 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 .mission[data-experience="planet"] .profile-hud-trigger {
   pointer-events: none !important;
 }
+
+
+/* ========================================================================
+   ANTARA CENTRAL COCKPIT SEAT
+   A single restrained, manufactured-looking seat integrated into the existing
+   cockpit depth stack. No console/panel additions and no other home UI changes.
+   ======================================================================== */
+.antara-cockpit-seat {
+  position: absolute;
+  z-index: 7;
+  left: 50%;
+  bottom: 19.2%;
+  width: clamp(320px, 27vw, 470px);
+  height: clamp(142px, 16.8vw, 218px);
+  transform: translateX(-50%);
+  pointer-events: none;
+  filter: drop-shadow(0 18px 22px rgba(0,0,0,.28));
+}
+.antara-cockpit-seat::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 12%; right: 12%; top: 6%; height: 7%;
+  clip-path: polygon(3% 0,97% 0,100% 42%,96% 100%,4% 100%,0 42%);
+  background: linear-gradient(180deg,#1a2d3d,#08121d);
+  border-top: 1px solid rgba(222,184,110,.25);
+  border-bottom: 1px solid rgba(105,165,194,.10);
+  box-shadow: inset 0 1px rgba(255,255,255,.025);
+}
+.antara-cockpit-seat::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 31%; right: 31%; bottom: 0; height: 12%;
+  background: linear-gradient(180deg,#0d1a26,#050b12);
+  clip-path: polygon(8% 0,92% 0,100% 100%,0 100%);
+  border-top: 1px solid rgba(132,165,184,.12);
+}
+.antara-seat-shadow {
+  position: absolute;
+  left: 13%; right: 13%; bottom: 1%; height: 15%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,.48), rgba(0,0,0,.12) 55%, transparent 76%);
+  filter: blur(5px);
+  opacity: .72;
+}
+.antara-seat-frame {
+  position: absolute;
+  inset: 11% 3% 9%;
+  clip-path: polygon(8% 0,92% 0,100% 15%,97% 88%,90% 100%,10% 100%,3% 88%,0 15%);
+  background:
+    linear-gradient(90deg, transparent 0 8%, rgba(215,176,104,.30) 8% 8.45%, transparent 8.45% 91.55%, rgba(215,176,104,.30) 91.55% 92%, transparent 92%),
+    linear-gradient(180deg, #182a3b 0%, #0b1623 48%, #060d16 100%);
+  border: 1px solid rgba(170,192,205,.17);
+  box-shadow: inset 0 1px rgba(255,255,255,.045), inset 0 -10px 20px rgba(0,0,0,.22);
+}
+.antara-seat-frame::before,
+.antara-seat-frame::after {
+  content: "";
+  position: absolute;
+  top: 10%; bottom: 15%; width: 7%;
+  background: linear-gradient(180deg, #25394a, #0c1722 60%, #070e16);
+  border: 1px solid rgba(221,184,111,.22);
+  box-shadow: inset 0 0 0 1px rgba(87,145,174,.07);
+}
+.antara-seat-frame::before { left: 3.5%; clip-path: polygon(25% 0,100% 7%,78% 100%,0 88%); }
+.antara-seat-frame::after { right: 3.5%; clip-path: polygon(0 7%,75% 0,100% 88%,22% 100%); }
+.antara-seat-frame-rail {
+  position: absolute;
+  top: 14%; bottom: 20%; width: 2px;
+  background: linear-gradient(180deg, rgba(231,192,116,.1), rgba(231,192,116,.58) 42%, rgba(105,171,202,.18) 68%, transparent);
+  opacity: .8;
+}
+.seat-frame-rail-left { left: 12%; }
+.seat-frame-rail-right { right: 12%; }
+.antara-seat-mount {
+  position: absolute;
+  bottom: 3%; width: 11%; height: 10%;
+  background: #080f18;
+  border: 1px solid rgba(210,176,111,.18);
+  clip-path: polygon(16% 0,84% 0,100% 100%,0 100%);
+}
+.seat-mount-left { left: 20%; }
+.seat-mount-right { right: 20%; }
+.antara-seat-back {
+  position: absolute;
+  left: 13%; right: 13%; top: 11%; height: 46%;
+  display: grid;
+  grid-template-columns: 1fr 1.22fr 1fr;
+  gap: 1.15%;
+  transform: perspective(620px) rotateX(-2deg);
+  transform-origin: 50% 100%;
+}
+.antara-seat-back-panel {
+  position: relative;
+  min-width: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.025), transparent 18%),
+    linear-gradient(150deg, #17283a 0%, #101d2b 54%, #0a131e 100%);
+  border: 1px solid rgba(144,170,188,.15);
+  box-shadow: inset 0 -12px 20px rgba(0,0,0,.15), inset 0 1px rgba(255,255,255,.035);
+}
+.seat-back-left { border-radius: 6px 3px 4px 5px; clip-path: polygon(7% 0,100% 0,100% 100%,0 94%,0 13%); }
+.seat-back-center { border-radius: 3px; }
+.seat-back-right { border-radius: 3px 6px 5px 4px; clip-path: polygon(0 0,93% 0,100% 13%,100% 94%,0 100%); }
+.antara-seat-back-panel::after {
+  content: "";
+  position: absolute;
+  left: 12%; right: 12%; bottom: 13%; height: 1px;
+  background: rgba(207,174,109,.20);
+}
+.seat-back-center::before {
+  content: "ANTARA";
+  position: absolute;
+  left: 50%; top: 25%;
+  transform: translateX(-50%);
+  color: rgba(224,190,120,.58);
+  font-size: clamp(5px,.42vw,7px);
+  font-weight: 700;
+  letter-spacing: .27em;
+}
+.seat-back-center i {
+  position: absolute;
+  left: 50%; top: 45%;
+  width: 18%; aspect-ratio: 1;
+  transform: translate(-50%,-50%) rotate(45deg);
+  border-top: 1px solid rgba(221,186,112,.44);
+  border-left: 1px solid rgba(104,171,203,.20);
+  opacity: .7;
+}
+.antara-seat-cushion {
+  position: absolute;
+  left: 10.5%; right: 10.5%; top: 53%; height: 21%;
+  display: grid;
+  grid-template-columns: 1fr 1.16fr 1fr;
+  gap: 1.05%;
+  transform: perspective(520px) rotateX(14deg);
+  transform-origin: 50% 0;
+}
+.antara-seat-cushion-panel {
+  background: linear-gradient(180deg, #172a3b 0%, #0d1a27 70%, #08111b 100%);
+  border: 1px solid rgba(140,169,187,.14);
+  border-top-color: rgba(229,195,128,.20);
+  box-shadow: inset 0 1px rgba(255,255,255,.035), inset 0 -8px 14px rgba(0,0,0,.16);
+}
+.seat-cushion-left { border-radius: 3px 3px 6px 7px; }
+.seat-cushion-center { border-radius: 3px 3px 6px 6px; }
+.seat-cushion-right { border-radius: 3px 3px 7px 6px; }
+.antara-seat-arm {
+  position: absolute;
+  top: 43%; width: 9.5%; height: 29%;
+  background: linear-gradient(180deg,#1a2c3e,#0a1521 73%);
+  border: 1px solid rgba(216,181,112,.18);
+  box-shadow: inset 0 1px rgba(255,255,255,.035), 0 8px 12px rgba(0,0,0,.17);
+}
+.seat-arm-left { left: 4.2%; clip-path: polygon(28% 0,100% 12%,82% 100%,0 85%); }
+.seat-arm-right { right: 4.2%; clip-path: polygon(0 12%,72% 0,100% 85%,18% 100%); }
+.antara-seat-arm i {
+  position: absolute;
+  top: 20%; width: 38%; height: 2px;
+  background: #d0a85f;
+  box-shadow: 0 0 5px rgba(208,168,95,.15);
+  opacity: .72;
+}
+.seat-arm-left i { left: 27%; }
+.seat-arm-right i { right: 27%; }
+.antara-seat-base {
+  position: absolute;
+  left: 20%; right: 20%; bottom: 4%; height: 17%;
+  clip-path: polygon(5% 0,95% 0,100% 34%,92% 100%,8% 100%,0 34%);
+  background: linear-gradient(180deg,#101f2d,#07111b 72%);
+  border: 1px solid rgba(127,160,181,.15);
+  box-shadow: inset 0 1px rgba(255,255,255,.03);
+}
+.antara-seat-base::before,
+.antara-seat-base::after {
+  content: "";
+  position: absolute;
+  bottom: -38%;
+  width: 18%; height: 48%;
+  background: linear-gradient(180deg,#0a151f,#04090f);
+  border: 1px solid rgba(141,166,181,.10);
+}
+.antara-seat-base::before { left: 15%; clip-path: polygon(0 0,100% 0,78% 100%,20% 100%); }
+.antara-seat-base::after { right: 15%; clip-path: polygon(0 0,100% 0,80% 100%,22% 100%); }
+.seat-base-track {
+  position: absolute;
+  left: 18%; right: 18%; bottom: 22%; height: 2px;
+  background: linear-gradient(90deg,transparent,rgba(112,178,208,.20),rgba(221,182,105,.48),rgba(112,178,208,.20),transparent);
+}
+.seat-base-lock {
+  position: absolute;
+  bottom: 16%; width: 4px; height: 4px;
+  border-radius: 50%;
+  background: rgba(221,184,110,.72);
+  box-shadow: 0 0 5px rgba(221,184,110,.18);
+}
+.seat-base-lock-left { left: 13%; }
+.seat-base-lock-right { right: 13%; }
+
+/* The seat belongs to the cockpit, so it follows the existing handoff rather
+   than introducing a separate transition or interaction. */
+@media (max-width: 1100px) {
+  .antara-cockpit-seat { width: clamp(285px,31vw,390px); bottom: 19.2%; }
+}
+@media (max-width: 900px) {
+  .antara-cockpit-seat { width: clamp(255px,34vw,330px); height: clamp(126px,19vw,185px); bottom: 20%; }
+}
+@media (max-width: 700px) {
+  .antara-cockpit-seat { width: clamp(220px,48vw,285px); height: clamp(112px,25vw,150px); bottom: 20.5%; opacity: .90; }
+  .seat-back-center::before { display: none; }
+}
+@media (max-height: 700px) and (min-width: 701px) {
+  .antara-cockpit-seat { width: clamp(270px,27vw,350px); height: clamp(120px,16.2vw,178px); bottom: 20%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .antara-cockpit-seat { filter: drop-shadow(0 14px 18px rgba(0,0,0,.24)); }
+}
+
+
+/* ========================================================================
+   HOME WINDOW LIFE REWORK
+   Only the blue-sky exterior and city outside the cockpit are refreshed.
+   No cockpit frame, characters, CTA, or other sections are redesigned.
+   ======================================================================== */
+
+/* Remove the temporary center bench from the cockpit. */
+.antara-cockpit-seat { display:none !important; }
+
+/* Make the daytime sky feel alive without turning it into noisy AI-style clutter. */
+.launch-sky {
+  background:
+    radial-gradient(ellipse at 50% 96%, rgba(255,200,133,.34) 0%, rgba(228,164,109,.12) 20%, transparent 44%),
+    radial-gradient(circle at 86% 22%, rgba(255,255,255,.10) 0%, transparent 9%),
+    radial-gradient(circle at 12% 24%, rgba(255,255,255,.05) 0%, transparent 8%),
+    linear-gradient(180deg, #0f3558 0%, #205377 34%, #4d80a2 61%, #94b0c0 84%, #d1dbe1 100%);
+}
+.exterior-cloud-haze {
+  inset: 12% 1% 33%;
+  opacity: calc(.58 - var(--space-mix) * .42);
+}
+.exterior-cloud-haze i {
+  width: 27%;
+  height: 17%;
+  background: radial-gradient(ellipse at center, rgba(244,250,253,.24), rgba(214,234,245,.10) 54%, transparent 76%);
+  filter: blur(5px);
+}
+.exterior-starfield {
+  inset: 8% 7% 34%;
+  opacity: calc(.18 + var(--star-opacity) * .46);
+}
+.exterior-starfield i {
+  background: rgba(236,246,252,.88);
+  box-shadow: 0 0 6px rgba(208,234,250,.40);
+}
+
+/* Small flying silhouettes and distant transit lines: subtle motion, not gimmicky. */
+.sky-living-detail {
+  position: absolute;
+  z-index: 1;
+  inset: 10% 7% 33%;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: calc(.96 - var(--space-mix) * .35);
+}
+.sky-bird-lane,
+.sky-transit-lane {
+  position: absolute;
+  inset: 0;
+}
+.sky-bird-lane i,
+.sky-transit-lane i {
+  position: absolute;
+}
+.sky-bird-lane i {
+  width: 20px;
+  height: 9px;
+  left: var(--bird-x, 0%);
+  top: var(--bird-y, 0%);
+  opacity: .62;
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,.08));
+  animation: home-bird-pass var(--bird-duration, 20s) linear infinite;
+  animation-delay: var(--bird-delay, 0s);
+}
+.sky-bird-lane i::before,
+.sky-bird-lane i::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 9px;
+  height: 2px;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(90deg, rgba(25,48,67,.88), rgba(59,84,103,.60));
+  transform-origin: 100% 50%;
+  animation: home-bird-flap 1.5s ease-in-out infinite;
+}
+.sky-bird-lane i::before {
+  left: 1px;
+  transform: translateY(-50%) rotate(18deg);
+}
+.sky-bird-lane i::after {
+  right: 1px;
+  transform: translateY(-50%) scaleX(-1) rotate(18deg);
+}
+.bird-lane-left i:nth-child(1){--bird-x:12%;--bird-y:30%;--bird-duration:22s;--bird-delay:-3s;transform:scale(.86)}
+.bird-lane-left i:nth-child(2){--bird-x:24%;--bird-y:23%;--bird-duration:26s;--bird-delay:-11s;transform:scale(.72)}
+.bird-lane-left i:nth-child(3){--bird-x:35%;--bird-y:34%;--bird-duration:23s;--bird-delay:-17s;transform:scale(.92)}
+.bird-lane-right i:nth-child(1){--bird-x:64%;--bird-y:18%;--bird-duration:28s;--bird-delay:-7s;transform:scale(.66)}
+.bird-lane-right i:nth-child(2){--bird-x:76%;--bird-y:28%;--bird-duration:25s;--bird-delay:-14s;transform:scale(.78)}
+.sky-transit-lane i {
+  left: var(--tx, 0%);
+  top: var(--ty, 0%);
+  width: var(--tw, 38px);
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255,240,201,0), rgba(255,240,201,.70) 20%, rgba(150,210,237,.82) 54%, rgba(255,240,201,0));
+  box-shadow: 0 0 8px rgba(143,196,222,.16);
+  opacity: .45;
+  transform: skewX(-26deg);
+  animation: home-transit-pass var(--td, 31s) linear infinite;
+  animation-delay: var(--t-delay, 0s);
+}
+.transit-lane-one i { --tx: -14%; --ty: 39%; --tw: 46px; --td: 29s; --t-delay: -6s; }
+.transit-lane-two i { --tx: 105%; --ty: 52%; --tw: 34px; --td: 33s; --t-delay: -18s; animation-name: home-transit-pass-reverse; opacity: .30; }
+
+/* Rebuild the ground city using clean vector-like geometry so it reads well on mobile too. */
+.anime-city-backdrop {
+  background-image: none !important;
+  background:
+    linear-gradient(180deg, rgba(197,224,239,.16) 0%, rgba(182,213,231,.08) 28%, transparent 40%),
+    linear-gradient(180deg, rgba(255,218,170,.10), transparent 30%);
+  left: -10%;
+  right: -10%;
+  top: -55%;
+  bottom: -8%;
+  filter: saturate(1.02) contrast(1.02) brightness(.98);
+  animation: home-city-parallax 14s ease-in-out infinite alternate;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.10) 7%, rgba(0,0,0,.72) 18%, #000 33%, #000 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.10) 7%, rgba(0,0,0,.72) 18%, #000 33%, #000 100%);
+}
+.anime-city-backdrop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(13,28,40,.74) 0 13%, transparent 13%) 0 100%/100% 100% no-repeat,
+    linear-gradient(rgba(31,60,80,.62), rgba(31,60,80,.62)) 2% 66%/6% 10% no-repeat,
+    linear-gradient(rgba(27,54,73,.64), rgba(27,54,73,.64)) 10% 59%/8% 17% no-repeat,
+    linear-gradient(rgba(31,60,80,.66), rgba(31,60,80,.66)) 21% 63%/10% 13% no-repeat,
+    linear-gradient(rgba(24,51,69,.64), rgba(24,51,69,.64)) 35% 56%/7% 20% no-repeat,
+    linear-gradient(rgba(29,57,78,.72), rgba(29,57,78,.72)) 46% 48%/8% 28% no-repeat,
+    linear-gradient(rgba(24,51,69,.64), rgba(24,51,69,.64)) 58% 60%/9% 16% no-repeat,
+    linear-gradient(rgba(31,60,80,.62), rgba(31,60,80,.62)) 71% 55%/11% 21% no-repeat,
+    linear-gradient(rgba(23,47,65,.64), rgba(23,47,65,.64)) 85% 61%/8% 15% no-repeat,
+    linear-gradient(rgba(24,46,64,.62), rgba(24,46,64,.62)) 93% 67%/5% 9% no-repeat;
+  opacity: .74;
+}
+.anime-city-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(20,37,52,.96), rgba(20,37,52,.96)) 0 79%/100% 4% no-repeat,
+    linear-gradient(rgba(30,54,73,.86), rgba(30,54,73,.86)) 6% 73%/13% 8% no-repeat,
+    linear-gradient(rgba(28,52,69,.88), rgba(28,52,69,.88)) 18% 69%/10% 12% no-repeat,
+    linear-gradient(rgba(24,47,64,.96), rgba(24,47,64,.96)) 30% 64%/14% 17% no-repeat,
+    linear-gradient(rgba(39,68,92,.97), rgba(39,68,92,.97)) 44% 59%/12% 22% no-repeat,
+    linear-gradient(rgba(44,76,102,.98), rgba(44,76,102,.98)) 46.2% 50%/7.6% 31% no-repeat,
+    linear-gradient(rgba(235,196,128,.88), rgba(235,196,128,.88)) 49.2% 48.5%/1.1% 7% no-repeat,
+    linear-gradient(rgba(27,52,69,.97), rgba(27,52,69,.97)) 57% 67%/15% 14% no-repeat,
+    linear-gradient(rgba(22,44,60,.94), rgba(22,44,60,.94)) 73% 70%/11% 11% no-repeat,
+    linear-gradient(rgba(31,55,73,.90), rgba(31,55,73,.90)) 84% 66%/12% 15% no-repeat,
+    linear-gradient(90deg, transparent 0 33%, rgba(243,204,129,.70) 33% 41%, transparent 41% 59%, rgba(138,201,232,.65) 59% 67%, transparent 67% 100%) 50% 82%/36% 2px no-repeat;
+  opacity: .95;
+  box-shadow: inset 0 -18px 24px rgba(3,10,16,.22);
+}
+.anime-city-lights {
+  left: -6%;
+  right: -6%;
+  bottom: 12%;
+  height: 30%;
+  opacity: calc(.86 - var(--ground-progress) * .48);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 2.8%, rgba(248,212,130,.65) 2.8% 3.2%, transparent 3.2% 7%) 12% 62%/19% 18% no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 3.4%, rgba(136,198,229,.48) 3.4% 3.9%, transparent 3.9% 8.5%) 30% 57%/14% 21% no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 3.1%, rgba(248,212,130,.72) 3.1% 3.6%, transparent 3.6% 7.8%) 44% 50%/12% 26% no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 3.2%, rgba(138,201,232,.50) 3.2% 3.6%, transparent 3.6% 8.6%) 59% 59%/15% 18% no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 3.1%, rgba(248,212,130,.66) 3.1% 3.6%, transparent 3.6% 7.8%) 78% 58%/16% 19% no-repeat,
+    linear-gradient(90deg, transparent 0 6%, rgba(243,204,129,.78) 9% 10%, transparent 13% 21%, rgba(123,192,226,.72) 24% 25%, transparent 28% 39%, rgba(243,204,129,.68) 42% 43%, transparent 46% 54%, rgba(123,192,226,.72) 57% 58%, transparent 61% 73%, rgba(243,204,129,.68) 76% 77%, transparent 80% 100%) 50% 84%/52% 2px no-repeat;
+  filter: drop-shadow(0 0 8px rgba(231,191,109,.25));
+  animation: home-city-light-shimmer 6.2s ease-in-out infinite alternate;
+}
+.anime-city-lights::before,
+.anime-city-lights::after {
+  content: "";
+  position: absolute;
+  top: 73%;
+  width: 18%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(137,201,230,.92) 40%, rgba(255,226,172,.15) 100%);
+  opacity: .58;
+  filter: blur(.1px);
+}
+.anime-city-lights::before {
+  left: -16%;
+  animation: home-hovercraft-pass 10.6s linear infinite;
+}
+.anime-city-lights::after {
+  right: -18%;
+  width: 14%;
+  top: 69%;
+  opacity: .46;
+  animation: home-hovercraft-pass-reverse 12.2s linear infinite;
+}
+.anime-city-cloud-band {
+  left: -10%;
+  right: -10%;
+  top: -12%;
+  height: 44%;
+  opacity: calc(.50 - var(--ground-progress) * .36);
+  filter: blur(2.4px);
+}
+.anime-city-atmosphere {
+  top: -36%;
+  height: 96%;
+  opacity: .78;
+  background:
+    radial-gradient(ellipse at 50% 70%, rgba(253,222,171,.24), transparent 42%),
+    linear-gradient(180deg, rgba(229,242,249,.20), rgba(173,207,229,.10) 33%, rgba(122,163,188,.07) 64%, transparent 100%);
+}
+.spaceport-skyline {
+  bottom: 31.8%;
+  height: 17%;
+  opacity: calc(var(--ground-opacity) * .92);
+}
+.spaceport-skyline::after {
+  opacity: .18;
+}
+.spaceport-horizon-lights {
+  bottom: 31.3%;
+  opacity: calc(var(--ground-opacity) * .82);
+}
+.ground-beacon-field {
+  bottom: 25.5%;
+  opacity: calc(var(--ground-opacity) * .70);
+}
+.distant-structure-lights {
+  opacity: calc(var(--ground-opacity) * .72);
+}
+.high-altitude-moon {
+  top: 14.5%;
+  right: 10.5%;
+  width: clamp(34px, 4vw, 58px);
+  opacity: calc(.35 + (1 - var(--space-mix)) * .22);
+}
+.orbital-glints {
+  opacity: calc(.26 + (1 - var(--space-mix)) * .20);
+}
+
+@keyframes home-bird-pass {
+  0% { transform: translate3d(-16px, 4px, 0) scale(var(--bird-scale,1)); opacity: 0; }
+  8%, 82% { opacity: .62; }
+  100% { transform: translate3d(110px, -10px, 0) scale(var(--bird-scale,1)); opacity: 0; }
+}
+@keyframes home-bird-flap {
+  0%,100% { transform: translateY(-50%) rotate(18deg); }
+  50% { transform: translateY(-50%) rotate(-6deg); }
+}
+@keyframes home-transit-pass {
+  0% { transform: translate3d(0,0,0) skewX(-26deg); opacity: 0; }
+  10%, 75% { opacity: .42; }
+  100% { transform: translate3d(128vw, -12px, 0) skewX(-26deg); opacity: 0; }
+}
+@keyframes home-transit-pass-reverse {
+  0% { transform: translate3d(0,0,0) skewX(-26deg); opacity: 0; }
+  14%, 72% { opacity: .28; }
+  100% { transform: translate3d(-118vw, 10px, 0) skewX(-26deg); opacity: 0; }
+}
+@keyframes home-city-parallax {
+  from { transform: translate3d(0,0,0); }
+  to { transform: translate3d(0, 4px, 0); }
+}
+@keyframes home-city-light-shimmer {
+  from { filter: brightness(.94) drop-shadow(0 0 7px rgba(231,191,109,.22)); }
+  to { filter: brightness(1.12) drop-shadow(0 0 9px rgba(231,191,109,.28)); }
+}
+@keyframes home-hovercraft-pass {
+  0% { transform: translateX(0); opacity: 0; }
+  12%, 68% { opacity: .56; }
+  100% { transform: translateX(620%); opacity: 0; }
+}
+@keyframes home-hovercraft-pass-reverse {
+  0% { transform: translateX(0); opacity: 0; }
+  14%, 70% { opacity: .40; }
+  100% { transform: translateX(-620%); opacity: 0; }
+}
+
+@media (max-width: 900px) {
+  .anime-city-backdrop { top: -51%; left:-12%; right:-12%; }
+  .anime-city-lights { bottom: 13%; height: 28%; }
+  .spaceport-skyline { left:5%; right:5%; bottom:31.9%; height:15%; }
+  .ground-beacon-field { bottom:24.5%; }
+}
+@media (max-width: 700px) {
+  .sky-living-detail { inset: 12% 5% 34%; }
+  .bird-lane-right i:nth-child(2),
+  .transit-lane-two { display:none; }
+  .anime-city-backdrop {
+    left: -16%;
+    right: -16%;
+    top: -38%;
+    bottom: -3%;
+  }
+  .anime-city-backdrop::before {
+    background:
+      linear-gradient(to top, rgba(13,28,40,.76) 0 16%, transparent 16%) 0 100%/100% 100% no-repeat,
+      linear-gradient(rgba(28,54,73,.66), rgba(28,54,73,.66)) 4% 63%/10% 14% no-repeat,
+      linear-gradient(rgba(24,49,68,.66), rgba(24,49,68,.66)) 18% 58%/12% 19% no-repeat,
+      linear-gradient(rgba(31,60,80,.74), rgba(31,60,80,.74)) 36% 61%/10% 16% no-repeat,
+      linear-gradient(rgba(39,68,92,.88), rgba(39,68,92,.88)) 46% 53%/10% 24% no-repeat,
+      linear-gradient(rgba(27,52,69,.70), rgba(27,52,69,.70)) 61% 60%/12% 17% no-repeat,
+      linear-gradient(rgba(31,55,73,.78), rgba(31,55,73,.78)) 78% 57%/13% 20% no-repeat;
+    opacity: .80;
+  }
+  .anime-city-backdrop::after {
+    background:
+      linear-gradient(rgba(20,37,52,.96), rgba(20,37,52,.96)) 0 80%/100% 4% no-repeat,
+      linear-gradient(rgba(24,47,64,.96), rgba(24,47,64,.96)) 12% 70%/17% 12% no-repeat,
+      linear-gradient(rgba(39,68,92,.98), rgba(39,68,92,.98)) 42% 64%/16% 18% no-repeat,
+      linear-gradient(rgba(44,76,102,.99), rgba(44,76,102,.99)) 46.5% 54%/7% 28% no-repeat,
+      linear-gradient(rgba(235,196,128,.88), rgba(235,196,128,.88)) 49.4% 52.5%/1.3% 6% no-repeat,
+      linear-gradient(rgba(27,52,69,.97), rgba(27,52,69,.97)) 62% 69%/17% 13% no-repeat,
+      linear-gradient(rgba(31,55,73,.90), rgba(31,55,73,.90)) 81% 67%/14% 15% no-repeat,
+      linear-gradient(90deg, transparent 0 31%, rgba(243,204,129,.72) 31% 40%, transparent 40% 59%, rgba(138,201,232,.66) 59% 68%, transparent 68% 100%) 50% 82%/42% 2px no-repeat;
+  }
+  .anime-city-lights {
+    left:-10%;
+    right:-10%;
+    bottom: 14%;
+    height: 24%;
+  }
+  .anime-city-cloud-band { display:none; }
+  .anime-city-atmosphere { top: -28%; height: 82%; opacity: .66; }
+  .spaceport-skyline {
+    left: 4%;
+    right: 4%;
+    bottom: 33.4%;
+    height: 11.5%;
+    opacity: calc(var(--ground-opacity) * .62);
+  }
+  .spaceport-cluster-center,
+  .spaceport-antenna { display:none; }
+  .spaceport-cluster { gap: 4px; }
+  .spaceport-horizon-lights { left: 8%; right: 8%; bottom: 32.8%; }
+  .ground-beacon-field { left: 3%; right: 3%; bottom: 26.4%; }
+  .high-altitude-moon { right: 11%; top: 16%; width: 26px; }
+}
+@media (max-width: 520px) {
+  .sky-bird-lane i { width: 15px; height: 7px; }
+  .anime-city-backdrop { left:-20%; right:-20%; top:-35%; }
+  .anime-city-lights { height: 21%; opacity: calc(.78 - var(--ground-progress) * .46); }
+  .spaceport-skyline,
+  .spaceport-horizon-lights,
+  .ground-beacon-field,
+  .distant-structure-lights { opacity: calc(var(--ground-opacity) * .48); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sky-bird-lane i,
+  .sky-transit-lane i,
+  .anime-city-backdrop,
+  .anime-city-lights,
+  .anime-city-lights::before,
+  .anime-city-lights::after,
+  .exterior-starfield i,
+  .spaceport-horizon-lights i,
+  .ground-beacon-field i,
+  .orbital-glints i { animation: none !important; }
+}
+
+/* ========================================================================
+   2026-09-30 IDENTITY HEADER SPACING + LEADERBOARD EXTENSION
+   Strict scope: preserve the existing avatar and login border design.
+   Only spacing/alignment is refined and one matching leaderboard frame is added.
+   ======================================================================== */
+
+.cockpit-profile-hud {
+  --identity-module-left: calc(3.9% + 8px);
+  --identity-module-width: clamp(228px,22.4vw,286px);
+  --avatar-login-gap: clamp(18px,1.45vw,24px);
+  --leader-side-gap: clamp(7px,.58vw,10px);
+  --leader-bridge-width: clamp(17px,1.45vw,24px);
+  --leader-frame-width: clamp(94px,8.6vw,118px);
+  --identity-frame-height: clamp(29px,3.45vh,34px);
+}
+
+/* 1) Keep the avatar and login border visually separate. */
+.cockpit-profile-hud .profile-hud-trigger {
+  left: var(--identity-module-left) !important;
+  width: var(--identity-module-width) !important;
+  max-width: none !important;
+  grid-template-columns: auto var(--avatar-login-gap) minmax(0,1fr) !important;
+}
+.cockpit-profile-hud .profile-hud-connector {
+  min-width: var(--avatar-login-gap) !important;
+  width: var(--avatar-login-gap) !important;
+}
+
+/* 2) Do not redesign the existing login frame. Only center its content precisely. */
+.cockpit-profile-hud .profile-login-frame {
+  position: relative !important;
+  height: var(--identity-frame-height) !important;
+  grid-template-columns: 1fr !important;
+  gap: 0 !important;
+}
+.cockpit-profile-hud .profile-hud-copy {
+  position: absolute !important;
+  inset: 0 22px !important;
+  display: grid !important;
+  align-content: center !important;
+  justify-items: center !important;
+  text-align: center !important;
+  gap: 1px !important;
+  min-width: 0 !important;
+}
+.cockpit-profile-hud .profile-hud-kicker {
+  justify-content: center !important;
+  width: 100% !important;
+}
+.cockpit-profile-hud .profile-hud-copy strong,
+.cockpit-profile-hud .profile-hud-copy small {
+  width: 100% !important;
+  text-align: center !important;
+}
+.cockpit-profile-hud .profile-hud-action {
+  position: absolute !important;
+  right: 5px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+  border-left: 0 !important;
+}
+
+/* 3) Small technical line after the login frame, with breathing room on both ends. */
+.profile-leaderboard-bridge {
+  position: absolute;
+  left: calc(var(--identity-module-left) + var(--identity-module-width) + var(--leader-side-gap));
+  top: 50%;
+  width: var(--leader-bridge-width);
+  height: 14px;
+  transform: translateY(-50%);
+  display: grid;
+  grid-template-columns: 3px 1fr 3px;
+  align-items: center;
+  gap: 3px;
+  pointer-events: none;
+}
+.profile-leaderboard-bridge b {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(218,176,103,.76), rgba(112,184,218,.62));
+  box-shadow: 0 0 5px rgba(112,184,218,.08);
+}
+.profile-leaderboard-bridge i {
+  display: block;
+  width: 3px;
+  height: 3px;
+  transform: rotate(45deg);
+  border: 1px solid rgba(219,178,105,.62);
+}
+.profile-leaderboard-bridge i:last-child {
+  border-color: rgba(112,184,218,.58);
+}
+
+/* 4) Leaderboard uses the same line language as the login frame, but stays its own section. */
+.leaderboard-hud-frame {
+  position: absolute;
+  left: calc(
+    var(--identity-module-left) +
+    var(--identity-module-width) +
+    var(--leader-side-gap) +
+    var(--leader-bridge-width) +
+    var(--leader-side-gap)
+  );
+  top: 50%;
+  width: var(--leader-frame-width);
+  height: var(--identity-frame-height);
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 0 10px;
+  overflow: visible;
+  background: transparent;
+  color: #f0eee8;
+  pointer-events: auto;
+  isolation: isolate;
+}
+.leaderboard-hud-frame::before,
+.leaderboard-hud-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.leaderboard-hud-frame::before {
+  clip-path: polygon(7px 0,72% 0,77% 2px,100% 2px,100% calc(100% - 6px),calc(100% - 6px) 100%,29% 100%,24% calc(100% - 2px),0 calc(100% - 2px),0 7px);
+  background:
+    linear-gradient(90deg, rgba(222,182,108,.82), rgba(222,182,108,.26) 48%, transparent 73%) top left / 74% 1px no-repeat,
+    linear-gradient(90deg, transparent 0 25%, rgba(107,183,220,.46) 45%, rgba(107,183,220,.78)) bottom right / 78% 1px no-repeat,
+    linear-gradient(180deg, rgba(222,182,108,.74), rgba(222,182,108,.16)) left top / 1px 65% no-repeat,
+    linear-gradient(180deg, rgba(107,183,220,.18), rgba(107,183,220,.62)) right bottom / 1px 62% no-repeat;
+  opacity: .94;
+}
+.leaderboard-hud-frame::after {
+  left: 9px;
+  right: 9px;
+  top: 50%;
+  height: 1px;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, transparent, rgba(112,184,218,.08) 30%, rgba(222,182,108,.07) 70%, transparent);
+  opacity: .62;
+}
+.leaderboard-hud-frame strong {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  max-width: 100%;
+  color: #f0eee8;
+  font: 600 clamp(7px,.58vw,9px)/1 system-ui,sans-serif;
+  letter-spacing: .15em;
+  text-indent: .15em;
+  text-align: center;
+  white-space: nowrap;
+}
+.leaderboard-hud-bracket {
+  position: absolute;
+  z-index: 2;
+  width: 22%;
+  height: 1px;
+  pointer-events: none;
+}
+.leaderboard-hud-bracket-top {
+  left: 12px;
+  top: -1px;
+  background: linear-gradient(90deg, rgba(222,182,108,.90), transparent);
+}
+.leaderboard-hud-bracket-bottom {
+  right: 12px;
+  bottom: -1px;
+  background: linear-gradient(270deg, rgba(112,184,218,.82), transparent);
+}
+
+@media (max-width: 1366px) {
+  .cockpit-profile-hud {
+    --identity-module-left: calc(3.9% + 7px);
+    --identity-module-width: clamp(220px,23.2vw,270px);
+    --avatar-login-gap: clamp(17px,1.35vw,22px);
+    --leader-side-gap: 7px;
+    --leader-bridge-width: clamp(15px,1.3vw,20px);
+    --leader-frame-width: clamp(90px,8.4vw,108px);
+  }
+}
+
+@media (max-width: 900px) {
+  .cockpit-profile-hud {
+    --identity-module-left: calc(3.9% + 6px);
+    --identity-module-width: min(245px,42vw);
+    --avatar-login-gap: 17px;
+    --leader-side-gap: 6px;
+    --leader-bridge-width: 15px;
+    --leader-frame-width: 92px;
+  }
+}
+
+@media (max-width: 700px) {
+  .cockpit-profile-hud {
+    --identity-module-left: calc(5.5% + 5px);
+    --identity-module-width: 205px;
+    --avatar-login-gap: 12px;
+    --leader-side-gap: 5px;
+    --leader-bridge-width: 11px;
+    --leader-frame-width: 74px;
+    --identity-frame-height: 28px;
+  }
+  .cockpit-profile-hud .profile-hud-trigger {
+    grid-template-columns: 30px var(--avatar-login-gap) minmax(0,1fr) !important;
+  }
+  .cockpit-profile-hud .profile-hud-copy { inset: 0 17px !important; }
+  .cockpit-profile-hud .profile-hud-action { right: 3px !important; }
+  .leaderboard-hud-frame { padding: 0 5px; }
+  .leaderboard-hud-frame strong {
+    font-size: 6.4px;
+    letter-spacing: .11em;
+    text-indent: .11em;
+  }
+  .leaderboard-hud-bracket { width: 18%; }
+}
+
+@media (max-width: 430px) {
+  .cockpit-profile-hud {
+    --identity-module-width: 185px;
+    --avatar-login-gap: 10px;
+    --leader-side-gap: 4px;
+    --leader-bridge-width: 9px;
+    --leader-frame-width: 67px;
+  }
+  .cockpit-profile-hud .profile-hud-trigger {
+    grid-template-columns: 28px var(--avatar-login-gap) minmax(0,1fr) !important;
+  }
+  .cockpit-profile-hud .profile-avatar-frame { width: 28px !important; }
+  .cockpit-profile-hud .profile-hud-copy { inset: 0 15px !important; }
+  .cockpit-profile-hud .profile-hud-copy strong { font-size: 7.1px !important; }
+  .leaderboard-hud-frame strong { font-size: 5.8px; letter-spacing:.08em; text-indent:.08em; }
+}
