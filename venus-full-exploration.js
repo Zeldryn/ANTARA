@@ -1,1725 +1,721 @@
 "use strict";
 
 /*
- * ANTARA Venus Full Exploration
+ * ANTARA · Venus Full Exploration
  *
- * Mars Full Exploration is the architectural template for this module: the same
- * streamed one-degree chunk world, active-radius logic, LOD/culling philosophy,
- * camera/input model, HUD lifecycle, teleport flow, entry/exit transitions and
- * cleanup model are reused here. Venus-specific world content is rebuilt around
- * Magellan GTDR macro relief, Magellan radar context and deterministic geological
- * detail functions that are continuous in world coordinates across chunk borders.
+ * Rebuilt from scratch around two existing ANTARA references:
+ * - Mars Full Exploration: camera, input, pointer lock, HUD/action lifecycle,
+ *   fullscreen, entry/exit transition language, adaptive DPR and view culling.
+ * - Earth Full Exploration: choose a destination before terrain is loaded and
+ *   return to the destination selector without leaving the planet.
  *
- * Orbit-mode Venus remains owned by VenusScene. This file owns only the lazy
- * surface renderer used after the user explicitly enters Full Exploration.
+ * The rejected planet-wide Venus terrain/streaming implementation is not used.
+ * Exactly one bounded curated Venus region exists in memory at a time.
  */
 
 (() => {
   const DEG = Math.PI / 180;
   const VENUS_RADIUS_KM = 6051.8;
   const KM_PER_DEG_LAT = 2 * Math.PI * VENUS_RADIUS_KM / 360;
-  const TILE_SIZE = 128;
-  const MAX_EXPLORATION_ALTITUDE_KM = 30;
-  const ALTITUDE_LIMIT_WARNING_KM = 29.75;
-  const MIN_DATA_LAT = -87.999;
-  const MAX_DATA_LAT = 87.999;
-  const GTDR_RES = 22.755556;
-  const GTDR_HEADER_BYTES = 2048;
-  const GTDR_SAMPLES = 1024;
-  const GTDR_RADIUS_OFFSET_M = 6039999;
-  const GTDR_REFERENCE_RADIUS_M = 6051000;
-  const GTDR_BASE = String(window.ANTARA_VENUS_GTDR_BASE || "https://pds-geosciences.wustl.edu/mgn/mgn-v-gxdr-v1/mg_3002/gtdr/sinus/").replace(/\/?$/, "/");
-  const MAGELLAN_GLOBAL_RADAR = "https://assets.science.nasa.gov/dynamicimage/assets/science/cds/3d/resources/image/venus/preview.webp?w=2048";
-
+  const MAX_ALTITUDE_KM = 18;
+  const MIN_CLEARANCE_KM = 0.12;
   const STATES = Object.freeze({
-    IDLE: "IDLE",
-    PREPARING: "PREPARING",
-    ENTERING: "ENTERING",
-    EXPLORING: "EXPLORING",
-    TRAVELLING: "TRAVELLING_TO_LOCATION",
-    EXITING: "EXITING",
-    ERROR: "ERROR"
+    IDLE: "idle",
+    SELECTING: "selecting",
+    PREPARING: "preparing",
+    ENTERING: "entering",
+    EXPLORING: "exploring",
+    SWITCHING: "switching",
+    EXITING: "exiting",
+    ERROR: "error"
   });
 
-  const LANDMARKS = Object.freeze([
+  const REGIONS = Object.freeze([
     {
       id: "maat",
       name: "Maat Mons",
-      type: "Volcanic rise · broad shield volcano and fractured plains",
+      short: "Maat Mons",
       category: "VOLCANIC RISE",
-      latitude: 0.50,
-      longitudeEast: 194.60,
-      heading: -0.18,
-      profile: "shield",
-      frame: "f09",
-      frameMeta: { maxLat: 45, minLat: 0, minLon: 180 },
-      southFrame: "f17",
-      source: "https://planetarynames.wr.usgs.gov/Feature/3550",
-      scienceSource: "https://science.nasa.gov/photojournal/venus-3-d-perspective-view-of-maat-mons-2/",
-      radarImage: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00254/PIA00254.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
-      description: "Maat Mons is rebuilt as a regional volcanic rise: a broad edifice, fractured volcanic plains and long flow-like structures continuing through neighboring chunks instead of a small cone on an empty square.",
+      latitude: 0.9,
+      longitudeEast: 194.5,
+      heading: 0,
+      pitch: -0.22,
+      spawn: { x: 0, z: 31, altitude: 2.7 },
+      playRadius: 72,
+      softBoundaryStart: 58,
+      source: "https://science.nasa.gov/photojournal/venus-3-d-perspective-view-of-maat-mons-2/",
+      coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/3550",
+      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00254/PIA00254.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
+      descriptor: "Gunung api perisai besar dengan lereng panjang, dataran retak, dan aliran lava yang memanjang ratusan kilometer.",
+      description: "Region ini menyusun komposisi seperti perspektif Magellan: dataran vulkanik berfraktur di depan, transisi aliran di tengah, dan tubuh Maat Mons yang dominan naik di kejauhan.",
       facts: [
-        "Magellan perspective products show lava flows extending hundreds of kilometres across fractured plains toward Maat Mons.",
-        "The volcanic edifice rises roughly 8 km above the mean Venus radius in NASA/JPL descriptions.",
-        "Macro elevation is sampled from Magellan GTDR when the PDS frame is reachable; added flow and fracture relief stays subordinate to that measured shape."
-      ]
+        "NASA/JPL menggambarkan Maat Mons sebagai gunung api sekitar 8 km di atas radius rata-rata Venus.",
+        "Perspektif Magellan memperlihatkan aliran lava memanjang ratusan kilometer melintasi dataran retak menuju kaki gunung.",
+        "Model ANTARA memprioritaskan edifice yang lebar dan lereng gradual, bukan pola radial berbentuk bintang."
+      ],
+      palette: { low: 0x5b3428, mid: 0x7b4935, high: 0x9a6245, accent: 0x3d211c, rock: 0x6b3f32 },
+      fog: 0x7f4c38,
+      fogDensity: 0.0105,
+      sky: 0x8b563e,
+      sun: 0xffd2a0,
+      hemi: 0xf0b97f
     },
     {
       id: "maxwell",
       name: "Maxwell Montes",
-      type: "Mountain belt · rugged highlands beside Lakshmi Planum",
+      short: "Maxwell",
       category: "MOUNTAIN BELT",
-      latitude: 65.20,
-      longitudeEast: 3.30,
-      heading: 0.48,
-      profile: "mountain",
-      frame: "f05",
-      frameMeta: { maxLat: 90, minLat: 45, minLon: 0 },
-      source: "https://planetarynames.wr.usgs.gov/Feature/3766",
-      scienceSource: "https://science.nasa.gov/photojournal/venus-lakshmi-planum-and-maxwell-montes/",
-      radarImage: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00241/PIA00241.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
-      description: "Maxwell is rebuilt as an extensive directional mountain system with organized ridge trains, valleys and the smoother Lakshmi context carried across the streamed world.",
+      latitude: 65.0,
+      longitudeEast: 6.0,
+      heading: -0.12,
+      pitch: -0.24,
+      spawn: { x: -8, z: 34, altitude: 3.1 },
+      playRadius: 68,
+      softBoundaryStart: 54,
+      source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
+      coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/3766",
+      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00149/PIA00149.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
+      descriptor: "Massif tertinggi Venus dengan ridge memanjang, lembah terhubung, dan konteks dataran tinggi Ishtar.",
+      description: "Maxwell dibentuk sebagai sistem pegunungan memanjang. Relief utama berasal dari envelope massif dan ridge terarah, bukan pegunungan noise yang berdiri sendiri-sendiri.",
       facts: [
-        "NASA/JPL radar imagery contrasts radar-dark smooth Lakshmi lava plains with the strongly deformed Maxwell mountain terrain.",
-        "Maxwell is the highest mountain system on Venus and belongs to the larger Ishtar Terra highland province.",
-        "The renderer uses elongated regional ridge belts rather than isolated random peaks."
-      ]
+        "NASA/JPL menyebut Maxwell Montes sebagai pegunungan tertinggi di Venus, hampir 11 km di atas radius rata-rata planet.",
+        "Magellan memperlihatkan terrain Maxwell yang sangat terdeformasi berdampingan dengan dataran lava Lakshmi yang lebih halus.",
+        "Ridge pada region ini dipaksa mengikuti tren struktural regional agar siluetnya terbaca sebagai mountain belt."
+      ],
+      palette: { low: 0x49332d, mid: 0x665047, high: 0x92776a, accent: 0x2d2221, rock: 0x55413b },
+      fog: 0x675046,
+      fogDensity: 0.0092,
+      sky: 0x766053,
+      sun: 0xffd8ac,
+      hemi: 0xd7b08d
     },
     {
       id: "aphrodite",
       name: "Aphrodite Terra",
-      type: "Equatorial highland · tectonic ridges, valleys and volcanic infill",
-      category: "EQUATORIAL HIGHLAND",
-      latitude: -5.80,
-      longitudeEast: 104.80,
-      heading: 0.12,
-      profile: "aphrodite",
-      frame: "f23",
-      frameMeta: { maxLat: 0, minLat: -45, minLon: 90 },
-      source: "https://planetarynames.wr.usgs.gov/Feature/317",
-      scienceSource: "https://science.nasa.gov/photojournal/venus-ovda-regio/",
-      radarImage: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00146/PIA00146.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
-      description: "Aphrodite Terra is now a broad highland province. The Ovda-inspired structural field combines older ridge-and-valley fabric with cross-cutting extensional fractures and smoother lava-filled lows.",
+      short: "Aphrodite",
+      category: "TECTONIC HIGHLAND",
+      latitude: -1.0,
+      longitudeEast: 81.0,
+      heading: 0.08,
+      pitch: -0.20,
+      spawn: { x: 4, z: 30, altitude: 2.8 },
+      playRadius: 72,
+      softBoundaryStart: 58,
+      source: "https://science.nasa.gov/photojournal/venus-interior-of-ovda-regio/",
+      coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/317",
+      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00218/PIA00218.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
+      descriptor: "Highland Ovda-style dengan fabric ridge-valley, fracture silang, rift, dan lava-filled lows.",
+      description: "Aphrodite menggunakan interior Ovda sebagai acuan morfologi: fabric ridge dan valley berarah NE–SW dipotong fracture NW–SE, disertai trough besar dan lowland yang lebih halus.",
       facts: [
-        "Ovda Regio in western Aphrodite rises more than 4 km above surrounding plains in NASA descriptions.",
-        "Magellan imagery records several generations of deformation, including ridges, curvilinear valleys and later graben.",
-        "The highland is represented as a region spanning many chunks, not one central mountain."
-      ]
+        "NASA/JPL mendeskripsikan interior Ovda Regio sebagai block-fractured terrain hasil beberapa episode tektonik.",
+        "Ridge dan valley dasarnya berarah timur-laut ke barat-daya lalu dipotong fracture ekstensional berarah barat-laut ke tenggara.",
+        "Lembah besar pada referensi Magellan diisi material gelap yang kemungkinan lava."
+      ],
+      palette: { low: 0x493028, mid: 0x714f3d, high: 0x9a7256, accent: 0x33221d, rock: 0x68483c },
+      fog: 0x78513f,
+      fogDensity: 0.0100,
+      sky: 0x845a44,
+      sun: 0xffd0a2,
+      hemi: 0xe0ad82
     },
     {
       id: "ishtar",
       name: "Ishtar Terra",
-      type: "Northern highland · plateau interior and mountain-bounded margins",
-      category: "PLATEAU + MOUNTAIN SYSTEM",
-      latitude: 70.40,
-      longitudeEast: 27.50,
-      heading: -0.42,
-      profile: "ishtar",
-      frame: "f05",
-      frameMeta: { maxLat: 90, minLat: 45, minLon: 0 },
-      source: "https://planetarynames.wr.usgs.gov/Feature/2733",
-      scienceSource: "https://science.nasa.gov/photojournal/venus-lakshmi-planum/",
-      radarImage: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00240/PIA00240.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
-      description: "Ishtar is rebuilt around a wide elevated plateau context with comparatively smoother interior sectors, strong topographic transitions and deformed mountain margins continuing beyond the initial camera view.",
+      short: "Ishtar",
+      category: "ELEVATED PLATEAU",
+      latitude: 65.0,
+      longitudeEast: 0.0,
+      heading: -0.08,
+      pitch: -0.18,
+      spawn: { x: -4, z: 30, altitude: 2.6 },
+      playRadius: 70,
+      softBoundaryStart: 56,
+      source: "https://science.nasa.gov/photojournal/perspective-view-of-ishtar-terra/",
+      coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/2733",
+      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00093/PIA00093.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
+      descriptor: "Plateau tinggi luas dengan interior lebih halus dan mountain-bounded margins.",
+      description: "Ishtar dibuat sebagai plateau regional yang jelas lebih tinggi dari lowland, dengan interior Lakshmi-like yang relatif halus dan sabuk pegunungan terdeformasi di batasnya.",
       facts: [
-        "Lakshmi Planum is a high plateau roughly 3.5 km above mean planetary radius in NASA descriptions.",
-        "USGS mapping describes a 3–4 km high volcanic plateau surrounded by Venus's highest mountain ranges and broad deformation zones.",
-        "The new world separates smoother plateau terrain from rugged boundaries instead of rendering one flat raised slab."
-      ]
+        "NASA/JPL menggambarkan Ishtar sebagai plateau besar sekitar 3.3 km di atas lowlands di sekitarnya.",
+        "Lakshmi Planum merupakan plateau tinggi yang dikelilingi mountain chains dan terrain yang sangat terdeformasi.",
+        "Model memisahkan interior plateau yang lebih halus dari margin pegunungan agar Ishtar tidak terbaca sebagai satu mesa generik."
+      ],
+      palette: { low: 0x4a342c, mid: 0x6b5145, high: 0x8c7160, accent: 0x382823, rock: 0x5b463d },
+      fog: 0x705447,
+      fogDensity: 0.0095,
+      sky: 0x7c6252,
+      sun: 0xffd5ab,
+      hemi: 0xd6af8b
     },
     {
       id: "alpha",
       name: "Alpha Regio",
-      type: "Tessera upland · intersecting structural fabrics and fault valleys",
+      short: "Alpha",
       category: "TESSERA UPLAND",
-      latitude: -25.50,
-      longitudeEast: 0.30,
-      heading: 0.35,
-      profile: "tessera",
-      frame: "f21",
-      frameMeta: { maxLat: 0, minLat: -45, minLon: 0 },
-      alternateFrame: "f20",
-      source: "https://planetarynames.wr.usgs.gov/Feature/203",
-      scienceSource: "https://science.nasa.gov/photojournal/venus-false-color-image-of-alpha-regio/",
-      radarImage: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00147/PIA00147.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
-      description: "Alpha Regio is rebuilt from zero as a tessera province: several intersecting ridge directions, cross-cutting troughs, broad fault valleys, irregular uplifted blocks and smoother lava-filled local lows.",
+      latitude: -25.0,
+      longitudeEast: 4.0,
+      heading: 0.18,
+      pitch: -0.22,
+      spawn: { x: 0, z: 28, altitude: 2.5 },
+      playRadius: 68,
+      softBoundaryStart: 54,
+      source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
+      coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/203",
+      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00481/PIA00481.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
+      descriptor: "Tessera dengan dua keluarga ridge silang, trough, fault valley, block uplift, dan lava-filled local lows.",
+      description: "Alpha dibangun sebagai tessera: beberapa tren struktural saling memotong dan membentuk pola polygonal, dengan trough dan fault valley yang memisahkan block upland. Tidak ada dune field atau bukit bulat acak.",
       facts: [
-        "NASA describes Alpha as a roughly 1,300 km-wide topographic upland.",
-        "Its radar-bright terrain contains multiple intersecting trends of ridges, troughs and flat-floored fault valleys.",
-        "Smooth radar-dark local lows are represented as volcanic infill rather than repeating dunes or generic hills."
-      ]
+        "NASA/JPL menyebut Alpha Regio sebagai upland sekitar 1,300 km dengan beberapa tren ridge, trough, dan flat-floored fault valleys yang saling berpotongan.",
+        "Local dark patches pada data Magellan adalah topographic lows yang terisi lava lebih halus.",
+        "Relief procedural hanya mengisi detail kecil; identitas utama region datang dari fabric tessera yang terarah."
+      ],
+      palette: { low: 0x4a3026, mid: 0x76503a, high: 0xa07858, accent: 0x39231d, rock: 0x654636 },
+      fog: 0x77503c,
+      fogDensity: 0.0107,
+      sky: 0x825940,
+      sun: 0xffd19a,
+      hemi: 0xe3ad79
     }
   ]);
 
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const lerp = (a, b, t) => a + (b - a) * t;
-  const smoothstep = value => {
-    const t = clamp(value, 0, 1);
-    return t * t * (3 - 2 * t);
-  };
-  const smootherstep = value => {
-    const t = clamp(value, 0, 1);
-    return t * t * t * (t * (t * 6 - 15) + 10);
-  };
-  const wrapLongitude = longitude => {
-    let result = longitude;
-    while (result < -180) result += 360;
-    while (result >= 180) result -= 360;
-    return result;
-  };
-  const eastLongitude = signedLongitude => ((signedLongitude % 360) + 360) % 360;
-  const shortestLongitudeDelta = (from, to) => wrapLongitude(to - from);
-  const formatCoordinate = (latitude, longitudeEast) => {
-    const latHemisphere = latitude >= 0 ? "N" : "S";
-    return `${Math.abs(latitude).toFixed(3)}° ${latHemisphere}  ·  ${eastLongitude(longitudeEast).toFixed(3)}° E`;
-  };
+  const smoothstep = value => { const t = clamp(value, 0, 1); return t * t * (3 - 2 * t); };
+  const smootherstep = value => { const t = clamp(value, 0, 1); return t * t * t * (t * (t * 6 - 15) + 10); };
+  const formatCoordinate = (latitude, longitudeEast) => `${Math.abs(latitude).toFixed(3)}° ${latitude >= 0 ? "N" : "S"}  ·  ${(((longitudeEast % 360) + 360) % 360).toFixed(3)}° E`;
   const formatAltitude = km => km < 1 ? `${Math.max(0, km * 1000).toFixed(0)} M` : `${Math.max(0, km).toFixed(km < 10 ? 2 : 1)} KM`;
   const formatSpeed = kmPerSecond => kmPerSecond < 1 ? `${Math.round(kmPerSecond * 1000)} M/S` : `${kmPerSecond.toFixed(2)} KM/S`;
-
-  async function fetchArrayBuffer(url, timeoutMs = 14000) {
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      const response = await fetch(url, { mode: "cors", credentials: "omit", cache: "force-cache", signal: controller.signal });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.arrayBuffer();
-    } finally {
-      window.clearTimeout(timer);
+  const wait = ms => new Promise(resolve => window.setTimeout(resolve, ms));
+  const gaussian = (x, z, cx, cz, sx, sz) => Math.exp(-(((x - cx) / sx) ** 2 + ((z - cz) / sz) ** 2));
+  const ridgeWave = (value, power = 6) => Math.pow(Math.abs(Math.sin(value)), power);
+  const hash2 = (x, z, seed = 0) => {
+    const v = Math.sin(x * 127.1 + z * 311.7 + seed * 74.7) * 43758.5453123;
+    return v - Math.floor(v);
+  };
+  const valueNoise = (x, z, seed = 0) => {
+    const x0 = Math.floor(x), z0 = Math.floor(z);
+    const fx = smoothstep(x - x0), fz = smoothstep(z - z0);
+    const a = hash2(x0, z0, seed), b = hash2(x0 + 1, z0, seed);
+    const c = hash2(x0, z0 + 1, seed), d = hash2(x0 + 1, z0 + 1, seed);
+    return lerp(lerp(a, b, fx), lerp(c, d, fx), fz) * 2 - 1;
+  };
+  const fbm = (x, z, seed = 0, octaves = 3) => {
+    let amp = 0.5, freq = 1, sum = 0, norm = 0;
+    for (let i = 0; i < octaves; i += 1) {
+      sum += valueNoise(x * freq, z * freq, seed + i * 19) * amp;
+      norm += amp;
+      amp *= 0.5;
+      freq *= 2.03;
     }
+    return norm ? sum / norm : 0;
+  };
+
+  function maatHeight(x, z) {
+    const mountain = 7.85 * gaussian(x, z, 0, -25, 29, 25);
+    const shoulder = 1.38 * gaussian(x, z, -10, -16, 45, 34);
+    const summit = -0.42 * gaussian(x, z, 0, -25, 5.2, 4.5);
+    // Broad flow aprons cross the foreground plains without producing a radial starburst.
+    const flowA = 0.24 * gaussian(x, z, -13, 8, 9, 47) * (0.55 + 0.45 * ridgeWave(x * 0.22 + z * 0.035, 10));
+    const flowB = 0.20 * gaussian(x, z, 14, 4, 11, 45) * (0.58 + 0.42 * ridgeWave(x * 0.18 - z * 0.042 + 0.8, 11));
+    const flowC = 0.13 * gaussian(x, z, 1, 23, 34, 19) * ridgeWave(x * 0.105 + z * 0.03 + 0.4 * Math.sin(z * 0.035), 12);
+    const fractureA = ridgeWave((x * 0.24 + z * 0.08) + 0.55 * Math.sin(z * 0.045), 10) * 0.16;
+    const fractureB = ridgeWave((x * -0.12 + z * 0.27) + 0.4 * Math.sin(x * 0.05), 12) * 0.11;
+    const plain = 0.14 * fbm(x * 0.055, z * 0.055, 11, 3);
+    return mountain + shoulder + summit + flowA + flowB + flowC + fractureA + fractureB + plain;
   }
 
-  class MagellanTileProvider {
-    constructor() {
-      this.cache = new Map();
-      this.pending = new Map();
-      this.frames = new Map();
-      this.pendingFrames = new Map();
-      this.generation = 0;
-      this.maxCache = 96;
-      this.activeRegion = LANDMARKS[0];
-      this.activeMode = "FALLBACK";
-      this.lastError = "";
-      this.sourceLabel = "Magellan GTDR / NASA PDS";
-    }
-
-    setRegion(region) {
-      this.activeRegion = region || LANDMARKS[0];
-    }
-
-    async prepareRegion(region) {
-      this.setRegion(region);
-      const required = [region.frame, region.alternateFrame, region.southFrame].filter(Boolean);
-      try {
-        await Promise.all(required.map(frame => this.loadFrame(frame).catch(error => {
-          if (frame === region.frame) throw error;
-          return null;
-        })));
-        this.activeMode = this.frames.has(region.frame) ? "GTDR_4_6KM" : "FALLBACK";
-        this.lastError = "";
-      } catch (error) {
-        this.activeMode = "FALLBACK";
-        this.lastError = String(error?.message || error || "GTDR unavailable");
-      }
-      return this.activeMode;
-    }
-
-    tileForLocation(latitude, signedLongitude) {
-      return {
-        lonWest: Math.floor(wrapLongitude(signedLongitude)),
-        latNorth: Math.ceil(clamp(latitude, MIN_DATA_LAT, MAX_DATA_LAT))
-      };
-    }
-
-    tileKey(lonWest, latNorth) {
-      return `${this.activeRegion.id}:${Math.floor(wrapLongitude(lonWest))},${Math.floor(latNorth)}`;
-    }
-
-    async loadFrame(frame) {
-      if (!frame) throw new Error("Missing GTDR frame id.");
-      if (this.frames.has(frame)) return this.frames.get(frame);
-      if (this.pendingFrames.has(frame)) return this.pendingFrames.get(frame);
-      const generation = this.generation;
-      const promise = fetchArrayBuffer(`${GTDR_BASE}${frame}.img`).then(buffer => {
-        if (generation !== this.generation) throw new Error("Magellan GTDR request cancelled.");
-        const minimum = GTDR_HEADER_BYTES + GTDR_SAMPLES * GTDR_SAMPLES * 2;
-        if (buffer.byteLength < minimum) throw new Error(`GTDR frame incomplete: ${frame}`);
-        const item = { frame, view: new DataView(buffer), lastUsed: performance.now() };
-        this.frames.set(frame, item);
-        return item;
-      }).finally(() => this.pendingFrames.delete(frame));
-      this.pendingFrames.set(frame, promise);
-      return promise;
-    }
-
-    sampleDN(frameData, row, col) {
-      const r = clamp(row, 0, GTDR_SAMPLES - 1);
-      const c = clamp(col, 0, GTDR_SAMPLES - 1);
-      return frameData.view.getInt16(GTDR_HEADER_BYTES + (r * GTDR_SAMPLES + c) * 2, true);
-    }
-
-    dnToKm(dn) {
-      // GTDR stores signed 16-bit radius offsets. -32678 is the archive NoData sentinel.
-      if (!Number.isFinite(dn) || dn === -32678) return null;
-      return (dn + GTDR_RADIUS_OFFSET_M - GTDR_REFERENCE_RADIUS_M) / 1000;
-    }
-
-    sampleMeasured(region, latitude, signedLongitude) {
-      if (this.activeMode !== "GTDR_4_6KM" || !region) return null;
-      const lonEast = eastLongitude(signedLongitude);
-      const signed = wrapLongitude(signedLongitude);
-      let frameName = region.frame;
-      let rowF;
-      let colF;
-
-      if (region.southFrame && latitude < 0 && this.frames.has(region.southFrame)) {
-        frameName = region.southFrame;
-        rowF = (0 - latitude) * GTDR_RES;
-        colF = (lonEast - 180) * Math.cos(latitude * DEG) * GTDR_RES;
-      } else if (region.alternateFrame && signed < 0 && this.frames.has(region.alternateFrame)) {
-        frameName = region.alternateFrame;
-        rowF = (region.frameMeta.maxLat - latitude) * GTDR_RES;
-        colF = (GTDR_SAMPLES - 1) + signed * Math.cos(latitude * DEG) * GTDR_RES;
-      } else {
-        let lon = lonEast;
-        const minLon = region.frameMeta.minLon;
-        if (lon < minLon && minLon >= 180) lon += 360;
-        rowF = (region.frameMeta.maxLat - latitude) * GTDR_RES;
-        colF = (lon - minLon) * Math.cos(latitude * DEG) * GTDR_RES;
-      }
-
-      const frame = this.frames.get(frameName);
-      if (!frame || rowF < -1 || rowF > GTDR_SAMPLES || colF < -1 || colF > GTDR_SAMPLES) return null;
-      frame.lastUsed = performance.now();
-      const r0 = Math.floor(rowF), c0 = Math.floor(colF);
-      const r1 = r0 + 1, c1 = c0 + 1;
-      const ty = clamp(rowF - r0, 0, 1), tx = clamp(colF - c0, 0, 1);
-      const values = [
-        this.dnToKm(this.sampleDN(frame, r0, c0)),
-        this.dnToKm(this.sampleDN(frame, r0, c1)),
-        this.dnToKm(this.sampleDN(frame, r1, c0)),
-        this.dnToKm(this.sampleDN(frame, r1, c1))
-      ];
-      const valid = values.filter(Number.isFinite);
-      if (!valid.length) return null;
-      const fill = valid.reduce((sum, value) => sum + value, 0) / valid.length;
-      const h00 = Number.isFinite(values[0]) ? values[0] : fill;
-      const h10 = Number.isFinite(values[1]) ? values[1] : fill;
-      const h01 = Number.isFinite(values[2]) ? values[2] : fill;
-      const h11 = Number.isFinite(values[3]) ? values[3] : fill;
-      return lerp(lerp(h00, h10, tx), lerp(h01, h11, tx), ty);
-    }
-
-    regionCoords(latitude, signedLongitude, region = this.activeRegion) {
-      const centerLon = wrapLongitude(region.longitudeEast > 180 ? region.longitudeEast - 360 : region.longitudeEast);
-      const cosLat = Math.max(0.10, Math.cos(region.latitude * DEG));
-      return {
-        x: shortestLongitudeDelta(centerLon, signedLongitude) * KM_PER_DEG_LAT * cosLat,
-        z: -(latitude - region.latitude) * KM_PER_DEG_LAT
-      };
-    }
-
-    hash(x, z, seed = 0) {
-      const s = Math.sin(x * 12.9898 + z * 78.233 + seed * 37.719) * 43758.5453123;
-      return s - Math.floor(s);
-    }
-
-    valueNoise(x, z, scale = 1, seed = 0) {
-      const px = x / scale, pz = z / scale;
-      const x0 = Math.floor(px), z0 = Math.floor(pz);
-      const tx0 = px - x0, tz0 = pz - z0;
-      const tx = tx0 * tx0 * (3 - 2 * tx0);
-      const tz = tz0 * tz0 * (3 - 2 * tz0);
-      const a = this.hash(x0, z0, seed), b = this.hash(x0 + 1, z0, seed);
-      const c = this.hash(x0, z0 + 1, seed), d = this.hash(x0 + 1, z0 + 1, seed);
-      return lerp(lerp(a, b, tx), lerp(c, d, tx), tz) * 2 - 1;
-    }
-
-    fbm(x, z, baseScale = 90, seed = 0) {
-      let sum = 0, amp = 0.56, scale = baseScale, norm = 0;
-      for (let octave = 0; octave < 4; octave += 1) {
-        sum += this.valueNoise(x, z, scale, seed + octave * 17) * amp;
-        norm += amp;
-        amp *= 0.5;
-        scale *= 0.5;
-      }
-      return sum / Math.max(norm, 0.001);
-    }
-
-    rotate(x, z, degrees) {
-      const a = degrees * DEG, c = Math.cos(a), s = Math.sin(a);
-      return { u: x * c + z * s, v: -x * s + z * c };
-    }
-
-    ridgeFamily(x, z, degrees, spacingKm, sharpness = 5, warp = 0) {
-      const q = this.rotate(x, z, degrees);
-      const phaseWarp = warp ? Math.sin(q.v / 42 + this.valueNoise(q.u, q.v, 85, 13) * 1.6) * warp : 0;
-      const wave = Math.sin((q.u + phaseWarp) * Math.PI / Math.max(1, spacingKm));
-      return Math.pow(clamp(1 - Math.abs(wave), 0, 1), sharpness);
-    }
-
-    valleyFamily(x, z, degrees, spacingKm, sharpness = 7, warp = 0) {
-      return this.ridgeFamily(x, z, degrees, spacingKm, sharpness, warp);
-    }
-
-    gaussian(x, z, cx, cz, rx, rz, degrees = 0) {
-      const q = this.rotate(x - cx, z - cz, degrees);
-      return Math.exp(-((q.u * q.u) / Math.max(1, rx * rx) + (q.v * q.v) / Math.max(1, rz * rz)));
-    }
-
-    fallbackMacro(latitude, signedLongitude, region = this.activeRegion) {
-      const { x, z } = this.regionCoords(latitude, signedLongitude, region);
-      const broadNoise = this.fbm(x, z, 180, 5);
-      if (region.profile === "shield") {
-        const q = this.rotate(x + 20, z - 8, -8);
-        const r = Math.hypot(q.u * 0.82, q.v);
-        const shield = 5.1 * Math.exp(-(r * r) / (2 * 155 * 155));
-        const shoulder = 0.85 * Math.exp(-((q.u + 115) ** 2) / (2 * 125 * 125) - ((q.v - 45) ** 2) / (2 * 95 * 95));
-        const caldera = 0.25 * Math.exp(-(r * r) / (2 * 18 * 18));
-        return 0.45 + shield + shoulder - caldera + broadNoise * 0.20;
-      }
-      if (region.profile === "mountain") {
-        const q = this.rotate(x, z, 14);
-        const belt = 4.2 * Math.exp(-(q.v * q.v) / (2 * 105 * 105));
-        const plateauSide = 1.25 * smoothstep((q.v + 210) / 220);
-        return 3.0 + belt + plateauSide + broadNoise * 0.32;
-      }
-      if (region.profile === "ishtar") {
-        const q = this.rotate(x, z, 8);
-        const plateau = 3.35 + 0.45 * smoothstep((q.v + 240) / 220);
-        const margin = 1.2 * Math.exp(-((Math.abs(q.v) - 185) ** 2) / (2 * 65 * 65));
-        return plateau + margin + broadNoise * 0.18;
-      }
-      if (region.profile === "tessera") {
-        const upland = 1.65 + 0.65 * Math.exp(-(x * x + z * z) / (2 * 330 * 330));
-        return upland + broadNoise * 0.36;
-      }
-      const q = this.rotate(x, z, 19);
-      const highland = 2.0 + 1.55 * Math.exp(-(q.v * q.v) / (2 * 260 * 260));
-      return highland + broadNoise * 0.50;
-    }
-
-    surfaceHeight(latitude, signedLongitude, detailStrength = 1, region = this.activeRegion) {
-      let macro = this.sampleMeasured(region, latitude, signedLongitude);
-      if (!Number.isFinite(macro)) macro = this.fallbackMacro(latitude, signedLongitude, region);
-      return macro + this.detailHeight(latitude, signedLongitude, detailStrength, region);
-    }
-
-    detailHeight(latitude, signedLongitude, strength = 1, region = this.activeRegion) {
-      if (strength <= 0) return 0;
-      const { x, z } = this.regionCoords(latitude, signedLongitude, region);
-      const fine = this.fbm(x, z, 26, 41) * 0.024;
-
-      if (region.profile === "shield") {
-        const r = Math.max(1, Math.hypot(x, z));
-        const theta = Math.atan2(z, x);
-        const flow = Math.pow(clamp(1 - Math.abs(Math.sin(theta * 11 + r / 22 + Math.sin(theta * 3) * 0.7)), 0, 1), 7);
-        const apron = 1 - smoothstep((r - 55) / 300);
-        const fractures = this.valleyFamily(x, z, -28, 34, 8, 5);
-        return strength * (flow * apron * 0.055 - fractures * 0.030 + fine);
-      }
-
-      if (region.profile === "mountain") {
-        const q = this.rotate(x, z, 14);
-        const envelope = Math.exp(-(q.v * q.v) / (2 * 165 * 165));
-        const ridges = this.ridgeFamily(x, z, 14, 17, 6, 5) * 0.18 + this.ridgeFamily(x, z, 20, 31, 5, 7) * 0.09;
-        const valleys = this.valleyFamily(x, z, 101, 44, 8, 6) * 0.075;
-        return strength * ((ridges - valleys) * envelope + fine * (0.6 + envelope));
-      }
-
-      if (region.profile === "ishtar") {
-        const q = this.rotate(x, z, 8);
-        const interior = clamp(1 - Math.abs(q.v) / 175, 0, 1);
-        const margin = 1 - interior;
-        const boundaryRidges = (this.ridgeFamily(x, z, 32, 24, 6, 7) * 0.14 + this.ridgeFamily(x, z, -14, 38, 5, 5) * 0.08) * margin;
-        const graben = this.valleyFamily(x, z, 86, 55, 8, 7) * 0.055 * (0.35 + margin);
-        return strength * (boundaryRidges - graben + fine * (0.35 + margin * 0.8));
-      }
-
-      if (region.profile === "tessera") {
-        const familyA = this.ridgeFamily(x, z, 28, 15, 6, 7) * 0.145;
-        const familyB = this.ridgeFamily(x, z, -38, 22, 6, 9) * 0.130;
-        const familyC = this.ridgeFamily(x, z, 5, 34, 7, 6) * 0.070;
-        const troughA = this.valleyFamily(x, z, 73, 31, 9, 8) * 0.120;
-        const troughB = this.valleyFamily(x, z, -8, 58, 10, 9) * 0.080;
-        const blocks = this.fbm(x, z, 72, 83) * 0.085 + this.fbm(x, z, 38, 97) * 0.040;
-        const lavaLow = clamp(
-          this.gaussian(x, z, 95, -75, 70, 38, 18) +
-          this.gaussian(x, z, -130, 110, 52, 82, -33) +
-          this.gaussian(x, z, 180, 135, 85, 48, 41), 0, 1);
-        const structural = (familyA + familyB + familyC - troughA - troughB + blocks) * (1 - lavaLow * 0.72);
-        return strength * (structural - lavaLow * 0.045 + fine * (1 - lavaLow * 0.7));
-      }
-
-      // Aphrodite / Ovda: an older NE-SW ridge-valley fabric cut by younger
-      // NW-SE extensional graben, with smoother lava-filled lows.
-      const oldFabric = this.ridgeFamily(x, z, 42, 19, 6, 8) * 0.125 + this.ridgeFamily(x, z, 48, 34, 5, 9) * 0.070;
-      const extension = this.valleyFamily(x, z, -38, 48, 9, 10) * 0.125;
-      const longValley = this.gaussian(x, z, 15, -40, 185, 24, -38) * 0.11;
-      const lavaLow = clamp(this.gaussian(x, z, -105, 70, 95, 44, 25) + this.gaussian(x, z, 155, -110, 105, 55, -20), 0, 1);
-      return strength * ((oldFabric - extension - longValley) * (1 - lavaLow * 0.55) - lavaLow * 0.035 + fine);
-    }
-
-    materialSignal(latitude, signedLongitude, region = this.activeRegion) {
-      const { x, z } = this.regionCoords(latitude, signedLongitude, region);
-      const base = this.fbm(x, z, 55, 131) * 0.5 + 0.5;
-      if (region.profile === "shield") {
-        const r = Math.hypot(x, z), theta = Math.atan2(z, x);
-        const flows = Math.pow(clamp(1 - Math.abs(Math.sin(theta * 9 + r / 28)), 0, 1), 6);
-        return { rough: 0.35 + base * 0.30, dark: flows * 0.62, smooth: 0.18 };
-      }
-      if (region.profile === "mountain") return { rough: 0.68 + base * 0.28, dark: 0.20, smooth: 0.04 };
-      if (region.profile === "ishtar") {
-        const q = this.rotate(x, z, 8);
-        const interior = clamp(1 - Math.abs(q.v) / 175, 0, 1);
-        return { rough: 0.42 + (1 - interior) * 0.45, dark: 0.12, smooth: interior * 0.62 };
-      }
-      if (region.profile === "tessera") return { rough: 0.78 + base * 0.18, dark: 0.28, smooth: 0.06 };
-      return { rough: 0.62 + base * 0.28, dark: 0.22, smooth: 0.16 };
-    }
-
-    async generateTile(lonWest, latNorth) {
-      const region = this.activeRegion;
-      const heights = new Float32Array(TILE_SIZE * TILE_SIZE);
-      let min = Infinity, max = -Infinity;
-      for (let y = 0; y < TILE_SIZE; y += 1) {
-        const fy = y / (TILE_SIZE - 1);
-        const latitude = latNorth - fy;
-        for (let x = 0; x < TILE_SIZE; x += 1) {
-          const fx = x / (TILE_SIZE - 1);
-          const signedLongitude = wrapLongitude(lonWest + fx);
-          let height = this.sampleMeasured(region, latitude, signedLongitude);
-          if (!Number.isFinite(height)) height = this.fallbackMacro(latitude, signedLongitude, region);
-          const i = y * TILE_SIZE + x;
-          heights[i] = height;
-          if (height < min) min = height;
-          if (height > max) max = height;
-        }
-        if (y > 0 && y % 24 === 0) await new Promise(resolve => window.setTimeout(resolve, 0));
-      }
-      return {
-        lonWest: Math.floor(wrapLongitude(lonWest)),
-        latNorth: Math.floor(latNorth),
-        heights,
-        min,
-        max,
-        regionId: region.id,
-        sourceMode: this.activeMode,
-        lastUsed: performance.now(),
-        url: this.activeMode === "GTDR_4_6KM" ? `${GTDR_BASE}${region.frame}.img` : "procedural-fallback"
-      };
-    }
-
-    async load(lonWest, latNorth) {
-      const lon = Math.floor(wrapLongitude(lonWest));
-      const lat = Math.floor(clamp(latNorth, -87, 88));
-      const key = this.tileKey(lon, lat);
-      if (this.cache.has(key)) {
-        const tile = this.cache.get(key);
-        tile.lastUsed = performance.now();
-        return tile;
-      }
-      if (this.pending.has(key)) return this.pending.get(key);
-      const generation = this.generation;
-      const promise = this.generateTile(lon, lat).then(tile => {
-        if (generation !== this.generation) throw new Error("Magellan terrain request cancelled.");
-        this.cache.set(key, tile);
-        this.trimCache();
-        return tile;
-      }).finally(() => this.pending.delete(key));
-      this.pending.set(key, promise);
-      return promise;
-    }
-
-    trimCache() {
-      if (this.cache.size <= this.maxCache) return;
-      const entries = [...this.cache.entries()].sort((a, b) => a[1].lastUsed - b[1].lastUsed);
-      while (entries.length && this.cache.size > this.maxCache) {
-        const [key] = entries.shift();
-        this.cache.delete(key);
-      }
-    }
-
-    sampleTile(tile, latitude, signedLongitude) {
-      if (!tile) return null;
-      const fx = clamp(shortestLongitudeDelta(tile.lonWest, signedLongitude), 0, 1) * (TILE_SIZE - 1);
-      const fy = clamp(tile.latNorth - latitude, 0, 1) * (TILE_SIZE - 1);
-      const x0 = Math.floor(fx), y0 = Math.floor(fy);
-      const x1 = Math.min(TILE_SIZE - 1, x0 + 1), y1 = Math.min(TILE_SIZE - 1, y0 + 1);
-      const tx = fx - x0, ty = fy - y0;
-      const h00 = tile.heights[y0 * TILE_SIZE + x0];
-      const h10 = tile.heights[y0 * TILE_SIZE + x1];
-      const h01 = tile.heights[y1 * TILE_SIZE + x0];
-      const h11 = tile.heights[y1 * TILE_SIZE + x1];
-      return lerp(lerp(h00, h10, tx), lerp(h01, h11, tx), ty);
-    }
-
-    sampleCached(latitude, signedLongitude) {
-      const address = this.tileForLocation(latitude, signedLongitude);
-      const tile = this.cache.get(this.tileKey(address.lonWest, address.latNorth));
-      if (!tile) return null;
-      tile.lastUsed = performance.now();
-      return this.sampleTile(tile, latitude, signedLongitude);
-    }
-
-    statusLabel() {
-      return this.activeMode === "GTDR_4_6KM"
-        ? "MAGELLAN GTDR ~4.6 KM/PX · MAGELLAN RADAR · VENUS MICRO DETAIL"
-        : "MAGELLAN GTDR UNAVAILABLE · SCIENCE-INFORMED FALLBACK + RADAR";
-    }
-
-    clearTiles() {
-      this.generation += 1;
-      this.cache.clear();
-      this.pending.clear();
-    }
-
-    clear() {
-      this.clearTiles();
-      this.frames.clear();
-      this.pendingFrames.clear();
-    }
+  function maxwellHeight(x, z) {
+    const envelope = gaussian(x, z, 4, -16, 32, 54);
+    const massif = 7.7 * envelope + 1.6 * gaussian(x, z, 15, -29, 18, 29);
+    const ridgeA = ridgeWave(x * 0.34 + z * 0.055 + 0.5 * Math.sin(z * 0.052), 7) * envelope * 2.2;
+    const ridgeB = ridgeWave(x * 0.20 - z * 0.075, 9) * envelope * 0.85;
+    const valleys = -0.8 * ridgeWave(x * 0.16 + z * 0.065 + 1.1, 11) * envelope;
+    const lakshmi = -1.25 * smoothstep((x + 22) / 18) * gaussian(x, z, -29, 0, 36, 60);
+    const micro = 0.18 * fbm(x * 0.065, z * 0.065, 23, 3);
+    return Math.max(-1.4, massif + ridgeA + ridgeB + valleys + lakshmi + micro);
   }
 
-  class VenusImageryProvider {
-    constructor(quality, surfaceImage, terrainProvider) {
-      this.quality = quality;
-      this.provider = terrainProvider;
-      this.region = LANDMARKS[0];
-      this.patchCache = new Map();
-      this.pendingPatches = new Map();
-      this.generation = 0;
-      this.maxPatchCache = quality.name === "HIGH" ? 84 : quality.name === "MEDIUM" ? 60 : 40;
-      this.sourceLabel = "Magellan GTDR elevation · NASA/JPL Magellan radar";
-
-      this.sourceCanvas = document.createElement("canvas");
-      this.sourceCanvas.width = Math.max(512, surfaceImage?.width || 2048);
-      this.sourceCanvas.height = Math.max(256, surfaceImage?.height || Math.round(this.sourceCanvas.width / 2));
-      const context = this.sourceCanvas.getContext("2d", { willReadFrequently: true });
-      context.drawImage(surfaceImage, 0, 0, this.sourceCanvas.width, this.sourceCanvas.height);
-      this.sourcePixels = context.getImageData(0, 0, this.sourceCanvas.width, this.sourceCanvas.height).data;
-      this.sourceWidth = this.sourceCanvas.width;
-      this.sourceHeight = this.sourceCanvas.height;
-    }
-
-    setRegion(region) {
-      this.region = region || LANDMARKS[0];
-    }
-
-    profileForAltitude(altitudeKm) {
-      const altitude = clamp(altitudeKm, 0, MAX_EXPLORATION_ALTITUDE_KM);
-      const textureSize = Math.min(this.quality.textureSize, altitude <= 2.5 ? 512 : altitude <= 7 ? 384 : altitude <= 14 ? 256 : 160);
-      const detailStrength = altitude <= 2.5 ? 1 : altitude <= 7 ? 0.78 : altitude <= 14 ? 0.48 : 0.22;
-      return { textureSize, detailStrength, key: `${this.region.id}-r${textureSize}-d${Math.round(detailStrength * 100)}` };
-    }
-
-    radarPixel(latitude, signedLongitude) {
-      const u = ((wrapLongitude(signedLongitude) + 180) / 360 + 1) % 1;
-      const v = clamp((90 - latitude) / 180, 0, 1);
-      const x = Math.min(this.sourceWidth - 1, Math.max(0, Math.floor(u * (this.sourceWidth - 1))));
-      const y = Math.min(this.sourceHeight - 1, Math.max(0, Math.floor(v * (this.sourceHeight - 1))));
-      const i = (y * this.sourceWidth + x) * 4;
-      return [this.sourcePixels[i], this.sourcePixels[i + 1], this.sourcePixels[i + 2]];
-    }
-
-    paletteFor(profile) {
-      if (profile === "shield") return { low: [78, 49, 36], mid: [129, 82, 54], high: [168, 116, 72], dark: [52, 34, 30] };
-      if (profile === "mountain") return { low: [83, 62, 50], mid: [132, 101, 76], high: [184, 153, 112], dark: [52, 43, 38] };
-      if (profile === "ishtar") return { low: [91, 67, 53], mid: [145, 109, 79], high: [181, 145, 105], dark: [57, 44, 38] };
-      if (profile === "tessera") return { low: [74, 57, 49], mid: [130, 96, 70], high: [184, 143, 98], dark: [45, 38, 35] };
-      return { low: [80, 57, 44], mid: [136, 93, 64], high: [177, 128, 85], dark: [50, 39, 34] };
-    }
-
-    async buildPatch(lonWest, latNorth, profile) {
-      const key = `${this.region.id}:${lonWest},${latNorth}:${profile.key}`;
-      if (this.patchCache.has(key)) {
-        const cached = this.patchCache.get(key);
-        cached.lastUsed = performance.now();
-        return cached.canvas;
-      }
-      if (this.pendingPatches.has(key)) return this.pendingPatches.get(key);
-      const generation = this.generation;
-      const promise = (async () => {
-        const size = profile.textureSize;
-        const canvas = document.createElement("canvas");
-        canvas.width = size;
-        canvas.height = size;
-        const context = canvas.getContext("2d", { alpha: false });
-        const image = context.createImageData(size, size);
-        const palette = this.paletteFor(this.region.profile);
-        const data = image.data;
-        const rowsPerYield = this.quality.name === "HIGH" ? 12 : this.quality.name === "MEDIUM" ? 16 : 24;
-
-        for (let y = 0; y < size; y += 1) {
-          const fy = y / Math.max(1, size - 1);
-          const latitude = latNorth - fy;
-          for (let x = 0; x < size; x += 1) {
-            const fx = x / Math.max(1, size - 1);
-            const signedLongitude = wrapLongitude(lonWest + fx);
-            const radar = this.radarPixel(latitude, signedLongitude);
-            const radarLum = clamp((radar[0] * 0.299 + radar[1] * 0.587 + radar[2] * 0.114) / 255, 0, 1);
-            const signal = this.provider.materialSignal(latitude, signedLongitude, this.region);
-            const macroHeight = this.provider.sampleCached(latitude, signedLongitude);
-            const heightTone = Number.isFinite(macroHeight) ? clamp((macroHeight + 2) / 12, 0, 1) : 0.45;
-            const localNoise = this.provider.valueNoise(
-              shortestLongitudeDelta(wrapLongitude(this.region.longitudeEast > 180 ? this.region.longitudeEast - 360 : this.region.longitudeEast), signedLongitude) * 800,
-              (latitude - this.region.latitude) * 800,
-              34,
-              211
-            ) * 0.5 + 0.5;
-            const tone = clamp(0.38 + radarLum * 0.42 + heightTone * 0.13 + (localNoise - 0.5) * 0.10 * profile.detailStrength, 0, 1);
-            const base = tone < 0.52 ? palette.low : tone < 0.76 ? palette.mid : palette.high;
-            const t = tone < 0.52 ? tone / 0.52 : tone < 0.76 ? (tone - 0.52) / 0.24 : (tone - 0.76) / 0.24;
-            const next = tone < 0.52 ? palette.mid : tone < 0.76 ? palette.high : palette.high;
-            const darkMix = clamp(signal.dark * 0.55 + signal.rough * 0.10 - signal.smooth * 0.14, 0, 0.62);
-            const i = (y * size + x) * 4;
-            for (let c = 0; c < 3; c += 1) {
-              const mixed = lerp(base[c], next[c], clamp(t, 0, 1));
-              data[i + c] = Math.round(lerp(mixed, palette.dark[c], darkMix));
-            }
-            data[i + 3] = 255;
-          }
-          if (y > 0 && y % rowsPerYield === 0) await new Promise(resolve => window.setTimeout(resolve, 0));
-        }
-        context.putImageData(image, 0, 0);
-        if (generation !== this.generation) return null;
-        this.patchCache.set(key, { canvas, lastUsed: performance.now() });
-        this.trimPatchCache();
-        return canvas;
-      })().finally(() => this.pendingPatches.delete(key));
-      this.pendingPatches.set(key, promise);
-      return promise;
-    }
-
-    trimPatchCache() {
-      if (this.patchCache.size <= this.maxPatchCache) return;
-      const entries = [...this.patchCache.entries()].sort((a, b) => a[1].lastUsed - b[1].lastUsed);
-      while (entries.length && this.patchCache.size > this.maxPatchCache) {
-        const [key] = entries.shift();
-        this.patchCache.delete(key);
-      }
-    }
-
-    prefetch(lonWest, latNorth, profile) {
-      this.buildPatch(lonWest, latNorth, profile).catch(() => {});
-    }
-
-    clearPatches() {
-      this.generation += 1;
-      this.patchCache.clear();
-      this.pendingPatches.clear();
-    }
-
-    clear() {
-      this.clearPatches();
-      this.sourcePixels = null;
-      this.sourceCanvas = null;
-    }
+  function aphroditeHeight(x, z) {
+    const upland = 3.35 * gaussian(x, z, 0, -10, 57, 43) + 0.9 * gaussian(x, z, -18, -18, 31, 25);
+    const neSw = ridgeWave((x + z * 0.72) * 0.235, 8) * gaussian(x, z, 0, -8, 64, 48) * 0.82;
+    const nwSe = ridgeWave((x - z * 0.88) * 0.31 + 0.6, 12) * gaussian(x, z, 6, -11, 58, 44) * 0.45;
+    const rift = -1.25 * Math.exp(-(((x - z * 0.34 - 7) / 5.5) ** 2)) * gaussian(x, z, 0, -5, 70, 55);
+    const valley = -0.66 * Math.exp(-(((x + z * 0.55 + 15) / 7.5) ** 2)) * gaussian(x, z, -8, -4, 66, 52);
+    const blocks = 0.24 * fbm(x * 0.07, z * 0.07, 37, 3);
+    return upland + neSw + nwSe + rift + valley + blocks;
   }
 
-  class TerrainManager {
-    constructor(THREE, scene, provider, imagery, surfaceImage, quality) {
+  function ishtarHeight(x, z) {
+    // Ishtar is a broad regional highland, not a single flat mesa. Several overlapping
+    // uplifts create an irregular plateau while mountain belts define its margins.
+    const plateau = 2.45 * gaussian(x, z, -5, -2, 62, 47)
+      + 0.82 * gaussian(x, z, -24, 4, 42, 35)
+      + 0.54 * gaussian(x, z, 19, -11, 38, 33);
+    const easternMargin = gaussian(x, z, 39, -10, 18, 48);
+    const westernMargin = gaussian(x, z, -43, -4, 17, 44);
+    const northernMargin = gaussian(x, z, -4, -39, 48, 15);
+    const mountainEast = easternMargin * (3.55 + ridgeWave(x * 0.36 + z * 0.05 + 0.35 * Math.sin(z * 0.04), 7) * 2.0);
+    const mountainWest = westernMargin * (1.95 + ridgeWave(x * 0.28 - z * 0.045, 8) * 1.15);
+    const mountainNorth = northernMargin * (1.25 + ridgeWave(x * 0.22 + z * 0.04, 9) * 0.85);
+    const interiorLava = 0.11 * ridgeWave(x * 0.075 + z * 0.038 + 0.3 * Math.sin(x * 0.03), 14) * gaussian(x, z, -4, 0, 47, 36);
+    const southernLowland = -0.52 * gaussian(x, z, 5, 55, 72, 28);
+    const micro = 0.09 * fbm(x * 0.06, z * 0.06, 41, 3);
+    return plateau + mountainEast + mountainWest + mountainNorth + interiorLava + southernLowland + micro;
+  }
+
+  function alphaHeight(x, z) {
+    const upland = 1.9 * gaussian(x, z, 0, -6, 54, 45) + 0.45 * gaussian(x, z, -17, -18, 32, 29);
+    const ridgeA = ridgeWave((x + z * 0.55) * 0.36 + 0.25 * Math.sin(z * 0.08), 8) * 0.88;
+    const ridgeB = ridgeWave((-x * 0.52 + z) * 0.33 + 0.35 * Math.sin(x * 0.065), 8) * 0.78;
+    const ridgeC = ridgeWave((x * 0.18 - z * 0.28) + 1.2, 12) * 0.25;
+    const faultA = -0.78 * Math.exp(-(((x - z * 0.42 - 8) / 2.9) ** 2));
+    const faultB = -0.58 * Math.exp(-(((x + z * 0.58 + 13) / 3.3) ** 2));
+    const lavaLowA = -0.85 * gaussian(x, z, 24, 13, 11, 8);
+    const lavaLowB = -0.64 * gaussian(x, z, -27, -4, 10, 12);
+    const blocks = 0.20 * fbm(x * 0.085, z * 0.085, 59, 3);
+    const envelope = gaussian(x, z, 0, -5, 62, 54);
+    return upland + (ridgeA + ridgeB + ridgeC) * envelope + faultA * envelope + faultB * envelope + lavaLowA + lavaLowB + blocks;
+  }
+
+  const HEIGHT_FUNCTIONS = Object.freeze({
+    maat: maatHeight,
+    maxwell: maxwellHeight,
+    aphrodite: aphroditeHeight,
+    ishtar: ishtarHeight,
+    alpha: alphaHeight
+  });
+
+  function regionHeight(region, x, z) {
+    return HEIGHT_FUNCTIONS[region.id](x, z);
+  }
+
+  function surfaceClass(region, x, z, height, slope) {
+    if (region.id === "maat") {
+      const r = Math.hypot(x, z + 25);
+      const flowA = gaussian(x, z, -13, 8, 9, 47);
+      const flowB = gaussian(x, z, 14, 4, 11, 45);
+      if (r < 9) return "summit";
+      if (z > -19 && Math.max(flowA, flowB) > 0.55) return "lava";
+      if (slope > 0.32) return "rugged";
+      return "plain";
+    }
+    if (region.id === "maxwell") {
+      if (height > 7.0 || slope > 0.55) return "rugged";
+      if (x < -20) return "plain";
+      return "highland";
+    }
+    if (region.id === "aphrodite") {
+      const rift = Math.abs(x - z * 0.34 - 7);
+      if (rift < 6) return "fracture";
+      if (height > 3.3) return "highland";
+      if (height < 1.0) return "lava";
+      return "rugged";
+    }
+    if (region.id === "ishtar") {
+      const interior = gaussian(x, z, -5, -2, 55, 42);
+      if (interior > 0.56 && slope < 0.22) return "plain";
+      if (Math.abs(x) > 30 || z < -31 || slope > 0.46) return "rugged";
+      return "highland";
+    }
+    if (region.id === "alpha") {
+      if (height < 0.85) return "lava";
+      if (slope > 0.36) return "tessera";
+      return "fracture";
+    }
+    return "plain";
+  }
+
+  class VenusRegionWorld {
+    constructor(THREE, scene, renderer, region, quality) {
       this.THREE = THREE;
       this.scene = scene;
-      this.provider = provider;
-      this.imagery = imagery;
+      this.renderer = renderer;
+      this.region = region;
       this.quality = quality;
-      this.meshes = new Map();
-      this.requestGeneration = 0;
-      this.origin = { latitude: 0, signedLongitude: 0 };
-      this.lastCenterTile = "";
-      this.lastTextureProfile = "";
       this.group = new THREE.Group();
+      this.group.name = `venus-region-${region.id}`;
       this.scene.add(this.group);
-      this.detailTexture = this.createVenusMicroDetailTexture();
-
-      // View-dependent terrain manager state. Three.js already performs mesh-level
-      // frustum culling, but we also keep an explicit visibility state so expensive
-      // texture upgrades and terrain shader detail are spent only where the camera
-      // can actually benefit from them.
+      this.tiles = [];
+      this.horizon = null;
+      this.accentMesh = null;
+      this.material = null;
+      this.horizonMaterial = null;
+      this.accentMaterial = null;
+      this.textures = [];
       this.frustum = new THREE.Frustum();
-      this.projectionScreenMatrix = new THREE.Matrix4();
-      this.cameraForward = new THREE.Vector3();
-      this.chunkCenter = new THREE.Vector3();
-      this.chunkVector = new THREE.Vector3();
-      this.visibilityStats = { visible: 0, buffered: 0, culled: 0, high: 0, medium: 0, low: 0 };
-      this.debugEnabled = typeof location !== "undefined" && new URLSearchParams(location.search).get("venusTerrainDebug") === "1";
-      this.lastDebugLog = 0;
-
-      // The orbit renderer only has a 2K global color map, so it is retained as
-      // a continuity placeholder only. Scientific surface color is upgraded per
-      // a geographic Magellan radar patch plus deterministic Venus material detail.
-      // Expensive texture work is still promoted only for visible / safety-buffer chunks.
-      this.sourceCanvas = document.createElement("canvas");
-      this.sourceCanvas.width = surfaceImage.width || 2048;
-      this.sourceCanvas.height = surfaceImage.height || 1024;
-      const sourceContext = this.sourceCanvas.getContext("2d", { willReadFrequently: true });
-      sourceContext.drawImage(surfaceImage, 0, 0, this.sourceCanvas.width, this.sourceCanvas.height);
-      this.sourcePixels = sourceContext.getImageData(0, 0, this.sourceCanvas.width, this.sourceCanvas.height).data;
-      this.sourceWidth = this.sourceCanvas.width;
-      this.sourceHeight = this.sourceCanvas.height;
+      this.projection = new THREE.Matrix4();
+      this.cameraDirection = new THREE.Vector3();
+      this.tileVector = new THREE.Vector3();
+      this.visibilityClock = 0;
+      this.visibilityStats = { visible: 0, buffered: 0, culled: 0, total: 0 };
     }
 
-    createVenusMicroDetailTexture() {
-      const THREE = this.THREE;
-      const size = this.quality.name === "HIGH" ? 512 : this.quality.name === "MEDIUM" ? 384 : 256;
-      const canvas = document.createElement("canvas");
-      canvas.width = size;
-      canvas.height = size;
-      const context = canvas.getContext("2d", { willReadFrequently: true });
-      const image = context.createImageData(size, size);
-      const data = image.data;
+    async build(onProgress = () => {}) {
+      this.material = this.createMaterial();
+      this.horizonMaterial = this.material.clone();
+      this.horizonMaterial.map = null;
+      this.horizonMaterial.normalMap = null;
+      this.horizonMaterial.roughnessMap = null;
+      this.horizonMaterial.vertexColors = true;
+      this.horizonMaterial.roughness = 0.97;
+      this.horizonMaterial.needsUpdate = true;
 
-      // Periodic value noise keeps the texture seamless when repeated across
-      // adjacent one-degree terrain tiles. This is deliberately micro-detail only:
-      // geographic identity comes from Magellan macro relief/radar plus region-specific Venus geology.
-      const hash = (x, y, seed) => {
-        let h = Math.imul((x + seed * 17) | 0, 374761393) ^ Math.imul((y - seed * 29) | 0, 668265263);
-        h = Math.imul(h ^ (h >>> 13), 1274126177);
-        return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
-      };
-      const fade = t => t * t * (3 - 2 * t);
-      const wrapCell = (value, cells) => ((value % cells) + cells) % cells;
-      const periodicNoise = (u, v, cells, seed) => {
-        const px = u * cells;
-        const py = v * cells;
-        const x0 = Math.floor(px);
-        const y0 = Math.floor(py);
-        const tx = fade(px - x0);
-        const ty = fade(py - y0);
-        const a = hash(wrapCell(x0, cells), wrapCell(y0, cells), seed);
-        const b = hash(wrapCell(x0 + 1, cells), wrapCell(y0, cells), seed);
-        const c = hash(wrapCell(x0, cells), wrapCell(y0 + 1, cells), seed);
-        const d = hash(wrapCell(x0 + 1, cells), wrapCell(y0 + 1, cells), seed);
-        return lerp(lerp(a, b, tx), lerp(c, d, tx), ty);
-      };
-
-      for (let y = 0; y < size; y += 1) {
-        const v = y / size;
-        for (let x = 0; x < size; x += 1) {
-          const u = x / size;
-          const broad = periodicNoise(u, v, 7, 11);
-          const mid = periodicNoise(u, v, 17, 23);
-          const fine = periodicNoise(u, v, 43, 47);
-          const grit = periodicNoise(u, v, 91, 71);
-          const ridge = 1 - Math.abs(mid * 2 - 1);
-          const sparseRock = Math.max(0, (grit - 0.78) / 0.22);
-          const height = clamp(0.43 + (broad - 0.5) * 0.26 + (mid - 0.5) * 0.24 + (fine - 0.5) * 0.16 + ridge * 0.08 + sparseRock * 0.13, 0.08, 0.94);
-          const value = Math.round(height * 255);
-          const i = (y * size + x) * 4;
-          data[i] = value;
-          data[i + 1] = value;
-          data[i + 2] = value;
-          data[i + 3] = 255;
+      const tileSize = this.quality.tileSize;
+      const halfTiles = 3;
+      const specs = [];
+      for (let iz = -halfTiles; iz <= halfTiles; iz += 1) {
+        for (let ix = -halfTiles; ix <= halfTiles; ix += 1) {
+          const cx = ix * tileSize;
+          const cz = iz * tileSize;
+          const distance = Math.hypot(cx, cz);
+          if (distance > this.region.playRadius + tileSize * 0.78) continue;
+          const segments = distance <= tileSize * 1.15 ? this.quality.nearSegments
+            : distance <= tileSize * 2.25 ? this.quality.midSegments
+              : this.quality.farSegments;
+          specs.push({ ix, iz, cx, cz, distance, segments });
         }
       }
-      context.putImageData(image, 0, 0);
+      specs.sort((a, b) => a.distance - b.distance);
 
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.colorSpace = THREE.NoColorSpace;
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.RepeatWrapping;
-      texture.minFilter = THREE.LinearMipmapLinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.generateMipmaps = true;
-      texture.anisotropy = this.quality.anisotropy || 4;
-      // Custom terrain shaders sample this texture in world-space triplanar coordinates.
-      // Keep the texture transform neutral; geographic continuity comes from world space,
-      // not from resetting a UV phase at every one-degree tile boundary.
-      texture.repeat.set(1, 1);
-      texture.needsUpdate = true;
-      return texture;
-    }
-
-    configureTerrainMaterial(material, tile) {
-      if (!material || !tile) return material;
-
-      // Keep bumpMap attached so Three compiles derivative helpers, but use a
-      // view-dependent uniform to decide how many triplanar layers are worth
-      // sampling for this chunk. Tier 3 is the exact premium near-field path;
-      // lower tiers only remove detail that is sub-pixel at that distance.
-      material.bumpMap = this.detailTexture;
-      material.bumpScale = 0.001;
-      const materialProfile = this.provider.activeRegion?.profile || "aphrodite";
-      const geologicalRoughness = {
-        shield: 0.82,       // volcanic plains / flow units
-        mountain: 0.95,     // rough highland rock
-        ishtar: 0.86,       // smoother plateau + rough margins
-        tessera: 0.97,      // intensely fractured terrain
-        aphrodite: 0.92     // tectonic highland / lava-filled lows
-      };
-      material.roughness = geologicalRoughness[materialProfile] ?? 0.91;
-      material.userData.venusMaterialProfile = materialProfile;
-      material.userData.venusDetailTier = material.userData.venusDetailTier ?? 3;
-
-      material.onBeforeCompile = shader => {
-        shader.uniforms.uVenusMicroDetail = { value: this.detailTexture };
-        shader.uniforms.uVenusAlbedoDetail = { value: this.quality.name === "HIGH" ? 0.24 : this.quality.name === "MEDIUM" ? 0.19 : 0.13 };
-        shader.uniforms.uVenusNormalDetail = { value: this.quality.name === "HIGH" ? 7.2 : this.quality.name === "MEDIUM" ? 5.4 : 3.8 };
-        shader.uniforms.uVenusDetailTier = { value: material.userData.venusDetailTier };
-
-        shader.vertexShader = shader.vertexShader
-          .replace("#include <common>", "#include <common>\nvarying vec3 vVenusWorldPosition;")
-          .replace("#include <begin_vertex>", "#include <begin_vertex>\nvVenusWorldPosition = (modelMatrix * vec4(transformed, 1.0)).xyz;");
-
-        shader.fragmentShader = shader.fragmentShader
-          .replace("#include <common>", `#include <common>
-            varying vec3 vVenusWorldPosition;
-            uniform sampler2D uVenusMicroDetail;
-            uniform float uVenusAlbedoDetail;
-            uniform float uVenusNormalDetail;
-            uniform float uVenusDetailTier;
-
-            float venusTriSample(sampler2D tex, vec3 p, vec3 n, float scale, vec3 phase) {
-              vec3 blend = pow(max(abs(n), vec3(0.0001)), vec3(5.0));
-              blend /= max(blend.x + blend.y + blend.z, 0.0001);
-              float sx = texture2D(tex, p.yz * scale + phase.yz).r;
-              float sy = texture2D(tex, p.xz * scale + phase.xz).r;
-              float sz = texture2D(tex, p.xy * scale + phase.xy).r;
-              return sx * blend.x + sy * blend.y + sz * blend.z;
-            }`)
-          .replace("#include <map_fragment>", `#include <map_fragment>
-            vec3 venusDx = dFdx(vVenusWorldPosition);
-            vec3 venusDy = dFdy(vVenusWorldPosition);
-            vec3 venusGeomNormal = normalize(cross(venusDx, venusDy));
-            if (!gl_FrontFacing) venusGeomNormal = -venusGeomNormal;
-
-            float venusViewDistance = length(cameraPosition - vVenusWorldPosition);
-            float venusNearWeight = 1.0 - smoothstep(1.25, 15.0, venusViewDistance);
-            float venusMidWeight = 1.0 - smoothstep(7.0, 46.0, venusViewDistance);
-
-            float venusBroad = 0.5;
-            float venusFine = 0.5;
-            float venusGrit = 0.5;
-            float venusRock = 0.0;
-
-            // Uniform branches let horizon / distant chunks skip expensive texture
-            // samples. Visible terrain near the camera still executes all three
-            // triplanar frequencies exactly as before.
-            if (uVenusDetailTier > 0.5) {
-              venusBroad = venusTriSample(uVenusMicroDetail, vVenusWorldPosition, venusGeomNormal, 0.18, vec3(0.17, 0.41, 0.73));
-            }
-            if (uVenusDetailTier > 1.5) {
-              venusFine = venusTriSample(uVenusMicroDetail, vVenusWorldPosition, venusGeomNormal, 0.92, vec3(0.61, 0.13, 0.37));
-            }
-            if (uVenusDetailTier > 2.5) {
-              venusGrit = venusTriSample(uVenusMicroDetail, vVenusWorldPosition, venusGeomNormal, 2.35, vec3(0.29, 0.83, 0.07));
-              venusRock = smoothstep(0.68, 0.92, venusGrit);
-            }
-
-            float venusMicro = (venusBroad - 0.5) * 0.44 * venusMidWeight
-              + (venusFine - 0.5) * 0.40 * venusNearWeight
-              + (venusGrit - 0.5) * 0.16 * venusNearWeight
-              + venusRock * 0.08 * venusNearWeight;
-            float venusMicroHeight = ((venusBroad - 0.5) * 0.52 * venusMidWeight
-              + (venusFine - 0.5) * 0.34 * venusNearWeight
-              + (venusGrit - 0.5) * 0.14 * venusNearWeight);
-
-            diffuseColor.rgb *= clamp(1.0 + venusMicro * uVenusAlbedoDetail, 0.86, 1.14);`)
-          .replace("#include <normal_fragment_maps>", `#include <normal_fragment_maps>
-            #ifdef USE_BUMPMAP
-              if (uVenusDetailTier > 0.5) {
-                vec2 venusMicroSlope = vec2(dFdx(venusMicroHeight), dFdy(venusMicroHeight));
-                normal = perturbNormalArb(-vViewPosition, normal, venusMicroSlope * uVenusNormalDetail, faceDirection);
-              }
-            #endif`)
-          .replace("#include <roughnessmap_fragment>", `#include <roughnessmap_fragment>
-            if (uVenusDetailTier > 2.5) {
-              roughnessFactor = clamp(roughnessFactor + (0.5 - venusGrit) * 0.065 + venusRock * 0.035, 0.80, 0.985);
-            }`);
-
-        material.userData.venusShader = shader;
-      };
-      material.customProgramCacheKey = () => `antara-venus-terrain-triplanar-viewlod-v6-${this.quality.name}`;
-      material.needsUpdate = true;
-      return material;
-    }
-
-    setEntryDetailTier(entry, tier) {
-      if (!entry?.mesh?.material) return;
-      const clampedTier = clamp(Math.round(tier), 0, 3);
-      if (entry.detailTier === clampedTier) return;
-      entry.detailTier = clampedTier;
-      const material = entry.mesh.material;
-      material.userData.venusDetailTier = clampedTier;
-      const shader = material.userData.venusShader;
-      if (shader?.uniforms?.uVenusDetailTier) shader.uniforms.uVenusDetailTier.value = clampedTier;
-      const transitionMaterial = entry.textureTransition?.overlay?.material;
-      if (transitionMaterial) {
-        transitionMaterial.userData.venusDetailTier = clampedTier;
-        const overlayShader = transitionMaterial.userData.venusShader;
-        if (overlayShader?.uniforms?.uVenusDetailTier) overlayShader.uniforms.uVenusDetailTier.value = clampedTier;
-      }
-    }
-
-    entryRingFromCamera(entry, cameraGeo) {
-      if (!entry || !cameraGeo) return 99;
-      const center = this.provider.tileForLocation(cameraGeo.latitude, cameraGeo.signedLongitude);
-      const dx = Math.abs(shortestLongitudeDelta(center.lonWest, entry.lonWest));
-      const dy = Math.abs(center.latNorth - entry.latNorth);
-      return Math.max(dx, dy);
-    }
-
-    updateViewDependent(camera, altitudeKm, velocity = null, now = performance.now()) {
-      if (!camera || !this.meshes.size) return this.visibilityStats;
-
-      camera.updateMatrixWorld();
-      this.group.updateMatrixWorld(true);
-      this.projectionScreenMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
-      this.frustum.setFromProjectionMatrix(this.projectionScreenMatrix);
-      camera.getWorldDirection(this.cameraForward).normalize();
-      const cameraGeo = this.geoFromWorld(camera.position.x, camera.position.z);
-      // Fine/grit shader weights already reach zero at ~15 km view distance. Only
-      // after that point do we cap visible chunks to the broad-detail tier, so this
-      // removes wasted samples rather than changing a contribution the user can see.
-      const maxTierForAltitude = altitudeKm >= 15 ? 1 : 3;
-      const speed = velocity ? Math.hypot(velocity.x || 0, velocity.y || 0, velocity.z || 0) : 0;
-      const stats = { visible: 0, buffered: 0, culled: 0, high: 0, medium: 0, low: 0 };
-      // Preserve the existing LOD rules, but do not synchronously rebuild every newly
-      // visible geometry in the same frame. Two swaps per frame is enough to converge
-      // quickly while avoiding the sharp camera-turn hitch seen on Venus.
-      let geometrySwapsRemaining = 2;
-
-      for (const entry of this.meshes.values()) {
-        const mesh = entry.mesh;
-        const sphere = mesh.geometry.boundingSphere;
-        if (!sphere) mesh.geometry.computeBoundingSphere();
-        const bounds = mesh.geometry.boundingSphere;
-        this.chunkCenter.copy(bounds.center).applyMatrix4(mesh.matrixWorld);
-        this.chunkVector.copy(this.chunkCenter).sub(camera.position);
-        const centerDistance = Math.max(0.0001, this.chunkVector.length());
-        const surfaceDistance = Math.max(0, centerDistance - bounds.radius);
-        const facing = this.chunkVector.dot(this.cameraForward) / centerDistance;
-        const inFrustum = this.frustum.intersectsObject(mesh);
-
-        // Safety buffer keeps nearby / side chunks alive so a fast 180-degree turn
-        // never exposes a void. Only the deep rear sector is deactivated entirely.
-        const bufferDistance = Math.max(52, 34 + altitudeKm * 2.4 + speed * 1.5);
-        const inSafetyBuffer = !inFrustum && facing > -0.62 && surfaceDistance < bufferDistance;
-        const active = inFrustum || inSafetyBuffer;
-        mesh.visible = active;
-        entry.frustumVisible = inFrustum;
-        entry.bufferVisible = inSafetyBuffer;
-        entry.lastSurfaceDistance = surfaceDistance;
-
-        const ring = this.entryRingFromCamera(entry, cameraGeo);
-        if (inFrustum) {
-          const desiredSegments = this.segmentsForAltitudeRing(ring, altitudeKm);
-          if (entry.segments !== desiredSegments && geometrySwapsRemaining > 0) {
-            this.swapEntryGeometry(entry, desiredSegments);
-            geometrySwapsRemaining -= 1;
-          }
-        }
-
-        let detailTier = 0;
-        if (inFrustum) {
-          const nearLimit = this.quality.name === "HIGH" ? 28 : this.quality.name === "MEDIUM" ? 22 : 16;
-          const midLimit = this.quality.name === "HIGH" ? 82 : this.quality.name === "MEDIUM" ? 64 : 48;
-          detailTier = surfaceDistance <= nearLimit ? 3 : surfaceDistance <= midLimit ? 2 : 1;
-          detailTier = Math.min(detailTier, maxTierForAltitude);
-        }
-        this.setEntryDetailTier(entry, detailTier);
-
-        if (inFrustum) {
-          stats.visible += 1;
-          if (detailTier === 3) stats.high += 1;
-          else if (detailTier === 2) stats.medium += 1;
-          else stats.low += 1;
-        } else if (inSafetyBuffer) {
-          stats.buffered += 1;
-        } else {
-          stats.culled += 1;
-        }
-
-        // Texture streaming is visibility-aware. The current / visible terrain can
-        // still request the full scientific profile, while buffered chunks are only
-        // warmed conservatively and deep rear chunks do zero imagery work.
-        const elapsed = now - (entry.lastViewTextureRequest || 0);
-        if (inFrustum && elapsed > 650) {
-          entry.lastViewTextureRequest = now;
-          const textureRing = detailTier >= 3 ? ring : ring + (detailTier === 2 ? 1 : 2);
-          this.upgradeEntryTexture(entry, altitudeKm, textureRing).catch(() => {});
-        } else if (inSafetyBuffer && elapsed > 1800 && ring <= 2) {
-          entry.lastViewTextureRequest = now;
-          this.upgradeEntryTexture(entry, Math.max(altitudeKm, 12), ring + 2).catch(() => {});
-        }
-      }
-
-      this.visibilityStats = stats;
-      if (this.debugEnabled && now - this.lastDebugLog > 1000) {
-        this.lastDebugLog = now;
-        console.debug("[ANTARA Venus terrain]", { ...stats, altitudeKm: Number(altitudeKm.toFixed(2)), chunks: this.meshes.size });
-      }
-      return stats;
-    }
-
-    setOrigin(latitude, longitudeEast) {
-      this.origin.latitude = clamp(latitude, MIN_DATA_LAT, MAX_DATA_LAT);
-      this.origin.signedLongitude = wrapLongitude(longitudeEast > 180 ? longitudeEast - 360 : longitudeEast);
-      this.lastCenterTile = "";
-    }
-
-    worldFromGeo(latitude, signedLongitude) {
-      const cosLatitude = Math.max(0.08, Math.cos(this.origin.latitude * DEG));
-      const dLon = shortestLongitudeDelta(this.origin.signedLongitude, signedLongitude);
-      return {
-        x: dLon * KM_PER_DEG_LAT * cosLatitude,
-        z: -(latitude - this.origin.latitude) * KM_PER_DEG_LAT
-      };
-    }
-
-    geoFromWorld(x, z) {
-      const cosLatitude = Math.max(0.08, Math.cos(this.origin.latitude * DEG));
-      const latitude = clamp(this.origin.latitude - z / KM_PER_DEG_LAT, MIN_DATA_LAT, MAX_DATA_LAT);
-      const signedLongitude = wrapLongitude(this.origin.signedLongitude + x / (KM_PER_DEG_LAT * cosLatitude));
-      return { latitude, signedLongitude, longitudeEast: eastLongitude(signedLongitude) };
-    }
-
-    subMagellanDetailHeight(latitude, signedLongitude, strength = 1) {
-      return this.provider.detailHeight(latitude, signedLongitude, strength, this.provider.activeRegion);
-    }
-
-    detailStrengthForSegments() {
-      // Keep chunk-edge heights identical across LOD rings. The LOD difference comes
-      // from tessellation density, not from changing the terrain function itself.
-      return 1;
-    }
-
-    desiredRadius() {
-      return this.quality.radius;
-    }
-
-    segmentsForRing(ring) {
-      if (ring === 0) return this.quality.nearSegments;
-      if (ring === 1) return this.quality.midSegments;
-      if (ring === 2) return this.quality.farSegments;
-      return this.quality.horizonSegments || this.quality.farSegments;
-    }
-
-    segmentsForOffset(dx, dy) {
-      return this.segmentsForRing(Math.max(Math.abs(dx), Math.abs(dy)));
-    }
-
-    segmentsForAltitudeRing(ring, altitudeKm) {
-      // Geometry LOD is conservative at low altitude. At higher altitude the fine
-      // tessellation is sub-pixel, so reduce only those rings where it is visually
-      // redundant. The same deterministic height function + skirts keeps seams stable.
-      if (altitudeKm >= 24) {
-        if (ring === 0) return this.quality.midSegments;
-        if (ring === 1) return this.quality.farSegments;
-        return this.quality.horizonSegments || this.quality.farSegments;
-      }
-      return this.segmentsForRing(ring);
-    }
-
-    async ensureAround(latitude, signedLongitude, { requiredRadius = 1, onProgress = null, textureAltitude = MAX_EXPLORATION_ALTITUDE_KM } = {}) {
-      const center = this.provider.tileForLocation(latitude, signedLongitude);
-      const radius = this.desiredRadius();
-      const generation = ++this.requestGeneration;
-      const desired = new Map();
-      const mandatory = [];
-      const optional = [];
-
-      for (let dy = -radius; dy <= radius; dy += 1) {
-        for (let dx = -radius; dx <= radius; dx += 1) {
-          const lonWest = Math.floor(wrapLongitude(center.lonWest + dx));
-          const latNorth = center.latNorth - dy;
-          if (latNorth > 88 || latNorth < -87) continue;
-          const segments = this.segmentsForOffset(dx, dy);
-          // Tile identity is independent from LOD. Moving across a boundary now reuses
-          // the existing tile material / textures and only swaps geometry when needed.
-          const key = this.provider.tileKey(lonWest, latNorth);
-          const entry = { key, lonWest, latNorth, segments, dx, dy };
-          desired.set(key, entry);
-          if (Math.max(Math.abs(dx), Math.abs(dy)) <= requiredRadius) mandatory.push(entry);
-          else optional.push(entry);
-        }
-      }
-
-      // Keep the previous safety ring alive until replacement chunks are ready.
-      // This avoids one-frame black/missing squares while crossing tile boundaries.
-      let completed = 0;
-      const total = Math.max(1, mandatory.length);
-      const makeRecord = (entry, tile, mesh) => ({
-        mesh,
-        tile,
-        lonWest: entry.lonWest,
-        latNorth: entry.latNorth,
-        segments: entry.segments,
-        geometryCache: new Map([[entry.segments, mesh.geometry]]),
-        textureProfile: "fallback",
-        textureLoading: "",
-        textureToken: 0,
-        detailTier: 3,
-        frustumVisible: undefined,
-        bufferVisible: false,
-        lastViewTextureRequest: 0
-      });
-
-      const loadEntry = async entry => {
-        if (generation !== this.requestGeneration) return;
-        const ring = Math.max(Math.abs(entry.dx), Math.abs(entry.dy));
-        if (this.meshes.has(entry.key)) {
-          const existing = this.meshes.get(entry.key);
-          this.swapEntryGeometry(existing, entry.segments);
-          // Mandatory chunks are either the camera tile or its immediate safety ring,
-          // so keep their scientific imagery current. Materials/textures are reused.
-          await this.upgradeEntryTexture(existing, textureAltitude, ring);
-          completed += 1;
-          onProgress?.(completed / total);
-          return;
-        }
-        const tile = await this.provider.load(entry.lonWest, entry.latNorth);
-        if (generation !== this.requestGeneration) return;
-        const mesh = this.createTileMesh(tile, entry.segments);
+      for (let i = 0; i < specs.length; i += 1) {
+        const spec = specs[i];
+        const mesh = this.createTile(spec.cx, spec.cz, tileSize, spec.segments);
         this.group.add(mesh);
-        const record = makeRecord(entry, tile, mesh);
-        this.meshes.set(entry.key, record);
-        await this.primeEntryTexture(record, textureAltitude, ring);
-        completed += 1;
-        onProgress?.(completed / total);
-      };
-
-      await Promise.all(mandatory.map(loadEntry));
-      if (generation !== this.requestGeneration) return;
-      this.lastCenterTile = this.provider.tileKey(center.lonWest, center.latNorth);
-
-      // Outer coverage is created with a fallback albedo but is NOT immediately sent
-      // through the expensive high-resolution radar/material path. Venus terrain creation
-      // is substantially more CPU-heavy than Mars because each vertex carries regional
-      // geology. Stream optional chunks one per animation frame so crossing a tile boundary
-      // cannot bunch dozens of geometry builds / LOD swaps into one long main-thread spike.
-      const streamOptional = async () => {
-        for (const entry of optional) {
-          if (generation !== this.requestGeneration) return;
-          const existing = this.meshes.get(entry.key);
-          if (existing) {
-            this.swapEntryGeometry(existing, entry.segments);
-          } else {
-            const tile = await this.provider.load(entry.lonWest, entry.latNorth);
-            if (generation !== this.requestGeneration) return;
-            const mesh = this.createTileMesh(tile, entry.segments);
-            this.group.add(mesh);
-            const record = makeRecord(entry, tile, mesh);
-            this.meshes.set(entry.key, record);
-            // Start background chunks at shader tier 0. The next visibility pass promotes
-            // only terrain that actually enters the camera or its safety buffer.
-            this.setEntryDetailTier(record, 0);
-          }
-          await new Promise(resolve => window.requestAnimationFrame(() => resolve()));
-        }
-        if (generation === this.requestGeneration) this.prune(desired);
-      };
-      streamOptional().catch(() => {});
-    }
-
-    maybeStream(latitude, signedLongitude, altitudeKm) {
-      const center = this.provider.tileForLocation(latitude, signedLongitude);
-      const key = this.provider.tileKey(center.lonWest, center.latNorth);
-      const profileKey = this.imagery.profileForAltitude(altitudeKm, latitude).key;
-      if (key === this.lastCenterTile && profileKey === this.lastTextureProfile) return;
-      this.lastTextureProfile = profileKey;
-      if (key === this.lastCenterTile) {
-        this.refreshTextureLOD(altitudeKm, latitude, signedLongitude);
-        return;
+        this.tiles.push({ mesh, cx: spec.cx, cz: spec.cz, distance: spec.distance, radius: tileSize * 0.74 });
+        onProgress((i + 1) / (specs.length + 3) * 0.78);
+        if (i % 2 === 1) await new Promise(resolve => requestAnimationFrame(() => resolve()));
       }
-      this.ensureAround(latitude, signedLongitude, { requiredRadius: 0, textureAltitude: altitudeKm }).catch(() => {});
+
+      this.horizon = this.createHorizon();
+      this.group.add(this.horizon);
+      onProgress(0.86);
+      await new Promise(resolve => requestAnimationFrame(() => resolve()));
+      this.accentMesh = this.createSurfaceAccents();
+      if (this.accentMesh) this.group.add(this.accentMesh);
+      onProgress(0.96);
+      await new Promise(resolve => requestAnimationFrame(() => resolve()));
+      this.group.updateMatrixWorld(true);
+      this.visibilityStats.total = this.tiles.length;
+      onProgress(1);
     }
 
-    createFallbackAlbedo(tile) {
-      const THREE = this.THREE;
-      const size = Math.min(192, this.quality.textureSize);
-      const canvas = document.createElement("canvas");
-      canvas.width = size;
-      canvas.height = size;
-      const context = canvas.getContext("2d");
-      context.imageSmoothingEnabled = true;
-      context.imageSmoothingQuality = "high";
-
-      const sourceX = ((tile.lonWest + 180) / 360) * this.sourceWidth;
-      const sourceY = ((90 - tile.latNorth) / 180) * this.sourceHeight;
-      const sourceW = this.sourceWidth / 360;
-      const sourceH = this.sourceHeight / 180;
-      context.drawImage(this.sourceCanvas, sourceX, sourceY, sourceW, sourceH, 0, 0, size, size);
-
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.colorSpace = THREE.SRGBColorSpace;
-      texture.wrapS = THREE.ClampToEdgeWrapping;
-      texture.wrapT = THREE.ClampToEdgeWrapping;
-      texture.minFilter = THREE.LinearMipmapLinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.generateMipmaps = true;
-      texture.anisotropy = this.quality.anisotropy || 4;
-      texture.needsUpdate = true;
-      return texture;
+    heightAt(x, z) {
+      return regionHeight(this.region, x, z);
     }
 
-    createMagellanNormalMap(tile, segments) {
-      const THREE = this.THREE;
-      const size = this.quality.name === "HIGH" ? 256 : this.quality.name === "MEDIUM" ? 192 : TILE_SIZE;
-      const data = new Uint8Array(size * size * 4);
-      const detailScale = this.detailStrengthForSegments(segments);
-      const stepDeg = 1 / Math.max(96, size - 1);
-      const centerLat = tile.latNorth - 0.5;
-      const spacingX = Math.max(0.04, stepDeg * KM_PER_DEG_LAT * Math.cos(centerLat * DEG));
-      const spacingZ = Math.max(0.04, stepDeg * KM_PER_DEG_LAT);
-      const sampleStride = size + 2;
-      const sampledHeights = new Float32Array(sampleStride * sampleStride);
-      let out = 0;
+    normalAt(x, z, epsilon = 0.18) {
+      const T = this.THREE;
+      const hL = this.heightAt(x - epsilon, z);
+      const hR = this.heightAt(x + epsilon, z);
+      const hD = this.heightAt(x, z - epsilon);
+      const hU = this.heightAt(x, z + epsilon);
+      return new T.Vector3(hL - hR, epsilon * 2, hD - hU).normalize();
+    }
 
-      // Build one shared height field including a one-sample border. The previous
-      // version evaluated surfaceHeight four times for every normal texel, which is
-      // especially expensive for Venus because each call includes Magellan sampling
-      // plus region geology/fBM. One expanded grid preserves the exact same central
-      // difference and cross-tile border continuity with roughly a quarter of those calls.
-      for (let y = -1; y <= size; y += 1) {
-        const fy = y / Math.max(1, size - 1);
-        const latitude = clamp(tile.latNorth - fy, MIN_DATA_LAT, MAX_DATA_LAT);
-        for (let x = -1; x <= size; x += 1) {
-          const fx = x / Math.max(1, size - 1);
-          const lon = wrapLongitude(tile.lonWest + fx);
-          sampledHeights[(y + 1) * sampleStride + (x + 1)] = this.provider.surfaceHeight(latitude, lon, detailScale);
+    colorFor(x, z, height, slope, target = null) {
+      const T = this.THREE;
+      const p = this.region.palette;
+      const cls = surfaceClass(this.region, x, z, height, slope);
+      let hex = p.mid;
+      if (cls === "plain") hex = p.low;
+      else if (cls === "lava") hex = p.accent;
+      else if (cls === "rugged" || cls === "tessera") hex = p.high;
+      else if (cls === "fracture") hex = p.rock;
+      else if (cls === "highland" || cls === "summit") hex = p.high;
+      const color = target || new T.Color();
+      color.setHex(hex);
+      const variation = 0.90 + 0.10 * valueNoise(x * 0.12, z * 0.12, this.region.id.length * 13);
+      color.multiplyScalar(variation);
+      return color;
+    }
+
+    createTile(centerX, centerZ, size, segments) {
+      const T = this.THREE;
+      const row = segments + 1;
+      const count = row * row;
+      const positions = new Float32Array(count * 3);
+      const normals = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+      const uvs = new Float32Array(count * 2);
+      const indexCount = segments * segments * 6;
+      const IndexArray = count > 65535 ? Uint32Array : Uint16Array;
+      const indices = new IndexArray(indexCount);
+      const half = size / 2;
+      const step = size / segments;
+
+      /*
+       * Terrain is static after a destination is loaded. Build one expanded
+       * height grid and derive both vertices and normals from it. This keeps
+       * the expensive morphology functions out of the animation loop and
+       * avoids four extra height-function evaluations for every vertex.
+       */
+      const sampleRow = segments + 3;
+      const heightGrid = new Float32Array(sampleRow * sampleRow);
+      for (let gz = -1; gz <= segments + 1; gz += 1) {
+        const worldZ = centerZ - half + gz * step;
+        const gridZ = gz + 1;
+        for (let gx = -1; gx <= segments + 1; gx += 1) {
+          const worldX = centerX - half + gx * step;
+          heightGrid[gridZ * sampleRow + gx + 1] = this.heightAt(worldX, worldZ);
         }
       }
+      const sampleHeight = (gx, gz) => heightGrid[(gz + 1) * sampleRow + gx + 1];
 
-      for (let y = 0; y < size; y += 1) {
-        const row = y + 1;
-        for (let x = 0; x < size; x += 1) {
-          const col = x + 1;
-          const left = sampledHeights[row * sampleStride + col - 1];
-          const right = sampledHeights[row * sampleStride + col + 1];
-          const north = sampledHeights[(row - 1) * sampleStride + col];
-          const south = sampledHeights[(row + 1) * sampleStride + col];
-          const dx = (right - left) / Math.max(spacingX * 2, 0.001);
-          const dz = (south - north) / Math.max(spacingZ * 2, 0.001);
-          let nx = -dx * 0.64, ny = 1, nz = -dz * 0.64;
-          const length = Math.hypot(nx, ny, nz) || 1;
-          nx /= length; ny /= length; nz /= length;
-          data[out++] = Math.round((nx * 0.5 + 0.5) * 255);
-          data[out++] = Math.round((ny * 0.5 + 0.5) * 255);
-          data[out++] = Math.round((nz * 0.5 + 0.5) * 255);
-          data[out++] = 255;
-        }
-      }
-      const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
-      texture.wrapS = THREE.ClampToEdgeWrapping;
-      texture.wrapT = THREE.ClampToEdgeWrapping;
-      texture.minFilter = THREE.LinearMipmapLinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.generateMipmaps = true;
-      texture.anisotropy = this.quality.anisotropy || 4;
-      texture.needsUpdate = true;
-      return texture;
-    }
-
-    textureFromCanvas(canvas) {
-      const THREE = this.THREE;
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.colorSpace = THREE.SRGBColorSpace;
-      texture.wrapS = THREE.ClampToEdgeWrapping;
-      texture.wrapT = THREE.ClampToEdgeWrapping;
-      texture.minFilter = THREE.LinearMipmapLinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.generateMipmaps = true;
-      texture.anisotropy = this.quality.anisotropy || 4;
-      texture.needsUpdate = true;
-      return texture;
-    }
-
-    cancelTextureTransition(entry, disposeCandidate = true) {
-      const transition = entry?.textureTransition;
-      if (!transition) return;
-      transition.cancelled = true;
-      const overlay = transition.overlay;
-      if (overlay?.parent) overlay.parent.remove(overlay);
-      if (overlay?.material) {
-        overlay.material.map = null;
-        overlay.material.normalMap = null;
-        overlay.material.dispose?.();
-      }
-      if (disposeCandidate && transition.texture && transition.texture !== entry.mesh?.material?.map) {
-        transition.texture.dispose?.();
-      }
-      entry.textureTransition = null;
-    }
-
-    async crossfadeEntryTexture(entry, nextTexture, requestToken) {
-      if (!entry?.mesh?.parent || requestToken !== entry.textureToken) {
-        nextTexture.dispose?.();
-        return false;
-      }
-      this.cancelTextureTransition(entry);
-      const mesh = entry.mesh;
-      const THREE = this.THREE;
-      const overlayMaterial = new THREE.MeshStandardMaterial({
-        map: nextTexture,
-        normalMap: mesh.material.normalMap,
-        normalMapType: THREE.ObjectSpaceNormalMap,
-        roughness: mesh.material.roughness,
-        metalness: 0,
-        color: 0xffffff,
-        side: THREE.FrontSide,
-        transparent: true,
-        opacity: 0,
-        depthWrite: false,
-        polygonOffset: true,
-        polygonOffsetFactor: -1,
-        polygonOffsetUnits: -1,
-        dithering: true
-      });
-      overlayMaterial.userData.venusDetailTier = entry.detailTier ?? 0;
-      this.configureTerrainMaterial(overlayMaterial, entry.tile);
-      const overlay = new THREE.Mesh(mesh.geometry, overlayMaterial);
-      overlay.frustumCulled = mesh.frustumCulled;
-      overlay.renderOrder = 1;
-      mesh.add(overlay);
-      const transition = { overlay, texture: nextTexture, cancelled: false };
-      entry.textureTransition = transition;
-
-      const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-      const duration = reduced ? 0 : 240;
-      if (duration > 0) {
-        const start = performance.now();
-        await new Promise(resolve => {
-          const frame = now => {
-            if (transition.cancelled || requestToken !== entry.textureToken || !mesh.parent) return resolve();
-            const t = smoothstep((now - start) / duration);
-            overlayMaterial.opacity = t;
-            if (t < 1) requestAnimationFrame(frame);
-            else resolve();
-          };
-          requestAnimationFrame(frame);
-        });
-      }
-
-      if (transition.cancelled || requestToken !== entry.textureToken || !mesh.parent) {
-        if (entry.textureTransition === transition) this.cancelTextureTransition(entry);
-        else nextTexture.dispose?.();
-        return false;
-      }
-
-      const previous = mesh.material.map;
-      mesh.material.map = nextTexture;
-      mesh.material.needsUpdate = true;
-      if (overlay.parent) overlay.parent.remove(overlay);
-      overlayMaterial.map = null;
-      overlayMaterial.normalMap = null;
-      overlayMaterial.dispose();
-      entry.textureTransition = null;
-      if (previous && previous !== nextTexture) previous.dispose?.();
-      return true;
-    }
-
-    async upgradeEntryTexture(entry, altitudeKm, ring = 0) {
-      if (!entry?.mesh || !entry.tile || !this.imagery) return;
-      const latitude = entry.latNorth - 0.5;
-      const ringPenalty = this.quality.name === "HIGH" ? 3.5 : this.quality.name === "MEDIUM" ? 5.0 : 7.0;
-      const visualAltitude = clamp(altitudeKm + ring * ringPenalty, 0, MAX_EXPLORATION_ALTITUDE_KM);
-      const profile = this.imagery.profileForAltitude(visualAltitude, latitude);
-      if (entry.textureProfile === profile.key || entry.textureLoading === profile.key) return;
-      const requestToken = (entry.textureToken || 0) + 1;
-      entry.textureToken = requestToken;
-      entry.textureLoading = profile.key;
-      try {
-        const canvas = await this.imagery.buildPatch(entry.lonWest, entry.latNorth, profile);
-        if (!canvas || requestToken !== entry.textureToken || !entry.mesh.parent) return;
-        const nextTexture = this.textureFromCanvas(canvas);
-        const applied = await this.crossfadeEntryTexture(entry, nextTexture, requestToken);
-        if (applied && requestToken === entry.textureToken) entry.textureProfile = profile.key;
-      } catch {
-        // Keep the current lower LOD texture if the higher detail source is unavailable.
-      } finally {
-        if (entry.textureLoading === profile.key) entry.textureLoading = "";
-      }
-    }
-
-    async primeEntryTexture(entry, altitudeKm, ring = 0) {
-      if (!entry?.mesh) return;
-      const latitude = entry.latNorth - 0.5;
-      const ringPenalty = this.quality.name === "HIGH" ? 3.5 : this.quality.name === "MEDIUM" ? 5.0 : 7.0;
-      const desiredAltitude = clamp(altitudeKm + ring * ringPenalty, 0, MAX_EXPLORATION_ALTITUDE_KM);
-      const desiredProfile = this.imagery.profileForAltitude(desiredAltitude, latitude);
-      const coarseProfile = this.imagery.profileForAltitude(MAX_EXPLORATION_ALTITUDE_KM, latitude);
-      if (entry.textureProfile === "fallback" && coarseProfile.key !== desiredProfile.key) {
-        await this.upgradeEntryTexture(entry, MAX_EXPLORATION_ALTITUDE_KM, 0);
-      }
-      await this.upgradeEntryTexture(entry, altitudeKm, ring);
-    }
-
-    refreshTextureLOD(altitudeKm, latitude, signedLongitude) {
-      const center = this.provider.tileForLocation(latitude, signedLongitude);
-      const now = performance.now();
-      for (const entry of this.meshes.values()) {
-        const dx = Math.abs(shortestLongitudeDelta(center.lonWest, entry.lonWest));
-        const dy = Math.abs(center.latNorth - entry.latNorth);
-        const ring = Math.max(dx, dy);
-
-        // Never run a full imagery refresh over the deep rear/off-screen field.
-        // The camera tile is always allowed; other tiles are refreshed only if the
-        // previous visibility pass marked them visible or in the safety buffer.
-        const shouldRefresh = ring === 0 || entry.frustumVisible === true || entry.bufferVisible === true;
-        if (!shouldRefresh) continue;
-        if (now - (entry.lastViewTextureRequest || 0) < 480) continue;
-        entry.lastViewTextureRequest = now;
-        const penalty = entry.frustumVisible === true ? 0 : 2;
-        this.upgradeEntryTexture(entry, altitudeKm, ring + penalty).catch(() => {});
-      }
-    }
-
-    prefetchAhead(latitude, signedLongitude, altitudeKm) {
-      const address = this.provider.tileForLocation(latitude, signedLongitude);
-      this.provider.load(address.lonWest, address.latNorth).catch(() => {});
-      const profile = this.imagery.profileForAltitude(altitudeKm, latitude);
-      const coarse = this.imagery.profileForAltitude(MAX_EXPLORATION_ALTITUDE_KM, latitude);
-      this.imagery.prefetch(address.lonWest, address.latNorth, coarse);
-      if (profile.key !== coarse.key) this.imagery.prefetch(address.lonWest, address.latNorth, profile);
-    }
-
-    createTileGeometry(tile, segments) {
-      const THREE = this.THREE;
-      const verticesPerSide = segments + 1;
-      const topVertexCount = verticesPerSide * verticesPerSide;
-      const skirtVertexCount = verticesPerSide * 8;
-      const positions = new Float32Array((topVertexCount + skirtVertexCount) * 3);
-      const uvs = new Float32Array((topVertexCount + skirtVertexCount) * 2);
-      const topHeights = new Float32Array(topVertexCount);
-      const indices = [];
-      let p = 0;
-      let uv = 0;
-      let heightCursor = 0;
-      const detailScale = this.detailStrengthForSegments(segments);
-
+      let p = 0, n = 0, c = 0, u = 0;
+      const normal = new T.Vector3();
+      const color = new T.Color();
       for (let iz = 0; iz <= segments; iz += 1) {
-        const fz = iz / segments;
-        const latitude = tile.latNorth - fz;
+        const vz = iz / segments;
+        const localZ = lerp(-half, half, vz);
+        const worldZ = centerZ + localZ;
         for (let ix = 0; ix <= segments; ix += 1) {
-          const fx = ix / segments;
-          const signedLongitude = wrapLongitude(tile.lonWest + fx);
-          const world = this.worldFromGeo(latitude, signedLongitude);
-          const baseHeight = this.provider.sampleTile(tile, latitude, signedLongitude);
-          const height = baseHeight + this.subMagellanDetailHeight(latitude, signedLongitude, detailScale);
-          topHeights[heightCursor++] = height;
-          positions[p++] = world.x;
-          positions[p++] = height;
-          positions[p++] = world.z;
-          uvs[uv++] = fx;
-          uvs[uv++] = 1 - fz;
+          const vx = ix / segments;
+          const localX = lerp(-half, half, vx);
+          const worldX = centerX + localX;
+          const height = sampleHeight(ix, iz);
+          const hL = sampleHeight(ix - 1, iz);
+          const hR = sampleHeight(ix + 1, iz);
+          const hD = sampleHeight(ix, iz - 1);
+          const hU = sampleHeight(ix, iz + 1);
+          normal.set(hL - hR, step * 2, hD - hU).normalize();
+          const slope = 1 - Math.max(0, normal.y);
+          this.colorFor(worldX, worldZ, height, slope, color);
+          positions[p++] = localX; positions[p++] = height; positions[p++] = localZ;
+          normals[n++] = normal.x; normals[n++] = normal.y; normals[n++] = normal.z;
+          colors[c++] = color.r; colors[c++] = color.g; colors[c++] = color.b;
+          uvs[u++] = worldX / 7; uvs[u++] = worldZ / 7;
         }
       }
 
-      for (let z = 0; z < segments; z += 1) {
-        for (let x = 0; x < segments; x += 1) {
-          const a = z * verticesPerSide + x;
+      let q = 0;
+      for (let iz = 0; iz < segments; iz += 1) {
+        for (let ix = 0; ix < segments; ix += 1) {
+          const a = iz * row + ix;
           const b = a + 1;
-          const c = a + verticesPerSide;
-          const d = c + 1;
-          indices.push(a, c, b, b, c, d);
+          const d = (iz + 1) * row + ix;
+          const e = d + 1;
+          indices[q++] = a; indices[q++] = d; indices[q++] = b;
+          indices[q++] = b; indices[q++] = d; indices[q++] = e;
         }
       }
 
-      const skirtDepth = 0.09;
-      let skirtCursor = topVertexCount;
-      const addSkirt = edge => {
-        const skirtTop = [];
-        const skirtBottom = [];
-        for (const sourceIndex of edge) {
-          const sourceP = sourceIndex * 3;
-          const sourceUv = sourceIndex * 2;
-          const topIndex = skirtCursor++;
-          const bottomIndex = skirtCursor++;
-          for (const [targetIndex, yOffset] of [[topIndex, 0], [bottomIndex, -skirtDepth]]) {
-            const targetP = targetIndex * 3;
-            const targetUv = targetIndex * 2;
-            positions[targetP] = positions[sourceP];
-            positions[targetP + 1] = positions[sourceP + 1] + yOffset;
-            positions[targetP + 2] = positions[sourceP + 2];
-            uvs[targetUv] = uvs[sourceUv];
-            uvs[targetUv + 1] = uvs[sourceUv + 1];
-          }
-          skirtTop.push(topIndex);
-          skirtBottom.push(bottomIndex);
-        }
-        for (let i = 0; i < edge.length - 1; i += 1) {
-          const a = skirtTop[i];
-          const b = skirtTop[i + 1];
-          const sa = skirtBottom[i];
-          const sb = skirtBottom[i + 1];
-          indices.push(a, sa, b, b, sa, sb);
-        }
-      };
-
-      const north = [];
-      const south = [];
-      const west = [];
-      const east = [];
-      for (let i = 0; i <= segments; i += 1) {
-        north.push(i);
-        south.push(segments * verticesPerSide + i);
-        west.push(i * verticesPerSide);
-        east.push(i * verticesPerSide + segments);
-      }
-      addSkirt(north);
-      addSkirt(south);
-      addSkirt(west);
-      addSkirt(east);
-
-      const geometry = new THREE.BufferGeometry();
-      geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-      geometry.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
-      geometry.setIndex(indices);
-      geometry.computeVertexNormals();
-
-      // Reuse the already-generated height grid for terrain normals. The rejected
-      // implementation called the expensive Venus surfaceHeight pipeline four more
-      // times for every vertex. Interior vertices now use their immediate grid
-      // neighbours; only the outer border samples one step beyond the tile so adjacent
-      // chunks still calculate matching shared-edge normals.
-      const normals = geometry.getAttribute("normal");
-      const normalStep = 1 / Math.max(1, segments);
-      const spacingLat = Math.max(0.04, normalStep * KM_PER_DEG_LAT);
-      const spacingLon = Math.max(0.04, normalStep * KM_PER_DEG_LAT * Math.cos((tile.latNorth - 0.5) * DEG));
-      let topIndex = 0;
-      for (let iz = 0; iz <= segments; iz += 1) {
-        const latitude = tile.latNorth - iz / segments;
-        for (let ix = 0; ix <= segments; ix += 1, topIndex += 1) {
-          const lon = wrapLongitude(tile.lonWest + ix / segments);
-          const hL = ix > 0
-            ? topHeights[topIndex - 1]
-            : this.provider.surfaceHeight(latitude, wrapLongitude(lon - normalStep), detailScale);
-          const hR = ix < segments
-            ? topHeights[topIndex + 1]
-            : this.provider.surfaceHeight(latitude, wrapLongitude(lon + normalStep), detailScale);
-          const hN = iz > 0
-            ? topHeights[topIndex - verticesPerSide]
-            : this.provider.surfaceHeight(clamp(latitude + normalStep, MIN_DATA_LAT, MAX_DATA_LAT), lon, detailScale);
-          const hS = iz < segments
-            ? topHeights[topIndex + verticesPerSide]
-            : this.provider.surfaceHeight(clamp(latitude - normalStep, MIN_DATA_LAT, MAX_DATA_LAT), lon, detailScale);
-          let nx = -(hR - hL) / Math.max(spacingLon * 2, 0.001);
-          let ny = 1;
-          let nz = -(hS - hN) / Math.max(spacingLat * 2, 0.001);
-          const n = Math.hypot(nx, ny, nz) || 1;
-          normals.setXYZ(topIndex, nx / n, ny / n, nz / n);
-        }
-      }
-      normals.needsUpdate = true;
+      const geometry = new T.BufferGeometry();
+      geometry.setAttribute("position", new T.BufferAttribute(positions, 3));
+      geometry.setAttribute("normal", new T.BufferAttribute(normals, 3));
+      geometry.setAttribute("color", new T.BufferAttribute(colors, 3));
+      geometry.setAttribute("uv", new T.BufferAttribute(uvs, 2));
+      geometry.setIndex(new T.BufferAttribute(indices, 1));
       geometry.computeBoundingSphere();
-
-      return geometry;
-    }
-
-    createTileMesh(tile, segments) {
-      const THREE = this.THREE;
-      const geometry = this.createTileGeometry(tile, segments);
-      const tileTexture = this.createFallbackAlbedo(tile);
-      const normalTexture = this.createMagellanNormalMap(tile, segments);
-      const material = new THREE.MeshStandardMaterial({
-        map: tileTexture,
-        normalMap: normalTexture,
-        normalMapType: THREE.ObjectSpaceNormalMap,
-        roughness: 0.90,
-        metalness: 0,
-        color: 0xffffff,
-        side: THREE.FrontSide,
-        dithering: true
-      });
-      this.configureTerrainMaterial(material, tile);
-      const mesh = new THREE.Mesh(geometry, material);
+      const mesh = new T.Mesh(geometry, this.material);
+      mesh.position.set(centerX, 0, centerZ);
       mesh.frustumCulled = true;
-      mesh.userData.magellanTile = `${tile.lonWest},${tile.latNorth}`;
-      mesh.userData.surfaceTexture = tileTexture;
-      mesh.userData.normalTexture = normalTexture;
+      mesh.matrixAutoUpdate = false;
+      mesh.updateMatrix();
       return mesh;
     }
 
-    swapEntryGeometry(entry, segments) {
-      if (!entry?.mesh || !entry.tile || !segments || entry.segments === segments) return;
-      entry.geometryCache = entry.geometryCache || new Map([[entry.segments, entry.mesh.geometry]]);
-      let geometry = entry.geometryCache.get(segments);
-      if (!geometry) {
-        geometry = this.createTileGeometry(entry.tile, segments);
-        entry.geometryCache.set(segments, geometry);
-      }
-      entry.mesh.geometry = geometry;
-      for (const child of entry.mesh.children) {
-        if (child?.isMesh) child.geometry = geometry;
-      }
-      entry.segments = segments;
-
-      // Keep at most two geometry variants per tile. This avoids rebuilding every
-      // frame while also preventing a long traversal from accumulating every LOD.
-      if (entry.geometryCache.size > 2) {
-        for (const [cachedSegments, cachedGeometry] of entry.geometryCache) {
-          if (cachedSegments === segments || cachedGeometry === entry.mesh.geometry) continue;
-          cachedGeometry.dispose?.();
-          entry.geometryCache.delete(cachedSegments);
-          break;
+    createHorizon() {
+      const T = this.THREE;
+      const radial = 8;
+      const angular = this.quality.horizonSegments;
+      const inner = this.region.playRadius * 0.76;
+      const outer = 190;
+      const vertices = [];
+      const normals = [];
+      const colors = [];
+      const indices = [];
+      for (let r = 0; r <= radial; r += 1) {
+        const rt = r / radial;
+        const radius = lerp(inner, outer, rt);
+        for (let a = 0; a <= angular; a += 1) {
+          const angle = a / angular * Math.PI * 2;
+          const x = Math.cos(angle) * radius;
+          const z = Math.sin(angle) * radius;
+          const sourceX = x * Math.min(1, this.region.playRadius / Math.max(radius, 0.001));
+          const sourceZ = z * Math.min(1, this.region.playRadius / Math.max(radius, 0.001));
+          const base = this.heightAt(sourceX, sourceZ);
+          const y = lerp(base, base * 0.28 - 0.8, smoothstep(rt));
+          const color = this.colorFor(sourceX, sourceZ, base, 0.08).multiplyScalar(lerp(0.78, 0.46, rt));
+          vertices.push(x, y, z);
+          normals.push(0, 1, 0);
+          colors.push(color.r, color.g, color.b);
         }
       }
-    }
-
-    disposeEntry(entry) {
-      if (!entry?.mesh) return;
-      const activeGeometry = entry.mesh.geometry;
-      if (entry.geometryCache) {
-        for (const geometry of entry.geometryCache.values()) {
-          if (geometry !== activeGeometry) geometry.dispose?.();
+      const row = angular + 1;
+      for (let r = 0; r < radial; r += 1) {
+        for (let a = 0; a < angular; a += 1) {
+          const i = r * row + a;
+          indices.push(i, i + row, i + 1, i + 1, i + row, i + row + 1);
         }
-        entry.geometryCache.clear();
       }
-      this.disposeMesh(entry.mesh);
+      const geometry = new T.BufferGeometry();
+      geometry.setAttribute("position", new T.Float32BufferAttribute(vertices, 3));
+      geometry.setAttribute("normal", new T.Float32BufferAttribute(normals, 3));
+      geometry.setAttribute("color", new T.Float32BufferAttribute(colors, 3));
+      geometry.setIndex(indices);
+      geometry.computeBoundingSphere();
+      const mesh = new T.Mesh(geometry, this.horizonMaterial);
+      mesh.frustumCulled = false;
+      mesh.renderOrder = -1;
+      return mesh;
     }
 
-    disposeMesh(mesh) {
-      for (const child of [...mesh.children]) {
-        if (!child?.material) continue;
-        if (child.material.map && child.material.map !== mesh.material?.map) child.material.map.dispose?.();
-        child.material.map = null;
-        child.material.normalMap = null;
-        child.material.dispose?.();
-        mesh.remove(child);
+    createSurfaceAccents() {
+      const T = this.THREE;
+      const count = this.quality.accentCount;
+      if (!count) return null;
+      const geometry = new T.BoxGeometry(1.0, 0.12, 0.66, 1, 1, 1);
+      this.accentMaterial = new T.MeshStandardMaterial({ color: this.region.palette.rock, roughness: 0.98, metalness: 0 });
+      const mesh = new T.InstancedMesh(geometry, this.accentMaterial, count);
+      mesh.frustumCulled = true;
+      const dummy = new T.Object3D();
+      let placed = 0;
+      for (let i = 0; i < count * 4 && placed < count; i += 1) {
+        const radius = 8 + hash2(i, 9, this.region.id.length) * (this.region.softBoundaryStart - 12);
+        const angle = hash2(i, 21, this.region.id.charCodeAt(0)) * Math.PI * 2;
+        const x = Math.cos(angle) * radius;
+        const z = Math.sin(angle) * radius;
+        const y = this.heightAt(x, z);
+        const normal = this.normalAt(x, z, 0.35);
+        const slope = 1 - normal.y;
+        if (slope > 0.63 && this.region.id !== "maxwell" && this.region.id !== "alpha") continue;
+        const scale = 0.35 + hash2(i, 31, 7) * 1.1;
+        dummy.position.set(x, y + 0.04, z);
+        dummy.rotation.set((hash2(i, 41, 3) - 0.5) * 0.18, angle + hash2(i, 52, 5), (hash2(i, 61, 11) - 0.5) * 0.22);
+        dummy.scale.set(scale * (0.75 + hash2(i, 73, 2)), scale * 0.35, scale);
+        dummy.updateMatrix();
+        mesh.setMatrixAt(placed, dummy.matrix);
+        placed += 1;
       }
-      mesh.geometry.dispose();
-      mesh.material?.map?.dispose?.();
-      mesh.material?.normalMap?.dispose?.();
-      mesh.material?.dispose?.();
+      mesh.count = placed;
+      mesh.instanceMatrix.needsUpdate = true;
+      return mesh;
     }
 
-    prune(desired) {
-      for (const [key, entry] of this.meshes) {
-        if (desired.has(key)) continue;
-        this.cancelTextureTransition(entry);
-        this.group.remove(entry.mesh);
-        this.disposeEntry(entry);
-        this.meshes.delete(key);
+    createMaterial() {
+      const T = this.THREE;
+      const size = 192;
+      const detail = new Float32Array(size * size);
+      const seed = this.region.id.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
+      for (let y = 0; y < size; y += 1) {
+        for (let x = 0; x < size; x += 1) {
+          const u = x / size, v = y / size;
+          const n = 0.55 * valueNoise(u * 22, v * 22, seed) + 0.30 * valueNoise(u * 54, v * 54, seed + 17) + 0.15 * valueNoise(u * 112, v * 112, seed + 31);
+          detail[y * size + x] = n;
+        }
       }
+      const albedoCanvas = document.createElement("canvas");
+      const roughCanvas = document.createElement("canvas");
+      const normalCanvas = document.createElement("canvas");
+      albedoCanvas.width = roughCanvas.width = normalCanvas.width = size;
+      albedoCanvas.height = roughCanvas.height = normalCanvas.height = size;
+      const albedoCtx = albedoCanvas.getContext("2d");
+      const roughCtx = roughCanvas.getContext("2d");
+      const normalCtx = normalCanvas.getContext("2d");
+      const albedoImage = albedoCtx.createImageData(size, size);
+      const roughImage = roughCtx.createImageData(size, size);
+      const normalImage = normalCtx.createImageData(size, size);
+      const sample = (x, y) => detail[((y + size) % size) * size + ((x + size) % size)];
+      for (let y = 0; y < size; y += 1) {
+        for (let x = 0; x < size; x += 1) {
+          const i = y * size + x;
+          const p = i * 4;
+          const n = detail[i];
+          const shade = Math.round(clamp(196 + n * 34, 138, 238));
+          albedoImage.data[p] = shade;
+          albedoImage.data[p + 1] = shade;
+          albedoImage.data[p + 2] = shade;
+          albedoImage.data[p + 3] = 255;
+          const rough = Math.round(clamp(224 - n * 20, 180, 248));
+          roughImage.data[p] = rough; roughImage.data[p + 1] = rough; roughImage.data[p + 2] = rough; roughImage.data[p + 3] = 255;
+          const dx = sample(x + 1, y) - sample(x - 1, y);
+          const dy = sample(x, y + 1) - sample(x, y - 1);
+          const nx = -dx * 1.6, ny = -dy * 1.6, nz = 1;
+          const inv = 1 / Math.hypot(nx, ny, nz);
+          normalImage.data[p] = Math.round((nx * inv * 0.5 + 0.5) * 255);
+          normalImage.data[p + 1] = Math.round((ny * inv * 0.5 + 0.5) * 255);
+          normalImage.data[p + 2] = Math.round((nz * inv * 0.5 + 0.5) * 255);
+          normalImage.data[p + 3] = 255;
+        }
+      }
+      albedoCtx.putImageData(albedoImage, 0, 0);
+      roughCtx.putImageData(roughImage, 0, 0);
+      normalCtx.putImageData(normalImage, 0, 0);
+      const makeTexture = canvas => {
+        const texture = new T.CanvasTexture(canvas);
+        texture.wrapS = texture.wrapT = T.RepeatWrapping;
+        texture.repeat.set(8, 8);
+        texture.anisotropy = Math.min(this.quality.anisotropy, this.renderer.capabilities.getMaxAnisotropy());
+        texture.needsUpdate = true;
+        this.textures.push(texture);
+        return texture;
+      };
+      const map = makeTexture(albedoCanvas);
+      map.colorSpace = T.SRGBColorSpace;
+      const roughnessMap = makeTexture(roughCanvas);
+      const normalMap = makeTexture(normalCanvas);
+      return new T.MeshStandardMaterial({
+        color: 0xffffff,
+        vertexColors: true,
+        map,
+        roughnessMap,
+        normalMap,
+        normalScale: new T.Vector2(0.30, 0.30),
+        roughness: 0.91,
+        metalness: 0,
+        fog: true
+      });
     }
 
-    getHeightAtWorld(x, z) {
-      const geo = this.geoFromWorld(x, z);
-      const base = this.provider.sampleCached(geo.latitude, geo.signedLongitude);
-      if (base === null) return null;
-      return base + this.subMagellanDetailHeight(geo.latitude, geo.signedLongitude, 1);
+    updateVisibility(camera, delta) {
+      this.visibilityClock += delta;
+      if (this.visibilityClock < 0.075) return;
+      this.visibilityClock = 0;
+      camera.updateMatrixWorld();
+      this.projection.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+      this.frustum.setFromProjectionMatrix(this.projection);
+      camera.getWorldDirection(this.cameraDirection).normalize();
+      let visible = 0, buffered = 0, culled = 0;
+      for (const entry of this.tiles) {
+        const mesh = entry.mesh;
+        const sphere = mesh.geometry.boundingSphere;
+        if (!sphere) { mesh.visible = true; visible += 1; continue; }
+        const center = this.tileVector.set(entry.cx, 0, entry.cz);
+        const dx = entry.cx - camera.position.x;
+        const dz = entry.cz - camera.position.z;
+        const distance = Math.hypot(dx, dz);
+        const inv = distance > 0.001 ? 1 / distance : 0;
+        const facing = (dx * this.cameraDirection.x + dz * this.cameraDirection.z) * inv;
+        const inFrustum = this.frustum.intersectsObject(mesh);
+        const safety = !inFrustum && distance < 34 && facing > -0.55;
+        const keep = inFrustum || safety || distance < 22;
+        mesh.visible = keep;
+        if (inFrustum || distance < 22) visible += 1;
+        else if (safety) buffered += 1;
+        else culled += 1;
+      }
+      this.visibilityStats = { visible, buffered, culled, total: this.tiles.length };
     }
 
-    clearMeshes() {
-      this.requestGeneration += 1;
-      for (const entry of this.meshes.values()) {
-        this.cancelTextureTransition(entry);
-        this.group.remove(entry.mesh);
-        this.disposeEntry(entry);
-      }
-      this.meshes.clear();
-      this.lastCenterTile = "";
-      this.lastTextureProfile = "";
+    geoFromWorld(x, z) {
+      const latitude = this.region.latitude - z / KM_PER_DEG_LAT;
+      const cos = Math.max(0.16, Math.cos(this.region.latitude * DEG));
+      const longitudeEast = this.region.longitudeEast + x / (KM_PER_DEG_LAT * cos);
+      return { latitude, longitudeEast };
     }
 
     dispose() {
-      this.clearMeshes();
-      this.group.removeFromParent();
-      this.detailTexture?.dispose?.();
-      this.detailTexture = null;
-      this.sourcePixels = null;
-      this.sourceCanvas = null;
+      this.scene.remove(this.group);
+      for (const entry of this.tiles) entry.mesh.geometry.dispose();
+      this.tiles.length = 0;
+      this.horizon?.geometry?.dispose();
+      this.accentMesh?.geometry?.dispose();
+      this.material?.dispose();
+      this.horizonMaterial?.dispose();
+      this.accentMaterial?.dispose();
+      for (const texture of this.textures) texture.dispose();
+      this.textures.length = 0;
+      this.group.clear();
     }
   }
 
@@ -1732,7 +728,6 @@
       this.dragPointer = null;
       this.bound = false;
       this.abortController = null;
-      this.pointerLockSupported = typeof document !== "undefined" && "pointerLockElement" in document;
     }
 
     bind() {
@@ -1751,7 +746,6 @@
       viewport.addEventListener("contextmenu", event => event.preventDefault(), { signal });
       document.addEventListener("mousemove", event => this.onLockedMouseMove(event), { signal });
       document.addEventListener("pointerlockchange", () => this.onPointerLockChange(), { signal });
-
       this.controller.root.querySelectorAll("[data-venus-control]").forEach(button => {
         button.addEventListener("pointerdown", event => this.onControlStart(event, button), { signal });
         button.addEventListener("pointerup", event => this.onControlEnd(event), { signal });
@@ -1770,15 +764,12 @@
       this.clear();
     }
 
-    isInteractive() {
-      return this.controller.state === STATES.EXPLORING;
-    }
+    interactive() { return this.controller.state === STATES.EXPLORING; }
 
     onKeyDown(event) {
       if (!this.controller.active) return;
       const key = event.key.toLowerCase();
-      const relevant = ["w", "a", "s", "d", "q", "e", "shift", "control", "escape"].includes(key);
-      if (!relevant) return;
+      if (!["w", "a", "s", "d", "q", "e", "shift", "control", "escape"].includes(key)) return;
       event.preventDefault();
       event.stopImmediatePropagation();
       if (key === "escape") {
@@ -1788,10 +779,11 @@
           this.clear();
           return;
         }
-        this.controller.exit();
+        if (this.controller.state === STATES.SELECTING && this.controller.regionWorld) this.controller.closeSelectorToRegion();
+        else this.controller.exit();
         return;
       }
-      if (!this.isInteractive()) return;
+      if (!this.interactive()) return;
       this.keys.add(key);
       this.controller.dismissTutorial();
     }
@@ -1806,17 +798,15 @@
     }
 
     onLookStart(event) {
-      if (!this.isInteractive()) return;
-      if (event.target.closest("button, a, [data-venus-ui]")) return;
+      if (!this.interactive()) return;
+      if (event.target.closest("button, a, [data-venus-ui], .venus-region-selector")) return;
       if (event.pointerType === "mouse") {
         if (event.button !== 0) return;
         this.controller.dismissTutorial();
-        if (this.controller.viewport.requestPointerLock) {
-          if (document.pointerLockElement !== this.controller.viewport) {
-            try { this.controller.viewport.requestPointerLock(); } catch {}
-          }
-          return;
+        if (this.controller.viewport.requestPointerLock && document.pointerLockElement !== this.controller.viewport) {
+          try { this.controller.viewport.requestPointerLock(); } catch {}
         }
+        return;
       }
       this.dragPointer = event.pointerId;
       this.dragPointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
@@ -1825,7 +815,7 @@
     }
 
     onLookMove(event) {
-      if (!this.isInteractive() || this.dragPointer !== event.pointerId) return;
+      if (!this.interactive() || this.dragPointer !== event.pointerId) return;
       const previous = this.dragPointers.get(event.pointerId);
       if (!previous) return;
       const dx = event.clientX - previous.x;
@@ -1836,7 +826,7 @@
     }
 
     onLockedMouseMove(event) {
-      if (!this.isInteractive() || document.pointerLockElement !== this.controller.viewport) return;
+      if (!this.interactive() || document.pointerLockElement !== this.controller.viewport) return;
       this.controller.addLookDelta(event.movementX || 0, event.movementY || 0, "locked");
     }
 
@@ -1852,7 +842,7 @@
     }
 
     onControlStart(event, button) {
-      if (!this.isInteractive()) return;
+      if (!this.interactive()) return;
       event.preventDefault();
       event.stopPropagation();
       button.setPointerCapture?.(event.pointerId);
@@ -1865,8 +855,7 @@
       const action = this.pointerActions.get(event.pointerId);
       this.pointerActions.delete(event.pointerId);
       if (!action) return;
-      const button = event.currentTarget;
-      button?.classList?.remove("is-held");
+      event.currentTarget?.classList?.remove("is-held");
     }
 
     actionActive(action) {
@@ -1880,9 +869,6 @@
       return false;
     }
 
-    boost() { return this.keys.has("shift"); }
-    precision() { return this.keys.has("control"); }
-
     movementAxes() {
       return {
         forward: Number(this.actionActive("forward")) - Number(this.actionActive("backward")),
@@ -1891,6 +877,8 @@
       };
     }
 
+    boost() { return this.keys.has("shift"); }
+    precision() { return this.keys.has("control"); }
     clear() {
       this.keys.clear();
       this.pointerActions.clear();
@@ -1906,13 +894,15 @@
       this.root = document.getElementById("venus-full-exploration");
       this.viewport = document.getElementById("venus-full-viewport");
       this.entryButton = document.getElementById("venus-full-explore-button");
+      this.selector = document.getElementById("venus-region-selector");
+      this.selectorGrid = document.getElementById("venus-region-grid");
+      this.selectorClose = document.getElementById("venus-region-selector-close");
       this.exitButton = document.getElementById("venus-full-exit");
       this.fullscreenButton = document.getElementById("venus-fullscreen-toggle");
       this.locationButton = document.getElementById("venus-location-toggle");
-      this.locationMenu = document.getElementById("venus-location-menu");
       this.loading = document.getElementById("venus-full-loading");
-      this.loadingProgress = document.getElementById("venus-full-loading-progress");
       this.loadingStatus = document.getElementById("venus-full-loading-status");
+      this.loadingProgress = document.getElementById("venus-full-loading-progress");
       this.errorPanel = document.getElementById("venus-full-error");
       this.errorMessage = document.getElementById("venus-full-error-message");
       this.errorReturn = document.getElementById("venus-full-error-return");
@@ -1920,17 +910,17 @@
       this.tutorialClose = document.getElementById("venus-tutorial-close");
       this.travelVeil = document.getElementById("venus-travel-veil");
       this.travelLabel = document.getElementById("venus-travel-label");
+      this.boundaryHint = document.getElementById("venus-boundary-hint");
       this.infoCard = document.getElementById("venus-landmark-card");
       this.infoName = document.getElementById("venus-landmark-name");
       this.infoType = document.getElementById("venus-landmark-type");
       this.infoCoords = document.getElementById("venus-landmark-coords");
-      this.infoSource = document.getElementById("venus-landmark-source");
-      this.infoCoordinateSource = document.getElementById("venus-landmark-coordinate-source");
-      this.infoTopographySource = document.getElementById("venus-landmark-topography-source");
       this.infoImage = document.getElementById("venus-landmark-image");
       this.infoDescription = document.getElementById("venus-landmark-description");
       this.infoFacts = document.getElementById("venus-landmark-facts");
-      this.infoDataBadge = document.getElementById("venus-landmark-data-badge");
+      this.infoBadge = document.getElementById("venus-landmark-data-badge");
+      this.infoSource = document.getElementById("venus-landmark-source");
+      this.infoCoordinateSource = document.getElementById("venus-landmark-coordinate-source");
       this.hudCoordinates = document.getElementById("venus-hud-coordinates");
       this.hudAltitude = document.getElementById("venus-hud-altitude");
       this.hudAltitudeLimit = document.getElementById("venus-hud-altitude-limit");
@@ -1940,328 +930,249 @@
       this.hudData = document.getElementById("venus-hud-data");
 
       this.state = STATES.IDLE;
-      this.prepared = false;
-      this.preparingPromise = null;
-      this.resourceGeneration = 0;
+      this.region = REGIONS[0];
+      this.regionWorld = null;
+      this.renderer = null;
+      this.scene = null;
+      this.camera = null;
+      this.hemiLight = null;
+      this.sunLight = null;
+      this.fillLight = null;
       this.frame = null;
       this.previous = 0;
-      this.elapsed = 0;
-      this.streamClock = 0;
       this.statsClock = 0;
       this.statsFrames = 0;
-      this.debugFrames = 0;
-      this.debugWindowStart = 0;
       this.lowFpsWindows = 0;
       this.highFpsWindows = 0;
-      this.lastGround = 0;
-      this.cameraAltitude = 2.8;
+      this.currentDpr = 1;
+      this.idealDpr = 1;
+      this.transitionToken = 0;
+      this.resourceGeneration = 0;
+      this.preparingPromise = null;
       this.speed = 0;
-      this.yaw = 0.18;
-      this.pitch = -0.28;
+      this.yaw = 0;
+      this.pitch = -0.22;
       this.lookYawTarget = this.yaw;
       this.lookPitchTarget = this.pitch;
       this.velocity = { x: 0, y: 0, z: 0 };
-      this.currentLandmark = LANDMARKS[0];
-      this.transitionToken = 0;
-      this.infoTimeout = null;
+      this.lastGround = 0;
+      this.cameraAltitude = 2.7;
+      this.selectorOpenedFromRegion = false;
       this.tutorialTimeout = null;
+      this.infoTimeout = null;
       this.quality = this.detectQuality();
       this.input = new VenusInputManager(this);
       this.tick = this.tick.bind(this);
-
       this.root.inert = true;
-      this.buildLocationMenu();
+      this.buildSelector();
       this.bindUI();
     }
 
-    get active() {
-      return this.state !== STATES.IDLE;
-    }
+    get active() { return this.state !== STATES.IDLE; }
 
     detectQuality() {
       const width = window.innerWidth;
       const cores = navigator.hardwareConcurrency || 4;
       const memory = navigator.deviceMemory || 4;
       const coarse = window.matchMedia("(pointer: coarse)").matches;
-
-      // Do not classify a strong high-DPI desktop as LOW simply because DPR makes
-      // its theoretical pixel count large. Quality selection is capability based;
-      // the render-pixel budget below controls the actual resolution separately.
       if (coarse || width <= 760 || cores <= 4 || memory <= 3) {
-        return { name: "LOW", radius: 1, nearSegments: 96, midSegments: 52, farSegments: 28, horizonSegments: 22, maxDpr: 1.45, minDpr: 0.92, supersample: 1, pixelBudget: 3000000, anisotropy: 4, radarDetailLevel: 6, structuralDetailLevel: 8, textureSize: 336 };
+        return { name: "LOW", tileSize: 24, nearSegments: 30, midSegments: 20, farSegments: 12, horizonSegments: 64, maxDpr: 1.4, minDpr: 0.90, supersample: 1, pixelBudget: 2900000, anisotropy: 4, accentCount: 32 };
       }
       if (cores >= 8 && memory >= 6) {
-        // Spend the geometry budget where a game would: dense centre chunk, progressively
-        // lighter rings toward the horizon. This is materially sharper near the camera
-        // without multiplying every distant tile to the same cost.
-        return { name: "HIGH", radius: 3, nearSegments: 320, midSegments: 176, farSegments: 80, horizonSegments: 36, maxDpr: 2.4, minDpr: 1.10, supersample: 1.62, pixelBudget: 12000000, anisotropy: 16, radarDetailLevel: 7, structuralDetailLevel: 9, textureSize: 768 };
+        return { name: "HIGH", tileSize: 24, nearSegments: 60, midSegments: 38, farSegments: 22, horizonSegments: 112, maxDpr: 2.1, minDpr: 1.0, supersample: 1.35, pixelBudget: 9000000, anisotropy: 12, accentCount: 88 };
       }
-      return { name: "MEDIUM", radius: 2, nearSegments: 192, midSegments: 112, farSegments: 48, horizonSegments: 32, maxDpr: 2.0, minDpr: 1.0, supersample: 1.30, pixelBudget: 7200000, anisotropy: 8, radarDetailLevel: 7, structuralDetailLevel: 8, textureSize: 544 };
+      return { name: "MEDIUM", tileSize: 24, nearSegments: 44, midSegments: 28, farSegments: 16, horizonSegments: 88, maxDpr: 1.75, minDpr: 0.95, supersample: 1.15, pixelBudget: 5600000, anisotropy: 8, accentCount: 56 };
     }
 
     calculateIdealDpr() {
       const width = Math.max(1, this.viewport?.clientWidth || window.innerWidth);
       const height = Math.max(1, this.viewport?.clientHeight || window.innerHeight);
-      const cssPixels = width * height;
-      const deviceDpr = window.devicePixelRatio || 1;
-      const requested = Math.max(deviceDpr, this.quality.supersample || 1);
-      const budgetDpr = Math.sqrt(this.quality.pixelBudget / cssPixels);
-      return clamp(Math.min(requested, this.quality.maxDpr, budgetDpr), this.quality.minDpr, this.quality.maxDpr);
+      const requested = Math.max(window.devicePixelRatio || 1, this.quality.supersample);
+      const budget = Math.sqrt(this.quality.pixelBudget / (width * height));
+      return clamp(Math.min(requested, this.quality.maxDpr, budget), this.quality.minDpr, this.quality.maxDpr);
+    }
+
+    buildSelector() {
+      const fragment = document.createDocumentFragment();
+      REGIONS.forEach((region, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "venus-region-card";
+        button.dataset.venusRegion = region.id;
+        button.innerHTML = `<span class="venus-region-preview venus-region-preview-${region.id}" aria-hidden="true"><i></i><b>${region.short}</b></span><span class="venus-region-index">${String(index + 1).padStart(2, "0")}</span><strong>${region.name}</strong><span class="venus-region-descriptor">${region.descriptor}</span><small>${formatCoordinate(region.latitude, region.longitudeEast)}</small><em>${region.category}</em><span class="venus-region-source">NASA/JPL · Magellan reference</span>`;
+        fragment.append(button);
+      });
+      this.selectorGrid.replaceChildren(fragment);
     }
 
     bindUI() {
       this.entryButton.addEventListener("click", () => this.enter());
+      this.selectorGrid.addEventListener("click", event => {
+        const button = event.target.closest("[data-venus-region]");
+        if (!button) return;
+        const region = REGIONS.find(item => item.id === button.dataset.venusRegion);
+        if (region) this.chooseRegion(region);
+      });
+      this.selectorClose.addEventListener("click", () => {
+        if (this.selectorOpenedFromRegion && this.regionWorld) this.closeSelectorToRegion();
+        else this.exit();
+      });
       this.exitButton.addEventListener("click", () => this.exit());
+      this.locationButton.addEventListener("click", () => this.openSelectorFromRegion());
+      this.fullscreenButton.addEventListener("click", () => this.toggleFullscreen());
       this.errorReturn.addEventListener("click", () => this.failBackToOrbit());
       this.tutorialClose.addEventListener("click", () => this.dismissTutorial(true));
-      this.locationButton.addEventListener("click", event => {
-        event.stopPropagation();
-        const open = !this.locationMenu.classList.contains("is-open");
-        this.locationMenu.classList.toggle("is-open", open);
-        this.locationButton.setAttribute("aria-expanded", String(open));
-      });
-      this.locationMenu.addEventListener("click", event => {
-        const button = event.target.closest("[data-landmark]");
-        if (!button) return;
-        this.locationMenu.classList.remove("is-open");
-        this.locationButton.setAttribute("aria-expanded", "false");
-        const landmark = LANDMARKS.find(item => item.id === button.dataset.landmark);
-        if (landmark) this.travelToLandmark(landmark);
-      });
-      this.fullscreenButton.addEventListener("click", () => this.toggleFullscreen());
       document.addEventListener("fullscreenchange", () => this.updateFullscreenLabel());
       document.addEventListener("visibilitychange", () => {
         if (!this.active) return;
-        if (document.hidden) this.stopLoop();
-        else this.startLoop();
+        if (document.hidden) this.stopLoop(); else this.startLoop();
       });
-      window.addEventListener("resize", () => {
-        if (this.prepared) this.resize();
-      });
-      window.addEventListener("orientationchange", () => {
-        if (this.prepared) window.setTimeout(() => this.resize(), 120);
-      });
-      document.addEventListener("pointerdown", event => {
-        if (!this.active || !this.locationMenu.classList.contains("is-open")) return;
-        if (event.target.closest("#venus-location-menu, #venus-location-toggle")) return;
-        this.locationMenu.classList.remove("is-open");
-        this.locationButton.setAttribute("aria-expanded", "false");
-      });
+      window.addEventListener("resize", () => this.resize());
+      window.addEventListener("orientationchange", () => window.setTimeout(() => this.resize(), 120));
+      document.addEventListener("keydown", event => {
+        if (event.key !== "Escape" || this.state !== STATES.SELECTING) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if (this.selectorOpenedFromRegion && this.regionWorld) this.closeSelectorToRegion();
+        else this.exit();
+      }, true);
     }
 
-    buildLocationMenu() {
-      const fragment = document.createDocumentFragment();
-      LANDMARKS.forEach(landmark => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.setAttribute("role", "menuitem");
-        button.dataset.landmark = landmark.id;
-        button.innerHTML = `<span>${landmark.name}</span><small>${formatCoordinate(landmark.latitude, landmark.longitudeEast)}</small>`;
-        fragment.append(button);
-      });
-      this.locationMenu.replaceChildren(fragment);
-    }
-
-    async enter() {
-      if (this.active || !this.venus.active) return;
+    enter() {
+      if (!this.venus.active || this.venus.travelMode || this.state !== STATES.IDLE) return;
       if (this.venus.exploring) this.venus.exitExploration();
-      this.state = STATES.PREPARING;
-      this.transitionToken += 1;
-      const token = this.transitionToken;
+      this.entryButton.disabled = true;
+      this.selectorOpenedFromRegion = false;
+      this.state = STATES.SELECTING;
       this.root.hidden = false;
       this.root.inert = false;
       this.root.setAttribute("aria-hidden", "false");
-      this.root.classList.add("is-preparing");
-      this.root.classList.remove("is-error", "is-surface-visible", "is-active", "is-exiting");
-      this.loading.hidden = false;
+      this.root.className = "mars-full-exploration venus-full-exploration is-selecting";
+      this.root.style.setProperty("--surface-opacity", "0");
+      this.root.style.setProperty("--entry-progress", "0");
+      this.selector.hidden = false;
+      this.loading.hidden = true;
       this.errorPanel.hidden = true;
-      this.setLoading(0.04, "MENYIAPKAN ENGINE PERMUKAAN VENUS");
-      this.entryButton.disabled = true;
-      this.venus.caption.inert = true;
+      this.infoCard.classList.remove("is-visible");
+      document.getElementById("mission").classList.add("is-venus-full-selecting");
+      document.getElementById("announcement").textContent = "Pilih destinasi Eksplorasi Pengalaman Penuh Venus.";
+      requestAnimationFrame(() => this.selector.querySelector("[data-venus-region]")?.focus({ preventScroll: true }));
+    }
+
+    async chooseRegion(region) {
+      if (![STATES.SELECTING, STATES.EXPLORING].includes(this.state)) return;
+      const switching = Boolean(this.regionWorld);
+      const token = ++this.transitionToken;
+      this.region = region;
+      this.selector.hidden = true;
+      this.selectorOpenedFromRegion = false;
+      this.input.clear();
+      this.input.unbind();
+      this.stopLoop();
+      this.tutorial.classList.remove("is-visible");
+      this.infoCard.classList.remove("is-visible");
+      this.errorPanel.hidden = true;
+      this.state = switching ? STATES.SWITCHING : STATES.PREPARING;
+      this.root.classList.remove("is-selecting", "is-active", "is-error");
+      this.root.classList.add("is-preparing");
+      document.getElementById("mission").classList.remove("is-venus-full-selecting");
       document.getElementById("mission").classList.add("is-venus-full");
-      document.getElementById("announcement").textContent = "Menyiapkan Eksplorasi Pengalaman Penuh Venus.";
+      this.setLoading(0.03, `MENGUNCI DESTINASI · ${region.name.toUpperCase()}`);
+      this.loading.hidden = false;
+      this.travelLabel.textContent = `NAVIGASI · ${region.name.toUpperCase()}`;
+      if (switching) this.travelVeil.classList.add("is-visible", "is-covered");
+      document.getElementById("announcement").textContent = `Menyiapkan region ${region.name}.`;
 
       try {
-        await this.prepare();
-        if (token !== this.transitionToken || this.state !== STATES.PREPARING) {
-          if (this.state === STATES.IDLE) this.disposeSurface();
-          return;
-        }
-        const landmark = this.currentLandmark || LANDMARKS[0];
-        this.setLoading(0.10, `MENYIAPKAN DATA MAGELLAN · ${landmark.name.toUpperCase()}`);
-        await this.provider.prepareRegion(landmark);
-        if (token !== this.transitionToken || this.state !== STATES.PREPARING) return;
-        this.imagery.setRegion(landmark);
-        this.hudData.textContent = this.provider.statusLabel();
-        this.terrain.setOrigin(landmark.latitude, landmark.longitudeEast);
-        this.setLoading(0.18, `MEMUAT PERMUKAAN ${landmark.name.toUpperCase()}`);
-        await this.terrain.ensureAround(landmark.latitude, wrapLongitude(landmark.longitudeEast > 180 ? landmark.longitudeEast - 360 : landmark.longitudeEast), {
-          requiredRadius: 1,
-          textureAltitude: 2.8,
-          onProgress: progress => this.setLoading(0.18 + progress * 0.72, "STREAMING CHUNK MAGELLAN + MATERIAL VENUS")
-        });
-        if (token !== this.transitionToken || this.state !== STATES.PREPARING) return;
-        this.setCameraAtLandmark(landmark, { altitude: 58 });
-        this.setLoading(1, "PERMUKAAN SIAP");
-        await this.wait(180);
+        if (!this.venus.startFullExplorationTransition?.(region) && !this.venus.fullExplorationActive) throw new Error("Transisi Venus tidak tersedia.");
+        await this.prepareRenderer();
         if (token !== this.transitionToken) return;
-        await this.runEntryTransition(token);
+        this.disposeRegion();
+        this.applyRegionEnvironment(region);
+        this.setLoading(0.10, `MEMBANGUN ${region.category}`);
+        this.regionWorld = new VenusRegionWorld(this.THREE, this.scene, this.renderer, region, this.quality);
+        await this.regionWorld.build(progress => this.setLoading(0.10 + progress * 0.76, `MEMBANGUN REGION · ${Math.round(progress * 100)}%`));
+        if (token !== this.transitionToken) return;
+        this.setCameraForRegion(region, switching ? 12 : 24);
+        this.updateRegionUI();
+        this.setLoading(1, "REGION SIAP");
+        await wait(this.venus.motion.matches ? 80 : 180);
+        if (token !== this.transitionToken) return;
+        if (switching) await this.runRegionSwitchTransition(token);
+        else await this.runEntryTransition(token);
       } catch (error) {
         if (token !== this.transitionToken) return;
         this.showError(error);
       }
     }
 
-    async prepare() {
-      if (this.prepared) return;
+    async prepareRenderer() {
+      if (this.renderer) return;
       if (this.preparingPromise) return this.preparingPromise;
       const generation = this.resourceGeneration;
       const promise = (async () => {
         await this.venus.prepare();
         if (generation !== this.resourceGeneration) throw new Error("Venus exploration preparation cancelled.");
-        const THREE = this.venus.THREE;
-        if (!THREE || !this.venus.surface) throw new Error("WebGL surface renderer tidak tersedia pada perangkat ini.");
-        this.THREE = THREE;
-
+        const T = this.venus.THREE;
+        if (!T) throw new Error("Renderer 3D Venus tidak tersedia pada perangkat ini.");
+        this.THREE = T;
         const canvas = document.createElement("canvas");
-        canvas.className = "venus-full-canvas";
+        canvas.className = "mars-full-canvas venus-full-canvas";
         canvas.setAttribute("aria-hidden", "true");
-        const context = canvas.getContext("webgl2", {
-          alpha: true,
-          antialias: this.quality.name !== "LOW",
-          powerPreference: "high-performance"
-        });
-        if (!context) throw new Error("WebGL2 diperlukan untuk terrain Venus 3D.");
-
-        this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias: this.quality.name !== "LOW" });
-        this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.045;
-        this.quality.anisotropy = Math.min(this.quality.anisotropy, this.renderer.capabilities.getMaxAnisotropy());
+        const context = canvas.getContext("webgl2", { alpha: true, antialias: this.quality.name !== "LOW", powerPreference: "high-performance" });
+        if (!context) throw new Error("WebGL2 diperlukan untuk Eksplorasi Pengalaman Penuh Venus.");
+        this.renderer = new T.WebGLRenderer({ canvas, context, alpha: true, antialias: this.quality.name !== "LOW" });
+        this.renderer.outputColorSpace = T.SRGBColorSpace;
+        this.renderer.toneMapping = T.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.02;
         this.idealDpr = this.calculateIdealDpr();
         this.currentDpr = this.idealDpr;
         this.renderer.setPixelRatio(this.currentDpr);
-        // Venus' dense atmospheric haze doubles as the low-cost horizon layer. The
-        // terrain boundary is fully attenuated into this colour before the active
-        // Mars-style chunk ring ends, so the player never sees a black/square void.
-        this.renderer.setClearColor(0xa55f45, 1);
+        this.renderer.setClearColor(0x7b4a38, 1);
         this.viewport.replaceChildren(canvas);
-
-        this.scene = new THREE.Scene();
-        const fogDensity = this.quality.name === "LOW" ? 0.0060 : this.quality.name === "MEDIUM" ? 0.0052 : 0.0047;
-        this.scene.fog = new THREE.FogExp2(0xa55f45, fogDensity);
-        this.camera = new THREE.PerspectiveCamera(this.mobileFov(), 1, 0.035, 850);
+        this.scene = new T.Scene();
+        this.camera = new T.PerspectiveCamera(this.mobileFov(), 1, 0.03, 380);
         this.camera.rotation.order = "YXZ";
-
-        const sun = new THREE.DirectionalLight(0xffd5af, 3.2);
-        sun.position.set(-70, 95, 45);
-        this.scene.add(sun);
-        const hemi = new THREE.HemisphereLight(0xe2a27a, 0x401b15, 0.40);
-        this.scene.add(hemi);
-        const fill = new THREE.DirectionalLight(0x8b6a65, 0.12);
-        fill.position.set(40, 18, -55);
-        this.scene.add(fill);
-
-        this.moveForward = new THREE.Vector3();
-        this.moveRight = new THREE.Vector3();
-        this.moveUp = new THREE.Vector3(0, 1, 0);
-        this.moveIntent = new THREE.Vector3();
-
-        this.provider = new MagellanTileProvider();
-        this.provider.maxCache = this.quality.name === "HIGH" ? 112 : this.quality.name === "MEDIUM" ? 84 : 52;
-        this.imagery = new VenusImageryProvider(this.quality, this.venus.surface, this.provider);
-        this.terrain = new TerrainManager(THREE, this.scene, this.provider, this.imagery, this.venus.surface, this.quality);
-        this.hudQuality.textContent = this.quality.name;
-        this.hudData.textContent = this.provider.statusLabel();
+        this.hemiLight = new T.HemisphereLight(0xe8b889, 0x2d1a18, 1.0);
+        this.sunLight = new T.DirectionalLight(0xffd0a0, 2.45);
+        this.sunLight.position.set(-45, 68, 30);
+        this.fillLight = new T.DirectionalLight(0xb27862, 0.22);
+        this.fillLight.position.set(42, 18, -34);
+        this.scene.add(this.hemiLight, this.sunLight, this.fillLight);
+        this.moveForward = new T.Vector3();
+        this.moveRight = new T.Vector3();
+        this.moveIntent = new T.Vector3();
         this.resize();
-        if (generation !== this.resourceGeneration) {
-          this.renderer.dispose();
-          this.renderer.domElement?.remove();
-          this.renderer = null;
-          this.terrain?.dispose();
-          this.terrain = null;
-          this.provider?.clear();
-          this.provider = null;
-          this.imagery?.clear();
-          this.imagery = null;
-          throw new Error("Venus exploration preparation cancelled.");
-        }
-        this.prepared = true;
       })();
       this.preparingPromise = promise;
-      try {
-        await promise;
-      } finally {
-        if (this.preparingPromise === promise) this.preparingPromise = null;
-      }
+      try { await promise; }
+      finally { if (this.preparingPromise === promise) this.preparingPromise = null; }
     }
 
-    addLookDelta(dx, dy, source = "mouse") {
-      const sensitivity = source === "touch" ? 0.0034 : source === "locked" ? 0.00175 : 0.0022;
-      this.lookYawTarget -= dx * sensitivity;
-      this.lookPitchTarget = clamp(this.lookPitchTarget - dy * sensitivity, -1.40, 1.20);
+    applyRegionEnvironment(region) {
+      if (!this.scene || !this.renderer) return;
+      this.scene.fog = new this.THREE.FogExp2(region.fog, region.fogDensity);
+      this.renderer.setClearColor(region.sky, 1);
+      this.hemiLight.color.set(region.hemi);
+      this.hemiLight.groundColor.set(0x2b1917);
+      this.hemiLight.intensity = 1.02;
+      this.sunLight.color.set(region.sun);
+      this.sunLight.intensity = 2.35;
+      this.fillLight.intensity = 0.24;
+      this.root.dataset.region = region.id;
     }
 
-    syncLookTargets() {
+    setCameraForRegion(region, altitude = 2.7) {
+      const ground = this.regionWorld.heightAt(region.spawn.x, region.spawn.z);
+      this.lastGround = ground;
+      this.cameraAltitude = altitude;
+      this.camera.position.set(region.spawn.x, ground + altitude, region.spawn.z);
+      this.yaw = region.heading;
+      this.pitch = region.pitch;
       this.lookYawTarget = this.yaw;
       this.lookPitchTarget = this.pitch;
-    }
-
-    updateLook(delta) {
-      const response = 1 - Math.exp(-delta * 27);
-      this.yaw += (this.lookYawTarget - this.yaw) * response;
-      this.pitch += (this.lookPitchTarget - this.pitch) * response;
-      this.pitch = clamp(this.pitch, -1.40, 1.20);
-    }
-
-    mobileFov() {
-      return window.innerWidth <= 760 ? 70 : 66;
-    }
-
-    setLoading(progress, status) {
-      const percent = clamp(progress, 0, 1);
-      this.loadingProgress.style.transform = `scaleX(${percent})`;
-      this.loadingStatus.textContent = status;
-    }
-
-    showError(error) {
-      console.warn("Venus Full Exploration:", error);
-      this.stopLoop();
-      this.input.unbind();
-      this.state = STATES.ERROR;
-      this.loading.hidden = true;
-      this.errorPanel.hidden = false;
-      this.errorMessage.textContent = /MAGELLAN|tile|terrain/i.test(error.message)
-        ? "Data elevasi MAGELLAN tidak dapat dimuat. Mode orbit Venus tetap aman. Periksa koneksi internet atau host tile MAGELLAN secara lokal."
-        : error.message;
-      this.root.classList.add("is-error");
-      this.root.classList.remove("is-preparing", "is-active", "is-surface-visible");
-      this.entryButton.disabled = false;
-      document.getElementById("announcement").textContent = "Eksplorasi permukaan Venus belum dapat dimuat. Panorama Venus tetap tersedia.";
-    }
-
-    failBackToOrbit() {
-      this.transitionToken += 1;
-      this.state = STATES.IDLE;
-      this.stopLoop();
-      this.input.unbind();
-      this.root.className = "mars-full-exploration venus-full-exploration";
-      this.root.hidden = true;
-      this.root.inert = true;
-      this.root.setAttribute("aria-hidden", "true");
-      this.errorPanel.hidden = true;
-      const pendingPreparation = this.preparingPromise;
-      this.disposeSurface();
-      this.entryButton.disabled = Boolean(pendingPreparation);
-      if (pendingPreparation) {
-        pendingPreparation.then(() => {}, () => {}).finally(() => {
-          if (this.state === STATES.IDLE) this.entryButton.disabled = false;
-        });
-      }
-      this.venus.setFullExplorationTransition?.(0, this.currentLandmark);
-      this.venus.caption.inert = false;
-      document.getElementById("mission").classList.remove("is-venus-full");
-      if (!this.entryButton.disabled) this.entryButton.focus({ preventScroll: true });
+      this.camera.rotation.set(this.pitch, this.yaw, 0, "YXZ");
+      this.velocity.x = this.velocity.y = this.velocity.z = 0;
     }
 
     async runEntryTransition(token) {
@@ -2269,203 +1180,253 @@
       this.root.classList.remove("is-preparing");
       this.root.classList.add("is-entering");
       this.loading.hidden = true;
-      this.input.bind();
       this.startLoop();
-      const reduced = this.venus.motion.matches;
-      const duration = reduced ? 400 : 4700;
+      const duration = this.venus.motion.matches ? 360 : 3800;
       const start = performance.now();
-      const startAltitude = Math.max(46, this.cameraAltitude);
-      const targetAltitude = 2.8;
-
+      const startAltitude = this.cameraAltitude;
+      const targetAltitude = this.region.spawn.altitude;
       await new Promise(resolve => {
         const frame = now => {
           if (token !== this.transitionToken || this.state !== STATES.ENTERING) return resolve();
           const raw = clamp((now - start) / duration, 0, 1);
           const eased = smootherstep(raw);
-          this.venus.setFullExplorationTransition?.(eased, this.currentLandmark);
-          this.root.style.setProperty("--surface-opacity", String(smoothstep((raw - 0.48) / 0.40)));
+          this.venus.setFullExplorationTransition?.(eased, this.region);
+          this.root.style.setProperty("--surface-opacity", String(smoothstep((raw - 0.30) / 0.45)));
           this.root.style.setProperty("--entry-progress", String(eased));
-          this.cameraAltitude = lerp(startAltitude, targetAltitude, smoothstep((raw - 0.46) / 0.54));
-          const ground = this.terrain.getHeightAtWorld(this.camera.position.x, this.camera.position.z);
-          if (ground !== null) {
-            this.lastGround = ground;
-            this.camera.position.y = ground + this.cameraAltitude;
-          }
-          if (raw < 1) requestAnimationFrame(frame);
-          else resolve();
+          const ground = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
+          this.lastGround = ground;
+          this.cameraAltitude = lerp(startAltitude, targetAltitude, smoothstep((raw - 0.32) / 0.68));
+          this.camera.position.y = ground + this.cameraAltitude;
+          if (raw < 1) requestAnimationFrame(frame); else resolve();
         };
         requestAnimationFrame(frame);
       });
+      if (token !== this.transitionToken) return;
+      this.activateRegion();
+    }
 
-      if (token !== this.transitionToken || this.state !== STATES.ENTERING) return;
+    async runRegionSwitchTransition(token) {
+      this.loading.hidden = true;
+      const start = performance.now();
+      const duration = this.venus.motion.matches ? 120 : 720;
+      await new Promise(resolve => {
+        const frame = now => {
+          if (token !== this.transitionToken) return resolve();
+          const t = clamp((now - start) / duration, 0, 1);
+          this.travelVeil.classList.toggle("is-covered", t < 0.45);
+          if (t < 1) requestAnimationFrame(frame); else resolve();
+        };
+        requestAnimationFrame(frame);
+      });
+      if (token !== this.transitionToken) return;
+      this.travelVeil.classList.remove("is-visible", "is-covered");
+      this.root.style.setProperty("--surface-opacity", "1");
+      this.root.style.setProperty("--entry-progress", "1");
+      this.activateRegion();
+    }
+
+    activateRegion() {
       this.state = STATES.EXPLORING;
-      this.root.classList.remove("is-entering");
+      this.root.classList.remove("is-preparing", "is-entering", "is-selecting");
       this.root.classList.add("is-active", "is-surface-visible");
       this.root.style.setProperty("--surface-opacity", "1");
       this.root.style.setProperty("--entry-progress", "1");
-      this.velocity.x = this.velocity.y = this.velocity.z = 0;
+      this.input.bind();
+      this.previous = performance.now();
+      this.startLoop();
       this.showTutorial();
-      this.showLandmarkInfo(this.currentLandmark);
-      document.getElementById("announcement").textContent = `Eksplorasi penuh Venus aktif di ${this.currentLandmark.name}. Gunakan WASD atau kontrol layar untuk bergerak.`;
+      this.showRegionInfo();
+      this.updateHUD();
+      document.getElementById("announcement").textContent = `Eksplorasi Venus aktif di ${this.region.name}.`;
     }
 
-    setCameraAtLandmark(landmark, { altitude = 2.8 } = {}) {
-      this.currentLandmark = landmark;
-      this.yaw = landmark.heading || 0;
-      this.pitch = -0.28;
-      this.syncLookTargets();
-      this.camera.position.x = 0;
-      this.camera.position.z = 0;
-      const ground = this.terrain.getHeightAtWorld(0, 0) ?? 0;
-      this.lastGround = ground;
-      this.cameraAltitude = altitude;
-      this.camera.position.y = ground + altitude;
-      this.camera.rotation.set(this.pitch, this.yaw, 0);
-      this.updateHUD();
+    openSelectorFromRegion() {
+      if (this.state !== STATES.EXPLORING || !this.regionWorld) return;
+      this.selectorOpenedFromRegion = true;
+      this.state = STATES.SELECTING;
+      this.input.unbind();
+      this.selector.hidden = false;
+      this.root.classList.add("is-selecting");
+      this.infoCard.classList.remove("is-visible");
+      document.getElementById("announcement").textContent = "Pilih region Venus lain untuk dijelajahi.";
+      requestAnimationFrame(() => this.selector.querySelector(`[data-venus-region="${this.region.id}"]`)?.focus({ preventScroll: true }));
+    }
+
+    closeSelectorToRegion() {
+      if (!this.regionWorld) return;
+      this.selector.hidden = true;
+      this.selectorOpenedFromRegion = false;
+      this.state = STATES.EXPLORING;
+      this.root.classList.remove("is-selecting");
+      this.input.bind();
+      this.startLoop();
+      this.showRegionInfo();
+    }
+
+    addLookDelta(dx, dy, source = "mouse") {
+      const sensitivity = source === "touch" ? 0.0034 : source === "locked" ? 0.00175 : 0.0022;
+      this.lookYawTarget -= dx * sensitivity;
+      this.lookPitchTarget = clamp(this.lookPitchTarget - dy * sensitivity, -1.40, 1.18);
+    }
+
+    updateLook(delta) {
+      const response = 1 - Math.exp(-delta * 27);
+      this.yaw += (this.lookYawTarget - this.yaw) * response;
+      this.pitch += (this.lookPitchTarget - this.pitch) * response;
+      this.pitch = clamp(this.pitch, -1.40, 1.18);
     }
 
     startLoop() {
-      if (!this.active || document.hidden || this.frame) return;
+      if (!this.active || document.hidden || this.frame || !this.renderer || !this.regionWorld) return;
       this.previous = performance.now();
       this.frame = requestAnimationFrame(this.tick);
     }
 
     stopLoop() {
-      cancelAnimationFrame(this.frame);
+      if (this.frame) cancelAnimationFrame(this.frame);
       this.frame = null;
     }
 
     tick(now) {
       this.frame = null;
-      if (!this.active || document.hidden || !this.prepared) return;
-      const delta = Math.min((now - this.previous) / 1000, 0.1);
+      if (!this.active || document.hidden || !this.renderer || !this.regionWorld) return;
+      const delta = Math.min(0.1, Math.max(0.001, (now - this.previous) / 1000));
       this.previous = now;
-      this.elapsed += delta;
       this.statsClock += delta;
       this.statsFrames += 1;
-
-      if (this.state === STATES.EXPLORING) this.updateLook(delta);
-      this.camera.rotation.set(this.pitch, this.yaw, 0);
-      if (this.state === STATES.EXPLORING) this.updateMovement(delta);
-
-      // Resolve chunk visibility/material LOD after the final camera movement for
-      // this frame and before rendering. A fast turn therefore promotes the newly
-      // visible terrain immediately, while the old rear sector can stop costing GPU.
-      const viewAltitude = Math.max(0, this.camera.position.y - this.lastGround);
-      this.terrain.updateViewDependent(this.camera, viewAltitude, this.velocity, now);
-      this.renderer.render(this.scene, this.camera);
-
-      if (this.terrain.debugEnabled) {
-        if (!this.debugWindowStart) this.debugWindowStart = now;
-        this.debugFrames += 1;
-        const debugElapsed = now - this.debugWindowStart;
-        if (debugElapsed >= 1000) {
-          const renderInfo = this.renderer.info.render;
-          console.debug("[ANTARA Venus render]", {
-            fps: Number((this.debugFrames * 1000 / debugElapsed).toFixed(1)),
-            frameMs: Number((debugElapsed / this.debugFrames).toFixed(2)),
-            calls: renderInfo.calls,
-            triangles: renderInfo.triangles,
-            lines: renderInfo.lines,
-            points: renderInfo.points,
-            dpr: Number(this.currentDpr.toFixed(2)),
-            chunks: { ...this.terrain.visibilityStats }
-          });
-          this.debugFrames = 0;
-          this.debugWindowStart = now;
-        }
+      if (this.state === STATES.EXPLORING) {
+        this.updateLook(delta);
+        this.camera.rotation.set(this.pitch, this.yaw, 0, "YXZ");
+        this.updateMovement(delta);
       }
-      this.updateHUD();
+      this.regionWorld.updateVisibility(this.camera, delta);
+      this.renderer.render(this.scene, this.camera);
+      if (this.state === STATES.EXPLORING) this.updateHUD();
       this.adaptResolution();
       this.frame = requestAnimationFrame(this.tick);
     }
 
     updateMovement(delta) {
       const axes = this.input.movementAxes();
-      const ground = this.terrain.getHeightAtWorld(this.camera.position.x, this.camera.position.z);
-      if (ground !== null) this.lastGround = ground;
-      const clearance = Math.max(0, this.camera.position.y - this.lastGround);
-      const baseSpeed = clearance < 0.25 ? 0.14
-        : clearance < 1 ? lerp(0.14, 0.82, (clearance - 0.25) / 0.75)
-          : clearance < 8 ? lerp(0.82, 4.2, (clearance - 1) / 7)
-            : clearance < 40 ? lerp(4.2, 14.5, (clearance - 8) / 32)
-              : 24;
-      const boost = this.input.boost() ? 3 : 1;
-      const precision = this.input.precision() ? 0.28 : 1;
+      const ground = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
+      this.lastGround = ground;
+      const clearance = Math.max(0, this.camera.position.y - ground);
+      const baseSpeed = clearance < 0.35 ? 0.16 : clearance < 2 ? lerp(0.16, 1.2, (clearance - 0.35) / 1.65) : clearance < 8 ? lerp(1.2, 3.8, (clearance - 2) / 6) : 5.8;
+      const boost = this.input.boost() ? 2.7 : 1;
+      const precision = this.input.precision() ? 0.30 : 1;
       const targetSpeed = baseSpeed * boost * precision;
-
-      let forward = axes.forward;
-      let strafe = axes.strafe;
-      const horizontalMagnitude = Math.hypot(forward, strafe);
-      if (horizontalMagnitude > 1) {
-        forward /= horizontalMagnitude;
-        strafe /= horizontalMagnitude;
-      }
-
-      // Ask Three.js for the actual camera direction. The previous hand-written
-      // sin/cos formula had the X/Z signs opposite to the camera's positive yaw,
-      // so W/A/S/D could slide across the world in a direction that did not match
-      // where the user was looking. This keeps movement truly camera-relative.
+      let forward = axes.forward, strafe = axes.strafe;
+      const mag = Math.hypot(forward, strafe);
+      if (mag > 1) { forward /= mag; strafe /= mag; }
       this.camera.getWorldDirection(this.moveForward);
+      this.moveForward.y = 0;
+      this.moveForward.normalize();
       this.moveRight.crossVectors(this.moveForward, this.camera.up).normalize();
-      this.moveIntent.set(0, 0, 0);
-      this.moveIntent.addScaledVector(this.moveForward, forward);
-      this.moveIntent.addScaledVector(this.moveRight, strafe);
+      this.moveIntent.set(0, 0, 0).addScaledVector(this.moveForward, forward).addScaledVector(this.moveRight, strafe);
+      if (this.moveIntent.lengthSq() > 1) this.moveIntent.normalize();
 
-      if (horizontalMagnitude > 1) this.moveIntent.normalize();
-      const targetX = this.moveIntent.x * targetSpeed;
-      const targetZ = this.moveIntent.z * targetSpeed;
-      const verticalSpeed = Math.max(0.22, Math.min(8, targetSpeed * 0.58));
-      const headroom = Math.max(0, MAX_EXPLORATION_ALTITUDE_KM - clearance);
-      const ascentFactor = smoothstep(headroom / 1.6);
-      const rawTargetY = this.moveIntent.y * targetSpeed + axes.vertical * verticalSpeed;
-      const targetY = rawTargetY > 0 ? rawTargetY * ascentFactor : rawTargetY;
-      const moving = horizontalMagnitude > 0 || axes.vertical !== 0;
-      const responseRate = moving ? 11.5 : 15.5;
-      const response = 1 - Math.exp(-delta * responseRate);
+      const currentRadius = Math.hypot(this.camera.position.x, this.camera.position.z);
+      const boundaryT = smoothstep((currentRadius - this.region.softBoundaryStart) / Math.max(1, this.region.playRadius - this.region.softBoundaryStart));
+      const radialX = currentRadius > 0.001 ? this.camera.position.x / currentRadius : 0;
+      const radialZ = currentRadius > 0.001 ? this.camera.position.z / currentRadius : 0;
+      const outward = Math.max(0, this.moveIntent.x * radialX + this.moveIntent.z * radialZ);
+      const boundaryScale = 1 - boundaryT * outward * 0.93;
+      const targetX = this.moveIntent.x * targetSpeed * boundaryScale;
+      const targetZ = this.moveIntent.z * targetSpeed * boundaryScale;
+      const verticalSpeed = Math.max(0.24, Math.min(5.4, targetSpeed * 0.62));
+      const rawY = axes.vertical * verticalSpeed;
+      const headroom = Math.max(0, MAX_ALTITUDE_KM - clearance);
+      const targetY = rawY > 0 ? rawY * smoothstep(headroom / 1.4) : rawY;
+      const moving = mag > 0 || axes.vertical !== 0;
+      const response = 1 - Math.exp(-delta * (moving ? 11.5 : 15.5));
       this.velocity.x += (targetX - this.velocity.x) * response;
       this.velocity.z += (targetZ - this.velocity.z) * response;
       this.velocity.y += (targetY - this.velocity.y) * response;
 
-      const nextX = this.camera.position.x + this.velocity.x * delta;
-      const nextZ = this.camera.position.z + this.velocity.z * delta;
-      const nextGeo = this.terrain.geoFromWorld(nextX, nextZ);
-      if (nextGeo.latitude > MIN_DATA_LAT && nextGeo.latitude < MAX_DATA_LAT) {
-        this.camera.position.x = nextX;
-        this.camera.position.z = nextZ;
+      let nextX = this.camera.position.x + this.velocity.x * delta;
+      let nextZ = this.camera.position.z + this.velocity.z * delta;
+      const nextRadius = Math.hypot(nextX, nextZ);
+      if (nextRadius > this.region.playRadius) {
+        const scale = this.region.playRadius / nextRadius;
+        nextX *= scale; nextZ *= scale;
+        const radialV = this.velocity.x * (nextX / this.region.playRadius) + this.velocity.z * (nextZ / this.region.playRadius);
+        if (radialV > 0) { this.velocity.x *= 0.22; this.velocity.z *= 0.22; }
       }
+      this.camera.position.x = nextX;
+      this.camera.position.z = nextZ;
       this.camera.position.y += this.velocity.y * delta;
-
-      const newGround = this.terrain.getHeightAtWorld(this.camera.position.x, this.camera.position.z);
-      if (newGround !== null) this.lastGround = newGround;
-      const safeClearance = clearance < 2 ? 0.11 : 0.16;
-      const minimumY = this.lastGround + safeClearance;
+      const newGround = this.regionWorld.heightAt(nextX, nextZ);
+      this.lastGround = newGround;
+      const minimumY = newGround + MIN_CLEARANCE_KM;
       if (this.camera.position.y < minimumY) {
         const correction = 1 - Math.exp(-delta * 17);
         this.camera.position.y = lerp(this.camera.position.y, minimumY + 0.025, correction);
         if (this.camera.position.y < minimumY) this.camera.position.y = minimumY;
         if (this.velocity.y < 0) this.velocity.y *= 0.12;
       }
-      const maximumY = this.lastGround + MAX_EXPLORATION_ALTITUDE_KM;
-      if (this.camera.position.y >= maximumY) {
-        this.camera.position.y = maximumY;
-        if (this.velocity.y > 0) this.velocity.y = 0;
-      }
-
+      const maximumY = newGround + MAX_ALTITUDE_KM;
+      if (this.camera.position.y > maximumY) { this.camera.position.y = maximumY; if (this.velocity.y > 0) this.velocity.y = 0; }
       this.speed = Math.hypot(this.velocity.x, this.velocity.y, this.velocity.z);
-      this.streamClock += delta;
-      if (this.streamClock > 0.36) {
-        this.streamClock = 0;
-        const geo = this.terrain.geoFromWorld(this.camera.position.x, this.camera.position.z);
-        const altitude = clamp(this.camera.position.y - this.lastGround, 0, MAX_EXPLORATION_ALTITUDE_KM);
-        this.terrain.maybeStream(geo.latitude, geo.signedLongitude, altitude);
-        const lookAheadSeconds = clamp(1.4 + this.speed * 0.08, 1.4, 4.5);
-        const aheadGeo = this.terrain.geoFromWorld(
-          this.camera.position.x + this.velocity.x * lookAheadSeconds,
-          this.camera.position.z + this.velocity.z * lookAheadSeconds
-        );
-        this.terrain.prefetchAhead(aheadGeo.latitude, aheadGeo.signedLongitude, altitude);
-      }
+      const finalRadius = Math.hypot(nextX, nextZ);
+      const boundaryVisible = finalRadius > this.region.softBoundaryStart - 4;
+      this.boundaryHint.classList.toggle("is-visible", boundaryVisible);
+      if (boundaryVisible) this.boundaryHint.textContent = finalRadius > this.region.playRadius - 1 ? "BATAS EKSPLORASI · REGION TERKURASI" : "MENDEKATI BATAS EKSPLORASI";
+    }
+
+    updateHUD() {
+      if (!this.regionWorld || !this.camera) return;
+      const ground = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
+      const altitude = Math.max(0, this.camera.position.y - ground);
+      this.cameraAltitude = altitude;
+      const geo = this.regionWorld.geoFromWorld(this.camera.position.x, this.camera.position.z);
+      this.hudCoordinates.textContent = formatCoordinate(geo.latitude, geo.longitudeEast);
+      this.hudAltitude.textContent = formatAltitude(altitude);
+      this.hudAltitudeLimit.hidden = altitude < MAX_ALTITUDE_KM - 1.0;
+      this.hudAltitudeLimit.textContent = altitude >= MAX_ALTITUDE_KM - 0.08 ? "BATAS KETINGGIAN" : "MENDEKATI BATAS";
+      this.hudSpeed.textContent = formatSpeed(this.speed);
+      this.hudLocation.textContent = this.region.name;
+      this.hudQuality.textContent = this.quality.name;
+      this.hudData.textContent = "NASA/JPL MAGELLAN · CURATED REGION";
+    }
+
+    updateRegionUI() {
+      const region = this.region;
+      this.hudLocation.textContent = region.name;
+      this.hudCoordinates.textContent = formatCoordinate(region.latitude, region.longitudeEast);
+      this.hudQuality.textContent = this.quality.name;
+      this.hudData.textContent = "NASA/JPL MAGELLAN · CURATED REGION";
+      this.infoName.textContent = region.name;
+      this.infoType.textContent = `${region.category} · ${region.descriptor}`;
+      this.infoCoords.textContent = formatCoordinate(region.latitude, region.longitudeEast);
+      this.infoImage.src = region.image;
+      this.infoImage.alt = `Referensi Magellan NASA/JPL untuk ${region.name}`;
+      this.infoDescription.textContent = region.description;
+      this.infoFacts.replaceChildren(...region.facts.map(fact => { const li = document.createElement("li"); li.textContent = fact; return li; }));
+      this.infoBadge.textContent = `REFERENCE-DRIVEN MORPHOLOGY · ${region.category} · STATIC BOUNDED REGION`;
+      this.infoSource.href = region.source;
+      this.infoSource.textContent = "Referensi morfologi: NASA/JPL ↗";
+      this.infoCoordinateSource.href = region.coordinateSource;
+    }
+
+    showRegionInfo() {
+      window.clearTimeout(this.infoTimeout);
+      this.infoCard.classList.add("is-visible");
+      this.infoTimeout = window.setTimeout(() => this.infoCard.classList.remove("is-visible"), 11000);
+    }
+
+    showTutorial() {
+      let seen = false;
+      try { seen = sessionStorage.getItem("antara-venus-full-tutorial-v2") === "1"; } catch {}
+      if (seen) return;
+      this.tutorial.classList.add("is-visible");
+      window.clearTimeout(this.tutorialTimeout);
+      this.tutorialTimeout = window.setTimeout(() => this.dismissTutorial(), 9000);
+    }
+
+    dismissTutorial(persist = false) {
+      this.tutorial.classList.remove("is-visible");
+      window.clearTimeout(this.tutorialTimeout);
+      if (persist) { try { sessionStorage.setItem("antara-venus-full-tutorial-v2", "1"); } catch {} }
     }
 
     adaptResolution() {
@@ -2474,18 +1435,9 @@
       this.statsFrames = 0;
       this.statsClock = 0;
       this.idealDpr = this.calculateIdealDpr();
-
-      if (fps < 38) {
-        this.lowFpsWindows += 1;
-        this.highFpsWindows = 0;
-      } else if (fps > 56) {
-        this.highFpsWindows += 1;
-        this.lowFpsWindows = Math.max(0, this.lowFpsWindows - 1);
-      } else {
-        this.lowFpsWindows = Math.max(0, this.lowFpsWindows - 1);
-        this.highFpsWindows = 0;
-      }
-
+      if (fps < 38) { this.lowFpsWindows += 1; this.highFpsWindows = 0; }
+      else if (fps > 56) { this.highFpsWindows += 1; this.lowFpsWindows = Math.max(0, this.lowFpsWindows - 1); }
+      else { this.lowFpsWindows = Math.max(0, this.lowFpsWindows - 1); this.highFpsWindows = 0; }
       if (this.lowFpsWindows >= 2 && this.currentDpr > this.quality.minDpr) {
         this.currentDpr = Math.max(this.quality.minDpr, this.currentDpr - 0.12);
         this.renderer.setPixelRatio(this.currentDpr);
@@ -2499,246 +1451,150 @@
       }
     }
 
-    updateHUD() {
-      if (!this.prepared || !this.camera) return;
-      const geo = this.terrain.geoFromWorld(this.camera.position.x, this.camera.position.z);
-      const ground = this.terrain.getHeightAtWorld(this.camera.position.x, this.camera.position.z);
-      if (ground !== null) this.lastGround = ground;
-      const altitude = Math.max(0, this.camera.position.y - this.lastGround);
-      this.cameraAltitude = altitude;
-      this.hudCoordinates.textContent = formatCoordinate(geo.latitude, geo.longitudeEast);
-      const ceilingActive = this.state === STATES.EXPLORING || this.state === STATES.TRAVELLING;
-      const displayAltitude = ceilingActive ? Math.min(altitude, MAX_EXPLORATION_ALTITUDE_KM) : altitude;
-      this.hudAltitude.textContent = formatAltitude(displayAltitude);
-      this.hudAltitudeLimit.hidden = !ceilingActive || altitude < ALTITUDE_LIMIT_WARNING_KM;
-      this.hudAltitudeLimit.textContent = altitude >= MAX_EXPLORATION_ALTITUDE_KM - 0.02 ? "BATAS KETINGGIAN" : "MENDEKATI BATAS 30 KM";
-      this.hudSpeed.textContent = formatSpeed(this.speed);
-      this.hudLocation.textContent = this.nearestLocation(geo.latitude, geo.signedLongitude);
-    }
-
-    nearestLocation(latitude, signedLongitude) {
-      let best = null;
-      let bestDistance = Infinity;
-      for (const landmark of LANDMARKS) {
-        const landmarkLon = wrapLongitude(landmark.longitudeEast > 180 ? landmark.longitudeEast - 360 : landmark.longitudeEast);
-        const dLat = (latitude - landmark.latitude) * KM_PER_DEG_LAT;
-        const dLon = shortestLongitudeDelta(landmarkLon, signedLongitude) * KM_PER_DEG_LAT * Math.cos(latitude * DEG);
-        const distance = Math.hypot(dLat, dLon);
-        if (distance < bestDistance) { best = landmark; bestDistance = distance; }
-      }
-      return best && bestDistance < 180 ? best.name : "Permukaan Venus";
-    }
-
-    async travelToLandmark(landmark) {
-      if (this.state !== STATES.EXPLORING || !landmark || landmark.id === this.currentLandmark?.id) return;
-      this.state = STATES.TRAVELLING;
-      this.input.clear();
-      const token = ++this.transitionToken;
-      this.travelLabel.textContent = `NAVIGASI · ${landmark.name.toUpperCase()}`;
-      this.travelVeil.classList.add("is-visible");
-      this.infoCard.classList.remove("is-visible");
-      document.getElementById("announcement").textContent = `Terbang menuju ${landmark.name}.`;
-
-      try {
-        const cruiseAltitude = Math.min(MAX_EXPLORATION_ALTITUDE_KM - 2, Math.max(this.cameraAltitude, 24));
-        await this.animateCameraAltitude(cruiseAltitude, 1350, token);
-        if (token !== this.transitionToken || this.state !== STATES.TRAVELLING) return;
-        this.travelVeil.classList.add("is-covered");
-        await this.wait(360);
-        if (token !== this.transitionToken) return;
-
-        this.terrain.clearMeshes();
-        this.provider.clearTiles();
-        await this.provider.prepareRegion(landmark);
-        if (token !== this.transitionToken || this.state !== STATES.TRAVELLING) return;
-        this.imagery.setRegion(landmark);
-        this.imagery.clearPatches();
-        this.hudData.textContent = this.provider.statusLabel();
-        this.terrain.setOrigin(landmark.latitude, landmark.longitudeEast);
-        this.currentLandmark = landmark;
-        this.yaw = landmark.heading || 0;
-        this.pitch = -0.34;
-        this.syncLookTargets();
-        await this.terrain.ensureAround(landmark.latitude, wrapLongitude(landmark.longitudeEast > 180 ? landmark.longitudeEast - 360 : landmark.longitudeEast), { requiredRadius: 1, textureAltitude: 3.2 });
-        if (token !== this.transitionToken) return;
-        const ground = this.terrain.getHeightAtWorld(0, 0) ?? 0;
-        this.lastGround = ground;
-        this.camera.position.set(0, ground + cruiseAltitude, 0);
-        this.travelVeil.classList.remove("is-covered");
-        await this.animateCameraAltitude(3.2, 1850, token);
-        if (token !== this.transitionToken) return;
-        this.state = STATES.EXPLORING;
-        this.travelVeil.classList.remove("is-visible");
-        this.showLandmarkInfo(landmark);
-        document.getElementById("announcement").textContent = `Tiba di ${landmark.name}. Eksplorasi bebas dilanjutkan.`;
-      } catch (error) {
-        console.warn("Venus landmark travel failed", error);
-        this.state = STATES.EXPLORING;
-        this.travelVeil.classList.remove("is-visible", "is-covered");
-      }
-    }
-
-    animateCameraAltitude(targetAltitude, duration, token) {
-      const ceilingApplies = this.state === STATES.EXPLORING || this.state === STATES.TRAVELLING;
-      if (ceilingApplies) targetAltitude = Math.min(targetAltitude, MAX_EXPLORATION_ALTITUDE_KM);
-      const startAltitude = this.cameraAltitude;
-      const start = performance.now();
-      return new Promise(resolve => {
-        const frame = now => {
-          if (token !== this.transitionToken) return resolve();
-          const raw = clamp((now - start) / (this.venus.motion.matches ? 120 : duration), 0, 1);
-          const eased = smootherstep(raw);
-          const ground = this.terrain.getHeightAtWorld(this.camera.position.x, this.camera.position.z) ?? this.lastGround;
-          this.lastGround = ground;
-          this.cameraAltitude = lerp(startAltitude, targetAltitude, eased);
-          this.camera.position.y = ground + this.cameraAltitude;
-          if (raw < 1) requestAnimationFrame(frame);
-          else resolve();
-        };
-        requestAnimationFrame(frame);
-      });
-    }
-
-    showLandmarkInfo(landmark) {
-      window.clearTimeout(this.infoTimeout);
-      this.infoName.textContent = landmark.name;
-      this.infoType.textContent = landmark.type;
-      this.infoCoords.textContent = formatCoordinate(landmark.latitude, landmark.longitudeEast);
-      this.infoSource.href = landmark.scienceSource || landmark.source;
-      this.infoCoordinateSource.href = landmark.source;
-      this.infoTopographySource.href = "https://pds-geosciences.wustl.edu/missions/magellan/gxdr/index.htm";
-      this.infoImage.src = landmark.radarImage || MAGELLAN_GLOBAL_RADAR;
-      this.infoImage.alt = `Citra radar Magellan untuk konteks ${landmark.name}`;
-      this.infoDescription.textContent = landmark.description || "";
-      this.infoFacts.replaceChildren(...(landmark.facts || []).map(text => {
-        const item = document.createElement("li");
-        item.textContent = text;
-        return item;
-      }));
-      this.infoDataBadge.textContent = this.provider?.activeMode === "GTDR_4_6KM"
-        ? "MACRO RELIEF · MAGELLAN GTDR · CHUNKED WORLD"
-        : "SCIENCE-INFORMED FALLBACK · CHUNKED WORLD";
-      this.infoCard.classList.add("is-visible");
-      this.infoTimeout = window.setTimeout(() => this.infoCard.classList.remove("is-visible"), 12000);
-    }
-
-    showTutorial() {
-      let seen = false;
-      try { seen = sessionStorage.getItem("antara-venus-full-tutorial") === "1"; } catch {}
-      if (seen) return;
-      this.tutorial.classList.add("is-visible");
-      window.clearTimeout(this.tutorialTimeout);
-      this.tutorialTimeout = window.setTimeout(() => this.dismissTutorial(), 9000);
-    }
-
-    dismissTutorial(persist = false) {
-      if (!this.tutorial.classList.contains("is-visible")) return;
-      this.tutorial.classList.remove("is-visible");
-      window.clearTimeout(this.tutorialTimeout);
-      if (persist) {
-        try { sessionStorage.setItem("antara-venus-full-tutorial", "1"); } catch {}
-      }
-    }
-
     async exit() {
       if (!this.active || this.state === STATES.EXITING) return;
-      if (this.state === STATES.ERROR || this.state === STATES.PREPARING) {
+      if (this.state === STATES.SELECTING && !this.regionWorld) {
+        this.finishExitToOrbit();
+        return;
+      }
+      if (this.state === STATES.ERROR || this.state === STATES.PREPARING || this.state === STATES.SWITCHING) {
         this.failBackToOrbit();
         return;
       }
       this.state = STATES.EXITING;
       const token = ++this.transitionToken;
-      this.input.clear();
-      this.locationMenu.classList.remove("is-open");
-      this.locationButton.setAttribute("aria-expanded", "false");
+      this.stopLoop();
+      this.input.unbind();
+      this.selector.hidden = true;
       this.tutorial.classList.remove("is-visible");
       this.infoCard.classList.remove("is-visible");
-      this.travelVeil.classList.remove("is-visible", "is-covered");
+      this.boundaryHint.classList.remove("is-visible");
       this.root.classList.add("is-exiting");
       document.getElementById("announcement").textContent = "Meninggalkan permukaan Venus dan kembali ke panorama orbit.";
-
-      if (this.prepared && this.camera) {
-        try { await this.animateCameraAltitude(Math.max(this.cameraAltitude, 52), 1650, token); }
-        catch {}
+      if (this.regionWorld && this.camera) {
+        const startY = this.camera.position.y;
+        const ground = this.regionWorld.heightAt(this.camera.position.x, this.camera.position.z);
+        const targetY = ground + 15;
+        const start = performance.now();
+        const duration = this.venus.motion.matches ? 120 : 900;
+        await new Promise(resolve => {
+          const frame = now => {
+            if (token !== this.transitionToken) return resolve();
+            const t = smootherstep(clamp((now - start) / duration, 0, 1));
+            this.camera.position.y = lerp(startY, targetY, t);
+            this.renderer.render(this.scene, this.camera);
+            if (t < 1) requestAnimationFrame(frame); else resolve();
+          };
+          requestAnimationFrame(frame);
+        });
       }
       if (token !== this.transitionToken) return;
-
-      const reduced = this.venus.motion.matches;
-      const duration = reduced ? 260 : 3200;
+      const duration = this.venus.motion.matches ? 180 : 2100;
       const start = performance.now();
       await new Promise(resolve => {
         const frame = now => {
           if (token !== this.transitionToken) return resolve();
           const raw = clamp((now - start) / duration, 0, 1);
           const eased = smootherstep(raw);
-          this.root.style.setProperty("--surface-opacity", String(1 - smoothstep(raw / 0.62)));
-          this.venus.setFullExplorationTransition?.(1 - eased, this.currentLandmark);
-          if (raw < 1) requestAnimationFrame(frame);
-          else resolve();
+          this.root.style.setProperty("--surface-opacity", String(1 - smoothstep(raw / 0.68)));
+          this.venus.setFullExplorationTransition?.(1 - eased, this.region);
+          if (raw < 1) requestAnimationFrame(frame); else resolve();
         };
         requestAnimationFrame(frame);
       });
       if (token !== this.transitionToken) return;
-      this.finishExit();
+      this.finishExitToOrbit();
     }
 
-    finishExit() {
+    finishExitToOrbit() {
+      this.transitionToken += 1;
       if (document.fullscreenElement === this.root) document.exitFullscreen().catch(() => {});
-      this.state = STATES.IDLE;
       this.stopLoop();
       this.input.unbind();
+      this.disposeRegion();
+      this.disposeRenderer();
+      this.venus.endFullExploration?.();
+      this.venus.setFullExplorationTransition?.(0, this.region);
+      this.venus.caption.inert = false;
+      this.state = STATES.IDLE;
+      this.selectorOpenedFromRegion = false;
       this.root.className = "mars-full-exploration venus-full-exploration";
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");
       this.root.style.removeProperty("--surface-opacity");
       this.root.style.removeProperty("--entry-progress");
+      this.selector.hidden = false;
+      this.loading.hidden = true;
+      this.errorPanel.hidden = true;
       this.entryButton.disabled = false;
-      this.venus.setFullExplorationTransition?.(0, this.currentLandmark);
-      this.venus.caption.inert = false;
-      document.getElementById("mission").classList.remove("is-venus-full");
+      document.getElementById("mission").classList.remove("is-venus-full", "is-venus-full-selecting");
       document.getElementById("announcement").textContent = "Kembali ke panorama Venus.";
       this.entryButton.focus({ preventScroll: true });
     }
 
+    showError(error) {
+      console.warn("Venus Full Exploration:", error);
+      this.stopLoop();
+      this.input.unbind();
+      this.state = STATES.ERROR;
+      this.loading.hidden = true;
+      this.errorPanel.hidden = false;
+      this.errorMessage.textContent = error?.message || "Region Venus tidak dapat dibangun.";
+      this.root.classList.add("is-error");
+      this.entryButton.disabled = false;
+      document.getElementById("announcement").textContent = "Eksplorasi penuh Venus gagal dimuat. Panorama Venus tetap aman.";
+    }
+
+    failBackToOrbit() {
+      this.transitionToken += 1;
+      this.finishExitToOrbit();
+    }
+
     onVenusStop() {
-      if (this.active) {
-        this.transitionToken += 1;
-        this.state = STATES.IDLE;
-        this.stopLoop();
-        this.input.unbind();
-        this.root.hidden = true;
-        this.root.inert = true;
-        this.root.setAttribute("aria-hidden", "true");
-        this.root.className = "mars-full-exploration venus-full-exploration";
-        this.entryButton.disabled = false;
-        document.getElementById("mission").classList.remove("is-venus-full");
-      }
-      this.disposeSurface();
+      this.transitionToken += 1;
+      this.stopLoop();
+      this.input.unbind();
+      this.disposeRegion();
+      this.disposeRenderer();
+      this.state = STATES.IDLE;
+      this.root.hidden = true;
+      this.root.inert = true;
+      this.root.setAttribute("aria-hidden", "true");
+      this.root.className = "mars-full-exploration venus-full-exploration";
+      this.entryButton.disabled = false;
+      document.getElementById("mission").classList.remove("is-venus-full", "is-venus-full-selecting");
       if (document.fullscreenElement === this.root) document.exitFullscreen().catch(() => {});
     }
 
-    disposeSurface() {
+    disposeRegion() {
+      this.regionWorld?.dispose();
+      this.regionWorld = null;
+      this.infoCard.classList.remove("is-visible");
+      this.boundaryHint.classList.remove("is-visible");
+    }
+
+    disposeRenderer() {
       this.resourceGeneration += 1;
-      this.stopLoop();
-      this.input.unbind();
-      if (this.terrain) {
-        this.terrain.dispose();
-        this.terrain = null;
-      }
-      this.provider?.clear();
-      this.provider = null;
-      this.imagery?.clear();
-      this.imagery = null;
       if (this.renderer) {
         this.renderer.dispose();
         this.renderer.domElement?.remove();
-        this.renderer = null;
       }
+      this.renderer = null;
       this.scene = null;
       this.camera = null;
-      this.prepared = false;
+      this.hemiLight = null;
+      this.sunLight = null;
+      this.fillLight = null;
     }
+
+    setLoading(progress, status) {
+      this.loading.hidden = false;
+      this.loadingProgress.style.transform = `scaleX(${clamp(progress, 0, 1)})`;
+      this.loadingStatus.textContent = status;
+    }
+
+    mobileFov() { return window.innerWidth <= 760 ? 70 : 66; }
 
     async toggleFullscreen() {
       if (!document.fullscreenElement) {
@@ -2753,27 +1609,23 @@
       const active = document.fullscreenElement === this.root;
       this.fullscreenButton.setAttribute("aria-pressed", String(active));
       this.fullscreenButton.querySelector("span").textContent = active ? "Keluar layar penuh" : "Layar penuh";
-      if (this.prepared) this.resize();
+      this.resize();
     }
 
     resize(recalculateDpr = true) {
-      if (!this.prepared || !this.renderer || !this.camera) return;
-      const width = Math.max(1, this.viewport.clientWidth);
-      const height = Math.max(1, this.viewport.clientHeight);
+      if (!this.renderer || !this.camera) return;
+      const width = Math.max(1, this.viewport.clientWidth || window.innerWidth);
+      const height = Math.max(1, this.viewport.clientHeight || window.innerHeight);
       if (recalculateDpr) {
         this.idealDpr = this.calculateIdealDpr();
         if (!Number.isFinite(this.currentDpr)) this.currentDpr = this.idealDpr;
-        if (this.currentDpr > this.idealDpr) this.currentDpr = this.idealDpr;
+        this.currentDpr = Math.min(this.currentDpr, this.idealDpr);
         this.renderer.setPixelRatio(this.currentDpr);
       }
       this.renderer.setSize(width, height, false);
       this.camera.aspect = width / height;
       this.camera.fov = this.mobileFov();
       this.camera.updateProjectionMatrix();
-    }
-
-    wait(ms) {
-      return new Promise(resolve => window.setTimeout(resolve, ms));
     }
   };
 })();
