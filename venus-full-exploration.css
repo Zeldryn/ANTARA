@@ -34,13 +34,14 @@
 .venus-caption .venus-full-explore-button:disabled { opacity: .5; cursor: wait; }
 
 .venus-full-exploration {
-  --venus-accent: #f0b66c;
-  --venus-accent-bright: #ffd69d;
-  --venus-line: rgba(242, 205, 154, .24);
-  --venus-panel: rgba(30, 16, 13, .82);
+  --venus-accent: #ff9a55;
+  --venus-accent-bright: #ffd08b;
+  --venus-line: rgba(255, 160, 91, .30);
+  --venus-panel: rgba(24, 9, 8, .88);
   background:
-    radial-gradient(circle at 50% 28%, rgba(247, 187, 116, .18), transparent 40%),
-    linear-gradient(180deg, #7e4d3a 0%, #5a3329 48%, #251513 100%);
+    radial-gradient(circle at 50% 27%, rgba(255, 128, 60, .30), transparent 42%),
+    radial-gradient(circle at 54% 64%, rgba(174, 37, 23, .24), transparent 45%),
+    linear-gradient(180deg, #a63f25 0%, #68231c 50%, #1e0b0b 100%);
 }
 .venus-full-exploration .mars-full-viewport,
 .venus-full-exploration .venus-full-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -52,26 +53,69 @@
 
 .venus-full-exploration::before {
   background:
-    linear-gradient(180deg, rgba(245, 189, 126, .13) 0%, transparent 42%, rgba(183, 102, 72, .14) 61%, rgba(37, 18, 16, .76) 100%),
-    radial-gradient(ellipse at 50% 62%, transparent 0 30%, rgba(157, 89, 63, .16) 56%, rgba(38, 18, 16, .56) 100%);
+    linear-gradient(180deg, rgba(255, 159, 92, .18) 0%, transparent 39%, rgba(188, 57, 35, .18) 64%, rgba(27, 7, 8, .80) 100%),
+    radial-gradient(ellipse at 50% 62%, transparent 0 28%, rgba(183, 57, 37, .19) 55%, rgba(31, 8, 9, .60) 100%);
 }
 .venus-full-exploration .venus-full-horizon {
-  background: radial-gradient(ellipse at center, rgba(250, 190, 122, .19) 0%, rgba(185, 103, 74, .08) 48%, transparent 74%);
+  background: radial-gradient(ellipse at center, rgba(255, 137, 68, .28) 0%, rgba(189, 58, 38, .12) 48%, transparent 76%);
 }
 .venus-cloud-entry,
-.venus-haze-vignette { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+.venus-haze-vignette,
+.venus-heat-shimmer { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
 .venus-cloud-entry {
   opacity: calc(.88 - var(--entry-progress, 0) * .72);
-  background: radial-gradient(ellipse at 50% 43%, rgba(255, 225, 183, .19), rgba(220, 142, 91, .11) 37%, rgba(86, 44, 36, .08) 72%, transparent 88%);
+  background: radial-gradient(ellipse at 50% 43%, rgba(255, 208, 145, .22), rgba(241, 111, 55, .15) 37%, rgba(105, 28, 25, .09) 72%, transparent 88%);
   filter: blur(6px);
 }
 .venus-haze-vignette {
-  opacity: .50;
+  opacity: .54;
   background:
-    linear-gradient(180deg, rgba(246, 183, 119, .14), transparent 33%, transparent 72%, rgba(38, 18, 15, .20)),
-    radial-gradient(circle at center, transparent 58%, rgba(61, 29, 23, .22) 100%);
+    linear-gradient(180deg, rgba(255, 143, 73, .17), transparent 33%, transparent 70%, rgba(35, 8, 9, .24)),
+    radial-gradient(circle at center, transparent 54%, rgba(87, 20, 17, .27) 100%);
 }
 .venus-full-exploration.is-active .venus-cloud-entry { opacity: .05; filter: blur(3px); }
+
+.venus-heat-shimmer {
+  /* Keep heat presence without drawing repeated horizontal bands across the camera. */
+  opacity: .035;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 80%, rgba(255, 205, 104, .12) 0%, rgba(255, 146, 54, .055) 34%, transparent 66%),
+    radial-gradient(ellipse at 22% 88%, rgba(255, 175, 65, .05), transparent 38%),
+    radial-gradient(ellipse at 78% 91%, rgba(255, 126, 43, .04), transparent 35%);
+  mask-image: linear-gradient(180deg, transparent 20%, #000 58%, #000 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 20%, #000 58%, #000 100%);
+}
+.venus-full-exploration[data-region="maat"] .venus-heat-shimmer { opacity: .085; }
+.venus-full-exploration[data-region="alpha"] .venus-heat-shimmer,
+.venus-full-exploration[data-region="aphrodite"] .venus-heat-shimmer { opacity: .045; }
+
+/* Performance-safe atmospheric motion: one composited haze layer, no repeated stripes. */
+.venus-haze-vignette::before {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 30% 72%, rgba(255, 191, 111, .13), transparent 36%),
+    radial-gradient(ellipse at 72% 62%, rgba(201, 75, 39, .11), transparent 40%),
+    radial-gradient(ellipse at 52% 88%, rgba(255, 142, 61, .08), transparent 46%);
+  opacity: .16;
+  transform: translate3d(-1.2%, .3%, 0) scale(1.035);
+  will-change: transform, opacity;
+  animation: venus-haze-drift 16s ease-in-out infinite alternate;
+}
+.venus-full-exploration[data-region="maat"] .venus-haze-vignette::before { opacity: .23; }
+.venus-full-exploration[data-region="alpha"] .venus-haze-vignette::before,
+.venus-full-exploration[data-region="aphrodite"] .venus-haze-vignette::before { opacity: .18; }
+@keyframes venus-haze-drift {
+  from { transform: translate3d(-1.2%, .3%, 0) scale(1.035); opacity: .90; }
+  to { transform: translate3d(1.4%, -.5%, 0) scale(1.045); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .venus-haze-vignette::before { animation: none; transform: scale(1.04); }
+}
+
 
 /* Mars owns geometry/spacing. Venus changes only palette. */
 .venus-full-exploration .mars-full-hud,
@@ -82,8 +126,8 @@
 }
 .venus-full-exploration .mars-full-hud,
 .venus-full-exploration .mars-landmark-card {
-  background: linear-gradient(145deg, rgba(28, 15, 12, .84), rgba(47, 25, 19, .72));
-  box-shadow: 0 18px 60px rgba(24, 8, 7, .31);
+  background: linear-gradient(145deg, rgba(20, 8, 8, .91), rgba(45, 17, 13, .82));
+  box-shadow: 0 18px 60px rgba(13, 3, 4, .42), 0 0 0 1px rgba(255, 130, 69, .04) inset;
 }
 .venus-full-exploration .mars-full-tutorial { background: rgba(29, 16, 12, .90); }
 .venus-full-exploration .mars-hud-kicker,
@@ -92,12 +136,24 @@
 .venus-full-exploration .mars-landmark-card > small,
 .venus-full-exploration .mars-hud-metric strong,
 .venus-full-exploration .mars-landmark-source { color: var(--venus-accent); }
-.venus-full-exploration .mars-full-actions button { background: rgba(27, 15, 12, .78); color: #decbb4; }
+.venus-full-exploration .mars-full-actions button { background: rgba(22, 8, 8, .86); color: #f0d3b4; text-shadow: 0 1px 8px rgba(0,0,0,.45); }
 .venus-full-exploration .mars-full-actions button:hover,
 .venus-full-exploration .mars-full-actions button:focus-visible { border-color: rgba(244, 202, 143, .58); background: rgba(63, 31, 23, .88); color: #f5dcad; }
 .venus-full-exploration .mars-full-exit { color: #f3cc91 !important; border-color: rgba(239, 175, 104, .50) !important; }
-.venus-full-exploration .mars-control-hints { color: rgba(229, 210, 190, .78); }
+.venus-full-exploration .mars-control-hints { color: rgba(244, 221, 202, .86); text-shadow: 0 1px 7px rgba(0,0,0,.58); }
 .venus-full-exploration .mars-control-hints b { color: #f0c981; }
+
+
+/* Venus keeps the Mars HUD framework, but raises type sizes enough for normal laptop viewing. */
+.venus-full-exploration .mars-full-hud { width: min(350px, 43vw); padding: 18px 19px 17px; }
+.venus-full-exploration .mars-hud-kicker { font-size: 8px; }
+.venus-full-exploration .mars-hud-mode { font-size: 7.2px; line-height: 1.45; }
+.venus-full-exploration .mars-hud-location { margin-top: 13px; font-size: 10px; }
+.venus-full-exploration .mars-hud-coordinates { font-size: 9px; line-height: 1.45; }
+.venus-full-exploration .mars-hud-metric small { font-size: 7px; line-height: 1.35; }
+.venus-full-exploration .mars-hud-metric strong { font-size: 11px; line-height: 1.3; }
+.venus-full-exploration .mars-hud-data { font-size: 6.6px; line-height: 1.45; }
+.venus-full-exploration .mars-control-hints { font-size: 7px; gap: 16px; }
 .venus-full-exploration .mars-loading-progress { background: linear-gradient(90deg, #b96b45, #ffc37a); }
 .venus-full-exploration .mars-travel-veil {
   background: radial-gradient(circle at 50% 42%, rgba(231, 154, 101, .40), transparent 32%), linear-gradient(180deg, rgba(98, 48, 36, .95), rgba(38, 19, 17, .99));
@@ -210,14 +266,79 @@
 }
 .venus-boundary-hint.is-visible { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
 
-/* Educational card remains in the Mars landmark-card slot. */
-.venus-location-card { width: min(320px, 38vw); max-height: min(66vh, 590px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(240, 182, 108, .45) transparent; }
-.venus-landmark-media { position: relative; overflow: hidden; aspect-ratio: 16 / 9; margin: 12px 0; border: 1px solid var(--venus-line); border-radius: 10px; background: rgba(20, 11, 9, .56); }
-.venus-landmark-media img { width: 100%; height: 100%; display: block; object-fit: cover; filter: sepia(.13) contrast(1.06) saturate(.94); }
-.venus-location-description { margin: 10px 0; color: rgba(255, 239, 219, .88); font-size: 8px; line-height: 1.58; }
-.venus-location-facts { display: grid; gap: 7px; margin: 0 0 11px; padding-left: 17px; color: rgba(255, 234, 209, .72); font-size: 7px; line-height: 1.5; }
-.venus-location-data-badge { margin: 10px 0; padding: 8px 10px; border: 1px solid rgba(240, 182, 108, .20); border-radius: 8px; background: rgba(240, 182, 108, .07); color: rgba(255, 209, 153, .86); font-size: 5.5px; letter-spacing: .9px; }
-.venus-location-sources { display: grid; gap: 5px; }
+/* Educational card stays in the Mars landmark-card slot, but is readable and user-controlled. */
+.venus-location-card {
+  right: clamp(18px, 3.5vw, 52px);
+  bottom: 72px;
+  width: min(430px, 39vw);
+  max-height: min(72vh, 700px);
+  padding: 18px 20px 19px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(240, 182, 108, .45) transparent;
+  pointer-events: auto;
+}
+.venus-location-card-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.venus-location-card .venus-location-card-head > small { color: #b58b69; font-size: 8px; line-height: 1.35; letter-spacing: 1.35px; }
+.venus-location-minimize {
+  flex: 0 0 auto;
+  min-height: 30px;
+  padding: 0 9px;
+  border: 1px solid rgba(236, 194, 137, .28);
+  border-radius: 999px;
+  background: rgba(38, 20, 16, .72);
+  color: #d7b98f;
+  font: 600 7px/1 system-ui, sans-serif;
+  letter-spacing: .9px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.venus-location-minimize:hover,
+.venus-location-minimize:focus-visible { border-color: rgba(246, 207, 151, .64); background: rgba(80, 40, 28, .82); color: #ffe1ae; outline: none; }
+.venus-location-card h4 { margin: 9px 0 7px; font-size: clamp(25px, 2.35vw, 31px); line-height: 1.06; }
+.venus-location-card .mars-landmark-type { color: #c0a18b; font-size: 10.5px; line-height: 1.55; }
+.venus-location-card .mars-landmark-coords { margin-top: 8px; color: #d2b78c; font-size: 9.5px; line-height: 1.45; }
+.venus-landmark-media {
+  position: relative;
+  width: 100%;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  margin: 14px 0;
+  padding: 0;
+  border: 1px solid var(--venus-line);
+  border-radius: 10px;
+  background: rgba(20, 11, 9, .56);
+  cursor: zoom-in;
+}
+.venus-landmark-media img { width: 100%; height: 100%; display: block; object-fit: cover; filter: sepia(.10) contrast(1.07) saturate(.96); transition: transform .24s ease, filter .24s ease; }
+.venus-landmark-media span {
+  position: absolute; right: 8px; bottom: 8px;
+  padding: 6px 8px; border: 1px solid rgba(246, 211, 163, .26); border-radius: 999px;
+  background: rgba(18, 9, 7, .76); color: #efd2a6; font: 650 7px/1 system-ui, sans-serif;
+  letter-spacing: .8px; text-transform: uppercase; backdrop-filter: blur(5px);
+}
+.venus-landmark-media:hover img, .venus-landmark-media:focus-visible img { transform: scale(1.018); filter: sepia(.06) contrast(1.10) saturate(1); }
+.venus-landmark-media:focus-visible { outline: 1px solid rgba(246, 208, 151, .75); outline-offset: 3px; }
+.venus-location-description { margin: 12px 0; color: rgba(255, 239, 219, .91); font-size: 12.5px; line-height: 1.68; }
+.venus-location-facts { display: grid; gap: 9px; margin: 0 0 13px; padding-left: 20px; color: rgba(255, 234, 209, .79); font-size: 11px; line-height: 1.62; }
+.venus-location-facts li::marker { color: #d4a36e; }
+.venus-location-visualization-note {
+  margin: 12px 0; padding: 10px 11px; border: 1px solid rgba(255, 126, 69, .25); border-radius: 8px;
+  background: linear-gradient(90deg, rgba(154, 38, 20, .26), rgba(88, 20, 16, .18)); color: #ffc29c; font-size: 9px; line-height: 1.55; letter-spacing: .35px; box-shadow: 0 0 24px rgba(255, 75, 25, .06) inset;
+}
+.venus-location-data-badge { margin: 12px 0 10px; padding: 9px 11px; border: 1px solid rgba(240, 182, 108, .20); border-radius: 8px; background: rgba(240, 182, 108, .07); color: rgba(255, 209, 153, .88); font-size: 7.5px; line-height: 1.45; letter-spacing: .8px; }
+.venus-location-sources { display: grid; gap: 7px; }
+.venus-location-card .mars-landmark-source { margin-top: 0; color: #9f8674; font-size: 8.5px; line-height: 1.45; letter-spacing: .55px; }
+.venus-location-card .mars-landmark-source:hover { color: #e7c99a; }
+.venus-location-info-toggle {
+  position: absolute; z-index: 13; right: clamp(18px, 3.5vw, 52px); bottom: 72px;
+  min-height: 36px; padding: 0 13px; border: 1px solid rgba(239, 193, 128, .42); border-radius: 999px;
+  background: rgba(27, 14, 11, .88); color: #ebc68f; box-shadow: 0 12px 32px rgba(15, 5, 3, .30);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); cursor: pointer;
+  font: 650 7px/1 system-ui, sans-serif; letter-spacing: 1px; text-transform: uppercase;
+}
+.venus-location-info-toggle:hover, .venus-location-info-toggle:focus-visible { border-color: rgba(249, 211, 158, .78); background: rgba(66, 31, 22, .94); color: #ffe0ac; outline: none; }
 
 /* Mars mobile layout targets data-mars-control. Map the same positions to Venus. */
 .venus-full-exploration .mars-mobile-dpad [data-venus-control="forward"] { left: 51px; top: 0; }
@@ -246,7 +367,9 @@
   .venus-region-card { min-height: 205px; }
   .venus-region-preview { height: 76px; }
   .venus-region-descriptor { min-height: 0; }
-  .venus-location-card { width: min(265px, 48vw); max-height: 54vh; }
+  .venus-location-card { width: min(360px, 52vw); max-height: 62vh; padding: 15px 16px; }
+  .venus-location-description { font-size: 11.5px; }
+  .venus-location-facts { font-size: 10.2px; }
   .venus-boundary-hint { bottom: 22px; }
 }
 @media (max-width: 700px) {
@@ -256,7 +379,15 @@
   .venus-region-grid { grid-template-columns: 1fr; }
   .venus-region-card { min-height: 160px; }
   .venus-region-preview { height: 72px; }
-  .venus-location-card { display: none; }
+  .venus-location-card {
+    display: block; right: 10px; bottom: 64px; width: calc(100vw - 20px); max-height: min(62vh, 520px);
+    padding: 14px 15px;
+  }
+  .venus-location-card h4 { font-size: 24px; }
+  .venus-location-card .mars-landmark-type { font-size: 10px; }
+  .venus-location-description { font-size: 11.5px; line-height: 1.62; }
+  .venus-location-facts { font-size: 10px; line-height: 1.55; }
+  .venus-location-info-toggle { right: 10px; bottom: 18px; }
 }
 @media (max-height: 560px) and (pointer: coarse) {
   .venus-full-exploration .mars-mobile-dpad [data-venus-control="forward"] { left: 45px; }

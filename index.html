@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="mercury-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="sun-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="venus-scene.css?v=20260927-venusscience-2">
-  <link rel="stylesheet" href="venus-full-exploration.css?v=20260929-curated-rebuild-1">
+  <link rel="stylesheet" href="venus-full-exploration.css?v=20260929-reference-fidelity-1">
   <link rel="stylesheet" href="asteroid-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="jupiter-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="saturn-scene.css?v=20260927-venusscience-2">
@@ -33,7 +33,7 @@
   <script src="mercury-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="sun-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="venus-scene.js?v=20260928-marsblueprint-2" defer></script>
-  <script src="venus-full-exploration.js?v=20260929-curated-rebuild-1" defer></script>
+  <script src="venus-full-exploration.js?v=20260929-reference-fidelity-1" defer></script>
   <script src="asteroid-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="jupiter-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="saturn-scene.js?v=20260927-venusscience-2" defer></script>
@@ -553,6 +553,7 @@
         <div class="mars-full-horizon venus-full-horizon" aria-hidden="true"></div>
         <div class="venus-cloud-entry" aria-hidden="true"></div>
         <div class="venus-haze-vignette" aria-hidden="true"></div>
+        <div class="venus-heat-shimmer" aria-hidden="true"></div>
 
         <section class="venus-region-selector" id="venus-region-selector" aria-labelledby="venus-region-selector-title">
           <div class="venus-region-selector-topline"><span>ANTARA · VENUS CURATED REGIONS</span><button id="venus-region-selector-close" type="button" aria-label="Tutup pemilih destinasi Venus">×</button></div>
@@ -575,8 +576,8 @@
           <div class="mars-hud-metrics">
             <div class="mars-hud-metric mars-hud-altitude-metric"><small>Ketinggian</small><strong id="venus-hud-altitude">--</strong><span id="venus-hud-altitude-limit" class="mars-hud-altitude-limit" hidden></span></div>
             <div class="mars-hud-metric"><small>Kecepatan</small><strong id="venus-hud-speed">0 M/S</strong></div>
-            <div class="mars-hud-metric"><small>Kualitas</small><strong id="venus-hud-quality">AUTO</strong></div>
-            <div class="mars-hud-metric"><small>Terrain</small><strong>CURATED</strong></div>
+            <div class="mars-hud-metric"><small>Jarak ke fitur</small><strong id="venus-hud-distance">--</strong></div>
+            <div class="mars-hud-metric"><small>Region</small><strong id="venus-hud-region-type">--</strong></div>
           </div>
           <div class="mars-hud-data" id="venus-hud-data">NASA/JPL MAGELLAN · REFERENCE-DRIVEN</div>
         </aside>
@@ -638,20 +639,28 @@
 
         <div class="mars-travel-veil venus-travel-veil" id="venus-travel-veil" aria-hidden="true"><span class="mars-travel-label" id="venus-travel-label">NAVIGASI VENUS</span></div>
 
-        <aside class="mars-landmark-card venus-location-card" id="venus-landmark-card" data-venus-ui aria-live="polite">
-          <small>VENUS CURATED REGION · MAGELLAN REFERENCE</small>
+        <aside class="mars-landmark-card venus-location-card" id="venus-landmark-card" data-venus-ui aria-live="polite" aria-hidden="true">
+          <div class="venus-location-card-head">
+            <small>VENUS CURATED REGION · MAGELLAN REFERENCE</small>
+            <button class="venus-location-minimize" id="venus-landmark-minimize" type="button" aria-label="Minimalkan informasi lokasi">Sembunyikan</button>
+          </div>
           <h4 id="venus-landmark-name">Venus</h4>
           <p class="mars-landmark-type" id="venus-landmark-type"></p>
           <p class="mars-landmark-coords" id="venus-landmark-coords"></p>
-          <div class="venus-landmark-media"><img id="venus-landmark-image" src="" alt="" loading="lazy" referrerpolicy="no-referrer"></div>
+          <button class="venus-landmark-media" id="venus-landmark-media" type="button" aria-label="Perbesar citra referensi Magellan">
+            <img id="venus-landmark-image" src="" alt="" loading="lazy" referrerpolicy="no-referrer">
+            <span>Perbesar referensi</span>
+          </button>
           <p class="venus-location-description" id="venus-landmark-description"></p>
           <ul class="venus-location-facts" id="venus-landmark-facts"></ul>
+          <div class="venus-location-visualization-note" id="venus-landmark-visualization-note" hidden></div>
           <div class="venus-location-data-badge" id="venus-landmark-data-badge">REFERENCE-DRIVEN MORPHOLOGY · CURATED REGION</div>
           <div class="venus-location-sources">
             <a class="mars-landmark-source" id="venus-landmark-source" href="https://science.nasa.gov/venus/" target="_blank" rel="noopener noreferrer">Referensi morfologi: NASA/JPL ↗</a>
             <a class="mars-landmark-source" id="venus-landmark-coordinate-source" href="https://planetarynames.wr.usgs.gov/" target="_blank" rel="noopener noreferrer">Koordinat: IAU/USGS ↗</a>
           </div>
         </aside>
+        <button class="venus-location-info-toggle" id="venus-info-toggle" type="button" hidden>Info Lokasi</button>
 
         <div class="mars-orientation-hint" aria-hidden="true">Putar perangkat untuk pengalaman terbaik</div>
       </section>

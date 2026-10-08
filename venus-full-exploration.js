@@ -41,8 +41,9 @@
       heading: 0,
       pitch: -0.22,
       spawn: { x: 0, z: 31, altitude: 2.7 },
-      playRadius: 72,
-      softBoundaryStart: 58,
+      featureCenter: { x: 0, z: -25 },
+      playRadius: 64,
+      softBoundaryStart: 52,
       source: "https://science.nasa.gov/photojournal/venus-3-d-perspective-view-of-maat-mons-2/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/3550",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00254/PIA00254.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
@@ -51,14 +52,17 @@
       facts: [
         "NASA/JPL menggambarkan Maat Mons sebagai gunung api sekitar 8 km di atas radius rata-rata Venus.",
         "Perspektif Magellan memperlihatkan aliran lava memanjang ratusan kilometer melintasi dataran retak menuju kaki gunung.",
+        "Magellan merekam sebuah vent Maat Mons berubah bentuk dan membesar secara signifikan antara Februari dan Oktober 1991, bukti kuat aktivitas vulkanik saat itu.",
         "Model ANTARA memprioritaskan edifice yang lebar dan lereng gradual, bukan pola radial berbentuk bintang."
       ],
-      palette: { low: 0x5b3428, mid: 0x7b4935, high: 0x9a6245, accent: 0x3d211c, rock: 0x6b3f32 },
-      fog: 0x7f4c38,
-      fogDensity: 0.0105,
-      sky: 0x8b563e,
-      sun: 0xffd2a0,
-      hemi: 0xf0b97f
+      visualizationNote: "VISUALISASI AKTIVITAS VULKANIK · Rekonstruksi ilustratif berdasarkan perubahan vent Magellan 1991. Glow lokal bukan foto observasi langsung lava pijar saat ini.",
+      palette: { low: 0xa35b2a, mid: 0xd18a3d, high: 0xefb85f, accent: 0x743a21, rock: 0x4b2c1d },
+      fog: 0xa76537,
+      fogDensity: 0.0100,
+      sky: 0xb96d39,
+      sun: 0xffdc96,
+      hemi: 0xf2ad67,
+      exposure: 1.04
     },
     {
       id: "maxwell",
@@ -70,8 +74,9 @@
       heading: -0.12,
       pitch: -0.24,
       spawn: { x: -8, z: 34, altitude: 3.1 },
-      playRadius: 68,
-      softBoundaryStart: 54,
+      featureCenter: { x: 4, z: -16 },
+      playRadius: 62,
+      softBoundaryStart: 50,
       source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/3766",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00149/PIA00149.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
@@ -82,12 +87,13 @@
         "Magellan memperlihatkan terrain Maxwell yang sangat terdeformasi berdampingan dengan dataran lava Lakshmi yang lebih halus.",
         "Ridge pada region ini dipaksa mengikuti tren struktural regional agar siluetnya terbaca sebagai mountain belt."
       ],
-      palette: { low: 0x49332d, mid: 0x665047, high: 0x92776a, accent: 0x2d2221, rock: 0x55413b },
-      fog: 0x675046,
-      fogDensity: 0.0092,
-      sky: 0x766053,
-      sun: 0xffd8ac,
-      hemi: 0xd7b08d
+      palette: { low: 0x6a472f, mid: 0x9b6b43, high: 0xd1a06a, accent: 0x7b4c31, rock: 0x4b3327 },
+      fog: 0x80583e,
+      fogDensity: 0.0090,
+      sky: 0x8d6548,
+      sun: 0xffd19a,
+      hemi: 0xdba071,
+      exposure: 1.02
     },
     {
       id: "aphrodite",
@@ -99,8 +105,9 @@
       heading: 0.08,
       pitch: -0.20,
       spawn: { x: 4, z: 30, altitude: 2.8 },
-      playRadius: 72,
-      softBoundaryStart: 58,
+      featureCenter: { x: 0, z: -10 },
+      playRadius: 64,
+      softBoundaryStart: 52,
       source: "https://science.nasa.gov/photojournal/venus-interior-of-ovda-regio/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/317",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00218/PIA00218.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
@@ -111,12 +118,13 @@
         "Ridge dan valley dasarnya berarah timur-laut ke barat-daya lalu dipotong fracture ekstensional berarah barat-laut ke tenggara.",
         "Lembah besar pada referensi Magellan diisi material gelap yang kemungkinan lava."
       ],
-      palette: { low: 0x493028, mid: 0x714f3d, high: 0x9a7256, accent: 0x33221d, rock: 0x68483c },
-      fog: 0x78513f,
-      fogDensity: 0.0100,
-      sky: 0x845a44,
-      sun: 0xffd0a2,
-      hemi: 0xe0ad82
+      palette: { low: 0x7b4a2b, mid: 0xaa6d3b, high: 0xd49a58, accent: 0x72452b, rock: 0x5b3828 },
+      fog: 0x93603b,
+      fogDensity: 0.0095,
+      sky: 0xa4683c,
+      sun: 0xffcc88,
+      hemi: 0xe49c62,
+      exposure: 1.03
     },
     {
       id: "ishtar",
@@ -128,8 +136,9 @@
       heading: -0.08,
       pitch: -0.18,
       spawn: { x: -4, z: 30, altitude: 2.6 },
-      playRadius: 70,
-      softBoundaryStart: 56,
+      featureCenter: { x: -5, z: -2 },
+      playRadius: 63,
+      softBoundaryStart: 51,
       source: "https://science.nasa.gov/photojournal/perspective-view-of-ishtar-terra/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/2733",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00093/PIA00093.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
@@ -140,12 +149,13 @@
         "Lakshmi Planum merupakan plateau tinggi yang dikelilingi mountain chains dan terrain yang sangat terdeformasi.",
         "Model memisahkan interior plateau yang lebih halus dari margin pegunungan agar Ishtar tidak terbaca sebagai satu mesa generik."
       ],
-      palette: { low: 0x4a342c, mid: 0x6b5145, high: 0x8c7160, accent: 0x382823, rock: 0x5b463d },
-      fog: 0x705447,
-      fogDensity: 0.0095,
-      sky: 0x7c6252,
-      sun: 0xffd5ab,
-      hemi: 0xd6af8b
+      palette: { low: 0x755238, mid: 0xa27a52, high: 0xd2ad78, accent: 0x855938, rock: 0x544034 },
+      fog: 0x826047,
+      fogDensity: 0.0091,
+      sky: 0x916a4d,
+      sun: 0xffd09a,
+      hemi: 0xdca071,
+      exposure: 1.02
     },
     {
       id: "alpha",
@@ -157,8 +167,9 @@
       heading: 0.18,
       pitch: -0.22,
       spawn: { x: 0, z: 28, altitude: 2.5 },
-      playRadius: 68,
-      softBoundaryStart: 54,
+      featureCenter: { x: 0, z: -6 },
+      playRadius: 62,
+      softBoundaryStart: 50,
       source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/203",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00481/PIA00481.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1100&w=1400",
@@ -169,12 +180,13 @@
         "Local dark patches pada data Magellan adalah topographic lows yang terisi lava lebih halus.",
         "Relief procedural hanya mengisi detail kecil; identitas utama region datang dari fabric tessera yang terarah."
       ],
-      palette: { low: 0x4a3026, mid: 0x76503a, high: 0xa07858, accent: 0x39231d, rock: 0x654636 },
-      fog: 0x77503c,
-      fogDensity: 0.0107,
-      sky: 0x825940,
-      sun: 0xffd19a,
-      hemi: 0xe3ad79
+      palette: { low: 0x75431f, mid: 0xae6b2f, high: 0xdfa14d, accent: 0x885024, rock: 0x4b2d1d },
+      fog: 0x975c32,
+      fogDensity: 0.0100,
+      sky: 0xa76735,
+      sun: 0xffca7d,
+      hemi: 0xe79a59,
+      exposure: 1.03
     }
   ]);
 
@@ -187,6 +199,13 @@
   const formatSpeed = kmPerSecond => kmPerSecond < 1 ? `${Math.round(kmPerSecond * 1000)} M/S` : `${kmPerSecond.toFixed(2)} KM/S`;
   const wait = ms => new Promise(resolve => window.setTimeout(resolve, ms));
   const gaussian = (x, z, cx, cz, sx, sz) => Math.exp(-(((x - cx) / sx) ** 2 + ((z - cz) / sz) ** 2));
+  const rotatedGaussian = (x, z, cx, cz, sx, sz, angle = 0) => {
+    const dx = x - cx, dz = z - cz;
+    const ca = Math.cos(angle), sa = Math.sin(angle);
+    const rx = dx * ca + dz * sa;
+    const rz = -dx * sa + dz * ca;
+    return Math.exp(-((rx / sx) ** 2 + (rz / sz) ** 2));
+  };
   const ridgeWave = (value, power = 6) => Math.pow(Math.abs(Math.sin(value)), power);
   const hash2 = (x, z, seed = 0) => {
     const v = Math.sin(x * 127.1 + z * 311.7 + seed * 74.7) * 43758.5453123;
@@ -210,71 +229,156 @@
     return norm ? sum / norm : 0;
   };
 
+  const smoothBand = (value, inner, outer) => 1 - smoothstep((Math.abs(value) - inner) / Math.max(0.0001, outer - inner));
+
+  function maatFlowFields(x, z) {
+    // PIA00254 shows coherent dark flow fields crossing the foreground plain,
+    // separated by brighter channels. Use broad lobes plus meandering feeders,
+    // not three hard procedural stripes.
+    const travel = clamp((z + 22) / 68, 0, 1);
+    const envelope = smoothstep((z + 23) / 8) * (1 - smoothstep((z - 49) / 12));
+    const ribbon = (distance, width) => Math.exp(-Math.pow(distance / Math.max(0.1, width), 4));
+    const pathA = -5.5 - travel * 8.0 + Math.sin((z + 18) * 0.070) * 2.4 + Math.sin(z * 0.027) * 1.7;
+    const pathB = 7.5 + travel * 8.8 + Math.sin((z + 9) * 0.061 + 1.2) * 2.7;
+    const pathC = 1.5 - travel * 1.7 + Math.sin((z + 5) * 0.086 - 0.7) * 1.4;
+    const a = ribbon(x - pathA, 3.3 + travel * 6.4) * envelope;
+    const b = ribbon(x - pathB, 3.7 + travel * 6.8) * envelope;
+    const c = ribbon(x - pathC, 2.1 + travel * 3.4) * envelope;
+    const westLobes = Math.max(
+      rotatedGaussian(x, z, -19, 17, 17, 25, -0.09),
+      rotatedGaussian(x, z, -31, 39, 23, 18, 0.10)
+    ) * envelope;
+    const eastLobes = Math.max(
+      rotatedGaussian(x, z, 18, 14, 16, 26, 0.08),
+      rotatedGaussian(x, z, 31, 38, 21, 20, -0.08)
+    ) * envelope;
+    const breakup = 0.90 + valueNoise(x * 0.045, z * 0.045, 101) * 0.10;
+    const goldenChannelPath = 0.8 + Math.sin((z + 11) * 0.055) * 2.1;
+    const goldenChannel = ribbon(x - goldenChannelPath, 3.1 + travel * 2.0) * envelope;
+    const rawFlow = Math.max(a * 0.66, b * 0.68, c * 0.36, westLobes * 0.90, eastLobes * 0.88) * breakup;
+    const combined = clamp(rawFlow * (1 - goldenChannel * 0.76), 0, 1);
+    const edge = clamp((a * (1 - a) + b * (1 - b) + westLobes * (1 - westLobes) + eastLobes * (1 - eastLobes)) * 2.2, 0, 1);
+    return { a, b, c, combined, edge, travel };
+  }
+
   function maatHeight(x, z) {
-    const mountain = 7.85 * gaussian(x, z, 0, -25, 29, 25);
-    const shoulder = 1.38 * gaussian(x, z, -10, -16, 45, 34);
-    const summit = -0.42 * gaussian(x, z, 0, -25, 5.2, 4.5);
-    // Broad flow aprons cross the foreground plains without producing a radial starburst.
-    const flowA = 0.24 * gaussian(x, z, -13, 8, 9, 47) * (0.55 + 0.45 * ridgeWave(x * 0.22 + z * 0.035, 10));
-    const flowB = 0.20 * gaussian(x, z, 14, 4, 11, 45) * (0.58 + 0.42 * ridgeWave(x * 0.18 - z * 0.042 + 0.8, 11));
-    const flowC = 0.13 * gaussian(x, z, 1, 23, 34, 19) * ridgeWave(x * 0.105 + z * 0.03 + 0.4 * Math.sin(z * 0.035), 12);
-    const fractureA = ridgeWave((x * 0.24 + z * 0.08) + 0.55 * Math.sin(z * 0.045), 10) * 0.16;
-    const fractureB = ridgeWave((x * -0.12 + z * 0.27) + 0.4 * Math.sin(x * 0.05), 12) * 0.11;
-    const plain = 0.14 * fbm(x * 0.055, z * 0.055, 11, 3);
-    return mountain + shoulder + summit + flowA + flowB + flowC + fractureA + fractureB + plain;
+    const dx = x;
+    const dz = z + 25;
+    const radial = Math.hypot(dx / 31.5, dz / 27.0);
+    const angular = Math.atan2(dz, dx);
+    const radialWarp = radial * (1 + 0.055 * Math.sin(angular * 3 + 0.4) + 0.035 * Math.sin(angular * 5 - 0.8));
+    const broadBase = 5.75 * Math.exp(-1.03 * Math.pow(radialWarp, 1.46));
+    const upperEdifice = 0.96 * Math.exp(-3.15 * Math.pow(radialWarp, 2.20));
+    const asymmetricShoulder = 0.74 * rotatedGaussian(x, z, -10, -17, 35, 27, 0.12)
+      + 0.34 * rotatedGaussian(x, z, 14, -18, 29, 26, -0.10);
+
+    // The summit is broad and irregular. Depressions are integrated into the
+    // upper edifice instead of forming a perfect game-like crater ring.
+    const summitBench = 0.82 * rotatedGaussian(x, z, -0.8, -24.8, 9.5, 7.3, 0.16)
+      + 0.22 * rotatedGaussian(x, z, -3.8, -24.0, 5.4, 4.5, -0.10)
+      + 0.18 * rotatedGaussian(x, z, 4.0, -25.6, 4.8, 4.1, 0.12);
+    const ventPrimary = -0.46 * rotatedGaussian(x, z, 1.5, -25.8, 3.8, 2.8, 0.28);
+    const ventSecondary = -0.18 * rotatedGaussian(x, z, -2.0, -23.7, 2.4, 1.8, -0.34);
+    const brokenRim = 0.13 * rotatedGaussian(x, z, 0.0, -25.0, 5.6, 4.2, 0.20)
+      * (0.58 + 0.42 * ridgeWave(x * 0.58 + z * 0.23 + 0.35 * Math.sin(z * 0.24), 7));
+    const summitChannel = -0.085 * Math.exp(-Math.pow((x - 0.18 * (z + 25) - 1.0) / 1.45, 2))
+      * rotatedGaussian(x, z, 1.0, -18, 7.5, 15, 0.04);
+    // A subordinate volcanic dome/shelf in the midground echoes the layered
+    // relief visible in the opened PIA00254 perspective without becoming a prop.
+    const foregroundDome = 1.05 * rotatedGaussian(x, z, -8.5, -5.5, 11.5, 9.0, -0.08)
+      + 0.32 * rotatedGaussian(x, z, -11.0, -3.0, 6.2, 5.0, 0.12);
+
+    const flows = maatFlowFields(x, z);
+    // Cooled flow units are low-relief lobes. Their identity is primarily tonal,
+    // as in the opened Magellan/Venera-hued reference, not tall glowing ridges.
+    const flowRelief = flows.combined * (0.09 + 0.045 * valueNoise(x * 0.08, z * 0.08, 113));
+    const flowLevees = flows.edge * 0.055;
+    const fractureFabric = (ridgeWave(x * 0.17 + z * 0.055 + 0.35 * Math.sin(z * 0.038), 11)
+      + ridgeWave(-x * 0.10 + z * 0.19 + 0.25 * Math.sin(x * 0.041), 12)) * 0.055;
+    const plainUndulation = 0.10 * fbm(x * 0.045, z * 0.045, 11, 3);
+
+    return broadBase + upperEdifice + asymmetricShoulder + summitBench + ventPrimary + ventSecondary
+      + brokenRim + summitChannel + foregroundDome + flowRelief + flowLevees + fractureFabric + plainUndulation;
   }
 
   function maxwellHeight(x, z) {
-    const envelope = gaussian(x, z, 4, -16, 32, 54);
-    const massif = 7.7 * envelope + 1.6 * gaussian(x, z, 15, -29, 18, 29);
-    const ridgeA = ridgeWave(x * 0.34 + z * 0.055 + 0.5 * Math.sin(z * 0.052), 7) * envelope * 2.2;
-    const ridgeB = ridgeWave(x * 0.20 - z * 0.075, 9) * envelope * 0.85;
-    const valleys = -0.8 * ridgeWave(x * 0.16 + z * 0.065 + 1.1, 11) * envelope;
-    const lakshmi = -1.25 * smoothstep((x + 22) / 18) * gaussian(x, z, -29, 0, 36, 60);
-    const micro = 0.18 * fbm(x * 0.065, z * 0.065, 23, 3);
-    return Math.max(-1.4, massif + ridgeA + ridgeB + valleys + lakshmi + micro);
+    const warp = valueNoise(x * 0.026, z * 0.026, 23) * 4.2;
+    const envelope = rotatedGaussian(x, z, 4, -16, 31, 55, -0.08);
+    const massif = 7.45 * envelope + 1.72 * rotatedGaussian(x, z, 16, -30, 18, 31, 0.10);
+    const ridgeA = ridgeWave((x + warp) * 0.30 + z * 0.052 + 0.38 * Math.sin(z * 0.046), 7) * envelope * 2.05;
+    const ridgeB = ridgeWave((x - warp * 0.55) * 0.19 - z * 0.068 + 0.8, 9) * envelope * 0.92;
+    const ridgeC = ridgeWave(x * 0.39 + z * 0.020 + 1.3 + 0.18 * Math.sin(z * 0.08), 10) * envelope * 0.46;
+    const valleys = -0.92 * ridgeWave(x * 0.145 + z * 0.062 + 1.0 + warp * 0.025, 10) * envelope;
+    const westernScarp = -0.95 * smoothBand(x + 24 + z * 0.05, 0, 7.5) * gaussian(x, z, -21, -6, 29, 50);
+    const lakshmi = -1.28 * smoothstep((x + 22) / 18) * gaussian(x, z, -30, 0, 36, 60);
+    const micro = 0.12 * fbm(x * 0.058, z * 0.058, 23, 3);
+    return Math.max(-1.4, massif + ridgeA + ridgeB + ridgeC + valleys + westernScarp + lakshmi + micro);
   }
 
   function aphroditeHeight(x, z) {
-    const upland = 3.35 * gaussian(x, z, 0, -10, 57, 43) + 0.9 * gaussian(x, z, -18, -18, 31, 25);
-    const neSw = ridgeWave((x + z * 0.72) * 0.235, 8) * gaussian(x, z, 0, -8, 64, 48) * 0.82;
-    const nwSe = ridgeWave((x - z * 0.88) * 0.31 + 0.6, 12) * gaussian(x, z, 6, -11, 58, 44) * 0.45;
-    const rift = -1.25 * Math.exp(-(((x - z * 0.34 - 7) / 5.5) ** 2)) * gaussian(x, z, 0, -5, 70, 55);
-    const valley = -0.66 * Math.exp(-(((x + z * 0.55 + 15) / 7.5) ** 2)) * gaussian(x, z, -8, -4, 66, 52);
-    const blocks = 0.24 * fbm(x * 0.07, z * 0.07, 37, 3);
-    return upland + neSw + nwSe + rift + valley + blocks;
+    const envelope = gaussian(x, z, 0, -9, 64, 50);
+    const warp = valueNoise(x * 0.028, z * 0.028, 37) * 4.8;
+    const upland = 3.20 * gaussian(x, z, 0, -10, 58, 44) + 0.82 * gaussian(x, z, -20, -18, 32, 26);
+    const neSw = ridgeWave((x + z * 0.72 + warp) * 0.215, 8) * envelope * 0.86;
+    const nwSe = ridgeWave((x - z * 0.88 - warp * 0.55) * 0.275 + 0.6, 11) * envelope * 0.48;
+    const foldedBand = ridgeWave((x + z * 0.30) * 0.155 + 0.48 * Math.sin(z * 0.052), 9) * envelope * 0.31;
+    const rift = -1.34 * Math.exp(-Math.pow((x - z * 0.34 - 7 - warp * 0.18) / 5.8, 2)) * gaussian(x, z, 0, -5, 70, 55);
+    const riftBranch = -0.50 * Math.exp(-Math.pow((x + z * 0.18 + 24 + warp * 0.12) / 4.2, 2)) * gaussian(x, z, -12, -2, 60, 48);
+    const broadValley = -0.70 * Math.exp(-Math.pow((x + z * 0.55 + 15) / 8.5, 2)) * gaussian(x, z, -8, -4, 66, 52);
+    const blocks = 0.15 * fbm(x * 0.058, z * 0.058, 37, 3);
+    return upland + neSw + nwSe + foldedBand + rift + riftBranch + broadValley + blocks;
+  }
+
+  function ishtarPlateauMask(x, z) {
+    // Ishtar/Lakshmi should read as a broad regional plateau, not a rounded box.
+    // Overlapping low-frequency lobes create an irregular natural outline while
+    // preserving the elevated interior and mountain-bounded margins.
+    const core = gaussian(x, z, -6, -2, 58, 42);
+    const west = gaussian(x, z, -26, 4, 39, 31);
+    const east = gaussian(x, z, 20, -10, 37, 32);
+    const north = gaussian(x, z, -4, -22, 48, 29);
+    const boundaryWarp = valueNoise(x * 0.027, z * 0.027, 97) * 0.08;
+    return smoothstep((clamp(core * 0.72 + west * 0.28 + east * 0.24 + north * 0.18 + boundaryWarp, 0, 1) - 0.28) / 0.58);
   }
 
   function ishtarHeight(x, z) {
-    // Ishtar is a broad regional highland, not a single flat mesa. Several overlapping
-    // uplifts create an irregular plateau while mountain belts define its margins.
-    const plateau = 2.45 * gaussian(x, z, -5, -2, 62, 47)
-      + 0.82 * gaussian(x, z, -24, 4, 42, 35)
-      + 0.54 * gaussian(x, z, 19, -11, 38, 33);
-    const easternMargin = gaussian(x, z, 39, -10, 18, 48);
-    const westernMargin = gaussian(x, z, -43, -4, 17, 44);
-    const northernMargin = gaussian(x, z, -4, -39, 48, 15);
-    const mountainEast = easternMargin * (3.55 + ridgeWave(x * 0.36 + z * 0.05 + 0.35 * Math.sin(z * 0.04), 7) * 2.0);
-    const mountainWest = westernMargin * (1.95 + ridgeWave(x * 0.28 - z * 0.045, 8) * 1.15);
-    const mountainNorth = northernMargin * (1.25 + ridgeWave(x * 0.22 + z * 0.04, 9) * 0.85);
-    const interiorLava = 0.11 * ridgeWave(x * 0.075 + z * 0.038 + 0.3 * Math.sin(x * 0.03), 14) * gaussian(x, z, -4, 0, 47, 36);
-    const southernLowland = -0.52 * gaussian(x, z, 5, 55, 72, 28);
-    const micro = 0.09 * fbm(x * 0.06, z * 0.06, 41, 3);
-    return plateau + mountainEast + mountainWest + mountainNorth + interiorLava + southernLowland + micro;
+    // A broad Lakshmi-like plateau with sharper regional boundaries. The interior
+    // stays comparatively smooth while deformation is concentrated at the margins.
+    const plateauMask = ishtarPlateauMask(x, z);
+    const plateau = 2.72 * plateauMask + 0.30 * gaussian(x, z, -18, 5, 34, 28);
+    const easternMargin = gaussian(x, z, 39, -10, 17, 46);
+    const westernMargin = gaussian(x, z, -43, -4, 17, 43);
+    const northernMargin = gaussian(x, z, -4, -39, 47, 14);
+    const warp = valueNoise(x * 0.031, z * 0.031, 41) * 3.0;
+    const mountainEast = easternMargin * (3.52 + ridgeWave((x + warp) * 0.34 + z * 0.05, 7) * 1.92);
+    const mountainWest = westernMargin * (1.90 + ridgeWave((x - warp) * 0.27 - z * 0.045, 8) * 1.10);
+    const mountainNorth = northernMargin * (1.28 + ridgeWave(x * 0.21 + z * 0.04 + warp * 0.02, 9) * 0.82);
+    const interiorFlow = 0.07 * ridgeWave(x * 0.066 + z * 0.031 + 0.24 * Math.sin(x * 0.028), 14) * plateauMask;
+    const marginFractures = 0.17 * ridgeWave(x * 0.10 + z * 0.22 + warp * 0.02, 11) * (easternMargin + westernMargin) * 0.65;
+    const southernLowland = -0.56 * gaussian(x, z, 5, 55, 72, 28);
+    const micro = 0.065 * fbm(x * 0.052, z * 0.052, 41, 3);
+    return plateau + mountainEast + mountainWest + mountainNorth + interiorFlow + marginFractures + southernLowland + micro;
   }
 
   function alphaHeight(x, z) {
-    const upland = 1.9 * gaussian(x, z, 0, -6, 54, 45) + 0.45 * gaussian(x, z, -17, -18, 32, 29);
-    const ridgeA = ridgeWave((x + z * 0.55) * 0.36 + 0.25 * Math.sin(z * 0.08), 8) * 0.88;
-    const ridgeB = ridgeWave((-x * 0.52 + z) * 0.33 + 0.35 * Math.sin(x * 0.065), 8) * 0.78;
-    const ridgeC = ridgeWave((x * 0.18 - z * 0.28) + 1.2, 12) * 0.25;
-    const faultA = -0.78 * Math.exp(-(((x - z * 0.42 - 8) / 2.9) ** 2));
-    const faultB = -0.58 * Math.exp(-(((x + z * 0.58 + 13) / 3.3) ** 2));
-    const lavaLowA = -0.85 * gaussian(x, z, 24, 13, 11, 8);
-    const lavaLowB = -0.64 * gaussian(x, z, -27, -4, 10, 12);
-    const blocks = 0.20 * fbm(x * 0.085, z * 0.085, 59, 3);
-    const envelope = gaussian(x, z, 0, -5, 62, 54);
-    return upland + (ridgeA + ridgeB + ridgeC) * envelope + faultA * envelope + faultB * envelope + lavaLowA + lavaLowB + blocks;
+    // Alpha is an irregular tessera upland. Cross-cutting ridge fabrics are warped
+    // and confined to uplifted blocks so the region does not read as infinite sine stripes.
+    const warpA = valueNoise(x * 0.030, z * 0.030, 59) * 7.0;
+    const warpB = valueNoise(x * 0.024 + 11, z * 0.024 - 7, 71) * 5.8;
+    const envelope = gaussian(x, z, 0, -6, 58, 49);
+    const blockField = smoothstep((fbm(x * 0.035, z * 0.035, 83, 2) + 0.55) / 1.10);
+    const upland = (1.45 + blockField * 0.85) * envelope + 0.38 * gaussian(x, z, -18, -18, 31, 28);
+    const ridgeA = ridgeWave((x + z * 0.55 + warpA) * 0.285, 8) * 0.88;
+    const ridgeB = ridgeWave((-x * 0.52 + z + warpB) * 0.270, 8) * 0.80;
+    const ridgeC = ridgeWave((x * 0.18 - z * 0.28 + warpA * 0.22) + 1.2, 11) * 0.24;
+    const faultA = -0.82 * Math.exp(-Math.pow((x - z * 0.42 - 8 - warpB * 0.12) / 3.2, 2));
+    const faultB = -0.62 * Math.exp(-Math.pow((x + z * 0.58 + 13 + warpA * 0.10) / 3.6, 2));
+    const faultC = -0.34 * Math.exp(-Math.pow((x - z * 0.08 + 24) / 2.6, 2));
+    const lavaLowA = -0.88 * gaussian(x, z, 24, 13, 11, 8);
+    const lavaLowB = -0.66 * gaussian(x, z, -27, -4, 10, 12);
+    const micro = 0.12 * fbm(x * 0.070, z * 0.070, 59, 3);
+    return upland + (ridgeA + ridgeB + ridgeC) * envelope
+      + (faultA + faultB + faultC) * envelope + lavaLowA + lavaLowB + micro;
   }
 
   const HEIGHT_FUNCTIONS = Object.freeze({
@@ -291,35 +395,37 @@
 
   function surfaceClass(region, x, z, height, slope) {
     if (region.id === "maat") {
-      const r = Math.hypot(x, z + 25);
-      const flowA = gaussian(x, z, -13, 8, 9, 47);
-      const flowB = gaussian(x, z, 14, 4, 11, 45);
-      if (r < 9) return "summit";
-      if (z > -19 && Math.max(flowA, flowB) > 0.55) return "lava";
-      if (slope > 0.32) return "rugged";
+      const r = Math.hypot(x / 31.5, (z + 25) / 27.0);
+      const flows = maatFlowFields(x, z);
+      if (r < 0.24) return "summit";
+      if (flows.combined > 0.62 && z > -20) return "lava"; // cooled flow unit, not exposed molten lava
+      if (r < 0.95 && (height > 2.0 || slope > 0.30)) return "rugged";
+      if (slope > 0.34) return "fracture";
       return "plain";
     }
     if (region.id === "maxwell") {
-      if (height > 7.0 || slope > 0.55) return "rugged";
-      if (x < -20) return "plain";
+      if (height > 7.0 || slope > 0.52) return "rugged";
+      if (height < 1.55 && slope < 0.18) return "plain";
       return "highland";
     }
     if (region.id === "aphrodite") {
-      const rift = Math.abs(x - z * 0.34 - 7);
-      if (rift < 6) return "fracture";
-      if (height > 3.3) return "highland";
-      if (height < 1.0) return "lava";
+      const warp = valueNoise(x * 0.028, z * 0.028, 37) * 4.8;
+      const rift = Math.abs(x - z * 0.34 - 7 - warp * 0.18);
+      const envelope = gaussian(x, z, 0, -9, 64, 50);
+      if ((rift < 6.5 && envelope > 0.40) || (height < 0.55 && envelope > 0.42)) return "lava";
+      if (height > 3.25) return "highland";
+      if (slope > 0.30) return "fracture";
       return "rugged";
     }
     if (region.id === "ishtar") {
-      const interior = gaussian(x, z, -5, -2, 55, 42);
-      if (interior > 0.56 && slope < 0.22) return "plain";
-      if (Math.abs(x) > 30 || z < -31 || slope > 0.46) return "rugged";
+      const plateauInterior = ishtarPlateauMask(x, z) > 0.56;
+      if (plateauInterior && slope < 0.20) return "plain";
+      if (Math.abs(x) > 31 || z < -31 || slope > 0.42) return "rugged";
       return "highland";
     }
     if (region.id === "alpha") {
-      if (height < 0.85) return "lava";
-      if (slope > 0.36) return "tessera";
+      if (height < 0.72) return "lava";
+      if (slope > 0.26 || height > 1.9) return "tessera";
       return "fracture";
     }
     return "plain";
@@ -338,14 +444,18 @@
       this.tiles = [];
       this.horizon = null;
       this.accentMesh = null;
+      this.regionalVisualization = null;
+      this.atmosphericMotes = null;
+      this.ambientClock = 0;
       this.material = null;
       this.horizonMaterial = null;
-      this.accentMaterial = null;
+      this.accentResources = [];
       this.textures = [];
       this.frustum = new THREE.Frustum();
       this.projection = new THREE.Matrix4();
       this.cameraDirection = new THREE.Vector3();
       this.tileVector = new THREE.Vector3();
+      this.thermalColor = new THREE.Color();
       this.visibilityClock = 0;
       this.visibilityStats = { visible: 0, buffered: 0, culled: 0, total: 0 };
     }
@@ -392,6 +502,10 @@
       await new Promise(resolve => requestAnimationFrame(() => resolve()));
       this.accentMesh = this.createSurfaceAccents();
       if (this.accentMesh) this.group.add(this.accentMesh);
+      this.regionalVisualization = this.createRegionalVisualization();
+      if (this.regionalVisualization) this.group.add(this.regionalVisualization);
+      this.atmosphericMotes = this.createAtmosphericMotes();
+      if (this.atmosphericMotes) this.group.add(this.atmosphericMotes);
       onProgress(0.96);
       await new Promise(resolve => requestAnimationFrame(() => resolve()));
       this.group.updateMatrixWorld(true);
@@ -416,16 +530,103 @@
       const T = this.THREE;
       const p = this.region.palette;
       const cls = surfaceClass(this.region, x, z, height, slope);
-      let hex = p.mid;
-      if (cls === "plain") hex = p.low;
-      else if (cls === "lava") hex = p.accent;
-      else if (cls === "rugged" || cls === "tessera") hex = p.high;
-      else if (cls === "fracture") hex = p.rock;
-      else if (cls === "highland" || cls === "summit") hex = p.high;
       const color = target || new T.Color();
-      color.setHex(hex);
-      const variation = 0.90 + 0.10 * valueNoise(x * 0.12, z * 0.12, this.region.id.length * 13);
-      color.multiplyScalar(variation);
+      const low = new T.Color(p.low);
+      const mid = new T.Color(p.mid);
+      const high = new T.Color(p.high);
+      const accent = new T.Color(p.accent);
+      const rock = new T.Color(p.rock);
+
+      // Reference-driven zoning is intentionally stronger than random noise.
+      // Random variation is retained only at micro scale so large dark/bright
+      // fields stay coherent when compared with the opened scientific image.
+      if (this.region.id === "maat") {
+        const flows = maatFlowFields(x, z);
+        const radial = Math.hypot(x / 31.5, (z + 25) / 27.0);
+        const mountainMask = clamp(1 - radial / 1.18, 0, 1);
+        const ventHeat = rotatedGaussian(x, z, 1.5, -25.7, 5.4, 3.8, 0.24);
+        const fracture = clamp((ridgeWave(x * 0.17 + z * 0.055, 11) + ridgeWave(-x * 0.10 + z * 0.19, 12)) * 0.62, 0, 1);
+
+        // PIA00254 color language: golden edifice and plains, coherent dark flow
+        // units in the foreground, with only the tiny illustrative vent allowed
+        // to approach molten yellow.
+        color.copy(mid);
+        color.lerp(high, clamp(mountainMask * 0.72 + Math.max(0, height - 3.5) * 0.05, 0, 0.88));
+        if (flows.combined > 0.16) {
+          color.lerp(accent, clamp(0.18 + flows.combined * 0.52, 0, 0.67));
+          const flowFracture = Math.max(
+            ridgeWave(x * 0.115 + z * 0.043 + 0.42 * Math.sin(z * 0.034), 10),
+            ridgeWave(-x * 0.082 + z * 0.128 + 0.31 * Math.sin(x * 0.037), 12)
+          );
+          color.lerp(mid, clamp(flowFracture * flows.combined * 0.22, 0, 0.22));
+        }
+        if (cls === "fracture") color.lerp(rock, 0.40 + fracture * 0.18);
+        if (cls === "rugged") color.lerp(high, 0.22);
+        if (cls === "summit") color.lerp(high, 0.30);
+        if (ventHeat > 0.28) {
+          this.thermalColor.setHex(ventHeat > 0.72 ? 0xffd95a : 0xf4a536);
+          color.lerp(this.thermalColor, (ventHeat - 0.28) * 0.28);
+        }
+
+        const coherent = valueNoise(x * 0.055, z * 0.055, 111);
+        const micro = valueNoise(x * 0.34, z * 0.34, 127);
+        const tone = 0.96 + coherent * 0.045 + micro * 0.018 + flows.edge * 0.035;
+        color.multiplyScalar(clamp(tone * (0.98 + slope * 0.08), 0.84, 1.12));
+        return color;
+      }
+
+      if (this.region.id === "maxwell") {
+        const envelope = rotatedGaussian(x, z, 4, -16, 32, 55, -0.08);
+        const ridge = Math.max(
+          ridgeWave(x * 0.30 + z * 0.052 + 0.38 * Math.sin(z * 0.046), 7),
+          ridgeWave(x * 0.19 - z * 0.068 + 0.8, 9)
+        ) * envelope;
+        color.copy(cls === "plain" ? low : mid);
+        if (cls === "highland") color.lerp(high, 0.34 + ridge * 0.20);
+        if (cls === "rugged") color.copy(high).lerp(rock, 0.18 + clamp(slope, 0, 0.7) * 0.18);
+        color.multiplyScalar(clamp(0.96 + ridge * 0.10 + valueNoise(x * 0.12, z * 0.12, 29) * 0.025, 0.84, 1.14));
+        return color;
+      }
+
+      if (this.region.id === "aphrodite") {
+        const warp = valueNoise(x * 0.028, z * 0.028, 37) * 4.8;
+        const fabricA = ridgeWave((x + z * 0.72 + warp) * 0.215, 8);
+        const fabricB = ridgeWave((x - z * 0.88 - warp * 0.55) * 0.275 + 0.6, 11);
+        const riftMask = Math.exp(-Math.pow((x - z * 0.34 - 7 - warp * 0.18) / 6.2, 2)) * gaussian(x, z, 0, -9, 64, 50);
+        color.copy(mid);
+        if (cls === "highland") color.lerp(high, 0.42 + Math.max(fabricA, fabricB) * 0.18);
+        if (cls === "fracture") color.lerp(rock, 0.44);
+        if (cls === "lava") color.lerp(accent, 0.38 + riftMask * 0.16);
+        if (cls === "rugged") color.lerp(high, 0.20);
+        color.multiplyScalar(clamp(0.95 + Math.max(fabricA, fabricB) * 0.065 + valueNoise(x * 0.11, z * 0.11, 43) * 0.025, 0.84, 1.13));
+        return color;
+      }
+
+      if (this.region.id === "ishtar") {
+        const plateau = ishtarPlateauMask(x, z);
+        const margin = Math.max(gaussian(x, z, 39, -10, 17, 46), gaussian(x, z, -43, -4, 17, 43), gaussian(x, z, -4, -39, 47, 14));
+        color.copy(cls === "plain" ? mid : low);
+        if (cls === "highland") color.copy(mid).lerp(high, 0.30 + plateau * 0.20);
+        if (cls === "rugged") color.copy(high).lerp(rock, 0.24 + margin * 0.12);
+        color.multiplyScalar(clamp(0.97 + plateau * 0.035 + margin * 0.06 + valueNoise(x * 0.10, z * 0.10, 47) * 0.02, 0.87, 1.12));
+        return color;
+      }
+
+      if (this.region.id === "alpha") {
+        const warpA = valueNoise(x * 0.030, z * 0.030, 59) * 7.0;
+        const warpB = valueNoise(x * 0.024 + 11, z * 0.024 - 7, 71) * 5.8;
+        const ridgeA = ridgeWave((x + z * 0.55 + warpA) * 0.285, 8);
+        const ridgeB = ridgeWave((-x * 0.52 + z + warpB) * 0.270, 8);
+        const tessera = Math.max(ridgeA, ridgeB);
+        color.copy(mid);
+        if (cls === "tessera") color.lerp(high, 0.36 + tessera * 0.20);
+        if (cls === "fracture") color.lerp(rock, 0.32);
+        if (cls === "lava") color.lerp(accent, 0.74);
+        color.multiplyScalar(clamp(0.94 + tessera * 0.10 + valueNoise(x * 0.12, z * 0.12, 61) * 0.025, 0.82, 1.14));
+        return color;
+      }
+
+      color.setHex(p.mid);
       return color;
     }
 
@@ -514,16 +715,35 @@
       return mesh;
     }
 
+    distantRelief(angle, rt) {
+      const depth = smoothstep((rt - 0.12) / 0.88);
+      if (depth <= 0) return 0;
+      let profile = 0.20;
+      if (this.region.id === "maat") {
+        profile = 0.14 + ridgeWave(angle * 3.0 + 0.3, 8) * 0.36 + ridgeWave(angle * 6.0 - 0.8, 11) * 0.12;
+      } else if (this.region.id === "maxwell") {
+        profile = 0.28 + ridgeWave(angle * 3.5 + 0.4, 5) * 1.18 + ridgeWave(angle * 7.0 - 0.9, 8) * 0.42;
+      } else if (this.region.id === "aphrodite") {
+        profile = 0.20 + ridgeWave(angle * 4.0 + 0.7, 6) * 0.62 + ridgeWave(angle * 7.5 - 0.4, 9) * 0.24;
+      } else if (this.region.id === "ishtar") {
+        profile = 0.24 + ridgeWave(angle * 3.0 - 0.2, 7) * 0.78 + ridgeWave(angle * 5.5 + 1.1, 10) * 0.24;
+      } else if (this.region.id === "alpha") {
+        profile = 0.18 + ridgeWave(angle * 5.0 + 0.2, 7) * 0.48 + ridgeWave(angle * 7.0 - 1.0, 8) * 0.34;
+      }
+      return profile * depth * (0.52 + rt * 0.48);
+    }
+
     createHorizon() {
       const T = this.THREE;
       const radial = 8;
       const angular = this.quality.horizonSegments;
       const inner = this.region.playRadius * 0.76;
-      const outer = 190;
+      const outer = 150;
       const vertices = [];
       const normals = [];
       const colors = [];
       const indices = [];
+      const fogColor = new T.Color(this.region.fog);
       for (let r = 0; r <= radial; r += 1) {
         const rt = r / radial;
         const radius = lerp(inner, outer, rt);
@@ -534,8 +754,9 @@
           const sourceX = x * Math.min(1, this.region.playRadius / Math.max(radius, 0.001));
           const sourceZ = z * Math.min(1, this.region.playRadius / Math.max(radius, 0.001));
           const base = this.heightAt(sourceX, sourceZ);
-          const y = lerp(base, base * 0.28 - 0.8, smoothstep(rt));
-          const color = this.colorFor(sourceX, sourceZ, base, 0.08).multiplyScalar(lerp(0.78, 0.46, rt));
+          const y = lerp(base, base * 0.28 - 0.8, smoothstep(rt)) + this.distantRelief(angle, rt);
+          const color = this.colorFor(sourceX, sourceZ, base, 0.08);
+          color.lerp(fogColor, smoothstep(rt) * 0.54).multiplyScalar(lerp(0.80, 0.54, rt));
           vertices.push(x, y, z);
           normals.push(0, 1, 0);
           colors.push(color.r, color.g, color.b);
@@ -562,48 +783,344 @@
 
     createSurfaceAccents() {
       const T = this.THREE;
-      const count = this.quality.accentCount;
-      if (!count) return null;
-      const geometry = new T.BoxGeometry(1.0, 0.12, 0.66, 1, 1, 1);
-      this.accentMaterial = new T.MeshStandardMaterial({ color: this.region.palette.rock, roughness: 0.98, metalness: 0 });
-      const mesh = new T.InstancedMesh(geometry, this.accentMaterial, count);
-      mesh.frustumCulled = true;
+      const total = this.quality.accentCount;
+      if (!total) return null;
+
+      // Perceived richness comes from composition, not brute-force mesh count.
+      // Keep roughly the same instance budget, but cluster it along real regional
+      // structures: Maat flow corridors, Maxwell ridge/talus belts, Aphrodite
+      // fractures, Ishtar plateau margins and Alpha tessera intersections.
+      const rockGeometry = new T.DodecahedronGeometry(0.68, 0);
+      const shardGeometry = new T.OctahedronGeometry(0.72, 0);
+      const plateGeometry = (() => {
+        const ring = [
+          [-0.95, -0.42], [-0.42, -0.88], [0.30, -0.82], [0.92, -0.28],
+          [0.72, 0.60], [0.08, 0.92], [-0.72, 0.61]
+        ];
+        const vertices = [];
+        const topY = [0.10, 0.14, 0.08, 0.13, 0.09, 0.15, 0.11];
+        for (let i = 0; i < ring.length; i += 1) vertices.push(ring[i][0], topY[i], ring[i][1]);
+        for (let i = 0; i < ring.length; i += 1) vertices.push(ring[i][0] * 0.96, -0.10, ring[i][1] * 0.96);
+        vertices.push(0, 0.105, 0, 0, -0.10, 0);
+        const topCenter = ring.length * 2;
+        const bottomCenter = topCenter + 1;
+        const indices = [];
+        for (let i = 0; i < ring.length; i += 1) {
+          const next = (i + 1) % ring.length;
+          indices.push(topCenter, i, next);
+          indices.push(bottomCenter, ring.length + next, ring.length + i);
+          indices.push(i, ring.length + i, next, next, ring.length + i, ring.length + next);
+        }
+        const geometry = new T.BufferGeometry();
+        geometry.setAttribute("position", new T.Float32BufferAttribute(vertices, 3));
+        geometry.setIndex(indices);
+        geometry.computeVertexNormals();
+        geometry.computeBoundingSphere();
+        return geometry;
+      })();
+
+      const volcanic = this.region.id === "maat";
+      const rockMaterial = new T.MeshStandardMaterial({ color: 0xffffff, roughness: volcanic ? 0.91 : 0.97, metalness: 0, flatShading: true });
+      const plateMaterial = new T.MeshStandardMaterial({ color: 0xffffff, roughness: volcanic ? 0.82 : (this.region.id === "alpha" ? 0.91 : 0.94), metalness: 0, flatShading: true });
+      const shardMaterial = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.96, metalness: 0, flatShading: true });
+      this.accentResources.push(rockGeometry, plateGeometry, shardGeometry, rockMaterial, plateMaterial, shardMaterial);
+
+      const rocks = new T.InstancedMesh(rockGeometry, rockMaterial, total);
+      const plates = new T.InstancedMesh(plateGeometry, plateMaterial, total);
+      const shards = new T.InstancedMesh(shardGeometry, shardMaterial, total);
+      rocks.frustumCulled = plates.frustumCulled = shards.frustumCulled = true;
+
+      const zones = {
+        maat: [
+          { x: 0, z: 20, rx: 27, rz: 12 },
+          { x: -13, z: 7, rx: 13, rz: 28 },
+          { x: 14, z: 4, rx: 14, rz: 27 },
+          { x: 0, z: -10, rx: 23, rz: 15 }
+        ],
+        maxwell: [
+          { x: -18, z: -4, rx: 19, rz: 27 },
+          { x: 6, z: -18, rx: 23, rz: 29 },
+          { x: 23, z: -7, rx: 16, rz: 23 }
+        ],
+        aphrodite: [
+          { x: 8, z: -5, rx: 17, rz: 34 },
+          { x: -13, z: -12, rx: 27, rz: 23 },
+          { x: 20, z: 5, rx: 21, rz: 24 }
+        ],
+        ishtar: [
+          { x: 35, z: -8, rx: 11, rz: 27 },
+          { x: -35, z: -3, rx: 11, rz: 26 },
+          { x: 0, z: -34, rx: 28, rz: 10 },
+          { x: -5, z: 7, rx: 24, rz: 18 }
+        ],
+        alpha: [
+          { x: 0, z: -5, rx: 25, rz: 23 },
+          { x: 22, z: 10, rx: 15, rz: 17 },
+          { x: -24, z: -4, rx: 15, rz: 19 }
+        ]
+      }[this.region.id] || [{ x: 0, z: 0, rx: 30, rz: 30 }];
+
       const dummy = new T.Object3D();
-      let placed = 0;
-      for (let i = 0; i < count * 4 && placed < count; i += 1) {
-        const radius = 8 + hash2(i, 9, this.region.id.length) * (this.region.softBoundaryStart - 12);
-        const angle = hash2(i, 21, this.region.id.charCodeAt(0)) * Math.PI * 2;
-        const x = Math.cos(angle) * radius;
-        const z = Math.sin(angle) * radius;
+      const instanceColor = new T.Color();
+      const rockBase = new T.Color(this.region.palette.rock);
+      const plateBase = new T.Color(this.region.palette.mid).lerp(new T.Color(this.region.palette.rock), volcanic ? 0.36 : 0.24);
+      const shardBase = new T.Color(this.region.palette.high).lerp(new T.Color(this.region.palette.rock), 0.42);
+      const thermalRock = new T.Color(volcanic ? 0x9c4828 : this.region.palette.accent);
+      let placedRocks = 0, placedPlates = 0, placedShards = 0;
+      const seed = this.region.id.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
+      const maxAttempts = total * 12;
+      const golden = 2.399963229728653;
+
+      for (let i = 0; i < maxAttempts && placedRocks + placedPlates + placedShards < total; i += 1) {
+        const zone = zones[i % zones.length];
+        const a = i * golden + hash2(i, 19, seed) * 0.72;
+        const r = Math.sqrt(hash2(i, 31, seed + 7));
+        const x = zone.x + Math.cos(a) * zone.rx * r;
+        const z = zone.z + Math.sin(a) * zone.rz * r;
+        if (Math.hypot(x, z) > this.region.softBoundaryStart - 4) continue;
+
+        // Preserve the hero sightline from the spawn point toward the main Maat edifice.
+        if (this.region.id === "maat" && z > -17 && z < 28 && Math.abs(x) < 4.5 && hash2(i, 55, seed) < 0.72) continue;
+
         const y = this.heightAt(x, z);
         const normal = this.normalAt(x, z, 0.35);
         const slope = 1 - normal.y;
-        if (slope > 0.63 && this.region.id !== "maxwell" && this.region.id !== "alpha") continue;
-        const scale = 0.35 + hash2(i, 31, 7) * 1.1;
-        dummy.position.set(x, y + 0.04, z);
-        dummy.rotation.set((hash2(i, 41, 3) - 0.5) * 0.18, angle + hash2(i, 52, 5), (hash2(i, 61, 11) - 0.5) * 0.22);
-        dummy.scale.set(scale * (0.75 + hash2(i, 73, 2)), scale * 0.35, scale);
-        dummy.updateMatrix();
-        mesh.setMatrixAt(placed, dummy.matrix);
-        placed += 1;
+        const cls = surfaceClass(this.region, x, z, y, slope);
+        let useful = true;
+        if (this.region.id === "maat") useful = cls === "plain" || cls === "lava" || cls === "rugged";
+        else if (this.region.id === "maxwell") useful = cls === "rugged" || cls === "highland";
+        else if (this.region.id === "aphrodite") useful = cls === "fracture" || cls === "highland" || cls === "rugged";
+        else if (this.region.id === "ishtar") useful = cls === "highland" || cls === "rugged" || (cls === "plain" && i % 5 === 0);
+        else if (this.region.id === "alpha") useful = cls === "tessera" || cls === "fracture";
+        if (!useful) continue;
+
+        const roll = hash2(i, 71, seed + 3);
+        const size = 0.24 + hash2(i, 37, seed + 11) * (this.region.id === "maxwell" ? 1.18 : 0.82);
+        const structuralYaw = this.region.id === "maxwell" ? -0.08
+          : this.region.id === "aphrodite" ? (i % 2 ? 0.78 : -0.74)
+            : this.region.id === "ishtar" ? (Math.abs(x) > 27 ? Math.PI * 0.5 : 0.12)
+              : this.region.id === "alpha" ? (i % 2 ? 0.57 : -0.91)
+                : (x < 0 ? -0.06 : 0.08);
+
+        dummy.position.set(x, y + 0.06, z);
+        dummy.rotation.set((hash2(i, 43, seed) - 0.5) * 0.30, structuralYaw + (hash2(i, 47, seed) - 0.5) * 0.52, (hash2(i, 53, seed) - 0.5) * 0.30);
+
+        const wantsShard = (this.region.id === "maxwell" || cls === "rugged" || cls === "highland") && roll > 0.53;
+        const wantsPlate = !wantsShard && (cls === "lava" || cls === "fracture" || cls === "tessera" || (this.region.id === "ishtar" && cls === "plain")) && roll > 0.24;
+
+        if (wantsShard && placedShards < total) {
+          dummy.scale.set(size * (0.62 + hash2(i, 59, seed) * 0.50), size * (1.10 + hash2(i, 61, seed) * 1.25), size * (0.55 + hash2(i, 67, seed) * 0.55));
+          dummy.position.y += size * 0.22;
+          dummy.updateMatrix();
+          shards.setMatrixAt(placedShards, dummy.matrix);
+          instanceColor.copy(shardBase).multiplyScalar(0.84 + hash2(i, 73, seed) * 0.24);
+          shards.setColorAt(placedShards++, instanceColor);
+        } else if (wantsPlate && placedPlates < total) {
+          dummy.scale.set(size * (1.20 + hash2(i, 79, seed) * 1.30), size * (0.58 + hash2(i, 83, seed) * 0.42), size * (0.90 + hash2(i, 89, seed) * 1.05));
+          dummy.updateMatrix();
+          plates.setMatrixAt(placedPlates, dummy.matrix);
+          instanceColor.copy(plateBase).multiplyScalar(0.86 + hash2(i, 97, seed) * 0.22);
+          if (volcanic && cls === "lava") instanceColor.lerp(thermalRock, 0.28);
+          plates.setColorAt(placedPlates++, instanceColor);
+        } else if (placedRocks < total) {
+          dummy.scale.set(size * (0.70 + hash2(i, 101, seed) * 0.70), size * (0.58 + hash2(i, 103, seed) * 0.90), size * (0.70 + hash2(i, 107, seed) * 0.70));
+          dummy.updateMatrix();
+          rocks.setMatrixAt(placedRocks, dummy.matrix);
+          instanceColor.copy(rockBase).multiplyScalar(0.84 + hash2(i, 109, seed) * 0.24);
+          rocks.setColorAt(placedRocks++, instanceColor);
+        }
       }
-      mesh.count = placed;
-      mesh.instanceMatrix.needsUpdate = true;
-      return mesh;
+
+      const finalize = (mesh, count) => {
+        mesh.count = count;
+        mesh.instanceMatrix.needsUpdate = true;
+        if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+        mesh.computeBoundingSphere?.();
+      };
+      finalize(rocks, placedRocks);
+      finalize(plates, placedPlates);
+      finalize(shards, placedShards);
+
+      const group = new T.Group();
+      group.name = `venus-geology-accents-${this.region.id}`;
+      if (placedRocks) group.add(rocks);
+      if (placedPlates) group.add(plates);
+      if (placedShards) group.add(shards);
+      group.userData.instanceCount = placedRocks + placedPlates + placedShards;
+      return group.children.length ? group : null;
+    }
+
+    createAtmosphericMotes() {
+      const T = this.THREE;
+      const count = this.quality.name === "HIGH" ? 56 : this.quality.name === "MEDIUM" ? 40 : 24;
+      if (!count) return null;
+
+      // A single Points draw call gives Venus a faint suspended-atmosphere cue.
+      // Nothing is regenerated per frame; the complete field only drifts as one object.
+      const positions = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+      const fogColor = new T.Color(this.region.fog);
+      const warmColor = new T.Color(this.region.sun);
+      const color = new T.Color();
+      const seed = this.region.id.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
+      const golden = 2.399963229728653;
+      for (let i = 0; i < count; i += 1) {
+        const a = i * golden + hash2(i, 13, seed) * 0.65;
+        const radius = 5 + Math.sqrt(hash2(i, 17, seed + 5)) * (this.region.playRadius * 0.68);
+        const x = Math.cos(a) * radius;
+        const z = Math.sin(a) * radius;
+        const ground = this.heightAt(x, z);
+        const y = ground + 0.45 + hash2(i, 23, seed + 11) * (this.region.id === "maat" ? 6.5 : 5.2);
+        const p = i * 3;
+        positions[p] = x; positions[p + 1] = y; positions[p + 2] = z;
+        color.copy(fogColor).lerp(warmColor, 0.12 + hash2(i, 29, seed) * 0.22).multiplyScalar(0.78 + hash2(i, 31, seed) * 0.20);
+        colors[p] = color.r; colors[p + 1] = color.g; colors[p + 2] = color.b;
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = 32;
+      const ctx = canvas.getContext("2d");
+      const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+      gradient.addColorStop(0, "rgba(255,255,255,.86)");
+      gradient.addColorStop(0.28, "rgba(255,255,255,.44)");
+      gradient.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 32, 32);
+      const map = new T.CanvasTexture(canvas);
+      map.needsUpdate = true;
+      this.textures.push(map);
+
+      const geometry = new T.BufferGeometry();
+      geometry.setAttribute("position", new T.BufferAttribute(positions, 3));
+      geometry.setAttribute("color", new T.BufferAttribute(colors, 3));
+      geometry.computeBoundingSphere();
+      const baseOpacity = this.region.id === "maat" ? 0.15 : this.region.id === "alpha" || this.region.id === "aphrodite" ? 0.11 : 0.085;
+      const material = new T.PointsMaterial({
+        map,
+        color: 0xffffff,
+        vertexColors: true,
+        size: this.quality.name === "HIGH" ? 2.0 : 1.65,
+        sizeAttenuation: true,
+        transparent: true,
+        opacity: baseOpacity,
+        alphaTest: 0.015,
+        depthWrite: false,
+        fog: true
+      });
+      const points = new T.Points(geometry, material);
+      points.name = `venus-atmospheric-motes-${this.region.id}`;
+      points.frustumCulled = true;
+      points.renderOrder = 1;
+      points.userData.baseOpacity = baseOpacity;
+      points.userData.seed = seed;
+      this.accentResources.push(geometry, material);
+      return points;
+    }
+
+    updateAmbient(delta) {
+      if (!this.atmosphericMotes) return;
+      this.ambientClock += delta;
+      const t = this.ambientClock;
+      const seed = this.atmosphericMotes.userData.seed || 0;
+      this.atmosphericMotes.position.x = Math.sin(t * 0.055 + seed * 0.01) * 0.38;
+      this.atmosphericMotes.position.z = Math.cos(t * 0.043 + seed * 0.013) * 0.30;
+      this.atmosphericMotes.position.y = Math.sin(t * 0.031 + seed * 0.017) * 0.05;
+      const material = this.atmosphericMotes.material;
+      if (material) material.opacity = this.atmosphericMotes.userData.baseOpacity * (0.94 + Math.sin(t * 0.17) * 0.06);
+    }
+
+    createRegionalVisualization() {
+      if (this.region.id !== "maat") return null;
+      const T = this.THREE;
+      const group = new T.Group();
+      group.name = "maat-illustrative-volcanic-activity";
+
+      const cx = 1.5, cz = -25.7;
+      const rimCount = 11;
+      const positions = [cx, this.heightAt(cx, cz) + 0.018, cz];
+      for (let i = 0; i <= rimCount; i += 1) {
+        const a = i / rimCount * Math.PI * 2;
+        const radius = 0.62 + 0.22 * Math.sin(a * 3 + 0.7) + 0.10 * Math.sin(a * 5);
+        const x = cx + Math.cos(a) * radius * 1.35;
+        const z = cz + Math.sin(a) * radius * 0.82;
+        positions.push(x, this.heightAt(x, z) + 0.022, z);
+      }
+      const patchGeometry = new T.BufferGeometry();
+      patchGeometry.setAttribute("position", new T.Float32BufferAttribute(positions, 3));
+      const indices = [];
+      for (let i = 0; i < rimCount; i += 1) indices.push(0, i + 1, i + 2);
+      patchGeometry.setIndex(indices);
+      patchGeometry.computeVertexNormals();
+      const patchMaterial = new T.MeshBasicMaterial({
+        color: 0xffdf55,
+        transparent: true,
+        opacity: 0.68,
+        depthWrite: false,
+        toneMapped: false,
+        side: T.DoubleSide,
+        blending: T.AdditiveBlending
+      });
+      const patch = new T.Mesh(patchGeometry, patchMaterial);
+      patch.renderOrder = 3;
+      group.add(patch);
+
+      const crackPoints = [];
+      const paths = [
+        [[1.1, -25.2], [2.2, -24.4], [2.8, -23.6], [3.0, -22.8]],
+        [[0.8, -25.8], [0.2, -24.9], [-0.5, -24.2]],
+        [[1.9, -26.0], [2.7, -26.6], [3.4, -27.4]],
+        [[1.3, -25.5], [1.8, -24.8], [1.2, -24.0], [0.7, -23.2]],
+        [[1.5, -25.7], [0.9, -26.4], [0.4, -27.2]]
+      ];
+      paths.forEach(path => {
+        for (let i = 0; i < path.length - 1; i += 1) {
+          const a = path[i], b = path[i + 1];
+          crackPoints.push(a[0], this.heightAt(a[0], a[1]) + 0.028, a[1]);
+          crackPoints.push(b[0], this.heightAt(b[0], b[1]) + 0.028, b[1]);
+        }
+      });
+      const crackGeometry = new T.BufferGeometry();
+      crackGeometry.setAttribute("position", new T.Float32BufferAttribute(crackPoints, 3));
+      const crackMaterial = new T.LineBasicMaterial({
+        color: 0xffb82b,
+        transparent: true,
+        opacity: 0.82,
+        depthWrite: false,
+        toneMapped: false,
+        blending: T.AdditiveBlending
+      });
+      const cracks = new T.LineSegments(crackGeometry, crackMaterial);
+      cracks.renderOrder = 4;
+      group.add(cracks);
+
+      this.accentResources.push(patchGeometry, patchMaterial, crackGeometry, crackMaterial);
+      return group;
     }
 
     createMaterial() {
       const T = this.THREE;
-      const size = 192;
+      const size = this.quality.name === "HIGH" ? 160 : 128;
+      const materialProfiles = {
+        maat:      { repeat: 8.5,  normal: 0.44, roughness: 0.88, roughSpread: 42, tint: [1.035, 1.00, 0.93] },
+        maxwell:   { repeat: 10.0, normal: 0.50, roughness: 0.95, roughSpread: 32, tint: [1.025, 1.00, 0.96] },
+        aphrodite: { repeat: 9.5,  normal: 0.48, roughness: 0.92, roughSpread: 38, tint: [1.030, 0.99, 0.94] },
+        ishtar:    { repeat: 8.0,  normal: 0.39, roughness: 0.93, roughSpread: 34, tint: [1.020, 1.00, 0.97] },
+        alpha:     { repeat: 10.5, normal: 0.53, roughness: 0.95, roughSpread: 40, tint: [1.030, 0.99, 0.93] }
+      };
+      const profile = materialProfiles[this.region.id] || materialProfiles.maat;
       const detail = new Float32Array(size * size);
       const seed = this.region.id.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
+
       for (let y = 0; y < size; y += 1) {
         for (let x = 0; x < size; x += 1) {
           const u = x / size, v = y / size;
-          const n = 0.55 * valueNoise(u * 22, v * 22, seed) + 0.30 * valueNoise(u * 54, v * 54, seed + 17) + 0.15 * valueNoise(u * 112, v * 112, seed + 31);
+          const n = 0.52 * valueNoise(u * 22, v * 22, seed)
+            + 0.30 * valueNoise(u * 54, v * 54, seed + 17)
+            + 0.18 * valueNoise(u * 112, v * 112, seed + 31);
           detail[y * size + x] = n;
         }
       }
+
       const albedoCanvas = document.createElement("canvas");
       const roughCanvas = document.createElement("canvas");
       const normalCanvas = document.createElement("canvas");
@@ -616,21 +1133,27 @@
       const roughImage = roughCtx.createImageData(size, size);
       const normalImage = normalCtx.createImageData(size, size);
       const sample = (x, y) => detail[((y + size) % size) * size + ((x + size) % size)];
+
       for (let y = 0; y < size; y += 1) {
         for (let x = 0; x < size; x += 1) {
           const i = y * size + x;
           const p = i * 4;
           const n = detail[i];
-          const shade = Math.round(clamp(196 + n * 34, 138, 238));
-          albedoImage.data[p] = shade;
-          albedoImage.data[p + 1] = shade;
-          albedoImage.data[p + 2] = shade;
+          const base = clamp(184 + n * 42, 158, 228);
+          albedoImage.data[p] = Math.round(clamp(base * profile.tint[0], 0, 255));
+          albedoImage.data[p + 1] = Math.round(clamp(base * profile.tint[1], 0, 255));
+          albedoImage.data[p + 2] = Math.round(clamp(base * profile.tint[2], 0, 255));
           albedoImage.data[p + 3] = 255;
-          const rough = Math.round(clamp(224 - n * 20, 180, 248));
-          roughImage.data[p] = rough; roughImage.data[p + 1] = rough; roughImage.data[p + 2] = rough; roughImage.data[p + 3] = 255;
+
+          const rough = Math.round(clamp(profile.roughness * 255 + (0.5 - n) * profile.roughSpread, 150, 250));
+          roughImage.data[p] = rough;
+          roughImage.data[p + 1] = rough;
+          roughImage.data[p + 2] = rough;
+          roughImage.data[p + 3] = 255;
+
           const dx = sample(x + 1, y) - sample(x - 1, y);
           const dy = sample(x, y + 1) - sample(x, y - 1);
-          const nx = -dx * 1.6, ny = -dy * 1.6, nz = 1;
+          const nx = -dx * 1.85, ny = -dy * 1.85, nz = 1;
           const inv = 1 / Math.hypot(nx, ny, nz);
           normalImage.data[p] = Math.round((nx * inv * 0.5 + 0.5) * 255);
           normalImage.data[p + 1] = Math.round((ny * inv * 0.5 + 0.5) * 255);
@@ -638,32 +1161,37 @@
           normalImage.data[p + 3] = 255;
         }
       }
+
       albedoCtx.putImageData(albedoImage, 0, 0);
       roughCtx.putImageData(roughImage, 0, 0);
       normalCtx.putImageData(normalImage, 0, 0);
+
       const makeTexture = canvas => {
         const texture = new T.CanvasTexture(canvas);
         texture.wrapS = texture.wrapT = T.RepeatWrapping;
-        texture.repeat.set(8, 8);
+        texture.repeat.set(profile.repeat, profile.repeat);
         texture.anisotropy = Math.min(this.quality.anisotropy, this.renderer.capabilities.getMaxAnisotropy());
         texture.needsUpdate = true;
         this.textures.push(texture);
         return texture;
       };
+
       const map = makeTexture(albedoCanvas);
       map.colorSpace = T.SRGBColorSpace;
       const roughnessMap = makeTexture(roughCanvas);
       const normalMap = makeTexture(normalCanvas);
+
       return new T.MeshStandardMaterial({
         color: 0xffffff,
         vertexColors: true,
         map,
         roughnessMap,
         normalMap,
-        normalScale: new T.Vector2(0.30, 0.30),
-        roughness: 0.91,
+        normalScale: new T.Vector2(profile.normal, profile.normal),
+        roughness: profile.roughness,
         metalness: 0,
-        fog: true
+        fog: true,
+        dithering: true
       });
     }
 
@@ -709,10 +1237,10 @@
       for (const entry of this.tiles) entry.mesh.geometry.dispose();
       this.tiles.length = 0;
       this.horizon?.geometry?.dispose();
-      this.accentMesh?.geometry?.dispose();
+      for (const resource of this.accentResources) resource?.dispose?.();
+      this.accentResources.length = 0;
       this.material?.dispose();
       this.horizonMaterial?.dispose();
-      this.accentMaterial?.dispose();
       for (const texture of this.textures) texture.dispose();
       this.textures.length = 0;
       this.group.clear();
@@ -912,6 +1440,9 @@
       this.travelLabel = document.getElementById("venus-travel-label");
       this.boundaryHint = document.getElementById("venus-boundary-hint");
       this.infoCard = document.getElementById("venus-landmark-card");
+      this.infoMinimize = document.getElementById("venus-landmark-minimize");
+      this.infoToggle = document.getElementById("venus-info-toggle");
+      this.infoMedia = document.getElementById("venus-landmark-media");
       this.infoName = document.getElementById("venus-landmark-name");
       this.infoType = document.getElementById("venus-landmark-type");
       this.infoCoords = document.getElementById("venus-landmark-coords");
@@ -919,6 +1450,7 @@
       this.infoDescription = document.getElementById("venus-landmark-description");
       this.infoFacts = document.getElementById("venus-landmark-facts");
       this.infoBadge = document.getElementById("venus-landmark-data-badge");
+      this.infoVisualizationNote = document.getElementById("venus-landmark-visualization-note");
       this.infoSource = document.getElementById("venus-landmark-source");
       this.infoCoordinateSource = document.getElementById("venus-landmark-coordinate-source");
       this.hudCoordinates = document.getElementById("venus-hud-coordinates");
@@ -926,7 +1458,8 @@
       this.hudAltitudeLimit = document.getElementById("venus-hud-altitude-limit");
       this.hudSpeed = document.getElementById("venus-hud-speed");
       this.hudLocation = document.getElementById("venus-hud-location");
-      this.hudQuality = document.getElementById("venus-hud-quality");
+      this.hudDistance = document.getElementById("venus-hud-distance");
+      this.hudRegionType = document.getElementById("venus-hud-region-type");
       this.hudData = document.getElementById("venus-hud-data");
 
       this.state = STATES.IDLE;
@@ -959,7 +1492,7 @@
       this.cameraAltitude = 2.7;
       this.selectorOpenedFromRegion = false;
       this.tutorialTimeout = null;
-      this.infoTimeout = null;
+      this.hudClock = 0;
       this.quality = this.detectQuality();
       this.input = new VenusInputManager(this);
       this.tick = this.tick.bind(this);
@@ -976,12 +1509,12 @@
       const memory = navigator.deviceMemory || 4;
       const coarse = window.matchMedia("(pointer: coarse)").matches;
       if (coarse || width <= 760 || cores <= 4 || memory <= 3) {
-        return { name: "LOW", tileSize: 24, nearSegments: 30, midSegments: 20, farSegments: 12, horizonSegments: 64, maxDpr: 1.4, minDpr: 0.90, supersample: 1, pixelBudget: 2900000, anisotropy: 4, accentCount: 32 };
+        return { name: "LOW", tileSize: 24, nearSegments: 26, midSegments: 16, farSegments: 10, horizonSegments: 56, maxDpr: 1.25, minDpr: 0.88, supersample: 1, pixelBudget: 2400000, anisotropy: 4, accentCount: 14 };
       }
       if (cores >= 8 && memory >= 6) {
-        return { name: "HIGH", tileSize: 24, nearSegments: 60, midSegments: 38, farSegments: 22, horizonSegments: 112, maxDpr: 2.1, minDpr: 1.0, supersample: 1.35, pixelBudget: 9000000, anisotropy: 12, accentCount: 88 };
+        return { name: "HIGH", tileSize: 24, nearSegments: 52, midSegments: 32, farSegments: 18, horizonSegments: 80, maxDpr: 1.65, minDpr: 0.95, supersample: 1.10, pixelBudget: 5200000, anisotropy: 8, accentCount: 36 };
       }
-      return { name: "MEDIUM", tileSize: 24, nearSegments: 44, midSegments: 28, farSegments: 16, horizonSegments: 88, maxDpr: 1.75, minDpr: 0.95, supersample: 1.15, pixelBudget: 5600000, anisotropy: 8, accentCount: 56 };
+      return { name: "MEDIUM", tileSize: 24, nearSegments: 38, midSegments: 24, farSegments: 14, horizonSegments: 72, maxDpr: 1.45, minDpr: 0.92, supersample: 1.05, pixelBudget: 4200000, anisotropy: 6, accentCount: 24 };
     }
 
     calculateIdealDpr() {
@@ -1022,6 +1555,9 @@
       this.fullscreenButton.addEventListener("click", () => this.toggleFullscreen());
       this.errorReturn.addEventListener("click", () => this.failBackToOrbit());
       this.tutorialClose.addEventListener("click", () => this.dismissTutorial(true));
+      this.infoMinimize.addEventListener("click", event => { event.stopPropagation(); this.hideRegionInfo(); });
+      this.infoToggle.addEventListener("click", event => { event.stopPropagation(); this.showRegionInfo(true); });
+      this.infoMedia.addEventListener("click", event => { event.stopPropagation(); this.openReferenceImage(); });
       document.addEventListener("fullscreenchange", () => this.updateFullscreenLabel());
       document.addEventListener("visibilitychange", () => {
         if (!this.active) return;
@@ -1054,6 +1590,8 @@
       this.loading.hidden = true;
       this.errorPanel.hidden = true;
       this.infoCard.classList.remove("is-visible");
+      this.infoCard.setAttribute("aria-hidden", "true");
+      this.infoToggle.hidden = true;
       document.getElementById("mission").classList.add("is-venus-full-selecting");
       document.getElementById("announcement").textContent = "Pilih destinasi Eksplorasi Pengalaman Penuh Venus.";
       requestAnimationFrame(() => this.selector.querySelector("[data-venus-region]")?.focus({ preventScroll: true }));
@@ -1071,6 +1609,8 @@
       this.stopLoop();
       this.tutorial.classList.remove("is-visible");
       this.infoCard.classList.remove("is-visible");
+      this.infoCard.setAttribute("aria-hidden", "true");
+      this.infoToggle.hidden = true;
       this.errorPanel.hidden = true;
       this.state = switching ? STATES.SWITCHING : STATES.PREPARING;
       this.root.classList.remove("is-selecting", "is-active", "is-error");
@@ -1131,7 +1671,7 @@
         this.renderer.setClearColor(0x7b4a38, 1);
         this.viewport.replaceChildren(canvas);
         this.scene = new T.Scene();
-        this.camera = new T.PerspectiveCamera(this.mobileFov(), 1, 0.03, 380);
+        this.camera = new T.PerspectiveCamera(this.mobileFov(), 1, 0.05, 220);
         this.camera.rotation.order = "YXZ";
         this.hemiLight = new T.HemisphereLight(0xe8b889, 0x2d1a18, 1.0);
         this.sunLight = new T.DirectionalLight(0xffd0a0, 2.45);
@@ -1153,12 +1693,14 @@
       if (!this.scene || !this.renderer) return;
       this.scene.fog = new this.THREE.FogExp2(region.fog, region.fogDensity);
       this.renderer.setClearColor(region.sky, 1);
+      this.renderer.toneMappingExposure = region.exposure || 1.04;
       this.hemiLight.color.set(region.hemi);
-      this.hemiLight.groundColor.set(0x2b1917);
-      this.hemiLight.intensity = 1.02;
+      this.hemiLight.groundColor.set(region.id === "maat" ? 0x35110f : 0x2a1715);
+      this.hemiLight.intensity = region.id === "maat" ? 1.10 : 1.03;
       this.sunLight.color.set(region.sun);
-      this.sunLight.intensity = 2.35;
-      this.fillLight.intensity = 0.24;
+      this.sunLight.intensity = region.id === "maat" ? 2.58 : 2.38;
+      this.fillLight.color.set(region.id === "maat" ? 0xff633d : 0xb65a43);
+      this.fillLight.intensity = region.id === "maat" ? 0.34 : 0.25;
       this.root.dataset.region = region.id;
     }
 
@@ -1248,6 +1790,8 @@
       this.selector.hidden = false;
       this.root.classList.add("is-selecting");
       this.infoCard.classList.remove("is-visible");
+      this.infoCard.setAttribute("aria-hidden", "true");
+      this.infoToggle.hidden = true;
       document.getElementById("announcement").textContent = "Pilih region Venus lain untuk dijelajahi.";
       requestAnimationFrame(() => this.selector.querySelector(`[data-venus-region="${this.region.id}"]`)?.focus({ preventScroll: true }));
     }
@@ -1300,8 +1844,15 @@
         this.updateMovement(delta);
       }
       this.regionWorld.updateVisibility(this.camera, delta);
+      this.regionWorld.updateAmbient(delta);
       this.renderer.render(this.scene, this.camera);
-      if (this.state === STATES.EXPLORING) this.updateHUD();
+      if (this.state === STATES.EXPLORING) {
+        this.hudClock += delta;
+        if (this.hudClock >= 0.10) {
+          this.hudClock = 0;
+          this.updateHUD();
+        }
+      }
       this.adaptResolution();
       this.frame = requestAnimationFrame(this.tick);
     }
@@ -1385,7 +1936,10 @@
       this.hudAltitudeLimit.textContent = altitude >= MAX_ALTITUDE_KM - 0.08 ? "BATAS KETINGGIAN" : "MENDEKATI BATAS";
       this.hudSpeed.textContent = formatSpeed(this.speed);
       this.hudLocation.textContent = this.region.name;
-      this.hudQuality.textContent = this.quality.name;
+      const feature = this.region.featureCenter || { x: 0, z: 0 };
+      const featureDistance = Math.hypot(this.camera.position.x - feature.x, this.camera.position.z - feature.z);
+      this.hudDistance.textContent = `${featureDistance.toFixed(featureDistance < 10 ? 1 : 0)} KM`;
+      this.hudRegionType.textContent = this.region.category;
       this.hudData.textContent = "NASA/JPL MAGELLAN · CURATED REGION";
     }
 
@@ -1393,25 +1947,52 @@
       const region = this.region;
       this.hudLocation.textContent = region.name;
       this.hudCoordinates.textContent = formatCoordinate(region.latitude, region.longitudeEast);
-      this.hudQuality.textContent = this.quality.name;
+      this.hudDistance.textContent = "--";
+      this.hudRegionType.textContent = region.category;
       this.hudData.textContent = "NASA/JPL MAGELLAN · CURATED REGION";
       this.infoName.textContent = region.name;
       this.infoType.textContent = `${region.category} · ${region.descriptor}`;
       this.infoCoords.textContent = formatCoordinate(region.latitude, region.longitudeEast);
       this.infoImage.src = region.image;
       this.infoImage.alt = `Referensi Magellan NASA/JPL untuk ${region.name}`;
+      this.infoMedia.setAttribute("aria-label", `Perbesar citra referensi Magellan untuk ${region.name}`);
       this.infoDescription.textContent = region.description;
       this.infoFacts.replaceChildren(...region.facts.map(fact => { const li = document.createElement("li"); li.textContent = fact; return li; }));
       this.infoBadge.textContent = `REFERENCE-DRIVEN MORPHOLOGY · ${region.category} · STATIC BOUNDED REGION`;
+      this.infoVisualizationNote.hidden = !region.visualizationNote;
+      this.infoVisualizationNote.textContent = region.visualizationNote || "";
       this.infoSource.href = region.source;
       this.infoSource.textContent = "Referensi morfologi: NASA/JPL ↗";
       this.infoCoordinateSource.href = region.coordinateSource;
     }
 
-    showRegionInfo() {
-      window.clearTimeout(this.infoTimeout);
+    showRegionInfo(focus = false) {
       this.infoCard.classList.add("is-visible");
-      this.infoTimeout = window.setTimeout(() => this.infoCard.classList.remove("is-visible"), 11000);
+      this.infoCard.setAttribute("aria-hidden", "false");
+      this.infoToggle.hidden = true;
+      if (focus) requestAnimationFrame(() => this.infoMinimize.focus({ preventScroll: true }));
+    }
+
+    hideRegionInfo() {
+      this.infoCard.classList.remove("is-visible");
+      this.infoCard.setAttribute("aria-hidden", "true");
+      this.infoToggle.hidden = false;
+      this.infoToggle.focus({ preventScroll: true });
+    }
+
+    openReferenceImage() {
+      const media = window.ExplorationMedia;
+      if (!media || !this.region?.image) return;
+      if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+      const image = {
+        src: this.region.image,
+        alt: `Referensi Magellan NASA/JPL untuk ${this.region.name}`,
+        credit: "NASA/JPL · Magellan",
+        source: this.region.source,
+        caption: `${this.region.name} · referensi morfologi untuk membandingkan citra Magellan dengan rekonstruksi ANTARA`,
+        type: "CITRA WAHANA"
+      };
+      media.openLightbox([image], 0, { title: `${this.region.name} · Referensi Magellan` }, this.infoMedia);
     }
 
     showTutorial() {
@@ -1468,6 +2049,8 @@
       this.selector.hidden = true;
       this.tutorial.classList.remove("is-visible");
       this.infoCard.classList.remove("is-visible");
+      this.infoCard.setAttribute("aria-hidden", "true");
+      this.infoToggle.hidden = true;
       this.boundaryHint.classList.remove("is-visible");
       this.root.classList.add("is-exiting");
       document.getElementById("announcement").textContent = "Meninggalkan permukaan Venus dan kembali ke panorama orbit.";
@@ -1571,6 +2154,8 @@
       this.regionWorld?.dispose();
       this.regionWorld = null;
       this.infoCard.classList.remove("is-visible");
+      this.infoCard.setAttribute("aria-hidden", "true");
+      this.infoToggle.hidden = true;
       this.boundaryHint.classList.remove("is-visible");
     }
 
