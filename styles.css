@@ -3789,3 +3789,105 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .profile-hud-kicker,.profile-hud-copy small { display:none !important; }
   .profile-hud-copy strong { font-size:8.5px !important; letter-spacing:.08em !important; }
 }
+
+/* 2026-09-30 compact identity alignment refinement
+   Keep the sharp main container unchanged. Center the identity module vertically,
+   align its left edge to the container's angled inset, and reduce its footprint. */
+.cockpit-profile-hud .profile-hud-trigger {
+  left: calc(3.9% + 8px) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: clamp(220px,21.5vw,280px) !important;
+  max-width: 280px !important;
+  height: clamp(34px,4vh,40px) !important;
+  align-items: center !important;
+  grid-template-columns: auto clamp(8px,.65vw,10px) minmax(0,1fr) !important;
+}
+
+.cockpit-profile-hud .profile-avatar-frame {
+  width: clamp(32px,3vw,38px) !important;
+  align-self: center !important;
+}
+.cockpit-profile-hud .profile-avatar-tech {
+  inset: -3% !important;
+  width: 106% !important;
+  height: 106% !important;
+}
+.cockpit-profile-hud .profile-avatar-orbit {
+  width: 100% !important;
+  left: 0 !important;
+}
+.cockpit-profile-hud .profile-avatar-frame::before {
+  inset: 13% 2% !important;
+}
+
+.cockpit-profile-hud .profile-hud-connector {
+  min-width: 8px !important;
+}
+.cockpit-profile-hud .profile-hud-connector i {
+  width: 3px !important;
+  height: 3px !important;
+}
+
+.cockpit-profile-hud .profile-login-frame {
+  height: clamp(29px,3.45vh,34px) !important;
+  padding: 0 6px 0 8px !important;
+  gap: 4px !important;
+  align-self: center !important;
+}
+.cockpit-profile-hud .profile-hud-copy {
+  gap: 1px !important;
+  align-content: center !important;
+}
+.cockpit-profile-hud .profile-hud-copy strong {
+  font-size: clamp(8px,.67vw,10px) !important;
+  letter-spacing: .095em !important;
+}
+.cockpit-profile-hud .profile-hud-kicker {
+  font-size: clamp(4.3px,.35vw,5.4px) !important;
+  letter-spacing: .18em !important;
+}
+.cockpit-profile-hud .profile-hud-kicker i {
+  width: 11px !important;
+}
+.cockpit-profile-hud .profile-hud-copy small {
+  font-size: clamp(3.8px,.3vw,4.7px) !important;
+}
+.cockpit-profile-hud .profile-hud-action {
+  padding-left: 5px !important;
+  gap: 3px !important;
+}
+.cockpit-profile-hud .profile-hud-action svg {
+  width: 13px !important;
+  height: 13px !important;
+}
+.cockpit-profile-hud .profile-login-bracket {
+  width: 28px !important;
+}
+
+@media (max-width: 1366px) {
+  .cockpit-profile-hud .profile-hud-trigger {
+    left: calc(3.9% + 7px) !important;
+    width: clamp(215px,23vw,260px) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .cockpit-profile-hud .profile-hud-trigger {
+    left: calc(3.9% + 6px) !important;
+    width: min(68%,245px) !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .cockpit-profile-hud .profile-hud-trigger {
+    left: calc(5.5% + 5px) !important;
+    width: min(calc(100% - 34px),225px) !important;
+    height: 32px !important;
+    grid-template-columns: 30px 7px minmax(0,1fr) !important;
+  }
+  .cockpit-profile-hud .profile-avatar-frame { width:30px !important; }
+  .cockpit-profile-hud .profile-login-frame { height:28px !important; padding:0 5px 0 7px !important; }
+  .cockpit-profile-hud .profile-hud-copy strong { font-size:8px !important; }
+  .cockpit-profile-hud .profile-hud-action svg { width:12px !important; height:12px !important; }
+}
