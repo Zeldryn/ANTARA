@@ -405,3 +405,72 @@
   text-transform: uppercase;
 }
 .mars-hud-altitude-limit[hidden] { display: none; }
+
+/* 2026-10-01 mobile arrival action hierarchy fix.
+   On narrow screens the previous three-column layout squeezed Previous/Next
+   into tiny side gutters around the primary CTA. Keep desktop untouched and
+   stack only the shared Earth/Mars arrival actions into a clear two-row layout. */
+@media (max-width: 700px) {
+  .mars-caption .mars-arrival-actions {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "primary primary"
+      "previous next";
+    column-gap: 12px;
+    row-gap: 9px;
+    width: min(100%, 360px);
+    margin: 17px auto 0;
+  }
+
+  .mars-caption .mars-explore-stack {
+    grid-area: primary;
+    width: 100%;
+    min-width: 0;
+    gap: 7px;
+  }
+
+  .mars-caption .mars-explore-button {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 16px 0 18px;
+    gap: 14px;
+    font-size: 7.8px;
+    letter-spacing: 1.05px;
+  }
+
+  .mars-caption .mars-explore-button svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .mars-caption .mars-full-explore-button {
+    width: 100%;
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 5.8px;
+    line-height: 1.2;
+    letter-spacing: .9px;
+    white-space: nowrap;
+  }
+
+  .mars-caption .mars-planet-prev { grid-area: previous; }
+  .mars-caption .mars-planet-next { grid-area: next; }
+
+  .mars-caption .mars-planet-nav {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 0 7px;
+    gap: 7px;
+  }
+
+  .mars-caption .mars-planet-nav small {
+    font-size: 4.8px;
+    letter-spacing: .82px;
+  }
+
+  .mars-caption .mars-planet-nav strong {
+    font-size: 6.8px;
+    letter-spacing: .7px;
+  }
+}
