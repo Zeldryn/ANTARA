@@ -4836,3 +4836,242 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .cockpit-profile-hud .profile-hud-copy strong { font-size: 7.1px !important; }
   .leaderboard-hud-frame strong { font-size: 5.8px; letter-spacing:.08em; text-indent:.08em; }
 }
+
+
+/* ========================================================================
+   2026-09-30 MAIN IDENTITY CONTAINER SINGLE-LAYER FIX
+   Remove the obsolete plain main bar instead of covering it. The remaining
+   sci-fi pseudo-element is now the only main identity container and carries
+   both the dark fill and its existing technical perimeter.
+   ======================================================================== */
+.cockpit-profile-hud::before {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.cockpit-profile-hud::after {
+  /* Same sci-fi perimeter, now combined with the main dark fill in ONE layer. */
+  background:
+    linear-gradient(90deg,
+      transparent 0 5.2%,
+      rgba(221,180,104,.72) 5.2% 15%,
+      transparent 15% 18.2%,
+      rgba(111,184,218,.55) 18.2% 24%,
+      transparent 24% 73%,
+      rgba(221,180,104,.42) 73% 82%,
+      transparent 82% 90.5%,
+      rgba(111,184,218,.46) 90.5% 95%,
+      transparent 95% 100%) top / 100% 1px no-repeat,
+    linear-gradient(90deg,
+      transparent 0 8%,
+      rgba(111,184,218,.36) 8% 14%,
+      transparent 14% 29%,
+      rgba(221,180,104,.62) 29% 48%,
+      transparent 48% 78%,
+      rgba(111,184,218,.42) 78% 87%,
+      transparent 87% 100%) bottom / 100% 1px no-repeat,
+    linear-gradient(58deg,
+      transparent 0 42%,
+      rgba(221,180,104,.62) 43% 47%,
+      transparent 48% 100%) left / 5% 100% no-repeat,
+    linear-gradient(-58deg,
+      transparent 0 42%,
+      rgba(111,184,218,.52) 43% 47%,
+      transparent 48% 100%) right / 5% 100% no-repeat,
+    linear-gradient(180deg,rgba(9,23,36,.98) 0%,rgba(3,11,19,.985) 100%) !important;
+  border: 0 !important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.018),
+    inset 0 -8px 16px rgba(0,0,0,.17),
+    0 8px 18px rgba(0,0,0,.18) !important;
+  opacity: 1 !important;
+}
+
+/* ========================================================================
+   2026-09-30 AVATAR / LOGIN TRUE SEPARATION + CLICKABLE LEADERBOARD
+   Structural correction only. Existing sci-fi frame artwork is preserved.
+   ======================================================================== */
+.cockpit-profile-hud {
+  --hud-content-left: calc(3.9% + 8px);
+  --avatar-module-size: clamp(34px,3.15vw,40px);
+  --avatar-login-gap: clamp(21px,1.65vw,28px);
+  --login-frame-width: clamp(158px,15.2vw,198px);
+  --identity-frame-height: clamp(29px,3.45vh,34px);
+  --leader-side-gap: clamp(8px,.65vw,11px);
+  --leader-bridge-width: clamp(17px,1.35vw,23px);
+  --leader-frame-width: clamp(96px,8.6vw,118px);
+}
+
+/* Avatar is its own dashboard socket, no longer nested inside the login link. */
+.profile-avatar-module {
+  position: absolute;
+  z-index: 4;
+  left: var(--hud-content-left);
+  top: 50%;
+  width: var(--avatar-module-size);
+  height: var(--avatar-module-size);
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.cockpit-profile-hud .profile-avatar-module .profile-avatar-frame {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+}
+
+/* Login is a separate independent frame with real negative space after avatar. */
+.cockpit-profile-hud .profile-login-trigger {
+  position: absolute !important;
+  z-index: 4 !important;
+  left: calc(var(--hud-content-left) + var(--avatar-module-size) + var(--avatar-login-gap)) !important;
+  top: 50% !important;
+  width: var(--login-frame-width) !important;
+  height: var(--identity-frame-height) !important;
+  transform: translateY(-50%) !important;
+  display: block !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  text-decoration: none !important;
+  pointer-events: auto !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy {
+  position: absolute !important;
+  inset: 0 23px !important;
+  display: grid !important;
+  align-content: center !important;
+  justify-items: center !important;
+  text-align: center !important;
+  gap: 1px !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-kicker {
+  width: 100% !important;
+  justify-content: center !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong,
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy small {
+  width: 100% !important;
+  text-align: center !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-action {
+  position: absolute !important;
+  right: 5px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+/* Existing connector to leaderboard now starts from the independent login frame. */
+.profile-leaderboard-bridge {
+  left: calc(
+    var(--hud-content-left) +
+    var(--avatar-module-size) +
+    var(--avatar-login-gap) +
+    var(--login-frame-width) +
+    var(--leader-side-gap)
+  ) !important;
+}
+.leaderboard-hud-frame {
+  left: calc(
+    var(--hud-content-left) +
+    var(--avatar-module-size) +
+    var(--avatar-login-gap) +
+    var(--login-frame-width) +
+    var(--leader-side-gap) +
+    var(--leader-bridge-width) +
+    var(--leader-side-gap)
+  ) !important;
+  text-decoration: none !important;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: filter .18s ease, transform .18s ease;
+}
+.leaderboard-hud-frame:hover,
+.leaderboard-hud-frame:focus-visible {
+  filter: brightness(1.17);
+}
+.leaderboard-hud-frame:hover::before,
+.leaderboard-hud-frame:focus-visible::before {
+  opacity: 1;
+}
+.leaderboard-hud-frame:focus-visible {
+  outline: 1px solid rgba(235,198,129,.72);
+  outline-offset: 4px;
+}
+.leaderboard-hud-frame:active {
+  filter: brightness(1.28);
+}
+
+@media (max-width:1366px) {
+  .cockpit-profile-hud {
+    --hud-content-left: calc(3.9% + 7px);
+    --avatar-module-size: clamp(33px,3vw,38px);
+    --avatar-login-gap: clamp(19px,1.5vw,24px);
+    --login-frame-width: clamp(150px,15.2vw,184px);
+    --leader-side-gap: 7px;
+    --leader-bridge-width: clamp(15px,1.25vw,20px);
+    --leader-frame-width: clamp(90px,8.2vw,108px);
+  }
+}
+@media (max-width:900px) {
+  .cockpit-profile-hud {
+    --hud-content-left: calc(4.4% + 6px);
+    --avatar-module-size: 33px;
+    --avatar-login-gap: 16px;
+    --login-frame-width: 152px;
+    --leader-side-gap: 6px;
+    --leader-bridge-width: 14px;
+    --leader-frame-width: 86px;
+  }
+}
+@media (max-width:700px) {
+  .cockpit-profile-hud {
+    --hud-content-left: calc(5.2% + 3px);
+    --avatar-module-size: 29px;
+    --avatar-login-gap: 10px;
+    --login-frame-width: 126px;
+    --leader-side-gap: 4px;
+    --leader-bridge-width: 8px;
+    --leader-frame-width: 67px;
+    --identity-frame-height: 27px;
+  }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy { inset:0 14px !important; }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-action { right:2px !important; }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong { font-size:7px !important; }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-kicker { font-size:3.8px !important; }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy small { display:none !important; }
+  .leaderboard-hud-frame { padding:0 4px !important; }
+  .leaderboard-hud-frame strong { font-size:5.6px !important; letter-spacing:.075em !important; text-indent:.075em !important; }
+}
+@media (max-width:430px) {
+  .cockpit-profile-hud {
+    --hud-content-left: calc(5% + 2px);
+    --avatar-module-size: 27px;
+    --avatar-login-gap: 8px;
+    --login-frame-width: 118px;
+    --leader-side-gap: 3px;
+    --leader-bridge-width: 7px;
+    --leader-frame-width: 61px;
+    --identity-frame-height: 26px;
+  }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy { inset:0 12px !important; }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong { font-size:6.5px !important; }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-kicker { font-size:3.5px !important; letter-spacing:.12em !important; }
+  .leaderboard-hud-frame strong { font-size:5.1px !important; letter-spacing:.045em !important; text-indent:.045em !important; }
+}
