@@ -1,8 +1,8 @@
 "use strict";
 
 // NASA Blue Marble Next Generation surface mosaic, stored locally for reliable rendering.
-const EARTH_SURFACE_TEXTURE = window.ANTARA_RENDER_PROFILE?.mobile ? "assets/textures/mobile/earth-1024.webp" : "assets/textures/earth-blue-marble-4k.jpg";
-const MARS_TRAVEL_TEXTURE = window.ANTARA_RENDER_PROFILE?.mobile ? "assets/textures/mobile/mars-1024.webp" : "assets/textures/mars-surface-2k.jpg";
+const EARTH_SURFACE_TEXTURE = "assets/textures/earth-blue-marble-4k.jpg";
+const MARS_TRAVEL_TEXTURE = "assets/textures/mars-surface-2k.jpg";
 
 const EARTH_EXPLORATION_STOPS = [
   {
@@ -688,21 +688,19 @@ window.EarthScene = class EarthScene {
     const texture = new THREE.Texture(image);
     texture.needsUpdate = true;
     texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = Math.min(window.ANTARA_RENDER_PROFILE?.mobile ? 2 : anisotropy, this.renderer.capabilities.getMaxAnisotropy());
+    texture.anisotropy = Math.min(anisotropy, this.renderer.capabilities.getMaxAnisotropy());
     return texture;
   }
 
   createThreeScene(THREE) {
     const canvas = document.createElement("canvas");
-    const mobileRender = !!window.ANTARA_RENDER_PROFILE?.mobile;
-    const antialias = !mobileRender;
-    const context = canvas.getContext("webgl2", { alpha: true, antialias, powerPreference: "high-performance" });
+    const context = canvas.getContext("webgl2", { alpha: true, antialias: true, powerPreference: "high-performance" });
     if (!context) throw new Error("WebGL2 unavailable");
 
     this.THREE = THREE;
-    this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias });
+    this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias: true });
     this.renderer.setClearColor(0x030812, 0);
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mobileRender ? 1.1 : 1.6));
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.6));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.04;
@@ -712,7 +710,7 @@ window.EarthScene = class EarthScene {
     this.camera = new THREE.PerspectiveCamera(36, 1, 0.1, 450);
     this.camera.position.z = 6;
 
-    const sphere = new THREE.SphereGeometry(1, mobileRender ? 72 : 128, mobileRender ? 48 : 96);
+    const sphere = new THREE.SphereGeometry(1, 128, 96);
     const earthTexture = this.createTexture(THREE, this.surface, 8);
     const earthMaterial = new THREE.MeshStandardMaterial({
       map: earthTexture,
@@ -837,7 +835,7 @@ window.EarthScene = class EarthScene {
       this.camera.aspect = this.width / this.height;
       this.camera.updateProjectionMatrix();
     } else if (this.mode === "canvas") {
-      const dpr = Math.min(devicePixelRatio || 1, this.mobile ? 1 : 1.5);
+      const dpr = Math.min(devicePixelRatio || 1, 1.5);
       this.canvas.width = this.width * dpr;
       this.canvas.height = this.height * dpr;
       this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -939,7 +937,6 @@ window.EarthScene = class EarthScene {
   tick(now) {
     this.frame = null;
     if (!this.active || document.hidden) return;
-    if (window.ANTARA_RENDER_PROFILE && !window.ANTARA_RENDER_PROFILE.shouldRender(this, now)) { this.frame = requestAnimationFrame(t => this.tick(t)); return; }
     const delta = Math.min((now - this.previous) / 1000, 0.15);
     this.previous = now;
     this.time += delta;
@@ -971,7 +968,7 @@ window.EarthScene = class EarthScene {
     return {
       halfHeight,
       x: halfHeight * (this.camera?.aspect || this.width / this.height) * (this.mobile ? 0 : 0.23),
-      y: halfHeight * (this.mobile ? 0.34 : 0.055)
+      y: halfHeight * (this.mobile ? 0.25 : 0.055)
     };
   }
 
@@ -991,7 +988,7 @@ window.EarthScene = class EarthScene {
 
     const drift = this.motion.matches ? 0 : Math.sin(t * 0.32) * 0.025;
     const rotation = 4.58 + (this.motion.matches ? 0 : t * 0.026);
-    const distance = this.finalDistance * (0.52 + framing * 0.48) * (this.mobile ? 1.08 : 1);
+    const distance = this.finalDistance * (0.52 + framing * 0.48);
 
     if (this.mode === "webgl") {
       const layout = this.normalLayout();
@@ -1019,7 +1016,7 @@ window.EarthScene = class EarthScene {
       const radius = this.finalRadius * this.finalDistance / distance;
       planet.style.width = planet.style.height = `${radius * 2}px`;
       planet.style.left = `${this.mobile ? 50 : 50 + 14 * framing}%`;
-      planet.style.top = `${this.mobile ? 31 - 3.5 * framing : 50 - 3 * framing}%`;
+      planet.style.top = `${this.mobile ? 36 - 5 * framing : 50 - 3 * framing}%`;
       planet.style.backgroundPositionX = `${rotation * -95}px`;
       planet.style.transform = "translate(-50%, -50%) rotate(-10.3deg)";
     }
@@ -1173,7 +1170,7 @@ window.EarthScene = class EarthScene {
     this.drawStars();
     const radius = this.finalRadius * this.finalDistance / distance;
     const cx = w * (this.mobile ? 0.5 : 0.5 + 0.14 * framing);
-    const cy = h * (this.mobile ? 0.31 - 0.035 * framing : 0.5 - 0.03 * framing) + drift * 18;
+    const cy = h * (this.mobile ? 0.36 - 0.05 * framing : 0.5 - 0.03 * framing) + drift * 18;
     const { yaw, pitch, roll } = this.pose;
     const cosYaw = Math.cos(yaw), sinYaw = Math.sin(yaw);
     const cosPitch = Math.cos(pitch), sinPitch = Math.sin(pitch);

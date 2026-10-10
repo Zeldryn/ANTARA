@@ -17,8 +17,8 @@ const MERCURY_SURFACE_TEXTURES = Object.freeze({
     "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533"
   ],
   mobile: [
-    "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Mercury_MESSENGER_MDIS_Basemap_BDR_Mosaic_Global_32ppd.jpg/2560px-Mercury_MESSENGER_MDIS_Basemap_BDR_Mosaic_Global_32ppd.jpg"
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Mercury_MESSENGER_MDIS_Basemap_BDR_Mosaic_Global_32ppd.jpg/2560px-Mercury_MESSENGER_MDIS_Basemap_BDR_Mosaic_Global_32ppd.jpg",
+    "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533"
   ]
 });
 const MERCURY_TEXTURE_SOURCE = "https://astrogeology.usgs.gov/search/map/mercury_messenger_mdis_global_basemap_bdr_166m";
@@ -622,14 +622,12 @@ window.MercuryScene = class MercuryScene {
 
   createThreeScene(THREE) {
     const canvas = document.createElement("canvas");
-    const mobileRender = !!window.ANTARA_RENDER_PROFILE?.mobile;
-    const antialias = !mobileRender;
-    const context = canvas.getContext("webgl2", { alpha: true, antialias, powerPreference: "high-performance" });
+    const context = canvas.getContext("webgl2", { alpha: true, antialias: true, powerPreference: "high-performance" });
     if (!context) throw new Error("WebGL2 unavailable");
     this.THREE = THREE;
-    this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias });
+    this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias: true });
     this.renderer.setClearColor(0x030812, 0);
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mobileRender ? 1.1 : 2));
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, window.innerWidth <= 700 ? 1.6 : 2));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.08;
@@ -644,7 +642,7 @@ window.MercuryScene = class MercuryScene {
     texture.minFilter = THREE.LinearMipmapLinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.generateMipmaps = true;
-    texture.anisotropy = Math.max(1, Math.min(window.ANTARA_RENDER_PROFILE?.mobile ? 2 : 12, this.renderer.capabilities.getMaxAnisotropy()));
+    texture.anisotropy = Math.max(1, Math.min(12, this.renderer.capabilities.getMaxAnisotropy()));
     texture.needsUpdate = true;
     const relief = texture.clone();
     relief.colorSpace = THREE.NoColorSpace;
@@ -663,7 +661,7 @@ window.MercuryScene = class MercuryScene {
     });
     material.map.name = "Mercury MESSENGER/USGS surface";
     material.bumpMap.name = "Mercury relief from MESSENGER surface";
-    this.planet = new THREE.Mesh(new THREE.SphereGeometry(1, mobileRender ? 72 : 128, mobileRender ? 48 : 96), material);
+    this.planet = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 96), material);
     this.planet.rotation.set(0.09, 0.6, 0.12);
     this.planetGroup = new THREE.Group();
     this.planetGroup.add(this.planet);
@@ -715,7 +713,7 @@ window.MercuryScene = class MercuryScene {
     const travelSurface = this.venusSurface || this.makeVenusTravelSurface();
     const travelTexture = new THREE.Texture(travelSurface);
     travelTexture.colorSpace = THREE.SRGBColorSpace;
-    travelTexture.anisotropy = Math.min(window.ANTARA_RENDER_PROFILE?.mobile ? 2 : 8, this.renderer.capabilities.getMaxAnisotropy());
+    travelTexture.anisotropy = Math.min(8, this.renderer.capabilities.getMaxAnisotropy());
     travelTexture.needsUpdate = true;
     this.travelVenusMaterial = new THREE.MeshStandardMaterial({ map: travelTexture, roughness: 0.97, metalness: 0, transparent: true, opacity: 1, color: 0xffd19a });
     this.travelVenus = new THREE.Mesh(new THREE.SphereGeometry(1, 112, 80), this.travelVenusMaterial);
@@ -789,12 +787,12 @@ window.MercuryScene = class MercuryScene {
     this.finalDistance = this.height / (2 * Math.tan(Math.PI / 10) * radius);
     this.finalRadius = radius;
     if (this.mode === "webgl") {
-      this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, this.mobile ? 1.1 : 2));
+      this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, this.mobile ? 1.6 : 2));
       this.renderer.setSize(this.width, this.height);
       this.camera.aspect = this.width / this.height;
       this.camera.updateProjectionMatrix();
     } else if (this.mode === "canvas") {
-      const dpr = Math.min(devicePixelRatio || 1, this.mobile ? 1 : 1.5);
+      const dpr = Math.min(devicePixelRatio || 1, 1.5);
       this.canvas.width = this.width * dpr; this.canvas.height = this.height * dpr;
       this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
@@ -850,7 +848,6 @@ window.MercuryScene = class MercuryScene {
   tick(now) {
     this.frame = null;
     if (!this.active || document.hidden) return;
-    if (window.ANTARA_RENDER_PROFILE && !window.ANTARA_RENDER_PROFILE.shouldRender(this, now)) { this.frame = requestAnimationFrame(t => this.tick(t)); return; }
     // Pause time when hidden; cap only anomalous gaps, not ordinary low frame rates.
     const delta = Math.min((now - this.previous) / 1000, 0.15);
     this.previous = now;
@@ -946,7 +943,7 @@ window.MercuryScene = class MercuryScene {
     return {
       halfHeight,
       x: halfHeight * (this.camera?.aspect || this.width / this.height) * (this.mobile ? 0 : 0.28),
-      y: halfHeight * (this.mobile ? 0.36 : 0.10)
+      y: halfHeight * (this.mobile ? 0.28 : 0.10)
     };
   }
 
@@ -1152,7 +1149,7 @@ window.MercuryScene = class MercuryScene {
       ? MERCURY_EXPLORATION_DISTANCE_SCALE_MOBILE
       : MERCURY_EXPLORATION_DISTANCE_SCALE_DESKTOP;
     const explorationFramingScale = 1 + this.explorationBlend * (explorationDistanceScale - 1);
-    this.distance = arrivalDistance * explorationFramingScale * (this.mobile ? 1.08 : 1);
+    this.distance = arrivalDistance * explorationFramingScale;
     const arrivalYaw = this.motion.matches ? 0.6 : 0.6 - t * 0.016;
     const exploreYaw = this.topicYaw + (this.motion.matches ? 0 : Math.sin(t * 0.14) * 0.012);
     const fallbackYaw = arrivalYaw * (1 - this.explorationBlend) + exploreYaw * this.explorationBlend;
@@ -1179,8 +1176,8 @@ window.MercuryScene = class MercuryScene {
       const halfHeight = Math.tan(Math.PI / 10) * this.finalDistance;
       const baseX = this.mobile ? 0 : 0.28;
       const exploreX = this.mobile ? this.topicShift.x * 0.7 : MERCURY_EXPLORATION_CENTER_X_DESKTOP + this.topicShift.x;
-      const baseY = this.mobile ? 0.36 : 0.1;
-      const exploreY = this.mobile ? 0.28 + this.topicShift.y : MERCURY_EXPLORATION_CENTER_Y_DESKTOP + this.topicShift.y;
+      const baseY = this.mobile ? 0.28 : 0.1;
+      const exploreY = this.mobile ? 0.20 + this.topicShift.y : MERCURY_EXPLORATION_CENTER_Y_DESKTOP + this.topicShift.y;
       const groupX = baseX * (1 - this.explorationBlend) + exploreX * this.explorationBlend;
       const groupY = baseY * (1 - this.explorationBlend) + exploreY * this.explorationBlend;
       this.travelVenusGroup.visible = false;
@@ -1271,7 +1268,7 @@ window.MercuryScene = class MercuryScene {
     const arrivalX = this.mobile ? 0 : 0.14 * approach;
     const exploreX = this.mobile ? this.topicShift.x * 0.12 : 0.14 + this.topicShift.x * 0.42;
     const cx = w * (0.5 + arrivalX * (1 - this.explorationBlend) + exploreX * this.explorationBlend);
-    const arrivalY = this.mobile ? 0.19 : 0.05;
+    const arrivalY = this.mobile ? 0.14 : 0.05;
     const exploreY = this.mobile ? 0.21 - this.topicShift.y * 0.3 : 0.03 - this.topicShift.y * 0.3;
     const cy = h * (0.5 - arrivalY * (1 - this.explorationBlend) - exploreY * this.explorationBlend) - drift * 50 * (1 - this.explorationBlend * 0.45);
     ctx.drawImage(this.sphereCanvas, cx - radius, cy - radius, radius * 2, radius * 2);

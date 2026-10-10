@@ -525,7 +525,7 @@ window.MarsScene = class MarsScene {
           const timeout = setTimeout(() => reject(new Error("Texture timeout")), 8000);
           image.onload = () => { clearTimeout(timeout); resolve(image); };
           image.onerror = () => { clearTimeout(timeout); reject(new Error("Texture unavailable")); };
-          image.src = window.ANTARA_RENDER_PROFILE?.mobile ? "assets/textures/mobile/mars-1024.webp" : "assets/textures/mars-surface-2k.jpg";
+          image.src = "assets/textures/mars-surface-2k.jpg";
         })
       ]);
       this.surface = imageResult.status === "fulfilled" ? imageResult.value : this.makeProceduralSurface();
@@ -549,14 +549,12 @@ window.MarsScene = class MarsScene {
 
   createThreeScene(THREE) {
     const canvas = document.createElement("canvas");
-    const mobileRender = !!window.ANTARA_RENDER_PROFILE?.mobile;
-    const antialias = !mobileRender;
-    const context = canvas.getContext("webgl2", { alpha: true, antialias, powerPreference: mobileRender ? "high-performance" : "low-power" });
+    const context = canvas.getContext("webgl2", { alpha: true, antialias: true, powerPreference: "low-power" });
     if (!context) throw new Error("WebGL2 unavailable");
     this.THREE = THREE;
-    this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias });
+    this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias: true });
     this.renderer.setClearColor(0x030812, 0);
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mobileRender ? 1.1 : 1.5));
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.08;
@@ -566,13 +564,13 @@ window.MarsScene = class MarsScene {
     this.camera.position.z = 6;
     const texture = new THREE.Texture(this.surface);
     texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = Math.min(mobileRender ? 2 : 4, this.renderer.capabilities.getMaxAnisotropy());
+    texture.anisotropy = Math.min(4, this.renderer.capabilities.getMaxAnisotropy());
     texture.needsUpdate = true;
     const relief = texture.clone();
     relief.colorSpace = THREE.NoColorSpace;
     relief.needsUpdate = true;
     const material = new THREE.MeshStandardMaterial({ map: texture, bumpMap: relief, bumpScale: 0.018, roughness: 0.98, metalness: 0 });
-    this.planet = new THREE.Mesh(new THREE.SphereGeometry(1, mobileRender ? 64 : 96, mobileRender ? 44 : 64), material);
+    this.planet = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), material);
     this.planet.rotation.set(0.09, 0.6, 0.12);
     this.planetGroup = new THREE.Group();
     this.planetGroup.add(this.planet);
@@ -691,7 +689,7 @@ window.MarsScene = class MarsScene {
       this.camera.aspect = this.width / this.height;
       this.camera.updateProjectionMatrix();
     } else if (this.mode === "canvas") {
-      const dpr = Math.min(devicePixelRatio || 1, this.mobile ? 1 : 1.5);
+      const dpr = Math.min(devicePixelRatio || 1, 1.5);
       this.canvas.width = this.width * dpr; this.canvas.height = this.height * dpr;
       this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
@@ -747,7 +745,6 @@ window.MarsScene = class MarsScene {
   tick(now) {
     this.frame = null;
     if (!this.active || document.hidden) return;
-    if (window.ANTARA_RENDER_PROFILE && !window.ANTARA_RENDER_PROFILE.shouldRender(this, now)) { this.frame = requestAnimationFrame(t => this.tick(t)); return; }
     // Pause time when hidden; cap only anomalous gaps, not ordinary low frame rates.
     const delta = Math.min((now - this.previous) / 1000, 0.15);
     this.previous = now;
@@ -849,7 +846,7 @@ window.MarsScene = class MarsScene {
       : MARS_EXPLORATION_DISTANCE_SCALE_DESKTOP;
     const explorationFramingScale = 1 + this.explorationBlend * (explorationDistanceScale - 1);
     const dive = smooth(this.fullDiveBlend);
-    this.distance = Math.max(1.12, arrivalDistance * explorationFramingScale * (this.mobile ? 1.08 : 1) * (1 - dive * 0.76));
+    this.distance = Math.max(1.12, arrivalDistance * explorationFramingScale * (1 - dive * 0.76));
     const arrivalYaw = this.motion.matches ? 0.6 : 0.6 + t * 0.024;
     const exploreYaw = this.topicYaw + (this.motion.matches ? 0 : Math.sin(t * 0.14) * 0.012);
     const orbitYaw = arrivalYaw * (1 - this.explorationBlend) + exploreYaw * this.explorationBlend;
@@ -880,8 +877,8 @@ window.MarsScene = class MarsScene {
       const halfHeight = Math.tan(Math.PI / 10) * this.finalDistance;
       const baseX = this.mobile ? 0 : 0.28;
       const exploreX = this.mobile ? this.topicShift.x * 0.7 : MARS_EXPLORATION_CENTER_X_DESKTOP + this.topicShift.x;
-      const baseY = this.mobile ? 0.36 : 0.1;
-      const exploreY = this.mobile ? 0.28 + this.topicShift.y : MARS_EXPLORATION_CENTER_Y_DESKTOP + this.topicShift.y;
+      const baseY = this.mobile ? 0.28 : 0.1;
+      const exploreY = this.mobile ? 0.20 + this.topicShift.y : MARS_EXPLORATION_CENTER_Y_DESKTOP + this.topicShift.y;
       const groupX = (baseX * (1 - this.explorationBlend) + exploreX * this.explorationBlend) * (1 - dive);
       const groupY = (baseY * (1 - this.explorationBlend) + exploreY * this.explorationBlend) * (1 - dive);
       this.planetGroup.position.set(halfHeight * this.camera.aspect * groupX, halfHeight * groupY + drift * (1 - this.explorationBlend * 0.45) * (1 - dive), 0);
@@ -976,7 +973,7 @@ window.MarsScene = class MarsScene {
     const exploreX = this.mobile ? this.topicShift.x * 0.12 : 0.14 + this.topicShift.x * 0.42;
     const dive = Math.max(0, Math.min(1, this.fullDiveBlend));
     const orbitCx = w * (0.5 + arrivalX * (1 - this.explorationBlend) + exploreX * this.explorationBlend);
-    const arrivalY = this.mobile ? 0.19 : 0.05;
+    const arrivalY = this.mobile ? 0.14 : 0.05;
     const exploreY = this.mobile ? 0.21 - this.topicShift.y * 0.3 : 0.03 - this.topicShift.y * 0.3;
     const orbitCy = h * (0.5 - arrivalY * (1 - this.explorationBlend) - exploreY * this.explorationBlend) - drift * 50 * (1 - this.explorationBlend * 0.45);
     const cx = orbitCx * (1 - dive) + w * 0.5 * dive;

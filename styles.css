@@ -6333,3 +6333,43 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     width:91% !important;
   }
 }
+
+/* ==============================================================
+   NARA 1:1 PONYTAIL SET — TARGETED FRAMING FIX (2026-10-02)
+   The new supplied sprites are square instead of the previous portrait ratio.
+   Only Nara is resized/repositioned. Her lower body is intentionally tucked
+   behind the existing cockpit dashboard so the visible framing ends at the
+   skirt rather than exposing the thigh area.
+   ============================================================== */
+.companion-a {
+  width: clamp(400px, 39vw, 560px);
+  bottom: 9%;
+}
+
+@media (max-width: 1100px) {
+  .companion-a {
+    width: clamp(340px, 39vw, 460px);
+    bottom: 9%;
+  }
+}
+
+@media (max-width: 900px) {
+  .companion-a {
+    width: clamp(260px, 44vw, 360px);
+    bottom: 13%;
+  }
+}
+
+@media (max-width: 700px) {
+  .companion-a {
+    width: clamp(215px, 58vw, 285px);
+    bottom: 18%;
+  }
+}
+
+@media (max-height: 700px) and (min-width: 701px) {
+  .companion-a {
+    width: clamp(330px, 40vw, 520px);
+    bottom: 5.5%;
+  }
+}

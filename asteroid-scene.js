@@ -1,7 +1,7 @@
 "use strict";
 
-const ASTEROID_MARS_TEXTURE = window.ANTARA_RENDER_PROFILE?.mobile ? "./assets/textures/mobile/mars-1024.webp" : "./assets/textures/mars-surface-2k.jpg";
-const ASTEROID_JUPITER_TEXTURE = window.ANTARA_RENDER_PROFILE?.mobile ? "./assets/textures/mobile/jupiter-1024.webp" : "./assets/textures/jupiter-hubble-inspired-4k.jpg";
+const ASTEROID_MARS_TEXTURE = "./assets/textures/mars-surface-2k.jpg";
+const ASTEROID_JUPITER_TEXTURE = "./assets/textures/jupiter-hubble-inspired-4k.jpg";
 const ASTEROID_TEXTURE_ROOT = "./assets/textures/asteroids/";
 const ASTEROID_VARIANTS = Object.freeze(["charcoal", "brown-gray", "dusty", "metallic-rock"]);
 const ASTEROID_EXPLORATION_STOPS = Object.freeze([
@@ -140,7 +140,7 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     this.time = 0;
     this.width = 1;
     this.height = 1;
-    this.mobile = window.ANTARA_RENDER_PROFILE?.mobile ?? (window.innerWidth <= 700);
+    this.mobile = false;
     this.travelMode = null;
     this.travelDirection = 1;
     this.travelStartedAt = 0;
@@ -236,13 +236,13 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     texture.minFilter = THREE.LinearMipmapLinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.generateMipmaps = true;
-    texture.anisotropy = Math.min(this.mobile ? 2 : 8, this.renderer.capabilities.getMaxAnisotropy());
+    texture.anisotropy = Math.min(8, this.renderer.capabilities.getMaxAnisotropy());
     texture.needsUpdate = true;
     return texture;
   }
 
   deformGeometry(THREE, variant) {
-    const geometry = new THREE.SphereGeometry(1, this.mobile ? 24 : 48, this.mobile ? 16 : 32);
+    const geometry = new THREE.SphereGeometry(1, 48, 32);
     const attr = geometry.attributes.position;
     const squash = [
       [1.15,.82,.93], [.93,1.08,.79], [1.23,.75,.86], [.86,1.17,.92]
@@ -263,10 +263,9 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
   createThreeScene(THREE, images) {
     this.THREE = THREE;
     const canvas = document.createElement("canvas");
-    const antialias=!this.mobile;
-    const context = canvas.getContext("webgl2", { alpha:true, antialias, powerPreference:"high-performance" });
+    const context = canvas.getContext("webgl2", { alpha:true, antialias:true, powerPreference:"high-performance" });
     if (!context) throw new Error("WebGL2 unavailable");
-    this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha:true, antialias });
+    this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha:true, antialias:true });
     this.renderer.setClearColor(0x02060d, 0);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -335,24 +334,24 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     const ceresBump=this.makeTexture(THREE,images.get(`${ASTEROID_TEXTURE_ROOT}ceres-bump.png`));
     const ceresRough=this.makeTexture(THREE,images.get(`${ASTEROID_TEXTURE_ROOT}ceres-roughness.png`));
     this.ceresMaterial=new THREE.MeshStandardMaterial({map:ceresMap,bumpMap:ceresBump,bumpScale:.055,roughnessMap:ceresRough,roughness:.94,metalness:0,transparent:true});
-    this.ceres=new THREE.Mesh(new THREE.SphereGeometry(1,this.mobile?40:72,this.mobile?28:48),this.ceresMaterial); this.ceres.position.set(4.25,2.05,-2.8); this.ceres.scale.setScalar(.56); this.fieldGroup.add(this.ceres);
+    this.ceres=new THREE.Mesh(new THREE.SphereGeometry(1,72,48),this.ceresMaterial); this.ceres.position.set(4.25,2.05,-2.8); this.ceres.scale.setScalar(.56); this.fieldGroup.add(this.ceres);
     this.vesta=new THREE.Mesh(this.geometries[2],this.materials[2]);this.vesta.position.set(2.25,-1.42,-2.55);this.vesta.scale.setScalar(.43);this.vesta.rotation.set(.8,1.45,.25);this.fieldGroup.add(this.vesta);
     this.ceresWorld=new THREE.Vector3();this.ceresProjected=new THREE.Vector3();
 
     const marsMap=this.makeTexture(THREE,images.get(ASTEROID_MARS_TEXTURE),{srgb:true});
     const marsMat=new THREE.MeshStandardMaterial({map:marsMap,roughness:.86,transparent:true,opacity:1});
-    this.travelMars=new THREE.Mesh(new THREE.SphereGeometry(1,this.mobile?56:96,this.mobile?38:64),marsMat); this.travelMarsGroup=new THREE.Group(); this.travelMarsGroup.add(this.travelMars); this.scene.add(this.travelMarsGroup); this.travelMarsGroup.visible=false;
+    this.travelMars=new THREE.Mesh(new THREE.SphereGeometry(1,96,64),marsMat); this.travelMarsGroup=new THREE.Group(); this.travelMarsGroup.add(this.travelMars); this.scene.add(this.travelMarsGroup); this.travelMarsGroup.visible=false;
 
     const jMap=this.makeTexture(THREE,images.get(ASTEROID_JUPITER_TEXTURE),{srgb:true});
     const jBump=jMap?.clone(); if(jBump){jBump.colorSpace=THREE.NoColorSpace;jBump.needsUpdate=true;}
     this.travelJupiterMaterial=new THREE.MeshStandardMaterial({map:jMap,bumpMap:jBump,bumpScale:.012,roughness:.88,transparent:true,opacity:1});
-    this.travelJupiter=new THREE.Mesh(new THREE.SphereGeometry(1,this.mobile?64:120,this.mobile?44:80),this.travelJupiterMaterial);
+    this.travelJupiter=new THREE.Mesh(new THREE.SphereGeometry(1,120,80),this.travelJupiterMaterial);
     this.travelJupiterGroup=new THREE.Group(); this.travelJupiterGroup.add(this.travelJupiter);
     const ringTex=this.makeRingTexture(THREE);
     this.travelRingMaterial=new THREE.MeshBasicMaterial({map:ringTex,color:0xb4a58c,transparent:true,opacity:.44,depthTest:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.NormalBlending});
     this.travelRingMaterial.userData.antaraBaseOpacity=.44;
     this.travelRingMaterial.userData.antaraTravelMaxOpacity=.56;
-    this.travelRing=new THREE.Mesh(new THREE.RingGeometry(1.30,1.88,this.mobile?112:220,this.mobile?2:3),this.travelRingMaterial); this.travelRing.rotation.x=Math.PI/2-.14; this.travelRing.rotation.z=.028; this.travelJupiterGroup.add(this.travelRing);
+    this.travelRing=new THREE.Mesh(new THREE.RingGeometry(1.30,1.88,220,3),this.travelRingMaterial); this.travelRing.rotation.x=Math.PI/2-.14; this.travelRing.rotation.z=.028; this.travelJupiterGroup.add(this.travelRing);
     this.scene.add(this.travelJupiterGroup); this.travelJupiterGroup.visible=false;
   }
 
@@ -390,7 +389,7 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
 
   resize() {
     const rect=this.viewport.getBoundingClientRect(); this.width=Math.max(1,Math.round(rect.width));this.height=Math.max(1,Math.round(rect.height));this.mobile=this.width<701;
-    const dpr=Math.min(devicePixelRatio||1,this.mobile?1.1:2);
+    const dpr=Math.min(devicePixelRatio||1,this.mobile?1.55:2);
     if(this.renderer){this.renderer.setPixelRatio(dpr);this.renderer.setSize(this.width,this.height,false);this.camera.aspect=this.width/this.height;this.camera.updateProjectionMatrix();}
     else if(this.canvas){this.canvas.width=Math.round(this.width*dpr);this.canvas.height=Math.round(this.height*dpr);this.canvas.style.width=`${this.width}px`;this.canvas.style.height=`${this.height}px`;this.ctx.setTransform(dpr,0,0,dpr,0,0);}
   }
@@ -458,7 +457,7 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
   beginTravelFromJupiter(options={}){this.beginTravel("from-jupiter",options);}
 
   tick(now) {
-    this.frame=null;if(!this.active||document.hidden)return;if(window.ANTARA_RENDER_PROFILE&&!window.ANTARA_RENDER_PROFILE.shouldRender(this,now)){this.frame=requestAnimationFrame(t=>this.tick(t));return;}const delta=Math.min((now-this.previous)/1000,.12);this.previous=now;this.time+=delta;const damp=1-Math.exp(-delta*2.15);this.cameraOffset.x+=(this.pointer.x-this.cameraOffset.x)*damp;this.cameraOffset.y+=(this.pointer.y-this.cameraOffset.y)*damp;const focusEase=this.motion.matches?1:1-Math.exp(-delta*2.1);for(const key of ["x","y","z","lookX","lookY"])this.focusCamera[key]+=(this.focusTarget[key]-this.focusCamera[key])*focusEase;this.updateAsteroids(delta,this.travelMode?this.currentBeltVisibility():1);this.render();this.frame=requestAnimationFrame(t=>this.tick(t));
+    this.frame=null;if(!this.active||document.hidden)return;const delta=Math.min((now-this.previous)/1000,.12);this.previous=now;this.time+=delta;const damp=1-Math.exp(-delta*2.15);this.cameraOffset.x+=(this.pointer.x-this.cameraOffset.x)*damp;this.cameraOffset.y+=(this.pointer.y-this.cameraOffset.y)*damp;const focusEase=this.motion.matches?1:1-Math.exp(-delta*2.1);for(const key of ["x","y","z","lookX","lookY"])this.focusCamera[key]+=(this.focusTarget[key]-this.focusCamera[key])*focusEase;this.updateAsteroids(delta,this.travelMode?this.currentBeltVisibility():1);this.render();this.frame=requestAnimationFrame(t=>this.tick(t));
   }
 
   currentBeltVisibility() {
@@ -709,7 +708,7 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
     this.fieldGroup.visible=belt>.008; this.materials.forEach(mat=>mat.opacity=belt); this.ceresMaterial.opacity=belt;
     this.fieldGroup.position.set(fieldIsDestination?separation:0,0,0); this.fieldGroup.rotation.y=Math.sin(this.time*.018)*.012;
 
-    const owner=this._jupiterVisualOwner,heroX=this.mobile?0:.82,heroY=this.mobile?.23:.02,heroScale=this.mobile?.88:1.13;
+    const owner=this._jupiterVisualOwner,heroX=this.mobile?0:.82,heroY=this.mobile?.13:.02,heroScale=this.mobile?.98:1.13;
     const projectionRatio=(8.4*Math.tan(19*Math.PI/180))/(6.4*Math.tan(17*Math.PI/180));
     const lane=destinationIsJupiter?separation:0;
     const jupiterSourceX=heroX*projectionRatio;

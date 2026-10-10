@@ -561,18 +561,18 @@ const CHARACTER_SPRITES = Object.freeze({
   A: {
     name: "Nara",
     base: "assets/characters/nara/",
-    fallback: "idle.webp",
+    fallback: "05_reaching_out_gentle.webp",
     states: Object.freeze({
-      idle: "idle.webp",
-      happy: "happy.webp",
-      talking: "talking.webp",
-      excited: "excited.webp",
-      pointing: "excited.webp",
-      explaining: "talking.webp",
-      thinking: "thinking.webp",
-      surprised: "surprised.webp",
-      confident: "confident.webp",
-      supportive: "supportive.webp"
+      idle: "05_reaching_out_gentle.webp",
+      happy: "07_open_arms_happy.webp",
+      talking: "01_wink_peace_reaching.webp",
+      excited: "04_cheerful_fists_up.webp",
+      pointing: "05_reaching_out_gentle.webp",
+      explaining: "01_wink_peace_reaching.webp",
+      thinking: "03_thinking_pose.webp",
+      surprised: "06_surprised_exclamation.webp",
+      confident: "02_confident_arms_crossed.webp",
+      supportive: "05_reaching_out_gentle.webp"
     })
   },
   B: {
