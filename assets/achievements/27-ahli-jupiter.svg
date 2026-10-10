@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Ahli Jupiter">
+  <defs>
+    <radialGradient id="bg"><stop stop-color="#715b48"/><stop offset="1" stop-color="#211915"/></radialGradient>
+    <radialGradient id="planet"><stop stop-color="#ffffff" stop-opacity=".35"/><stop offset=".3" stop-color="#d7b58e"/><stop offset="1" stop-color="#d7b58e" stop-opacity=".72"/></radialGradient>
+  </defs>
+  <circle cx="256" cy="256" r="218" fill="url(#bg)" stroke="#d8b36b" stroke-width="12"/>
+  <circle cx="256" cy="256" r="188" fill="none" stroke="#dce8ec" stroke-opacity=".28" stroke-width="4"/>
+  <g stroke="#d8b36b" stroke-width="4" stroke-linecap="round" opacity=".82">
+    <path d="M256 38v20M256 454v20M38 256h20M454 256h20M102 102l14 14M396 396l14 14M410 102l-14 14M116 396l-14 14"/>
+  </g>
+  <circle cx="256" cy="257" r="92" fill="url(#planet)"/>
+  <g fill="none" stroke="#8c6349" stroke-width="10" opacity=".75"><path d="M184 220c45 18 99 18 144 0"/><path d="M178 258c52 16 105 16 156 0"/><path d="M188 300c43 13 92 13 136 0"/></g><ellipse cx="292" cy="274" rx="27" ry="17" fill="#a65038" opacity=".9"/>
+  <path d="M175 371h162" stroke="#d8b36b" stroke-width="3" opacity=".65"/>
+  <text x="256" y="405" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" letter-spacing="3" fill="#f3ead8">AHLI</text>
+  <text x="256" y="438" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="700" letter-spacing="2" fill="#dbeaf0">JUPITER</text>
+</svg>

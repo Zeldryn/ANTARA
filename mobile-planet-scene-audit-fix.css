@@ -1,0 +1,613 @@
+/* ANTARA mobile scene audit fix — 2026-10-04
+   Final mobile-only polish pass for panorama + lesson layout consistency.
+   Goal: make the non-Mars planet scenes feel closer to the calmer, cleaner
+   Mars mobile composition without disturbing desktop. */
+
+@media (max-width: 700px) {
+  :is(
+    .sun-caption,
+    .mercury-caption,
+    .venus-caption,
+    .asteroid-caption,
+    .jupiter-caption,
+    .saturn-caption,
+    .uranus-caption,
+    .neptune-caption
+  ) {
+    left: 18px !important;
+    right: 18px !important;
+    bottom: max(18px, env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    text-align: center !important;
+  }
+
+  :is(
+    .sun-caption,
+    .mercury-caption,
+    .venus-caption,
+    .asteroid-caption,
+    .jupiter-caption,
+    .saturn-caption,
+    .uranus-caption,
+    .neptune-caption
+  ) .eyebrow {
+    justify-content: center !important;
+  }
+
+  :is(
+    .sun-caption,
+    .mercury-caption,
+    .venus-caption,
+    .asteroid-caption,
+    .jupiter-caption,
+    .saturn-caption,
+    .uranus-caption,
+    .neptune-caption
+  ) .eyebrow span {
+    display: none !important;
+  }
+
+  .sun-caption h2,
+  .mercury-caption h2,
+  .venus-caption h2,
+  .asteroid-caption h2,
+  .jupiter-caption h2,
+  .saturn-caption h2,
+  .uranus-caption h2,
+  .neptune-caption h2 {
+    margin: 14px 0 10px !important;
+    line-height: 0.96 !important;
+    letter-spacing: -0.05em !important;
+  }
+
+  .sun-caption h2 {
+    font-size: clamp(48px, 15vw, 72px) !important;
+  }
+
+  :is(.mercury-caption, .venus-caption, .jupiter-caption, .saturn-caption, .uranus-caption, .neptune-caption) h2 {
+    font-size: clamp(52px, 16.4vw, 78px) !important;
+  }
+
+  .asteroid-caption h2 {
+    font-size: clamp(40px, 12.5vw, 58px) !important;
+  }
+
+  .sun-whisper,
+  .mercury-whisper,
+  .venus-whisper,
+  .asteroid-whisper,
+  .jupiter-whisper,
+  .saturn-whisper,
+  .uranus-whisper,
+  .neptune-whisper {
+    margin: 6px 0 0 !important;
+    font-size: 10px !important;
+    line-height: 1.45 !important;
+  }
+
+  /* Make single-CTA planet pages behave more like Mars on mobile:
+     a clear hero button first, then previous / next navigation underneath. */
+  :is(
+    .sun-arrival-actions,
+    .mercury-arrival-actions,
+    .venus-arrival-actions,
+    .asteroid-arrival-actions,
+    .jupiter-arrival-actions,
+    .saturn-arrival-actions,
+    .uranus-arrival-actions,
+    .neptune-arrival-actions
+  ) {
+    width: min(84vw, 360px) !important;
+    margin: 17px auto 0 !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: 12px !important;
+    row-gap: 9px !important;
+    align-items: stretch !important;
+  }
+
+  :is(
+    .sun-explore-button,
+    .mercury-explore-button,
+    .venus-explore-button,
+    .asteroid-explore-button,
+    .jupiter-explore-button,
+    .saturn-explore-button,
+    .uranus-explore-button,
+    .neptune-explore-button
+  ) {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    min-height: 46px !important;
+    padding: 0 16px 0 18px !important;
+    gap: 14px !important;
+    font-size: 7.8px !important;
+    letter-spacing: 1.05px !important;
+    justify-content: space-between !important;
+  }
+
+  :is(
+    .sun-planet-prev,
+    .mercury-planet-prev,
+    .venus-planet-prev,
+    .asteroid-object-prev,
+    .jupiter-planet-prev,
+    .saturn-planet-prev,
+    .uranus-planet-prev,
+    .neptune-planet-prev
+  ) {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  :is(
+    .sun-planet-next,
+    .mercury-planet-next,
+    .venus-planet-next,
+    .asteroid-object-next,
+    .jupiter-planet-next,
+    .saturn-planet-next,
+    .uranus-planet-next,
+    .neptune-planet-next
+  ) {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  :is(
+    .sun-planet-nav,
+    .mercury-planet-nav,
+    .venus-planet-nav,
+    .asteroid-object-nav,
+    .jupiter-planet-nav,
+    .saturn-planet-nav,
+    .uranus-planet-nav,
+    .neptune-planet-nav
+  ) {
+    min-width: 0 !important;
+    min-height: 44px !important;
+    padding: 0 7px !important;
+    gap: 7px !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  :is(
+    .sun-planet-nav small,
+    .mercury-planet-nav small,
+    .venus-planet-nav small,
+    .asteroid-object-nav small,
+    .jupiter-planet-nav small,
+    .saturn-planet-nav small,
+    .uranus-planet-nav small,
+    .neptune-planet-nav small
+  ) {
+    font-size: 4.8px !important;
+    letter-spacing: 0.82px !important;
+  }
+
+  :is(
+    .sun-planet-nav strong,
+    .mercury-planet-nav strong,
+    .venus-planet-nav strong,
+    .asteroid-object-nav strong,
+    .jupiter-planet-nav strong,
+    .saturn-planet-nav strong,
+    .uranus-planet-nav strong,
+    .neptune-planet-nav strong
+  ) {
+    font-size: 6.8px !important;
+    letter-spacing: 0.7px !important;
+    white-space: normal !important;
+  }
+
+  /* Keep non-reference lesson sheets shorter than Earth/Mars so the planet panorama
+     stays visible while reading on phones. Content remains scrollable inside. */
+  :is(
+    .sun-exploration,
+    .mercury-exploration,
+    .venus-exploration,
+    .asteroid-exploration,
+    .jupiter-exploration,
+    .saturn-exploration,
+    .uranus-exploration,
+    .neptune-exploration
+  ) {
+    height: min(35dvh, 280px) !important;
+    max-height: min(35dvh, 280px) !important;
+  }
+
+  /* Keep detached science visuals lighter so they do not fight the planet. */
+  :is(
+    .sun-context-media,
+    .mercury-context-media,
+    .venus-context-media,
+    .asteroid-context-media,
+    .jupiter-context-media,
+    .saturn-context-media,
+    .uranus-context-media,
+    .neptune-context-media
+  ) {
+    top: 64px !important;
+    right: 12px !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: min(42vw, 168px) !important;
+    max-height: none !important;
+    gap: 4px !important;
+  }
+
+  .jupiter-semantic-overlay.is-magnetosphere .jupiter-semantic-arc {
+    width: 68vw !important;
+    height: 50vw !important;
+    opacity: 0.7 !important;
+  }
+
+  .jupiter-semantic-label {
+    top: 18% !important;
+    font-size: 7px !important;
+    letter-spacing: 1.6px !important;
+  }
+
+  :is(.sun-credit, .mercury-credit, .venus-credit, .asteroid-credit, .jupiter-credit, .saturn-credit, .uranus-credit, .neptune-credit) {
+    display: none !important;
+  }
+}
+
+@media (max-width: 700px) and (max-height: 740px) {
+  :is(
+    .sun-caption,
+    .mercury-caption,
+    .venus-caption,
+    .asteroid-caption,
+    .jupiter-caption,
+    .saturn-caption,
+    .uranus-caption,
+    .neptune-caption
+  ) {
+    bottom: max(14px, env(safe-area-inset-bottom)) !important;
+  }
+
+  .sun-caption h2,
+  .mercury-caption h2,
+  .venus-caption h2,
+  .asteroid-caption h2,
+  .jupiter-caption h2,
+  .saturn-caption h2,
+  .uranus-caption h2,
+  .neptune-caption h2 {
+    margin: 10px 0 8px !important;
+  }
+
+  :is(
+    .sun-arrival-actions,
+    .mercury-arrival-actions,
+    .venus-arrival-actions,
+    .asteroid-arrival-actions,
+    .jupiter-arrival-actions,
+    .saturn-arrival-actions,
+    .uranus-arrival-actions,
+    .neptune-arrival-actions
+  ) {
+    column-gap: 12px !important;
+    row-gap: 9px !important;
+    margin: 17px auto 0 !important;
+  }
+
+  :is(
+    .sun-exploration,
+    .mercury-exploration,
+    .venus-exploration,
+    .asteroid-exploration,
+    .jupiter-exploration,
+    .saturn-exploration,
+    .uranus-exploration,
+    .neptune-exploration
+  ) {
+    height: min(33dvh, 240px) !important;
+    max-height: min(33dvh, max(48px, calc(100dvh - 210px))) !important;
+  }
+
+  :is(
+    .sun-context-media,
+    .mercury-context-media,
+    .venus-context-media,
+    .asteroid-context-media,
+    .jupiter-context-media,
+    .saturn-context-media,
+    .uranus-context-media,
+    .neptune-context-media
+  ) {
+    width: min(38vw, 150px) !important;
+    top: 56px !important;
+    bottom: auto !important;
+    left: auto !important;
+  }
+}
+
+/* 2026-10-04 reference-lock pass
+   Mars/Earth are the mobile placement reference. Keep the hero copy/actions
+   at their vertical level instead of pinning non-reference scenes to the floor. */
+@media (max-width: 700px) {
+  :is(
+    .sun-caption,
+    .mercury-caption,
+    .venus-caption,
+    .asteroid-caption,
+    .jupiter-caption,
+    .saturn-caption,
+    .uranus-caption,
+    .neptune-caption
+  ) {
+    left: 8% !important;
+    right: 8% !important;
+    bottom: 17% !important;
+  }
+
+  /* Give the primary action a little more breathing room from the planet/title,
+     including the shared Earth/Mars reference stack. */
+  .mars-caption .mars-arrival-actions,
+  :is(
+    .sun-arrival-actions,
+    .mercury-arrival-actions,
+    .venus-arrival-actions,
+    .asteroid-arrival-actions,
+    .jupiter-arrival-actions,
+    .saturn-arrival-actions,
+    .uranus-arrival-actions,
+    .neptune-arrival-actions
+  ) {
+    width: min(100%, 360px) !important;
+    margin: 22px auto 0 !important;
+  }
+
+  /* Venus has the same primary + full-exploration stack as Mars/Earth. */
+  .venus-arrival-actions {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-template-areas:
+      "primary primary"
+      "previous next" !important;
+    column-gap: 12px !important;
+    row-gap: 9px !important;
+  }
+  .venus-explore-stack {
+    grid-area: primary !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    gap: 7px !important;
+  }
+  .venus-planet-prev { grid-area: previous !important; }
+  .venus-planet-next { grid-area: next !important; }
+  .venus-explore-stack .venus-explore-button {
+    width: 100% !important;
+    min-height: 46px !important;
+  }
+  .venus-explore-stack .mars-full-explore-button {
+    width: 100% !important;
+    min-height: 36px !important;
+    padding: 0 12px !important;
+    font-size: 5.8px !important;
+    line-height: 1.2 !important;
+    letter-spacing: .9px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Shorter lesson sheet. The visual subject stays visible above it. */
+  :is(
+    .sun-exploration,
+    .mercury-exploration,
+    .venus-exploration,
+    .asteroid-exploration,
+    .jupiter-exploration,
+    .saturn-exploration,
+    .uranus-exploration,
+    .neptune-exploration
+  ) {
+    height: min(31dvh, 260px) !important;
+    max-height: min(31dvh, 260px) !important;
+  }
+}
+
+@media (max-width: 700px) and (max-height: 740px) {
+  :is(
+    .sun-caption,
+    .mercury-caption,
+    .venus-caption,
+    .asteroid-caption,
+    .jupiter-caption,
+    .saturn-caption,
+    .uranus-caption,
+    .neptune-caption
+  ) {
+    bottom: 15% !important;
+  }
+
+  :is(
+    .sun-exploration,
+    .mercury-exploration,
+    .venus-exploration,
+    .asteroid-exploration,
+    .jupiter-exploration,
+    .saturn-exploration,
+    .uranus-exploration,
+    .neptune-exploration
+  ) {
+    height: min(30dvh, 225px) !important;
+    max-height: min(30dvh, 225px) !important;
+  }
+}
+
+/* 2026-10-04 measured alignment pass
+   At 500x890 the Mars/Earth primary CTA sits near y=597 while the single-CTA
+   scenes sat near y=640. Lift only those shorter caption stacks by 30px, which
+   brings the CTA into the same visual band without forcing identical content
+   heights. Earth/Mars/Venus keep the full-exploration reference stack. */
+@media (max-width: 700px) {
+  .mars-caption,
+  .venus-caption {
+    bottom: 16% !important;
+  }
+
+  :is(
+    .sun-caption,
+    .mercury-caption,
+    .asteroid-caption,
+    .jupiter-caption,
+    .saturn-caption,
+    .uranus-caption,
+    .neptune-caption
+  ) {
+    bottom: calc(16% + 30px) !important;
+  }
+
+  .mars-caption .mars-arrival-actions,
+  :is(
+    .sun-arrival-actions,
+    .mercury-arrival-actions,
+    .venus-arrival-actions,
+    .asteroid-arrival-actions,
+    .jupiter-arrival-actions,
+    .saturn-arrival-actions,
+    .uranus-arrival-actions,
+    .neptune-arrival-actions
+  ) {
+    margin-top: 17px !important;
+  }
+}
+
+@media (max-width: 700px) and (max-height: 740px) {
+  :is(
+    .sun-caption,
+    .mercury-caption,
+    .asteroid-caption,
+    .jupiter-caption,
+    .saturn-caption,
+    .uranus-caption,
+    .neptune-caption
+  ) {
+    bottom: calc(15% + 24px) !important;
+  }
+}
+
+/* 2026-10-04 mobile spacing + reading-space correction
+   Keep a visible gap between panorama subjects and the hero copy, while giving
+   exploration lessons enough vertical room to read more than a single line. */
+@media (max-width: 700px) {
+  /* Lower every panorama copy/action stack slightly. Full-exploration planets
+     keep their taller stack offset, single-CTA planets keep theirs. */
+  .mars-caption,
+  .earth-caption,
+  .venus-caption {
+    bottom: calc(16% - 38px) !important;
+  }
+
+  :is(
+    .sun-caption,
+    .mercury-caption,
+    .asteroid-caption,
+    .jupiter-caption,
+    .saturn-caption,
+    .uranus-caption,
+    .neptune-caption
+  ) {
+    bottom: calc(16% - 8px) !important;
+  }
+
+  /* Restore reading room without letting the card swallow the panorama.
+     The added height grows upward because each scene keeps its existing bottom
+     anchor, preserving a clear visual gap above the card. */
+  :is(
+    .sun-exploration,
+    .mercury-exploration,
+    .venus-exploration,
+    .asteroid-exploration,
+    .jupiter-exploration,
+    .saturn-exploration,
+    .uranus-exploration,
+    .neptune-exploration
+  ) {
+    height: min(38dvh, 320px) !important;
+    max-height: min(38dvh, 320px) !important;
+  }
+}
+
+@media (max-width: 700px) and (max-height: 740px) {
+  .mars-caption,
+  .earth-caption,
+  .venus-caption {
+    bottom: calc(15% - 28px) !important;
+  }
+
+  :is(
+    .sun-caption,
+    .mercury-caption,
+    .asteroid-caption,
+    .jupiter-caption,
+    .saturn-caption,
+    .uranus-caption,
+    .neptune-caption
+  ) {
+    bottom: calc(15% - 6px) !important;
+  }
+
+  :is(
+    .sun-exploration,
+    .mercury-exploration,
+    .venus-exploration,
+    .asteroid-exploration,
+    .jupiter-exploration,
+    .saturn-exploration,
+    .uranus-exploration,
+    .neptune-exploration
+  ) {
+    height: min(39dvh, 285px) !important;
+    max-height: min(39dvh, 285px) !important;
+  }
+}
+
+/* 2026-10-04 EXPLORATION SCROLL CONTENT
+   Topic title + subtitle + lesson + source now live in one scroll region.
+   Keep the compact topline and bottom navigation fixed. */
+:is(
+  .sun-topic-scroll,
+  .mercury-topic-scroll,
+  .venus-topic-scroll,
+  .mars-topic-scroll,
+  .asteroid-topic-scroll,
+  .jupiter-topic-scroll,
+  .saturn-topic-scroll,
+  .uranus-topic-scroll,
+  .neptune-topic-scroll
+) {
+  padding-top: 2px;
+  padding-bottom: 8px;
+}
+
+:is(
+  .sun-topic-scroll,
+  .mercury-topic-scroll,
+  .venus-topic-scroll,
+  .mars-topic-scroll,
+  .asteroid-topic-scroll,
+  .jupiter-topic-scroll,
+  .saturn-topic-scroll,
+  .uranus-topic-scroll,
+  .neptune-topic-scroll
+) > :is(
+  .sun-topic-source,
+  .mercury-topic-source,
+  .venus-topic-source,
+  .mars-topic-source,
+  .asteroid-topic-source,
+  .jupiter-topic-source,
+  .saturn-topic-source,
+  .uranus-topic-source,
+  .neptune-topic-source
+) {
+  display: inline-flex;
+  margin-bottom: 2px;
+}

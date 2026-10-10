@@ -1,0 +1,614 @@
+/* ANTARA Full Exploration canonical UI geometry
+   Earth and Venus intentionally share layout, spacing, shapes and typography.
+   Only palette variables differ per planet. Loaded after planet-specific styles. */
+
+.earth-full-exploration {
+  --fx-bg: rgba(5, 20, 28, .92);
+  --fx-bg-strong: rgba(4, 17, 24, .97);
+  --fx-border: rgba(151, 211, 230, .28);
+  --fx-border-strong: rgba(132, 215, 240, .58);
+  --fx-text: #d9edf4;
+  --fx-muted: #91adba;
+  --fx-accent: #9adff2;
+  --fx-shadow: rgba(0, 8, 14, .48);
+}
+.venus-full-exploration {
+  --fx-bg: rgba(42, 19, 13, .92);
+  --fx-bg-strong: rgba(34, 15, 11, .97);
+  --fx-border: rgba(226, 180, 123, .30);
+  --fx-border-strong: rgba(236, 184, 118, .62);
+  --fx-text: #f0ddc6;
+  --fx-muted: #b69376;
+  --fx-accent: #f0bd78;
+  --fx-shadow: rgba(22, 7, 3, .48);
+}
+
+/* === Canonical panel shape === */
+.earth-full-exploration :is(.earth-full-hud,.earth-objectives-panel,.earth-landmark-card,.earth-full-tutorial,.earth-quality-panel),
+.venus-full-exploration :is(.mars-full-hud,.venus-objectives-panel,.venus-location-card,.mars-full-tutorial,.venus-quality-panel) {
+  border-radius: 0 !important;
+  border: 1px solid var(--fx-border) !important;
+  background: linear-gradient(145deg,var(--fx-bg-strong),var(--fx-bg)) !important;
+  box-shadow: 0 18px 54px var(--fx-shadow) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-sizing: border-box;
+}
+
+/* === Four anchors: HUD / actions / objectives / location === */
+.earth-full-exploration .earth-full-hud,
+.venus-full-exploration .mars-full-hud {
+  left: clamp(14px,2.2vw,34px) !important;
+  top: clamp(14px,2.5vh,28px) !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: min(340px,38vw) !important;
+  padding: 16px 18px !important;
+}
+
+.earth-full-exploration .earth-full-actions,
+.venus-full-exploration .venus-full-actions {
+  right: clamp(14px,2.2vw,34px) !important;
+  top: clamp(14px,2.5vh,28px) !important;
+  left: auto !important;
+  bottom: auto !important;
+  display: block !important;
+  width: auto !important;
+  max-width: calc(100vw - 28px);
+  z-index: 40 !important;
+}
+.earth-full-exploration .earth-actions-menu,
+.venus-full-exploration .venus-actions-menu {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+.earth-full-exploration :is(.earth-actions-menu button,.earth-actions-menu-toggle),
+.venus-full-exploration :is(.venus-actions-menu button,.venus-actions-menu-toggle) {
+  min-height: 42px !important;
+  padding: 0 14px !important;
+  border-radius: 0 !important;
+  border: 1px solid var(--fx-border) !important;
+  background: var(--fx-bg-strong) !important;
+  color: var(--fx-text) !important;
+  font-size: 9px !important;
+  line-height: 1.2 !important;
+  letter-spacing: .65px !important;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.earth-full-exploration :is(.earth-actions-menu button,.earth-actions-menu-toggle):hover,
+.venus-full-exploration :is(.venus-actions-menu button,.venus-actions-menu-toggle):hover {
+  border-color: var(--fx-border-strong) !important;
+  color: #fff !important;
+}
+.earth-actions-menu-toggle,.venus-actions-menu-toggle { display:none !important; }
+
+/* Bottom-aligned companion panels. This is the canonical desktop position. */
+.earth-full-exploration .earth-objectives-panel,
+.venus-full-exploration .venus-objectives-panel {
+  left: clamp(14px,2.2vw,34px) !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: 76px !important;
+  width: min(390px,calc(100vw - 28px)) !important;
+  max-height: min(58vh,560px) !important;
+  overflow: auto !important;
+  padding: 16px 18px !important;
+}
+.earth-full-exploration .earth-landmark-card,
+.venus-full-exploration .venus-location-card {
+  right: clamp(14px,2.2vw,34px) !important;
+  left: auto !important;
+  top: auto !important;
+  bottom: 76px !important;
+  width: min(390px,calc(100vw - 28px)) !important;
+  max-height: min(64vh,640px) !important;
+  overflow: auto !important;
+  padding: 17px 18px !important;
+  z-index: 22 !important;
+}
+
+/* Matching card headers / buttons */
+.earth-full-exploration :is(.earth-objectives-head,.earth-landmark-head),
+.venus-full-exploration :is(.venus-objectives-head,.venus-location-card-head) {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+.earth-full-exploration :is(.earth-objectives-head button,.earth-landmark-minimize),
+.venus-full-exploration :is(.venus-objectives-head button,.venus-location-minimize) {
+  min-height: 32px !important;
+  padding: 6px 10px !important;
+  border-radius: 0 !important;
+  border: 1px solid var(--fx-border) !important;
+  background: transparent !important;
+  color: var(--fx-muted) !important;
+  font-size: 8px !important;
+  letter-spacing: .7px !important;
+  text-transform: uppercase;
+}
+
+/* === Persistent desktop help bar, exactly the same geometry === */
+.earth-full-exploration .earth-control-hints,
+.venus-full-exploration .mars-control-hints {
+  left: 50% !important;
+  right: auto !important;
+  bottom: max(18px,env(safe-area-inset-bottom)) !important;
+  top: auto !important;
+  transform: translateX(-50%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  gap: 5px 16px !important;
+  width: max-content !important;
+  max-width: calc(100vw - 32px) !important;
+  padding: 9px 13px !important;
+  box-sizing: border-box;
+  border-radius: 0 !important;
+  border: 1px solid var(--fx-border) !important;
+  background: var(--fx-bg) !important;
+  box-shadow: 0 8px 30px var(--fx-shadow) !important;
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  color: var(--fx-muted) !important;
+  font-size: 8.7px !important;
+  line-height: 1.4 !important;
+  letter-spacing: .68px !important;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 26 !important;
+}
+.earth-full-exploration .earth-control-hints b,
+.venus-full-exploration .mars-control-hints b {
+  color: var(--fx-text) !important;
+  font-size: 9px !important;
+}
+
+/* === Canonical tutorial === */
+.earth-full-exploration .earth-full-tutorial,
+.venus-full-exploration .mars-full-tutorial {
+  left: 50% !important;
+  top: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%,-50%) !important;
+  width: min(680px,calc(100vw - 32px)) !important;
+  max-height: min(80dvh,640px) !important;
+  overflow: auto !important;
+  padding: 24px 26px !important;
+  z-index: 44 !important;
+}
+.earth-full-exploration .earth-tutorial-header,
+.venus-full-exploration .mars-full-tutorial-header {
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:16px !important;
+}
+.earth-full-exploration .earth-tutorial-header span,
+.venus-full-exploration .mars-full-tutorial-header span {
+  color:var(--fx-muted) !important;
+  font-size:10px !important;
+  line-height:1.4 !important;
+  letter-spacing:1.5px !important;
+  text-transform:uppercase;
+}
+.earth-full-exploration .earth-tutorial-header button,
+.venus-full-exploration .mars-full-tutorial-header button {
+  width:34px !important;
+  height:34px !important;
+  flex:0 0 34px !important;
+  border-radius:0 !important;
+  border:1px solid var(--fx-border) !important;
+  background:transparent !important;
+  color:var(--fx-text) !important;
+  font-size:20px !important;
+}
+.earth-full-exploration .earth-tutorial-grid.earth-tutorial-desktop,
+.venus-full-exploration .mars-full-tutorial-grid.mars-tutorial-desktop {
+  display:grid !important;
+  grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+  gap:12px !important;
+  margin-top:18px !important;
+}
+.earth-full-exploration .earth-tutorial-grid.earth-tutorial-mobile,
+.venus-full-exploration .mars-full-tutorial-grid.mars-tutorial-mobile { display:none !important; }
+.earth-full-exploration .earth-tutorial-grid>div,
+.venus-full-exploration .mars-tutorial-item {
+  padding-top:12px !important;
+  border-top:1px solid var(--fx-border) !important;
+}
+.earth-full-exploration .earth-tutorial-grid b,
+.venus-full-exploration .mars-tutorial-item b {
+  display:block !important;
+  color:var(--fx-text) !important;
+  font-size:11.5px !important;
+  line-height:1.35 !important;
+  letter-spacing:.75px !important;
+}
+.earth-full-exploration .earth-tutorial-grid span,
+.venus-full-exploration .mars-tutorial-item span {
+  display:block !important;
+  margin-top:5px !important;
+  color:var(--fx-muted) !important;
+  font-size:9px !important;
+  line-height:1.45 !important;
+  letter-spacing:.45px !important;
+  text-transform:uppercase;
+}
+
+/* === Readable, equalized panel type === */
+.earth-full-exploration :is(.earth-objectives-panel,.earth-landmark-card),
+.venus-full-exploration :is(.venus-objectives-panel,.venus-location-card) {
+  color:var(--fx-text);
+}
+.earth-full-exploration .earth-objectives-panel>p,
+.venus-full-exploration .venus-objectives-panel>p { font-size:11px !important; line-height:1.62 !important; }
+.earth-full-exploration .earth-objectives-list strong,
+.venus-full-exploration .venus-objectives-list strong { font-size:10px !important; line-height:1.4 !important; }
+.earth-full-exploration .earth-objectives-list small,
+.venus-full-exploration .venus-objectives-list small { font-size:8px !important; line-height:1.35 !important; }
+.earth-full-exploration .earth-landmark-card h4,
+.venus-full-exploration .venus-location-card h4 { font-size:28px !important; line-height:1.08 !important; }
+.earth-full-exploration .earth-landmark-card p,
+.venus-full-exploration .venus-location-card p { font-size:10.5px !important; line-height:1.64 !important; }
+.earth-full-exploration .earth-landmark-facts,
+.venus-full-exploration .venus-location-facts { font-size:9.5px !important; line-height:1.62 !important; }
+
+/* === Tablet / medium widths === */
+@media (max-width: 1040px) and (min-width: 761px) {
+  .earth-full-exploration .earth-full-hud,
+  .venus-full-exploration .mars-full-hud { width:min(300px,43vw) !important; }
+  .earth-full-exploration .earth-objectives-panel,
+  .venus-full-exploration .venus-objectives-panel { width:min(350px,43vw) !important; max-height:52vh !important; }
+  .earth-full-exploration .earth-landmark-card,
+  .venus-full-exploration .venus-location-card { width:min(350px,43vw) !important; max-height:58vh !important; }
+  .earth-full-exploration .earth-control-hints,
+  .venus-full-exploration .mars-control-hints { gap:4px 11px !important; font-size:7.8px !important; }
+  .earth-full-exploration .earth-control-hints b,
+  .venus-full-exploration .mars-control-hints b { font-size:8.2px !important; }
+}
+
+/* === Mobile canonical geometry === */
+@media (pointer:coarse), (max-width:760px) {
+  .earth-full-exploration .earth-full-hud,
+  .venus-full-exploration .mars-full-hud {
+    left:10px !important;
+    top:10px !important;
+    width:min(238px,62vw) !important;
+    padding:11px 12px !important;
+    max-height:122px !important;
+    overflow:hidden !important;
+  }
+
+  .earth-full-exploration .earth-full-actions,
+  .venus-full-exploration .venus-full-actions {
+    top:10px !important;
+    right:10px !important;
+  }
+  .earth-actions-menu-toggle,.venus-actions-menu-toggle {
+    display:block !important;
+    min-height:36px !important;
+    padding:0 11px !important;
+  }
+  .earth-full-exploration .earth-actions-menu,
+  .venus-full-exploration .venus-actions-menu {
+    position:absolute !important;
+    top:42px !important;
+    right:0 !important;
+    display:none !important;
+    grid-template-columns:1fr !important;
+    width:max-content !important;
+    min-width:168px !important;
+    gap:5px !important;
+  }
+  .earth-full-exploration.is-actions-open .earth-actions-menu,
+  .venus-full-exploration.is-actions-open .venus-actions-menu { display:grid !important; }
+
+  /* Desktop hint bar never competes with touch controls. */
+  .earth-full-exploration .earth-control-hints,
+  .venus-full-exploration .mars-control-hints { display:none !important; }
+
+  /* One open panel uses the lower sheet position above controls. */
+  .earth-full-exploration .earth-objectives-panel,
+  .venus-full-exploration .venus-objectives-panel,
+  .earth-full-exploration .earth-landmark-card,
+  .venus-full-exploration .venus-location-card {
+    left:10px !important;
+    right:10px !important;
+    top:auto !important;
+    bottom:166px !important;
+    width:auto !important;
+    max-height:38dvh !important;
+    padding:13px 14px !important;
+    overflow:auto !important;
+  }
+
+  /* If Goals + Info are both open, keep them independent without overlap:
+     Info becomes a top sheet, Goals stays above the touch controls. */
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-landmark-card,
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-location-card {
+    top:140px !important;
+    bottom:auto !important;
+    max-height:27dvh !important;
+  }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-objectives-panel,
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-objectives-panel {
+    bottom:166px !important;
+    max-height:27dvh !important;
+  }
+
+  .earth-full-exploration .earth-full-tutorial,
+  .venus-full-exploration .mars-full-tutorial {
+    width:calc(100vw - 18px) !important;
+    max-height:72dvh !important;
+    padding:18px !important;
+  }
+  .earth-full-exploration .earth-tutorial-grid.earth-tutorial-desktop,
+  .venus-full-exploration .mars-full-tutorial-grid.mars-tutorial-desktop { display:none !important; }
+  .earth-full-exploration .earth-tutorial-grid.earth-tutorial-mobile,
+  .venus-full-exploration .mars-full-tutorial-grid.mars-tutorial-mobile {
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+    margin-top:16px !important;
+  }
+  .earth-full-exploration .earth-tutorial-header span,
+  .venus-full-exploration .mars-full-tutorial-header span { font-size:8.5px !important; }
+  .earth-full-exploration .earth-tutorial-grid b,
+  .venus-full-exploration .mars-tutorial-item b { font-size:9px !important; }
+  .earth-full-exploration .earth-tutorial-grid span,
+  .venus-full-exploration .mars-tutorial-item span { font-size:7px !important; }
+
+  .earth-full-exploration .earth-objectives-panel>p,
+  .venus-full-exploration .venus-objectives-panel>p { font-size:9px !important; }
+  .earth-full-exploration .earth-objectives-list strong,
+  .venus-full-exploration .venus-objectives-list strong { font-size:8.4px !important; }
+  .earth-full-exploration .earth-objectives-list small,
+  .venus-full-exploration .venus-objectives-list small { font-size:6.5px !important; }
+  .earth-full-exploration .earth-landmark-card h4,
+  .venus-full-exploration .venus-location-card h4 { font-size:24px !important; }
+  .earth-full-exploration .earth-landmark-card p,
+  .venus-full-exploration .venus-location-card p { font-size:8.8px !important; }
+  .earth-full-exploration .earth-landmark-facts,
+  .venus-full-exploration .venus-location-facts { font-size:8px !important; }
+}
+
+/* Very small phones: keep touch UI legible but reduce vertical competition. */
+@media (max-width:420px) {
+  .earth-full-exploration .earth-full-hud,
+  .venus-full-exploration .mars-full-hud { width:min(218px,64vw) !important; max-height:110px !important; }
+  .earth-full-exploration .earth-objectives-panel,
+  .venus-full-exploration .venus-objectives-panel,
+  .earth-full-exploration .earth-landmark-card,
+  .venus-full-exploration .venus-location-card { bottom:158px !important; max-height:36dvh !important; }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-landmark-card,
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-location-card { top:126px !important; max-height:25dvh !important; }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-objectives-panel,
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-objectives-panel { bottom:158px !important; max-height:25dvh !important; }
+}
+
+/* Short landscape phones: compact anchors, no panel collision. */
+@media (max-height:520px) and (max-width:900px) {
+  .earth-full-exploration .earth-full-hud,
+  .venus-full-exploration .mars-full-hud { width:min(210px,40vw) !important; max-height:88px !important; padding:8px 10px !important; }
+  .earth-full-exploration .earth-objectives-panel,
+  .venus-full-exploration .venus-objectives-panel { left:8px !important; right:auto !important; bottom:102px !important; width:min(320px,46vw) !important; max-height:44dvh !important; }
+  .earth-full-exploration .earth-landmark-card,
+  .venus-full-exploration .venus-location-card { right:8px !important; left:auto !important; bottom:102px !important; width:min(320px,46vw) !important; max-height:44dvh !important; }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-landmark-card,
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-location-card { top:auto !important; bottom:102px !important; max-height:44dvh !important; }
+}
+
+/* Ultra-narrow phones need an extra vertical safety gap when both independent sheets are open. */
+@media (max-width:360px) and (min-height:521px) {
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-landmark-card,
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-location-card {
+    top:118px !important;
+    max-height:20dvh !important;
+  }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-objectives-panel,
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-objectives-panel {
+    bottom:158px !important;
+    max-height:24dvh !important;
+  }
+}
+
+/* === 2026-10-03 mobile hard reset ===
+   Prevent legacy planet rules from stretching the compact Goals / Info buttons
+   into full-height rails. Earth and Venus use the same responsive geometry. */
+@media (pointer:coarse), (max-width:760px) {
+  .earth-full-exploration :is(.earth-objectives-toggle,.earth-location-info-toggle),
+  .venus-full-exploration :is(.venus-objectives-toggle,.venus-location-info-toggle) {
+    position:absolute !important;
+    top:128px !important;
+    bottom:auto !important;
+    width:auto !important;
+    min-width:0 !important;
+    max-width:46vw !important;
+    height:38px !important;
+    min-height:38px !important;
+    max-height:38px !important;
+    padding:0 12px !important;
+    margin:0 !important;
+    border-radius:0 !important;
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+    transform:none !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    line-height:36px !important;
+    box-sizing:border-box !important;
+    font-size:8px !important;
+    letter-spacing:.7px !important;
+    z-index:32 !important;
+  }
+  .earth-full-exploration :is(.earth-objectives-toggle,.earth-location-info-toggle)[hidden],
+  .venus-full-exploration :is(.venus-objectives-toggle,.venus-location-info-toggle)[hidden] {
+    display:none !important;
+  }
+  .earth-full-exploration .earth-objectives-toggle:not([hidden]),
+  .venus-full-exploration .venus-objectives-toggle:not([hidden]) {
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    left:10px !important;
+    right:auto !important;
+  }
+  .earth-full-exploration .earth-location-info-toggle:not([hidden]),
+  .venus-full-exploration .venus-location-info-toggle:not([hidden]) {
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    right:10px !important;
+    left:auto !important;
+  }
+
+  /* Open panels are compact sheets, never vertical side rails. */
+  .earth-full-exploration .earth-objectives-panel,
+  .venus-full-exploration .venus-objectives-panel,
+  .earth-full-exploration .earth-landmark-card,
+  .venus-full-exploration .venus-location-card {
+    position:absolute !important;
+    left:10px !important;
+    right:10px !important;
+    width:auto !important;
+    min-width:0 !important;
+    max-width:none !important;
+    height:auto !important;
+    min-height:0 !important;
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+    border-radius:0 !important;
+    box-sizing:border-box !important;
+  }
+  .earth-full-exploration .earth-objectives-panel:not([hidden]),
+  .venus-full-exploration .venus-objectives-panel:not([hidden]) {
+    display:block !important;
+    top:auto !important;
+    bottom:154px !important;
+    max-height:34dvh !important;
+    overflow:auto !important;
+    transform:none !important;
+  }
+  .earth-full-exploration .earth-landmark-card.is-visible,
+  .venus-full-exploration .venus-location-card.is-visible {
+    display:block !important;
+    top:auto !important;
+    bottom:154px !important;
+    max-height:42dvh !important;
+    overflow:auto !important;
+    transform:none !important;
+  }
+
+  /* Two independent panels can coexist. On portrait they occupy separate vertical zones. */
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-landmark-card.is-visible,
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-location-card.is-visible {
+    top:176px !important;
+    bottom:auto !important;
+    max-height:26dvh !important;
+  }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-objectives-panel:not([hidden]),
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-objectives-panel:not([hidden]) {
+    top:auto !important;
+    bottom:154px !important;
+    max-height:26dvh !important;
+  }
+}
+
+@media (max-width:420px) and (min-height:641px) {
+  .earth-full-exploration :is(.earth-objectives-toggle,.earth-location-info-toggle),
+  .venus-full-exploration :is(.venus-objectives-toggle,.venus-location-info-toggle) {
+    top:122px !important;
+    max-width:45vw !important;
+    height:36px !important;
+    min-height:36px !important;
+    max-height:36px !important;
+    line-height:34px !important;
+    padding-inline:10px !important;
+    font-size:7.4px !important;
+  }
+  .earth-full-exploration .earth-objectives-panel:not([hidden]),
+  .venus-full-exploration .venus-objectives-panel:not([hidden]),
+  .earth-full-exploration .earth-landmark-card.is-visible,
+  .venus-full-exploration .venus-location-card.is-visible {
+    bottom:146px !important;
+  }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-landmark-card.is-visible,
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-location-card.is-visible {
+    top:168px !important;
+    max-height:25dvh !important;
+  }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-objectives-panel:not([hidden]),
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-objectives-panel:not([hidden]) {
+    bottom:146px !important;
+    max-height:24dvh !important;
+  }
+}
+
+@media (max-width:360px) and (max-height:640px) {
+  .earth-full-exploration :is(.earth-objectives-toggle,.earth-location-info-toggle),
+  .venus-full-exploration :is(.venus-objectives-toggle,.venus-location-info-toggle) {
+    top:104px !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    line-height:32px !important;
+    font-size:7px !important;
+  }
+  .earth-full-exploration .earth-objectives-panel:not([hidden]),
+  .venus-full-exploration .venus-objectives-panel:not([hidden]),
+  .earth-full-exploration .earth-landmark-card.is-visible,
+  .venus-full-exploration .venus-location-card.is-visible {
+    bottom:132px !important;
+    max-height:31dvh !important;
+  }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-landmark-card.is-visible,
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-location-card.is-visible {
+    top:146px !important;
+    bottom:auto !important;
+    max-height:20dvh !important;
+  }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-objectives-panel:not([hidden]),
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-objectives-panel:not([hidden]) {
+    bottom:132px !important;
+    max-height:21dvh !important;
+  }
+}
+
+/* Landscape phones/tablets use two compact side cards, not stacked sheets. */
+@media (max-height:520px) and (max-width:900px) {
+  .earth-full-exploration :is(.earth-objectives-toggle,.earth-location-info-toggle),
+  .venus-full-exploration :is(.venus-objectives-toggle,.venus-location-info-toggle) {
+    top:78px !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    line-height:32px !important;
+  }
+  .earth-full-exploration .earth-objectives-panel:not([hidden]),
+  .venus-full-exploration .venus-objectives-panel:not([hidden]) {
+    left:8px !important;
+    right:auto !important;
+    top:auto !important;
+    bottom:92px !important;
+    width:min(315px,44vw) !important;
+    max-height:46dvh !important;
+  }
+  .earth-full-exploration .earth-landmark-card.is-visible,
+  .venus-full-exploration .venus-location-card.is-visible,
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-landmark-card.is-visible,
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-location-card.is-visible {
+    right:8px !important;
+    left:auto !important;
+    top:auto !important;
+    bottom:92px !important;
+    width:min(315px,44vw) !important;
+    max-height:46dvh !important;
+  }
+}

@@ -1,0 +1,386 @@
+/* ANTARA · Saturnus Full Exploration
+ * Venus is the interaction/layout template; Saturn keeps its own navy/graphite/ice palette.
+ */
+
+.saturn-caption .saturn-explore-stack {
+  display: grid;
+  gap: 7px;
+  min-width: 210px;
+}
+.saturn-caption .saturn-explore-stack .saturn-explore-button,
+.saturn-caption .saturn-explore-stack .saturn-full-explore-button { width: 100%; }
+.saturn-full-explore-button {
+  min-height: 36px;
+  border: 1px solid rgba(191, 205, 215, .28);
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(26, 33, 40, .92), rgba(10, 14, 19, .94));
+  color: #d8dde1;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.saturn-full-explore-button:hover:not(:disabled) {
+  border-color: rgba(216, 221, 225, .56);
+  background: linear-gradient(180deg, rgba(38, 47, 56, .96), rgba(14, 19, 25, .96));
+}
+.saturn-full-explore-button:disabled { opacity: .42; cursor: default; }
+
+.saturn-full-exploration {
+  /* Gas Full Exploration owns its HUD visibility. Do not inherit Mars' entry fade (0). */
+  --surface-opacity: 1;
+
+  --fx-bg: rgba(18, 25, 32, .94);
+  --fx-bg-strong: rgba(7, 11, 16, .98);
+  --fx-border: rgba(166, 186, 200, .28);
+  --fx-border-strong: rgba(207, 216, 221, .56);
+  --fx-text: #edf0ef;
+  --fx-muted: #99a8b2;
+  --fx-accent: #b9ccd7;
+  --fx-shadow: rgba(0, 4, 9, .56);
+
+  --saturn-full-bg: rgba(6, 10, 15, .965);
+  --saturn-full-panel: rgba(13, 19, 26, .955);
+  --saturn-full-card: rgba(19, 27, 35, .95);
+  --saturn-full-card-2: rgba(27, 36, 45, .96);
+  --saturn-full-border: rgba(166, 186, 200, .22);
+  --saturn-full-border-strong: rgba(207, 216, 221, .4);
+  --saturn-full-text: #edf0ef;
+  --saturn-full-soft: #c2cbd0;
+  --saturn-full-dim: #8998a4;
+  --saturn-full-accent: #d5d2c2;
+  --saturn-full-ice: #9fb8c7;
+  --saturn-full-titan: #c4aa72;
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  overflow: hidden;
+  color: var(--saturn-full-text);
+  pointer-events: auto;
+}
+.saturn-full-exploration[hidden] { display: none !important; }
+.saturn-full-exploration::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 70% 42%, rgba(151, 173, 190, .08), transparent 34%),
+    linear-gradient(180deg, rgba(2, 5, 8, .12), rgba(2, 5, 8, .24));
+}
+.saturn-full-orbit-input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: grab;
+  touch-action: none;
+}
+.saturn-full-orbit-input:active { cursor: grabbing; }
+.saturn-scene.is-saturn-full-active .saturn-caption,
+.saturn-scene.is-saturn-full-active .saturn-credit,
+.saturn-scene.is-saturn-full-active .saturn-exploration,
+.saturn-scene.is-saturn-full-active .saturn-context-media { opacity: 0 !important; pointer-events: none !important; visibility: hidden !important; }
+.saturn-scene.is-saturn-full-active .saturn-focus-reticle,
+.saturn-scene.is-saturn-full-active .saturn-ring-annotation { z-index: 43; }
+
+.saturn-full-exploration .venus-quality-panel,
+.saturn-full-exploration .venus-region-selector,
+.saturn-full-exploration .venus-objectives-panel,
+.saturn-full-exploration .venus-location-card,
+.saturn-full-exploration .venus-observation-card,
+.saturn-full-exploration .mars-full-hud,
+.saturn-full-exploration .mars-full-tutorial,
+.saturn-full-exploration .mars-full-loading {
+  z-index: 52;
+  background:
+    linear-gradient(180deg, rgba(30, 40, 49, .22), rgba(0,0,0,0) 22%),
+    linear-gradient(180deg, var(--saturn-full-panel), var(--saturn-full-bg));
+  border-color: var(--saturn-full-border);
+  box-shadow: 0 26px 80px rgba(0, 0, 0, .52), inset 0 1px rgba(255,255,255,.025);
+  backdrop-filter: blur(12px) saturate(.92);
+}
+.saturn-full-exploration .venus-region-card,
+.saturn-full-exploration .venus-quality-option,
+.saturn-full-exploration .venus-actions-menu > button,
+.saturn-full-exploration .venus-actions-menu-toggle,
+.saturn-full-exploration .venus-objectives-toggle,
+.saturn-full-exploration .venus-location-info-toggle {
+  background: linear-gradient(180deg, var(--saturn-full-card-2), var(--saturn-full-card));
+  border-color: rgba(159, 180, 195, .24);
+  color: var(--saturn-full-text);
+}
+.saturn-full-exploration .venus-region-card:hover,
+.saturn-full-exploration .venus-region-card:focus-visible,
+.saturn-full-exploration .venus-region-card.is-selected,
+.saturn-full-exploration .venus-quality-option:hover,
+.saturn-full-exploration .venus-quality-option:focus-visible,
+.saturn-full-exploration .venus-quality-option.is-selected {
+  border-color: rgba(206, 218, 224, .52);
+  background: linear-gradient(180deg, rgba(42, 54, 64, .98), rgba(19, 26, 34, .98));
+  box-shadow: 0 12px 34px rgba(0,0,0,.34), inset 0 0 0 1px rgba(159,184,199,.08);
+}
+.saturn-full-exploration .venus-region-selector h3,
+.saturn-full-exploration .venus-quality-copy h3,
+.saturn-full-exploration .mars-full-hud h3,
+.saturn-full-exploration .venus-location-card h4,
+.saturn-full-exploration .venus-observation-card h4,
+.saturn-full-exploration .venus-objectives-head strong { color: var(--saturn-full-text); }
+.saturn-full-exploration .venus-region-descriptor,
+.saturn-full-exploration .venus-region-selector > p,
+.saturn-full-exploration .venus-quality-copy p,
+.saturn-full-exploration .venus-location-description,
+.saturn-full-exploration .venus-location-facts,
+.saturn-full-exploration .venus-observation-lead,
+.saturn-full-exploration #saturn-objectives-intro { color: var(--saturn-full-soft); }
+.saturn-full-exploration .venus-region-source,
+.saturn-full-exploration .venus-region-card small,
+.saturn-full-exploration .mars-hud-coordinates,
+.saturn-full-exploration .mars-hud-data,
+.saturn-full-exploration .venus-observation-meta { color: var(--saturn-full-dim); }
+.saturn-full-exploration .venus-region-card em,
+.saturn-full-exploration .venus-region-provenance strong,
+.saturn-full-exploration .mars-hud-kicker,
+.saturn-full-exploration .mars-hud-metric strong,
+.saturn-full-exploration .mars-landmark-source,
+.saturn-full-exploration .venus-observation-source { color: var(--saturn-full-ice); }
+.saturn-full-exploration .venus-discovery-track i,
+.saturn-full-exploration .mars-loading-progress {
+  background: linear-gradient(90deg, #536b7b, #9fb8c7 54%, #d7d5c9);
+}
+
+.saturn-region-preview {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  height: 104px;
+  margin-bottom: 13px;
+  border: 1px solid rgba(255,255,255,.06);
+  background: #070b10;
+}
+.saturn-region-preview::before,
+.saturn-region-preview::after,
+.saturn-region-preview i { content: ""; position: absolute; display: block; }
+.saturn-region-preview b {
+  position: absolute;
+  left: 9px;
+  bottom: 8px;
+  z-index: 5;
+  color: #edf0ef;
+  font-size: 6px;
+  letter-spacing: 1.1px;
+  text-shadow: 0 1px 8px #000;
+}
+.saturn-region-preview-rings {
+  background: radial-gradient(circle at 52% 48%, #ddd7bf 0 15%, #b5aa8f 16% 21%, transparent 22%), linear-gradient(160deg,#0a1017,#111a22);
+}
+.saturn-region-preview-rings::before {
+  inset: 34% -12%;
+  border: 8px double rgba(205,202,188,.78);
+  border-left-color: rgba(120,139,150,.5);
+  border-right-color: rgba(228,225,208,.88);
+  border-radius: 50%;
+  transform: rotate(-9deg) skewX(-8deg);
+}
+.saturn-region-preview-rings::after { left:8%; right:8%; top:51%; height:2px; background:rgba(5,8,12,.9); box-shadow:0 5px rgba(5,8,12,.62); }
+.saturn-region-preview-hexagon { background: radial-gradient(circle at 54% 45%, #b9b4a1 0 9%, #747d80 10% 24%, #27343c 25% 47%, #0a1015 70%); }
+.saturn-region-preview-hexagon::before { width:54px; height:48px; left:calc(50% - 27px); top:19px; border:3px solid rgba(212,216,211,.75); clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%); box-shadow:0 0 22px rgba(159,184,199,.22); }
+.saturn-region-preview-hexagon::after { width:22px; height:22px; left:calc(50% - 11px); top:32px; border:2px solid rgba(121,151,166,.78); border-radius:50%; box-shadow:0 0 0 5px rgba(12,18,24,.45); }
+.saturn-region-preview-titan { background: radial-gradient(circle at 66% 42%, #c3a764 0 18%, #887044 19% 24%, transparent 25%), radial-gradient(circle at 40% 50%, rgba(164,184,194,.16), transparent 38%), #080d13; }
+.saturn-region-preview-titan::before { width:150px; height:22px; left:-15px; top:45px; border-top:3px solid rgba(205,202,188,.62); border-bottom:1px solid rgba(159,184,199,.24); transform:rotate(-8deg); }
+.saturn-region-preview-enceladus { background: radial-gradient(circle at 60% 43%, #e2e6e5 0 15%, #8f9ca2 16% 20%, transparent 21%), linear-gradient(160deg,#081018,#101923); }
+.saturn-region-preview-enceladus::before { width:3px; height:45px; left:61%; top:49%; background:linear-gradient(#dbe8ed,transparent); box-shadow:-9px 3px 7px rgba(195,224,236,.48),9px -2px 9px rgba(195,224,236,.38); transform:rotate(8deg); }
+.saturn-region-preview-cassini { background: radial-gradient(circle at 42% 49%, #cfc8ae 0 16%, #8f866f 17% 20%, transparent 21%), #070c12; }
+.saturn-region-preview-cassini::before { width:120px; height:58px; left:33px; top:20px; border:1px solid rgba(159,184,199,.52); border-radius:50%; transform:rotate(-12deg); box-shadow:0 0 16px rgba(159,184,199,.12); }
+.saturn-region-preview-cassini::after { width:7px; height:7px; left:113px; top:25px; border-radius:50%; background:#e7e3d2; box-shadow:0 0 10px rgba(231,227,210,.8); }
+
+.saturn-full-exploration .saturn-landmark-real-media {
+  display: grid;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  min-height: 170px;
+  border: 1px solid rgba(159,180,195,.18);
+  background: #05090d;
+  text-decoration: none;
+}
+.saturn-full-exploration .saturn-landmark-real-media img {
+  width: 100%;
+  height: clamp(160px, 24vh, 230px);
+  display: block;
+  object-fit: cover;
+}
+.saturn-full-exploration .saturn-landmark-real-media b {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 9px;
+  padding: 6px 8px;
+  border: 1px solid rgba(255,255,255,.07);
+  background: rgba(4,8,12,.78);
+  color: #e4e7e5;
+  font-size: 6px;
+  letter-spacing: .75px;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
+
+.saturn-full-exploration .venus-observation-prompt { z-index: 58; }
+.saturn-full-exploration .venus-observation-card { z-index: 60; }
+.saturn-full-exploration .venus-full-actions { z-index: 61; }
+.saturn-full-exploration .mars-control-hints,
+.saturn-full-exploration .mars-mobile-controls { z-index: 55; }
+
+.saturn-full-exploration.is-exiting [data-saturn-ui] {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity .34s ease !important;
+}
+
+@media (max-width: 820px), (pointer: coarse) and (max-width: 1100px) {
+  .saturn-caption .saturn-arrival-actions {
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr) !important;
+    grid-template-areas: "primary primary" "previous next" !important;
+    gap: 9px 12px !important;
+  }
+  .saturn-caption .saturn-explore-stack { grid-area: primary; width:100%; min-width:0; }
+  .saturn-caption .saturn-planet-prev { grid-area: previous; }
+  .saturn-caption .saturn-planet-next { grid-area: next; }
+  .saturn-full-exploration .venus-quality-panel,
+  .saturn-full-exploration .venus-region-selector {
+    left: 50%; right: auto;
+    width: calc(100vw - 18px) !important;
+    max-width: calc(100vw - 18px) !important;
+    transform: translate(-50%,-50%);
+    box-sizing: border-box;
+  }
+  .saturn-full-exploration .venus-full-actions { z-index: 72; pointer-events:auto; }
+  .saturn-full-exploration .venus-actions-menu-toggle { position:relative; z-index:74; pointer-events:auto!important; touch-action:manipulation; }
+  .saturn-full-exploration .venus-actions-menu { z-index:73; pointer-events:none; }
+  .saturn-full-exploration .venus-full-actions.is-open .venus-actions-menu { pointer-events:auto; }
+  .saturn-full-exploration .venus-actions-menu > button { min-height:46px; touch-action:manipulation; }
+  .saturn-full-exploration .mars-mobile-dpad button[data-saturn-control="forward"] { grid-area: 1 / 2; }
+  .saturn-full-exploration .mars-mobile-dpad button[data-saturn-control="left"] { grid-area: 2 / 1; }
+  .saturn-full-exploration .mars-mobile-dpad button[data-saturn-control="right"] { grid-area: 2 / 3; }
+  .saturn-full-exploration .mars-mobile-dpad button[data-saturn-control="backward"] { grid-area: 3 / 2; }
+  .saturn-full-exploration .saturn-region-preview { height: 86px; }
+}
+@media (max-width: 520px) {
+  .saturn-full-exploration .venus-region-card { min-height: 182px; }
+  .saturn-full-exploration .saturn-region-preview { height: 80px; }
+}
+
+
+/* Bug-hunt 2026-10-05: physical mobile control geometry */
+@media (max-width: 820px), (pointer: coarse) and (max-width: 1100px) {
+  .saturn-full-exploration .mars-mobile-dpad [data-saturn-control="forward"] { left:50% !important; right:auto !important; top:0 !important; bottom:auto !important; translate:-50% 0; }
+  .saturn-full-exploration .mars-mobile-dpad [data-saturn-control="left"] { left:0 !important; right:auto !important; top:50% !important; bottom:auto !important; translate:0 -50%; }
+  .saturn-full-exploration .mars-mobile-dpad [data-saturn-control="right"] { left:auto !important; right:0 !important; top:50% !important; bottom:auto !important; translate:0 -50%; }
+  .saturn-full-exploration .mars-mobile-dpad [data-saturn-control="backward"] { left:50% !important; right:auto !important; top:auto !important; bottom:0 !important; translate:-50% 0; }
+  .saturn-full-exploration .mars-mobile-altitude [data-saturn-control="up"] { top:0 !important; bottom:auto !important; }
+  .saturn-full-exploration .mars-mobile-altitude [data-saturn-control="down"] { top:auto !important; bottom:0 !important; }
+}
+
+/* Keep the existing planet renderer inside the Full Exploration stacking context. */
+.saturn-full-exploration > .saturn-viewport.is-full-exploration-mounted {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+}
+.saturn-full-exploration > .saturn-viewport.is-full-exploration-mounted canvas {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 1 !important;
+}
+
+
+/* Saturn POV rebuild 2026-10-05 · Venus parity + Jupiter-style full free-flight */
+.saturn-full-viewport {
+  position:absolute;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  background:#10151d;
+  opacity:0;
+  transition:opacity .55s ease;
+}
+.saturn-full-exploration.is-active .saturn-full-viewport,
+.saturn-full-exploration.is-exiting .saturn-full-viewport { opacity:1; }
+.saturn-full-viewport canvas.saturn-full-canvas {
+  display:block;
+  width:100%;
+  height:100%;
+}
+.saturn-full-orbit-input { cursor: crosshair; }
+.saturn-full-exploration.is-pointer-locked .saturn-full-orbit-input { cursor:none; }
+.mission.is-saturn-full .masthead,
+.mission.is-saturn-full .mission-footer {
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:opacity .35s ease, visibility .35s ease;
+}
+.saturn-full-exploration .mars-full-error,
+.saturn-full-exploration .venus-boundary-hint {
+  z-index:54;
+  color:#edf0ef;
+  border-color:rgba(200,212,221,.28);
+  background:rgba(9,14,20,.82);
+  box-shadow:0 12px 38px rgba(0,0,0,.28);
+}
+.saturn-full-exploration .mars-full-error {
+  background:linear-gradient(180deg, rgba(28,35,42,.98), rgba(8,11,16,.99));
+  border-color:rgba(200,212,221,.22);
+}
+.saturn-full-exploration .mars-full-error button {
+  border-color:rgba(200,212,221,.28);
+  color:#edf0ef;
+  background:rgba(33,42,50,.92);
+}
+.saturn-full-exploration .mars-hud-coordinates {
+  max-width:240px;
+  white-space:normal;
+  line-height:1.4;
+}
+.saturn-full-exploration .mars-hud-metrics {
+  grid-template-columns: repeat(2, minmax(0,1fr));
+}
+.saturn-full-exploration .venus-location-visualization-note {
+  color:#c2cbd0;
+  border-color:rgba(200,212,221,.14);
+  background:rgba(255,255,255,.025);
+}
+.saturn-full-exploration .saturn-region-preview-storms {
+  background:
+    radial-gradient(circle at 68% 46%, rgba(255,246,219,.55) 0 6%, transparent 7%),
+    repeating-linear-gradient(0deg,#4b4337 0 12px,#d5c3a8 13px 24px,#b29b7a 25px 36px,#7d6a53 37px 48px);
+}
+.saturn-full-exploration .saturn-region-preview-storms::before {
+  width:72px; height:26px; left:52px; top:34px;
+  border:2px solid rgba(245,232,202,.52);
+  border-radius:50%;
+  transform:rotate(-12deg);
+}
+.saturn-full-exploration .saturn-region-preview-storms::after {
+  width:34px; height:34px; left:104px; top:38px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(255,247,229,.85), rgba(255,247,229,0));
+}
+.saturn-full-exploration .venus-observation-card,
+.saturn-full-exploration .venus-quality-panel,
+.saturn-full-exploration .venus-region-selector,
+.saturn-full-exploration .mars-full-loading,
+.saturn-full-exploration .mars-full-error,
+.saturn-full-exploration .mars-full-tutorial { z-index:52; }
+.saturn-full-exploration .venus-boundary-hint { bottom:126px; max-width:calc(100vw - 40px); text-align:center; }
+.saturn-full-exploration:is(.is-info-open,.is-objectives-open,.is-actions-open,.is-observation-open) .venus-boundary-hint {
+  opacity:0 !important;
+  transform:translateY(10px) !important;
+}

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="STREAK">
+  <defs>
+    <radialGradient id="bg"><stop stop-color="#0f2d45"/><stop offset="1" stop-color="#04101b"/></radialGradient>
+  </defs>
+  <circle cx="256" cy="256" r="218" fill="url(#bg)" stroke="#d9b16a" stroke-width="12"/>
+  <circle cx="256" cy="256" r="186" fill="none" stroke="#69b5d8" stroke-opacity=".65" stroke-width="4"/>
+  <g stroke="#d9b16a" stroke-width="4" stroke-linecap="round" opacity=".8">
+    <path d="M256 38v20M256 454v20M38 256h20M454 256h20M102 102l14 14M396 396l14 14M410 102l-14 14M116 396l-14 14"/>
+  </g>
+  <text x="256" y="292" text-anchor="middle" font-family="Arial, sans-serif" font-size="150" font-weight="700" fill="#f2e4c4">5</text>
+  <text x="256" y="374" text-anchor="middle" font-family="Arial, sans-serif" font-size="40" font-weight="700" letter-spacing="5" fill="#7bc0df">STREAK</text>
+</svg>

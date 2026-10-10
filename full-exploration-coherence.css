@@ -1,0 +1,325 @@
+/* ANTARA 2026-10-08 full exploration coherence pass
+   Final override loaded last. Keeps each planet palette, but standardizes geometry,
+   lifecycle visibility, text containment and responsive safe zones. */
+
+/* Hidden must always win over older planet-specific display rules. */
+:is(.earth-full-exploration,.mercury-full-exploration,.venus-full-exploration,.mars-venus-template,.jupiter-full-exploration,.saturn-full-exploration,.uranus-full-exploration,.neptune-full-exploration) [hidden] {
+  display:none !important;
+}
+
+/* One rectangular visual language for the core HUD, objective and location cards. */
+.earth-full-exploration :is(.earth-full-hud,.earth-objectives-panel,.earth-landmark-card,.earth-full-tutorial),
+.venus-full-exploration :is(.mars-full-hud,.venus-objectives-panel,.venus-location-card,.mars-full-tutorial,.venus-observation-card) {
+  border-radius:0 !important;
+  box-sizing:border-box !important;
+}
+
+/* Text must stay inside cards, including long labels such as rover/location types. */
+:is(.earth-full-exploration,.venus-full-exploration) :is(
+  .earth-objectives-panel,.earth-landmark-card,.earth-full-hud,
+  .venus-objectives-panel,.venus-location-card,.venus-observation-card,.mars-full-hud
+) * {
+  min-width:0;
+  max-width:100%;
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+:is(.earth-full-exploration,.venus-full-exploration) :is(
+  .mars-landmark-type,.mars-landmark-coords,.venus-location-description,
+  .venus-location-facts li,.venus-objectives-list strong,.venus-objectives-list small,
+  .venus-observation-lead,.venus-observation-why p,.earth-landmark-card p,
+  .earth-objectives-panel p
+) {
+  white-space:normal !important;
+  overflow-wrap:anywhere !important;
+}
+
+/* Desktop/laptop: four fixed safe zones. Objectives never begin under the HUD,
+   and the location card never begins under top-right actions. */
+@media (min-width:901px) {
+  .earth-full-exploration .earth-full-hud,
+  .venus-full-exploration .mars-full-hud {
+    top:18px !important;
+    left:22px !important;
+    width:min(326px,31vw) !important;
+    max-height:218px !important;
+    overflow:auto !important;
+    padding:13px 15px !important;
+  }
+  .venus-full-exploration .mars-hud-metrics {
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:6px 8px !important;
+    margin-top:8px !important;
+  }
+  .earth-full-exploration .earth-objectives-panel,
+  .venus-full-exploration .venus-objectives-panel {
+    left:22px !important;
+    right:auto !important;
+    top:252px !important;
+    bottom:72px !important;
+    width:min(360px,32vw) !important;
+    max-height:none !important;
+    overflow:auto !important;
+  }
+  .earth-full-exploration .earth-landmark-card,
+  .venus-full-exploration .venus-location-card {
+    right:22px !important;
+    left:auto !important;
+    top:104px !important;
+    bottom:72px !important;
+    width:min(392px,34vw) !important;
+    max-height:none !important;
+    overflow:auto !important;
+  }
+  .earth-full-exploration .earth-full-actions,
+  .venus-full-exploration .venus-full-actions {
+    top:18px !important;
+    right:22px !important;
+    z-index:80 !important;
+  }
+  .earth-full-exploration .earth-control-hints,
+  .venus-full-exploration .mars-control-hints {
+    bottom:14px !important;
+    max-width:calc(100vw - 440px) !important;
+    z-index:70 !important;
+  }
+  .venus-full-exploration .venus-observation-prompt {
+    bottom:76px !important;
+    left:50% !important;
+    right:auto !important;
+    transform:translateX(-50%) !important;
+    max-width:min(560px,46vw) !important;
+    z-index:75 !important;
+  }
+  .venus-full-exploration .venus-observation-card {
+    left:50% !important;
+    right:auto !important;
+    top:50% !important;
+    bottom:auto !important;
+    width:min(620px,58vw) !important;
+    max-height:calc(100dvh - 150px) !important;
+    transform:translate(-50%,-50%) !important;
+    overflow:auto !important;
+    z-index:120 !important;
+  }
+}
+
+/* Typical 1366x768 and 1024-class laptops need a denser vertical rhythm. */
+@media (min-width:761px) and (max-width:1450px), (min-width:901px) and (max-height:720px) {
+  .earth-full-exploration .earth-full-hud,
+  .venus-full-exploration .mars-full-hud {
+    width:min(300px,31vw) !important;
+    max-height:198px !important;
+    padding:11px 13px !important;
+  }
+  .venus-full-exploration .mars-full-hud h3 { font-size:27px !important; margin-block:5px 1px !important; }
+  .venus-full-exploration .mars-hud-metrics { gap:4px 6px !important; margin-top:6px !important; }
+  .venus-full-exploration .mars-hud-metric { padding-top:5px !important; }
+  .earth-full-exploration .earth-objectives-panel,
+  .venus-full-exploration .venus-objectives-panel {
+    top:224px !important;
+    width:min(338px,34vw) !important;
+    padding:13px 15px !important;
+  }
+  .earth-full-exploration .earth-landmark-card,
+  .venus-full-exploration .venus-location-card {
+    top:92px !important;
+    width:min(365px,36vw) !important;
+    padding:14px 15px !important;
+  }
+  .earth-full-exploration .earth-control-hints,
+  .venus-full-exploration .mars-control-hints {
+    padding:7px 10px !important;
+    gap:4px 10px !important;
+    font-size:7.4px !important;
+  }
+  .earth-full-exploration .earth-control-hints b,
+  .venus-full-exploration .mars-control-hints b { font-size:8px !important; }
+}
+
+/* Exiting means UI disappears immediately, not near the end of the camera tween. */
+:is(.earth-full-exploration,.mercury-full-exploration,.venus-full-exploration,.mars-venus-template,.jupiter-full-exploration,.saturn-full-exploration,.uranus-full-exploration,.neptune-full-exploration).is-exiting :is(
+  .earth-full-hud,.earth-objectives-panel,.earth-landmark-card,.earth-full-actions,.earth-control-hints,.earth-objectives-toggle,.earth-location-info-toggle,
+  .mars-full-hud,.venus-objectives-panel,.venus-location-card,.venus-full-actions,.mars-control-hints,.venus-objectives-toggle,.venus-location-info-toggle,
+  .venus-observation-prompt,.venus-observation-card,.mars-mobile-controls,.mars-full-tutorial,.venus-boundary-hint
+) {
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:none !important;
+}
+
+/* Gas planets: ensure their already-present top actions and persistent controls are
+   actually exposed while flying. */
+:is(.jupiter-full-exploration,.saturn-full-exploration,.uranus-full-exploration,.neptune-full-exploration).is-active .venus-full-actions:not([hidden]) {
+  display:block !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+}
+@media (min-width:901px) {
+  :is(.jupiter-full-exploration,.saturn-full-exploration,.uranus-full-exploration,.neptune-full-exploration).is-active .mars-control-hints:not([hidden]) {
+    display:flex !important;
+    opacity:1 !important;
+    visibility:visible !important;
+  }
+}
+
+/* Gas HUD now has six useful values. Keep them compact and readable. */
+:is(.jupiter-full-exploration,.saturn-full-exploration,.uranus-full-exploration,.neptune-full-exploration) .mars-hud-metric small {
+  white-space:nowrap !important;
+}
+:is(.jupiter-full-exploration,.saturn-full-exploration,.uranus-full-exploration,.neptune-full-exploration) .mars-hud-metric strong {
+  white-space:normal !important;
+  line-height:1.2 !important;
+}
+
+/* Mobile/touch: one secondary sheet at a time. The sheet stays above touch controls,
+   below HUD/actions, and never competes with the audio button in the top-right. */
+@media (max-width:900px), (pointer:coarse) {
+  .earth-full-exploration .earth-full-hud,
+  .venus-full-exploration .mars-full-hud {
+    left:9px !important;
+    top:9px !important;
+    width:min(224px,59vw) !important;
+    max-height:112px !important;
+    padding:9px 10px !important;
+    overflow:auto !important;
+  }
+  .venus-full-exploration .mars-hud-metrics {
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:3px 5px !important;
+    margin-top:5px !important;
+  }
+  .venus-full-exploration .mars-hud-metric small { font-size:5.7px !important; }
+  .venus-full-exploration .mars-hud-metric strong { font-size:6.8px !important; }
+
+  .earth-full-exploration .earth-full-actions,
+  .venus-full-exploration .venus-full-actions {
+    top:9px !important;
+    right:9px !important;
+    z-index:95 !important;
+  }
+  .earth-full-exploration :is(.earth-objectives-toggle,.earth-location-info-toggle),
+  .venus-full-exploration :is(.venus-objectives-toggle,.venus-location-info-toggle) {
+    top:122px !important;
+    height:36px !important;
+    min-height:36px !important;
+    max-height:36px !important;
+    line-height:34px !important;
+    max-width:44vw !important;
+    z-index:88 !important;
+  }
+  .earth-full-exploration .earth-objectives-panel:not([hidden]),
+  .venus-full-exploration .venus-objectives-panel:not([hidden]),
+  .earth-full-exploration .earth-landmark-card:not([hidden]),
+  .venus-full-exploration .venus-location-card:not([hidden]) {
+    left:9px !important;
+    right:9px !important;
+    top:auto !important;
+    bottom:150px !important;
+    width:auto !important;
+    max-width:none !important;
+    max-height:min(42dvh,360px) !important;
+    overflow:auto !important;
+    transform:none !important;
+    z-index:84 !important;
+  }
+  /* Defensive fallback if a legacy state opens both panels at once: location info wins. */
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-objectives-panel,
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-objectives-panel {
+    display:none !important;
+  }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-landmark-card:not([hidden]),
+  .venus-full-exploration.is-info-open.is-objectives-open .venus-location-card:not([hidden]) {
+    top:auto !important;
+    bottom:150px !important;
+    max-height:min(42dvh,360px) !important;
+  }
+
+  .venus-full-exploration .venus-observation-card:not([hidden]) {
+    left:9px !important;
+    right:9px !important;
+    top:50% !important;
+    bottom:auto !important;
+    width:auto !important;
+    max-height:min(64dvh,520px) !important;
+    transform:translateY(-50%) !important;
+    overflow:auto !important;
+    z-index:130 !important;
+  }
+  .venus-full-exploration .venus-observation-prompt:not([hidden]) {
+    left:12px !important;
+    right:12px !important;
+    bottom:146px !important;
+    width:auto !important;
+    max-width:none !important;
+    transform:none !important;
+    z-index:92 !important;
+  }
+  .earth-full-exploration .earth-control-hints,
+  .venus-full-exploration .mars-control-hints { display:none !important; }
+}
+
+/* Short landscape devices use left/right compact panels and a reduced HUD. */
+@media (max-width:900px) and (max-height:520px) {
+  .earth-full-exploration .earth-full-hud,
+  .venus-full-exploration .mars-full-hud {
+    width:min(205px,38vw) !important;
+    max-height:90px !important;
+    padding:7px 9px !important;
+  }
+  .earth-full-exploration :is(.earth-objectives-toggle,.earth-location-info-toggle),
+  .venus-full-exploration :is(.venus-objectives-toggle,.venus-location-info-toggle) {
+    top:76px !important;
+    height:32px !important;
+    min-height:32px !important;
+    max-height:32px !important;
+  }
+  .earth-full-exploration .earth-objectives-panel:not([hidden]),
+  .venus-full-exploration .venus-objectives-panel:not([hidden]) {
+    left:8px !important;
+    right:auto !important;
+    bottom:86px !important;
+    width:min(308px,43vw) !important;
+    max-height:45dvh !important;
+  }
+  .earth-full-exploration .earth-landmark-card:not([hidden]),
+  .venus-full-exploration .venus-location-card:not([hidden]) {
+    right:8px !important;
+    left:auto !important;
+    bottom:86px !important;
+    width:min(308px,43vw) !important;
+    max-height:45dvh !important;
+  }
+}
+
+/* All panorama Previous/Next controls use one exact height. */
+:is(.sun-planet-nav,.mercury-planet-nav,.venus-planet-nav,.mars-planet-nav,.asteroid-object-nav,.jupiter-planet-nav,.saturn-planet-nav,.uranus-planet-nav,.neptune-planet-nav) {
+  box-sizing:border-box !important;
+  height:50px !important;
+  min-height:50px !important;
+  max-height:50px !important;
+  align-items:center !important;
+}
+
+/* Ceres label belongs to Asteroid exploration, not the arrival panorama. */
+.asteroid-ceres-badge {
+  opacity:0 !important;
+  visibility:hidden !important;
+  transform:translateY(-4px);
+}
+.asteroid-scene.is-exploring:not(.is-leaving) .asteroid-ceres-badge {
+  opacity:1 !important;
+  visibility:visible !important;
+  transform:none;
+}
+.asteroid-scene.is-leaving .asteroid-ceres-badge {
+  opacity:0 !important;
+  visibility:hidden !important;
+}
+
+/* The overlay itself should never create an accidental horizontal scroll area. */
+:is(.earth-full-exploration,.venus-full-exploration) {
+  overflow:hidden !important;
+}

@@ -1,0 +1,347 @@
+/* ANTARA inner-planet Full Exploration mobile UI audit · 2026-10-05
+   Scope: Mercury, Venus, Earth, Mars, Jupiter only.
+   Mobile rule: one large secondary sheet at a time (Goals OR Location Info OR Menu).
+   This file is loaded last so legacy per-planet mobile rules cannot re-stretch the controls. */
+
+@media (max-width:820px), (pointer:coarse) and (max-width:1100px) {
+  :is(#earth-full-exploration,#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) {
+    --antara-mobile-edge: max(10px, env(safe-area-inset-left));
+    --antara-mobile-top: max(10px, env(safe-area-inset-top));
+    --antara-mobile-bottom: max(10px, env(safe-area-inset-bottom));
+    --antara-mobile-panel-bottom: calc(146px + env(safe-area-inset-bottom));
+  }
+
+  /* HUD stays compact and leaves a dedicated right-hand socket for Menu. */
+  #earth-full-exploration .earth-full-hud,
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) .mars-full-hud {
+    left:max(10px, env(safe-area-inset-left)) !important;
+    right:auto !important;
+    top:max(10px, env(safe-area-inset-top)) !important;
+    width:min(238px, calc(100vw - 76px)) !important;
+    max-width:62vw !important;
+    max-height:118px !important;
+    overflow:hidden !important;
+    box-sizing:border-box !important;
+    z-index:60 !important;
+  }
+
+  /* Canonical 44px mobile Menu button and dropdown. */
+  #earth-full-exploration .earth-full-actions,
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) .venus-full-actions {
+    position:absolute !important;
+    top:max(10px, env(safe-area-inset-top)) !important;
+    right:max(10px, env(safe-area-inset-right)) !important;
+    left:auto !important;
+    width:44px !important;
+    max-width:44px !important;
+    display:block !important;
+    z-index:82 !important;
+  }
+
+  #earth-full-exploration .earth-actions-menu-toggle,
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) .venus-actions-menu-toggle {
+    display:grid !important;
+    place-items:center !important;
+    width:44px !important;
+    min-width:44px !important;
+    max-width:44px !important;
+    height:44px !important;
+    min-height:44px !important;
+    max-height:44px !important;
+    padding:0 !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+    touch-action:manipulation !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    font-size:7px !important;
+    line-height:1 !important;
+    letter-spacing:.65px !important;
+  }
+
+  #earth-full-exploration .earth-actions-menu,
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) .venus-actions-menu {
+    position:absolute !important;
+    top:126px !important;
+    right:0 !important;
+    left:auto !important;
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    width:min(190px, calc(100vw - 20px)) !important;
+    min-width:0 !important;
+    max-width:calc(100vw - 20px) !important;
+    gap:6px !important;
+    padding:7px !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+    transform:translateY(-5px) !important;
+    transition:opacity .16s ease, transform .16s ease, visibility 0s linear .16s !important;
+    z-index:83 !important;
+  }
+
+  #earth-full-exploration.is-actions-open .earth-actions-menu,
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration).is-actions-open .venus-actions-menu,
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) .venus-full-actions.is-open .venus-actions-menu {
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+    transform:none !important;
+    transition-delay:0s !important;
+  }
+
+  #earth-full-exploration .earth-actions-menu > button,
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) .venus-actions-menu > button {
+    width:100% !important;
+    min-width:0 !important;
+    min-height:44px !important;
+    padding:0 12px !important;
+    box-sizing:border-box !important;
+    text-align:left !important;
+    white-space:normal !important;
+    line-height:1.25 !important;
+    touch-action:manipulation !important;
+  }
+
+  /* Goals + Location are two equal compact switches, never vertical rails. */
+  #earth-full-exploration :is(#earth-objectives-toggle,#earth-info-toggle),
+  #mercury-full-exploration :is(#mercury-objectives-toggle,#mercury-info-toggle),
+  #venus-full-exploration :is(#venus-objectives-toggle,#venus-info-toggle),
+  #mars-full-exploration :is(#mars-objectives-toggle,#mars-info-toggle),
+  #jupiter-full-exploration :is(#jupiter-objectives-toggle,#jupiter-info-toggle) {
+    position:absolute !important;
+    top:calc(136px + env(safe-area-inset-top)) !important;
+    bottom:auto !important;
+    width:min(170px, calc(50vw - 15px)) !important;
+    min-width:0 !important;
+    max-width:calc(50vw - 15px) !important;
+    height:38px !important;
+    min-height:38px !important;
+    max-height:38px !important;
+    padding:0 10px !important;
+    margin:0 !important;
+    border-radius:0 !important;
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+    transform:none !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    line-height:36px !important;
+    box-sizing:border-box !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size:7.6px !important;
+    letter-spacing:.55px !important;
+    z-index:66 !important;
+    touch-action:manipulation !important;
+  }
+
+  #earth-full-exploration :is(#earth-objectives-toggle,#earth-info-toggle)[hidden],
+  #mercury-full-exploration :is(#mercury-objectives-toggle,#mercury-info-toggle)[hidden],
+  #venus-full-exploration :is(#venus-objectives-toggle,#venus-info-toggle)[hidden],
+  #mars-full-exploration :is(#mars-objectives-toggle,#mars-info-toggle)[hidden],
+  #jupiter-full-exploration :is(#jupiter-objectives-toggle,#jupiter-info-toggle)[hidden] {
+    display:none !important;
+  }
+
+  #earth-full-exploration #earth-objectives-toggle,
+  #mercury-full-exploration #mercury-objectives-toggle,
+  #venus-full-exploration #venus-objectives-toggle,
+  #mars-full-exploration #mars-objectives-toggle,
+  #jupiter-full-exploration #jupiter-objectives-toggle {
+    left:max(10px, env(safe-area-inset-left)) !important;
+    right:auto !important;
+  }
+
+  #earth-full-exploration #earth-info-toggle,
+  #mercury-full-exploration #mercury-info-toggle,
+  #venus-full-exploration #venus-info-toggle,
+  #mars-full-exploration #mars-info-toggle,
+  #jupiter-full-exploration #jupiter-info-toggle {
+    right:max(10px, env(safe-area-inset-right)) !important;
+    left:auto !important;
+  }
+
+  /* JS enforces exclusivity; CSS is a second safety net against stale state/classes. */
+  #earth-full-exploration:is(.is-info-open,.is-objectives-open,.is-actions-open) :is(#earth-objectives-toggle,#earth-info-toggle),
+  #mercury-full-exploration:is(.is-info-open,.is-objectives-open,.is-actions-open) :is(#mercury-objectives-toggle,#mercury-info-toggle),
+  #venus-full-exploration:is(.is-info-open,.is-objectives-open,.is-actions-open) :is(#venus-objectives-toggle,#venus-info-toggle),
+  #mars-full-exploration:is(.is-info-open,.is-objectives-open,.is-actions-open) :is(#mars-objectives-toggle,#mars-info-toggle),
+  #jupiter-full-exploration:is(.is-info-open,.is-objectives-open,.is-actions-open) :is(#jupiter-objectives-toggle,#jupiter-info-toggle) {
+    display:none !important;
+  }
+
+  /* One scrollable bottom sheet. No side rail, no double-sheet collision. */
+  #earth-full-exploration :is(#earth-objectives-panel,#earth-landmark-card),
+  #mercury-full-exploration :is(#mercury-objectives-panel,#mercury-landmark-card),
+  #venus-full-exploration :is(#venus-objectives-panel,#venus-landmark-card),
+  #mars-full-exploration :is(#mars-objectives-panel,#mars-landmark-card),
+  #jupiter-full-exploration :is(#jupiter-objectives-panel,#jupiter-landmark-card) {
+    position:absolute !important;
+    left:max(10px, env(safe-area-inset-left)) !important;
+    right:max(10px, env(safe-area-inset-right)) !important;
+    top:auto !important;
+    bottom:var(--antara-mobile-panel-bottom) !important;
+    width:auto !important;
+    min-width:0 !important;
+    max-width:none !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:min(44dvh, calc(100dvh - 296px)) !important;
+    padding:13px 14px !important;
+    margin:0 !important;
+    border-radius:0 !important;
+    box-sizing:border-box !important;
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+    overscroll-behavior:contain !important;
+    -webkit-overflow-scrolling:touch !important;
+    transform:none !important;
+    z-index:70 !important;
+  }
+
+  #earth-full-exploration :is(#earth-objectives-panel,#earth-landmark-card)[hidden],
+  #mercury-full-exploration :is(#mercury-objectives-panel,#mercury-landmark-card)[hidden],
+  #venus-full-exploration :is(#venus-objectives-panel,#venus-landmark-card)[hidden],
+  #mars-full-exploration :is(#mars-objectives-panel,#mars-landmark-card)[hidden],
+  #jupiter-full-exploration :is(#jupiter-objectives-panel,#jupiter-landmark-card)[hidden] {
+    display:none !important;
+  }
+
+  #earth-full-exploration #earth-landmark-card.is-visible,
+  #mercury-full-exploration #mercury-landmark-card.is-visible,
+  #venus-full-exploration #venus-landmark-card.is-visible,
+  #mars-full-exploration #mars-landmark-card.is-visible,
+  #jupiter-full-exploration #jupiter-landmark-card.is-visible {
+    display:block !important;
+  }
+
+  /* Keep imagery useful without allowing it to consume the whole sheet. */
+  #earth-full-exploration .earth-landmark-media,
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) .venus-landmark-media,
+  #jupiter-full-exploration .jupiter-landmark-real-media {
+    max-height:150px !important;
+    overflow:hidden !important;
+  }
+  #earth-full-exploration .earth-landmark-media img,
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) .venus-landmark-media img,
+  #jupiter-full-exploration .jupiter-landmark-real-media img {
+    max-height:150px !important;
+    object-fit:cover !important;
+  }
+
+  /* Flight controls are visually and interactively parked while an overlay owns the screen. */
+  #earth-full-exploration:is(.is-info-open,.is-objectives-open,.is-actions-open,.is-observation-open) .earth-mobile-controls,
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration):is(.is-info-open,.is-objectives-open,.is-actions-open,.is-observation-open) .mars-mobile-controls {
+    opacity:.08 !important;
+    pointer-events:none !important;
+    transition:opacity .14s ease !important;
+  }
+
+  #earth-full-exploration:is(.is-info-open,.is-objectives-open,.is-actions-open,.is-observation-open) :is(.earth-observation-prompt,.earth-boundary-hint),
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration):is(.is-info-open,.is-objectives-open,.is-actions-open,.is-observation-open) :is(.venus-observation-prompt,.venus-boundary-hint) {
+    opacity:0 !important;
+    pointer-events:none !important;
+  }
+
+  /* Long labels/facts must wrap inside the sheet instead of widening it. */
+  #earth-full-exploration :is(#earth-objectives-panel,#earth-landmark-card) *,
+  #mercury-full-exploration :is(#mercury-objectives-panel,#mercury-landmark-card) *,
+  #venus-full-exploration :is(#venus-objectives-panel,#venus-landmark-card) *,
+  #mars-full-exploration :is(#mars-objectives-panel,#mars-landmark-card) *,
+  #jupiter-full-exploration :is(#jupiter-objectives-panel,#jupiter-landmark-card) * {
+    min-width:0;
+    overflow-wrap:anywhere;
+  }
+}
+
+@media (max-width:420px) and (min-height:641px) {
+  :is(#earth-full-exploration,#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) {
+    --antara-mobile-panel-bottom:calc(140px + env(safe-area-inset-bottom));
+  }
+  #earth-full-exploration :is(#earth-objectives-toggle,#earth-info-toggle),
+  #mercury-full-exploration :is(#mercury-objectives-toggle,#mercury-info-toggle),
+  #venus-full-exploration :is(#venus-objectives-toggle,#venus-info-toggle),
+  #mars-full-exploration :is(#mars-objectives-toggle,#mars-info-toggle),
+  #jupiter-full-exploration :is(#jupiter-objectives-toggle,#jupiter-info-toggle) {
+    top:calc(132px + env(safe-area-inset-top)) !important;
+    height:36px !important;
+    min-height:36px !important;
+    max-height:36px !important;
+    line-height:34px !important;
+    font-size:7.2px !important;
+  }
+}
+
+@media (max-width:360px) and (max-height:640px) {
+  :is(#earth-full-exploration,#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) {
+    --antara-mobile-panel-bottom:calc(126px + env(safe-area-inset-bottom));
+  }
+  #earth-full-exploration .earth-full-hud,
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) .mars-full-hud {
+    max-height:96px !important;
+  }
+  #earth-full-exploration :is(#earth-objectives-toggle,#earth-info-toggle),
+  #mercury-full-exploration :is(#mercury-objectives-toggle,#mercury-info-toggle),
+  #venus-full-exploration :is(#venus-objectives-toggle,#venus-info-toggle),
+  #mars-full-exploration :is(#mars-objectives-toggle,#mars-info-toggle),
+  #jupiter-full-exploration :is(#jupiter-objectives-toggle,#jupiter-info-toggle) {
+    top:calc(110px + env(safe-area-inset-top)) !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    line-height:32px !important;
+    font-size:6.8px !important;
+  }
+  #earth-full-exploration :is(#earth-objectives-panel,#earth-landmark-card),
+  #mercury-full-exploration :is(#mercury-objectives-panel,#mercury-landmark-card),
+  #venus-full-exploration :is(#venus-objectives-panel,#venus-landmark-card),
+  #mars-full-exploration :is(#mars-objectives-panel,#mars-landmark-card),
+  #jupiter-full-exploration :is(#jupiter-objectives-panel,#jupiter-landmark-card) {
+    max-height:31dvh !important;
+  }
+}
+
+/* Landscape phones: a single centered sheet stays clear of the bottom touch controls. */
+@media (max-height:520px) and (max-width:900px) {
+  :is(#earth-full-exploration,#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) {
+    --antara-mobile-panel-bottom:calc(82px + env(safe-area-inset-bottom));
+  }
+  #earth-full-exploration .earth-full-hud,
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) .mars-full-hud {
+    width:min(205px,44vw) !important;
+    max-height:86px !important;
+  }
+  #earth-full-exploration .earth-actions-menu,
+  :is(#mercury-full-exploration,#venus-full-exploration,#mars-full-exploration,#jupiter-full-exploration) .venus-actions-menu {
+    top:88px !important;
+  }
+  #earth-full-exploration :is(#earth-objectives-toggle,#earth-info-toggle),
+  #mercury-full-exploration :is(#mercury-objectives-toggle,#mercury-info-toggle),
+  #venus-full-exploration :is(#venus-objectives-toggle,#venus-info-toggle),
+  #mars-full-exploration :is(#mars-objectives-toggle,#mars-info-toggle),
+  #jupiter-full-exploration :is(#jupiter-objectives-toggle,#jupiter-info-toggle) {
+    top:calc(98px + env(safe-area-inset-top)) !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    line-height:32px !important;
+  }
+  #earth-full-exploration :is(#earth-objectives-panel,#earth-landmark-card),
+  #mercury-full-exploration :is(#mercury-objectives-panel,#mercury-landmark-card),
+  #venus-full-exploration :is(#venus-objectives-panel,#venus-landmark-card),
+  #mars-full-exploration :is(#mars-objectives-panel,#mars-landmark-card),
+  #jupiter-full-exploration :is(#jupiter-objectives-panel,#jupiter-landmark-card) {
+    left:max(8px, env(safe-area-inset-left)) !important;
+    right:max(8px, env(safe-area-inset-right)) !important;
+    bottom:var(--antara-mobile-panel-bottom) !important;
+    width:auto !important;
+    max-height:45dvh !important;
+  }
+}

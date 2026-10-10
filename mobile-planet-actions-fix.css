@@ -1,0 +1,195 @@
+/* Mobile-only unification for planet arrival actions. Desktop remains untouched. */
+@media (max-width: 700px) {
+  .sun-arrival-actions,
+  .mercury-arrival-actions,
+  .venus-arrival-actions,
+  .mars-arrival-actions,
+  .asteroid-arrival-actions,
+  .jupiter-arrival-actions,
+  .saturn-arrival-actions,
+  .uranus-arrival-actions,
+  .neptune-arrival-actions {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "primary primary"
+      "previous next";
+    column-gap: 10px;
+    row-gap: 9px;
+    width: min(100%, 360px);
+    margin: 17px auto 0;
+    align-items: stretch;
+  }
+
+  .sun-object-prev,
+  .mercury-planet-prev,
+  .venus-planet-prev,
+  .mars-planet-prev,
+  .asteroid-object-prev,
+  .jupiter-planet-prev,
+  .saturn-planet-prev,
+  .uranus-planet-prev,
+  .neptune-planet-prev {
+    grid-area: previous;
+  }
+
+  .sun-object-next,
+  .mercury-planet-next,
+  .venus-planet-next,
+  .mars-planet-next,
+  .asteroid-object-next,
+  .jupiter-planet-next,
+  .saturn-planet-next,
+  .uranus-planet-next,
+  .neptune-planet-next {
+    grid-area: next;
+  }
+
+  .sun-explore-button,
+  .mercury-explore-button,
+  .asteroid-explore-button,
+  .jupiter-explore-button,
+  .saturn-explore-button,
+  .uranus-explore-button,
+  .neptune-explore-button,
+  .mars-explore-stack {
+    grid-area: primary;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .mars-explore-stack {
+    display: grid;
+    gap: 7px;
+  }
+
+  .sun-explore-button,
+  .mercury-explore-button,
+  .venus-explore-button,
+  .mars-explore-button,
+  .asteroid-explore-button,
+  .jupiter-explore-button,
+  .saturn-explore-button,
+  .uranus-explore-button,
+  .neptune-explore-button {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    min-height: 48px;
+    padding: 0 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    text-align: center;
+  }
+
+  .sun-explore-button span,
+  .mercury-explore-button span,
+  .venus-explore-button span,
+  .mars-explore-button span,
+  .asteroid-explore-button span,
+  .jupiter-explore-button span,
+  .saturn-explore-button span,
+  .uranus-explore-button span,
+  .neptune-explore-button span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max-content;
+    max-width: calc(100% - 84px);
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .sun-explore-button > svg,
+  .mercury-explore-button > svg,
+  .venus-explore-button > svg,
+  .mars-explore-button > svg,
+  .asteroid-explore-button > svg,
+  .jupiter-explore-button > svg,
+  .saturn-explore-button > svg,
+  .uranus-explore-button > svg,
+  .neptune-explore-button > svg {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+  }
+
+  .mars-full-explore-button {
+    width: 100%;
+    min-width: 0;
+    min-height: 38px;
+    padding: 0 12px;
+    font-size: 6.2px;
+    line-height: 1.2;
+    letter-spacing: .95px;
+    white-space: nowrap;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .sun-planet-nav,
+  .mercury-planet-nav,
+  .venus-planet-nav,
+  .mars-planet-nav,
+  .asteroid-object-nav,
+  .jupiter-planet-nav,
+  .saturn-planet-nav,
+  .uranus-planet-nav,
+  .neptune-planet-nav {
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 0 9px;
+    gap: 7px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .sun-planet-nav span,
+  .mercury-planet-nav span,
+  .venus-planet-nav span,
+  .mars-planet-nav span,
+  .asteroid-object-nav span,
+  .jupiter-planet-nav span,
+  .saturn-planet-nav span,
+  .uranus-planet-nav span,
+  .neptune-planet-nav span {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .sun-planet-nav small,
+  .mercury-planet-nav small,
+  .venus-planet-nav small,
+  .mars-planet-nav small,
+  .asteroid-object-nav small,
+  .jupiter-planet-nav small,
+  .saturn-planet-nav small,
+  .uranus-planet-nav small,
+  .neptune-planet-nav small {
+    font-size: 6px;
+    line-height: 1.2;
+    letter-spacing: .8px;
+    white-space: normal;
+  }
+
+  .sun-planet-nav strong,
+  .mercury-planet-nav strong,
+  .venus-planet-nav strong,
+  .mars-planet-nav strong,
+  .asteroid-object-nav strong,
+  .jupiter-planet-nav strong,
+  .saturn-planet-nav strong,
+  .uranus-planet-nav strong,
+  .neptune-planet-nav strong {
+    font-size: 8px;
+    line-height: 1.2;
+    letter-spacing: .7px;
+    white-space: normal;
+  }
+}
