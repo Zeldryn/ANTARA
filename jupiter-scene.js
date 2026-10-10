@@ -1,7 +1,7 @@
 "use strict";
 
-const JUPITER_TEXTURE = "assets/textures/jupiter-hubble-inspired-4k.jpg";
-const JUPITER_MARS_TEXTURE = "assets/textures/mars-surface-2k.jpg";
+const JUPITER_TEXTURE = window.ANTARA_RENDER_PROFILE?.mobile ? "assets/textures/mobile/jupiter-1024.webp" : "assets/textures/jupiter-hubble-inspired-4k.jpg";
+const JUPITER_MARS_TEXTURE = window.ANTARA_RENDER_PROFILE?.mobile ? "assets/textures/mobile/mars-1024.webp" : "assets/textures/mars-surface-2k.jpg";
 const JUPITER_RING_SOURCE = "https://science.nasa.gov/jupiter/jupiter-facts/";
 
 const JUPITER_EXPLORATION_STOPS = Object.freeze([
@@ -138,7 +138,7 @@ window.JupiterScene = class JupiterScene {
     this.time = 0;
     this.width = 1;
     this.height = 1;
-    this.mobile = false;
+    this.mobile = window.ANTARA_RENDER_PROFILE?.mobile ?? (window.innerWidth <= 700);
     this.travelMode = null;
     this.travelCallbacks = {};
     this.travelStartedAt = 0;
@@ -223,9 +223,9 @@ window.JupiterScene = class JupiterScene {
   createThreeScene(THREE) {
     this.THREE=THREE;
     const canvas=document.createElement("canvas");
-    const context=canvas.getContext("webgl2",{alpha:true,antialias:true,powerPreference:"high-performance"});
+    const antialias=!this.mobile;const context=canvas.getContext("webgl2",{alpha:true,antialias,powerPreference:"high-performance"});
     if(!context) throw new Error("WebGL2 unavailable");
-    this.renderer=new THREE.WebGLRenderer({canvas,context,alpha:true,antialias:true});
+    this.renderer=new THREE.WebGLRenderer({canvas,context,alpha:true,antialias});
     this.renderer.setClearColor(0x030812,0);
     this.renderer.outputColorSpace=THREE.SRGBColorSpace;
     this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
@@ -243,7 +243,7 @@ window.JupiterScene = class JupiterScene {
     this.jupiterTexture=texture;
     const bump=texture.clone(); bump.colorSpace=THREE.NoColorSpace; bump.needsUpdate=true;
     this.jupiterMaterial=new THREE.MeshStandardMaterial({map:texture,bumpMap:bump,bumpScale:.012,roughness:.88,metalness:0,color:0xffffff});
-    this.planet=new THREE.Mesh(new THREE.SphereGeometry(1,144,96),this.jupiterMaterial);
+    this.planet=new THREE.Mesh(new THREE.SphereGeometry(1,this.mobile?80:144,this.mobile?56:96),this.jupiterMaterial);
     this.planet.rotation.set(.055,2.58,.035);
     this.planetGroup=new THREE.Group(); this.planetGroup.add(this.planet); this.scene.add(this.planetGroup);
 
@@ -252,13 +252,13 @@ window.JupiterScene = class JupiterScene {
       vertexShader:`varying vec3 vN;varying vec3 vW;void main(){vN=normalize(mat3(modelMatrix)*normal);vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}`,
       fragmentShader:`precision highp float;varying vec3 vN;varying vec3 vW;void main(){vec3 V=normalize(cameraPosition-vW);float rim=pow(1.-max(dot(normalize(vN),V),0.),3.2);gl_FragColor=vec4(vec3(1.0,.72,.43)*rim*.34,rim*.28);}`
     });
-    this.atmosphere=new THREE.Mesh(new THREE.SphereGeometry(1.035,96,64),atmosphereMat); this.planetGroup.add(this.atmosphere);
+    this.atmosphere=new THREE.Mesh(new THREE.SphereGeometry(1.035,this.mobile?64:96,this.mobile?44:64),atmosphereMat); this.planetGroup.add(this.atmosphere);
 
     const ringTexture=this.makeRingTexture(THREE);
     const ringMat=new THREE.MeshBasicMaterial({map:ringTexture,color:0xb4a58c,transparent:true,opacity:.44,depthTest:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.NormalBlending});
     ringMat.userData.antaraBaseOpacity=.44;
     ringMat.userData.antaraTravelMaxOpacity=.56;
-    this.ring=new THREE.Mesh(new THREE.RingGeometry(1.30,1.88,256,3),ringMat);
+    this.ring=new THREE.Mesh(new THREE.RingGeometry(1.30,1.88,this.mobile?128:256,this.mobile?2:3),ringMat);
     this.ring.rotation.x=Math.PI/2-.14; this.ring.rotation.z=.028; this.planetGroup.add(this.ring);
 
     const ambient=new THREE.HemisphereLight(0xd8e4f3,0x1a0e0b,1.25); this.scene.add(ambient);
@@ -304,7 +304,7 @@ window.JupiterScene = class JupiterScene {
     const tex=this.marsSurface?new THREE.Texture(this.marsSurface):null;
     if(tex){tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=Math.min(6,this.renderer.capabilities.getMaxAnisotropy());tex.needsUpdate=true;}
     const mat=new THREE.MeshStandardMaterial({map:tex,color:tex?0xffffff:0xa45e40,roughness:.95,metalness:0,transparent:true,opacity:1});
-    this.travelMarsMaterial=mat; this.travelMars=new THREE.Mesh(new THREE.SphereGeometry(1,96,64),mat); this.travelMars.rotation.set(.1,.72,.08);
+    this.travelMarsMaterial=mat; this.travelMars=new THREE.Mesh(new THREE.SphereGeometry(1,this.mobile?56:96,this.mobile?38:64),mat); this.travelMars.rotation.set(.1,.72,.08);
     this.travelMarsGroup=new THREE.Group();this.travelMarsGroup.add(this.travelMars);this.travelMarsGroup.visible=false;this.scene.add(this.travelMarsGroup);
   }
 
@@ -385,8 +385,8 @@ window.JupiterScene = class JupiterScene {
 
   resize() {
     const parent=this.element.parentElement; this.width=Math.max(1,parent.clientWidth);this.height=Math.max(1,parent.clientHeight);this.mobile=this.width<=700;
-    if(this.mode==="webgl") {this.renderer.setPixelRatio(Math.min(devicePixelRatio||1,this.mobile?1.55:2));this.renderer.setSize(this.width,this.height);this.camera.aspect=this.width/this.height;this.camera.updateProjectionMatrix();}
-    else if(this.mode==="canvas"&&this.canvas){const dpr=Math.min(devicePixelRatio||1,1.5);this.canvas.width=this.width*dpr;this.canvas.height=this.height*dpr;this.canvas.style.width=this.width+"px";this.canvas.style.height=this.height+"px";this.ctx.setTransform(dpr,0,0,dpr,0,0);}
+    if(this.mode==="webgl") {this.renderer.setPixelRatio(Math.min(devicePixelRatio||1,this.mobile?1.1:2));this.renderer.setSize(this.width,this.height);this.camera.aspect=this.width/this.height;this.camera.updateProjectionMatrix();}
+    else if(this.mode==="canvas"&&this.canvas){const dpr=Math.min(devicePixelRatio||1,this.mobile?1:1.5);this.canvas.width=this.width*dpr;this.canvas.height=this.height*dpr;this.canvas.style.width=this.width+"px";this.canvas.style.height=this.height+"px";this.ctx.setTransform(dpr,0,0,dpr,0,0);}
   }
 
   start({settled=false}={}) {
@@ -423,14 +423,14 @@ window.JupiterScene = class JupiterScene {
   }
 
   tick(now) {
-    this.frame=null;if(!this.active||document.hidden)return;const delta=Math.min((now-this.previous)/1000,.12);this.previous=now;this.time+=delta;const damp=1-Math.exp(-delta*2.1);this.cameraOffset.x+=(this.pointer.x-this.cameraOffset.x)*damp;this.cameraOffset.y+=(this.pointer.y-this.cameraOffset.y)*damp;const ed=this.motion.matches?1:1-Math.exp(-delta*3);this.explorationBlend+=(this.explorationBlendTarget-this.explorationBlend)*ed;this.render();
+    this.frame=null;if(!this.active||document.hidden)return;if(window.ANTARA_RENDER_PROFILE&&!window.ANTARA_RENDER_PROFILE.shouldRender(this,now)){this.frame=requestAnimationFrame(t=>this.tick(t));return;}const delta=Math.min((now-this.previous)/1000,.12);this.previous=now;this.time+=delta;const damp=1-Math.exp(-delta*2.1);this.cameraOffset.x+=(this.pointer.x-this.cameraOffset.x)*damp;this.cameraOffset.y+=(this.pointer.y-this.cameraOffset.y)*damp;const ed=this.motion.matches?1:1-Math.exp(-delta*3);this.explorationBlend+=(this.explorationBlendTarget-this.explorationBlend)*ed;this.render();
     if(this.active&&(!this.motion.matches||this.travelMode||Math.abs(this.explorationBlend-this.explorationBlendTarget)>.002||this.time<14))this.frame=requestAnimationFrame(t=>this.tick(t));
   }
 
   render() { if(this.travelMode)this.renderTravel(); else this.renderJupiter(); }
 
   renderJupiter() {
-    const blend=this.explorationBlend;const x=this.mobile?0:(.82+blend*.15);const y=this.mobile?(.13-blend*.23):(.02+blend*.01);const scale=this.mobile?.98:1.13;this.renderedRotation=2.58+this.time*.030;
+    const blend=this.explorationBlend;const x=this.mobile?0:(.82+blend*.15);const y=this.mobile?(.23-blend*.23):(.02+blend*.01);const scale=this.mobile?.88:1.13;this.renderedRotation=2.58+this.time*.030;
     if(this.mode==="webgl"){
       this.travelMarsGroup.visible=false;if(this.asteroidGroup)this.asteroidGroup.visible=false;this.planetGroup.visible=true;this.planetGroup.position.set(x,y,0);this.planetGroup.scale.setScalar(scale);this.planet.rotation.y=this.renderedRotation;this.ring.rotation.z=.015+Math.sin(this.time*.14)*.008;this.camera.position.set(this.motion.matches?0:this.cameraOffset.x*.13,this.motion.matches?0:-this.cameraOffset.y*.09,6.4);this.camera.lookAt(0,0,0);this.renderer.render(this.scene,this.camera);
     }else this.drawCanvasJupiter(x,y,scale);
@@ -446,13 +446,13 @@ window.JupiterScene = class JupiterScene {
     this.beltLabel.style.opacity=String(this.clamp(beltP*1.35));this.ceresLabel.style.opacity=String(this.clamp(ceresP*1.5));
     if(this.mode==="webgl"){
       this.planetGroup.visible=jupiterP>.005;this.travelMarsGroup.visible=marsP>.005;if(this.asteroidGroup)this.asteroidGroup.visible=beltP>.01;
-      const jFinalX=this.mobile?0:.82;
+      const jFinalX=this.mobile?0:.82,jFinalY=this.mobile?.23:.03,jFinalScale=this.mobile?.88:1.14;
       if(!reverse){
         this.travelMarsGroup.position.set(-p*4.8,0,-p*5.2);this.travelMarsGroup.scale.setScalar(.92*(1-p*.73));this.travelMarsMaterial.opacity=marsP;
-        this.planetGroup.position.set(5.5-(5.5-jFinalX)*jupiterP,.03,-5.5*(1-jupiterP));this.planetGroup.scale.setScalar(.14+1.0*jupiterP);
+        this.planetGroup.position.set(5.5-(5.5-jFinalX)*jupiterP,jFinalY*jupiterP,-5.5*(1-jupiterP));this.planetGroup.scale.setScalar(.14+(jFinalScale-.14)*jupiterP);
         if(this.asteroidGroup)this.asteroidGroup.position.z=(p-.18)*25;
       }else{
-        this.planetGroup.position.set(jFinalX-(jFinalX+4.9)*p,.03,-p*5.6);this.planetGroup.scale.setScalar(1.14-p*.86);this.travelMarsGroup.position.set(5.0-(5.0)*marsP,0,-5.4*(1-marsP));this.travelMarsGroup.scale.setScalar(.18+.74*marsP);this.travelMarsMaterial.opacity=marsP;if(this.asteroidGroup)this.asteroidGroup.position.z=(.82-p)*25;
+        this.planetGroup.position.set(jFinalX-(jFinalX+4.9)*p,jFinalY*(1-p),-p*5.6);this.planetGroup.scale.setScalar(jFinalScale-p*(jFinalScale-.28));this.travelMarsGroup.position.set(5.0-(5.0)*marsP,0,-5.4*(1-marsP));this.travelMarsGroup.scale.setScalar(.18+.74*marsP);this.travelMarsMaterial.opacity=marsP;if(this.asteroidGroup)this.asteroidGroup.position.z=(.82-p)*25;
       }
       this.planet.rotation.y=2.58+this.time*.030;this.travelMars.rotation.y+=.0018;this.updateAsteroidMotion(beltP);
       this.camera.position.set(0,0,6.4);this.camera.lookAt(0,0,0);this.renderer.render(this.scene,this.camera);
@@ -510,7 +510,7 @@ window.JupiterScene = class JupiterScene {
     // A second, very faint cloud shell reuses the existing scientific texture instead
     // of replacing it with procedural noise. Its slightly different drift adds depth.
     this.cloudLayer = new THREE.Mesh(
-      new THREE.SphereGeometry(1.008, 144, 96),
+      new THREE.SphereGeometry(1.008, this.mobile ? 80 : 144, this.mobile ? 56 : 96),
       new THREE.MeshStandardMaterial({ map: this.jupiterTexture, transparent: true, opacity: .115, depthWrite: false, roughness: .92, metalness: 0, color: 0xfff4e5 })
     );
     this.planetGroup.add(this.cloudLayer);
@@ -583,7 +583,7 @@ window.JupiterScene = class JupiterScene {
   };
 
   P.tick = function(now) {
-    this.frame=null; if(!this.active||document.hidden)return; const delta=Math.min((now-this.previous)/1000,.12); this.previous=now; this.time+=delta;
+    this.frame=null; if(!this.active||document.hidden)return; if(window.ANTARA_RENDER_PROFILE&&!window.ANTARA_RENDER_PROFILE.shouldRender(this,now)){this.frame=requestAnimationFrame(t=>this.tick(t));return;} const delta=Math.min((now-this.previous)/1000,.12); this.previous=now; this.time+=delta;
     const damp=1-Math.exp(-delta*2.1); this.cameraOffset.x+=(this.pointer.x-this.cameraOffset.x)*damp; this.cameraOffset.y+=(this.pointer.y-this.cameraOffset.y)*damp;
     const ed=this.motion.matches?1:1-Math.exp(-delta*3); this.explorationBlend+=(this.explorationBlendTarget-this.explorationBlend)*ed; this._updateFeatureMotion(delta); this.render();
     if(this.active && (!this.motion.matches || this.travelMode || Math.abs(this.explorationBlend-this.explorationBlendTarget)>.002 || this.focusState==="FOCUS_TRANSITION")) this.frame=requestAnimationFrame(t=>this.tick(t));
@@ -600,7 +600,7 @@ window.JupiterScene = class JupiterScene {
   };
 
   P.renderJupiter = function() {
-    this._ensureFeatureState(); const blend=this.explorationBlend; const x=this.mobile?0:(.82+blend*.15), y=this.mobile?(.13-blend*.23):(.02+blend*.01), scale=this.mobile?.98:1.13;
+    this._ensureFeatureState(); const blend=this.explorationBlend; const x=this.mobile?0:(.82+blend*.15), y=this.mobile?(.23-blend*.23):(.02+blend*.01), scale=this.mobile?.88:1.13;
     const idle=(Number.isFinite(this.rotationBase)?this.rotationBase:2.58)+this.time*.030; const subtle=this.exploring&&this.focusState==="FOCUSED_IDLE"?Math.sin(this.time*.16)*.018:0; this.renderedRotation=this.exploring?this.focusYaw+subtle:idle;
     if(this.mode==="webgl"){
       this.travelMarsGroup.visible=false;if(this.asteroidGroup)this.asteroidGroup.visible=false;this.planetGroup.visible=true;this.planetGroup.position.set(x,y,0);this.planetGroup.scale.setScalar(scale);
@@ -641,8 +641,8 @@ window.JupiterScene = class JupiterScene {
   P.getHeroVisualState = function() {
     return {
       x: this.mobile ? 0 : .82,
-      y: this.mobile ? .13 : .02,
-      scale: this.mobile ? .98 : 1.13,
+      y: this.mobile ? .23 : .02,
+      scale: this.mobile ? .88 : 1.13,
       cameraZ: 6.4,
       fov: 34,
       rotation: this.renderedRotation,

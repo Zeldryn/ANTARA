@@ -145,7 +145,7 @@ window.SunScene = class SunScene {
     this.frame = null;
     this.width = 1;
     this.height = 1;
-    this.mobile = false;
+    this.mobile = window.ANTARA_RENDER_PROFILE?.mobile ?? (window.innerWidth <= 700);
     this.pointer = { x: 0, y: 0 };
     this.cameraOffset = { x: 0, y: 0 };
     this.exploring = false;
@@ -257,12 +257,13 @@ window.SunScene = class SunScene {
 
   createThreeScene(THREE) {
     const canvas = document.createElement("canvas");
-    const context = canvas.getContext("webgl2", { alpha: true, antialias: true, powerPreference: "high-performance" });
+    const antialias = !window.ANTARA_RENDER_PROFILE?.mobile;
+    const context = canvas.getContext("webgl2", { alpha: true, antialias, powerPreference: "high-performance" });
     if (!context) throw new Error("WebGL2 unavailable");
     this.THREE = THREE;
-    this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias: true });
+    this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias });
     this.renderer.setClearColor(0x020409, 0);
-    const cap = window.innerWidth <= 700 ? 1.45 : 2;
+    const cap = window.ANTARA_RENDER_PROFILE?.mobile ? 1.1 : 2;
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, cap));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -439,13 +440,13 @@ window.SunScene = class SunScene {
         }`
     });
     this.photosphereMaterial = photosphereMaterial;
-    this.photosphere = new THREE.Mesh(new THREE.SphereGeometry(1, 144, 104), photosphereMaterial);
+    this.photosphere = new THREE.Mesh(new THREE.SphereGeometry(1, this.mobile ? 80 : 144, this.mobile ? 56 : 104), photosphereMaterial);
     this.photosphere.rotation.set(0.07, 0.35, -0.04);
     this.sunGroup = new THREE.Group();
     this.sunGroup.add(this.photosphere);
     this.scene.add(this.sunGroup);
 
-    this.chromosphere = new THREE.Mesh(new THREE.SphereGeometry(1.018, 96, 64), new THREE.ShaderMaterial({
+    this.chromosphere = new THREE.Mesh(new THREE.SphereGeometry(1.018, this.mobile ? 64 : 96, this.mobile ? 44 : 64), new THREE.ShaderMaterial({
       uniforms: { uTime: { value: 0 }, uFlare: { value: 0 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false,
       vertexShader: `varying vec3 vWorldNormal; varying vec3 vWorld; void main(){vWorldNormal=normalize(mat3(modelMatrix)*normal); vec4 w=modelMatrix*vec4(position,1.); vWorld=w.xyz; gl_Position=projectionMatrix*viewMatrix*w;}`,
       fragmentShader: `varying vec3 vWorldNormal; varying vec3 vWorld; uniform float uTime; uniform float uFlare; void main(){float rim=pow(1.-max(dot(normalize(vWorldNormal),normalize(cameraPosition-vWorld)),0.),3.0); float pulse=.76+.18*sin(uTime*.42+vWorldNormal.y*21.); gl_FragColor=vec4(1.0,.43,.045,rim*(.175+.105*pulse+.075*uFlare));\n#include <colorspace_fragment>\n}`
@@ -663,7 +664,7 @@ window.SunScene = class SunScene {
     texture.minFilter=THREE.LinearMipmapLinearFilter; texture.magFilter=THREE.LinearFilter; texture.generateMipmaps=true;
     texture.anisotropy=Math.max(1,Math.min(12,this.renderer.capabilities.getMaxAnisotropy())); texture.needsUpdate=true;
     this.travelMercuryMaterial=new THREE.MeshStandardMaterial({map:texture,roughness:.91,metalness:0,color:0xffffff,transparent:true,opacity:1});
-    this.travelMercury=new THREE.Mesh(new THREE.SphereGeometry(1,112,80),this.travelMercuryMaterial);
+    this.travelMercury=new THREE.Mesh(new THREE.SphereGeometry(1,this.mobile?64:112,this.mobile?44:80),this.travelMercuryMaterial);
     this.travelMercuryGroup=new THREE.Group(); this.travelMercuryGroup.add(this.travelMercury);
     const key=new THREE.DirectionalLight(0xfff4dd,2.2); key.position.set(-4.5,2.6,4.2); this.scene.add(key,new THREE.AmbientLight(0xb5bdc7,.09));
     this.travelMercuryGroup.visible=false; this.scene.add(this.travelMercuryGroup);
@@ -708,12 +709,12 @@ window.SunScene = class SunScene {
 
   resize() {
     const rect=this.viewport.getBoundingClientRect(); this.width=Math.max(1,Math.round(rect.width||window.innerWidth)); this.height=Math.max(1,Math.round(rect.height||window.innerHeight)); this.mobile=this.width<=700;
-    if(this.renderer&&this.camera){ const cap=this.mobile?1.45:2; this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,cap)); this.renderer.setSize(this.width,this.height,false); this.camera.aspect=this.width/this.height; this.camera.updateProjectionMatrix(); if(this.particles?.material?.uniforms?.uPixelRatio)this.particles.material.uniforms.uPixelRatio.value=Math.min(window.devicePixelRatio||1,cap); }
-    if(this.canvas){ const dpr=Math.min(window.devicePixelRatio||1,this.mobile?1.35:1.8); this.canvas.width=Math.round(this.width*dpr); this.canvas.height=Math.round(this.height*dpr); this.canvas.style.width=`${this.width}px`; this.canvas.style.height=`${this.height}px`; this.ctx.setTransform(dpr,0,0,dpr,0,0); }
+    if(this.renderer&&this.camera){ const cap=this.mobile?1.1:2; this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,cap)); this.renderer.setSize(this.width,this.height,false); this.camera.aspect=this.width/this.height; this.camera.updateProjectionMatrix(); if(this.particles?.material?.uniforms?.uPixelRatio)this.particles.material.uniforms.uPixelRatio.value=Math.min(window.devicePixelRatio||1,cap); }
+    if(this.canvas){ const dpr=Math.min(window.devicePixelRatio||1,this.mobile?1:1.8); this.canvas.width=Math.round(this.width*dpr); this.canvas.height=Math.round(this.height*dpr); this.canvas.style.width=`${this.width}px`; this.canvas.style.height=`${this.height}px`; this.ctx.setTransform(dpr,0,0,dpr,0,0); }
   }
 
   tick(now) {
-    this.frame=null; if(!this.active||document.hidden)return; const delta=Math.min((now-this.previous)/1000,.12); this.previous=now; this.time+=delta;
+    this.frame=null; if(!this.active||document.hidden)return; if(window.ANTARA_RENDER_PROFILE&&!window.ANTARA_RENDER_PROFILE.shouldRender(this,now)){this.frame=requestAnimationFrame(t=>this.tick(t));return;} const delta=Math.min((now-this.previous)/1000,.12); this.previous=now; this.time+=delta;
     const damping=1-Math.exp(-delta*2.3); this.cameraOffset.x+=(this.pointer.x-this.cameraOffset.x)*damping; this.cameraOffset.y+=(this.pointer.y-this.cameraOffset.y)*damping;
     const expDamping=this.motion.matches?1:1-Math.exp(-delta*2.7); this.explorationBlend+=(this.explorationBlendTarget-this.explorationBlend)*expDamping;
     this.updateSolarEvent(delta); this.render();
@@ -842,7 +843,7 @@ window.SunScene = class SunScene {
 
   render(){ if(this.travelMode)this.renderTravel(); else this.renderSun(); }
 
-  normalLayout(){ const dist=5.45; const half=Math.tan((35*Math.PI/180)/2)*dist; return {distance:dist,half,x:half*(this.width/this.height)*(this.mobile?0:.25),y:half*(this.mobile?.20:.08),scale:this.mobile?.86:1}; }
+  normalLayout(){ const dist=5.45; const half=Math.tan((35*Math.PI/180)/2)*dist; return {distance:dist,half,x:half*(this.width/this.height)*(this.mobile?0:.25),y:half*(this.mobile?.30:.08),scale:this.mobile?.78:1}; }
 
   renderSun(){
     const layout=this.normalLayout(); const blend=this.explorationBlend; const groupX=layout.x + blend*layout.half*(this.mobile?0:.20); const groupY=layout.y + blend*layout.half*(this.mobile?.24:0); const groupScale=layout.scale*(1-blend*(this.mobile?.08:.06)); const cameraX=this.cameraOffset.x*.12*(1-blend), cameraY=-this.cameraOffset.y*.08*(1-blend);
