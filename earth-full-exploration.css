@@ -709,3 +709,132 @@
   .earth-landmark-card p,.earth-landmark-description { font-size:8.8px; }
   .earth-landmark-facts { font-size:8px; }
 }
+
+/* 2026-10-03 FINAL SHARED FULL-EXPLORATION LAYOUT CONTRACT
+   Earth and Venus share geometry; planet color remains planet-specific. */
+.earth-full-exploration {
+  --shared-edge-x: clamp(14px, 2.4vw, 34px);
+  --shared-panel-bottom: max(74px, calc(env(safe-area-inset-bottom) + 64px));
+  --shared-panel-width: min(390px, calc(100vw - 32px));
+  --shared-chamfer: 10px;
+}
+
+.earth-objectives-panel,
+.earth-landmark-card,
+.earth-full-tutorial {
+  border-radius: 0 !important;
+  clip-path: polygon(0 0, calc(100% - var(--shared-chamfer)) 0, 100% var(--shared-chamfer), 100% 100%, var(--shared-chamfer) 100%, 0 calc(100% - var(--shared-chamfer)));
+}
+
+.earth-objectives-panel,
+.earth-landmark-card {
+  bottom: var(--shared-panel-bottom) !important;
+  top: auto !important;
+  width: var(--shared-panel-width) !important;
+  max-height: min(68dvh, calc(100dvh - 156px)) !important;
+  box-sizing: border-box;
+}
+.earth-objectives-panel { left: var(--shared-edge-x) !important; right: auto !important; }
+.earth-landmark-card { right: var(--shared-edge-x) !important; left: auto !important; }
+
+.earth-objectives-head button,
+.earth-landmark-minimize,
+.earth-objectives-toggle,
+.earth-location-info-toggle,
+.earth-full-actions button,
+.earth-actions-menu-toggle {
+  border-radius: 0 !important;
+}
+
+.earth-control-hints {
+  width: max-content !important;
+  max-width: calc(100vw - 32px) !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  row-gap: 5px !important;
+  column-gap: 16px !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  bottom: max(16px, env(safe-area-inset-bottom)) !important;
+  box-sizing: border-box;
+}
+
+@media (pointer:coarse),(max-width:760px) {
+  .earth-full-hud {
+    left: 10px !important;
+    top: 10px !important;
+    width: min(245px, calc(100vw - 118px)) !important;
+    max-width: calc(100vw - 118px) !important;
+  }
+  .earth-full-actions { right:10px !important; top:10px !important; }
+  .earth-actions-menu-toggle { min-width:78px !important; }
+
+  .earth-objectives-panel,
+  .earth-landmark-card {
+    left: 10px !important;
+    right: 10px !important;
+    width: calc(100vw - 20px) !important;
+    bottom: 166px !important;
+    top: auto !important;
+    max-height: calc(100dvh - 238px) !important;
+  }
+
+  /* If both independent panels are open, stack them with a guaranteed gap. */
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-landmark-card {
+    top: 72px !important;
+    bottom: auto !important;
+    max-height: calc((100dvh - 250px) / 2) !important;
+  }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-objectives-panel {
+    bottom: 166px !important;
+    top: auto !important;
+    max-height: calc((100dvh - 250px) / 2) !important;
+  }
+
+  .earth-objectives-toggle,
+  .earth-location-info-toggle { bottom:158px !important; }
+}
+
+@media (pointer:coarse) and (orientation:landscape) and (max-height:560px) {
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-landmark-card,
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-objectives-panel {
+    top: 64px !important;
+    bottom: 70px !important;
+    max-height: none !important;
+    width: calc(50vw - 15px) !important;
+  }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-objectives-panel {
+    left:10px !important;
+    right:auto !important;
+  }
+  .earth-full-exploration.is-info-open.is-objectives-open .earth-landmark-card {
+    right:10px !important;
+    left:auto !important;
+  }
+}
+
+/* Shared geometry refinement: same anchors/shapes on Earth and Venus. */
+.earth-full-exploration { --shared-top:clamp(18px,4vh,42px); }
+.earth-full-hud {
+  left:var(--shared-edge-x) !important;
+  top:var(--shared-top) !important;
+  width:min(340px,40vw) !important;
+  box-sizing:border-box;
+}
+.earth-full-actions {
+  right:var(--shared-edge-x) !important;
+  top:var(--shared-top) !important;
+}
+.earth-control-hints,
+.earth-full-tutorial {
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+}
+@media (min-width:761px) and (max-width:900px) {
+  .earth-full-exploration { --shared-panel-width:min(350px,calc((100vw - (3 * var(--shared-edge-x))) / 2)); }
+  .earth-full-hud { width:min(280px,34vw) !important; }
+  .earth-full-actions { max-width:48vw; flex-wrap:wrap; justify-content:flex-end; }
+  .earth-full-actions button { min-height:38px; padding-inline:10px; font-size:8px; }
+}
+.earth-objectives-toggle { left:var(--shared-edge-x) !important; bottom:var(--shared-panel-bottom) !important; }
+.earth-location-info-toggle { right:var(--shared-edge-x) !important; bottom:var(--shared-panel-bottom) !important; }
