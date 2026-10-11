@@ -578,19 +578,19 @@ const CHARACTER_SPRITES = Object.freeze({
   B: {
     name: "Sora",
     base: "assets/characters/sora/",
-    fallback: "idle.webp",
+    fallback: "05_warm_smile.webp",
     states: Object.freeze({
-      idle: "idle.webp",
-      smile: "smile.webp",
-      happy: "smile.webp",
-      talking: "talking.webp",
-      excited: "smile.webp",
-      curious: "curious.webp",
-      explaining: "talking.webp",
-      thinking: "thinking.webp",
-      surprised: "surprised.webp",
-      confident: "confident.webp",
-      supportive: "supportive.webp"
+      idle: "05_warm_smile.webp",
+      smile: "05_warm_smile.webp",
+      happy: "06_winking_pose.webp",
+      talking: "01_gentle_reaching_out.webp",
+      excited: "04_cheerful_excited.webp",
+      curious: "02_thinking_pose.webp",
+      explaining: "01_gentle_reaching_out.webp",
+      thinking: "02_thinking_pose.webp",
+      surprised: "07_surprised_exclamation.webp",
+      confident: "03_confident_arms_crossed.webp",
+      supportive: "05_warm_smile.webp"
     })
   }
 });

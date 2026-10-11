@@ -6373,3 +6373,44 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     bottom: 5.5%;
   }
 }
+
+/* ==============================================================
+   SORA 3:4 SEVEN-POSE SET — TARGETED COCKPIT FRAMING (2026-10-02)
+   Uses the supplied portrait sprites while keeping Sora visually balanced
+   with Nara. The lower edge stays behind the existing dashboard so the
+   cockpit framing ends around the skirt / waist area, never the thighs.
+   ============================================================== */
+.companion-b {
+  width: clamp(350px, 26vw, 455px);
+  bottom: 13.5%;
+}
+
+@media (max-width: 1100px) {
+  .companion-b {
+    width: clamp(300px, 29vw, 400px);
+    bottom: 14%;
+  }
+}
+
+@media (max-width: 900px) {
+  .companion-b {
+    width: clamp(245px, 31vw, 330px);
+    bottom: 16%;
+    right: -1%;
+  }
+}
+
+@media (max-width: 700px) {
+  .companion-b {
+    width: clamp(160px, 42vw, 205px);
+    bottom: 22%;
+    right: 1%;
+  }
+}
+
+@media (max-height: 700px) and (min-width: 701px) {
+  .companion-b {
+    width: clamp(270px, 28vw, 355px);
+    bottom: 8%;
+  }
+}
