@@ -7,14 +7,16 @@ const MARS_TRAVEL_TEXTURE = "assets/textures/mars-surface-2k.jpg";
 const EARTH_EXPLORATION_STOPS = [
   {
     title: "Bumi",
-    kicker: "PLANET BIRU",
+    kicker: "KENALAN DULU",
     subtitle: "Planet berbatu ketiga dari Matahari dan satu-satunya dunia yang diketahui menopang kehidupan",
-    summary: "Bumi adalah planet berbatu dengan samudra air cair, atmosfer aktif, medan magnet global, dan geologi yang terus berubah. Kombinasi sistem ini membuat permukaannya sangat dinamis dibanding dunia berbatu lain yang kita kenal.",
-    context: "ANTARA memisahkan fakta global, konsep ilmiah, dan lokasi nyata. Slide konsep memakai diagram atau visualisasi; slide lokasi memutar globe ke koordinat sebenarnya dan menampilkan marker.",
+    summary: "Bumi adalah planet berbatu ketiga dari Matahari dan rumah bagi semua kehidupan yang sudah kita kenal. Permukaannya punya samudra air cair, daratan, atmosfer, es, dan lingkungan yang terus berubah.",
+    context: "Bukan cuma karena ada air. Samudra, atmosfer, batuan, medan magnet, dan kehidupan saling memengaruhi satu sama lain. Gabungan sistem inilah yang membuat Bumi menjadi dunia yang sangat aktif dan beragam.",
+    contextHeading: "KENAPA BUMI TERASA ISTIMEWA?",
+    factsHeading: "COBA INGAT...",
     facts: [
-      "Bumi adalah planet ketiga dari Matahari dengan usia sekitar 4,5 miliar tahun.",
-      "Sekitar 71% permukaan Bumi tertutup samudra.",
-      "Atmosfer, samudra, batuan, es, dan biosfer saling bertukar energi dan materi."
+      "Usia Bumi sekitar 4,5 miliar tahun.",
+      "Sekitar 71% permukaannya tertutup samudra.",
+      "Bumi adalah satu-satunya tempat yang saat ini diketahui pasti memiliki kehidupan."
     ],
     source: "https://science.nasa.gov/earth/facts/",
     sourceName: "NASA Science",
@@ -31,14 +33,16 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     title: "Dunia Air",
-    kicker: "SISTEM BUMI",
+    kicker: "TAHUKAH KAMU?",
     subtitle: "Samudra menyimpan sebagian besar air permukaan dan membantu mengatur iklim",
-    summary: "Samudra mendominasi wajah Bumi. Air terus berpindah antara laut, atmosfer, daratan, es, dan organisme melalui penguapan, kondensasi, presipitasi, aliran permukaan, serta infiltrasi.",
-    context: "Air bukan hanya fitur permukaan. Kapasitas panas samudra membuat laut menyerap dan memindahkan energi dalam jumlah besar, sehingga berperan penting pada cuaca dan iklim global.",
+    summary: "Samudra adalah kumpulan air asin raksasa yang menutupi sebagian besar permukaan Bumi. Airnya tidak diam, tetapi terus bergerak melalui arus laut dan siklus air antara laut, udara, daratan, es, dan makhluk hidup.",
+    context: "Samudra bisa menyimpan panas dalam jumlah besar lalu memindahkannya ke berbagai wilayah. Karena itu laut ikut memengaruhi cuaca, suhu, hujan, dan iklim di seluruh planet.",
+    contextHeading: "KENAPA LAUT PENTING BANGET?",
+    factsHeading: "FAKTA CEPAT",
     facts: [
       "Sekitar 71% permukaan Bumi tertutup air.",
-      "Sebagian besar air Bumi berada di samudra dan bersifat asin.",
-      "Arus laut dan pertukaran panas laut-atmosfer membantu mendistribusikan energi di seluruh planet."
+      "Sebagian besar air di Bumi berada di samudra dan rasanya asin.",
+      "Arus laut membantu memindahkan panas dari satu wilayah ke wilayah lain."
     ],
     source: "https://oceanservice.noaa.gov/facts/oceanwater.html",
     sourceName: "NOAA Ocean Service",
@@ -55,14 +59,16 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     title: "Atmosfer yang Menjaga Kehidupan",
-    kicker: "ATMOSFER",
+    kicker: "COBA LIHAT KE ATAS",
     subtitle: "Campuran gas berlapis yang mengatur iklim dan melindungi permukaan",
-    summary: "Atmosfer Bumi didominasi nitrogen dan oksigen, dengan uap air serta gas jejak yang sangat penting bagi cuaca dan efek rumah kaca alami. Tekanan dan komposisinya memungkinkan air cair stabil pada banyak wilayah permukaan.",
-    context: "Efek rumah kaca bukan sekadar 'pemanasan buruk'. Dalam kadar alami, gas rumah kaca menjaga Bumi jauh lebih hangat daripada jika atmosfer hanya transparan terhadap radiasi inframerah. Perubahan konsentrasi gas rumah kaca mengubah keseimbangan energi tersebut.",
+    summary: "Atmosfer Bumi adalah lapisan gas yang menyelimuti planet kita. Udara di dekat permukaan terutama berisi nitrogen dan oksigen, ditambah uap air serta gas lain dalam jumlah lebih kecil.",
+    context: "Atmosfer membantu menjaga suhu Bumi, membawa cuaca, dan menyaring sebagian radiasi berbahaya dari Matahari. Tanpa atmosfer yang cocok, air cair dan kehidupan di permukaan akan jauh lebih sulit bertahan.",
+    contextHeading: "KENAPA KITA BUTUH ATMOSFER?",
+    factsHeading: "YANG MENARIK...",
     facts: [
-      "Udara kering dekat permukaan terdiri terutama dari nitrogen dan oksigen.",
-      "Troposfer adalah lapisan tempat hampir seluruh cuaca terjadi.",
-      "Stratosfer mengandung sebagian besar ozon atmosfer yang menyerap radiasi ultraviolet berenergi tinggi."
+      "Sebagian besar cuaca terjadi di lapisan troposfer.",
+      "Stratosfer mengandung sebagian besar ozon yang membantu menyerap radiasi ultraviolet.",
+      "Efek rumah kaca alami membantu menjaga Bumi tetap cukup hangat untuk air cair."
     ],
     source: "https://science.nasa.gov/earth/facts/",
     sourceName: "NASA Science",
@@ -79,14 +85,16 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     title: "Bumi yang Terus Bergerak",
-    kicker: "TEKTONIK LEMPENG",
+    kicker: "TERNYATA...",
     subtitle: "Litosfer terpecah menjadi lempeng yang bergerak di atas interior Bumi",
-    summary: "Gerak lempeng tektonik membentuk pegunungan, palung samudra, busur vulkanik, dan banyak gempa. Batas lempeng dapat saling menjauh, bertumbukan, atau bergeser sejajar.",
-    context: "Gerak lempeng hanya beberapa sentimeter per tahun pada banyak wilayah, tetapi terakumulasi selama jutaan tahun. Skala waktu yang panjang mengubah posisi benua dan bentuk cekungan samudra secara dramatis.",
+    summary: "Lempeng tektonik adalah potongan-potongan besar lapisan luar Bumi yang bergerak sangat pelan. Walau kita tidak merasakannya setiap hari, gerakan ini membentuk banyak pegunungan, gempa, gunung api, dan palung laut.",
+    context: "Lempeng bergerak hanya beberapa sentimeter per tahun di banyak tempat, kira-kira secepat kuku tumbuh. Tetapi jika gerakan kecil itu berlangsung jutaan tahun, posisi benua dan bentuk samudra bisa berubah sangat jauh.",
+    contextHeading: "KOK TANAH BISA BERGERAK?",
+    factsHeading: "COBA BAYANGKAN...",
     facts: [
-      "Lempeng litosfer bergerak relatif satu sama lain di atas astenosfer yang lebih lemah.",
-      "Batas konvergen dapat menghasilkan subduksi, gempa besar, dan vulkanisme.",
-      "Punggung tengah samudra adalah contoh batas divergen tempat kerak samudra baru terbentuk."
+      "Ada batas lempeng yang saling menjauh, bertumbukan, atau bergeser.",
+      "Tumbukan lempeng dapat membentuk pegunungan dan zona gempa besar.",
+      "Kerak samudra baru dapat terbentuk di punggung tengah samudra."
     ],
     source: "https://www.usgs.gov/programs/earthquake-hazards/science/plate-tectonics",
     sourceName: "U.S. Geological Survey",
@@ -103,14 +111,16 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     title: "Pelindung Tak Terlihat",
-    kicker: "MEDAN MAGNET",
+    kicker: "PELINDUNG BUMI",
     subtitle: "Magnetosfer membentuk wilayah pertahanan dinamis terhadap angin Matahari",
-    summary: "Gerak logam cair konduktif di inti luar menghasilkan geodynamo yang mempertahankan sebagian besar medan magnet global Bumi. Di ruang angkasa, medan ini membentuk magnetosfer yang membelokkan banyak partikel bermuatan dari Matahari.",
-    context: "Magnetosfer bukan perisai padat. Bentuknya berubah mengikuti kondisi angin Matahari dan aktivitas Matahari. Sebagian partikel tetap dapat masuk melalui interaksi kompleks dan menghasilkan aurora di wilayah kutub.",
+    summary: "Magnetosfer adalah wilayah di sekitar Bumi yang dipengaruhi kuat oleh medan magnet planet kita. Wilayah ini membantu membelokkan banyak partikel bermuatan yang datang bersama angin Matahari.",
+    context: "Medan magnet bukan tembok padat. Bentuk magnetosfer terus berubah saat dihantam angin Matahari. Sebagian partikel masih bisa masuk di dekat kutub dan menghasilkan cahaya aurora.",
+    contextHeading: "GIMANA CARA MELINDUNGI BUMI?",
+    factsHeading: "TAHUKAH KAMU?",
     facts: [
-      "Sumber utama medan magnet global berada pada gerak fluida konduktif di inti luar.",
-      "Angin Matahari menekan sisi siang magnetosfer dan memanjangkan sisi malam menjadi magnetotail.",
-      "Aurora terkait interaksi partikel bermuatan dengan atmosfer atas di wilayah medan magnet kutub."
+      "Medan magnet utama Bumi berkaitan dengan gerakan logam cair di inti luar.",
+      "Sisi siang magnetosfer tertekan oleh angin Matahari.",
+      "Interaksi partikel dengan atmosfer atas dapat menghasilkan aurora."
     ],
     source: "https://science.nasa.gov/heliophysics/focus-areas/magnetosphere-ionosphere/",
     sourceName: "NASA Science",
@@ -127,14 +137,16 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     title: "Isi Bumi",
-    kicker: "STRUKTUR INTERNAL",
+    kicker: "YUK INTIP KE DALAM",
     subtitle: "Kerak, mantel, inti luar cair, dan inti dalam padat",
-    summary: "Kita tidak dapat melihat langsung sebagian besar interior Bumi. Struktur dalam disimpulkan dari gelombang seismik, eksperimen material bertekanan tinggi, gravitasi, medan magnet, dan pemodelan fisika.",
-    context: "Batas antarlapisan tidak sekadar perubahan warna. Tekanan, temperatur, komposisi, dan fase material berubah dengan kedalaman. Inti luar yang cair sangat penting bagi geodynamo Bumi.",
+    summary: "Interior Bumi adalah bagian planet yang tersembunyi jauh di bawah permukaan. Secara sederhana, Bumi tersusun dari kerak, mantel, inti luar yang cair, dan inti dalam yang padat.",
+    context: "Manusia belum pernah mengebor sampai ke inti Bumi. Ilmuwan mempelajarinya dari gelombang gempa, gravitasi, medan magnet, eksperimen tekanan tinggi, dan cara material bereaksi di dalam planet.",
+    contextHeading: "KOK KITA TAHU ISINYA?",
+    factsHeading: "LAPISAN UTAMANYA",
     facts: [
-      "Kerak adalah lapisan terluar yang sangat tipis dibanding radius Bumi.",
-      "Mantel sebagian besar padat namun dapat mengalir sangat lambat dalam skala geologi.",
-      "Inti luar bersifat cair, sedangkan inti dalam tetap padat karena tekanan sangat tinggi."
+      "Kerak sangat tipis jika dibandingkan dengan ukuran seluruh Bumi.",
+      "Mantel kebanyakan padat, tetapi dapat mengalir sangat lambat dalam waktu geologi.",
+      "Inti luar cair membantu menghasilkan medan magnet global Bumi."
     ],
     source: "https://pubs.usgs.gov/gip/interior/",
     sourceName: "U.S. Geological Survey",
@@ -151,15 +163,17 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     title: "Mount Everest",
-    kicker: "REKOR & EKSTREM",
+    kicker: "REKOR BUMI",
     subtitle: "Puncak tertinggi di atas muka laut",
     region: "Himalaya · Nepal / Tiongkok",
-    summary: "Mount Everest adalah titik dengan elevasi tertinggi di Bumi ketika ketinggian diukur terhadap muka laut rata-rata global.",
-    context: "Definisi ini penting. Everest memegang rekor elevasi tertinggi di atas muka laut, tetapi bukan gunung dengan jarak dasar-ke-puncak terbesar. Perbandingan itu muncul pada Mauna Kea.",
+    summary: "Mount Everest adalah gunung di Himalaya yang memiliki puncak tertinggi di Bumi jika ketinggian dihitung dari muka laut. Puncaknya berada di perbatasan Nepal dan Tiongkok.",
+    context: "Ketinggian resmi Everest adalah 8.848,86 meter di atas muka laut. Tapi ada cara ukur lain, misalnya dari dasar gunung sampai puncak. Karena itu kata “tertinggi” bisa punya arti berbeda tergantung titik awal pengukurannya.",
+    contextHeading: "KENAPA DISEBUT PALING TINGGI?",
+    factsHeading: "FAKTA CEPAT",
     facts: [
-      "Elevasi resmi yang disepakati Nepal dan Tiongkok pada 2020 adalah 8.848,86 meter.",
-      "Puncaknya berada pada perbatasan Nepal dan Tiongkok di Himalaya.",
-      "Ketinggian di sini memakai acuan muka laut, bukan jarak dari pusat Bumi."
+      "Elevasi resminya 8.848,86 meter di atas muka laut.",
+      "Puncaknya berada di kawasan Himalaya pada perbatasan Nepal dan Tiongkok.",
+      "Everest memegang rekor elevasi tertinggi di atas muka laut."
     ],
     source: "https://www.tourismdepartment.gov.np/files/statistics/46.pdf",
     sourceName: "Department of Tourism Nepal",
@@ -178,15 +192,17 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     title: "Mauna Kea",
-    kicker: "REKOR & EKSTREM",
+    kicker: "TERNYATA...",
     subtitle: "Raksasa yang sebagian besar tersembunyi di bawah laut",
     region: "Hawaiʻi · Samudra Pasifik",
-    summary: "Mauna Kea menunjukkan kenapa kata 'tertinggi' dan 'tertinggi dari dasar' tidak selalu berarti hal yang sama. Sebagian besar tubuh gunung ini berada di bawah Samudra Pasifik.",
-    context: "USGS memperkirakan Mauna Kea sekitar 4.205 meter di atas muka laut dan memanjang kira-kira 6.000 meter lagi sampai dasar samudra. Total dasar-ke-puncaknya mendekati 10 kilometer.",
+    summary: "Mauna Kea adalah gunung api perisai besar di Pulau Hawaiʻi. Dari daratan kita hanya melihat bagian atasnya, karena sebagian besar tubuh gunung ini masih berlanjut jauh ke bawah Samudra Pasifik.",
+    context: "Puncak Mauna Kea berada sekitar 4,2 kilometer di atas muka laut. Tetapi tubuh gunungnya terus turun kira-kira 6 kilometer menuju dasar samudra. Kalau dihitung dari dasar sampai puncak, totalnya mendekati 10 kilometer.",
+    contextHeading: "KOK BISA HAMPIR 10 KM?",
+    factsHeading: "COBA BAYANGKAN...",
     facts: [
-      "Puncaknya sekitar 4,2 kilometer di atas muka laut.",
-      "Jika dihitung dari dasar samudra, tubuh vulkaniknya jauh lebih tinggi daripada angka elevasi puncaknya saja.",
-      "Everest tetap memegang rekor elevasi di atas muka laut."
+      "Sekitar 4,2 kilometer bagiannya berada di atas muka laut.",
+      "Sebagian besar tubuh gunung berada di bawah permukaan laut.",
+      "Everest tetap lebih tinggi jika acuannya adalah muka laut."
     ],
     source: "https://www.usgs.gov/faqs/how-big-are-hawaiian-volcanoes",
     sourceName: "U.S. Geological Survey",
@@ -204,15 +220,17 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     title: "Challenger Deep",
-    kicker: "REKOR & EKSTREM",
+    kicker: "SEJAUH APA DALAMNYA?",
     subtitle: "Titik terdalam yang diketahui di samudra Bumi",
     region: "Palung Mariana · Pasifik Barat",
-    summary: "Challenger Deep berada di bagian selatan Palung Mariana. Lokasinya tidak tampak sebagai celah raksasa dari foto satelit biasa, sehingga ANTARA memakai batimetri ilmiah untuk menjelaskan bentuk dasar laut.",
-    context: "Kedalaman laut diukur terhadap muka laut dan ditentukan dengan survei akustik, sensor tekanan, serta koreksi oseanografi. Angka tepat dapat berbeda antarsurvei karena metode dan ketidakpastian pengukuran.",
+    summary: "Challenger Deep adalah bagian terdalam yang diketahui di Palung Mariana, sebuah palung laut raksasa di Pasifik barat. Tempat ini berada jauh di bawah permukaan laut dan tidak bisa dilihat langsung dari foto satelit biasa.",
+    context: "Pengukuran modern menempatkan kedalamannya sekitar 10,9 kilometer di bawah muka laut. Angka tepatnya bisa sedikit berbeda antarsurvei karena alat, kondisi laut, dan metode pengukuran tidak selalu sama.",
+    contextHeading: "SEBERAPA DALAM?",
+    factsHeading: "COBA BANDINGKAN",
     facts: [
-      "Pengukuran modern menempatkan kedalaman Challenger Deep sekitar 10,9 kilometer di bawah muka laut.",
-      "Kedalamannya lebih besar daripada elevasi Everest di atas muka laut.",
-      "Visual batimetri adalah representasi data kedalaman, bukan foto optik dasar samudra."
+      "Kedalamannya sekitar 10,9 kilometer di bawah muka laut.",
+      "Jarak vertikalnya lebih besar daripada tinggi Everest di atas muka laut.",
+      "Bentuk dasar laut dipetakan dengan sonar dan data batimetri, bukan foto biasa."
     ],
     source: "https://oceanservice.noaa.gov/facts/oceandepth.html",
     sourceName: "NOAA Ocean Service",
@@ -229,15 +247,17 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     title: "Benua Es",
-    kicker: "REKOR & EKSTREM",
+    kicker: "DINGIN BANGET",
     subtitle: "Antarktika menyimpan es terbesar di Bumi dan rekor dingin ekstrem",
     region: "Antarktika · fokus Stasiun Vostok",
-    summary: "Antarktika adalah benua yang hampir seluruh permukaannya tertutup es. Interiornya tinggi, kering, sangat dingin, dan berperan besar dalam sistem iklim serta muka laut global.",
-    context: "ANTARA membedakan permukaan es dari batuan di bawahnya. Citra permukaan dan DEM permukaan es tidak boleh dipresentasikan sebagai topografi subglasial yang terlihat langsung.",
+    summary: "Antarktika adalah benua paling selatan di Bumi dan hampir seluruh permukaannya tertutup lapisan es tebal. Di bagian dalam benua, wilayahnya tinggi, kering, berangin, dan sangat dingin.",
+    context: "Antarktika menerima sedikit energi Matahari, permukaannya banyak memantulkan cahaya karena es, dan sebagian besar interiornya berada di elevasi tinggi. Gabungan kondisi itu membuat suhunya bisa turun sangat ekstrem.",
+    contextHeading: "KENAPA BISA SEDINGIN ITU?",
+    factsHeading: "YANG PERLU DIINGAT",
     facts: [
-      "Rekor suhu udara terendah dari pengukuran stasiun yang diakui WMO adalah -89,2 °C di Vostok pada 21 Juli 1983.",
-      "Lapisan es Antarktika menyimpan sebagian besar es tawar Bumi.",
-      "Permukaan es dan topografi batuan dasar di bawah es adalah dua data yang berbeda."
+      "Antarktika menyimpan lapisan es terbesar di Bumi.",
+      "Stasiun Vostok berada jauh di pedalaman Antarktika Timur.",
+      "Permukaan es tidak sama dengan bentuk batuan yang tersembunyi di bawahnya."
     ],
     source: "https://wmo.int/media/news/wmo-concludes-evaluation-of-possible-new-record-antarctic-temperature",
     sourceName: "World Meteorological Organization",
@@ -254,15 +274,17 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     title: "Furnace Creek",
-    kicker: "REKOR & EKSTREM",
+    kicker: "PANAS EKSTREM",
     subtitle: "Lokasi rekor panas resmi WMO",
     region: "Death Valley · California, Amerika Serikat",
-    summary: "Furnace Creek berada di Death Valley, cekungan gurun yang sangat panas dan rendah. WMO masih mencantumkan pengukuran 56,7 °C pada 10 Juli 1913 sebagai rekor suhu udara tertinggi resmi.",
-    context: "Sebagian peneliti sejarah cuaca mempertanyakan akurasi sejumlah rekor lama. Karena itu ANTARA menampilkan statusnya secara eksplisit sebagai rekor resmi WMO yang masih berlaku, bukan klaim bahwa semua perdebatan ilmiah sudah tertutup.",
+    summary: "Furnace Creek adalah kawasan di Death Valley, California, Amerika Serikat. Tempat ini terkenal karena berada di salah satu lingkungan terpanas di Bumi dan menjadi lokasi rekor suhu udara resmi yang dicatat WMO.",
+    context: "Death Valley sangat kering, berada di cekungan rendah, dan dikelilingi pegunungan. Sinar Matahari memanaskan tanah dengan kuat, sementara udara panas dapat terperangkap dan bersirkulasi kembali di dalam lembah.",
+    contextHeading: "KENAPA BISA PANAS BANGET?",
+    factsHeading: "REKORNYA",
     facts: [
-      "Rekor resmi WMO: 56,7 °C pada 10 Juli 1913.",
-      "Furnace Creek berada di Death Valley, California.",
-      "Topografi cekungan, udara kering, dan radiasi Matahari kuat berkontribusi pada panas ekstrem kawasan ini."
+      "WMO masih mencatat 56,7 °C pada 10 Juli 1913 sebagai rekor suhu udara tertinggi resmi.",
+      "Pengukuran itu dilakukan di Furnace Creek, Death Valley.",
+      "Sebagian peneliti memperdebatkan keakuratan beberapa rekor cuaca lama, jadi status “rekor resmi WMO” perlu disebut jelas."
     ],
     source: "https://public.wmo.int/media/news/wmo-verifies-3rd-and-4th-hottest-temperature-recorded-earth",
     sourceName: "World Meteorological Organization",
@@ -279,15 +301,17 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     title: "Danau Baikal",
-    kicker: "REKOR & EKSTREM",
+    kicker: "TAHUKAH KAMU?",
     subtitle: "Danau terdalam di dunia",
     region: "Siberia · Rusia",
-    summary: "Danau Baikal membentuk cekungan air tawar yang sangat dalam di Siberia. Kedalamannya mencapai sekitar 1,6 kilometer dan menjadikannya danau terdalam di dunia.",
-    context: "Baikal juga sangat tua secara geologi. Citra satelit memperlihatkan bentuk danau memanjang di antara pegunungan, sedangkan angka kedalamannya berasal dari pengukuran batimetri, bukan dari warna foto satelit.",
+    summary: "Danau Baikal adalah danau air tawar besar di Siberia, Rusia. Danau ini terkenal karena sangat tua, sangat dalam, dan berada di sebuah wilayah kerak Bumi yang perlahan meregang.",
+    context: "Baikal berada di zona retakan kerak yang disebut rift. Saat kerak meregang, sebuah cekungan panjang dapat terbentuk dan terus mengalami perubahan geologi. Itulah salah satu alasan bentuk Baikal sangat dalam dan memanjang.",
+    contextHeading: "KOK BISA SEDALAM ITU?",
+    factsHeading: "FAKTA CEPAT",
     facts: [
-      "Kedalaman maksimum sekitar 1.642 meter.",
-      "Baikal merupakan danau terdalam di dunia.",
-      "Cekungannya berada pada zona rift benua yang masih aktif."
+      "Kedalaman maksimumnya sekitar 1,6 kilometer.",
+      "Baikal adalah danau terdalam di dunia.",
+      "Warna pada citra satelit tidak menunjukkan kedalaman secara langsung, jadi kedalaman diukur dengan data batimetri."
     ],
     source: "https://science.nasa.gov/earth/earth-observatory/lake-baikal-at-night-153110/",
     sourceName: "NASA Earth Observatory",
@@ -304,14 +328,16 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     title: "Bumi dan Bulan",
-    kicker: "SISTEM BUMI–BULAN",
+    kicker: "TEMAN SETIA BUMI",
     subtitle: "Dua dunia yang saling memengaruhi melalui gravitasi",
-    summary: "Bulan mengorbit Bumi dan bersama-sama keduanya mengorbit Matahari. Gravitasi Bulan berperan besar pada pasang surut laut, sementara pertukaran momentum perlahan mengubah rotasi Bumi dan orbit Bulan.",
-    context: "Bulan tidak 'menjaga Bumi tetap diam'. Pengaruhnya lebih halus: dinamika pasang surut dan interaksi gravitasi berkontribusi pada evolusi rotasi dan orientasi sistem Bumi–Bulan dalam jangka panjang.",
+    summary: "Sistem Bumi-Bulan adalah pasangan Bumi dan satelit alaminya, Bulan, yang saling menarik melalui gravitasi. Bulan mengorbit Bumi, sementara keduanya bersama-sama bergerak mengelilingi Matahari.",
+    context: "Tarikan gravitasi Bulan berperan besar pada pasang surut laut. Dalam waktu yang sangat panjang, interaksi pasang surut juga perlahan memengaruhi kecepatan rotasi Bumi dan jarak orbit Bulan.",
+    contextHeading: "APA PENGARUH BULAN?",
+    factsHeading: "COBA INGAT...",
     facts: [
-      "Jarak rata-rata Bumi–Bulan sekitar 384.400 kilometer.",
-      "Pasang surut terutama dipengaruhi gravitasi Bulan, dengan kontribusi penting dari Matahari.",
-      "Bulan perlahan menjauh dari Bumi beberapa sentimeter per tahun menurut pengukuran laser."
+      "Bulan adalah satelit alami Bumi.",
+      "Gravitasi Bulan menjadi salah satu penyebab utama pasang surut laut.",
+      "Bulan tidak membuat Bumi “diam”, tetapi ikut memengaruhi dinamika sistem Bumi-Bulan."
     ],
     source: "https://science.nasa.gov/moon/facts/",
     sourceName: "NASA Science",
@@ -328,14 +354,16 @@ const EARTH_EXPLORATION_STOPS = [
   },
   {
     title: "Dunia yang Dapat Dihuni",
-    kicker: "HABITABILITAS",
+    kicker: "RUMAH KEHIDUPAN",
     subtitle: "Satu-satunya planet yang saat ini diketahui pasti menopang kehidupan",
-    summary: "Habitabilitas Bumi bukan hasil satu faktor tunggal. Air cair, sumber energi, kimia yang kaya, atmosfer, siklus geologi, serta rentang lingkungan yang relatif stabil bekerja sebagai sistem yang saling terkait.",
-    context: "Pernyataan ini tidak berarti Bumi pasti satu-satunya dunia berkehidupan di alam semesta. Artinya, sampai sekarang Bumi adalah satu-satunya tempat dengan kehidupan yang telah dikonfirmasi secara langsung.",
+    summary: "Habitabilitas Bumi adalah kemampuan lingkungan planet ini untuk mendukung kehidupan seperti yang kita kenal. Bumi punya air cair, sumber energi, unsur kimia penting, atmosfer, dan banyak lingkungan yang relatif stabil.",
+    context: "Tidak ada satu alasan tunggal. Kehidupan di Bumi didukung oleh banyak sistem yang bekerja bersama, mulai dari air dan atmosfer sampai siklus batuan dan sumber energi. Kombinasi inilah yang membuat Bumi sangat istimewa bagi kita.",
+    contextHeading: "KENAPA BUMI BISA DIHUNI?",
+    factsHeading: "SATU HAL PENTING",
     facts: [
-      "Air cair tersedia dalam jumlah besar di permukaan.",
-      "Atmosfer dan samudra membantu mengatur distribusi panas dan tekanan permukaan.",
-      "Matahari menyediakan sumber energi utama bagi sebagian besar ekosistem permukaan."
+      "Bumi adalah satu-satunya dunia yang saat ini diketahui pasti memiliki kehidupan.",
+      "Itu tidak membuktikan bahwa kehidupan tidak ada di tempat lain.",
+      "Mencari kehidupan di dunia lain berarti mencari lingkungan dan tanda-tanda yang bisa dibandingkan dengan proses di Bumi."
     ],
     source: "https://astrobiology.nasa.gov/research/life-detection/about/",
     sourceName: "NASA Astrobiology",
@@ -473,8 +501,10 @@ window.EarthScene = class EarthScene {
     get("kicker").textContent = stop.kicker || "REKOR & EKSTREM";
     get("subtitle").textContent = stop.region || stop.subtitle;
     get("context-section").hidden = !stop.context;
+    document.getElementById("earth-context-heading").textContent = stop.contextHeading || "YUK PAHAMI";
     get("context").textContent = stop.context || "";
     get("facts-heading").hidden = false;
+    get("facts-heading").textContent = stop.factsHeading || "FAKTA CEPAT";
     this.marker.classList.add("is-relocating");
     this.marker.style.opacity = "0";
     document.getElementById("earth-marker-title").textContent = stop.location ? stop.title : "";
