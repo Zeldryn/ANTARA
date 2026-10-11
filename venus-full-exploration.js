@@ -2924,24 +2924,28 @@
       if (!this.root) return;
       const exploring = this.state === STATES.EXPLORING;
       const mobile = this.isMobileUi();
-      const top = mobile ? this.getTopSecondaryPanel() : null;
       const observationOpen = this.isObservationCardOpen();
-      const showInfo = exploring && this.infoOpen && !observationOpen && (!mobile || top === "info");
-      const showObjectives = exploring && this.objectiveOpen && (!mobile || (top === "objectives" && !observationOpen));
+      // Goals and Info are independent controls on every viewport. Mobile CSS decides
+      // how two open cards share the available screen; JS never hides one because
+      // the other was touched more recently.
+      const showInfo = exploring && this.infoOpen && !observationOpen;
+      const showObjectives = exploring && this.objectiveOpen && !observationOpen;
 
       this.root.classList.toggle("is-info-open", Boolean(this.infoOpen));
       this.root.classList.toggle("is-objectives-open", Boolean(this.objectiveOpen));
-      this.root.dataset.mobilePanel = mobile ? (top || "") : "";
+      this.root.dataset.mobilePanel = mobile
+        ? (this.infoOpen && this.objectiveOpen ? "both" : this.infoOpen ? "info" : this.objectiveOpen ? "objectives" : "")
+        : "";
 
       this.infoCard?.classList.toggle("is-visible", showInfo);
       this.infoCard?.setAttribute("aria-hidden", String(!showInfo));
-      if (this.infoToggle) this.infoToggle.hidden = !exploring || (showInfo && (!mobile || top === "info"));
+      if (this.infoToggle) this.infoToggle.hidden = !exploring || this.infoOpen;
 
       if (this.objectivesPanel) {
         this.objectivesPanel.hidden = !showObjectives;
         this.objectivesPanel.setAttribute("aria-hidden", String(!showObjectives));
       }
-      if (this.objectivesToggle) this.objectivesToggle.hidden = !exploring || (showObjectives && (!mobile || top === "objectives"));
+      if (this.objectivesToggle) this.objectivesToggle.hidden = !exploring || this.objectiveOpen;
     }
 
     setActionsMenu(open, focus = false) {
