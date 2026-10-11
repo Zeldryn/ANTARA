@@ -385,3 +385,182 @@
   .earth-tutorial-mobile{grid-template-columns:repeat(4,1fr)}
 }
 @media (prefers-reduced-motion:reduce){.earth-entry-clouds{animation:none!important}}
+
+/* 2026-10-03: Full Exploration readable cards, safe wrapping, working tutorial close. */
+.earth-full-exploration,
+.earth-full-exploration * { box-sizing:border-box; }
+.earth-full-exploration button,
+.earth-full-exploration a { cursor:pointer; }
+.earth-full-exploration.is-active .earth-full-tutorial.is-dismissed {
+  opacity:0 !important;
+  pointer-events:none !important;
+  visibility:hidden;
+}
+.earth-full-tutorial[hidden] { display:none !important; }
+
+.earth-region-selector,
+.earth-quality-panel,
+.earth-full-tutorial,
+.earth-objectives-panel,
+.earth-observation-card,
+.earth-landmark-card { max-width:calc(100vw - 24px); }
+.earth-region-selector *,
+.earth-quality-panel *,
+.earth-full-tutorial *,
+.earth-objectives-panel *,
+.earth-observation-card *,
+.earth-landmark-card * { min-width:0; overflow-wrap:anywhere; }
+
+/* Destination selector */
+.earth-region-selector-topline { font-size:8px; letter-spacing:1.6px; }
+.earth-region-selector>p { font-size:11px; line-height:1.7; }
+.earth-region-index { font-size:7.5px; }
+.earth-region-card strong { font-size:22px; line-height:1.12; }
+.earth-region-descriptor { font-size:8.8px; line-height:1.6; min-height:0; }
+.earth-region-card small { font-size:7.5px; line-height:1.5; }
+.earth-region-card em { font-size:6.8px; }
+.earth-region-source { font-size:6.7px; line-height:1.5; }
+.earth-region-provenance strong { font-size:7.5px; }
+.earth-region-provenance span { font-size:8.5px; }
+.earth-region-provenance small { font-size:7.2px; }
+
+/* Flight HUD + top actions */
+.earth-hud-kicker { font-size:9px; }
+.earth-hud-mode { font-size:8.5px; }
+.earth-hud-location { font-size:12px; line-height:1.4; }
+.earth-hud-coordinates { font-size:10px; }
+.earth-hud-metrics small { font-size:8.2px; }
+.earth-hud-metrics strong { font-size:11px; line-height:1.4; }
+.earth-hud-data small { font-size:8px; }
+.earth-hud-data span { font-size:9px; }
+.earth-full-actions button { min-height:42px; font-size:8.5px; letter-spacing:.65px; }
+
+/* Tutorial */
+.earth-full-tutorial { width:min(680px,calc(100vw - 32px)); padding:24px 26px; z-index:32; }
+.earth-tutorial-header span { font-size:10px; letter-spacing:1.5px; }
+.earth-tutorial-header button { width:34px; height:34px; font-size:20px; }
+.earth-tutorial-grid { gap:12px; }
+.earth-tutorial-grid b { font-size:11.5px; line-height:1.35; }
+.earth-tutorial-grid span { font-size:9px; line-height:1.45; }
+
+/* Objectives */
+.earth-objectives-panel { width:min(390px,calc(100vw - 32px)); max-height:min(48vh,520px); overflow:auto; padding:16px 18px; }
+.earth-objectives-head small { font-size:8.8px; }
+.earth-objectives-head strong { font-size:13px; line-height:1.35; }
+.earth-objectives-head button,.earth-landmark-minimize { min-height:32px; padding:6px 10px; font-size:8px; }
+.earth-objectives-panel>p { font-size:11px; line-height:1.65; }
+.earth-discovery-progress>div:first-child { font-size:8px; }
+.earth-objectives-list li { grid-template-columns:29px 1fr; gap:10px; padding:9px 0; }
+.earth-objectives-list li>span { width:27px; height:27px; font-size:7px; }
+.earth-objectives-list strong { font-size:10px; line-height:1.4; }
+.earth-objectives-list small { font-size:8px; }
+.earth-next-target small { font-size:7.8px; }
+.earth-next-target strong,.earth-next-target span { font-size:9px; }
+.earth-objectives-toggle,.earth-location-info-toggle { min-height:40px; font-size:8.5px; }
+
+/* Observation prompt + discovery card */
+.earth-observation-prompt { max-width:calc(100vw - 24px); }
+.earth-observation-key { width:34px; height:34px; font-size:10px; }
+.earth-observation-prompt small { font-size:8px; }
+.earth-observation-prompt strong { font-size:10px; line-height:1.4; }
+.earth-observation-prompt button { min-height:37px; font-size:8.5px; }
+.earth-observation-card { width:min(720px,calc(100vw - 32px)); max-height:min(82vh,760px); padding:24px 26px; }
+.earth-observation-card-head small { font-size:8.8px; }
+.earth-observation-card-head span { font-size:8px; }
+.earth-observation-card-head button { width:36px; height:36px; font-size:21px; }
+.earth-observation-card h4 { font-size:clamp(30px,4vw,46px); }
+.earth-observation-meta { font-size:8.8px; line-height:1.5; }
+.earth-observation-lead { font-size:12.5px; line-height:1.72; }
+.earth-observation-sections { gap:12px; }
+.earth-observation-sections section { padding:13px; }
+.earth-observation-sections small,.earth-observation-why small { font-size:8.5px; }
+.earth-observation-sections p,.earth-observation-why p,.earth-observation-more p { font-size:10.5px; line-height:1.7; }
+.earth-observation-more summary { font-size:9.5px; }
+.earth-observation-source { font-size:8px; line-height:1.45; }
+
+/* Location info card + actual reference image */
+.earth-landmark-card {
+  width:min(390px,calc(100vw - 32px));
+  max-height:min(68vh,690px);
+  overflow:auto;
+  padding:17px 18px;
+}
+.earth-landmark-card small { font-size:8px; line-height:1.4; }
+.earth-landmark-card h4 { margin:10px 0 6px; font-size:28px; line-height:1.08; }
+.earth-landmark-card p { font-size:10.5px; line-height:1.65; }
+.earth-landmark-facts { font-size:9.5px; line-height:1.65; }
+.earth-landmark-card a { font-size:8px; line-height:1.45; }
+.earth-landmark-media {
+  margin:12px 0 11px;
+  border:1px solid #9bd1df2f;
+  background:linear-gradient(145deg,#0a1d27,#07131a);
+  overflow:hidden;
+}
+.earth-landmark-media img {
+  display:block;
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  background:#0a1d27;
+}
+.earth-landmark-media figcaption {
+  padding:7px 9px;
+  color:#8fb0bd;
+  font-size:8px;
+  line-height:1.45;
+  letter-spacing:.3px;
+}
+.earth-landmark-media.is-error img { display:none; }
+.earth-landmark-media.is-error::before {
+  content:"VISUAL LOKASI TIDAK DAPAT DIMUAT";
+  display:grid; place-items:center; min-height:82px; padding:12px;
+  color:#7898a5; font-size:7px; letter-spacing:1px; text-align:center;
+}
+
+/* Misc readable cards */
+.earth-quality-topline { font-size:9px; }
+.earth-quality-copy small { font-size:8.5px; }
+.earth-quality-copy p { font-size:11.5px; }
+.earth-quality-option strong { font-size:11.5px; }
+.earth-quality-option small { font-size:9px; }
+.earth-quality-option em { font-size:8px; }
+.earth-quality-summary { font-size:9px; }
+.earth-quality-summary strong { font-size:10px; }
+.earth-quality-start { font-size:9.5px; }
+.earth-boundary-hint { font-size:8px; }
+
+@media (pointer:coarse),(max-width:760px) {
+  .earth-full-hud { width:min(285px,68vw); padding:12px 13px; }
+  .earth-full-hud h3 { font-size:26px; }
+  .earth-hud-location { font-size:8.8px; }
+  .earth-hud-coordinates { font-size:7.2px; }
+  .earth-hud-metrics small { font-size:5.8px; }
+  .earth-hud-metrics strong { font-size:8px; }
+  .earth-objectives-panel { width:min(330px,82vw); max-height:42vh; padding:13px 14px; }
+  .earth-objectives-panel>p { font-size:8.5px; }
+  .earth-objectives-list strong { font-size:8px; }
+  .earth-objectives-list small { font-size:6.2px; }
+  .earth-observation-card { width:calc(100vw - 18px); max-height:78vh; padding:18px; }
+  .earth-observation-card h4 { font-size:31px; }
+  .earth-observation-lead { font-size:10.5px; }
+  .earth-observation-sections p,.earth-observation-why p,.earth-observation-more p { font-size:8.8px; }
+  .earth-landmark-card { width:min(350px,88vw); max-height:52vh; padding:14px; }
+  .earth-landmark-card h4 { font-size:25px; }
+  .earth-landmark-card p { font-size:8.4px; }
+  .earth-landmark-facts { font-size:7.8px; }
+  .earth-full-tutorial { width:calc(100vw - 18px); max-height:72vh; overflow:auto; padding:18px; }
+  .earth-tutorial-header span { font-size:8px; }
+  .earth-tutorial-grid b { font-size:9px; }
+  .earth-tutorial-grid span { font-size:7px; }
+  .earth-region-card strong { font-size:19px; }
+  .earth-region-descriptor { font-size:8px; }
+  .earth-region-card small { font-size:7px; }
+}
+
+@media (max-width:520px) {
+  .earth-full-hud { width:min(250px,72vw); }
+  .earth-objectives-panel,.earth-landmark-card { width:calc(100vw - 20px); max-height:46vh; }
+  .earth-landmark-media img { aspect-ratio:16/8.5; }
+  .earth-observation-card { top:49%; }
+  .earth-tutorial-mobile { grid-template-columns:repeat(2,1fr); }
+}

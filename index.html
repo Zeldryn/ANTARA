@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="styles.css?v=20261002-account-dropdown-2">
   <link rel="stylesheet" href="account-home-v2.css?v=20261002-account-dropdown-2">
   <link rel="stylesheet" href="exploration-media.css?v=20260927-venusscience-2">
-  <link rel="stylesheet" href="earth-scene.css?v=20260927-venusscience-2">
-  <link rel="stylesheet" href="earth-full-exploration.css?v=20261002-venus-parity-1">
+  <link rel="stylesheet" href="earth-scene.css?v=20261003-earth-card-ui-1">
+  <link rel="stylesheet" href="earth-full-exploration.css?v=20261003-earth-card-ui-1">
   <link rel="stylesheet" href="mars-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="mars-full-exploration.css?v=20261001-mobile-arrival-actions-1">
   <link rel="stylesheet" href="mercury-scene.css?v=20260927-venusscience-2">
@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="mobile-planet-actions-fix.css?v=20261001-all-planets-mobile-actions-2">
   <script src="exploration-media.js?v=20260927-venusscience-2" defer></script>
   <script src="earth-scene.js?v=20261002-earth-copy-rework-1" defer></script>
-  <script src="earth-full-exploration.js?v=20261002-earth-copy-v2" defer></script>
+  <script src="earth-full-exploration.js?v=20261003-earth-card-ui-1" defer></script>
   <script src="mars-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="mars-full-exploration.js?v=20260927-venusscience-2" defer></script>
   <script src="mercury-scene.js?v=20260927-venusscience-2" defer></script>
@@ -473,6 +473,10 @@
         <div class="earth-travel-veil" id="earth-travel-veil" aria-hidden="true"><span id="earth-travel-label">NAVIGASI BUMI</span></div>
         <aside class="earth-landmark-card" id="earth-landmark-card" data-earth-ui aria-live="polite" aria-hidden="true">
           <div class="earth-landmark-head"><small>REAL EARTH REGION · DATA ELEVASI</small><button class="earth-landmark-minimize" id="earth-landmark-minimize" type="button">Sembunyikan</button></div>
+          <figure class="earth-landmark-media" id="earth-landmark-media">
+            <img id="earth-landmark-image" alt="" loading="eager" decoding="async">
+            <figcaption id="earth-landmark-image-caption"></figcaption>
+          </figure>
           <h4 id="earth-landmark-name">Bumi</h4><p id="earth-landmark-type"></p><p id="earth-landmark-coords"></p><p class="earth-landmark-description" id="earth-landmark-description"></p><ul class="earth-landmark-facts" id="earth-landmark-facts"></ul>
           <a id="earth-landmark-source" href="https://www.mapzen.com/blog/terrain-tile-service/" target="_blank" rel="noopener noreferrer">Provenance terrain ↗</a>
         </aside>

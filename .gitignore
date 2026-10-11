@@ -1,3 +1,5 @@
+.tmp/
+__pycache__/
 
 # Packaging exclusions: local secrets and runtime state
 .env

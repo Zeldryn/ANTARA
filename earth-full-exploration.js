@@ -134,6 +134,35 @@
     }
   ]);
 
+
+  const REGION_MEDIA = Object.freeze({
+    everest: Object.freeze({
+      src: "https://upload.wikimedia.org/wikipedia/commons/1/13/Everest%2C_South_Col%2C_Himalayas.jpg",
+      alt: "Mount Everest dan Pegunungan Himalaya",
+      caption: "Mount Everest · Himalaya · foto referensi Wikimedia Commons"
+    }),
+    mariana: Object.freeze({
+      src: "https://omao.noaa.gov/sites/default/files/2025-12/survey%20area.png",
+      alt: "Peta batimetri wilayah Palung Mariana",
+      caption: "Palung Mariana · peta batimetri NOAA"
+    }),
+    maunakea: Object.freeze({
+      src: "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/thumbnails/image/maunakea2.jpg",
+      alt: "Mauna Kea di Hawaiʻi",
+      caption: "Mauna Kea · Hawaiʻi · foto USGS"
+    }),
+    grandcanyon: Object.freeze({
+      src: "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/thumbnails/image/YES.Scott_.002.GrandCanyon.051919.jpg",
+      alt: "Grand Canyon dari South Rim dekat Powell Point",
+      caption: "Grand Canyon · South Rim · foto USGS"
+    }),
+    antarctica: Object.freeze({
+      src: "https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/36000/36839/Antarctica_AMO_2009027_lrg.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1600",
+      alt: "Citra satelit Antarktika",
+      caption: "Antarktika · mosaik MODIS · NASA Earth Observatory"
+    })
+  });
+
   const REGION_VISUALS = Object.freeze({
     everest: { skyTop: 0x5f89a9, skyHorizon: 0xd9e6ed, fog: 0xc7d8e2, fogDensity: 0.0027, hemiSky: 0xe7f5ff, hemiGround: 0x4a4540, sun: 0xfff4df, sunIntensity: 3.05, exposure: 1.15 },
     mariana: { skyTop: 0x061925, skyHorizon: 0x163c50, fog: 0x082d3d, fogDensity: 0.028, hemiSky: 0x5d91a8, hemiGround: 0x07131b, sun: 0x79b8cf, sunIntensity: 0.72, exposure: 0.92 },
@@ -1055,6 +1084,9 @@
       this.infoDescription = document.getElementById("earth-landmark-description");
       this.infoFacts = document.getElementById("earth-landmark-facts");
       this.infoSource = document.getElementById("earth-landmark-source");
+      this.infoMedia = document.getElementById("earth-landmark-media");
+      this.infoImage = document.getElementById("earth-landmark-image");
+      this.infoImageCaption = document.getElementById("earth-landmark-image-caption");
 
       this.objectivesPanel = document.getElementById("earth-objectives-panel");
       this.objectivesRegion = document.getElementById("earth-objectives-region");
@@ -1232,7 +1264,11 @@
       this.fullscreenButton.addEventListener("click", () => this.toggleFullscreen());
       this.actionsMenuToggle?.addEventListener("click", () => this.setActionsMenu(!this.actionsMenuOpen, true));
       this.errorReturn.addEventListener("click", () => this.failBack());
-      this.tutorialClose.addEventListener("click", () => this.dismissTutorial(true));
+      this.tutorialClose.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.dismissTutorial(true);
+      });
 
       this.objectivesCollapse?.addEventListener("click", () => this.collapseObjectives(true));
       this.objectivesToggle?.addEventListener("click", () => this.expandObjectives(true));
@@ -1708,6 +1744,23 @@
         li.textContent = item;
         return li;
       }));
+      const media = REGION_MEDIA[region.id];
+      if (this.infoMedia && this.infoImage && this.infoImageCaption) {
+        this.infoMedia.classList.remove("is-error");
+        if (media) {
+          this.infoMedia.hidden = false;
+          this.infoImage.alt = media.alt;
+          this.infoImageCaption.textContent = media.caption;
+          this.infoImage.onerror = () => this.infoMedia.classList.add("is-error");
+          this.infoImage.onload = () => this.infoMedia.classList.remove("is-error");
+          this.infoImage.src = media.src;
+        } else {
+          this.infoMedia.hidden = true;
+          this.infoImage.removeAttribute("src");
+          this.infoImage.alt = "";
+          this.infoImageCaption.textContent = "";
+        }
+      }
       this.infoSource.href = "https://www.mapzen.com/blog/terrain-tile-service/";
       this.infoSource.textContent = "Provenance terrain: Mapzen / Amazon Public Dataset ↗";
       this.root.dataset.region = region.id;
@@ -1838,6 +1891,7 @@
     openObservationCard(observation) {
       this.activeObservation = observation;
       this.input.reset();
+      if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
       this.observationPrompt.hidden = true;
       this.observationType.textContent = observation.type || "TAHUKAH KAMU?";
       this.observationStatus.textContent = this.discovered.has(observation.id) ? "TEMUAN TERCATAT" : "BARU KAMU LIHAT";
@@ -1877,6 +1931,7 @@
     }
 
     expandObjectives(focus = false) {
+      if (this.infoOpen) this.hideRegionInfo(false);
       this.objectivesOpen = true;
       this.objectivesPanel.hidden = false;
       this.objectivesToggle.hidden = true;
@@ -1893,6 +1948,8 @@
     }
 
     showRegionInfo(focus = false) {
+      if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+      if (this.objectivesOpen) this.collapseObjectives(false);
       this.infoOpen = true;
       this.infoCard.classList.add("is-visible");
       this.infoCard.setAttribute("aria-hidden", "false");
@@ -1911,6 +1968,7 @@
     }
 
     showTutorial() {
+      this.tutorial.hidden = false;
       this.tutorial.classList.remove("is-dismissed");
       clearTimeout(this.tutorialTimeout);
       this.tutorialTimeout = window.setTimeout(() => this.dismissTutorial(), this.isMobileUi() ? 6500 : 5200);
@@ -1919,6 +1977,9 @@
     dismissTutorial(persist = false) {
       clearTimeout(this.tutorialTimeout);
       this.tutorial.classList.add("is-dismissed");
+      window.setTimeout(() => {
+        if (this.tutorial.classList.contains("is-dismissed")) this.tutorial.hidden = true;
+      }, 280);
     }
 
     showBoundaryHint() {
