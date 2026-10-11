@@ -412,6 +412,11 @@ window.EarthScene = class EarthScene {
     this.topicIndex = 0;
     this.pose = { yaw: 4.58, pitch: 0, roll: -0.18 };
     this.poseTarget = { ...this.pose };
+    this.fullDiveBlend = 0;
+    this.fullDiveRegion = null;
+    this.fullDiveYawTarget = this.pose.yaw;
+    this.fullDivePitchTarget = this.pose.pitch;
+    this.fullDiveRollTarget = 0;
     this.exploration = document.getElementById("earth-exploration");
     this.exploreButton = document.getElementById("earth-explore-button");
     this.marker = this.element.querySelector(".earth-location-dot");
@@ -547,6 +552,21 @@ window.EarthScene = class EarthScene {
     this.wake();
   }
 
+  setFullExplorationTransition(blend, region = null) {
+    const next = this.clamp(Number(blend) || 0);
+    if (region?.latitude != null && region?.longitude != null) {
+      const yaw = -Math.PI / 2 - region.longitude * Math.PI / 180;
+      const delta = Math.atan2(Math.sin(yaw - this.pose.yaw), Math.cos(yaw - this.pose.yaw));
+      this.fullDiveYawTarget = this.pose.yaw + delta;
+      this.fullDivePitchTarget = region.latitude * Math.PI / 180;
+      this.fullDiveRollTarget = 0;
+      this.fullDiveRegion = region;
+    }
+    this.fullDiveBlend = next;
+    this.element.classList.toggle("is-full-diving", next > 0.001);
+    if (this.active) this.render();
+  }
+
   beginFullExplorationFocus(region = null) {
     if (!this.active || this.travelMode) return;
     if (this.exploring) this.exitExploration(false);
@@ -554,6 +574,7 @@ window.EarthScene = class EarthScene {
     this.information.inert = true;
     this.element.classList.add("is-full-focus");
     this.element.classList.remove("is-full-surface-active");
+    this.setFullExplorationTransition(0, region);
     if (region?.latitude != null && region?.longitude != null) {
       const yaw = -Math.PI / 2 - region.longitude * Math.PI / 180;
       const delta = Math.atan2(Math.sin(yaw - this.pose.yaw), Math.cos(yaw - this.pose.yaw));
@@ -567,12 +588,15 @@ window.EarthScene = class EarthScene {
 
   completeFullExplorationHandoff() {
     if (!this.fullExploring) return;
+    this.setFullExplorationTransition(1, this.fullDiveRegion);
     this.element.classList.add("is-full-surface-active");
     this.element.classList.remove("is-full-descending");
   }
 
   returnFromFullExplorationToSelector() {
     if (!this.fullExploring) return;
+    // Keep fullDiveBlend at 1 here. EarthFullExploration animates it back to zero
+    // while its terrain renderer fades, matching Venus' continuous handoff.
     this.element.classList.remove("is-full-surface-active", "is-full-descending");
     this.element.classList.add("is-full-focus");
     this.wake();
@@ -580,14 +604,16 @@ window.EarthScene = class EarthScene {
 
   endFullExplorationFocus() {
     this.fullExploring = false;
-    this.element.classList.remove("is-full-focus", "is-full-descending", "is-full-surface-active");
+    this.fullDiveBlend = 0;
+    this.fullDiveRegion = null;
+    this.element.classList.remove("is-full-focus", "is-full-descending", "is-full-surface-active", "is-full-diving");
     this.information.inert = false;
     this.wake();
   }
 
-  applyEarthPose() {
+  applyEarthPose(pose = this.pose) {
     const T = this.THREE;
-    this.planet.quaternion.setFromEuler(new T.Euler(this.pose.pitch, this.pose.yaw, this.pose.roll, "ZXY"));
+    this.planet.quaternion.setFromEuler(new T.Euler(pose.pitch, pose.yaw, pose.roll, "ZXY"));
   }
 
   updateMarker() {
@@ -1018,16 +1044,22 @@ window.EarthScene = class EarthScene {
 
     const drift = this.motion.matches ? 0 : Math.sin(t * 0.32) * 0.025;
     const rotation = 4.58 + (this.motion.matches ? 0 : t * 0.026);
-    const distance = this.finalDistance * (0.52 + framing * 0.48);
+    const dive = this.smooth(this.fullDiveBlend);
+    const distance = this.finalDistance * (0.52 + framing * 0.48) * (1 - dive * 0.75);
+    const renderPose = {
+      yaw: this.pose.yaw * (1 - dive) + this.fullDiveYawTarget * dive,
+      pitch: this.pose.pitch * (1 - dive) + this.fullDivePitchTarget * dive,
+      roll: this.pose.roll * (1 - dive) + this.fullDiveRollTarget * dive
+    };
 
     if (this.mode === "webgl") {
       const layout = this.normalLayout();
       this.travelMarsGroup.visible = false;
       this.travelVenusGroup.visible = false;
       this.planetGroup.visible = true;
-      this.planetGroup.position.set(layout.x * framing, layout.y * framing + drift, 0);
-      this.applyEarthPose();
-      const pointerStrength = 1 - infoReveal * 0.35;
+      this.planetGroup.position.set(layout.x * framing * (1 - dive), (layout.y * framing + drift) * (1 - dive), 0);
+      this.applyEarthPose(renderPose);
+      const pointerStrength = (1 - infoReveal * 0.35) * (1 - dive);
       this.camera.position.set(
         this.motion.matches ? 0 : this.cameraOffset.x * 0.10 * pointerStrength,
         this.motion.matches ? 0 : -this.cameraOffset.y * 0.07 * pointerStrength,
@@ -1045,8 +1077,10 @@ window.EarthScene = class EarthScene {
       if (!planet) return;
       const radius = this.finalRadius * this.finalDistance / distance;
       planet.style.width = planet.style.height = `${radius * 2}px`;
-      planet.style.left = `${this.mobile ? 50 : 50 + 14 * framing}%`;
-      planet.style.top = `${this.mobile ? 36 - 5 * framing : 50 - 3 * framing}%`;
+      const orbitLeft = this.mobile ? 50 : 50 + 14 * framing;
+      const orbitTop = this.mobile ? 36 - 5 * framing : 50 - 3 * framing;
+      planet.style.left = `${orbitLeft * (1 - dive) + 50 * dive}%`;
+      planet.style.top = `${orbitTop * (1 - dive) + 50 * dive}%`;
       planet.style.backgroundPositionX = `${rotation * -95}px`;
       planet.style.transform = "translate(-50%, -50%) rotate(-10.3deg)";
     }

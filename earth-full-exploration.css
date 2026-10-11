@@ -570,3 +570,78 @@
 .earth-landmark-card.is-visible { z-index:22; pointer-events:auto; }
 .earth-landmark-head { position:relative; z-index:2; }
 .earth-landmark-minimize,.earth-location-info-toggle,.earth-objectives-toggle,.earth-objectives-head button { pointer-events:auto; touch-action:manipulation; }
+
+/* 2026-10-03 Venus-parity pass: independent panels + destination selector polish. */
+.earth-objectives-panel,
+.earth-landmark-card {
+  transition: opacity .2s ease, transform .2s ease, border-color .2s ease;
+}
+.earth-full-exploration.is-objectives-open .earth-objectives-panel,
+.earth-full-exploration.is-info-open .earth-landmark-card {
+  pointer-events:auto;
+}
+
+/* Match Venus selector rhythm while preserving Earth's blue language. */
+.earth-region-selector {
+  width:min(1080px,calc(100vw - 42px));
+  padding:28px;
+  border-color:rgba(164,216,235,.28);
+  background:linear-gradient(145deg,rgba(5,16,25,.96),rgba(9,31,43,.93));
+  box-shadow:0 34px 120px rgba(0,7,12,.66),0 0 0 1px rgba(135,210,235,.06) inset;
+}
+.earth-region-grid { gap:12px; }
+.earth-region-card {
+  min-height:250px;
+  padding:0 14px 14px;
+  gap:8px;
+  overflow:hidden;
+  border-color:rgba(151,205,226,.24);
+  background:linear-gradient(160deg,rgba(10,31,42,.94),rgba(5,18,27,.94));
+  box-shadow:0 12px 34px rgba(0,8,13,.20);
+}
+.earth-region-card:hover,.earth-region-card:focus-visible {
+  transform:translateY(-4px);
+  outline:none;
+  border-color:rgba(133,218,247,.66);
+  background:rgba(12,42,57,.97);
+  box-shadow:0 20px 52px rgba(0,8,13,.46),0 0 0 1px rgba(110,207,238,.15) inset;
+}
+.earth-region-card.is-current {
+  border-color:rgba(115,220,246,.82);
+  box-shadow:0 0 0 1px rgba(100,211,240,.22) inset,0 18px 48px rgba(0,14,23,.42);
+}
+.earth-region-card-top { display:flex;align-items:center;justify-content:space-between;gap:10px; }
+.earth-region-current {
+  color:#9ce8f7;
+  font-size:6.8px;
+  letter-spacing:1.1px;
+  text-transform:uppercase;
+}
+.earth-region-card:not(.is-current) .earth-region-current { color:#668b99; }
+.earth-region-preview { height:105px;margin:0 -14px 3px; }
+
+/* On narrow screens Info and Goals remain independent instead of closing each other. */
+@media (pointer:coarse),(max-width:760px) {
+  .earth-landmark-card.is-visible {
+    top:72px;
+    right:10px;
+    bottom:auto;
+    max-height:40dvh;
+  }
+  .earth-objectives-panel:not([hidden]) {
+    left:10px;
+    bottom:166px;
+    max-height:38dvh;
+  }
+  .earth-region-selector { width:calc(100vw - 18px);padding:18px;max-height:calc(100dvh - 18px); }
+  .earth-region-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:8px; }
+  .earth-region-card { min-height:205px;padding:0 11px 11px; }
+  .earth-region-preview { height:76px;margin-inline:-11px; }
+}
+@media (max-width:520px) {
+  .earth-region-grid { grid-template-columns:1fr; }
+  .earth-region-card { min-height:160px; }
+  .earth-region-preview { height:68px; }
+  .earth-landmark-card.is-visible { top:64px;max-height:39dvh; }
+  .earth-objectives-panel:not([hidden]) { bottom:158px;max-height:36dvh; }
+}

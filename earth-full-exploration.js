@@ -368,6 +368,10 @@
       this.water = null;
       this.sky = null;
       this.particles = null;
+      this.observationGroup = null;
+      this.observationMarkers = new Map();
+      this.observationMarkerResources = [];
+      this.observationTime = 0;
       this.environmentTime = 0;
     }
 
@@ -793,6 +797,88 @@
       }
     }
 
+    markerPalette() {
+      // Do not use white markers on snow/ice. Everest and Antarctica deliberately
+      // use warm high-contrast colors so the guide points remain visible.
+      const palettes = {
+        everest: { ring: 0xffc247, stem: 0xff9b3d, core: 0xff5f3d },
+        antarctica: { ring: 0xffb72e, stem: 0xff8a2f, core: 0xff4f3f },
+        mariana: { ring: 0x45d4ff, stem: 0x59b9d3, core: 0xffd166 },
+        maunakea: { ring: 0xffb04a, stem: 0xff8f42, core: 0xff6542 },
+        grandcanyon: { ring: 0xffa647, stem: 0xe77a38, core: 0xff573d }
+      };
+      return palettes[this.region.id] || palettes.maunakea;
+    }
+
+    createEducationalMarkers(observations = []) {
+      const T = this.THREE;
+      this.disposeEducationalMarkers();
+      if (!observations.length) return;
+      const palette = this.markerPalette();
+      const ringGeometry = new T.TorusGeometry(0.34, 0.024, 8, 30);
+      const stemGeometry = new T.CylinderGeometry(0.014, 0.014, 0.52, 8);
+      const coreGeometry = new T.OctahedronGeometry(0.12, 0);
+      this.observationMarkerResources.push(ringGeometry, stemGeometry, coreGeometry);
+      this.observationGroup = new T.Group();
+      this.observationGroup.name = `earth-education-markers-${this.region.id}`;
+      this.scene.add(this.observationGroup);
+
+      observations.forEach((observation, index) => {
+        const y = this.heightAtWorld(observation.x, observation.z);
+        const ground = Number.isFinite(y) ? y : 0;
+        const marker = new T.Group();
+        marker.name = `earth-observation-${observation.id}`;
+        marker.position.set(observation.x, ground + 0.04, observation.z);
+        marker.userData.observationId = observation.id;
+        marker.userData.phase = index * 1.73 + 0.45;
+
+        const ringMaterial = new T.MeshBasicMaterial({ color: palette.ring, transparent: true, opacity: 0.62, depthWrite: false, fog: true });
+        const stemMaterial = new T.MeshBasicMaterial({ color: palette.stem, transparent: true, opacity: 0.34, depthWrite: false, fog: true });
+        const coreMaterial = new T.MeshBasicMaterial({ color: palette.core, transparent: true, opacity: 0.94, depthWrite: false, fog: true });
+        this.observationMarkerResources.push(ringMaterial, stemMaterial, coreMaterial);
+        const ring = new T.Mesh(ringGeometry, ringMaterial);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = 0.03;
+        const stem = new T.Mesh(stemGeometry, stemMaterial);
+        stem.position.y = 0.30;
+        const core = new T.Mesh(coreGeometry, coreMaterial);
+        core.position.y = 0.62;
+        marker.add(ring, stem, core);
+        marker.userData.ring = ring;
+        marker.userData.core = core;
+        marker.userData.materials = { ring: ringMaterial, stem: stemMaterial, core: coreMaterial };
+        this.observationGroup.add(marker);
+        this.observationMarkers.set(observation.id, marker);
+      });
+    }
+
+    updateEducationalMarkers(activeId, discoveredIds, dt = 0) {
+      this.observationTime += dt;
+      for (const [id, marker] of this.observationMarkers) {
+        const active = id === activeId;
+        const discovered = discoveredIds?.has?.(id);
+        const { core, materials } = marker.userData;
+        if (!core || !materials) continue;
+        const pulse = 1 + Math.sin(this.observationTime * 3.1 + marker.userData.phase) * (active ? 0.11 : 0.035);
+        marker.scale.setScalar((active ? 1.22 : discovered ? 0.86 : 1.02) * pulse);
+        materials.ring.opacity = active ? 0.98 : discovered ? 0.24 : 0.62;
+        materials.stem.opacity = active ? 0.55 : discovered ? 0.12 : 0.34;
+        materials.core.opacity = active ? 1 : discovered ? 0.42 : 0.94;
+        core.rotation.y += dt * (active ? 1.7 : 0.55);
+      }
+    }
+
+    disposeEducationalMarkers() {
+      if (this.observationGroup) {
+        this.scene.remove(this.observationGroup);
+        this.observationGroup.clear();
+        this.observationGroup = null;
+      }
+      this.observationMarkers.clear();
+      this.observationMarkerResources.forEach(resource => resource?.dispose?.());
+      this.observationMarkerResources.length = 0;
+    }
+
     resizeWater() {
       if (!this.water) return;
       const width = Math.max(120, this.bounds.maxX - this.bounds.minX + 20);
@@ -860,6 +946,7 @@
     }
 
     dispose() {
+      this.disposeEducationalMarkers();
       for (const entry of this.entries.values()) {
         this.scene.remove(entry.mesh);
         for (const geometry of entry.geometries.values()) geometry.dispose();
@@ -1233,10 +1320,22 @@
         button.type = "button";
         button.className = "earth-region-card";
         button.dataset.earthRegion = region.id;
-        button.innerHTML = `<span class="earth-region-preview earth-region-preview-${region.id}" aria-hidden="true"><i></i><b>${region.short}</b></span><span class="earth-region-index">${String(index + 1).padStart(2, "0")}</span><strong>${region.name}</strong><span class="earth-region-descriptor">${region.descriptor}</span><small>${formatLatLon(region.latitude, region.longitude)}</small><em>${region.mode === "underwater" ? "BATHYMETRY" : region.mode === "coastal" ? "LAND + OCEAN" : "REAL DEM"}</em><span class="earth-region-source">${region.sourceLabel}</span>`;
+        button.innerHTML = `<span class="earth-region-preview earth-region-preview-${region.id}" aria-hidden="true"><i></i><b>${region.short}</b></span><span class="earth-region-card-top"><span class="earth-region-index">${String(index + 1).padStart(2, "0")}</span><span class="earth-region-current">${this.region?.id === region.id ? "AKTIF" : "PILIH"}</span></span><strong>${region.name}</strong><span class="earth-region-descriptor">${region.descriptor}</span><small>${formatLatLon(region.latitude, region.longitude)}</small><em>${region.mode === "underwater" ? "BATHYMETRY" : region.mode === "coastal" ? "LAND + OCEAN" : "REAL DEM"}</em><span class="earth-region-source">${region.sourceLabel}</span>`;
+        button.classList.toggle("is-current", this.region?.id === region.id);
+        button.setAttribute("aria-pressed", String(this.region?.id === region.id));
         fragment.append(button);
       });
       this.selectorGrid.replaceChildren(fragment);
+    }
+
+    updateSelectorCurrentRegion() {
+      this.selectorGrid?.querySelectorAll?.("[data-earth-region]").forEach(button => {
+        const current = button.dataset.earthRegion === this.region?.id;
+        button.classList.toggle("is-current", current);
+        button.setAttribute("aria-pressed", String(current));
+        const status = button.querySelector(".earth-region-current");
+        if (status) status.textContent = current ? "AKTIF" : "PILIH";
+      });
     }
 
     bindUI() {
@@ -1664,6 +1763,7 @@
       this.speed = Math.hypot(this.velocity.x, this.velocity.z, this.velocity.y);
       this.terrain.update(this.camera);
       this.terrain.updateEnvironment(dt, this.camera);
+      this.terrain.updateEducationalMarkers(this.nearbyObservation?.id || null, this.discovered, dt);
       this.updateEnvironment();
 
       this.hudClock += dt;
@@ -1770,6 +1870,7 @@
       this.infoSource.href = "https://www.mapzen.com/blog/terrain-tile-service/";
       this.infoSource.textContent = "Provenance terrain: Mapzen / Amazon Public Dataset ↗";
       this.root.dataset.region = region.id;
+      this.updateSelectorCurrentRegion();
     }
 
     applyRegionLighting() {
@@ -1814,6 +1915,7 @@
       this.objectivesRegion.textContent = this.region.short;
       const education = EARTH_EDUCATION[this.region.id];
       this.objectivesIntro.textContent = education?.intro || "Jelajahi wilayah dan amati bentuk terrain di sekitarmu.";
+      this.terrain?.createEducationalMarkers(education?.observations || []);
       this.renderObjectives();
       this.updateDiscoveryUI();
     }
@@ -1963,7 +2065,6 @@
     }
 
     expandObjectives(focus = false) {
-      this.infoOpen = false;
       this.objectivesOpen = true;
       this.syncEducationPanels(focus ? "objectives-close" : null);
     }
@@ -1975,7 +2076,6 @@
 
     showRegionInfo(focus = false) {
       if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
-      this.objectivesOpen = false;
       this.infoOpen = true;
       this.syncEducationPanels(focus ? "info-close" : null);
     }
@@ -2013,6 +2113,7 @@
       this.input.reset();
       this.state = STATES.SELECTING;
       this.selector.hidden = false;
+      this.updateSelectorCurrentRegion();
       this.root.classList.add("is-selecting");
       this.closeObservationCard(false);
       this.hideRegionInfo(false);
@@ -2088,16 +2189,21 @@
       }
       if (token !== this.transitionToken) return;
 
+      // Venus-style continuous handoff: reveal the real Earth sphere while the
+      // surface renderer is still alive, then recede smoothly to panorama framing.
       this.earth.returnFromFullExplorationToSelector?.();
+      this.earth.setFullExplorationTransition?.(1, this.region);
       const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const duration = reduced ? 180 : 1250;
+      const duration = reduced ? 240 : 3000;
       const start = performance.now();
       await new Promise(resolve => {
         const frame = now => {
           if (token !== this.transitionToken) return resolve();
           const raw = clamp((now - start) / duration, 0, 1);
-          this.root.style.setProperty("--surface-opacity", String(1 - smoothstep(raw)));
-          this.root.style.opacity = String(1 - smoothstep(clamp((raw - 0.28) / 0.72, 0, 1)));
+          const eased = smoothstep(raw);
+          this.root.style.setProperty("--surface-opacity", String(1 - smoothstep(raw / 0.70)));
+          this.root.style.opacity = String(1 - smoothstep(clamp((raw - 0.18) / 0.82, 0, 1)));
+          this.earth.setFullExplorationTransition?.(1 - eased);
           if (raw < 1) requestAnimationFrame(frame);
           else resolve();
         };
@@ -2131,6 +2237,7 @@
       this.objectivesOpen = false;
       this.infoOpen = false;
       document.getElementById("mission").classList.remove("is-earth-full", "is-earth-full-selecting");
+      this.earth.setFullExplorationTransition?.(0, this.region);
       this.earth.endFullExplorationFocus?.();
       this.entryButton.disabled = false;
       this.entryButton.focus({ preventScroll:true });
