@@ -314,3 +314,63 @@ a { color: inherit; text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
 }
+
+/* ANTARA account backend integration */
+.auth-mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 18px 0 20px;
+  padding: 4px;
+  border: 1px solid rgba(117,185,216,.14);
+  background: rgba(2,8,14,.38);
+  clip-path: polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+}
+.auth-mode-button {
+  min-height: 36px;
+  border: 1px solid transparent;
+  color: #71899a;
+  background: transparent;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  cursor: pointer;
+  transition: color .2s ease, border-color .2s ease, background .2s ease;
+}
+.auth-mode-button:hover { color: #c8d8e2; }
+.auth-mode-button.is-active {
+  color: #edd39b;
+  border-color: rgba(221,181,109,.3);
+  background: linear-gradient(90deg, rgba(221,181,109,.09), rgba(117,185,216,.05));
+  box-shadow: inset 0 0 18px rgba(221,181,109,.035);
+}
+.registration-form[hidden], .account-session[hidden] { display: none !important; }
+.registration-form.is-submitting { opacity: .72; pointer-events: none; }
+.registration-form.is-submitting .register-button { cursor: wait; }
+.form-note.is-error { color: var(--danger); }
+.account-session {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  padding: 12px 14px;
+  border: 1px solid rgba(117,185,216,.16);
+  background: rgba(4,13,22,.58);
+}
+.account-session div { display: grid; gap: 4px; }
+.account-session small { color: #5e7789; font-size: 7px; letter-spacing: .16em; }
+.account-session strong { color: #dfeaf0; font-size: 11px; letter-spacing: .08em; }
+.account-session button {
+  min-width: 76px;
+  height: 32px;
+  border: 1px solid rgba(221,181,109,.25);
+  color: #d6b979;
+  background: rgba(221,181,109,.05);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  cursor: pointer;
+}
+.account-session span { color: #688397; font-size: 8px; letter-spacing: .04em; word-break: break-word; }
+.auth-mode-switch[hidden] { display: none !important; }

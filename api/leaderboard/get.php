@@ -1,51 +1,26 @@
 <?php
 declare(strict_types=1);
 require_once dirname(__DIR__) . '/_bootstrap.php';
-require_once __DIR__ . '/_leaderboard.php';
 
 antara_method('GET');
-$type = strtolower(trim((string)($_GET['type'] ?? 'completion')));
-$limit = (int)($_GET['limit'] ?? 50);
-$userId = (int)($_SESSION['user_id'] ?? 0);
-$pdo = antara_db_or_fail();
-
-try {
-    antara_leaderboard_ensure_schema($pdo);
-
-    if ($type === 'completion') {
-        $entries = antara_completion_entries($pdo, $limit);
-        $me = $userId > 0 ? antara_completion_user_rank($pdo, $userId) : null;
-        antara_json([
-            'success' => true,
-            'type' => 'completion',
-            'entries' => $entries,
-            'me' => $me,
-            'integrity' => [
-                'serverVerified' => true,
-                'minimumCompletionSeconds' => ANTARA_COMPLETION_MIN_SECONDS,
-            ],
-        ]);
-    }
-
-    if ($type === 'game') {
-        $game = strtolower(trim((string)($_GET['game'] ?? 'general')));
-        if (!preg_match('/^[a-z0-9_-]{1,40}$/', $game)) {
-            antara_json(['success' => false, 'message' => 'Kode permainan tidak valid.'], 422);
-        }
-        $entries = antara_verified_game_entries($pdo, $game, $limit);
-        $me = $userId > 0 ? antara_verified_game_user_rank($pdo, $userId, $game) : null;
-        antara_json([
-            'success' => true,
-            'type' => 'game',
-            'game' => $game,
-            'entries' => $entries,
-            'me' => $me,
-            'verifiedOnly' => true,
-        ]);
-    }
-
-    antara_json(['success' => false, 'message' => 'Jenis leaderboard tidak dikenali.'], 422);
-} catch (Throwable $e) {
-    error_log('ANTARA leaderboard get error: ' . $e->getMessage());
-    antara_json(['success' => false, 'message' => 'Leaderboard belum dapat dimuat dari database.'], 503);
+$game = trim((string)($_GET['game'] ?? 'general'));
+if (!preg_match('/^[a-z0-9_-]{1,40}$/', $game)) {
+    antara_json(['success' => false, 'message' => 'Kode permainan tidak valid.'], 422);
 }
+
+$pdo = antara_db_or_fail();
+$stmt = $pdo->prepare(
+    'SELECT u.id AS user_id, u.username, u.full_name, MAX(gs.score) AS score FROM game_scores gs JOIN users u ON u.id = gs.user_id WHERE gs.game_code = :game GROUP BY u.id, u.username, u.full_name ORDER BY score DESC, u.username ASC LIMIT 100'
+);
+$stmt->execute(['game' => $game]);
+$rows = $stmt->fetchAll();
+
+$entries = array_map(static fn(array $row, int $index): array => [
+    'rank' => $index + 1,
+    'userId' => (int)$row['user_id'],
+    'username' => (string)$row['username'],
+    'name' => (string)$row['full_name'],
+    'score' => (int)$row['score'],
+], $rows, array_keys($rows));
+
+antara_json(['success' => true, 'game' => $game, 'entries' => $entries]);

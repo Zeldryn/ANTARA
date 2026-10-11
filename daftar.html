@@ -7,8 +7,9 @@
   <meta name="description" content="Daftar identitas penjelajah ANTARA, Antariksa Nusantara.">
   <title>Daftar Identitas | ANTARA</title>
   <link rel="icon" href="assets/orbit.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="daftar.css?v=20260930-1">
-  <script src="daftar.js?v=20260930-1" defer></script>
+  <link rel="stylesheet" href="daftar.css?v=20261002-auth-1">
+  <script src="auth-client.js?v=20261002-auth-1" defer></script>
+  <script src="daftar.js?v=20261002-auth-1" defer></script>
 </head>
 <body>
   <main class="auth-shell">
@@ -80,6 +81,11 @@
           <div class="console-code"><span></span>A-01</div>
         </div>
 
+        <div class="auth-mode-switch" role="tablist" aria-label="Pilih mode akun ANTARA">
+          <button class="auth-mode-button is-active" id="mode-register" type="button" role="tab" aria-selected="true" data-auth-mode="register">DAFTAR</button>
+          <button class="auth-mode-button" id="mode-login" type="button" role="tab" aria-selected="false" data-auth-mode="login">MASUK</button>
+        </div>
+
         <form class="registration-form" id="registration-form" novalidate>
           <div class="field-row field-row-two">
             <label class="field-group">
@@ -142,8 +148,44 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"></path></svg>
           </button>
 
-          <p class="form-note" id="form-note">Form ini menyiapkan antarmuka pendaftaran. Penyimpanan akun dapat dihubungkan ke backend ANTARA berikutnya.</p>
+          <p class="form-note" id="form-note" role="status" aria-live="polite">Akun akan disimpan ke database MySQL ANTARA.</p>
         </form>
+
+        <form class="registration-form login-form" id="login-form" novalidate hidden>
+          <label class="field-group">
+            <span class="field-label"><b>USERNAME / EMAIL</b><i>01</i></span>
+            <span class="input-frame">
+              <input id="login-identifier" name="identifier" type="text" autocomplete="username" placeholder="Username atau email" required maxlength="254">
+              <span class="field-node"></span>
+            </span>
+            <small class="field-error" data-login-error-for="login-identifier"></small>
+          </label>
+
+          <label class="field-group">
+            <span class="field-label"><b>KATA SANDI</b><i>02</i></span>
+            <span class="input-frame password-frame">
+              <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Masukkan kata sandi" required minlength="8">
+              <button class="password-toggle" type="button" data-toggle-password="login-password" aria-label="Tampilkan kata sandi">LIHAT</button>
+            </span>
+            <small class="field-error" data-login-error-for="login-password"></small>
+          </label>
+
+          <button class="register-button" type="submit">
+            <span class="button-leading"><i></i>BUKA AKSES ANTARA</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"></path></svg>
+          </button>
+
+          <p class="form-note" id="login-note" role="status" aria-live="polite">Masuk menggunakan username atau email yang sudah terdaftar.</p>
+        </form>
+
+        <div class="account-session" id="account-session" hidden>
+          <div>
+            <small>SESI AKTIF</small>
+            <strong id="account-session-name">PENJELAJAH</strong>
+            <span id="account-session-email"></span>
+          </div>
+          <button type="button" id="logout-button">KELUAR</button>
+        </div>
 
         <div class="console-footer">
           <a href="index.html"><span>←</span> KEMBALI KE KOKPIT</a>

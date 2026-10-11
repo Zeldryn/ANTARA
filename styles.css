@@ -6413,3 +6413,167 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     bottom: 5.5%;
   }
 }
+/* ========================================================================
+   2026-10-02 MEDIUM-WIDTH TOP NAV PARITY FIX
+   The 701-1199px layout intentionally collapses the desktop navigation into
+   avatar + identity + MORE. Older rules exposed MORE in this range without
+   carrying over its visual skin, so browsers rendered a native grey button.
+   This patch gives the transition layout the same ANTARA sci-fi language as
+   mobile/desktop while leaving the full desktop and mobile breakpoints intact.
+   ======================================================================== */
+@media (min-width:701px) and (max-width:1199px) {
+  .profile-primary-cluster {
+    max-width:92% !important;
+  }
+
+  .profile-primary-cluster .profile-avatar-module {
+    flex-basis:clamp(34px,3.7vw,40px) !important;
+    width:clamp(34px,3.7vw,40px) !important;
+    height:clamp(34px,3.7vw,40px) !important;
+    margin-right:clamp(14px,1.6vw,18px) !important;
+  }
+
+  .cockpit-profile-hud .profile-avatar-module .profile-avatar-frame {
+    width:100% !important;
+    height:100% !important;
+  }
+
+  .profile-primary-cluster .profile-login-trigger {
+    flex-basis:clamp(158px,19vw,190px) !important;
+    width:clamp(158px,19vw,190px) !important;
+    height:32px !important;
+    margin-right:9px !important;
+  }
+
+  .profile-primary-cluster .profile-more-trigger {
+    -webkit-appearance:none !important;
+    appearance:none !important;
+    display:flex !important;
+    position:relative !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:4px !important;
+    flex:0 0 62px !important;
+    min-width:62px !important;
+    height:32px !important;
+    margin:0 !important;
+    padding:0 9px !important;
+    border:0 !important;
+    border-radius:0 !important;
+    color:#edf2f4 !important;
+    background:linear-gradient(180deg,rgba(11,28,42,.34),rgba(4,13,22,.18)) !important;
+    font:650 6.8px/1 system-ui,sans-serif !important;
+    letter-spacing:.12em !important;
+    cursor:pointer !important;
+    pointer-events:auto !important;
+    touch-action:manipulation !important;
+    -webkit-tap-highlight-color:transparent;
+    clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px) !important;
+    box-shadow:inset 0 0 0 1px rgba(222,183,110,.34),inset -8px 0 12px rgba(112,188,222,.05) !important;
+    text-shadow:0 0 8px rgba(237,242,244,.08);
+    transition:filter .18s ease,transform .18s ease,box-shadow .18s ease !important;
+  }
+
+  .profile-primary-cluster .profile-more-trigger::before {
+    content:"" !important;
+    position:absolute !important;
+    left:7px !important;
+    right:7px !important;
+    top:0 !important;
+    height:1px !important;
+    background:linear-gradient(90deg,#ddb570,transparent 76%) !important;
+    pointer-events:none !important;
+  }
+
+  .profile-primary-cluster .profile-more-trigger::after {
+    content:"" !important;
+    position:absolute !important;
+    left:9px !important;
+    right:9px !important;
+    bottom:0 !important;
+    height:1px !important;
+    background:linear-gradient(270deg,#77bddb,transparent 76%) !important;
+    pointer-events:none !important;
+  }
+
+  .profile-primary-cluster .profile-more-trigger i {
+    width:2px !important;
+    height:2px !important;
+    flex:0 0 2px !important;
+    border-radius:50% !important;
+    background:#dcb46f !important;
+    box-shadow:0 0 4px rgba(220,180,111,.34) !important;
+  }
+
+  .profile-primary-cluster .profile-more-trigger:hover,
+  .profile-primary-cluster .profile-more-trigger:focus-visible,
+  .profile-primary-cluster .profile-more-trigger[aria-expanded="true"] {
+    filter:brightness(1.16) !important;
+    box-shadow:inset 0 0 0 1px rgba(222,183,110,.54),inset -10px 0 15px rgba(112,188,222,.08),0 0 12px rgba(111,190,223,.06) !important;
+  }
+
+  .profile-primary-cluster .profile-more-trigger:focus-visible {
+    outline:1px solid rgba(223,183,111,.58) !important;
+    outline-offset:3px !important;
+  }
+
+  .profile-primary-cluster .profile-more-trigger:active {
+    transform:scale(.985) !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite {
+    width:min(430px,calc(100vw - 48px)) !important;
+    padding:8px !important;
+    background:linear-gradient(180deg,rgba(8,21,34,.985) 0%,rgba(3,11,19,.99) 100%) !important;
+    border:1px solid rgba(116,186,218,.18) !important;
+    clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px) !important;
+    box-shadow:0 15px 32px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.025) !important;
+    transition:opacity .16s ease,transform .18s ease,visibility 0s linear .18s !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite::before {
+    content:"MORE // NAV" !important;
+    position:absolute !important;
+    right:10px !important;
+    top:-5px !important;
+    padding:0 4px !important;
+    background:#07131e !important;
+    color:#7797a9 !important;
+    font:500 4px/1 system-ui,sans-serif !important;
+    letter-spacing:.16em !important;
+    pointer-events:none !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite.is-open {
+    transition:opacity .16s ease,transform .18s ease !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite .hud-nav-module {
+    min-width:0 !important;
+    height:36px !important;
+    grid-template-columns:25px minmax(0,1fr) !important;
+    gap:6px !important;
+    padding:0 8px !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite .hud-nav-icon {
+    width:23px !important;
+    height:23px !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite .hud-nav-icon svg {
+    width:18px !important;
+    height:18px !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite .hud-nav-copy small {
+    display:block !important;
+    font-size:4px !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite .hud-nav-copy strong {
+    font-size:6.8px !important;
+    letter-spacing:.085em !important;
+  }
+}
+

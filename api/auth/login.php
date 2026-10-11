@@ -13,12 +13,10 @@ if ($identifier === '' || $password === '') {
 }
 
 $pdo = antara_db_or_fail();
-$hasBio = antara_ensure_users_bio_column($pdo);
-$bioColumn = $hasBio ? ', bio' : '';
 
 try {
     $stmt = $pdo->prepare(
-        'SELECT id, full_name, username, email, password_hash, avatar_url' . $bioColumn . ', created_at FROM users WHERE username = :username_identifier OR email = :email_identifier LIMIT 1'
+        'SELECT id, full_name, username, email, password_hash, avatar_url, created_at FROM users WHERE username = :username_identifier OR email = :email_identifier LIMIT 1'
     );
     $stmt->execute(['username_identifier' => $identifier, 'email_identifier' => strtolower($identifier)]);
     $user = $stmt->fetch();
@@ -40,7 +38,6 @@ try {
 
     session_regenerate_id(true);
     $_SESSION['user_id'] = (int)$user['id'];
-    try { antara_issue_remember_token($pdo, (int)$user['id']); } catch (Throwable $rememberError) { error_log('ANTARA remember token issue error: ' . $rememberError->getMessage()); }
 
     antara_json([
         'success' => true,

@@ -10,16 +10,13 @@ if ($userId <= 0) {
 }
 
 $pdo = antara_db_or_fail();
-$hasBio = antara_ensure_users_bio_column($pdo);
-$bioColumn = $hasBio ? ', bio' : '';
 
 try {
-    $stmt = $pdo->prepare('SELECT id, full_name, username, email, avatar_url' . $bioColumn . ', created_at FROM users WHERE id = :id LIMIT 1');
+    $stmt = $pdo->prepare('SELECT id, full_name, username, email, avatar_url, created_at FROM users WHERE id = :id LIMIT 1');
     $stmt->execute(['id' => $userId]);
     $user = $stmt->fetch();
 
     if (!$user) {
-        antara_revoke_remember_token($pdo);
         $_SESSION = [];
         session_destroy();
         antara_json(['success' => true, 'authenticated' => false, 'user' => null]);

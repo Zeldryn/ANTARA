@@ -10,10 +10,10 @@
   <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, Sabuk Asteroid, Jupiter, Saturnus, Uranus, Neptunus, dan keajaiban Tata Surya.">
   <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/orbit.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20261002-nara-sora-framing-1">
+  <link rel="stylesheet" href="styles.css?v=20261002-medium-nav-parity-2">
   <link rel="stylesheet" href="exploration-media.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="earth-scene.css?v=20260927-venusscience-2">
-  <link rel="stylesheet" href="earth-full-exploration.css?v=20261002-venus-parity-2">
+  <link rel="stylesheet" href="earth-full-exploration.css?v=20261002-venus-parity-1">
   <link rel="stylesheet" href="mars-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="mars-full-exploration.css?v=20261001-mobile-arrival-actions-1">
   <link rel="stylesheet" href="mercury-scene.css?v=20260927-venusscience-2">
@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="mobile-planet-actions-fix.css?v=20261001-all-planets-mobile-actions-2">
   <script src="exploration-media.js?v=20260927-venusscience-2" defer></script>
   <script src="earth-scene.js?v=20260927-venusscience-2" defer></script>
-  <script src="earth-full-exploration.js?v=20261002-venus-parity-2" defer></script>
+  <script src="earth-full-exploration.js?v=20261002-venus-parity-1" defer></script>
   <script src="mars-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="mars-full-exploration.js?v=20260927-venusscience-2" defer></script>
   <script src="mercury-scene.js?v=20260927-venusscience-2" defer></script>
@@ -40,7 +40,8 @@
   <script src="saturn-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="uranus-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="neptune-scene.js?v=20260927-venusscience-2" defer></script>
-  <script src="script.js?v=20261002-nara-sora-framing-1" defer></script>
+  <script src="auth-client.js?v=20261002-auth-1" defer></script>
+  <script src="script.js?v=20261002-medium-nav-parity-2" defer></script>
 </head>
 <body>
   <main class="mission" id="mission">
@@ -217,7 +218,7 @@
           <span class="profile-hud-rail profile-hud-rail-right" aria-hidden="true"></span>
 
           <div class="profile-primary-cluster">
-          <a class="profile-avatar-module" id="profile-avatar-trigger" href="daftar.html" aria-label="Buka profil penjelajah ANTARA">
+          <a class="profile-avatar-module" id="profile-avatar-trigger" href="daftar.html?mode=login" aria-label="Buka profil penjelajah ANTARA">
             <span class="profile-avatar-frame" aria-hidden="true">
               <svg class="profile-avatar-tech" viewBox="0 0 100 100" focusable="false">
                 <circle class="profile-ring-base" cx="50" cy="50" r="37"></circle>
@@ -241,7 +242,7 @@
             </span>
           </a>
 
-          <a class="profile-hud-trigger profile-login-trigger" id="profile-hud-trigger" href="daftar.html" aria-label="Masuk ke ANTARA">
+          <a class="profile-hud-trigger profile-login-trigger" id="profile-hud-trigger" href="daftar.html?mode=login" aria-label="Masuk ke ANTARA">
             <span class="profile-login-frame">
               <span class="profile-login-bracket profile-login-bracket-top" aria-hidden="true"></span>
               <span class="profile-login-bracket profile-login-bracket-bottom" aria-hidden="true"></span>

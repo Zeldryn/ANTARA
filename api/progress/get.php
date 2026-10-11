@@ -1,26 +1,18 @@
 <?php
 declare(strict_types=1);
 require_once dirname(__DIR__) . '/_bootstrap.php';
-require_once __DIR__ . '/_progress.php';
-require_once dirname(__DIR__) . '/leaderboard/_leaderboard.php';
 
 antara_method('GET');
 $userId = antara_require_user();
 $pdo = antara_db_or_fail();
+$stmt = $pdo->prepare('SELECT planet_code, progress_percent, completed, updated_at FROM user_progress WHERE user_id = :user_id ORDER BY id ASC');
+$stmt->execute(['user_id' => $userId]);
 
-try {
-    antara_progress_ensure_schema($pdo);
-    antara_leaderboard_ensure_schema($pdo);
-    $summary = antara_progress_summary($pdo, $userId);
-    antara_completion_sync($pdo, $userId, $summary);
-    antara_json([
-        'success' => true,
-        'overall' => $summary['overall'],
-        'planets' => $summary['planets'],
-        // Compatibility alias for older callers that expected `progress`.
-        'progress' => $summary['planets'],
-    ]);
-} catch (Throwable $e) {
-    error_log('ANTARA progress get error: ' . $e->getMessage());
-    antara_json(['success' => false, 'message' => 'Progress belum dapat dibaca dari database.'], 503);
-}
+$progress = array_map(static fn(array $row): array => [
+    'planet' => (string)$row['planet_code'],
+    'progress' => (int)$row['progress_percent'],
+    'completed' => (bool)$row['completed'],
+    'updatedAt' => (string)$row['updated_at'],
+], $stmt->fetchAll());
+
+antara_json(['success' => true, 'progress' => $progress]);

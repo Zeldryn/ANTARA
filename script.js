@@ -869,9 +869,12 @@ class CockpitProfileHUD {
         api.openProfile(this.user.raw);
         return;
       }
-      window.dispatchEvent(new CustomEvent("antara:profile-request", {
-        detail: { user: this.user.raw, source: "cockpit-profile-hud" }
-      }));
+      const profileEvent = new CustomEvent("antara:profile-request", {
+        detail: { user: this.user.raw, source: "cockpit-profile-hud" },
+        cancelable: true
+      });
+      const shouldUseFallback = window.dispatchEvent(profileEvent);
+      if (shouldUseFallback) window.location.assign("daftar.html?mode=account");
       return;
     }
 
@@ -932,7 +935,9 @@ if (profileMoreTrigger && profileNavSuite) {
     if (!profileNavSuite.contains(event.target) && !profileMoreTrigger.contains(event.target)) closeProfileMore();
   });
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 700) closeProfileMore();
+    // MORE is used by both mobile and the 701-1199px transition layout.
+    // Only force-close it once the full desktop navigation becomes visible.
+    if (window.innerWidth >= 1200) closeProfileMore();
   }, { passive: true });
 }
 companions.setJourneyPhase("idle");
