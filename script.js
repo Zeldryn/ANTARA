@@ -1231,6 +1231,10 @@ function advancePreparation(timestamp) {
 }
 
 launchButton.addEventListener("click", () => {
+  if (!window.ANTARAAuth?.currentUser) {
+    window.dispatchEvent(new CustomEvent("antara:launch-auth-required"));
+    return;
+  }
   if (phase !== "idle") return;
   phase = "preparing";
   elapsed = 0;
