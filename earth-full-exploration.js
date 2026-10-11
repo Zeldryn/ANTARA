@@ -36,14 +36,16 @@
       mode: "land",
       terrainStyle: "alpine",
       feature: "Puncak Everest",
+      infoLabel: "GUNUNG · HIMALAYA",
+      definition: "Puncak Everest adalah puncak gunung tertinggi di Bumi jika diukur dari permukaan laut. Puncaknya berada di Pegunungan Himalaya, tepat di perbatasan Nepal dan Tibet, Tiongkok.",
       sourceLabel: "Terrarium DEM · global SRTM / open elevation composite",
       sourceDetail: "Mapzen Terrain Tiles menggabungkan SRTM 30 m secara global bersama sumber elevasi terbuka lain. Bentuk terrain yang dirender berasal dari nilai elevasi tile, bukan noise procedural.",
       startAltitude: 3.2,
       maxClearance: 14,
       pitch: -0.22,
       yaw: 0.02,
-      descriptor: "Punggungan bersalju, batu alpine, dan horizon tertinggi di Bumi.",
-      educational: ["Everest summit", "Lhotse", "Pembentukan Himalaya akibat tumbukan India–Eurasia"]
+      descriptor: "Kenali Everest dan relief Himalaya lewat punggungan tinggi, lembah dalam, dan medan bersalju.",
+      educational: ["Everest berada di rangkaian Pegunungan Himalaya.", "Punggungan dan lembah membantu kita membaca bentuk pegunungan.", "Himalaya terbentuk karena tumbukan Lempeng India dan Eurasia."]
     },
     {
       id: "mariana",
@@ -55,6 +57,8 @@
       mode: "underwater",
       terrainStyle: "abyss",
       feature: "Challenger Deep",
+      infoLabel: "PALUNG LAUT · SAMUDRA PASIFIK",
+      definition: "Challenger Deep adalah bagian terdalam yang diketahui di Palung Mariana, sebuah palung laut sangat dalam di Samudra Pasifik bagian barat. Di sini, dasar laut berada jauh di bawah permukaan laut.",
       sourceLabel: "Terrarium bathymetry · NOAA ETOPO1 composite",
       sourceDetail: "Mapzen memakai NOAA ETOPO1 untuk mengisi bathymetry. Nilai negatif dipertahankan sebagai kedalaman di bawah muka laut.",
       startAltitude: 9.0,
@@ -62,8 +66,8 @@
       maxClearance: 12,
       pitch: -0.16,
       yaw: 0.08,
-      descriptor: "Turun menembus kolom air menuju bathymetry Challenger Deep.",
-      educational: ["Challenger Deep", "Sumbu Palung Mariana", "Konteks subduksi Lempeng Pasifik"]
+      descriptor: "Turun ke Palung Mariana dan lihat bagaimana dasar samudra membentuk lembah panjang yang sangat dalam.",
+      educational: ["Challenger Deep berada di dalam sistem Palung Mariana.", "Bathymetry adalah pemetaan bentuk dan kedalaman dasar laut.", "Palung Mariana berkaitan dengan proses subduksi lempeng tektonik."]
     },
     {
       id: "maunakea",
@@ -75,14 +79,16 @@
       mode: "coastal",
       terrainStyle: "volcanic",
       feature: "Mauna Kea",
+      infoLabel: "GUNUNG API PERISAI · HAWAIʻI",
+      definition: "Mauna Kea adalah gunung api perisai besar di Pulau Hawaiʻi. Bagian yang terlihat di atas laut hanyalah sebagian dari tubuh gunungnya, karena lerengnya terus berlanjut sampai ke dasar samudra.",
       sourceLabel: "Terrarium DEM + bathymetry · open elevation composite",
       sourceDetail: "Terrain mempertahankan elevasi darat dan nilai negatif bathymetry sehingga konteks gunung di atas serta di bawah muka laut dapat dijelaskan dalam satu model.",
       startAltitude: 3.0,
       maxClearance: 13,
       pitch: -0.24,
       yaw: -0.05,
-      descriptor: "Gunung api samudra dengan lereng basalt dan konteks pulau Hawaiʻi.",
-      educational: ["Puncak Mauna Kea", "Garis muka laut", "Hubungan tubuh gunung dengan dasar samudra"]
+      descriptor: "Ikuti Mauna Kea dari puncak hingga lerengnya dan pahami kenapa gunung ini tidak berhenti di garis pantai.",
+      educational: ["Mauna Kea adalah gunung api perisai yang tumbuh dari dasar samudra.", "Muka laut membantu memisahkan bagian gunung yang terlihat dan yang berada di bawah air.", "Lerengnya yang luas merupakan ciri khas gunung api perisai."]
     },
     {
       id: "grandcanyon",
@@ -94,14 +100,16 @@
       mode: "land",
       terrainStyle: "canyon",
       feature: "Grand Canyon",
+      infoLabel: "NGARAI · ARIZONA, AMERIKA SERIKAT",
+      definition: "Grand Canyon adalah ngarai raksasa di Arizona yang dipahat terutama oleh Sungai Colorado bersama proses erosi lainnya selama waktu geologi yang sangat panjang. Dindingnya membuka lapisan batuan dari masa yang berbeda.",
       sourceLabel: "Terrarium DEM · USGS/open elevation composite",
       sourceDetail: "Di Amerika Serikat Mapzen memasukkan data elevasi USGS resolusi tinggi ke mosaik Terrain Tiles. Terrain tetap berasal dari DEM nyata.",
       startAltitude: 1.8,
       maxClearance: 10,
       pitch: -0.24,
       yaw: 0.18,
-      descriptor: "Lapisan batuan merah-cokelat dan relief ngarai yang terukir erosi.",
-      educational: ["Koridor Grand Canyon", "Colorado River", "Relief dan erosi batuan berlapis"]
+      descriptor: "Terbang di antara dinding Grand Canyon dan lihat bagaimana sungai, erosi, serta perbedaan elevasi membentuk ngarai.",
+      educational: ["Grand Canyon adalah ngarai besar yang dilalui Sungai Colorado.", "Rim adalah tepi dataran tinggi di bagian atas ngarai.", "Erosi perlahan mengikis dan memindahkan batuan hingga membentuk relief yang kita lihat sekarang."]
     },
     {
       id: "antarctica",
@@ -113,14 +121,16 @@
       mode: "land",
       terrainStyle: "ice",
       feature: "Dataran Tinggi Antarktika",
+      infoLabel: "DATARAN ES · ANTARKTIKA TIMUR",
+      definition: "Dataran Tinggi Antarktika adalah wilayah pedalaman Antarktika yang tertutup lapisan es sangat tebal dan berada pada elevasi tinggi. Eksplorasi ini menampilkan bentuk permukaan esnya, bukan batuan dasar yang tersembunyi jauh di bawah es.",
       sourceLabel: "Terrarium surface elevation · global open elevation composite",
       sourceDetail: "Mode ini menampilkan elevasi permukaan yang tersedia pada mosaik global. Ini BUKAN visualisasi bedrock sub-ice dan tidak dipresentasikan sebagai topografi di bawah lapisan es.",
       startAltitude: 2.2,
       maxClearance: 12,
       pitch: -0.15,
       yaw: -0.12,
-      descriptor: "Bentang es polar cerah dengan variasi biru-putih dan atmosfer dingin.",
-      educational: ["Permukaan es Antarktika Timur", "Konteks Stasiun Vostok", "Perbedaan ice surface dan bedrock subglacial"]
+      descriptor: "Jelajahi pedalaman Antarktika Timur dan bedakan permukaan lapisan es dari batuan yang tersembunyi di bawahnya.",
+      educational: ["Yang terlihat di mode ini adalah permukaan lapisan es.", "Wilayah pedalaman Antarktika dapat berada jauh dari garis pantai dan pada elevasi tinggi.", "Bentuk permukaan es dan bentuk batuan dasar di bawahnya tidak selalu sama."]
     }
   ]);
 
@@ -134,43 +144,43 @@
 
   const EARTH_EDUCATION = Object.freeze({
     everest: {
-      intro: "Jelajahi relief Himalaya, punggungan tinggi, dan cara data elevasi membentuk medan nyata.",
+      intro: "Kenali dulu bagian penting Himalaya, lalu dekati setiap titik untuk melihat bagaimana gunung, punggungan, dan lereng saling terhubung.",
       observations: [
-        { id:"everest-summit", title:"Puncak Tertinggi", type:"TAHUKAH KAMU?", x:0, z:0, radius:5.5, lead:"Di pusat wilayah ini, DEM memperlihatkan relief ekstrem kawasan Everest.", why:"Perbedaan elevasi yang besar membuat bentuk pegunungan terbaca langsung dari data ketinggian.", sections:[["COBA PERHATIKAN","Lihat bagaimana punggungan naik tajam dan lembah turun di sekitarnya. Bentuk besar ini berasal dari data elevasi, bukan gunung acak."],["KENAPA TINGGI?","Himalaya terbentuk karena tumbukan Lempeng India dan Eurasia yang terus mengangkat kerak."]] },
-        { id:"everest-ridge", title:"Punggungan Himalaya", type:"LIHAT DEH!", x:6, z:-5, radius:4.5, lead:"Pegunungan tidak hanya satu puncak. Punggungan panjang menghubungkan relief tinggi di kawasan Himalaya.", why:"Punggungan membantu membaca struktur bentang alam secara utuh, bukan hanya mengejar satu titik tertinggi.", sections:[["IKUTI GARISNYA","Gerakkan kamera sepanjang garis tinggi. Lereng kiri dan kanan turun menuju lembah yang berbeda."],["DATA VS TEKSTUR","Tekstur memperjelas batu dan salju, tetapi bentuk punggungannya tetap berasal dari DEM."]] },
-        { id:"everest-relief", title:"Relief dan Lereng", type:"COBA PERHATIKAN!", x:-6, z:5, radius:4.5, lead:"Perubahan ketinggian dalam jarak pendek membuat lereng Himalaya tampak sangat dramatis.", why:"Relief lokal memengaruhi aliran es, sungai, cuaca, dan jalur manusia di pegunungan.", sections:[["BANDINGKAN TINGGI","Perhatikan nilai terrain pada HUD ketika bergerak dari lembah menuju punggungan."],["SKALA NYATA","Gerakan di mode ini memakai kilometer, jadi jarak antar bentuk medan memang besar."]] }
+        { id:"everest-summit", title:"Puncak Everest", type:"TAHUKAH KAMU?", x:0, z:0, radius:5.5, lead:"Puncak Everest adalah titik tertinggi di Bumi jika diukur dari permukaan laut. Puncaknya berada di Pegunungan Himalaya, di perbatasan Nepal dan Tibet, Tiongkok.", why:"Everest membantu kita melihat seberapa ekstrem perbedaan ketinggian di Himalaya. Puncak, punggungan, dan lembah di sekitarnya membentuk satu sistem pegunungan besar.", sections:[["COBA PERHATIKAN","Lihat bagaimana medan naik tajam menuju bagian tinggi lalu turun lagi ke lembah. Bentuk besar ini mengikuti data elevasi wilayah Everest."],["KOK BISA SETINGGI INI?","Himalaya terus terangkat karena Lempeng India bergerak menekan Lempeng Eurasia. Prosesnya sangat lambat, tetapi berlangsung selama jutaan tahun."]] },
+        { id:"everest-ridge", title:"Punggungan Himalaya", type:"LIHAT DEH!", x:6, z:-5, radius:4.5, lead:"Punggungan Himalaya adalah jalur medan tinggi yang menghubungkan satu bagian pegunungan dengan bagian lainnya. Jadi pegunungan bukan kumpulan puncak yang berdiri sendiri.", why:"Dengan mengikuti punggungan, kamu bisa melihat arah memanjang pegunungan dan bagaimana lereng turun ke lembah di kedua sisinya.", sections:[["IKUTI GARIS TINGGINYA","Gerakkan kamera sepanjang bagian yang tetap tinggi. Coba bandingkan bentuk lereng di sisi kiri dan kanan."],["BUKAN CUMA TEKSTUR","Salju dan batu membantu tampilannya terasa nyata, tetapi bentuk punggungan utamanya tetap mengikuti data elevasi."]] },
+        { id:"everest-relief", title:"Relief dan Lereng", type:"COBA PERHATIKAN!", x:-6, z:5, radius:4.5, lead:"Relief adalah perbedaan tinggi dan rendah pada suatu bentang alam. Di Himalaya, perubahannya bisa sangat besar dalam jarak yang relatif dekat.", why:"Relief yang curam memengaruhi aliran es dan air, jalur pendakian, hingga pola cuaca lokal di sekitar pegunungan.", sections:[["BANDINGKAN TINGGINYA","Bergeraklah dari bagian rendah menuju punggungan dan lihat nilai terrain pada HUD berubah."],["BAYANGKAN SKALANYA","Jarak di mode ini menggunakan kilometer. Artinya, lereng dan lembah yang kamu lintasi mewakili bentang alam yang benar-benar luas."]] }
       ]
     },
     mariana: {
-      intro: "Turun ke bathymetry Palung Mariana dan baca bentuk dasar laut dari nilai elevasi negatif.",
+      intro: "Kenali bentuk Palung Mariana dari dasar lautnya, lalu amati Challenger Deep, sumbu palung, dan perubahan lingkungan saat bergerak makin dalam.",
       observations: [
-        { id:"mariana-deep", title:"Challenger Deep", type:"TERNYATA...", x:0, z:0, radius:6, lead:"Nilai negatif pada terrain menunjukkan dasar laut berada jauh di bawah muka laut.", why:"Bathymetry memakai prinsip elevasi yang sama, hanya referensinya berada di bawah nol muka laut.", sections:[["LIHAT HUD","Saat kamera turun, HUD memisahkan posisi kamera dan ketinggian terrain di bawah muka laut."],["BUKAN LUBANG ACAK","Bentuk dasar laut berasal dari mosaik bathymetry pada Terrain Tiles."]] },
-        { id:"mariana-axis", title:"Sumbu Palung", type:"COBA PERHATIKAN!", x:7, z:-4, radius:5, lead:"Palung membentuk zona memanjang, bukan sekadar satu lubang bundar.", why:"Geometri memanjang mencerminkan zona pertemuan lempeng yang membentuk sistem Palung Mariana.", sections:[["IKUTI ARAHNYA","Terbang sejajar dengan lembah dasar laut dan perhatikan perubahan kedalaman."],["KONTEKS TEKTONIK","Palung terkait dengan subduksi Lempeng Pasifik di bawah lempeng tetangganya."]] },
-        { id:"mariana-water", title:"Kolom Air", type:"TAHUKAH KAMU?", x:-6, z:5, radius:5, lead:"Di sini kamu berada di bawah permukaan laut, jadi atmosfer visual diganti dengan kabut dan partikel bawah air.", why:"Kedalaman mengubah cara cahaya dan warna terbaca, sehingga visual lingkungan ikut berubah.", sections:[["CAHAYA BERKURANG","Semakin dalam kamera turun, warna latar menjadi lebih gelap dan kebiruan."],["DATA TETAP SAMA","Efek air hanya visual. Nilai bathymetry tidak diubah oleh efek tersebut."]] }
+        { id:"mariana-deep", title:"Challenger Deep", type:"TERNYATA...", x:0, z:0, radius:6, lead:"Challenger Deep adalah bagian terdalam yang diketahui di Palung Mariana. Lokasinya berada jauh di bawah permukaan Samudra Pasifik.", why:"Titik ini menunjukkan bahwa dasar samudra tidak rata. Ada pegunungan, dataran, dan palung yang perbedaan kedalamannya bisa sangat besar.", sections:[["LIHAT ANGKA KEDALAMAN","Nilai terrain negatif berarti titik tersebut berada di bawah muka laut. Semakin besar nilai kedalamannya, semakin jauh posisi dasar laut dari permukaan."],["BUKAN LUBANG ACAK","Challenger Deep berada di dalam sistem palung yang memanjang. Bentuk terrain di mode ini berasal dari data bathymetry, bukan lubang yang dibuat secara acak."]] },
+        { id:"mariana-axis", title:"Sumbu Palung", type:"COBA PERHATIKAN!", x:7, z:-4, radius:5, lead:"Sumbu palung adalah jalur bagian terdalam yang memanjang mengikuti bentuk utama sebuah palung laut. Jadi Palung Mariana bukan sekadar satu lubang bulat di dasar samudra.", why:"Bentuk memanjang ini berkaitan dengan batas lempeng tektonik. Di wilayah Mariana, salah satu lempeng bergerak masuk ke bawah lempeng lainnya melalui proses yang disebut subduksi.", sections:[["IKUTI ARAHNYA","Terbang mengikuti bagian dasar yang lebih rendah. Kamu akan melihat lembah lautnya terus memanjang."],["APA ITU SUBDUKSI?","Subduksi terjadi ketika satu lempeng tektonik menunjam ke bawah lempeng lain. Proses ini dapat membentuk palung laut yang sangat dalam."]] },
+        { id:"mariana-water", title:"Kolom Air Laut Dalam", type:"TAHUKAH KAMU?", x:-6, z:5, radius:5, lead:"Kolom air adalah seluruh lapisan air dari permukaan laut sampai ke dasar samudra. Di Palung Mariana, jarak vertikal ini luar biasa besar.", why:"Semakin dalam kita turun, cahaya Matahari semakin sulit menembus air. Lingkungan laut dalam pun menjadi gelap, dingin, dan memiliki tekanan sangat tinggi.", sections:[["COBA LIHAT SUASANANYA","Saat kamera turun, lingkungan dibuat semakin gelap dan kebiruan untuk membantu memberi rasa kedalaman."],["INGAT YA","Kabut dan partikel air hanyalah bantuan visual. Bentuk dasar lautnya tetap mengikuti data bathymetry."]] }
       ]
     },
     maunakea: {
-      intro: "Baca gunung api samudra sebagai satu tubuh besar yang berlanjut dari dasar laut ke puncak.",
+      intro: "Kenali Mauna Kea sebagai satu gunung besar dari dasar samudra hingga puncaknya, lalu amati puncak, lereng vulkanik, dan hubungan gunung dengan muka laut.",
       observations: [
-        { id:"mauna-summit", title:"Puncak Mauna Kea", type:"TAHUKAH KAMU?", x:0, z:0, radius:5.5, lead:"Bagian puncak hanya sebagian dari keseluruhan tubuh gunung api.", why:"Jika diukur dari dasar samudra, tubuh Mauna Kea jauh lebih besar daripada bagian yang terlihat di atas laut.", sections:[["LIHAT LERENG","Perhatikan bagaimana lereng meluas jauh dari pusat puncak."],["GUNUNG SAMUDRA","Pulau dan dasar laut adalah bagian dari sistem vulkanik yang sama."]] },
-        { id:"mauna-slope", title:"Lereng Vulkanik", type:"LIHAT DEH!", x:7, z:4, radius:5, lead:"Lereng yang panjang menunjukkan bagaimana gunung api perisai tumbuh melebar.", why:"Lava yang relatif cair dapat menyebar jauh dan membangun lereng luas.", sections:[["BENTUKNYA LEBAR","Bandingkan kemiringan lereng dengan relief tajam di Himalaya."],["MATERIAL VISUAL","Detail basalt memperkaya tampilan dekat, tetapi topografi besar tetap dari DEM."]] },
-        { id:"mauna-sea", title:"Konteks Laut", type:"COBA PERHATIKAN!", x:-7, z:-5, radius:5, lead:"Wilayah pesisir menggabungkan elevasi darat dan bathymetry agar konteks gunung terhadap laut tetap terbaca.", why:"Referensi muka laut membantu membedakan bagian gunung yang muncul sebagai pulau dan bagian yang berada di bawah air.", sections:[["GARIS NOL","Air dirender pada elevasi nol sebagai referensi muka laut."],["SATU MODEL","Nilai positif dan negatif tetap berada dalam sistem koordinat yang sama."]] }
+        { id:"mauna-summit", title:"Puncak Mauna Kea", type:"TAHUKAH KAMU?", x:0, z:0, radius:5.5, lead:"Mauna Kea adalah gunung api perisai besar di Pulau Hawaiʻi. Puncaknya berada lebih dari 4 kilometer di atas permukaan laut, tetapi tubuh gunungnya masih berlanjut jauh ke bawah laut.", why:"Kalau hanya melihat bagian yang muncul di atas air, ukuran Mauna Kea mudah terasa lebih kecil daripada sebenarnya. Gunung ini tumbuh dari dasar samudra.", sections:[["LIHAT LERENGNYA","Perhatikan bagaimana lereng menyebar jauh dari pusat puncak. Bentuk yang lebar ini khas gunung api perisai."],["SATU GUNUNG BESAR","Bagian pulau yang terlihat dan bagian gunung di bawah laut tetap merupakan bagian dari sistem vulkanik yang sama."]] },
+        { id:"mauna-slope", title:"Lereng Vulkanik", type:"LIHAT DEH!", x:7, z:4, radius:5, lead:"Lereng vulkanik adalah sisi gunung yang terbentuk dari tumpukan material hasil aktivitas gunung api. Pada gunung api perisai seperti Mauna Kea, lerengnya cenderung luas dan tidak setajam banyak gunung berbentuk kerucut.", why:"Lava yang relatif cair dapat mengalir lebih jauh sebelum membeku. Dari waktu ke waktu, aliran itu membantu membangun tubuh gunung yang lebar.", sections:[["BANDINGKAN BENTUKNYA","Coba bandingkan kemiringan Mauna Kea dengan relief tajam di Himalaya. Keduanya sama-sama tinggi, tetapi bentuk bentang alamnya berbeda."],["TEKSTUR VS BENTUK","Detail batu membantu permukaan terlihat lebih hidup, sedangkan bentuk lereng besarnya mengikuti data elevasi."]] },
+        { id:"mauna-sea", title:"Gunung dan Muka Laut", type:"COBA PERHATIKAN!", x:-7, z:-5, radius:5, lead:"Muka laut adalah acuan ketinggian nol yang memisahkan bagian daratan dari bagian yang berada di bawah air. Pada Mauna Kea, acuan ini memotong tubuh gunung yang sebenarnya jauh lebih besar.", why:"Dengan melihat daratan dan dasar laut dalam satu model, kita bisa memahami bahwa garis pantai bukanlah tempat gunung itu berakhir.", sections:[["CARI GARIS NOL","Permukaan air menjadi petunjuk sederhana untuk melihat bagian gunung yang berada di atas dan di bawah muka laut."],["COBA BAYANGKAN","Kalau air samudra dihilangkan, lereng Mauna Kea akan terlihat terus turun menuju dasar laut."]] }
       ]
     },
     grandcanyon: {
-      intro: "Ikuti relief ngarai dan lihat bagaimana perubahan elevasi membentuk dinding, koridor, dan dataran tinggi.",
+      intro: "Kenali Grand Canyon dari koridor ngarai, bagian rim, dan jejak erosi. Dekati tiap titik untuk melihat bagaimana perbedaan elevasi membentuk bentang alamnya.",
       observations: [
-        { id:"canyon-core", title:"Koridor Grand Canyon", type:"LIHAT DEH!", x:0, z:0, radius:5.5, lead:"Ngarai terbaca sebagai koridor relief yang terpotong jauh ke dalam dataran tinggi.", why:"Perbedaan elevasi memperlihatkan hasil erosi jangka panjang dengan sangat jelas.", sections:[["IKUTI KORIDOR","Terbang mengikuti bagian yang lebih rendah dan bandingkan dinding pada kedua sisi."],["WARNA LAPISAN","Warna batu membantu membaca relief, tetapi bentuk makro tetap mengikuti DEM."]] },
-        { id:"canyon-rim", title:"Tepi Ngarai", type:"COBA PERHATIKAN!", x:6, z:-5, radius:4.5, lead:"Dari rim, perubahan tinggi menuju dasar ngarai terasa lebih jelas.", why:"Sudut pandang dari tepi membantu memahami skala vertikal sebuah canyon.", sections:[["CEK HUD","Bandingkan Terrain Lokal saat berpindah dari rim ke bagian lebih rendah."],["LERENG CURAM","Slope shading membuat bidang curam lebih mudah dibaca tanpa mengubah bentuk data."]] },
-        { id:"canyon-erosion", title:"Jejak Erosi", type:"KENAPA BISA BEGINI?", x:-6, z:5, radius:4.5, lead:"Ngarai terbentuk oleh kombinasi pengangkatan regional dan erosi yang bekerja sangat lama.", why:"Bentang alam menyimpan riwayat proses geologi, bukan sekadar bentuk visual.", sections:[["AIR DAN WAKTU","Sungai dan erosi mengikis batuan sementara dataran tinggi mengalami pengangkatan."],["BACA BENTUK","Cabang lembah kecil memberi petunjuk bagaimana material dipindahkan menuju koridor utama."]] }
+        { id:"canyon-core", title:"Koridor Grand Canyon", type:"LIHAT DEH!", x:0, z:0, radius:5.5, lead:"Grand Canyon adalah ngarai besar di Arizona yang membelah dataran tinggi. Sungai Colorado mengalir melalui bagian dasarnya dan menjadi salah satu pelaku utama pengikisan ngarai.", why:"Koridor ngarai memperlihatkan perbedaan tinggi antara dataran di atas dan lembah di bawah. Dari sinilah skala Grand Canyon mulai terasa.", sections:[["IKUTI BAGIAN RENDAH","Terbang mengikuti jalur yang lebih rendah dan lihat dinding ngarai berdiri di kedua sisinya."],["LAPISAN BATU","Perbedaan warna membantu memperjelas lapisan batuan, tetapi bentuk utama ngarai tetap mengikuti data elevasi."]] },
+        { id:"canyon-rim", title:"Tepi Ngarai", type:"COBA PERHATIKAN!", x:6, z:-5, radius:4.5, lead:"Rim adalah tepi bagian atas Grand Canyon, tempat dataran tinggi tiba-tiba berubah menjadi lereng dan dinding yang turun ke dalam ngarai.", why:"Berdiri di dekat rim membuat perbedaan ketinggian jauh lebih mudah dibaca karena bagian atas dan dasar ngarai bisa dibandingkan secara langsung.", sections:[["BANDINGKAN ELEVASI","Bergeraklah dari rim menuju bagian yang lebih rendah lalu lihat nilai Terrain Lokal pada HUD."],["KENAPA TERLIHAT CURAM?","Perubahan ketinggian dalam jarak pendek membuat dinding ngarai tampak sangat terjal."]] },
+        { id:"canyon-erosion", title:"Jejak Erosi", type:"KENAPA BISA BEGINI?", x:-6, z:5, radius:4.5, lead:"Erosi adalah proses pengikisan dan pemindahan batuan oleh air, angin, es, atau gaya alam lainnya. Di Grand Canyon, proses ini bekerja bersama pengangkatan wilayah selama waktu yang sangat panjang.", why:"Grand Canyon tidak terbentuk dalam satu kejadian. Bentuknya merupakan hasil perubahan sedikit demi sedikit yang terus berlangsung dalam skala waktu geologi.", sections:[["AIR DAN WAKTU","Sungai dan aliran air mengikis batuan, sementara material yang terlepas dibawa menjauh dari tempat asalnya."],["BACA CABANG LEMBAH","Lembah kecil yang bergabung ke koridor utama memberi petunjuk tentang jalur air dan arah pengikisan medan."]] }
       ]
     },
     antarctica: {
-      intro: "Jelajahi permukaan es Antarktika Timur sambil membedakan surface elevation dari bedrock subglasial.",
+      intro: "Kenali pedalaman Antarktika Timur lewat dataran tinggi es, bentuk permukaan lapisan es, dan konteks wilayah Vostok. Ingat, yang terlihat adalah permukaan es, bukan batuan di bawahnya.",
       observations: [
-        { id:"antarctica-plateau", title:"Dataran Tinggi Es", type:"TAHUKAH KAMU?", x:0, z:0, radius:6, lead:"Terrain di sini mewakili elevasi permukaan yang tersedia pada mosaik global.", why:"Permukaan es dan batuan dasar di bawahnya adalah dua hal berbeda dan tidak boleh dicampur.", sections:[["YANG KAMU LIHAT","Mode ini memvisualkan surface elevation, bukan bentuk bedrock yang tersembunyi di bawah es."],["KENAPA PENTING","Label data yang tepat mencegah visual edukasi memberi kesan ilmiah yang salah."]] },
-        { id:"antarctica-ice", title:"Permukaan Es", type:"COBA PERHATIKAN!", x:7, z:-5, radius:5, lead:"Variasi putih dan biru dibuat untuk membantu membaca kontur permukaan es yang sangat halus.", why:"Tanpa variasi cahaya dan material, relief es mudah terlihat datar walaupun datanya berubah.", sections:[["LIHAT BAYANGAN","Perhatikan perubahan shading pada lereng rendah."],["BENTUK DATA","Material tidak menambah gunung baru, hanya memperjelas bentuk yang sudah ada."]] },
-        { id:"antarctica-vostok", title:"Konteks Vostok", type:"TERNYATA...", x:-7, z:5, radius:5, lead:"Wilayah ini memberi konteks bentang es pedalaman dekat kawasan Vostok.", why:"Antarktika bukan hanya garis pantai dan gunung es. Bagian interiornya berupa dataran es luas pada elevasi tinggi.", sections:[["INTERIOR BENUA","Coba lihat horizon yang panjang dan perubahan relief yang lebih halus dibanding Himalaya."],["LINGKUNGAN DINGIN","Kabut dingin dan pencahayaan hanya membantu suasana, bukan mengubah data elevasi."]] }
+        { id:"antarctica-plateau", title:"Dataran Tinggi Es", type:"TAHUKAH KAMU?", x:0, z:0, radius:6, lead:"Dataran Tinggi Antarktika adalah wilayah luas di pedalaman benua yang tertutup lapisan es dan berada pada elevasi tinggi. Permukaannya terlihat lebih halus dibanding pegunungan berbatu.", why:"Lapisan es Antarktika sangat tebal, sehingga bentuk permukaan yang kita lihat tidak sama dengan bentuk batuan dasar yang tersembunyi jauh di bawahnya.", sections:[["APA YANG KAMU LIHAT?","Mode ini menampilkan elevasi permukaan es. Jadi tonjolan dan cekungan yang tampak adalah bentuk bagian atas lapisan es."],["JANGAN TERTUKAR","Bedrock adalah batuan dasar di bawah es. Untuk melihatnya dengan benar dibutuhkan data khusus yang berbeda dari surface elevation."]] },
+        { id:"antarctica-ice", title:"Permukaan Lapisan Es", type:"COBA PERHATIKAN!", x:7, z:-5, radius:5, lead:"Permukaan lapisan es adalah bagian paling atas dari es Antarktika yang bersentuhan langsung dengan atmosfer. Walaupun dari jauh terlihat rata, permukaannya tetap memiliki perubahan ketinggian.", why:"Perubahan reliefnya sering lebih halus daripada pegunungan berbatu. Karena itu cahaya, bayangan, dan warna membantu mata membaca bentuk permukaan es.", sections:[["LIHAT BAYANGANNYA","Perhatikan perubahan shading saat melewati lereng yang sangat landai. Perubahan kecil itu membantu memperlihatkan kontur medan."],["BENTUKNYA TETAP DARI DATA","Material putih dan biru hanya membantu keterbacaan. Ia tidak menambahkan gunung atau cekungan baru ke terrain."]] },
+        { id:"antarctica-vostok", title:"Wilayah Vostok", type:"TERNYATA...", x:-7, z:5, radius:5, lead:"Vostok adalah kawasan pedalaman Antarktika Timur yang terkenal karena Stasiun Vostok, sebuah stasiun penelitian Rusia. Wilayahnya jauh dari pantai dan berada di atas lapisan es benua yang sangat luas.", why:"Antarktika bukan hanya tebing es di tepi laut. Sebagian besar interiornya adalah hamparan es luas dengan kondisi yang sangat dingin dan elevasi tinggi.", sections:[["LIHAT HORIZONNYA","Bandingkan horizon panjang di sini dengan relief tajam Himalaya atau Grand Canyon. Bentuk bentang alamnya jauh lebih lembut."],["SUASANA VS DATA","Efek dingin dan pencahayaan membantu suasana eksplorasi, tetapi tidak mengubah nilai elevasi yang digunakan terrain."]] }
       ]
     }
   });
@@ -1690,9 +1700,9 @@
       this.hudQuality.textContent = QUALITY_PROFILES[this.selectedQualityName].label;
       this.hudData.textContent = region.sourceLabel;
       this.infoName.textContent = region.feature;
-      this.infoType.textContent = region.sourceDetail;
+      this.infoType.textContent = region.infoLabel || region.name;
       this.infoCoords.textContent = formatLatLon(region.latitude, region.longitude);
-      this.infoDescription.textContent = region.descriptor;
+      this.infoDescription.textContent = region.definition || region.descriptor;
       this.infoFacts.replaceChildren(...region.educational.map(item => {
         const li = document.createElement("li");
         li.textContent = item;
@@ -1841,8 +1851,8 @@
         return section;
       }));
       this.observationDeep.replaceChildren(...[
-        `Data terrain wilayah ini: ${this.region.sourceLabel}.`,
-        "Detail material dan pencahayaan membantu keterbacaan, tetapi tidak mengganti bentuk topografi utama."
+        `SUMBER MEDAN: ${this.region.sourceLabel}. Data ini dipakai untuk membentuk tinggi dan rendah terrain yang kamu jelajahi.`,
+        "Tekstur, kabut, air, salju, dan pencahayaan membantu suasana serta keterbacaan. Bentuk topografi utamanya tetap mengikuti data elevasi atau bathymetry."
       ].map(item => {
         const p = document.createElement("p");
         p.textContent = item;
