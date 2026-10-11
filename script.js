@@ -815,7 +815,7 @@ class CockpitProfileHUD {
       this.root.dataset.profileState = "logged-out";
       this.kicker.textContent = "IDENTITAS PENJELAJAH";
       this.primary.textContent = "MASUK KE ANTARA";
-      this.secondary.textContent = "CREW ACCESS · STANDBY";
+      this.secondary.textContent = "";
       this.trigger.setAttribute("aria-label", "Masuk ke ANTARA");
       this.trigger.removeAttribute("aria-expanded");
       this.avatarImage.hidden = true;
@@ -828,9 +828,11 @@ class CockpitProfileHUD {
     }
 
     this.root.dataset.profileState = "logged-in";
-    this.kicker.textContent = "ANTARA ID · CREW";
+    this.kicker.textContent = "IDENTITAS AKTIF";
     this.primary.textContent = this.user.name;
-    this.secondary.textContent = this.user.label;
+    const rawUsername = String(this.user.raw?.username ?? "").trim();
+    const rawEmail = String(this.user.raw?.email ?? "").trim();
+    this.secondary.textContent = rawUsername ? `@${rawUsername}` : rawEmail;
     this.trigger.setAttribute("aria-label", `Buka profil ${this.user.name}`);
     this.loginGlyph.hidden = true;
 

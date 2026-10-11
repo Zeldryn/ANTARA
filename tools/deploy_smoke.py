@@ -50,6 +50,19 @@ request('api/auth/logout.php', {})
 request('api/auth/login.php', {'identifier': payload['email'], 'password': password})
 assert request('api/auth/me.php')['user']['id'] == user_id
 request('api/auth/logout.php', {})
-print('PASS auth, session, persistent progress and leaderboard.')
+request('api/auth/login.php', {'identifier': username, 'password': password})
+new_email = username + '.updated@example.invalid'
+updated = request('api/account/update.php', {'action': 'profile', 'fullName': 'Updated Smoke User', 'username': username, 'email': new_email})
+assert updated['user']['name'] == 'Updated Smoke User' and updated['user']['email'] == new_email
+assert request('api/auth/me.php')['user']['email'] == new_email
+request('api/account/update.php', {'action': 'password', 'currentPassword': 'wrong-password', 'newPassword': password, 'confirmPassword': password}, 422)
+new_password = secrets.token_urlsafe(24)
+request('api/account/update.php', {'action': 'password', 'currentPassword': password, 'newPassword': new_password, 'confirmPassword': new_password})
+request('api/auth/logout.php', {})
+request('api/auth/login.php', {'identifier': username, 'password': password}, 401)
+request('api/auth/login.php', {'identifier': new_email, 'password': new_password})
+assert request('api/auth/me.php')['user']['id'] == user_id
+request('api/auth/logout.php', {})
+print('PASS auth, session, persistent progress, leaderboard, profile and password updates.')
 print('Delete disposable test user via admin: user ID', user_id, 'username', username)
 print('No credentials were saved or printed. Foreign keys delete related test rows when user is deleted.')

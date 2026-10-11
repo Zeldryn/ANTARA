@@ -1,0 +1,19 @@
+ANTARA ACCOUNT HOMEPAGE HOTFIX
+==============================
+
+1. Copy semua isi ZIP ini ke C:\xampp\htdocs\
+2. Pilih Replace files in the destination.
+3. Tidak perlu import database ulang.
+4. Tidak perlu menghapus akun yang sudah dibuat.
+5. Buka http://localhost/ lalu Ctrl+F5 sekali jika tab lama masih terbuka.
+
+Perubahan:
+- Session aktif: header menampilkan nama + @username.
+- Session keluar: kembali ke MASUK KE ANTARA.
+- CREW ACCESS / STANDBY dihapus.
+- Klik nama/avatar: dropdown Profil, Pengaturan, Keluar.
+- Profil: avatar Early Access, Bio kosong, Progress 0, Pencapaian 0.
+- Pengaturan: ubah nama, username, email, dan password.
+- Password baru wajib diverifikasi dengan password saat ini.
+
+File database tidak berubah. Endpoint baru: api/account/update.php
