@@ -3344,13 +3344,26 @@
     renderObjectives() {
       const objectives = this.region?.education?.objectives || [];
       const fragment = document.createDocumentFragment();
-      for (const objective of objectives) {
+      objectives.forEach((objective, index) => {
         const item = document.createElement("li");
-        item.dataset.discovery = objective.discovery || "";
-        item.textContent = objective.label;
-        if (objective.discovery && this.discovered.has(objective.discovery)) item.classList.add("is-complete");
+        const discoveryId = objective.discovery || "";
+        const complete = Boolean(discoveryId && this.discovered.has(discoveryId));
+        item.dataset.discovery = discoveryId;
+        if (complete) item.classList.add("is-complete");
+
+        const marker = document.createElement("span");
+        marker.className = "venus-objective-marker";
+        marker.textContent = complete ? "✓" : String(index + 1).padStart(2, "0");
+
+        const copy = document.createElement("div");
+        const title = document.createElement("strong");
+        title.textContent = objective.label;
+        const status = document.createElement("small");
+        status.textContent = complete ? "SUDAH DIAMATI" : "BELUM DIAMATI";
+        copy.append(title, status);
+        item.append(marker, copy);
         fragment.append(item);
-      }
+      });
       this.objectivesList.replaceChildren(fragment);
     }
 
@@ -3360,9 +3373,7 @@
       if (this.discoveryCount) this.discoveryCount.textContent = `${completed} / ${total}`;
       if (this.discoveryBar) this.discoveryBar.style.transform = `scaleX(${total ? completed / total : 0})`;
       if (this.objectivesToggle) this.objectivesToggle.textContent = `Tujuan · ${completed} / ${total}`;
-      for (const item of this.objectivesList?.querySelectorAll?.("li") || []) {
-        item.classList.toggle("is-complete", Boolean(item.dataset.discovery && this.discovered.has(item.dataset.discovery)));
-      }
+      this.renderObjectives();
     }
 
     collapseObjectives(focusToggle = false) {

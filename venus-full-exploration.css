@@ -1416,3 +1416,101 @@
   .venus-full-exploration .venus-actions-menu>button,
   .venus-full-exploration .venus-actions-menu-toggle { min-height:40px; font-size:8px; }
 }
+
+
+/* 2026-10-03 Full Exploration UI consistency pass.
+   Geometry and information hierarchy mirror Earth; Venus keeps only its warm palette. */
+.venus-full-exploration .mars-full-tutorial {
+  width:min(680px,calc(100vw - 32px));
+  padding:24px 26px;
+  border-radius:0;
+}
+.venus-full-exploration .mars-full-tutorial-header { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.venus-full-exploration .mars-full-tutorial-header span { font-size:10px; line-height:1.4; letter-spacing:1.5px; }
+.venus-full-exploration .mars-full-tutorial-header button { width:34px; height:34px; flex:0 0 34px; font-size:20px; }
+.venus-full-exploration .mars-full-tutorial-grid.mars-tutorial-desktop {
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:12px;
+  margin-top:18px;
+}
+.venus-full-exploration .mars-full-tutorial-grid.mars-tutorial-mobile { display:none; }
+.venus-full-exploration .mars-tutorial-item { padding-top:12px; border-top:1px solid rgba(214,191,147,.24); }
+.venus-full-exploration .mars-tutorial-item b { display:block; font-size:11.5px; line-height:1.35; letter-spacing:.75px; }
+.venus-full-exploration .mars-tutorial-item span { display:block; margin-top:5px; font-size:9px; line-height:1.45; letter-spacing:.45px; text-transform:uppercase; }
+
+/* Same six persistent hints and framed treatment used on Earth. */
+.venus-full-exploration .mars-control-hints {
+  gap:16px;
+  bottom:max(18px,env(safe-area-inset-bottom));
+  padding:9px 12px;
+  border:1px solid rgba(238,195,139,.19);
+  background:rgba(31,15,12,.72);
+  box-shadow:0 8px 30px rgba(12,4,3,.24);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  font-size:8px;
+  line-height:1.4;
+  letter-spacing:.7px;
+}
+.venus-full-exploration .mars-control-hints b { font-size:8.5px; }
+
+/* Location card sits a little lower so it breathes under the global actions. */
+.venus-location-card {
+  top:calc(var(--venus-safe-top) + var(--venus-edge-y) + 58px);
+  max-height:min(70dvh,calc(100dvh - var(--venus-safe-top) - var(--venus-safe-bottom) - var(--venus-edge-y) - 116px));
+}
+
+/* Objectives now use the exact Earth information structure: index/check + title + state.
+   This also fixes the old circular marker overlapping the first letters. */
+.venus-objectives-list { display:grid; gap:6px; margin:10px 0 0; padding:0; list-style:none; }
+.venus-objectives-list li {
+  display:grid;
+  grid-template-columns:29px minmax(0,1fr);
+  gap:10px;
+  align-items:center;
+  min-height:0;
+  padding:9px 0;
+  border:0;
+  border-top:1px solid rgba(236,190,128,.14);
+  background:transparent;
+  color:rgba(239,220,199,.86);
+}
+.venus-objectives-list li::before { content:none !important; display:none !important; }
+.venus-objective-marker {
+  width:27px;
+  height:27px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(237,191,130,.34);
+  color:#b58a69;
+  background:rgba(25,12,10,.28);
+  font:650 7px/1 system-ui,sans-serif;
+  letter-spacing:.35px;
+}
+.venus-objectives-list li.is-complete .venus-objective-marker {
+  border-color:rgba(211,164,111,.62);
+  color:#ffe0b0;
+  background:rgba(103,54,34,.52);
+}
+.venus-objectives-list li>div { min-width:0; }
+.venus-objectives-list strong { display:block; color:#f0dcc5; font-size:10px; line-height:1.4; font-weight:600; }
+.venus-objectives-list small { display:block; margin-top:2px; color:#95745f; font-size:8px; line-height:1.35; letter-spacing:.6px; }
+.venus-objectives-list li.is-complete strong { color:rgba(230,211,186,.62); }
+.venus-objectives-list li.is-complete small { color:#876c5d; }
+
+@media (pointer:coarse),(max-width:760px) {
+  .venus-full-exploration .mars-full-tutorial { width:calc(100vw - 18px); max-height:72dvh; overflow:auto; padding:18px; }
+  .venus-full-exploration .mars-full-tutorial-grid.mars-tutorial-desktop { display:none; }
+  .venus-full-exploration .mars-full-tutorial-grid.mars-tutorial-mobile { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:16px; }
+  .venus-full-exploration .mars-full-tutorial-header span { font-size:8px; }
+  .venus-full-exploration .mars-tutorial-item b { font-size:9px; }
+  .venus-full-exploration .mars-tutorial-item span { font-size:7px; }
+  .venus-location-card { top:auto; max-height:52dvh; }
+  .venus-objectives-list strong { font-size:8px; }
+  .venus-objectives-list small { font-size:6.2px; }
+}
+
+/* Match the final shared guidance scale used by Earth. */
+.venus-full-exploration .mars-control-hints { font-size:8.7px; }
+.venus-full-exploration .mars-control-hints b { font-size:9px; }
