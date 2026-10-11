@@ -1,1 +1,1 @@
-Taruh folder ANTARA di C:\xampp\htdocs\ANTARA. Jalankan Apache, buka http://localhost/ANTARA/. Jangan buka lewat file://. Jika ada api/, baca docs/DEPLOY_DATABASE.md dan import SQL terlebih dahulu.
+Folder ANTARA -> C:\xampp\htdocs\ANTARA. Start Apache + MySQL. Open http://localhost/ANTARA/. Follow docs/DEPLOY_DATABASE.md. No file://.

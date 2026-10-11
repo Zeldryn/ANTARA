@@ -1,2 +1,10 @@
+
+# Packaging exclusions: local secrets and runtime state
+.env
+.env.*
+*.pem
+*.key
+logs/
+sessions/
 .tmp/
 __pycache__/

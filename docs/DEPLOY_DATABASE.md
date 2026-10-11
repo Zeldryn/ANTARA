@@ -1,40 +1,40 @@
-# Deploy database ANTARA (141A)
+# ANTARA 142-156: localhost dan database
 
-Gunakan snapshot 141A untuk backend. Snapshot 141 masih merekam query SQL asli yang bermasalah.
-141A berasal dari 141 + empat file hotfix asli; perubahan packaging dicatat dalam laporan.
+Semua ZIP tahap berisi folder ANTARA/. Lanjutan dimulai setelah 141A.
+142-146 adalah rekonstruksi eksplisit: salinan source tahap sebelumnya + file hotfix asli.
+147-156 adalah snapshot lengkap asli dengan file XAMPP dan cache dikeluarkan.
+Lihat COMMIT_ORDER.txt dan VERIFICATION.json untuk perubahan, provenance, dan daftar penghapusan.
 
-## Lokal
-1. PHP 8.1+ dengan PDO MySQL, MySQL 8 atau MariaDB yang mendukung CHECK dan InnoDB.
-2. Salin ANTARA ke C:\xampp\htdocs\ANTARA. Jalankan Apache dan MySQL.
-3. Buat database antara di phpMyAdmin, pilih database tersebut, lalu import export/antara-schema.sql dari bundel luar.
-4. Default aplikasi adalah 127.0.0.1:3306, database antara, root tanpa password, hanya sesuai instalasi lokal standar.
-5. Buka http://localhost/ANTARA/api/health.php, harus mengembalikan database connected. Buka http://localhost/ANTARA/ untuk aplikasi.
+## Lokal XAMPP
+Salin ANTARA ke C:\xampp\htdocs\ANTARA. Jalankan Apache dan MySQL.
+Buka http://localhost/ANTARA/ dan http://localhost/ANTARA/api/health.php.
+PHP 8.1+ dan PDO MySQL diperlukan. Server statis atau membuka file HTML langsung tidak menjalankan API.
+Default generik: host 127.0.0.1, port 3306, database antara, akun root tanpa password (lokal standar saja).
+
+## Database
+Skema semua tahap sama persis dengan tahap 141A, terdiri dari lima tabel.
+Jika database 141A sudah diimport dan API health terhubung, TIDAK perlu import ulang.
+Untuk database baru: buat database, pilih di phpMyAdmin, import export/antara-schema.sql dari bundel luar.
+Export ini adalah skema fresh tanpa data akun; bukan export database lokal berjalan.
+Tidak ada CREATE DATABASE/USE dalam export portabel, sehingga nama database hosting dapat berbeda.
+Jangan gunakan SQL versi ini untuk snapshot project sesudah 156 tanpa memeriksa migrasinya.
 
 ## Hosting
-Buat database dan akun aplikasi di panel hosting. Import export/antara-schema.sql ke database yang dipilih.
-File export tidak mengandung CREATE DATABASE atau USE, sehingga nama database hosting bebas.
-Tetapkan environment server ANTARA_DB_HOST, ANTARA_DB_PORT, ANTARA_DB_NAME, ANTARA_DB_USER, ANTARA_DB_PASS sesuai database hosting.
-Kode database.php menggunakan getenv; kode generik ini diperlukan, bukan konfigurasi lokal atau rahasia.
-Jangan isi password ke kode, commit .env, atau upload folder instalasi XAMPP/MySQL.
-Jika panel tidak menyediakan environment untuk PHP, minta admin menyetel variabel tersebut melalui konfigurasi server di luar repository.
-Aktifkan HTTPS dan pastikan session PHP dapat menyimpan cookie. Gunakan akun database aplikasi, bukan root.
-Host harus menjalankan PHP; hosting statis saja tidak menjalankan backend ini.
+Kode backend aplikasi tetap disertakan; folder XAMPP/dashboard, phpMyAdmin, .env, credential dan dump pengguna tidak disertakan.
+Tetapkan ANTARA_DB_HOST, ANTARA_DB_PORT, ANTARA_DB_NAME, ANTARA_DB_USER, ANTARA_DB_PASS melalui environment server/panel hosting, di luar repository.
+api/config/database.php adalah kode generik getenv yang dibutuhkan aplikasi, bukan file konfigurasi rahasia lokal.
+Gunakan user aplikasi dengan akses database yang sesuai. Jangan hardcode password atau mengganti konfigurasi umum XAMPP dalam repository.
+Host wajib mendukung PHP, PDO MySQL, session dan MySQL/MariaDB dengan InnoDB. Gunakan HTTPS.
+Pengaturan session writable dan environment harus disiapkan admin server; ZIP tidak bisa membawa konfigurasi rahasia tersebut.
+database/.htaccess memblokir akses direktori SQL pada Apache. Pada server lain, admin harus memblokir direktori tersebut atau menyimpan SQL di luar webroot.
 
-## Export dan verifikasi
-export/antara-schema.sql adalah skema fresh dari SQL snapshot 141, berisi lima tabel tanpa data akun.
-Ini bukan export database lokal berjalan karena database tersebut tidak tersedia di sesi ini.
-Untuk migrasi data yang sudah ada, export database aplikasi sendiri lewat phpMyAdmin; tinjau data pribadi sebelum dibagikan kepada admin.
-Jangan salin folder mysql/data. Jangan import skema lama ini ke database versi terbaru tanpa memeriksa migrasi.
-Skema ini sesuai backend tahap 141A, bukan skema fitur dari snapshot sesudahnya.
-
-Jalankan pada deployment TEST setelah import SQL (membuat satu akun tes):
+## Tes pada deployment TEST
 python tools/deploy_smoke.py http://localhost/ANTARA/
-Skrip menguji health, register, duplicate register, sesi, logout, login username/email, progres yang tidak menurun, dan skor leaderboard.
-Hapus akun tes dengan ID yang dicetak menggunakan akses admin; foreign keys menghapus progres dan skor terkait.
-Skrip tidak menyimpan atau mencetak password. Jangan jalankan ke production tanpa menerima pembuatan akun tes.
-
-PHP/MySQL tidak tersedia di lingkungan pembuatan bundel: tes backend ini belum dijalankan.
-Tes HTTP statis tidak membuktikan koneksi database. Wajib jalankan smoke test pada server tujuan.
-Frontend progres/leaderboard snapshot ini belum terintegrasi penuh dengan API; endpoint tersedia untuk integrasi berikutnya.
-Periksa render dan alur daftar/login di browser server tujuan juga.
-Untuk produksi, audit lanjutan autentikasi, pembatasan request, dan validasi skor diperlukan; hotfix SQL ini bukan audit keamanan menyeluruh.
+Skrip membuat satu akun tes, menguji health/register/login/session, progres persisten, leaderboard, pengubahan profil dan password.
+Hapus akun tes menggunakan ID yang dicetak setelah tes. Relasi foreign key menghapus progres/skor terkait.
+Password tes tidak disimpan atau dicetak. Tes harus dijalankan pada database uji.
+Backend PHP/MySQL belum diuji langsung dalam sesi pembuatan bundel. Tes HTTP statis bukan tes database.
+Render browser dan alur tombol/More/dropdown juga perlu diuji pada localhost tujuan.
+Stage 156 menambahkan gerbang login mulai perjalanan. Ini mencerminkan sumber asli, bukan perubahan baru packaging.
+Frontend progres/pencapaian pada tahap historis ini belum sepenuhnya memakai API; endpoint backend tidak menjamin seluruh UI sudah terintegrasi.
+Panduan lama di docs/history berasal dari ZIP sumber dan dapat menyebut htdocs root. Untuk paket ini ikuti panduan di atas.
