@@ -232,3 +232,156 @@
   .earth-region-preview { height:76px; }
   .earth-region-descriptor { min-height:0; }
 }
+
+/* 2026-10-02: Venus-parity Earth Full Exploration rebuild. */
+.earth-full-exploration {
+  --surface-opacity:0;
+  --entry-progress:0;
+  background:#040b11;
+}
+.earth-full-exploration.is-configuring,
+.earth-full-exploration.is-selecting,
+.earth-full-exploration.is-preparing,
+.earth-full-exploration.is-entering,
+.earth-full-exploration.is-active,
+.earth-full-exploration.is-exiting { background:#040c12; }
+.earth-full-exploration.is-entering,
+.earth-full-exploration.is-active,
+.earth-full-exploration.is-exiting { --surface:var(--surface-opacity,1); }
+.earth-full-exploration.is-active { --surface-opacity:1; }
+.earth-full-exploration.is-entering .earth-full-viewport,
+.earth-full-exploration.is-active .earth-full-viewport,
+.earth-full-exploration.is-exiting .earth-full-viewport { opacity:var(--surface-opacity,1); }
+.earth-full-exploration.is-surface-visible.is-selecting .earth-full-viewport,
+.earth-full-exploration.is-surface-visible.is-selecting .earth-full-atmosphere { opacity:.72; }
+.earth-full-exploration.is-surface-visible.is-selecting::before {
+  content:"";position:absolute;inset:0;z-index:30;pointer-events:none;background:#02080daa;backdrop-filter:blur(4px);
+}
+.earth-entry-clouds,.earth-haze-vignette { position:absolute;inset:-8%;z-index:4;pointer-events:none;opacity:0; }
+.earth-entry-clouds {
+  background:
+    radial-gradient(ellipse at 20% 42%,#f5fbff66 0 7%,transparent 22%),
+    radial-gradient(ellipse at 74% 56%,#d8edf55c 0 9%,transparent 25%),
+    radial-gradient(ellipse at 48% 68%,#ffffff45 0 10%,transparent 29%);
+  filter:blur(20px);transform:scale(1.2) translateY(calc((1 - var(--entry-progress))*8%));
+}
+.earth-haze-vignette { inset:0;background:radial-gradient(circle at 50% 48%,transparent 30%,#05101940 72%,#010508b8 100%);opacity:var(--surface);z-index:5; }
+.earth-full-exploration.is-entering .earth-entry-clouds { opacity:calc((1 - var(--entry-progress)) * .88);animation:earthCloudDrift 4.2s linear both; }
+.earth-full-exploration[data-region="mariana"].is-entering .earth-entry-clouds { background:linear-gradient(180deg,#8bd1e255 0,#4a9fb644 30%,#0f4c622e 62%,transparent 85%);filter:blur(12px); }
+@keyframes earthCloudDrift { from{transform:scale(1.28) translate3d(-4%,7%,0)} to{transform:scale(1.75) translate3d(5%,-12%,0)} }
+
+.earth-quality-panel {
+  position:absolute;z-index:42;left:50%;top:50%;width:min(760px,calc(100vw - 44px));max-height:min(86vh,720px);overflow:auto;
+  transform:translate(-50%,-50%);padding:28px;border:1px solid #a9d9ea45;background:linear-gradient(145deg,#061019f4,#0b1e2bed 70%,#07131ceb);
+  box-shadow:0 34px 120px #01070ca8;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+}
+.earth-quality-panel[hidden]{display:none}
+.earth-quality-topline{display:flex;align-items:center;justify-content:space-between;color:#78a8ba;font-size:6px;letter-spacing:2.2px}
+.earth-quality-topline button{width:32px;height:32px;border:1px solid #9ecfe142;background:transparent;color:#d2edf6;font-size:20px}
+.earth-quality-copy small{display:block;margin-top:16px;color:#7fb7ca;font-size:5.8px;letter-spacing:1.8px}
+.earth-quality-copy h3{margin:7px 0 8px;font:400 clamp(34px,5vw,58px)/1 Georgia,"Times New Roman",serif;color:#f0fbff;letter-spacing:-1px}
+.earth-quality-copy p{max-width:650px;margin:0;color:#94afbb;font-size:9px;line-height:1.72}
+.earth-quality-options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px}
+.earth-quality-option{min-height:106px;padding:16px;text-align:left;border:1px solid #a9d6e333;background:#071720bd;color:#c9e5ee;display:flex;justify-content:space-between;align-items:flex-start;transition:.2s ease}
+.earth-quality-option:hover,.earth-quality-option:focus-visible{outline:none;border-color:#9dddf49a;background:#0c2735db}
+.earth-quality-option.is-selected{border-color:#8ddbf6cc;background:linear-gradient(145deg,#0b2a3be8,#0b1e29dd);box-shadow:0 0 0 1px #79cfea2a inset,0 14px 38px #0006}
+.earth-quality-option strong{display:block;font-size:9px;letter-spacing:1.5px}
+.earth-quality-option small{display:block;margin-top:6px;color:#7e9ca9;font-size:6px;letter-spacing:.5px}
+.earth-quality-option em{color:#93d9ef;font:normal 5px/1.3 system-ui,sans-serif;letter-spacing:1px;max-width:100px;text-align:right}
+.earth-quality-summary{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:14px;padding-top:12px;border-top:1px solid #9bcde228;color:#7996a3;font-size:6px;line-height:1.5}
+.earth-quality-summary strong{color:#d6f0f8;font-size:7px;letter-spacing:1.2px}
+.earth-quality-start{width:100%;margin-top:16px;min-height:46px;border:1px solid #91d7ef8c;background:#0c2a38cc;color:#e9f9fd;font-size:7px;letter-spacing:1.7px}
+
+.earth-full-hud,.earth-full-actions,.earth-control-hints,.earth-mobile-controls,.earth-full-tutorial,.earth-landmark-card,
+.earth-objectives-panel,.earth-objectives-toggle,.earth-observation-prompt,.earth-observation-card,.earth-location-info-toggle,.earth-boundary-hint { opacity:var(--surface-opacity,0); }
+.earth-full-exploration.is-active .earth-full-hud,
+.earth-full-exploration.is-active .earth-full-actions,
+.earth-full-exploration.is-active .earth-control-hints,
+.earth-full-exploration.is-active .earth-mobile-controls,
+.earth-full-exploration.is-active .earth-full-tutorial,
+.earth-full-exploration.is-active .earth-landmark-card,
+.earth-full-exploration.is-active .earth-objectives-panel,
+.earth-full-exploration.is-active .earth-objectives-toggle,
+.earth-full-exploration.is-active .earth-observation-prompt,
+.earth-full-exploration.is-active .earth-observation-card,
+.earth-full-exploration.is-active .earth-location-info-toggle,
+.earth-full-exploration.is-active .earth-boundary-hint { opacity:1; }
+
+.earth-full-actions{display:block;pointer-events:auto}
+.earth-actions-menu-toggle{display:none}
+.earth-actions-menu{display:flex;gap:7px}
+.earth-actions-menu[hidden]{display:none}
+
+.earth-objectives-panel,.earth-observation-card{
+  position:absolute;z-index:16;width:min(340px,40vw);border:1px solid #addce942;background:linear-gradient(145deg,#06141de8,#0a202bdd);box-shadow:0 20px 70px #01080d78;backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px)
+}
+.earth-objectives-panel{left:clamp(16px,3.2vw,48px);bottom:62px;padding:14px 16px}
+.earth-objectives-panel[hidden],.earth-objectives-toggle[hidden],.earth-observation-prompt[hidden],.earth-observation-card[hidden],.earth-location-info-toggle[hidden]{display:none!important}
+.earth-objectives-head,.earth-observation-card-head,.earth-landmark-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.earth-objectives-head small,.earth-observation-card-head small{display:block;color:#76a6b9;font-size:5.3px;letter-spacing:1.5px}
+.earth-objectives-head strong{display:block;margin-top:4px;color:#e4f7fb;font-size:9px;letter-spacing:.6px;text-transform:uppercase}
+.earth-objectives-head button,.earth-landmark-minimize{padding:5px 7px;border:1px solid #9dcddb35;background:transparent;color:#87a8b5;font-size:5px;text-transform:uppercase;letter-spacing:.8px}
+.earth-objectives-panel>p{margin:9px 0;color:#8ea8b4;font-size:6.2px;line-height:1.55}
+.earth-discovery-progress>div:first-child{display:flex;justify-content:space-between;color:#7896a2;font-size:5px;letter-spacing:1px}
+.earth-discovery-progress strong{color:#c9e8f1}
+.earth-discovery-track{height:2px;margin-top:7px;background:#8fc6d524;overflow:hidden}
+.earth-discovery-track i{display:block;width:100%;height:100%;transform:scaleX(0);transform-origin:left;background:#8bd8ef;box-shadow:0 0 12px #72cbe7a0;transition:transform .3s ease}
+.earth-objectives-list{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+.earth-objectives-list li{display:grid;grid-template-columns:23px 1fr;gap:8px;align-items:center;padding:7px 0;border-top:1px solid #9bcde21b}
+.earth-objectives-list li>span{width:21px;height:21px;display:grid;place-items:center;border:1px solid #86bad02e;color:#708d99;font-size:5.5px}
+.earth-objectives-list li.is-done>span{border-color:#86d4c07a;color:#bdeedb;background:#17443555}
+.earth-objectives-list strong{display:block;color:#d3eaf1;font-size:6.3px;font-weight:600}
+.earth-objectives-list small{display:block;margin-top:2px;color:#66828e;font-size:4.8px;letter-spacing:.6px}
+.earth-next-target{margin-top:9px;padding:8px;border:1px solid #8ec7d32a;background:#07141d82;display:grid;grid-template-columns:1fr auto;gap:3px 10px}
+.earth-next-target small{grid-column:1/-1;color:#6d8e9c;font-size:4.8px;letter-spacing:1px}
+.earth-next-target strong{color:#cce9f1;font-size:6px}.earth-next-target span{color:#8fb8c8;font-size:6px}
+.earth-objectives-toggle,.earth-location-info-toggle{position:absolute;z-index:15;bottom:64px;min-height:34px;padding:0 11px;border:1px solid #9bd1e244;background:#061720cc;color:#bfe1ec;font-size:5.5px;letter-spacing:.9px;text-transform:uppercase;backdrop-filter:blur(10px)}
+.earth-objectives-toggle{left:clamp(16px,3.2vw,48px)}
+.earth-location-info-toggle{right:clamp(16px,3.2vw,48px)}
+
+.earth-observation-prompt{position:absolute;z-index:18;left:50%;bottom:72px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid #9bd9e65e;background:#061821e6;box-shadow:0 12px 40px #0008;backdrop-filter:blur(10px)}
+.earth-observation-key{width:29px;height:29px;display:grid;place-items:center;border:1px solid #9ce0f380;color:#e7faff;font-size:8px;font-weight:700}
+.earth-observation-prompt div{min-width:150px}.earth-observation-prompt small{display:block;color:#6f97a8;font-size:4.8px;letter-spacing:1.2px}.earth-observation-prompt strong{display:block;margin-top:3px;color:#dff4fa;font-size:6.8px}
+.earth-observation-prompt button{min-height:31px;padding:0 10px;border:1px solid #94d6e97a;background:#0c2b39;color:#e6f9fd;font-size:5.5px;letter-spacing:1px}
+.earth-observation-card{left:50%;top:50%;transform:translate(-50%,-50%);width:min(580px,calc(100vw - 40px));max-height:min(78vh,680px);overflow:auto;padding:20px 22px;z-index:28}
+.earth-observation-card-head span{display:block;margin-top:3px;color:#8fd5ba;font-size:5px;letter-spacing:1px}.earth-observation-card-head button{width:30px;height:30px;border:1px solid #9ecbd83d;background:transparent;color:#d7eef4;font-size:18px}
+.earth-observation-card h4{margin:12px 0 4px;color:#eefbff;font:400 clamp(27px,4vw,42px)/1.04 Georgia,"Times New Roman",serif}
+.earth-observation-meta{margin:0;color:#7393a0;font-size:5.6px;letter-spacing:.7px}.earth-observation-lead{margin:13px 0;color:#c1d7df;font-size:8.2px;line-height:1.65}
+.earth-observation-sections{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.earth-observation-sections section{padding:10px;border:1px solid #8fbfd02a;background:#07151d80}.earth-observation-sections small,.earth-observation-why small{color:#78acc0;font-size:5px;letter-spacing:1.1px}.earth-observation-sections p,.earth-observation-why p,.earth-observation-more p{margin:5px 0 0;color:#91abb6;font-size:6.4px;line-height:1.6}
+.earth-observation-why{margin-top:10px;padding:10px;border-left:2px solid #8bd8ed80;background:#0a1e2880}.earth-observation-more{margin-top:10px;border-top:1px solid #94c7d42b;padding-top:8px}.earth-observation-more summary{cursor:pointer;color:#afd1dc;font-size:6px}.earth-observation-source{display:inline-block;margin-top:12px;color:#79aec1;font-size:5.4px;text-decoration:none;text-transform:uppercase;letter-spacing:.7px}
+.earth-full-exploration.is-observation-open::before{content:"";position:absolute;inset:0;z-index:27;background:#01070c8a;backdrop-filter:blur(3px);pointer-events:none}
+
+.earth-landmark-card{opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s ease,transform .2s ease}
+.earth-landmark-card.is-visible{opacity:1;pointer-events:auto;transform:none}
+.earth-landmark-description{padding-top:7px;border-top:1px solid #9bcde21c}.earth-landmark-facts{margin:8px 0 0;padding-left:16px;color:#87a3af;font-size:5.8px;line-height:1.55}.earth-landmark-facts li+li{margin-top:4px}
+
+.earth-boundary-hint{position:absolute;z-index:20;left:50%;bottom:118px;transform:translate(-50%,8px);padding:7px 10px;border:1px solid #91cbd842;background:#06151dd9;color:#a9c7d2;font-size:5.3px;letter-spacing:.8px;text-transform:uppercase;pointer-events:none;visibility:hidden;transition:.2s ease}
+.earth-boundary-hint.is-visible{visibility:visible;transform:translate(-50%,0)}
+.earth-travel-veil{position:absolute;inset:0;z-index:38;display:grid;place-items:center;opacity:0;visibility:hidden;background:radial-gradient(circle at center,#15384a88,#02070bec 70%);backdrop-filter:blur(7px);transition:opacity .32s ease,visibility .32s ease}
+.earth-travel-veil span{color:#c7eaf5;font-size:7px;letter-spacing:2px}.earth-travel-veil.is-visible{opacity:1;visibility:visible}.earth-travel-veil.is-visible:not(.is-covered){opacity:0}
+
+.earth-tutorial-grid.earth-tutorial-desktop{grid-template-columns:repeat(6,1fr)}
+
+@media (pointer:coarse),(max-width:760px){
+  .earth-quality-panel{width:calc(100vw - 22px);max-height:90vh;padding:18px}
+  .earth-quality-options{grid-template-columns:1fr;gap:7px}.earth-quality-option{min-height:66px;padding:11px 12px;align-items:center}
+  .earth-quality-copy h3{font-size:34px}.earth-quality-copy p{font-size:7.5px}.earth-quality-start{min-height:42px}
+  .earth-full-hud{width:min(236px,62vw);padding:10px 11px}.earth-full-hud h3{font-size:22px}.earth-hud-metrics{gap:5px}.earth-hud-metrics strong{font-size:6.7px}.earth-hud-data{display:none}
+  .earth-full-actions{right:10px;top:10px;max-width:none}.earth-actions-menu-toggle{display:block!important;min-height:34px!important}.earth-actions-menu{position:absolute;right:0;top:40px;display:none;min-width:150px;grid-template-columns:1fr;gap:5px}.earth-full-exploration.is-actions-open .earth-actions-menu{display:grid}.earth-actions-menu button{width:100%}
+  .earth-objectives-panel{left:10px;bottom:180px;width:min(290px,74vw);max-height:38vh;overflow:auto;padding:11px 12px}.earth-objectives-toggle{left:10px;bottom:174px}
+  .earth-location-info-toggle{right:10px;bottom:174px}
+  .earth-observation-prompt{bottom:176px;max-width:calc(100vw - 26px);padding:7px 8px}.earth-observation-prompt div{min-width:110px}.earth-observation-key{display:none}
+  .earth-observation-card{width:calc(100vw - 22px);max-height:74vh;padding:16px;top:48%}.earth-observation-card h4{font-size:29px}.earth-observation-sections{grid-template-columns:1fr}
+  .earth-landmark-card{display:block;right:10px;bottom:174px;width:min(300px,78vw);max-height:42vh;overflow:auto}
+  .earth-mobile-dpad{left:12px;bottom:14px;width:132px;height:132px}.earth-mobile-dpad button,.earth-mobile-altitude button{width:42px;height:42px}.earth-mobile-dpad [data-earth-control="forward"]{left:45px}.earth-mobile-dpad [data-earth-control="left"]{top:45px}.earth-mobile-dpad [data-earth-control="right"]{top:45px}.earth-mobile-dpad [data-earth-control="backward"]{left:45px}.earth-mobile-dpad span{left:57px;top:57px}
+  .earth-mobile-altitude{right:14px;bottom:18px;height:112px}.earth-boundary-hint{bottom:154px;width:max-content;max-width:78vw;text-align:center}
+  .earth-region-selector{z-index:41}.earth-region-grid{grid-template-columns:1fr 1fr}.earth-region-card{min-height:205px}
+}
+@media (max-width:520px){
+  .earth-region-grid{grid-template-columns:1fr}.earth-region-card{min-height:176px}.earth-region-preview{height:70px}
+  .earth-full-hud{width:min(220px,66vw)}.earth-hud-location{font-size:6.8px}.earth-hud-coordinates{font-size:5.7px}.earth-hud-metrics small{font-size:4.4px}.earth-hud-metrics strong{font-size:6px}
+  .earth-objectives-panel{width:calc(100vw - 20px);left:10px;bottom:166px}.earth-landmark-card{width:calc(100vw - 20px);right:10px;bottom:166px}
+  .earth-observation-prompt{bottom:160px}.earth-objectives-toggle,.earth-location-info-toggle{bottom:158px}
+  .earth-tutorial-mobile{grid-template-columns:repeat(4,1fr)}
+}
+@media (prefers-reduced-motion:reduce){.earth-entry-clouds{animation:none!important}}

@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="styles.css?v=20261002-nara-sora-framing-1">
   <link rel="stylesheet" href="exploration-media.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="earth-scene.css?v=20260927-venusscience-2">
-  <link rel="stylesheet" href="earth-full-exploration.css?v=20260927-venusscience-2">
+  <link rel="stylesheet" href="earth-full-exploration.css?v=20261002-venus-parity-1">
   <link rel="stylesheet" href="mars-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="mars-full-exploration.css?v=20261001-mobile-arrival-actions-1">
   <link rel="stylesheet" href="mercury-scene.css?v=20260927-venusscience-2">
@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="mobile-planet-actions-fix.css?v=20261001-all-planets-mobile-actions-2">
   <script src="exploration-media.js?v=20260927-venusscience-2" defer></script>
   <script src="earth-scene.js?v=20260927-venusscience-2" defer></script>
-  <script src="earth-full-exploration.js?v=20260927-venusscience-2" defer></script>
+  <script src="earth-full-exploration.js?v=20261002-venus-parity-1" defer></script>
   <script src="mars-scene.js?v=20260927-venusscience-2" defer></script>
   <script src="mars-full-exploration.js?v=20260927-venusscience-2" defer></script>
   <script src="mercury-scene.js?v=20260927-venusscience-2" defer></script>
@@ -381,81 +381,99 @@
       <section class="earth-full-exploration" id="earth-full-exploration" aria-label="Eksplorasi penuh terrain nyata Bumi" aria-hidden="true" hidden>
         <div class="earth-full-viewport" id="earth-full-viewport" aria-label="Terrain Bumi tiga dimensi berbasis data elevasi nyata"></div>
         <div class="earth-full-atmosphere" aria-hidden="true"></div>
+        <div class="earth-entry-clouds" aria-hidden="true"></div>
+        <div class="earth-haze-vignette" aria-hidden="true"></div>
+
+        <section class="earth-quality-panel" id="earth-quality-panel" aria-labelledby="earth-quality-title" hidden>
+          <div class="earth-quality-topline"><span>ANTARA · EKSPLORASI BUMI</span><button id="earth-quality-close" type="button" aria-label="Tutup pengaturan kualitas grafis">×</button></div>
+          <div class="earth-quality-copy">
+            <small>PERSIAPAN EKSPLORASI</small>
+            <h3 id="earth-quality-title">Kualitas Grafis</h3>
+            <p>Pilih kualitas sebelum turun ke permukaan. Data elevasi tetap sama pada semua mode, sementara detail, resolusi, dan jarak render disesuaikan agar eksplorasi tetap mulus.</p>
+          </div>
+          <div class="earth-quality-options" id="earth-quality-options" role="radiogroup" aria-label="Kualitas grafis Bumi">
+            <button type="button" class="earth-quality-option" data-earth-quality="LOW" role="radio" aria-checked="false"><span><strong>RENDAH</strong><small>Performa terbaik</small></span><em data-quality-recommendation></em></button>
+            <button type="button" class="earth-quality-option" data-earth-quality="MEDIUM" role="radio" aria-checked="false"><span><strong>SEDANG</strong><small>Seimbang</small></span><em data-quality-recommendation></em></button>
+            <button type="button" class="earth-quality-option" data-earth-quality="HIGH" role="radio" aria-checked="false"><span><strong>TINGGI</strong><small>Visual terbaik</small></span><em data-quality-recommendation></em></button>
+          </div>
+          <div class="earth-quality-summary"><span id="earth-quality-device-note">Rekomendasi ditentukan dari kemampuan browser dan layar.</span><strong id="earth-quality-selected-label">SEDANG</strong></div>
+          <button class="earth-quality-start" id="earth-quality-start" type="button">MULAI EKSPLORASI</button>
+        </section>
 
         <section class="earth-region-selector" id="earth-region-selector" aria-labelledby="earth-region-selector-title">
           <div class="earth-region-selector-topline"><span>ANTARA · EARTH REAL TERRAIN</span><button id="earth-region-selector-close" type="button" aria-label="Tutup pemilih wilayah">×</button></div>
           <h3 id="earth-region-selector-title">Pilih Wilayah Eksplorasi</h3>
-          <p>Pilih destinasi dulu. ANTARA akan memutar Bumi ke koordinat nyata, menurunkan kamera, lalu masuk ke terrain lokal berbasis elevasi nyata dengan material khusus tiap wilayah.</p>
+          <p>Pilih destinasi dulu. ANTARA akan memutar Bumi ke koordinat nyata, menurunkan kamera melalui atmosfer, lalu masuk ke terrain lokal berbasis elevasi nyata.</p>
           <div class="earth-region-grid" id="earth-region-grid"></div>
           <div class="earth-region-provenance">
-            <strong>DATA TERRAIN</strong>
-            <span>Mapzen Terrain Tiles · Amazon Public Dataset</span>
-            <small>Sumber mosaik mencakup SRTM, USGS 3DEP, GMTED, dan NOAA ETOPO1 untuk bathymetry. Provenance region ditampilkan kembali di HUD.</small>
+            <strong>DATA TERRAIN</strong><span>Mapzen Terrain Tiles · Amazon Public Dataset</span>
+            <small>Sumber mosaik mencakup SRTM, USGS 3DEP, GMTED, dan NOAA ETOPO1 untuk bathymetry. Area luar tetap dirender sebagai konteks visual, sementara zona gerak dibatasi untuk menjaga performa.</small>
           </div>
         </section>
 
         <aside class="earth-full-hud" data-earth-ui aria-label="Informasi penerbangan Bumi">
-          <div class="earth-hud-kicker">BUMI</div>
-          <h3>Eksplorasi Terrain</h3>
-          <div class="earth-hud-mode">REAL DATA · FULL EXPLORATION</div>
-          <div class="earth-hud-location" id="earth-hud-location">Everest / Himalaya</div>
-          <div class="earth-hud-coordinates" id="earth-hud-coordinates">27.9881° N · 86.9253° E</div>
+          <div class="earth-hud-kicker">BUMI</div><h3>Eksplorasi</h3><div class="earth-hud-mode">REAL DATA · FULL EXPLORATION</div>
+          <div class="earth-hud-location" id="earth-hud-location">Pilih destinasi</div>
+          <div class="earth-hud-coordinates" id="earth-hud-coordinates">--</div>
           <div class="earth-hud-metrics">
-            <div><small>Posisi Vertikal</small><strong id="earth-hud-altitude">--</strong></div>
-            <div><small>Terrain Lokal</small><strong id="earth-hud-terrain">--</strong></div>
-            <div><small>Jarak Fitur</small><strong id="earth-hud-distance">--</strong></div>
-            <div><small>Kualitas</small><strong id="earth-hud-quality">AUTO</strong></div>
+            <div class="earth-hud-metric"><small>Ketinggian</small><strong id="earth-hud-altitude">--</strong></div>
+            <div class="earth-hud-metric"><small>Kecepatan</small><strong id="earth-hud-speed">0 M/S</strong></div>
+            <div class="earth-hud-metric"><small>Jarak fitur</small><strong id="earth-hud-distance">--</strong></div>
+            <div class="earth-hud-metric"><small>Terrain</small><strong id="earth-hud-terrain">--</strong></div>
+            <div class="earth-hud-metric"><small>Kualitas</small><strong id="earth-hud-quality">SEDANG</strong></div>
           </div>
           <div class="earth-hud-data"><small>DATA SOURCE</small><span id="earth-hud-data">Terrarium DEM</span></div>
         </aside>
 
-        <div class="earth-full-actions" data-earth-ui>
-          <button id="earth-region-toggle" type="button">Ganti Wilayah</button>
-          <button id="earth-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button>
-          <button class="earth-full-exit" id="earth-full-exit" type="button">Keluar dari Eksplorasi</button>
-        </div>
+        <aside class="earth-objectives-panel" id="earth-objectives-panel" data-earth-ui aria-label="Tujuan eksplorasi Bumi" aria-live="polite">
+          <div class="earth-objectives-head"><div><small>TUJUAN EKSPLORASI</small><strong id="earth-objectives-region">Bumi</strong></div><button id="earth-objectives-collapse" type="button">Minimalkan</button></div>
+          <p id="earth-objectives-intro"></p>
+          <div class="earth-discovery-progress"><div><span>PROGRES TEMUAN</span><strong id="earth-discovery-count">0 / 0</strong></div><div class="earth-discovery-track" aria-hidden="true"><i id="earth-discovery-bar"></i></div></div>
+          <ol id="earth-objectives-list" class="earth-objectives-list"></ol>
+          <div class="earth-next-target" id="earth-next-target" hidden><small>TEMUAN TERDEKAT</small><strong id="earth-next-target-name">-</strong><span id="earth-next-target-distance">-</span></div>
+        </aside>
+        <button class="earth-objectives-toggle" id="earth-objectives-toggle" type="button" data-earth-ui hidden>Tujuan · 0 / 0</button>
 
-        <div class="earth-control-hints" aria-hidden="true"><span><b>WASD</b> Bergerak</span><span><b>Klik + Mouse</b> Lihat sekitar</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Percepat</span><span class="earth-exit-hint"><b>ESC</b> Untuk keluar</span></div>
+        <div class="earth-observation-prompt" id="earth-observation-prompt" data-earth-ui hidden>
+          <span class="earth-observation-key">E</span><div><small>COBA AMATI DI SINI</small><strong id="earth-observation-prompt-title">Ada yang menarik</strong></div><button id="earth-observe-button" type="button">AMATI</button>
+        </div>
+        <aside class="earth-observation-card" id="earth-observation-card" data-earth-ui aria-live="polite" aria-hidden="true" hidden>
+          <div class="earth-observation-card-head"><div><small id="earth-observation-type">TAHUKAH KAMU?</small><span id="earth-observation-status">BARU KAMU LIHAT</span></div><button id="earth-observation-close" type="button" aria-label="Tutup informasi pengamatan">×</button></div>
+          <h4 id="earth-observation-title">Ada yang Menarik di Sini</h4><p class="earth-observation-meta" id="earth-observation-meta"></p><p class="earth-observation-lead" id="earth-observation-lead"></p>
+          <div class="earth-observation-sections" id="earth-observation-sections"></div>
+          <div class="earth-observation-why"><small>KENAPA INI MENARIK?</small><p id="earth-observation-why"></p></div>
+          <details class="earth-observation-more" id="earth-observation-more"><summary>Pelajari lebih lanjut</summary><div id="earth-observation-deep"></div></details>
+          <a class="earth-observation-source" id="earth-observation-source" href="https://www.mapzen.com/blog/terrain-tile-service/" target="_blank" rel="noopener noreferrer">Sumber data ↗</a>
+        </aside>
+
+        <div class="earth-full-actions" data-earth-ui>
+          <button class="earth-actions-menu-toggle" id="earth-actions-menu-toggle" type="button" aria-expanded="false" aria-controls="earth-actions-menu">Menu</button>
+          <div class="earth-actions-menu" id="earth-actions-menu"><button id="earth-region-toggle" type="button">Wilayah</button><button id="earth-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button><button class="earth-full-exit" id="earth-full-exit" type="button">Keluar dari Eksplorasi</button></div>
+        </div>
+        <div class="earth-control-hints" aria-hidden="true"><span><b>WASD</b> Bergerak</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Cepat</span><span><b>E</b> Amati</span><span class="earth-exit-hint"><b>ESC</b> Panel / Keluar</span></div>
 
         <div class="earth-mobile-controls" data-earth-ui aria-label="Kontrol eksplorasi Bumi">
-          <div class="earth-mobile-dpad" aria-label="Kontrol arah">
-            <button type="button" data-earth-control="forward" aria-label="Maju">▲</button>
-            <button type="button" data-earth-control="left" aria-label="Geser ke kiri">◀</button>
-            <span aria-hidden="true"></span>
-            <button type="button" data-earth-control="right" aria-label="Geser ke kanan">▶</button>
-            <button type="button" data-earth-control="backward" aria-label="Mundur">▼</button>
-          </div>
-          <div class="earth-mobile-altitude" aria-label="Kontrol ketinggian">
-            <button type="button" data-earth-control="up" aria-label="Naik">＋</button><span>ALT</span><button type="button" data-earth-control="down" aria-label="Turun">−</button>
-          </div>
+          <div class="earth-mobile-dpad" aria-label="Kontrol arah"><button type="button" data-earth-control="forward" aria-label="Maju">▲</button><button type="button" data-earth-control="left" aria-label="Geser ke kiri">◀</button><span aria-hidden="true"></span><button type="button" data-earth-control="right" aria-label="Geser ke kanan">▶</button><button type="button" data-earth-control="backward" aria-label="Mundur">▼</button></div>
+          <div class="earth-mobile-altitude" aria-label="Kontrol ketinggian"><button type="button" data-earth-control="up" aria-label="Naik">＋</button><span>TINGGI</span><button type="button" data-earth-control="down" aria-label="Turun">−</button></div>
         </div>
 
-        <div class="earth-full-loading" id="earth-full-loading" data-earth-ui hidden>
-          <div class="earth-full-loading-kicker">ANTARA · EARTH TERRAIN</div>
-          <h3>Menyiapkan Terrain Nyata</h3>
-          <div class="earth-full-loading-status" id="earth-full-loading-status">MENGUNCI KOORDINAT</div>
-          <div class="earth-loading-track"><div class="earth-loading-progress" id="earth-full-loading-progress"></div></div>
-        </div>
-
-        <div class="earth-full-error" id="earth-full-error" data-earth-ui hidden>
-          <h3>Data Terrain Tidak Tersedia</h3>
-          <p id="earth-full-error-message">Terrain real tidak dapat dimuat.</p>
-          <button id="earth-full-error-return" type="button">Kembali ke Bumi</button>
-        </div>
+        <div class="earth-boundary-hint" id="earth-boundary-hint" aria-live="polite"></div>
+        <div class="earth-full-loading" id="earth-full-loading" data-earth-ui hidden><div class="earth-full-loading-kicker">ANTARA · EARTH TERRAIN</div><h3>Menembus Atmosfer Bumi</h3><div class="earth-full-loading-status" id="earth-full-loading-status">MENYIAPKAN DESTINASI</div><div class="earth-loading-track"><div class="earth-loading-progress" id="earth-full-loading-progress"></div></div></div>
+        <div class="earth-full-error" id="earth-full-error" data-earth-ui hidden><h3>Eksplorasi Belum Tersedia</h3><p id="earth-full-error-message">Terrain real tidak dapat dimuat.</p><button id="earth-full-error-return" type="button">Kembali ke Bumi</button></div>
 
         <div class="earth-full-tutorial" id="earth-full-tutorial" data-earth-ui>
           <div class="earth-tutorial-header"><span>Kontrol Eksplorasi</span><button id="earth-tutorial-close" type="button" aria-label="Tutup panduan">×</button></div>
-          <div class="earth-tutorial-grid earth-tutorial-desktop"><div><b>W A S D</b><span>Bergerak</span></div><div><b>KLIK + MOUSE</b><span>Lihat sekitar</span></div><div><b>Q / E</b><span>Turun / Naik</span></div><div><b>SHIFT</b><span>Percepat</span></div><div><b>ESC</b><span>Keluar</span></div></div>
-          <div class="earth-tutorial-grid earth-tutorial-mobile"><div><b>ARROW</b><span>Bergerak</span></div><div><b>GESER</b><span>Lihat sekitar</span></div><div><b>＋ / −</b><span>Ketinggian</span></div></div>
+          <div class="earth-tutorial-grid earth-tutorial-desktop"><div><b>W A S D</b><span>Bergerak</span></div><div><b>KLIK + MOUSE</b><span>Lihat sekitar</span></div><div><b>Q / E</b><span>Turun / Naik</span></div><div><b>SHIFT</b><span>Percepat</span></div><div><b>E</b><span>Amati</span></div><div><b>ESC</b><span>Panel / Keluar</span></div></div>
+          <div class="earth-tutorial-grid earth-tutorial-mobile"><div><b>ARROW</b><span>Bergerak</span></div><div><b>GESER</b><span>Lihat sekitar</span></div><div><b>＋ / −</b><span>Ketinggian</span></div><div><b>AMATI</b><span>Temuan</span></div></div>
         </div>
 
-        <aside class="earth-landmark-card" id="earth-landmark-card" data-earth-ui aria-live="polite">
-          <small>REAL EARTH REGION</small>
-          <h4 id="earth-landmark-name">Mount Everest</h4>
-          <p id="earth-landmark-type"></p>
-          <p id="earth-landmark-coords"></p>
+        <div class="earth-travel-veil" id="earth-travel-veil" aria-hidden="true"><span id="earth-travel-label">NAVIGASI BUMI</span></div>
+        <aside class="earth-landmark-card" id="earth-landmark-card" data-earth-ui aria-live="polite" aria-hidden="true">
+          <div class="earth-landmark-head"><small>REAL EARTH REGION · DATA ELEVASI</small><button class="earth-landmark-minimize" id="earth-landmark-minimize" type="button">Sembunyikan</button></div>
+          <h4 id="earth-landmark-name">Bumi</h4><p id="earth-landmark-type"></p><p id="earth-landmark-coords"></p><p class="earth-landmark-description" id="earth-landmark-description"></p><ul class="earth-landmark-facts" id="earth-landmark-facts"></ul>
           <a id="earth-landmark-source" href="https://www.mapzen.com/blog/terrain-tile-service/" target="_blank" rel="noopener noreferrer">Provenance terrain ↗</a>
         </aside>
+        <button class="earth-location-info-toggle" id="earth-info-toggle" type="button" hidden>Info Lokasi</button>
       </section>
     </section>
     <section class="sun-scene" id="sun-scene" aria-labelledby="sun-title" hidden>
