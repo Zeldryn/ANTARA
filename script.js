@@ -932,7 +932,9 @@ if (profileMoreTrigger && profileNavSuite) {
     if (!profileNavSuite.contains(event.target) && !profileMoreTrigger.contains(event.target)) closeProfileMore();
   });
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 700) closeProfileMore();
+    // MORE is used by both mobile and the 701-1199px transition layout.
+    // Only force-close it once the full desktop navigation becomes visible.
+    if (window.innerWidth >= 1200) closeProfileMore();
   }, { passive: true });
 }
 companions.setJourneyPhase("idle");
