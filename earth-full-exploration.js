@@ -1270,12 +1270,21 @@
         this.dismissTutorial(true);
       });
 
-      this.objectivesCollapse?.addEventListener("click", () => this.collapseObjectives(true));
-      this.objectivesToggle?.addEventListener("click", () => this.expandObjectives(true));
+      const bindPanelButton = (button, handler) => {
+        if (!button) return;
+        button.addEventListener("pointerdown", event => event.stopPropagation());
+        button.addEventListener("click", event => {
+          event.preventDefault();
+          event.stopPropagation();
+          handler();
+        });
+      };
+      bindPanelButton(this.objectivesCollapse, () => this.collapseObjectives(true));
+      bindPanelButton(this.objectivesToggle, () => this.expandObjectives(true));
       this.observeButton?.addEventListener("click", () => this.tryObserveNearby());
       this.observationClose?.addEventListener("click", () => this.closeObservationCard(true));
-      this.infoMinimize?.addEventListener("click", () => this.hideRegionInfo(true));
-      this.infoToggle?.addEventListener("click", () => this.showRegionInfo(true));
+      bindPanelButton(this.infoMinimize, () => this.hideRegionInfo(true));
+      bindPanelButton(this.infoToggle, () => this.showRegionInfo(true));
 
       document.addEventListener("fullscreenchange", () => this.updateFullscreenLabel());
       window.addEventListener("resize", () => {
@@ -1548,12 +1557,9 @@
       this.previous = performance.now();
       this.startLoop();
       this.showTutorial();
-      this.infoCard.classList.remove("is-visible");
-      this.infoCard.setAttribute("aria-hidden", "true");
       this.infoOpen = false;
-      this.infoToggle.hidden = false;
-      if (this.isMobileUi()) this.collapseObjectives(false);
-      else this.expandObjectives(false);
+      this.objectivesOpen = !this.isMobileUi();
+      this.syncEducationPanels();
       this.updateResponsiveUi();
       this.updateHUD(true);
       this.updateEducation(true);
@@ -1930,41 +1936,53 @@
       if (this.state === STATES.ACTIVE) this.updateEducation(true);
     }
 
+    syncEducationPanels(focusTarget = null) {
+      const active = this.state === STATES.ACTIVE;
+      if (!active) {
+        this.infoOpen = false;
+        this.objectivesOpen = false;
+      }
+
+      this.infoCard.hidden = !this.infoOpen;
+      this.infoCard.classList.toggle("is-visible", this.infoOpen);
+      this.infoCard.setAttribute("aria-hidden", String(!this.infoOpen));
+      this.root.classList.toggle("is-info-open", this.infoOpen);
+
+      this.objectivesPanel.hidden = !this.objectivesOpen;
+      this.root.classList.toggle("is-objectives-open", this.objectivesOpen);
+
+      // The two compact buttons are independent switches. Opening one panel never
+      // re-labels or reuses the other button, so their click targets cannot drift.
+      this.infoToggle.hidden = !active || this.infoOpen;
+      this.objectivesToggle.hidden = !active || this.objectivesOpen;
+
+      if (focusTarget === "info-close" && this.infoOpen) this.infoMinimize?.focus({ preventScroll:true });
+      else if (focusTarget === "info-toggle" && !this.infoToggle.hidden) this.infoToggle?.focus({ preventScroll:true });
+      else if (focusTarget === "objectives-close" && this.objectivesOpen) this.objectivesCollapse?.focus({ preventScroll:true });
+      else if (focusTarget === "objectives-toggle" && !this.objectivesToggle.hidden) this.objectivesToggle?.focus({ preventScroll:true });
+    }
+
     expandObjectives(focus = false) {
-      if (this.infoOpen) this.hideRegionInfo(false);
+      this.infoOpen = false;
       this.objectivesOpen = true;
-      this.objectivesPanel.hidden = false;
-      this.objectivesToggle.hidden = true;
-      this.root.classList.add("is-objectives-open");
-      if (focus) this.objectivesCollapse.focus({ preventScroll:true });
+      this.syncEducationPanels(focus ? "objectives-close" : null);
     }
 
     collapseObjectives(focus = false) {
       this.objectivesOpen = false;
-      this.objectivesPanel.hidden = true;
-      this.objectivesToggle.hidden = this.state !== STATES.ACTIVE;
-      this.root.classList.remove("is-objectives-open");
-      if (focus && !this.objectivesToggle.hidden) this.objectivesToggle.focus({ preventScroll:true });
+      this.syncEducationPanels(focus ? "objectives-toggle" : null);
     }
 
     showRegionInfo(focus = false) {
       if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
-      if (this.objectivesOpen) this.collapseObjectives(false);
+      this.objectivesOpen = false;
       this.infoOpen = true;
-      this.infoCard.classList.add("is-visible");
-      this.infoCard.setAttribute("aria-hidden", "false");
-      this.infoToggle.hidden = true;
-      this.root.classList.add("is-info-open");
-      if (focus) this.infoMinimize.focus({ preventScroll:true });
+      this.syncEducationPanels(focus ? "info-close" : null);
     }
 
     hideRegionInfo(focus = false) {
       this.infoOpen = false;
-      this.infoCard.classList.remove("is-visible");
-      this.infoCard.setAttribute("aria-hidden", "true");
-      this.infoToggle.hidden = this.state !== STATES.ACTIVE;
-      this.root.classList.remove("is-info-open");
-      if (focus && !this.infoToggle.hidden) this.infoToggle.focus({ preventScroll:true });
+      this.syncEducationPanels(focus ? "info-toggle" : null);
     }
 
     showTutorial() {
@@ -2012,9 +2030,9 @@
       this.selectorOpenedFromRegion = false;
       this.state = STATES.ACTIVE;
       this.root.classList.remove("is-selecting");
-      this.infoToggle.hidden = false;
-      if (this.isMobileUi()) this.collapseObjectives(false);
-      else this.expandObjectives(false);
+      this.infoOpen = false;
+      this.objectivesOpen = !this.isMobileUi();
+      this.syncEducationPanels();
       this.startLoop();
       this.updateResponsiveUi();
       this.updateEducation(true);
