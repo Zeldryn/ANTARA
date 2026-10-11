@@ -1125,3 +1125,294 @@
     max-height: calc(100dvh - var(--venus-safe-top) - var(--venus-safe-bottom) - 20px);
   }
 }
+
+
+/* ============================================================
+   2026-10-03 VENUS UI READABILITY + EARTH PARITY PASS
+   Geometry, hierarchy and control density mirror Earth while
+   preserving the Venus copper / Magellan visual identity.
+   ============================================================ */
+.venus-full-exploration,
+.venus-full-exploration * { box-sizing:border-box; }
+.venus-full-exploration button,
+.venus-full-exploration a { cursor:pointer; }
+
+.venus-region-selector,
+.venus-quality-panel,
+.venus-full-exploration .mars-full-tutorial,
+.venus-objectives-panel,
+.venus-observation-card,
+.venus-location-card { max-width:calc(100vw - 24px); }
+.venus-region-selector *,
+.venus-quality-panel *,
+.venus-full-exploration .mars-full-tutorial *,
+.venus-objectives-panel *,
+.venus-observation-card *,
+.venus-location-card * { min-width:0; overflow-wrap:anywhere; }
+
+/* Destination selector: preserve the cinematic five-column desktop view,
+   but remove the 5–6px typography that made the cards unreadable. */
+.venus-region-selector {
+  width:min(1240px,calc(100vw - var(--venus-safe-left) - var(--venus-safe-right) - 32px));
+  max-height:min(88dvh,calc(100dvh - var(--venus-safe-top) - var(--venus-safe-bottom) - 26px));
+  padding:28px 30px 26px;
+  border-color:rgba(241,198,142,.36);
+  box-shadow:0 34px 120px rgba(22,7,6,.68),0 0 0 1px rgba(244,196,134,.05) inset;
+}
+.venus-region-selector-topline { font-size:8.5px; line-height:1.4; letter-spacing:1.75px; }
+.venus-region-selector-topline button { width:38px; height:38px; font-size:22px; }
+.venus-region-selector h3 { margin:14px 0 10px; font-size:clamp(38px,4.2vw,58px); line-height:1.02; }
+.venus-region-selector>p { max-width:900px; font-size:12px; line-height:1.72; }
+.venus-region-grid { grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; margin-top:24px; }
+.venus-region-card { min-height:318px; gap:9px; padding:0 15px 15px; border-color:rgba(233,190,133,.30); }
+.venus-region-index { font-size:8px; line-height:1.3; letter-spacing:1.35px; }
+.venus-region-card strong { font-size:23px; line-height:1.12; }
+.venus-region-descriptor { min-height:0; font-size:9.5px; line-height:1.62; }
+.venus-region-card small { font-size:8px; line-height:1.55; }
+.venus-region-card em { padding:6px 8px; font-size:7.2px; line-height:1.35; letter-spacing:.9px; }
+.venus-region-source { font-size:6.9px; line-height:1.5; }
+.venus-region-preview { height:116px; margin:0 -15px 4px; }
+.venus-region-preview b { left:11px; bottom:9px; font-size:7.5px; letter-spacing:1.05px; }
+.venus-region-provenance { gap:12px; padding-top:14px; }
+.venus-region-provenance strong { font-size:8px; }
+.venus-region-provenance span { font-size:9px; line-height:1.5; }
+.venus-region-provenance small { font-size:7.5px; line-height:1.55; }
+
+/* Flight HUD and top-right actions: same readable hierarchy as Earth. */
+.venus-full-exploration .mars-full-hud {
+  width:min(390px,calc(100vw - 32px));
+  padding:16px 18px;
+  border-color:rgba(241,198,142,.30);
+  border-left-color:rgba(241,184,112,.70);
+}
+.venus-full-exploration .mars-full-hud h3 { font-size:clamp(30px,2.4vw,38px); }
+.venus-full-exploration .mars-hud-kicker { font-size:9px; }
+.venus-full-exploration .mars-hud-mode { font-size:8.5px; line-height:1.45; }
+.venus-full-exploration .mars-hud-location { margin-top:12px; font-size:12px; line-height:1.4; }
+.venus-full-exploration .mars-hud-coordinates { font-size:10px; line-height:1.45; }
+.venus-full-exploration .mars-hud-metrics { gap:8px 12px; margin-top:11px; }
+.venus-full-exploration .mars-hud-metric { padding-top:8px; }
+.venus-full-exploration .mars-hud-metric small { font-size:8.2px; line-height:1.35; }
+.venus-full-exploration .mars-hud-metric strong { margin-top:4px; font-size:11px; line-height:1.4; }
+.venus-full-exploration .mars-hud-data { margin-top:10px; font-size:8.5px; line-height:1.5; }
+
+.venus-full-exploration .venus-full-actions { gap:8px; }
+.venus-full-exploration .venus-actions-menu { gap:8px; }
+.venus-full-exploration .venus-actions-menu>button,
+.venus-full-exploration .venus-actions-menu-toggle {
+  min-height:42px;
+  padding:0 14px;
+  border:1px solid rgba(238,212,163,.28);
+  background:rgba(22,8,8,.88);
+  color:#e4d2bc;
+  font-size:8.5px;
+  line-height:1.25;
+  letter-spacing:.65px;
+  text-transform:uppercase;
+  box-shadow:0 10px 30px rgba(17,4,3,.18);
+}
+.venus-full-exploration .venus-actions-menu>button:hover,
+.venus-full-exploration .venus-actions-menu>button:focus-visible,
+.venus-full-exploration .venus-actions-menu-toggle:hover,
+.venus-full-exploration .venus-actions-menu-toggle:focus-visible {
+  border-color:rgba(246,210,158,.60);
+  background:rgba(63,31,23,.92);
+  color:#ffe1b7;
+  outline:none;
+}
+
+/* Persistent help bar: Earth-style framed background instead of floating tiny text. */
+.venus-full-exploration .mars-control-hints {
+  gap:16px;
+  bottom:calc(var(--venus-safe-bottom) + 16px);
+  padding:9px 12px;
+  border:1px solid rgba(238,195,139,.17);
+  background:rgba(31,15,12,.64);
+  box-shadow:0 8px 30px rgba(12,4,3,.22);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  color:rgba(244,221,202,.88);
+  font-size:8px;
+  line-height:1.4;
+  letter-spacing:.7px;
+  opacity:calc(var(--surface-opacity) * .92);
+}
+.venus-full-exploration .mars-control-hints b { color:#f6ca87; font-size:8.5px; }
+
+/* Entry tutorial: same six-column desktop language and four-item mobile rhythm as Earth. */
+.venus-full-exploration .mars-full-tutorial {
+  width:min(680px,calc(100vw - 32px));
+  padding:24px 26px;
+  border:1px solid rgba(239,211,156,.28);
+  background:linear-gradient(145deg,rgba(29,16,12,.96),rgba(47,24,18,.94));
+  box-shadow:0 26px 96px rgba(17,5,3,.56);
+}
+.venus-full-exploration .mars-full-tutorial-header span { font-size:10px; line-height:1.4; letter-spacing:1.5px; }
+.venus-full-exploration .mars-full-tutorial-header button { width:34px; height:34px; font-size:20px; }
+.venus-full-exploration .mars-full-tutorial-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:12px; margin-top:18px; }
+.venus-full-exploration .mars-tutorial-item { padding-top:12px; border-top-color:rgba(214,191,147,.24); }
+.venus-full-exploration .mars-tutorial-item b { font-size:11.5px; line-height:1.35; letter-spacing:.75px; }
+.venus-full-exploration .mars-tutorial-item span { margin-top:5px; font-size:9px; line-height:1.45; letter-spacing:.45px; }
+
+/* Quality setup. */
+.venus-quality-panel { width:min(720px,calc(100vw - 28px)); padding:24px 26px; }
+.venus-quality-topline { font-size:9px; line-height:1.4; letter-spacing:1.5px; }
+.venus-quality-topline button { width:36px; height:36px; font-size:20px; }
+.venus-quality-copy>small { font-size:8.5px; }
+.venus-quality-copy h3 { font-size:clamp(34px,4vw,48px); }
+.venus-quality-copy p { max-width:620px; font-size:11.5px; line-height:1.72; }
+.venus-quality-option { min-height:104px; padding:15px; }
+.venus-quality-option strong { font-size:11.5px; }
+.venus-quality-option small { font-size:9px; line-height:1.4; }
+.venus-quality-option em { font-size:8px; line-height:1.35; }
+.venus-quality-summary span { font-size:9px; line-height:1.5; }
+.venus-quality-summary strong { font-size:10px; }
+.venus-quality-start { min-height:46px; font-size:9.5px; }
+
+/* Objectives, observations and location cards use the same readable density as Earth. */
+.venus-objectives-panel { width:min(390px,calc(100vw - 32px)); max-height:min(50vh,540px); overflow:auto; padding:16px 18px; }
+.venus-objectives-head small { font-size:8.8px; }
+.venus-objectives-head strong { font-size:13px; line-height:1.35; }
+.venus-objectives-head button { min-height:32px; padding:6px 10px; font-size:8px; }
+.venus-objectives-panel>p { font-size:11px; line-height:1.65; }
+.venus-discovery-progress>div:first-child { font-size:8px; }
+.venus-objectives-list li { padding:9px 0; }
+.venus-objectives-list strong { font-size:10px; line-height:1.4; }
+.venus-objectives-list small { font-size:8px; }
+.venus-next-target small { font-size:7.8px; }
+.venus-next-target strong,.venus-next-target span { font-size:9px; }
+.venus-objectives-toggle,.venus-location-info-toggle { min-height:40px; font-size:8.5px; }
+
+.venus-observation-prompt { max-width:calc(100vw - 24px); padding:10px 12px; }
+.venus-observation-key { width:34px; height:34px; font-size:10px; }
+.venus-observation-prompt small { font-size:8px; }
+.venus-observation-prompt strong { font-size:10px; line-height:1.4; }
+.venus-observation-prompt button { min-height:37px; font-size:8.5px; }
+.venus-observation-card { width:min(720px,calc(100vw - 32px)); max-height:min(82vh,760px); padding:24px 26px; }
+.venus-observation-card-head small { font-size:8.8px; }
+.venus-observation-card-head span { font-size:8px; }
+.venus-observation-card-head button { width:36px; height:36px; font-size:21px; }
+.venus-observation-card h4 { font-size:clamp(30px,4vw,46px); }
+.venus-observation-meta { font-size:8.8px; line-height:1.5; }
+.venus-observation-lead { font-size:12.5px; line-height:1.72; }
+.venus-observation-section { padding:13px; }
+.venus-observation-section small,.venus-observation-why small { font-size:8.5px; }
+.venus-observation-section p,.venus-observation-why p,.venus-observation-more p { font-size:10.5px; line-height:1.7; }
+.venus-observation-more summary { font-size:9.5px; }
+.venus-observation-source-note,.venus-observation-source { font-size:8px; line-height:1.45; }
+
+.venus-location-card {
+  width:min(390px,calc(100vw - 32px));
+  max-height:min(68vh,690px);
+  overflow:auto;
+  padding:17px 18px;
+  border-color:rgba(228,198,143,.30);
+  border-right-color:rgba(226,191,122,.58);
+}
+.venus-location-card .venus-location-card-head>small { font-size:8px; line-height:1.4; }
+.venus-location-minimize { min-height:32px; padding:6px 10px; font-size:8px; }
+.venus-location-card h4 { margin:10px 0 6px; font-size:28px; line-height:1.08; }
+.venus-location-card .mars-landmark-type { font-size:10.5px; line-height:1.6; }
+.venus-location-card .mars-landmark-coords { font-size:9.5px; line-height:1.5; }
+.venus-location-description { font-size:11.5px; line-height:1.68; }
+.venus-location-facts { font-size:10px; line-height:1.65; }
+.venus-location-data-badge { font-size:8px; line-height:1.5; }
+.venus-location-card .mars-landmark-source { font-size:8px; line-height:1.45; }
+.venus-boundary-hint { font-size:8px; }
+
+/* Laptop / medium width: keep five cards when practical, then two-column rhythm. */
+@media (max-width:1180px) {
+  .venus-region-selector { width:calc(100vw - 22px); padding:22px; }
+  .venus-region-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .venus-region-card { min-height:275px; }
+  .venus-full-exploration .mars-full-hud { width:min(340px,38vw); }
+}
+
+@media (max-width:900px) {
+  .venus-region-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+  .venus-region-card { min-height:230px; padding:0 12px 12px; }
+  .venus-region-preview { height:90px; margin-inline:-12px; }
+  .venus-region-card strong { font-size:20px; }
+  .venus-region-descriptor { font-size:8.5px; }
+  .venus-full-exploration .mars-full-tutorial-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .venus-full-exploration .mars-full-hud { width:min(300px,48vw); }
+}
+
+@media (pointer:coarse),(max-width:760px) {
+  .venus-full-exploration .mars-control-hints { display:none; }
+  .venus-full-exploration .mars-full-hud { width:min(285px,68vw); padding:12px 13px; }
+  .venus-full-exploration .mars-full-hud h3 { font-size:26px; }
+  .venus-full-exploration .mars-hud-location { font-size:8.8px; }
+  .venus-full-exploration .mars-hud-coordinates { font-size:7.2px; }
+  .venus-full-exploration .mars-hud-metric small { font-size:5.8px; }
+  .venus-full-exploration .mars-hud-metric strong { font-size:8px; }
+  .venus-objectives-panel { width:min(330px,82vw); max-height:42vh; padding:13px 14px; }
+  .venus-objectives-panel>p { font-size:8.5px; }
+  .venus-objectives-list strong { font-size:8px; }
+  .venus-objectives-list small { font-size:6.2px; }
+  .venus-observation-card { width:calc(100vw - 18px); max-height:78vh; padding:18px; }
+  .venus-observation-card h4 { font-size:31px; }
+  .venus-observation-lead { font-size:10.5px; }
+  .venus-observation-section p,.venus-observation-why p,.venus-observation-more p { font-size:8.8px; }
+  .venus-location-card { width:min(350px,88vw); max-height:52vh; padding:14px; }
+  .venus-location-card h4 { font-size:25px; }
+  .venus-location-description { font-size:8.8px; }
+  .venus-location-facts { font-size:8px; }
+  .venus-full-exploration .mars-full-tutorial { width:calc(100vw - 18px); max-height:72vh; overflow:auto; padding:18px; }
+  .venus-full-exploration .mars-full-tutorial-header span { font-size:8px; }
+  .venus-full-exploration .mars-full-tutorial-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .venus-full-exploration .mars-tutorial-item b { font-size:9px; }
+  .venus-full-exploration .mars-tutorial-item span { font-size:7px; }
+  .venus-region-selector { width:calc(100vw - 18px); padding:18px; }
+  .venus-region-selector h3 { font-size:clamp(31px,9vw,42px); }
+  .venus-region-selector>p { font-size:10px; }
+  .venus-region-card { min-height:205px; }
+  .venus-region-card strong { font-size:19px; }
+  .venus-region-descriptor { font-size:8px; }
+  .venus-region-card small { font-size:7px; }
+  .venus-quality-panel { width:calc(100vw - 18px); padding:18px; }
+  .venus-quality-copy p { font-size:9.5px; }
+  .venus-quality-option strong { font-size:10px; }
+  .venus-quality-option small { font-size:8px; }
+}
+
+@media (max-width:520px) {
+  .venus-region-grid { grid-template-columns:1fr; }
+  .venus-region-card { min-height:170px; }
+  .venus-region-preview { height:76px; }
+  .venus-full-exploration .mars-full-hud { width:min(250px,72vw); }
+  .venus-objectives-panel,.venus-location-card { width:calc(100vw - 20px); max-height:46vh; }
+  .venus-full-exploration .mars-full-tutorial-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+/* Final readability tuning after cross-checking 1366px + 390px compositions. */
+.venus-region-selector-topline { font-size:9px; }
+.venus-region-selector>p { font-size:12.5px; }
+.venus-region-descriptor { font-size:10.5px; }
+.venus-region-card small { font-size:8.8px; }
+.venus-region-source { font-size:7.5px; }
+.venus-region-provenance strong { font-size:8.5px; }
+.venus-region-provenance span { font-size:9.5px; }
+.venus-region-provenance small { font-size:8px; }
+.venus-full-exploration .venus-actions-menu>button,
+.venus-full-exploration .venus-actions-menu-toggle { min-height:44px; font-size:9.5px; }
+.venus-full-exploration .mars-control-hints { font-size:8.7px; }
+.venus-full-exploration .mars-control-hints b { font-size:9px; }
+.venus-discovery-progress span { font-size:8px; }
+.venus-discovery-progress strong { font-size:9px; }
+.venus-objectives-list li { font-size:9.5px; line-height:1.55; }
+#venus-observation-status { font-size:7.8px; }
+.venus-observation-comparison small { font-size:8px; }
+.venus-observation-comparison strong { font-size:11.5px; }
+#venus-observation-deep p { font-size:10.5px; line-height:1.7; }
+#venus-observe-button { min-height:37px; font-size:8.5px; }
+
+@media (pointer:coarse),(max-width:760px) {
+  .venus-region-selector>p { font-size:10.5px; }
+  .venus-region-descriptor { font-size:8.4px; }
+  .venus-region-card small { font-size:7.4px; }
+  .venus-region-source { font-size:6.8px; }
+  .venus-region-provenance small { font-size:7px; }
+  .venus-full-exploration .venus-actions-menu>button,
+  .venus-full-exploration .venus-actions-menu-toggle { min-height:40px; font-size:8px; }
+}
