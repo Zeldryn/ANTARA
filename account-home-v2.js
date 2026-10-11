@@ -195,29 +195,40 @@
 
     positionMenu() {
       if (!this.menu || !this.trigger) return;
-      const anchor = this.trigger.querySelector('.profile-login-frame') || this.trigger;
-      const rect = anchor.getBoundingClientRect();
+      const accountFrame = this.trigger.querySelector('.profile-login-frame') || this.trigger;
+      const accountRect = accountFrame.getBoundingClientRect();
+      const avatarRect = this.avatarTrigger?.getBoundingClientRect?.() || accountRect;
       const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
       const viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
       const gutter = viewportWidth <= 430 ? 8 : 10;
       const gap = viewportWidth <= 700 ? 6 : 7;
 
-      // Keep the dropdown visually attached to the account border without making
-      // the action copy too narrow on phones/tablets.
-      const desiredWidth = Math.max(240, Math.min(300, rect.width + (viewportWidth <= 700 ? 92 : 104)));
-      const menuWidth = Math.min(desiredWidth, viewportWidth - gutter * 2);
-      let left = rect.left;
-      left = Math.max(gutter, Math.min(left, viewportWidth - menuWidth - gutter));
+      // The menu is the account module's continuation: its left edge starts at
+      // the profile socket and its right edge ends exactly at the identity frame.
+      // This is measured from the live layout, so desktop/medium/mobile breakpoints
+      // all stay aligned without per-resolution magic numbers.
+      const identityLeft = Math.min(avatarRect.left, accountRect.left);
+      const identityRight = Math.max(avatarRect.right, accountRect.right);
+      const availableWidth = Math.max(0, viewportWidth - gutter * 2);
+      const naturalWidth = Math.max(1, identityRight - identityLeft);
+      const menuWidth = Math.min(naturalWidth, availableWidth);
+      let left = identityLeft;
+
+      if (left < gutter) left = gutter;
+      if (left + menuWidth > viewportWidth - gutter) left = viewportWidth - gutter - menuWidth;
+
+      const anchorBottom = Math.max(accountRect.bottom, avatarRect.bottom);
+      const menuTop = anchorBottom + gap;
 
       this.menu.style.setProperty('--account-menu-left', `${Math.round(left)}px`);
-      this.menu.style.setProperty('--account-menu-top', `${Math.round(rect.bottom + gap)}px`);
+      this.menu.style.setProperty('--account-menu-top', `${Math.round(menuTop)}px`);
       this.menu.style.setProperty('--account-menu-width', `${Math.round(menuWidth)}px`);
 
       // Tiny-height landscape devices still keep the whole menu reachable.
       const menuHeight = this.menu.offsetHeight || 0;
-      const bottom = rect.bottom + gap + menuHeight;
+      const bottom = menuTop + menuHeight;
       if (menuHeight && bottom > viewportHeight - gutter) {
-        const maxTop = Math.max(rect.bottom + 2, viewportHeight - menuHeight - gutter);
+        const maxTop = Math.max(anchorBottom + 2, viewportHeight - menuHeight - gutter);
         this.menu.style.setProperty('--account-menu-top', `${Math.round(maxTop)}px`);
       }
     }

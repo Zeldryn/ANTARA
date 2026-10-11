@@ -152,3 +152,64 @@
   .account-panel-scan { animation:none; }
   .account-panel,.account-quick-menu,.account-toast { transition:none; }
 }
+
+
+/* ========================================================================
+   2026-10-03 ACCOUNT DROPDOWN GEOMETRY + AVATAR OPTICAL CENTERING
+   The quick menu spans the complete identity unit (profile socket -> account
+   frame edge). Avatar initials are centered independently from font metrics.
+   ======================================================================== */
+.account-quick-menu { box-sizing:border-box; }
+.account-quick-avatar {
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 0 1px;
+  line-height:1;
+  letter-spacing:0;
+  text-indent:0;
+}
+.profile-avatar-initials {
+  position:absolute;
+  inset:0;
+  z-index:1;
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  margin:0;
+  padding:0;
+  line-height:1;
+  letter-spacing:0 !important;
+  text-indent:0 !important;
+  transform:translateY(-.04em);
+  pointer-events:none;
+}
+.profile-avatar-initials[hidden] { display:none !important; }
+.account-profile-avatar {
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 0 1px;
+  line-height:1;
+  letter-spacing:0;
+  text-indent:0;
+}
+
+@media (max-width:700px) {
+  .account-quick-menu { padding:8px; }
+  .account-quick-head { gap:8px; padding:6px 6px 9px; }
+  .account-quick-avatar { width:32px;height:32px;flex-basis:32px;font-size:10px; }
+  .account-quick-actions button { grid-template-columns:25px minmax(0,1fr);gap:6px;padding:7px 6px; }
+  .account-quick-icon { width:24px;height:24px; }
+  .account-quick-actions strong { font-size:8px; }
+  .account-quick-actions small { font-size:6.5px;overflow-wrap:anywhere; }
+}
+
+@media (max-width:360px) {
+  .account-quick-menu { padding:7px; }
+  .account-quick-head { padding-left:5px;padding-right:5px; }
+  .account-quick-actions button { padding-left:5px;padding-right:5px; }
+}
