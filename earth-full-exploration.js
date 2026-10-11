@@ -330,6 +330,10 @@
       this.sky = null;
       this.particles = null;
       this.environmentTime = 0;
+      this.observationGroup = null;
+      this.observationMarkers = new Map();
+      this.observationTime = 0;
+      this.observationResources = [];
     }
 
     createSurfaceTexture(kind = "detail") {
@@ -793,6 +797,89 @@
 
     distanceToFeature(x, z) { return Math.hypot(x, z); }
 
+    createEducationalMarkers(observations = []) {
+      const T = this.THREE;
+      this.disposeEducationalMarkers();
+      if (!observations.length) return;
+
+      this.observationGroup = new T.Group();
+      this.observationGroup.name = `earth-education-markers-${this.region.id}`;
+      this.scene.add(this.observationGroup);
+
+      // Ported from Venus Full Exploration: a ground ring, vertical stem and luminous core.
+      // Earth uses kilometers as world units, so these dimensions are intentionally compact
+      // enough to read from flight altitude without becoming giant props on the terrain.
+      const ringGeometry = new T.TorusGeometry(0.30, 0.020, 7, 28);
+      const stemGeometry = new T.CylinderGeometry(0.011, 0.011, 0.44, 7);
+      const coreGeometry = new T.OctahedronGeometry(0.095, 0);
+      this.observationResources.push(ringGeometry, stemGeometry, coreGeometry);
+
+      observations.forEach((observation, index) => {
+        const ground = this.heightAtWorld(observation.x, observation.z);
+        if (!Number.isFinite(ground)) return;
+
+        const marker = new T.Group();
+        marker.name = `earth-observation-${observation.id}`;
+        marker.position.set(observation.x, ground + 0.035, observation.z);
+        marker.userData.observationId = observation.id;
+        marker.userData.phase = ((index * 0.61803398875) % 1) * Math.PI * 2;
+
+        const ringMaterial = new T.MeshBasicMaterial({ color:0x86dcff, transparent:true, opacity:0.50, depthWrite:false, fog:true });
+        const stemMaterial = new T.MeshBasicMaterial({ color:0x9fe6ff, transparent:true, opacity:0.27, depthWrite:false, fog:true });
+        const coreMaterial = new T.MeshBasicMaterial({ color:0xd9f7ff, transparent:true, opacity:0.88, depthWrite:false, fog:true });
+        this.observationResources.push(ringMaterial, stemMaterial, coreMaterial);
+
+        const ring = new T.Mesh(ringGeometry, ringMaterial);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = 0.025;
+        const stem = new T.Mesh(stemGeometry, stemMaterial);
+        stem.position.y = 0.25;
+        const core = new T.Mesh(coreGeometry, coreMaterial);
+        core.position.y = 0.52;
+        marker.add(ring, stem, core);
+        marker.userData.ring = ring;
+        marker.userData.stem = stem;
+        marker.userData.core = core;
+        marker.userData.materials = { ring:ringMaterial, stem:stemMaterial, core:coreMaterial };
+        this.observationGroup.add(marker);
+        this.observationMarkers.set(observation.id, marker);
+      });
+    }
+
+    updateObservationMarkers(activeId, discoveredIds, delta = 0) {
+      this.observationTime += delta;
+      for (const [id, marker] of this.observationMarkers) {
+        const active = id === activeId;
+        const discovered = discoveredIds?.has?.(id);
+        const { core, materials } = marker.userData;
+        if (!core || !materials) continue;
+        const pulse = 1 + (active ? Math.sin(this.observationTime * 3.0 + marker.userData.phase) * 0.08 : 0);
+        marker.scale.setScalar(active ? 1.16 * pulse : discovered ? 0.86 : 1);
+        materials.ring.opacity = active ? 0.94 : discovered ? 0.18 : 0.50;
+        materials.stem.opacity = active ? 0.46 : discovered ? 0.09 : 0.27;
+        materials.core.opacity = active ? 1 : discovered ? 0.34 : 0.88;
+        materials.ring.color.setHex(active ? 0xcff5ff : discovered ? 0x648997 : 0x86dcff);
+        materials.core.color.setHex(active ? 0xffffff : discovered ? 0x8baab5 : 0xd9f7ff);
+        core.rotation.y += delta * (active ? 1.35 : 0.42);
+      }
+    }
+
+    disposeEducationalMarkers() {
+      if (this.observationGroup) {
+        this.scene.remove(this.observationGroup);
+        this.observationGroup.clear();
+        this.observationGroup = null;
+      }
+      this.observationMarkers.clear();
+      const seen = new Set();
+      for (const resource of this.observationResources) {
+        if (!resource || seen.has(resource)) continue;
+        seen.add(resource);
+        resource.dispose?.();
+      }
+      this.observationResources.length = 0;
+    }
+
     update(camera) {
       this.projection.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
       this.frustum.setFromProjectionMatrix(this.projection);
@@ -845,6 +932,7 @@
         this.particles.material.dispose();
         this.particles = null;
       }
+      this.disposeEducationalMarkers();
       const textures = this.material.userData.surfaceTextures || {};
       Object.values(textures).forEach(texture => texture?.dispose?.());
       this.material.dispose();
@@ -1204,7 +1292,11 @@
         if (button) this.setQualityChoice(button.dataset.earthQuality);
       });
       this.qualityStart?.addEventListener("click", () => this.confirmQualitySelection());
-      this.qualityClose?.addEventListener("click", () => this.cancelPreEntry());
+      this.qualityClose?.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.cancelPreEntry();
+      });
 
       this.selectorGrid.addEventListener("click", event => {
         const button = event.target.closest("[data-earth-region]");
@@ -1232,6 +1324,19 @@
       this.infoToggle?.addEventListener("click", () => this.showRegionInfo(true));
 
       document.addEventListener("fullscreenchange", () => this.updateFullscreenLabel());
+      document.addEventListener("pointerdown", event => {
+        if (!this.actionsMenuOpen) return;
+        if (this.actionsMenu?.contains(event.target) || this.actionsMenuToggle?.contains(event.target)) return;
+        this.setActionsMenu(false);
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key !== "Escape" || ![STATES.CONFIGURING, STATES.SELECTING].includes(this.state)) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if (this.state === STATES.CONFIGURING) this.cancelPreEntry();
+        else if (this.selectorOpenedFromRegion && this.terrain) this.closeSelectorToRegion();
+        else this.cancelPreEntry();
+      }, true);
       window.addEventListener("resize", () => {
         this.resize();
         this.updateResponsiveUi();
@@ -1244,7 +1349,7 @@
     }
 
     isMobileUi() {
-      return matchMedia("(pointer: coarse)").matches || innerWidth <= 760;
+      return window.matchMedia?.("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)")?.matches || false;
     }
 
     setActionsMenu(open, focus = false) {
@@ -1299,6 +1404,7 @@
     }
 
     cancelPreEntry() {
+      if (![STATES.CONFIGURING, STATES.SELECTING].includes(this.state) || this.terrain) return;
       this.transitionToken += 1;
       this.stopLoop();
       this.input.reset();
@@ -1317,6 +1423,7 @@
       this.state = STATES.IDLE;
       this.entryButton.disabled = false;
       document.getElementById("announcement").textContent = "Kembali ke panorama Bumi.";
+      this.entryButton.focus({ preventScroll:true });
     }
 
     setLoading(progress, text) {
@@ -1418,6 +1525,7 @@
       this.setCameraForRegion(region, true);
       this.updateRegionUI();
       this.setupEducationUI();
+      this.terrain.createEducationalMarkers(EARTH_EDUCATION[this.region.id]?.observations || []);
       void this.terrain.loadExtended().catch(() => {});
     }
 
@@ -1621,8 +1729,9 @@
         this.updateHUD();
       }
       if (this.educationClock >= 0.16) {
+        const educationDelta = this.educationClock;
         this.educationClock = 0;
-        this.updateEducation();
+        this.updateEducation(false, educationDelta);
       }
     }
 
@@ -1770,7 +1879,7 @@
       this.renderObjectives();
     }
 
-    updateEducation(force = false) {
+    updateEducation(force = false, delta = 0) {
       if (this.state !== STATES.ACTIVE || !this.camera) return;
       const observations = EARTH_EDUCATION[this.region.id]?.observations || [];
       let nearest = null;
@@ -1804,6 +1913,8 @@
         this.observationPrompt.hidden = true;
       }
 
+      const activeId = this.nearbyObservation?.id || nearest?.id || null;
+      this.terrain?.updateObservationMarkers(activeId, this.discovered, delta);
       if (force) this.updateDiscoveryUI();
     }
 
@@ -1828,6 +1939,12 @@
     openObservationCard(observation) {
       this.activeObservation = observation;
       this.input.reset();
+      this.setActionsMenu(false);
+      if (this.isMobileUi()) {
+        this.hideRegionInfo(false);
+        this.collapseObjectives(false);
+      }
+      this.dismissTutorial(false);
       this.observationPrompt.hidden = true;
       this.observationType.textContent = observation.type || "TAHUKAH KAMU?";
       this.observationStatus.textContent = this.discovered.has(observation.id) ? "TEMUAN TERCATAT" : "BARU KAMU LIHAT";
@@ -1867,6 +1984,10 @@
     }
 
     expandObjectives(focus = false) {
+      this.setActionsMenu(false);
+      if (this.isObservationCardOpen()) this.closeObservationCard(false);
+      if (this.isMobileUi() && this.infoOpen) this.hideRegionInfo(false);
+      this.dismissTutorial(false);
       this.objectivesOpen = true;
       this.objectivesPanel.hidden = false;
       this.objectivesToggle.hidden = true;
@@ -1883,6 +2004,10 @@
     }
 
     showRegionInfo(focus = false) {
+      this.setActionsMenu(false);
+      if (this.isObservationCardOpen()) this.closeObservationCard(false);
+      if (this.isMobileUi() && this.objectivesOpen) this.collapseObjectives(false);
+      this.dismissTutorial(false);
       this.infoOpen = true;
       this.infoCard.classList.add("is-visible");
       this.infoCard.setAttribute("aria-hidden", "false");
