@@ -1,1 +1,27 @@
-ANTARA -> C:\xampp\htdocs\ANTARA. Start Apache + MySQL. Open http://localhost/ANTARA/. Follow docs/DEPLOY_DATABASE.md for migrations and test.
+# ANTARA 164-168: localhost dan database
+
+Urutan: 164, 165, 166, 167, 168 setelah 163. Judul commit ada di COMMIT_ORDER.txt.
+Setiap tahap berasal dari satu snapshot lengkap asli. Nomor merupakan urutan paket, bukan nomor atau tanggal commit GitHub asli.
+Salin isi ANTARA/ ke folder project Git yang sudah ada. Pertahankan .git dan konfigurasi rahasia lokal milikmu; terapkan juga daftar penghapusan di VERIFICATION.json.
+Folder docs/history berisi catatan sumber lama, bukan petunjuk terbaru.
+
+## Localhost
+Letakkan folder ANTARA di C:\xampp\htdocs\ANTARA. Jalankan Apache dan MySQL.
+Buka http://localhost/ANTARA/ dan http://localhost/ANTARA/api/health.php.
+PHP 8.1+, PDO MySQL, session, dan MySQL/MariaDB diperlukan. Server statis tidak menjalankan backend.
+Konfigurasi generik menggunakan environment ANTARA_DB_HOST, ANTARA_DB_PORT, ANTARA_DB_NAME, ANTARA_DB_USER, ANTARA_DB_PASS.
+Default localhost: 127.0.0.1:3306, database antara, root tanpa password. Simpan konfigurasi pribadimu di luar Git.
+Kode backend/API tetap disertakan. .env nyata, kredensial nyata, dump akun, cookie/session, dan runtime XAMPP dikeluarkan.
+
+## Database
+SQL tahap 164-168 sama dengan tahap 163: tidak perlu migrasi baru jika database 163 sudah siap.
+Untuk database baru, pilih database di phpMyAdmin dan import export/antara-schema.sql.
+Jika database masih tahap 156, gunakan migrasi tahap 163 dari paket sebelumnya: progress-migration.sql, leaderboard-migration.sql, lalu achievement-migration.sql.
+SQL export hanya struktur, tidak berisi data pengguna; tidak memiliki CREATE DATABASE atau USE.
+Jangan mengganti konfigurasi database hosting dengan default localhost. Isi environment server melalui admin hosting.
+
+## Verifikasi
+Pemeriksaan bundel ini: CRC ZIP, hash sumber/hasil, sintaks JavaScript, pemindaian pola rahasia, pemeriksaan SQL tanpa data akun, dan kesamaan skema/API terhadap tahap sebelumnya.
+PHP/MySQL dan render browser belum diuji langsung di lingkungan ini. Tidak ada klaim login/database sudah lulus uji runtime.
+Setelah database siap, jalankan python tools/deploy_smoke.py http://localhost/ANTARA/ pada database uji.
+Skrip membuat akun uji. Hapus akun tersebut setelah tes sesuai petunjuk skrip. Cek juga tampilan dan interaksi pada browser localhost.

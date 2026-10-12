@@ -6,6 +6,67 @@ window.ExplorationMedia = {
     window.AntariksaUIAudio?.click?.();
   },
 
+  // When a stop only provides a concept diagram, pair it with a real official image
+  // of the same world so learners still see grounded observational media first.
+  sceneFallbackImages: {
+    sun: {
+      src: "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003988/SDOHMIintensity_Jewelbox.01000.jpg",
+      alt: "Fotosfer Matahari dalam cahaya tampak yang direkam Solar Dynamics Observatory",
+      credit: "NASA/SDO/HMI",
+      source: "https://svs.gsfc.nasa.gov/3988/",
+      caption: "Fotosfer Matahari · SDO/HMI",
+      fit: "contain"
+    },
+    asteroid: {
+      src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia21/pia21906/PIA21906.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
+      alt: "Citra Dawn resolusi tinggi Ceres",
+      credit: "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA",
+      source: "https://science.nasa.gov/dwarf-planets/ceres/",
+      caption: "Ceres · contoh dunia besar di Sabuk Asteroid · Dawn",
+      fit: "contain"
+    },
+    mercury: {
+      src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533",
+      alt: "Mosaik global permukaan Merkurius dari citra MESSENGER dan Mariner 10",
+      credit: "NASA/JHU APL/Carnegie/USGS",
+      source: "https://science.nasa.gov/photojournal/full-global-mercury-mosaic/",
+      caption: "Mosaik global Merkurius · MESSENGER",
+      fit: "cover"
+    },
+    jupiter: {
+      src: "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9A3VN7VYXN5H6Z1GDG93.tif?w=2000",
+      alt: "Peta atmosfer global Jupiter dari Hubble",
+      credit: "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
+      source: "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
+      caption: "Jupiter global map · Hubble 2019",
+      fit: "contain"
+    },
+    saturn: {
+      src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia05/pia05425/PIA05425.jpg?crop=faces%2Cfocalpoint&fit=clip&h=649&w=1166",
+      alt: "Citra Saturnus dan sistem cincinnya dari Cassini",
+      credit: "NASA/JPL/Space Science Institute",
+      source: "https://science.nasa.gov/saturn/facts/",
+      caption: "Saturnus dan sistem cincin · Cassini",
+      fit: "contain"
+    },
+    uranus: {
+      src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/1/PIA18182-1.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1720&w=1720",
+      alt: "Citra Uranus dari Voyager 2",
+      credit: "NASA/JPL",
+      source: "https://science.nasa.gov/uranus/facts/",
+      caption: "Uranus · Voyager 2",
+      fit: "contain"
+    },
+    neptune: {
+      src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/1/PIA01492.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1720&w=1720",
+      alt: "Citra Neptunus dari Voyager 2",
+      credit: "NASA/JPL",
+      source: "https://science.nasa.gov/neptune/neptune-facts/",
+      caption: "Neptunus · Voyager 2",
+      fit: "contain"
+    }
+  },
+
   lightbox: null,
   activeImages: [],
   activeIndex: 0,
@@ -40,19 +101,12 @@ window.ExplorationMedia = {
     return !!scene?.classList?.contains("is-exploring");
   },
 
-  getImages(stop) {
+  getImages(stop, prefix = "") {
     const seen = new Set();
-    const raw = Array.isArray(stop?.images) ? stop.images : [];
+    const raw = Array.isArray(stop?.images) ? stop.images.slice() : [];
 
-    return raw
+    const normalized = raw
       .filter(item => item && typeof item.src === "string" && item.src.trim())
-      .filter(item => {
-        const key = this.canonicalSrc(item.src);
-        if (!key || seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      })
-      .slice(0, 2)
       .map((item, index) => ({
         src: item.src.trim(),
         alt: item.alt || `${stop.title || "Visual"} ${index + 1}`,
@@ -64,7 +118,43 @@ window.ExplorationMedia = {
         fit: item.fit || "cover",
         position: item.position || "50% 50%",
         type: this.inferVisualType(item)
-      }));
+      }))
+      .filter(item => {
+        const key = this.canonicalSrc(item.src);
+        if (!key || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+
+    normalized.sort((a, b) => {
+      const aIsDiagram = a.type === "DIAGRAM ILMIAH";
+      const bIsDiagram = b.type === "DIAGRAM ILMIAH";
+      if (aIsDiagram !== bIsDiagram) return aIsDiagram ? 1 : -1;
+      return 0;
+    });
+
+    const hasObservational = normalized.some(item => item.type !== "DIAGRAM ILMIAH");
+    const fallback = this.sceneFallbackImages[prefix];
+    if (!hasObservational && fallback?.src) {
+      const key = this.canonicalSrc(fallback.src);
+      if (key && !seen.has(key)) {
+        normalized.unshift({
+          src: fallback.src,
+          alt: fallback.alt || `${stop.title || prefix} resmi`,
+          credit: fallback.credit || "",
+          source: fallback.source || stop.source || "",
+          license: fallback.license || "",
+          licenseUrl: fallback.licenseUrl || "",
+          caption: fallback.caption || stop.title || "",
+          fit: fallback.fit || "cover",
+          position: fallback.position || "50% 50%",
+          type: this.inferVisualType(fallback)
+        });
+        seen.add(key);
+      }
+    }
+
+    return normalized.slice(0, 2);
   },
 
   ensureLightbox() {
@@ -359,8 +449,10 @@ window.ExplorationMedia = {
     this.closeLightbox({ restoreFocus: false });
     host.replaceChildren();
 
-    const images = this.getImages(stop);
-    const featureTopic = /bintik merah|great red|hexagon|cassini|cincin|ceres|vortex|badai besar|awan terang|lautan awan|cloud|storm/i.test(`${stop?.kicker || ""} ${stop?.title || ""}`);
+    const images = this.getImages(stop, prefix);
+    const featureTopic = Boolean(stop?.location)
+      || ["storm", "clouds", "rings", "triton", "miranda", "moons", "bands"].includes(String(stop?.semantic || "").toLowerCase())
+      || /bintik merah|great red|hexagon|cassini|cincin|ceres|vesta|caloris|miranda|triton|enceladus|titan|vortex|badai besar|awan terang|lautan awan|cloud|storm/i.test(`${stop?.kicker || ""} ${stop?.title || ""}`);
     host.dataset.mediaLayout = featureTopic ? "feature" : "detached";
     host.hidden = images.length === 0;
     if (!images.length) return;
