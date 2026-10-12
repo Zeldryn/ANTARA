@@ -1,6 +1,6 @@
-# ANTARA 164-168: localhost dan database
+# ANTARA 169-172: localhost dan database
 
-Urutan: 164, 165, 166, 167, 168 setelah 163. Judul commit ada di COMMIT_ORDER.txt.
+Urutan: 169, 170, 171, 172 setelah 168. Judul commit ada di COMMIT_ORDER.txt.
 Setiap tahap berasal dari satu snapshot lengkap asli. Nomor merupakan urutan paket, bukan nomor atau tanggal commit GitHub asli.
 Salin isi ANTARA/ ke folder project Git yang sudah ada. Pertahankan .git dan konfigurasi rahasia lokal milikmu; terapkan juga daftar penghapusan di VERIFICATION.json.
 Folder docs/history berisi catatan sumber lama, bukan petunjuk terbaru.
@@ -14,7 +14,7 @@ Default localhost: 127.0.0.1:3306, database antara, root tanpa password. Simpan 
 Kode backend/API tetap disertakan. .env nyata, kredensial nyata, dump akun, cookie/session, dan runtime XAMPP dikeluarkan.
 
 ## Database
-SQL tahap 164-168 sama dengan tahap 163: tidak perlu migrasi baru jika database 163 sudah siap.
+SQL tahap 169-172 sama dengan tahap 163: tidak perlu migrasi baru jika database 163 sudah siap.
 Untuk database baru, pilih database di phpMyAdmin dan import export/antara-schema.sql.
 Jika database masih tahap 156, gunakan migrasi tahap 163 dari paket sebelumnya: progress-migration.sql, leaderboard-migration.sql, lalu achievement-migration.sql.
 SQL export hanya struktur, tidak berisi data pengguna; tidak memiliki CREATE DATABASE atau USE.

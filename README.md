@@ -1,6 +1,6 @@
-# ANTARA snapshot 168
+# ANTARA snapshot 169
 
-Original source: ANTARA-mobile-planet-scene-audit-fixed-tested-2026-10-04.zip
-Commit suggestion: fix: improve mobile planet scene framing and controls
+Original source: ANTARA-mobile-panorama-buttons-earth-mars-match-tested-2026-10-04.zip
+Commit suggestion: fix: align mobile panorama actions with Earth and Mars
 
 Read LOCALHOST.txt before running. Runtime files are preserved from the original source.
