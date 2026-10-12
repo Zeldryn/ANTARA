@@ -6740,3 +6740,19 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   }
 }
 
+
+
+/* 2026-10-04 laptop opening balance fix
+   On 16-inch-class laptop viewports the square Nara/Sora sprites were reaching
+   the same 560px desktop cap despite having less vertical breathing room. Scale
+   only this laptop band down by about 15% and keep the original baseline so the
+   composition matches the roomier PC framing without affecting phone/tablet or
+   large desktop layouts. */
+@media (min-width: 1280px) and (max-width: 1700px) and (min-height: 760px) {
+  .companion {
+    width: clamp(400px, 31vw, 480px);
+    bottom: 9%;
+  }
+  .companion-a { left: .5%; }
+  .companion-b { right: .5%; }
+}
