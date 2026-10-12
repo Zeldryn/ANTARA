@@ -492,3 +492,79 @@
     bottom: calc(15% + 24px) !important;
   }
 }
+
+/* 2026-10-04 mobile spacing + reading-space correction
+   Keep a visible gap between panorama subjects and the hero copy, while giving
+   exploration lessons enough vertical room to read more than a single line. */
+@media (max-width: 700px) {
+  /* Lower every panorama copy/action stack slightly. Full-exploration planets
+     keep their taller stack offset, single-CTA planets keep theirs. */
+  .mars-caption,
+  .earth-caption,
+  .venus-caption {
+    bottom: calc(16% - 14px) !important;
+  }
+
+  :is(
+    .sun-caption,
+    .mercury-caption,
+    .asteroid-caption,
+    .jupiter-caption,
+    .saturn-caption,
+    .uranus-caption,
+    .neptune-caption
+  ) {
+    bottom: calc(16% + 16px) !important;
+  }
+
+  /* Restore reading room without letting the card swallow the panorama.
+     The added height grows upward because each scene keeps its existing bottom
+     anchor, preserving a clear visual gap above the card. */
+  :is(
+    .sun-exploration,
+    .mercury-exploration,
+    .venus-exploration,
+    .asteroid-exploration,
+    .jupiter-exploration,
+    .saturn-exploration,
+    .uranus-exploration,
+    .neptune-exploration
+  ) {
+    height: min(38dvh, 320px) !important;
+    max-height: min(38dvh, 320px) !important;
+  }
+}
+
+@media (max-width: 700px) and (max-height: 740px) {
+  .mars-caption,
+  .earth-caption,
+  .venus-caption {
+    bottom: calc(15% - 10px) !important;
+  }
+
+  :is(
+    .sun-caption,
+    .mercury-caption,
+    .asteroid-caption,
+    .jupiter-caption,
+    .saturn-caption,
+    .uranus-caption,
+    .neptune-caption
+  ) {
+    bottom: calc(15% + 12px) !important;
+  }
+
+  :is(
+    .sun-exploration,
+    .mercury-exploration,
+    .venus-exploration,
+    .asteroid-exploration,
+    .jupiter-exploration,
+    .saturn-exploration,
+    .uranus-exploration,
+    .neptune-exploration
+  ) {
+    height: min(39dvh, 285px) !important;
+    max-height: min(39dvh, 285px) !important;
+  }
+}
