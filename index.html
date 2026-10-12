@@ -27,25 +27,25 @@
   <link rel="stylesheet" href="asteroid-scene.css?v=20261003-education-expand-1">
   <link rel="stylesheet" href="jupiter-scene.css?v=20261003-education-expand-1">
   <link rel="stylesheet" href="saturn-scene.css?v=20261003-education-expand-1">
-  <link rel="stylesheet" href="uranus-scene.css?v=20261003-education-expand-1">
-  <link rel="stylesheet" href="neptune-scene.css?v=20261003-education-expand-1">
+  <link rel="stylesheet" href="uranus-scene.css?v=20261004-location-image-audit-2">
+  <link rel="stylesheet" href="neptune-scene.css?v=20261004-location-image-audit-2">
   <link rel="stylesheet" href="mobile-planet-actions-fix.css?v=20261001-all-planets-mobile-actions-2">
-  <script src="exploration-media.js?v=20260927-venusscience-2" defer></script>
+  <script src="exploration-media.js?v=20261004-location-image-audit-2" defer></script>
   <script src="progress-tracker.js?v=20261003-account-progress-1" defer></script>
   <script src="achievement-client.js?v=20261003-achievement-toast-1" defer></script>
   <script src="earth-scene.js?v=20261003-account-progress-1" defer></script>
   <script src="earth-full-exploration.js?v=20261003-account-progress-1" defer></script>
-  <script src="mars-scene.js?v=20261003-account-progress-1" defer></script>
+  <script src="mars-scene.js?v=20261004-location-image-audit-2" defer></script>
   <script src="mars-full-exploration.js?v=20261003-account-progress-1" defer></script>
-  <script src="mercury-scene.js?v=20261003-education-expand-1" defer></script>
+  <script src="mercury-scene.js?v=20261004-location-image-audit-2" defer></script>
   <script src="sun-scene.js?v=20261003-education-expand-1" defer></script>
   <script src="venus-scene.js?v=20261003-account-progress-1" defer></script>
   <script src="venus-full-exploration.js?v=20261003-account-progress-1" defer></script>
   <script src="asteroid-scene.js?v=20261003-education-expand-1" defer></script>
-  <script src="jupiter-scene.js?v=20261003-education-expand-1" defer></script>
-  <script src="saturn-scene.js?v=20261003-education-expand-1" defer></script>
-  <script src="uranus-scene.js?v=20261003-education-expand-1" defer></script>
-  <script src="neptune-scene.js?v=20261003-education-expand-1" defer></script>
+  <script src="jupiter-scene.js?v=20261004-location-image-audit-2" defer></script>
+  <script src="saturn-scene.js?v=20261004-location-image-audit-2" defer></script>
+  <script src="uranus-scene.js?v=20261004-location-image-audit-2" defer></script>
+  <script src="neptune-scene.js?v=20261004-location-image-audit-2" defer></script>
   <script src="auth-client.js?v=20261002-account-dropdown-2" defer></script>
   <script src="account-home-v2.js?v=20261003-achievements-1" defer></script>
   <script src="start-auth-gate.js?v=20261003-startlock-1" defer></script>
@@ -1033,7 +1033,7 @@
         <span class="asteroid-focus-line"></span>
         <span class="asteroid-focus-label">
           <span class="asteroid-focus-title">CERES</span>
-          <span class="asteroid-focus-context">PLANET KATAI · SABUK ASTEROID UTAMA</span>
+          <span class="asteroid-focus-context">MODEL CERES · POSISI ILUSTRATIF</span>
         </span>
       </div>
 
@@ -1264,6 +1264,19 @@
       </div>
       <div class="uranus-ring-annotation" id="uranus-ring-annotation" aria-hidden="true" hidden>
         <span class="ring-label epsilon">EPSILON</span><span class="ring-label beta">BETA</span><span class="ring-label alpha">ALPHA</span>
+      </div>
+      <div class="uranus-focus-reticle" id="uranus-focus-reticle" aria-hidden="true">
+        <span class="uranus-focus-ring"></span>
+        <span class="uranus-focus-dot"></span>
+        <span class="uranus-focus-line"></span>
+        <span class="uranus-focus-label">
+          <span class="uranus-focus-title" id="uranus-focus-label"></span>
+          <span class="uranus-focus-context" id="uranus-focus-context"></span>
+        </span>
+      </div>
+      <div class="uranus-focus-reticle uranus-focus-reticle-secondary" id="uranus-focus-reticle-secondary" aria-hidden="true">
+        <span class="uranus-focus-ring"></span><span class="uranus-focus-dot"></span><span class="uranus-focus-line"></span>
+        <span class="uranus-focus-label"><span class="uranus-focus-title" id="uranus-focus-label-secondary"></span><span class="uranus-focus-context" id="uranus-focus-context-secondary"></span></span>
       </div>
 
       <div class="exploration-marker-media uranus-context-media" id="uranus-context-media" hidden></div>

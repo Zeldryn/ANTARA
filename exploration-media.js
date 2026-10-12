@@ -25,6 +25,30 @@ window.ExplorationMedia = {
       caption: "Ceres · contoh dunia besar di Sabuk Asteroid · Dawn",
       fit: "contain"
     },
+    venus: {
+      src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia23/pia23791/PIA23791.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1096&w=2245",
+      alt: "Citra ultraviolet awan global Venus oleh Mariner 10",
+      credit: "NASA/JPL-Caltech",
+      source: "https://science.nasa.gov/photojournal/mariner-10-image-of-venus/",
+      caption: "Awan Venus · Mariner 10",
+      fit: "cover"
+    },
+    earth: {
+      src: "assets/textures/earth-blue-marble-4k.jpg",
+      alt: "Mosaik global Bumi Blue Marble dari data satelit NASA",
+      credit: "NASA Blue Marble / Visible Earth",
+      source: "https://visibleearth.nasa.gov/collection/1484/blue-marble",
+      caption: "Bumi · Blue Marble",
+      fit: "cover"
+    },
+    mars: {
+      src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00407/PIA00407.jpg?crop=faces%2Cfocalpoint&fit=clip&h=2000&w=2000",
+      alt: "Mosaik warna global Mars dari citra Viking Orbiter",
+      credit: "NASA/JPL/USGS",
+      source: "https://science.nasa.gov/photojournal/global-color-views-of-mars/",
+      caption: "Mars global · Viking Orbiter",
+      fit: "contain"
+    },
     mercury: {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533",
       alt: "Mosaik global permukaan Merkurius dari citra MESSENGER dan Mariner 10",
@@ -34,11 +58,11 @@ window.ExplorationMedia = {
       fit: "cover"
     },
     jupiter: {
-      src: "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9A3VN7VYXN5H6Z1GDG93.tif?w=2000",
-      alt: "Peta atmosfer global Jupiter dari Hubble",
-      credit: "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
-      source: "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
-      caption: "Jupiter global map · Hubble 2019",
+      src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04866/PIA04866.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
+      alt: "Potret warna asli Jupiter dari mosaik citra Cassini",
+      credit: "NASA/JPL/Space Science Institute",
+      source: "https://science.nasa.gov/photojournal/cassini-jupiter-portrait/",
+      caption: "Jupiter · mosaik warna Cassini",
       fit: "contain"
     },
     saturn: {

@@ -235,15 +235,15 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
     "source": "https://science.nasa.gov/mercury/facts/",
     "images": [
       {
-        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19247/PIA19247.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1550&w=2044",
-        "alt": "Peta suhu maksimum wilayah kutub utara Merkurius dari data MESSENGER",
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia18/pia18748/PIA18748.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1400&w=1400",
+        "alt": "Permukaan berbayang permanen di Kawah Prokofiev dekat kutub utara Merkurius",
         "credit": "NASA/JHU APL/Carnegie",
-        "source": "https://science.nasa.gov/photojournal/hot-and-cold/",
+        "source": "https://science.nasa.gov/photojournal/icy-view-of-prokofiev/",
         "license": "NASA image policy",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        "caption": "Hot and Cold · suhu permukaan kutub Merkurius",
+        "caption": "Prokofiev · kawah kutub dengan bukti es air",
         "fit": "cover",
-        "position": "50% 56%"
+        "position": "50% 50%"
       },
       {
         "src": "./assets/mercury-temperature-diagram.svg",
@@ -254,7 +254,12 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
         "fit": "contain"
       }
     ],
-    "location": null,
+    "location": {
+      "label": "Prokofiev · Es Kutub",
+      "latitude": 85.77,
+      "longitudeEast": 62.92,
+      "source": "https://www.nasa.gov/image-article/hot-cold/"
+    },
     "orientation": {
       "yaw": 1.55,
       "pitch": 0.95,

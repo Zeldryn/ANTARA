@@ -18,7 +18,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
     "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
     "images": [
       {
-        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9JYWYARC4A8336KMKNTQ.tif?w=2000",
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04866/PIA04866.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
         "alt": "Citra global Jupiter dengan pita atmosfer dan Bintik Merah Besar",
         "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
         "source": "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
@@ -41,7 +41,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
     "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
     "images": [
       {
-        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9JYWYARC4A8336KMKNTQ.tif?w=2000",
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04866/PIA04866.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
         "alt": "Citra global Jupiter dengan pita atmosfer dan Bintik Merah Besar",
         "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
         "source": "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
@@ -64,7 +64,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
     "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
     "images": [
       {
-        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9A3VN7VYXN5H6Z1GDG93.tif?w=2000",
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04866/PIA04866.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
         "alt": "Peta atmosfer global Jupiter dari Hubble",
         "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
         "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
@@ -87,7 +87,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
     "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
     "images": [
       {
-        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9A3VN7VYXN5H6Z1GDG93.tif?w=2000",
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04866/PIA04866.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
         "alt": "Peta atmosfer global Jupiter dari Hubble",
         "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
         "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
@@ -107,14 +107,14 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
       "Badai ini merupakan anticyclone yang berputar berlawanan arah dengan cyclone biasa di wilayah sekitarnya.",
       "Data Juno menunjukkan struktur badai memanjang ratusan kilometer ke bawah puncak awan."
     ],
-    "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+    "source": "https://science.nasa.gov/asset/hubble/jupiters-great-red-spot/",
     "images": [
       {
-        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9JYWYARC4A8336KMKNTQ.tif?w=2000",
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia02/pia02821/PIA02821.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1200",
         "alt": "Detail Bintik Merah Besar pada tekstur atmosfer Jupiter",
-        "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
-        "source": "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
-        "caption": "Bintik Merah Besar dan aliran awan sekitarnya",
+        "credit": "NASA/JPL/University of Arizona",
+        "source": "https://science.nasa.gov/photojournal/jupiters-great-red-spot-in-cassini-image/",
+        "caption": "Great Red Spot · citra Cassini",
         "fit": "cover",
         "type": "CITRA TELESKOP"
       }
@@ -155,7 +155,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
     "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
     "images": [
       {
-        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9JYWYARC4A8336KMKNTQ.tif?w=2000",
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04866/PIA04866.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
         "alt": "Citra global Jupiter dengan pita atmosfer dan Bintik Merah Besar",
         "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
         "source": "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
@@ -675,7 +675,7 @@ window.JupiterScene = class JupiterScene {
     "pitch": -0.1,
     "cameraZ": 5.82,
     "label": "GREAT RED SPOT",
-    "context": "BADAI ATMOSFER",
+    "context": "BADAI DINAMIS · SEKITAR 22° LS",
     "marker": "grs",
     "semantic": ""
   },
@@ -763,7 +763,9 @@ window.JupiterScene = class JupiterScene {
     );
     this.planetGroup.add(this.cloudLayer);
 
-    const lat = -22 * DEG, lon = -122 * DEG, c = Math.cos(lat);
+    // The project texture contains the GRS centered near u≈0.1945 and latitude ≈22°S.
+    // Longitude here is texture-relative, not a claim that the drifting storm has a permanent System III longitude.
+    const lat = -22 * DEG, lon = -110 * DEG, c = Math.cos(lat);
     this.grsAnchor = new THREE.Object3D();
     this.grsAnchor.position.set(c * Math.cos(lon), Math.sin(lat), -c * Math.sin(lon));
     this.planet.add(this.grsAnchor);

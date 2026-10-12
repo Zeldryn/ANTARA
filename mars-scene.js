@@ -210,13 +210,13 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
   {
     images: [
       {
-        src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia25/pia25614/PIA25614.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1397&w=490",
-        alt: "Citra Mars Odyssey memperlihatkan lapisan es dan debu pada tudung kutub selatan Mars",
-        credit: "NASA/JPL-Caltech/ASU",
-        source: "https://science.nasa.gov/photojournal/pj-south-polar-cap-11/",
+        src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia13/pia13163/PIA13163.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1200",
+        alt: "Citra orbital wilayah tudung es kutub utara Mars di Planum Boreum",
+        credit: "NASA/JPL-Caltech/MSSS",
+        source: "https://science.nasa.gov/photojournal/northern-ice-cap-of-mars/",
         license: "NASA image policy",
         licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Lapisan tudung es kutub selatan Mars",
+        caption: "Planum Boreum · tudung es kutub utara Mars",
         fit: "cover"
       }
     ],
@@ -286,9 +286,10 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Sebagian badai dapat berkembang hingga mencakup hampir seluruh planet dan mengurangi cahaya untuk wahana bertenaga surya."
     ],
     source: "https://science.nasa.gov/helio-and-you-seasons-on-earth-mars-and-beyond/",
-    // NASA documents Hellas as a frequent origin region for major/global dust storms.
-    location: { label: "Hellas Planitia", latitude: -42.43, longitudeEast: 70.50, source: "https://planetarynames.wr.usgs.gov/Feature/2432" },
-    shift: { x: -0.025, y: 0.008 }
+    // Badai debu dapat tumbuh dan berpindah lintas wilayah; jangan tampilkan satu titik sebagai “lokasi badai”.
+    location: null,
+    view: { yaw: 2.02, pitch: -0.06, roll: MARS_EXPLORATION_ROLL },
+    shift: { x: 0, y: 0 }
   }
 ]);
 

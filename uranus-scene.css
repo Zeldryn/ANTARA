@@ -20,3 +20,16 @@
   .uranus-exploration-controls{margin-top:11px!important}
   .uranus-exploration-close{margin-top:8px!important}
 }
+
+.uranus-focus-reticle{position:absolute;z-index:8;width:1px;height:1px;pointer-events:none;opacity:0;transition:opacity .3s ease}
+.uranus-focus-reticle.is-marker-visible{opacity:1}
+.uranus-focus-ring{position:absolute;left:-24px;top:-24px;width:48px;height:48px;border:1px solid #d6f0ee77;border-radius:50%;box-shadow:0 0 18px #80dce455}
+.uranus-focus-dot{position:absolute;left:-3px;top:-3px;width:6px;height:6px;border-radius:50%;background:#efffff;box-shadow:0 0 10px #91d9dc}
+.uranus-focus-line{position:absolute;left:20px;top:0;width:86px;height:1px;background:linear-gradient(90deg,#c7f1eeaa,transparent)}
+.uranus-focus-label{position:absolute;left:112px;top:-14px;display:grid;gap:3px;min-width:155px}
+.uranus-focus-title{color:#edf9f7;font-size:8px;letter-spacing:1.7px}.uranus-focus-context{color:#89a4aa;font-size:6px;letter-spacing:1.2px}
+@media(max-width:700px){.uranus-focus-label{display:none}}
+
+/* Location/object marker readability: flip labels inward when a moon sits near the right edge. */
+.uranus-focus-reticle.is-left .uranus-focus-line{left:auto;right:20px;background:linear-gradient(270deg,#c7f1eeaa,transparent)}
+.uranus-focus-reticle.is-left .uranus-focus-label{left:auto;right:112px;text-align:right}

@@ -42,3 +42,7 @@
   .neptune-exploration-controls{margin-top:11px!important}
   .neptune-exploration-close{margin-top:8px!important}
 }
+
+/* Keep historical-storm / Triton marker labels inside the viewport. */
+.neptune-focus-reticle.is-left .neptune-focus-line{left:auto;right:20px;background:linear-gradient(270deg,#a9d8f2aa,transparent)}
+.neptune-focus-reticle.is-left .neptune-focus-label{left:auto;right:112px;text-align:right}
