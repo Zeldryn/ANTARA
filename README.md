@@ -1,6 +1,6 @@
-# ANTARA snapshot 169
+# ANTARA snapshot 170
 
-Original source: ANTARA-mobile-panorama-buttons-earth-mars-match-tested-2026-10-04.zip
-Commit suggestion: fix: align mobile panorama actions with Earth and Mars
+Original source: ANTARA-mobile-planet-layout-reference-lock-tested-2026-10-04.zip
+Commit suggestion: fix: lock consistent mobile planet layout
 
 Read LOCALHOST.txt before running. Runtime files are preserved from the original source.
