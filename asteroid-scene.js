@@ -6,106 +6,340 @@ const ASTEROID_TEXTURE_ROOT = "./assets/textures/asteroids/";
 const ASTEROID_VARIANTS = Object.freeze(["charcoal", "brown-gray", "dusty", "metallic-rock"]);
 const ASTEROID_EXPLORATION_STOPS = Object.freeze([
   {
-    kicker: "IDENTITAS SABUK ASTEROID",
-    title: "Bukan Lorong Batu",
-    subtitle: "Wilayah luas sisa pembentukan Tata Surya",
-    summary: "Sabuk asteroid utama adalah wilayah besar di antara orbit Mars dan Jupiter yang dihuni banyak benda berbatu. Jarak antarbenda tetap sangat besar, sehingga sabuk ini bukan dinding asteroid yang rapat.",
-    facts: [
-      "Mayoritas asteroid yang dikenal mengorbit Matahari di sabuk utama antara Mars dan Jupiter.",
-      "Ukurannya beragam, dari bongkahan kecil sampai objek besar seperti Vesta dan planet katai Ceres.",
-      "Asteroid adalah sisa material dari masa awal pembentukan Tata Surya sekitar 4,6 miliar tahun lalu."
+    "title": "Sabuk Asteroid Itu Apa?",
+    "kicker": "KENALAN DULU",
+    "subtitle": "Wilayah luas berisi banyak benda kecil yang mengorbit Matahari",
+    "summary": "Sabuk Asteroid adalah daerah di Tata Surya yang dihuni banyak asteroid. Asteroid adalah sisa batuan dan logam dari masa awal pembentukan planet. Mereka mengorbit Matahari seperti planet, hanya ukurannya jauh lebih kecil.",
+    "facts": [
+      "Sebagian besar sabuk utama berada di antara orbit Mars dan Jupiter.",
+      "Anggotanya beragam, dari debu dan batu kecil sampai dunia berdiameter ratusan kilometer.",
+      "Sabuk ini bukan “tembok batu” yang padat."
     ],
-    source: "https://science.nasa.gov/solar-system/asteroids/facts/",
-    images: [{ src: "./assets/asteroid-belt/overview.svg", alt: "Ilustrasi sabuk asteroid yang renggang", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/solar-system/asteroids/facts/", caption: "Sabuk asteroid adalah wilayah luas dengan banyak ruang kosong.", fit: "contain" }]
+    "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
+    "images": [
+      {
+        "src": "./assets/asteroid-belt/overview.svg",
+        "alt": "Ilustrasi sabuk asteroid yang renggang",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
+        "caption": "Sabuk asteroid adalah wilayah luas dengan banyak ruang kosong.",
+        "fit": "contain"
+      }
+    ]
   },
   {
-    kicker: "LOKASI DI TATA SURYA",
-    title: "Di Antara Dua Dunia",
-    subtitle: "Setelah Mars, sebelum Jupiter",
-    summary: "Sabuk asteroid utama menempati wilayah di antara orbit Mars dan Jupiter. Dalam perjalanan ANTARA, sabuk ini menjadi destinasi mandiri sebelum pengguna melanjutkan perjalanan menuju Jupiter.",
-    facts: [
-      "Sabuk utama bukan cincin milik Jupiter; objek-objeknya mengorbit Matahari.",
-      "Orbit asteroid tersebar pada rentang jarak yang luas dan memiliki eksentrisitas serta kemiringan berbeda.",
-      "Gravitasi Jupiter sangat memengaruhi dinamika sabuk dan membentuk celah-celah resonansi tertentu."
+    "title": "Asteroid Tidak Berdesakan",
+    "kicker": "JANGAN BAYANGKAN FILM",
+    "subtitle": "Di antara asteroid ada ruang kosong yang sangat luas",
+    "summary": "Film sering menggambarkan pesawat harus meliuk di antara batu yang saling berdekatan. Kenyataannya, sabuk asteroid sangat luas dan sebagian besar anggotanya dipisahkan jarak yang besar.",
+    "facts": [
+      "Wahana antariksa sudah berkali-kali melewati sabuk utama dengan aman.",
+      "Jumlah asteroid memang banyak, tetapi ruang yang ditempati sabuk jauh lebih besar lagi.",
+      "Tabrakan tetap terjadi, hanya tidak seperti lalu lintas batu yang rapat dalam film."
     ],
-    source: "https://science.nasa.gov/solar-system/asteroids/facts/",
-    images: [{ src: "./assets/asteroid-belt/location.svg", alt: "Diagram lokasi sabuk asteroid di antara Mars dan Jupiter", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/solar-system/asteroids/facts/", caption: "Posisi sabuk utama relatif terhadap Mars dan Jupiter.", fit: "contain" }]
+    "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
+    "images": [
+      {
+        "src": "./assets/asteroid-belt/overview.svg",
+        "alt": "Ilustrasi sabuk asteroid yang renggang",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
+        "caption": "Sabuk asteroid adalah wilayah luas dengan banyak ruang kosong.",
+        "fit": "contain"
+      }
+    ]
   },
   {
-    kicker: "ASAL-USUL PEMBENTUKAN",
-    title: "Planet yang Tak Pernah Jadi",
-    subtitle: "Jejak kondisi awal Tata Surya",
-    summary: "Material di kawasan ini terbentuk bersama komponen Tata Surya lain. Gangguan gravitasi, terutama dari Jupiter yang besar, menghambat banyak material untuk menyatu menjadi satu planet besar.",
-    facts: [
-      "Asteroid menyimpan petunjuk tentang material dan proses yang bekerja saat planet-planet mulai terbentuk.",
-      "Tabrakan selama miliaran tahun memecah, mengubah, dan mengelompokkan ulang banyak benda di sabuk utama.",
-      "Karena sejarahnya panjang, asteroid yang berbeda dapat memiliki struktur dan komposisi yang sangat berbeda."
+    "title": "Antara Mars dan Jupiter",
+    "kicker": "ADA DI MANA?",
+    "subtitle": "Sabuk utama berada di wilayah tengah antara planet batuan dan Jupiter",
+    "summary": "Kalau kita bergerak keluar dari Matahari, sabuk utama berada setelah Mars dan sebelum Jupiter. Wilayah ini menjadi semacam zona transisi antara planet-planet batuan di bagian dalam dan planet raksasa di bagian luar.",
+    "facts": [
+      "Sabuk utama membentang kira-kira dari lebih dari 2 AU hingga sedikit di atas 3 AU dari Matahari.",
+      "Ceres mengorbit pada jarak rata-rata sekitar 2,8 AU.",
+      "Jupiter yang sangat besar memberi pengaruh gravitasi kuat pada banyak orbit di wilayah ini."
     ],
-    source: "https://science.nasa.gov/resource/fact-sheet-dawn-to-the-asteroid-belt/",
-    images: [{ src: "./assets/asteroid-belt/formation.svg", alt: "Diagram pembentukan sabuk asteroid", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/resource/fact-sheet-dawn-to-the-asteroid-belt/", caption: "Material awal Tata Surya yang tidak menjadi satu planet.", fit: "contain" }]
+    "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
+    "images": [
+      {
+        "src": "./assets/asteroid-belt/location.svg",
+        "alt": "Diagram lokasi sabuk asteroid di antara Mars dan Jupiter",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
+        "caption": "Posisi sabuk utama relatif terhadap Mars dan Jupiter.",
+        "fit": "contain"
+      }
+    ]
   },
   {
-    kicker: "REKOR & EKSTREM",
-    title: "Ceres, Vesta, dan Tetangga Besarnya",
-    subtitle: "Objek menonjol di antara jutaan benda kecil",
-    summary: "Ceres adalah objek terbesar di sabuk asteroid dan diklasifikasikan sebagai planet katai. Vesta adalah salah satu benda paling masif berikutnya dan memperlihatkan sejarah geologi yang kompleks.",
-    facts: [
-      "Ceres ditemukan Giuseppe Piazzi pada 1801 dan menjadi planet katai pada 2006.",
-      "Ceres memiliki radius sekitar 476 kilometer dan menyumbang sekitar seperempat massa total sabuk asteroid.",
-      "Vesta memiliki kerak, mantel, dan inti yang terdiferensiasi, karakteristik yang membuatnya sangat penting bagi ilmu keplanetan."
+    "title": "Sisa Bahan Pembentuk Planet",
+    "kicker": "KOK TIDAK JADI PLANET?",
+    "subtitle": "Bahan pembentuk dunia tersisa karena lingkungan gravitasinya terlalu ramai",
+    "summary": "Pada awal Tata Surya, debu dan batu saling bertabrakan dan bergabung menjadi benda yang lebih besar. Di wilayah sabuk asteroid, gangguan gravitasi terutama dari Jupiter membuat proses penggabungan menjadi satu planet besar sulit berlanjut.",
+    "facts": [
+      "Asteroid menyimpan material yang terbentuk sekitar 4,5 miliar tahun lalu.",
+      "Jupiter membantu mengaduk orbit banyak benda di sabuk.",
+      "Sabuk bukan pecahan satu planet yang meledak; ia lebih tepat disebut sisa proses pembentukan planet."
     ],
-    source: "https://science.nasa.gov/dwarf-planets/ceres/facts/",
-    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia21/pia21906/PIA21906.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600", alt: "Citra Dawn resolusi tinggi Ceres", credit: "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA", source: "https://science.nasa.gov/photojournal/high-resolution-ceres/", caption: "Ceres dipotret wahana Dawn · PIA21906", fit: "contain", type: "CITRA WAHANA" }, { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia15/pia15678/PIA15678.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1200", alt: "Citra global Vesta oleh Dawn", credit: "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA", source: "https://science.nasa.gov/photojournal/full-view-of-vesta/", caption: "Vesta dipotret wahana Dawn · PIA15678", fit: "contain", type: "CITRA WAHANA" }]
+    "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
+    "images": [
+      {
+        "src": "./assets/asteroid-belt/formation.svg",
+        "alt": "Diagram pembentukan sabuk asteroid",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://science.nasa.gov/resource/fact-sheet-dawn-to-the-asteroid-belt/",
+        "caption": "Material awal Tata Surya yang tidak menjadi satu planet.",
+        "fit": "contain"
+      }
+    ]
   },
   {
-    kicker: "KOMPOSISI ASTEROID",
-    title: "Batuan, Karbon, dan Logam",
-    subtitle: "Tidak semua asteroid tersusun dari material yang sama",
-    summary: "Permukaan asteroid dapat gelap kaya karbon, berbatu kaya silikat, atau mengandung proporsi logam yang lebih besar. Variasi komposisi ini merupakan rekaman kimia lingkungan tempat mereka terbentuk dan berevolusi.",
-    facts: [
-      "Asteroid tipe C cenderung gelap dan kaya material karbonan.",
-      "Asteroid tipe S lebih kaya silikat dan material berbatu.",
-      "Beberapa asteroid mengandung logam dalam jumlah tinggi; 16 Psyche diperkirakan merupakan campuran batuan dan logam."
+    "title": "Ceres",
+    "kicker": "SI PALING BESAR",
+    "subtitle": "Objek terbesar di sabuk utama ternyata adalah planet katai",
+    "summary": "Ceres jauh lebih besar daripada kebanyakan tetangganya. Ia cukup besar untuk berbentuk hampir bulat dan kini diklasifikasikan sebagai planet katai. Wahana Dawn bahkan pernah mengorbit Ceres dari dekat.",
+    "facts": [
+      "Ceres memiliki radius sekitar 476 km.",
+      "Ceres adalah satu-satunya planet katai di bagian dalam Tata Surya.",
+      "Permukaannya menunjukkan endapan garam dan bukti bahwa air berperan dalam sejarahnya."
     ],
-    source: "https://science.nasa.gov/solar-system/asteroids/facts/",
-    images: [{ src: "./assets/asteroid-belt/composition.svg", alt: "Diagram variasi komposisi asteroid", credit: "Visualisasi ANTARA", source: "https://www.jpl.nasa.gov/press-kits/psyche/quick-facts/", caption: "Komposisi asteroid dapat berbeda secara drastis.", fit: "contain" }]
+    "source": "https://science.nasa.gov/dwarf-planets/ceres/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia21/pia21906/PIA21906.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
+        "alt": "Citra Dawn resolusi tinggi Ceres",
+        "credit": "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA",
+        "source": "https://science.nasa.gov/photojournal/high-resolution-ceres/",
+        "caption": "Ceres dipotret wahana Dawn · PIA21906",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ]
   },
   {
-    kicker: "SEJARAH PENEMUAN",
-    title: "Dari Planet Baru ke Sabuk Asteroid",
-    subtitle: "Klasifikasi berubah seiring bertambahnya penemuan",
-    summary: "Ceres awalnya dianggap sebagai planet. Setelah semakin banyak benda ditemukan pada kawasan yang sama, astronom mulai memandang wilayah itu sebagai populasi objek tersendiri yang kini dikenal sebagai sabuk asteroid.",
-    facts: [
-      "Ceres ditemukan pada 1801, disusul Pallas, Juno, dan Vesta dalam beberapa tahun berikutnya.",
-      "Pada abad ke-19, istilah asteroid dan sabuk asteroid makin luas digunakan untuk objek-objek tersebut.",
-      "Klasifikasi modern menempatkan Ceres sebagai planet katai sementara banyak tetangganya disebut asteroid."
+    "title": "Vesta",
+    "kicker": "DUNIA BATU UNIK",
+    "subtitle": "Asteroid besar dengan kawah raksasa dan sejarah geologi sendiri",
+    "summary": "Vesta adalah salah satu benda terbesar di sabuk asteroid. Bentuk dan permukaannya menunjukkan bahwa benda kecil pun bisa punya kisah geologi yang rumit, termasuk tumbukan besar yang membentuk cekungan luas.",
+    "facts": [
+      "Vesta adalah salah satu objek terbesar di sabuk utama.",
+      "Wahana Dawn mengorbit Vesta sebelum melanjutkan perjalanan ke Ceres.",
+      "Sebagian meteorit yang ditemukan di Bumi dapat ditelusuri asalnya ke Vesta."
     ],
-    source: "https://science.nasa.gov/dwarf-planets/ceres/exploration/",
-    images: [{ src: "./assets/asteroid-belt/history.svg", alt: "Garis waktu sejarah penemuan sabuk asteroid", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/dwarf-planets/ceres/exploration/", caption: "Perubahan cara astronom mengklasifikasikan objek di antara Mars dan Jupiter.", fit: "contain" }]
+    "source": "https://science.nasa.gov/dwarf-planets/ceres/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia15/pia15678/PIA15678.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1200",
+        "alt": "Citra global Vesta oleh Dawn",
+        "credit": "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA",
+        "source": "https://science.nasa.gov/photojournal/full-view-of-vesta/",
+        "caption": "Vesta dipotret wahana Dawn · PIA15678",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ]
   },
   {
-    kicker: "MISI EKSPLORASI ASTEROID",
-    title: "Dawn, Psyche, dan Dunia Kecil",
-    subtitle: "Wahana antariksa membaca arsip awal Tata Surya",
-    summary: "NASA Dawn mengorbit Vesta lalu Ceres, memberi pandangan dekat pada dua benda besar dengan karakter sangat berbeda. Misi Psyche melanjutkan eksplorasi asteroid dengan target 16 Psyche di bagian luar sabuk utama.",
-    facts: [
-      "Dawn mengorbit Vesta pada 2011–2012 dan Ceres mulai 2015.",
-      "Dawn menjadi misi pertama yang mengorbit dua target Tata Surya di luar sistem Bumi-Bulan.",
-      "Psyche dirancang untuk mempelajari asteroid kaya logam dan membantu memahami pembentukan inti planet."
+    "title": "Batu, Karbon, dan Logam",
+    "kicker": "MACAM-MACAM ASTEROID",
+    "subtitle": "Tidak semua asteroid terbuat dari bahan yang sama",
+    "summary": "Ada asteroid yang kaya batuan, ada yang kaya karbon, dan ada pula yang memiliki banyak logam. Perbedaan ini memberi petunjuk tentang suhu dan tempat material tersebut terbentuk ketika Tata Surya masih sangat muda.",
+    "facts": [
+      "Kelompok C-type umumnya kaya karbon dan berwarna lebih gelap.",
+      "S-type lebih banyak mengandung material berbatu atau silikat.",
+      "Sebagian asteroid M-type memiliki kandungan logam yang tinggi."
     ],
-    source: "https://science.nasa.gov/dwarf-planets/ceres/exploration/",
-    images: [{ src: "./assets/asteroid-belt/missions.svg", alt: "Diagram eksplorasi asteroid oleh wahana antariksa", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/dwarf-planets/ceres/exploration/", caption: "Dawn dan Psyche mewakili era eksplorasi langsung sabuk asteroid.", fit: "contain" }]
+    "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
+    "images": [
+      {
+        "src": "./assets/asteroid-belt/composition.svg",
+        "alt": "Diagram variasi komposisi asteroid",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://www.jpl.nasa.gov/press-kits/psyche/quick-facts/",
+        "caption": "Komposisi asteroid dapat berbeda secara drastis.",
+        "fit": "contain"
+      }
+    ]
+  },
+  {
+    "title": "Keluarga Asteroid",
+    "kicker": "TABRAKAN BISA BIKIN KELUARGA",
+    "subtitle": "Pecahan dari satu tumbukan dapat mengikuti orbit yang mirip",
+    "summary": "Ketika dua asteroid bertabrakan, salah satunya bisa pecah menjadi banyak bagian. Jika pecahan-pecahan itu masih mengikuti pola orbit yang mirip, ilmuwan dapat mengenalinya sebagai sebuah “keluarga asteroid”.",
+    "facts": [
+      "Tabrakan dapat membuat kawah, memecahkan asteroid, atau mengubah putarannya.",
+      "Keluarga asteroid membantu ilmuwan menelusuri sejarah tumbukan di sabuk utama.",
+      "Potongan kecil hasil tabrakan juga dapat menjadi meteoroid."
+    ],
+    "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
+    "images": [
+      {
+        "src": "./assets/asteroid-belt/formation.svg",
+        "alt": "Diagram pembentukan sabuk asteroid",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://science.nasa.gov/resource/fact-sheet-dawn-to-the-asteroid-belt/",
+        "caption": "Material awal Tata Surya yang tidak menjadi satu planet.",
+        "fit": "contain"
+      }
+    ]
+  },
+  {
+    "title": "Kenapa Asteroid Penting?",
+    "kicker": "KAPSUL WAKTU TATA SURYA",
+    "subtitle": "Batuan kecil ini menyimpan bahan dari masa ketika planet baru mulai terbentuk",
+    "summary": "Planet besar telah banyak berubah karena panas, geologi, dan atmosfer. Banyak asteroid lebih sederhana. Karena itu, materialnya dapat menyimpan petunjuk lama tentang bahan awal yang membangun planet-planet.",
+    "facts": [
+      "Asteroid membantu ilmuwan mempelajari bahan awal Tata Surya.",
+      "Komposisinya dapat dibandingkan dengan meteorit yang jatuh ke Bumi.",
+      "Mempelajari asteroid juga membantu memahami bagaimana air dan bahan organik tersebar di Tata Surya awal."
+    ],
+    "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
+    "images": [
+      {
+        "src": "./assets/asteroid-belt/composition.svg",
+        "alt": "Diagram variasi komposisi asteroid",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://www.jpl.nasa.gov/press-kits/psyche/quick-facts/",
+        "caption": "Komposisi asteroid dapat berbeda secara drastis.",
+        "fit": "contain"
+      }
+    ]
+  },
+  {
+    "title": "Dulu Dikira Planet",
+    "kicker": "CERITA PENEMUAN",
+    "subtitle": "Cara manusia memahami sabuk asteroid berubah seiring waktu",
+    "summary": "Ketika Ceres ditemukan pada 1801, astronom awalnya menganggapnya sebagai planet baru. Setelah makin banyak benda serupa ditemukan di wilayah yang sama, gambaran sebuah sabuk penuh dunia kecil mulai terbentuk.",
+    "facts": [
+      "Ceres ditemukan Giuseppe Piazzi pada 1801.",
+      "Vesta ditemukan beberapa tahun kemudian pada 1807.",
+      "Istilah dan klasifikasi asteroid berkembang saat jumlah objek yang diketahui terus bertambah."
+    ],
+    "source": "https://science.nasa.gov/dwarf-planets/ceres/exploration/",
+    "images": [
+      {
+        "src": "./assets/asteroid-belt/history.svg",
+        "alt": "Garis waktu sejarah penemuan sabuk asteroid",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://science.nasa.gov/dwarf-planets/ceres/exploration/",
+        "caption": "Perubahan cara astronom mengklasifikasikan objek di antara Mars dan Jupiter.",
+        "fit": "contain"
+      }
+    ]
+  },
+  {
+    "title": "Dawn, Psyche, dan Misi Asteroid",
+    "kicker": "KITA SUDAH DATANG KE SANA",
+    "subtitle": "Wahana antariksa bisa membaca sejarah Tata Surya langsung dari dunia kecil",
+    "summary": "Dawn mengunjungi Vesta dan Ceres, sementara misi Psyche menuju asteroid kaya logam 16 Psyche. Misi seperti ini membantu ilmuwan membandingkan dunia kecil yang terbentuk dari bahan berbeda.",
+    "facts": [
+      "Dawn adalah wahana pertama yang mengorbit dua objek di luar Bumi dalam satu misi: Vesta dan Ceres.",
+      "Psyche diluncurkan untuk mempelajari asteroid 16 Psyche yang kaya logam.",
+      "Setiap target memberi potongan cerita berbeda tentang pembentukan planet."
+    ],
+    "source": "https://science.nasa.gov/dwarf-planets/ceres/exploration/",
+    "images": [
+      {
+        "src": "./assets/asteroid-belt/missions.svg",
+        "alt": "Diagram eksplorasi asteroid oleh wahana antariksa",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://science.nasa.gov/dwarf-planets/ceres/exploration/",
+        "caption": "Dawn dan Psyche mewakili era eksplorasi langsung sabuk asteroid.",
+        "fit": "contain"
+      }
+    ]
   }
 ]);
 
 const ASTEROID_INFO_VIEWS = Object.freeze([
-  { x:0, y:0, z:8.4, lookX:0, lookY:0, marker:false },
-  { x:-.45, y:.05, z:9.15, lookX:0, lookY:0, marker:false },
-  { x:.55, y:-.12, z:8.75, lookX:.25, lookY:0, marker:false },
-  { x:2.85, y:1.05, z:7.15, lookX:2.75, lookY:.95, marker:true },
-  { x:-1.15, y:-.35, z:6.95, lookX:-.8, lookY:-.25, marker:false },
-  { x:.35, y:.18, z:8.7, lookX:.15, lookY:.1, marker:false },
-  { x:-.25, y:.05, z:8.25, lookX:0, lookY:0, marker:false }
+  {
+    "x": 0,
+    "y": 0,
+    "z": 8.4,
+    "lookX": 0,
+    "lookY": 0,
+    "marker": false
+  },
+  {
+    "x": 0.25,
+    "y": 0.04,
+    "z": 9.1,
+    "lookX": 0,
+    "lookY": 0,
+    "marker": false
+  },
+  {
+    "x": -0.45,
+    "y": 0.05,
+    "z": 9.15,
+    "lookX": 0,
+    "lookY": 0,
+    "marker": false
+  },
+  {
+    "x": 0.55,
+    "y": -0.12,
+    "z": 8.75,
+    "lookX": 0.25,
+    "lookY": 0,
+    "marker": false
+  },
+  {
+    "x": 2.85,
+    "y": 1.05,
+    "z": 7.15,
+    "lookX": 2.75,
+    "lookY": 0.95,
+    "marker": true
+  },
+  {
+    "x": 1.55,
+    "y": -0.42,
+    "z": 7.55,
+    "lookX": 1.1,
+    "lookY": -0.25,
+    "marker": false
+  },
+  {
+    "x": -1.15,
+    "y": -0.35,
+    "z": 6.95,
+    "lookX": -0.8,
+    "lookY": -0.25,
+    "marker": false
+  },
+  {
+    "x": 0.72,
+    "y": 0.18,
+    "z": 8.1,
+    "lookX": 0.35,
+    "lookY": 0.08,
+    "marker": false
+  },
+  {
+    "x": -0.72,
+    "y": 0.08,
+    "z": 8.35,
+    "lookX": -0.2,
+    "lookY": 0,
+    "marker": false
+  },
+  {
+    "x": 0.35,
+    "y": 0.18,
+    "z": 8.7,
+    "lookX": 0.15,
+    "lookY": 0.1,
+    "marker": false
+  },
+  {
+    "x": -0.25,
+    "y": 0.05,
+    "z": 8.25,
+    "lookX": 0,
+    "lookY": 0,
+    "marker": false
+  }
 ]);
 
 window.AsteroidBeltScene = class AsteroidBeltScene {

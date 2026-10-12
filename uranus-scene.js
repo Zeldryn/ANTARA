@@ -7,81 +7,270 @@ const URANUS_TILT_DEG = 97.77;
 
 const URANUS_EXPLORATION_STOPS = Object.freeze([
   {
-    kicker:"IDENTITAS URANUS", title:"Raksasa Es yang Menyamping", subtitle:"Planet ketujuh dengan warna biru-hijau dan orientasi paling ganjil",
-    summary:"Uranus adalah planet ketujuh dari Matahari dan salah satu dari dua raksasa es. Warna biru-hijaunya berasal dari metana di atmosfer, sementara orientasi sumbunya membuat planet ini tampak berputar hampir menyamping.",
-    facts:["Diameter ekuator Uranus sekitar 51.118 km.","Jarak rata-ratanya dari Matahari sekitar 19 AU atau 2,9 miliar km.","Satu hari Uranus berlangsung sekitar 17 jam dan satu tahunnya sekitar 84 tahun Bumi."],
-    source:"https://science.nasa.gov/uranus/facts/", semantic:"identity",
-    images:[{src:"https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/1/PIA18182-1.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1720&w=1720",alt:"Citra global Uranus dari Voyager 2",credit:"NASA/JPL",source:"https://science.nasa.gov/uranus/facts/",caption:"Uranus · raksasa es yang hampir berputar menyamping",fit:"contain",type:"CITRA WAHANA"}]
+    "title": "Uranus",
+    "kicker": "KENALAN DULU",
+    "subtitle": "Raksasa es biru-hijau yang berputar dengan posisi sangat miring",
+    "summary": "Uranus adalah planet ketujuh dari Matahari. Dari jauh warnanya tampak tenang, tetapi planet ini punya salah satu posisi rotasi paling aneh di Tata Surya, cincin samar, banyak bulan, dan medan magnet yang tidak biasa.",
+    "facts": [
+      "Uranus adalah planet terbesar ketiga berdasarkan diameter.",
+      "Satu hari di Uranus berlangsung sekitar 17 jam.",
+      "Satu tahun Uranus berlangsung sekitar 84 tahun Bumi."
+    ],
+    "source": "https://science.nasa.gov/uranus/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/1/PIA18182-1.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1720&w=1720",
+        "alt": "Citra global Uranus dari Voyager 2",
+        "credit": "NASA/JPL",
+        "source": "https://science.nasa.gov/uranus/facts/",
+        "caption": "Uranus · raksasa es yang hampir berputar menyamping",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ],
+    "semantic": "identity"
   },
   {
-    kicker:"REKOR & EKSTREM", title:"Dunia yang Hampir Menggelinding", subtitle:"Sumbu rotasi hampir sejajar dengan bidang orbit",
-    summary:"Kemiringan sumbu Uranus mencapai sekitar 97,77 derajat. Planet ini seolah berputar sambil berbaring, berbeda sangat jauh dari orientasi Jupiter dan Saturnus.",
-    facts:["Kemiringan 97,77 derajat adalah salah satu ciri paling khas Uranus.","Cincin dan orbit bulan-bulan utama mengikuti ekuator Uranus yang sangat miring.","Orientasi ekstrem ini kemungkinan berkaitan dengan sejarah pembentukan Uranus yang sangat dinamis."],
-    source:"https://science.nasa.gov/uranus/facts/", semantic:"axis",
-    images:[{src:"./assets/uranus-tilt-diagram.svg",alt:"Diagram kemiringan sumbu Uranus 97,77 derajat",credit:"Visualisasi ANTARA berdasarkan NASA Science",source:"https://science.nasa.gov/uranus/facts/",caption:"Sumbu rotasi Uranus miring 97,77°",fit:"contain"}]
+    "title": "Planet yang Berputar Menyamping",
+    "kicker": "KOK BISA MIRING?",
+    "subtitle": "Sumbu rotasinya hampir rebah sejajar dengan bidang orbit",
+    "summary": "Bayangkan bola yang tidak berputar tegak, tetapi hampir menggelinding sambil mengitari Matahari. Itulah Uranus. Sumbu rotasinya miring sekitar 98°, jauh lebih ekstrem daripada Bumi.",
+    "facts": [
+      "Kemiringan sumbu Uranus sekitar 97,8°.",
+      "Ilmuwan menduga tumbukan besar atau interaksi pada masa awal mungkin ikut membentuk kemiringan ekstrem ini.",
+      "Kemiringan tersebut membuat orientasi kutub Uranus terhadap Matahari sangat tidak biasa."
+    ],
+    "source": "https://science.nasa.gov/uranus/facts/",
+    "images": [
+      {
+        "src": "./assets/uranus-tilt-diagram.svg",
+        "alt": "Diagram kemiringan sumbu Uranus 97,77 derajat",
+        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "source": "https://science.nasa.gov/uranus/facts/",
+        "caption": "Sumbu rotasi Uranus miring 97,77°",
+        "fit": "contain"
+      }
+    ],
+    "semantic": "axis"
   },
   {
-    kicker:"MUSIM EKSTREM", title:"Puluhan Tahun Cahaya dan Gelap", subtitle:"Kemiringan ekstrem menciptakan musim yang sangat panjang",
-    summary:"Karena Uranus hampir berputar menyamping, setiap kutub dapat lama menghadap Matahari. Selama sebagian orbitnya, satu belahan menerima cahaya terus-menerus sementara belahan lain mengalami musim dingin gelap yang panjang.",
-    facts:["Satu tahun Uranus berlangsung sekitar 84 tahun Bumi.","Setiap kutub dapat mengalami periode panjang ketika Matahari berada hampir tepat di atasnya.","Belahan yang berlawanan dapat mengalami sekitar 21 tahun kegelapan musim dingin."],
-    source:"https://science.nasa.gov/uranus/facts/", semantic:"seasons",
-    images:[{src:"./assets/uranus-seasons-diagram.svg",alt:"Diagram musim ekstrem Uranus akibat kemiringan sumbu",credit:"Visualisasi ANTARA berdasarkan NASA Science",source:"https://science.nasa.gov/uranus/facts/",caption:"Kemiringan Uranus membentuk musim yang berlangsung puluhan tahun",fit:"contain"}]
+    "title": "Puluhan Tahun Terang dan Gelap",
+    "kicker": "MUSIMNYA LAMA BANGET",
+    "subtitle": "Kemiringan ekstrem membuat musim Uranus berjalan dalam skala puluhan tahun",
+    "summary": "Karena satu tahun Uranus memakan 84 tahun Bumi dan planetnya hampir rebah, setiap musim dapat berlangsung sekitar dua dekade. Di dekat solstis, satu kutub bisa mendapat cahaya Matahari terus-menerus dalam waktu sangat lama.",
+    "facts": [
+      "Satu musim Uranus kira-kira berlangsung 21 tahun Bumi.",
+      "Daerah kutub dapat mengalami periode siang atau malam yang sangat panjang.",
+      "Perubahan musim dapat memengaruhi pola awan dan atmosfer yang kita lihat."
+    ],
+    "source": "https://science.nasa.gov/uranus/facts/",
+    "images": [
+      {
+        "src": "./assets/uranus-seasons-diagram.svg",
+        "alt": "Diagram musim ekstrem Uranus akibat kemiringan sumbu",
+        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "source": "https://science.nasa.gov/uranus/facts/",
+        "caption": "Kemiringan Uranus membentuk musim yang berlangsung puluhan tahun",
+        "fit": "contain"
+      }
+    ],
+    "semantic": "seasons"
   },
   {
-    kicker:"ATMOSFER METANA", title:"Mengapa Uranus Berwarna Cyan", subtitle:"Metana menyerap cahaya merah dan memperkuat kesan biru-hijau",
-    summary:"Atmosfer Uranus didominasi hidrogen dan helium dengan sejumlah metana. Metana menyerap bagian merah dari cahaya, sehingga cahaya yang dipantulkan kembali memberi Uranus warna biru-hijau yang lembut.",
-    facts:["Atmosfer mengandung hidrogen, helium, metana, serta jejak air dan amonia.","Metana memengaruhi warna, bukan berarti Uranus dipenuhi awan hijau terang.","Pengamatan modern menunjukkan awan dan fitur terang yang dapat berubah seiring musim."],
-    source:"https://science.nasa.gov/uranus/facts/", semantic:"atmosphere",
-    images:[{src:"./assets/uranus-methane-diagram.svg",alt:"Diagram bagaimana metana memengaruhi warna Uranus",credit:"Visualisasi ANTARA berdasarkan NASA Science",source:"https://science.nasa.gov/uranus/facts/",caption:"Metana menyerap merah dan meninggalkan kesan biru-hijau",fit:"contain"}]
+    "title": "Metana di Atmosfer Uranus",
+    "kicker": "KENAPA WARNANYA BIRU-HIJAU?",
+    "subtitle": "Gas metana menyerap sebagian cahaya merah yang datang dari Matahari",
+    "summary": "Atmosfer Uranus mengandung sedikit metana. Gas ini menyerap banyak cahaya merah dan membiarkan lebih banyak warna biru-hijau dipantulkan kembali, sehingga Uranus terlihat cyan atau biru kehijauan.",
+    "facts": [
+      "Atmosfer Uranus terutama berisi hidrogen dan helium dengan sedikit metana.",
+      "Metana berperan penting pada warna planet.",
+      "Awan dan kabut atmosfer juga memengaruhi warna yang akhirnya tertangkap kamera."
+    ],
+    "source": "https://science.nasa.gov/uranus/facts/",
+    "images": [
+      {
+        "src": "./assets/uranus-methane-diagram.svg",
+        "alt": "Diagram bagaimana metana memengaruhi warna Uranus",
+        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "source": "https://science.nasa.gov/uranus/facts/",
+        "caption": "Metana menyerap merah dan meninggalkan kesan biru-hijau",
+        "fit": "contain"
+      }
+    ],
+    "semantic": "atmosphere"
   },
   {
-    kicker:"STRUKTUR RAKSASA ES", title:"Bukan Bola Es Padat", subtitle:"Fluida panas dan padat mengelilingi inti kecil",
-    summary:"Istilah raksasa es tidak berarti Uranus adalah bola es beku. Sebagian besar massanya diperkirakan berupa fluida panas dan padat yang kaya air, metana, dan amonia di atas inti batuan yang relatif kecil.",
-    facts:["Lebih dari 80 persen massa Uranus diperkirakan berupa material raksasa es di interiornya.","Uranus tidak memiliki permukaan padat tempat wahana dapat mendarat.","Tekanan dan suhu meningkat ekstrem menuju bagian dalam planet."],
-    source:"https://science.nasa.gov/uranus/facts/", semantic:"interior",
-    images:[{src:"./assets/uranus-interior-diagram.svg",alt:"Diagram konseptual struktur interior Uranus",credit:"Visualisasi ANTARA berdasarkan NASA Science",source:"https://science.nasa.gov/uranus/facts/",caption:"Lapisan konseptual interior Uranus",fit:"contain"}]
+    "title": "Bukan Bola Es Padat",
+    "kicker": "YUK INTIP KE DALAM",
+    "subtitle": "Istilah “raksasa es” tidak berarti seluruh planet membeku seperti es batu",
+    "summary": "Di bawah atmosfer, ilmuwan memperkirakan ada lapisan fluida panas dan padat yang kaya air, metana, dan amonia. Jadi Uranus bukan bola es keras, melainkan dunia bertekanan tinggi dengan bahan yang berperilaku sangat berbeda dari di Bumi.",
+    "facts": [
+      "Uranus tidak memiliki permukaan padat yang jelas untuk didarati.",
+      "Tekanan dan suhu meningkat tajam menuju bagian dalam.",
+      "Sebutan raksasa es membedakan komposisinya dari Jupiter dan Saturnus yang lebih didominasi hidrogen-helium."
+    ],
+    "source": "https://science.nasa.gov/uranus/facts/",
+    "images": [
+      {
+        "src": "./assets/uranus-interior-diagram.svg",
+        "alt": "Diagram konseptual struktur interior Uranus",
+        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "source": "https://science.nasa.gov/uranus/facts/",
+        "caption": "Lapisan konseptual interior Uranus",
+        "fit": "contain"
+      }
+    ],
+    "semantic": "interior"
   },
   {
-    kicker:"CINCIN URANUS", title:"Cincin Gelap yang Nyaris Tersembunyi", subtitle:"Tiga belas cincin redup mengelilingi ekuator Uranus",
-    summary:"Uranus mempunyai sistem cincin yang jauh lebih gelap dan sempit daripada Saturnus. Cincin-cincin ini mengikuti ekuator planet, sehingga seluruh sistem cincin ikut tampak sangat miring bersama Uranus.",
-    facts:["NASA mencatat 13 cincin Uranus.","Sembilan cincin bagian dalam umumnya sempit dan berwarna abu-abu gelap.","Cincin luar mengandung material debu dan tetap jauh lebih redup daripada cincin Saturnus."],
-    source:"https://science.nasa.gov/uranus/facts/", semantic:"rings",
-    images:[{src:"https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia01/pia01977/PIA01977.jpg?crop=faces%2Cfocalpoint&fit=clip&h=735&w=754",alt:"Citra cincin Uranus dari Voyager 2",credit:"NASA/JPL",source:"https://science.nasa.gov/uranus/facts/",caption:"Cincin Uranus · sempit, gelap, dan redup",fit:"contain",type:"CITRA WAHANA"}]
+    "title": "Uranus Juga Punya Cincin",
+    "kicker": "TAHUKAH KAMU?",
+    "subtitle": "Cincinnya gelap dan jauh lebih sulit dilihat daripada cincin Saturnus",
+    "summary": "Uranus punya sistem cincin sendiri. Cincinnya tipis, gelap, dan tidak terlalu memantulkan cahaya, jadi perlu pengamatan yang tepat agar terlihat jelas.",
+    "facts": [
+      "NASA mencatat Uranus memiliki 13 cincin yang diketahui.",
+      "Sebagian besar cincin sangat sempit dan gelap.",
+      "Cincin Uranus ditemukan pada 1977 melalui pengamatan bintang yang tertutup planet."
+    ],
+    "source": "https://science.nasa.gov/uranus/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia01/pia01977/PIA01977.jpg?crop=faces%2Cfocalpoint&fit=clip&h=735&w=754",
+        "alt": "Citra cincin Uranus dari Voyager 2",
+        "credit": "NASA/JPL",
+        "source": "https://science.nasa.gov/uranus/facts/",
+        "caption": "Cincin Uranus · sempit, gelap, dan redup",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ],
+    "semantic": "rings"
   },
   {
-    kicker:"MEDAN MAGNET YANG ANEH", title:"Magnetosfer yang Tidak Sejajar", subtitle:"Sumbu magnet sangat miring dan bergeser dari pusat planet",
-    summary:"Medan magnet Uranus tidak sejajar dengan sumbu rotasinya. Sumbu magnetnya miring hampir 60 derajat dan pusat medan magnet juga bergeser dari pusat planet, menghasilkan magnetosfer yang bentuknya sangat tidak biasa.",
-    facts:["Sumbu magnet Uranus miring hampir 60 derajat terhadap sumbu rotasi.","Pusat medan magnet bergeser sekitar sepertiga radius planet.","Rotasi menyamping Uranus memelintir magnetotail menjadi struktur panjang seperti pembuka botol."],
-    source:"https://science.nasa.gov/uranus/facts/", semantic:"magnetosphere",
-    images:[{src:"./assets/uranus-magnetosphere-diagram.svg",alt:"Diagram magnetosfer Uranus yang miring dan tidak terpusat",credit:"Visualisasi ANTARA berdasarkan NASA Science",source:"https://science.nasa.gov/uranus/facts/",caption:"Medan magnet Uranus miring dan off-center",fit:"contain"}]
+    "title": "Medan Magnet yang Miring",
+    "kicker": "KOMPASNYA ANEH",
+    "subtitle": "Sumbu magnet Uranus tidak mengikuti sumbu rotasinya",
+    "summary": "Kalau sebuah kompas bisa bekerja di sekitar Uranus, arahnya akan sangat membingungkan. Medan magnet planet ini miring kuat dan pusatnya juga tidak tepat berada di tengah planet.",
+    "facts": [
+      "Sumbu medan magnet Uranus miring sekitar 60° dari sumbu rotasinya.",
+      "Medan magnetnya juga bergeser dari pusat planet.",
+      "Akibatnya, magnetosfer berubah bentuk secara dramatis saat Uranus berputar."
+    ],
+    "source": "https://science.nasa.gov/uranus/facts/",
+    "images": [
+      {
+        "src": "./assets/uranus-magnetosphere-diagram.svg",
+        "alt": "Diagram magnetosfer Uranus yang miring dan tidak terpusat",
+        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "source": "https://science.nasa.gov/uranus/facts/",
+        "caption": "Medan magnet Uranus miring dan off-center",
+        "fit": "contain"
+      }
+    ],
+    "semantic": "magnetosphere"
   },
   {
-    kicker:"MIRANDA", title:"Bulan dengan Lanskap Terpecah", subtitle:"Tebing, lembah, coronae, dan sejarah geologi yang rumit",
-    summary:"Miranda adalah bulan kecil Uranus dengan permukaan yang sangat beragam. Voyager 2 mengungkap coronae, lembah besar, patahan, dan wilayah dengan usia geologi berbeda yang tampak seperti potongan lanskap yang disatukan.",
-    facts:["Miranda berdiameter sekitar 472 km.","Beberapa jurangnya dapat mencapai kedalaman berkali-kali Grand Canyon.","Miranda adalah yang terkecil dan paling dekat di antara lima bulan besar Uranus."],
-    source:"https://science.nasa.gov/uranus/moons/miranda/", semantic:"miranda",
-    images:[{src:"https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00042/PIA00042.jpg?crop=faces%2Cfocalpoint&fit=clip&h=600&w=459",alt:"Citra Miranda dari Voyager 2",credit:"NASA/JPL",source:"https://science.nasa.gov/uranus/moons/miranda/",caption:"Miranda · dunia es kecil dengan lanskap yang sangat beragam",fit:"contain",type:"CITRA WAHANA"}]
+    "title": "Miranda",
+    "kicker": "BULAN YANG ANEH",
+    "subtitle": "Permukaannya terlihat seperti potongan-potongan lanskap yang disatukan kembali",
+    "summary": "Miranda adalah salah satu bulan Uranus yang paling unik. Tebing, lembah, dan wilayah permukaannya terlihat sangat berbeda satu sama lain, seolah-olah dunia kecil ini mengalami sejarah geologi yang rumit.",
+    "facts": [
+      "Miranda berdiameter sekitar 470 km.",
+      "Verona Rupes pada Miranda dikenal sebagai salah satu tebing sangat tinggi di Tata Surya.",
+      "Voyager 2 memberi citra jarak dekat terbaik yang kita miliki tentang Miranda."
+    ],
+    "source": "https://science.nasa.gov/uranus/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00042/PIA00042.jpg?crop=faces%2Cfocalpoint&fit=clip&h=600&w=459",
+        "alt": "Citra Miranda dari Voyager 2",
+        "credit": "NASA/JPL",
+        "source": "https://science.nasa.gov/uranus/moons/miranda/",
+        "caption": "Miranda · dunia es kecil dengan lanskap yang sangat beragam",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ],
+    "semantic": "miranda"
   },
   {
-    kicker:"TITANIA & OBERON", title:"Dua Bulan Terbesar", subtitle:"Dunia es-batuan di bagian luar sistem Uranus",
-    summary:"Titania dan Oberon adalah dua bulan terbesar Uranus. Keduanya merupakan dunia es dan batu dengan permukaan yang banyak berkawah, tetapi Titania juga menunjukkan sistem patahan dan ngarai yang menandakan sejarah geologi internal.",
-    facts:["Titania adalah bulan terbesar Uranus dengan diameter sekitar 1.578 km.","Oberon adalah bulan terbesar kedua dengan diameter sekitar 1.523 km.","Per Agustus 2026, NASA mencatat 29 bulan yang diketahui mengorbit Uranus."],
-    source:"https://science.nasa.gov/uranus/moons/facts/", semantic:"moons",
-    images:[{src:"https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia01/pia01979/PIA01979.jpg?crop=faces%2Cfocalpoint&fit=clip&h=560&w=784",alt:"Titania dipotret Voyager 2",credit:"NASA/JPL",source:"https://science.nasa.gov/photojournal/titania/",caption:"Titania · Voyager 2 · PIA01979",fit:"contain",type:"CITRA WAHANA"},{src:"https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00034/PIA00034.jpg?crop=faces%2Cfocalpoint&fit=clip&h=500&w=500",alt:"Oberon dipotret Voyager 2",credit:"NASA/JPL",source:"https://science.nasa.gov/photojournal/oberon/",caption:"Oberon · Voyager 2 · PIA00034",fit:"contain",type:"CITRA WAHANA"}]
+    "title": "Titania dan Oberon",
+    "kicker": "KELUARGA URANUS",
+    "subtitle": "Dua bulan terbesar Uranus menyimpan kawah dan lembah panjang",
+    "summary": "Titania dan Oberon adalah dua bulan terbesar Uranus. Keduanya terlihat sebagai dunia es-batuan dengan permukaan tua yang penuh kawah, tetapi masing-masing juga menunjukkan retakan dan lembah yang memberi petunjuk tentang perubahan geologi masa lalu.",
+    "facts": [
+      "Titania adalah bulan terbesar Uranus.",
+      "Oberon adalah bulan terbesar kedua Uranus.",
+      "Nama banyak bulan Uranus berasal dari tokoh karya Shakespeare dan Alexander Pope."
+    ],
+    "source": "https://science.nasa.gov/uranus/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia01/pia01979/PIA01979.jpg?crop=faces%2Cfocalpoint&fit=clip&h=560&w=784",
+        "alt": "Titania dipotret Voyager 2",
+        "credit": "NASA/JPL",
+        "source": "https://science.nasa.gov/photojournal/titania/",
+        "caption": "Titania · Voyager 2 · PIA01979",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      },
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00034/PIA00034.jpg?crop=faces%2Cfocalpoint&fit=clip&h=500&w=500",
+        "alt": "Oberon dipotret Voyager 2",
+        "credit": "NASA/JPL",
+        "source": "https://science.nasa.gov/photojournal/oberon/",
+        "caption": "Oberon · Voyager 2 · PIA00034",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ],
+    "semantic": "moons"
   },
   {
-    kicker:"VOYAGER 2", title:"Lima Setengah Jam yang Mengubah Uranus", subtitle:"Satu-satunya kunjungan dekat manusia ke sistem Uranus",
-    summary:"Voyager 2 melakukan pendekatan terdekat ke Uranus pada 24 Januari 1986. Flyby singkat itu menghasilkan ribuan gambar dan data tentang atmosfer, cincin, medan magnet, serta bulan-bulan Uranus.",
-    facts:["Voyager 2 melintas sekitar 81.500 km dari puncak awan Uranus.","Wahana menemukan 10 bulan baru dan dua cincin baru pada saat itu.","Voyager 2 masih menjadi satu-satunya wahana yang pernah mengunjungi Uranus dari dekat."],
-    source:"https://science.nasa.gov/mission/voyager/voyager-2/", semantic:"voyager",
-    images:[{src:"./assets/uranus-voyager-diagram.svg",alt:"Diagram Voyager 2 terbang melintasi Uranus",credit:"Visualisasi ANTARA berdasarkan NASA/JPL",source:"https://science.nasa.gov/mission/voyager/voyager-2/",caption:"Voyager 2 · flyby Uranus, 24 Januari 1986",fit:"contain"}]
+    "title": "Voyager 2",
+    "kicker": "CUMA PERNAH DIDATANGI SEKALI",
+    "subtitle": "Satu flyby pada 1986 masih menjadi kunjungan dekat satu-satunya ke Uranus",
+    "summary": "Sejauh ini hanya Voyager 2 yang pernah terbang dekat Uranus. Dalam beberapa jam, wahana itu memotret planet, cincin, dan bulan-bulannya serta mengukur medan magnet. Banyak pengetahuan dasar kita berasal dari pertemuan singkat tersebut.",
+    "facts": [
+      "Voyager 2 melakukan flyby Uranus pada 24 Januari 1986.",
+      "Wahana menemukan bulan dan cincin baru serta mengukur magnetosfer planet.",
+      "Tidak ada wahana lain yang pernah mengorbit Uranus hingga sekarang."
+    ],
+    "source": "https://science.nasa.gov/uranus/facts/",
+    "images": [
+      {
+        "src": "./assets/uranus-voyager-diagram.svg",
+        "alt": "Diagram Voyager 2 terbang melintasi Uranus",
+        "credit": "Visualisasi ANTARA berdasarkan NASA/JPL",
+        "source": "https://science.nasa.gov/mission/voyager/voyager-2/",
+        "caption": "Voyager 2 · flyby Uranus, 24 Januari 1986",
+        "fit": "contain"
+      }
+    ],
+    "semantic": "voyager"
   },
   {
-    kicker:"MASA DEPAN EKSPLORASI", title:"Raksasa Es yang Masih Menyimpan Banyak Pertanyaan", subtitle:"Atmosfer, interior, cincin, magnetosfer, dan bulan-bulan menunggu penyelidikan baru",
-    summary:"Hanya satu flyby tidak cukup untuk menjawab semua pertanyaan tentang Uranus. Pengamatan dan misi masa depan dapat mengungkap bagaimana raksasa es terbentuk, bagaimana magnetosfer ganjilnya bekerja, dan bagaimana sistem bulan serta cincinnya berevolusi.",
-    facts:["Uranus memberi contoh penting untuk memahami raksasa es, tipe planet yang umum ditemukan di luar Tata Surya.","Pertanyaan besar tersisa tentang interior, panas internal, cuaca, medan magnet, dan evolusi bulan-bulannya.","Voyager 2 hanya memiliki sekitar 5,5 jam untuk studi jarak dekat Uranus, sehingga proses jangka panjang belum pernah dipantau dari orbit."],
-    source:"https://science.nasa.gov/uranus/", semantic:"future",
-    images:[{src:"./assets/uranus-future-diagram.svg",alt:"Diagram tema masa depan eksplorasi Uranus",credit:"Visualisasi ANTARA",source:"https://science.nasa.gov/uranus/",caption:"Pertanyaan ilmiah besar di sistem Uranus",fit:"contain"}]
+    "title": "Apa yang Belum Kita Tahu?",
+    "kicker": "MASIH BANYAK MISTERI",
+    "subtitle": "Satu kunjungan singkat belum cukup untuk memahami seluruh raksasa es ini",
+    "summary": "Uranus masih menyimpan pertanyaan besar: seperti apa bagian dalamnya, bagaimana atmosfernya berubah sepanjang musim, dan bagaimana cincin serta bulan-bulannya terbentuk. Karena itulah Uranus menjadi target penting untuk eksplorasi masa depan.",
+    "facts": [
+      "Data Voyager 2 hanya memberi satu potret singkat dari satu musim Uranus.",
+      "Pengamatan teleskop modern membantu memantau awan dan cincin dari jauh.",
+      "Misi pengorbit di masa depan dapat mempelajari interior, atmosfer, magnet, cincin, dan bulan secara bersamaan."
+    ],
+    "source": "https://science.nasa.gov/uranus/facts/",
+    "images": [
+      {
+        "src": "./assets/uranus-future-diagram.svg",
+        "alt": "Diagram tema masa depan eksplorasi Uranus",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://science.nasa.gov/uranus/",
+        "caption": "Pertanyaan ilmiah besar di sistem Uranus",
+        "fit": "contain"
+      }
+    ],
+    "semantic": "future"
   }
 ]);
 

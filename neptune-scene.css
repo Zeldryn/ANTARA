@@ -24,3 +24,21 @@
 .neptune-ring-annotation .arcs{left:71%;top:51%}.neptune-ring-annotation .arcs::after{right:calc(100% + 8px);width:70px}
 @media(max-width:700px){.neptune-flow-overlay{display:none}.neptune-ring-annotation .ring-label{display:none}.neptune-focus-label{display:none}}
 @media(prefers-reduced-motion:reduce){.neptune-flow-line{animation:none}}
+
+
+/* 2026-10-03 CHILD EDUCATION MOBILE READABILITY
+   Keep the longer child-friendly lessons readable without turning the mobile
+   exploration sheet into tiny textbook text. */
+@media(max-width:700px){
+  .neptune-exploration{height:min(56dvh,420px)!important;max-height:calc(100dvh - 48px)!important}
+  .neptune-exploration h3{font-size:clamp(25px,7.4vw,29px)!important;line-height:1.05!important}
+  .neptune-topic-summary{font-size:12px!important;line-height:1.62!important}
+  .neptune-topic-facts li{font-size:10px!important;line-height:1.5!important}
+  .neptune-topic-facts{gap:8px!important;margin:15px 0 14px!important}
+}
+@media(max-width:340px){
+  .neptune-exploration{height:min(58dvh,420px)!important;left:4%!important;right:4%!important;padding:15px 15px 13px!important}
+  .neptune-exploration h3{font-size:24px!important}
+  .neptune-exploration-controls{margin-top:11px!important}
+  .neptune-exploration-close{margin-top:8px!important}
+}

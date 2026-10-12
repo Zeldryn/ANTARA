@@ -2,111 +2,269 @@
 
 const SUN_INFO_STOPS = Object.freeze([
   {
-    title: "Bintang Kita",
-    kicker: "IDENTITAS MATAHARI",
-    subtitle: "Bintang G2 V yang menjadi pusat gravitasi dan sumber energi Tata Surya",
-    summary: "Matahari adalah bintang deret utama yang berusia sekitar 4,5 miliar tahun. Hampir seluruh massa Tata Surya berada di Matahari, sehingga gravitasinya mengikat planet, asteroid, komet, dan debu dalam satu sistem.",
-    facts: [
-      "Diameter Matahari sekitar 1,4 juta km dan radiusnya sekitar 700.000 km.",
-      "Jarak rata-rata Matahari ke Bumi sekitar 150 juta km atau 1 satuan astronomi.",
-      "Matahari mengandung sekitar 99,8% massa Tata Surya."
+    "title": "Matahari",
+    "kicker": "KENALAN DULU",
+    "subtitle": "Bintang yang membuat Tata Surya kita tetap terang dan terikat",
+    "summary": "Matahari bukan planet. Ia adalah bintang terdekat dari Bumi dan menjadi pusat Tata Surya. Cahaya dan panasnya membantu membuat Bumi layak dihuni, sementara gravitasinya menjaga planet-planet tetap mengorbit.",
+    "facts": [
+      "Usia Matahari sekitar 4,5 miliar tahun.",
+      "Jarak rata-rata Bumi ke Matahari sekitar 150 juta km.",
+      "Sekitar 99,8% massa Tata Surya berada di Matahari."
     ],
-    source: "https://science.nasa.gov/sun/facts/",
-    images: [
-      { src: "./assets/sun-identity-diagram.svg", alt: "Diagram identitas dan skala Matahari", credit: "ANTARA · data NASA", source: "https://science.nasa.gov/sun/facts/", caption: "Identitas dan skala Matahari", fit: "contain" },
-      { src: "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003988/SDOHMIintensity_Jewelbox.01000.jpg", alt: "Fotosfer Matahari dalam cahaya tampak yang direkam Solar Dynamics Observatory", credit: "NASA/SDO/HMI", source: "https://svs.gsfc.nasa.gov/3988/", caption: "Fotosfer Matahari · SDO/HMI", fit: "contain" }
+    "source": "https://science.nasa.gov/sun/facts/",
+    "images": [
+      {
+        "src": "./assets/sun-identity-diagram.svg",
+        "alt": "Diagram identitas dan skala Matahari",
+        "credit": "ANTARA · data NASA",
+        "source": "https://science.nasa.gov/sun/facts/",
+        "caption": "Identitas dan skala Matahari",
+        "fit": "contain"
+      },
+      {
+        "src": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003988/SDOHMIintensity_Jewelbox.01000.jpg",
+        "alt": "Fotosfer Matahari dalam cahaya tampak yang direkam Solar Dynamics Observatory",
+        "credit": "NASA/SDO/HMI",
+        "source": "https://svs.gsfc.nasa.gov/3988/",
+        "caption": "Fotosfer Matahari · SDO/HMI",
+        "fit": "contain"
+      }
     ]
   },
   {
-    title: "Mesin Fusi",
-    kicker: "ENERGI & FUSI NUKLIR",
-    subtitle: "Tekanan dan suhu ekstrem di inti mengubah hidrogen menjadi helium",
-    summary: "Energi Matahari berasal dari fusi nuklir di inti. Dalam rantai proton-proton, inti hidrogen bergabung menjadi helium dan sebagian massa berubah menjadi energi yang kemudian bergerak keluar melalui interior Matahari.",
-    facts: [
+    "title": "Seberapa Besar Matahari?",
+    "kicker": "COBA BAYANGKAN...",
+    "subtitle": "Bola plasma raksasa yang jauh lebih besar daripada Bumi",
+    "summary": "Kalau Bumi terasa besar, Matahari berada di skala yang berbeda. Diameternya sekitar 1,4 juta km. Ukuran sebesar itu membuat Matahari mampu menjadi “jangkar gravitasi” untuk seluruh Tata Surya.",
+    "facts": [
+      "Diameter Matahari sekitar 109 kali diameter Bumi.",
+      "Lebih dari satu juta Bumi dapat muat di dalam volume Matahari secara kasar.",
+      "Matahari tersusun dari plasma, bukan permukaan batu padat."
+    ],
+    "source": "https://science.nasa.gov/sun/facts/",
+    "images": [
+      {
+        "src": "./assets/sun-identity-diagram.svg",
+        "alt": "Diagram identitas dan skala Matahari",
+        "credit": "ANTARA · data NASA",
+        "source": "https://science.nasa.gov/sun/facts/",
+        "caption": "Identitas dan skala Matahari",
+        "fit": "contain"
+      }
+    ]
+  },
+  {
+    "title": "8 Menit Menuju Bumi",
+    "kicker": "CAHAYA JUGA BUTUH WAKTU",
+    "subtitle": "Sinar Matahari yang kamu lihat sebenarnya memulai perjalanan beberapa menit lalu",
+    "summary": "Cahaya sangat cepat, tetapi ruang antara Matahari dan Bumi juga sangat luas. Karena itu, cahaya Matahari memerlukan sekitar delapan menit untuk sampai ke kita. Jadi kita selalu melihat Matahari sedikit “di masa lalu”.",
+    "facts": [
+      "Cahaya bergerak sekitar 300.000 km setiap detik di ruang hampa.",
+      "Jarak Bumi-Matahari rata-rata disebut 1 satuan astronomi atau 1 AU.",
+      "Perjalanan cahaya dari Matahari ke Bumi kira-kira 8 menit 20 detik."
+    ],
+    "source": "https://science.nasa.gov/sun/facts/",
+    "images": [
+      {
+        "src": "./assets/sun-identity-diagram.svg",
+        "alt": "Diagram identitas dan skala Matahari",
+        "credit": "ANTARA · data NASA",
+        "source": "https://science.nasa.gov/sun/facts/",
+        "caption": "Identitas dan skala Matahari",
+        "fit": "contain"
+      }
+    ]
+  },
+  {
+    "title": "Mesin Fusi",
+    "kicker": "DARI MANA ENERGINYA?",
+    "subtitle": "Inti Matahari bekerja seperti mesin energi raksasa",
+    "summary": "Di bagian paling dalam Matahari, suhu dan tekanannya sangat tinggi. Di sana inti hidrogen dapat bergabung menjadi helium. Proses ini disebut fusi, dan dari sinilah energi Matahari berasal.",
+    "facts": [
       "Suhu inti Matahari sekitar 15 juta °C.",
-      "Fusi menghasilkan tekanan keluar yang membantu menahan keruntuhan gravitasi Matahari.",
-      "Energi dari inti membutuhkan perjalanan panjang sebelum akhirnya mencapai fotosfer dan dipancarkan ke ruang angkasa."
+      "Fusi mengubah sebagian kecil massa menjadi energi.",
+      "Energi dari inti tidak langsung keluar; ia harus melewati lapisan-lapisan Matahari terlebih dahulu."
     ],
-    source: "https://science.nasa.gov/sun/facts/",
-    images: [
-      { src: "./assets/sun-fusion-diagram.svg", alt: "Diagram sederhana fusi proton-proton di inti Matahari", credit: "ANTARA · data NASA", source: "https://science.nasa.gov/sun/facts/", caption: "Fusi hidrogen di inti Matahari", fit: "contain" }
+    "source": "https://science.nasa.gov/sun/facts/",
+    "images": [
+      {
+        "src": "./assets/sun-fusion-diagram.svg",
+        "alt": "Diagram sederhana fusi proton-proton di inti Matahari",
+        "credit": "ANTARA · data NASA",
+        "source": "https://science.nasa.gov/sun/facts/",
+        "caption": "Fusi hidrogen di inti Matahari",
+        "fit": "contain"
+      }
     ]
   },
   {
-    title: "Dari Inti ke Corona",
-    kicker: "STRUKTUR MATAHARI",
-    subtitle: "Lapisan internal dan atmosfer Matahari memiliki cara transport energi yang berbeda",
-    summary: "Matahari tersusun atas inti, zona radiatif, dan zona konveksi. Di atasnya terdapat fotosfer yang kita lihat, kromosfer yang tipis, zona transisi, lalu corona yang sangat renggang tetapi dapat mencapai suhu jutaan derajat.",
-    facts: [
-      "Energi bergerak lewat radiasi di zona radiatif dan lewat aliran plasma di zona konveksi.",
-      "Fotosfer memiliki suhu sekitar 5.500 °C.",
-      "Corona dapat mencapai sekitar 2 juta °C, jauh lebih panas daripada fotosfer."
+    "title": "Lapisan-Lapisan Matahari",
+    "kicker": "YUK INTIP KE DALAM",
+    "subtitle": "Dari inti yang sangat panas sampai corona yang membentang jauh",
+    "summary": "Matahari punya beberapa lapisan. Ada inti, zona radiatif, zona konveksi, lalu bagian atmosfer seperti fotosfer, kromosfer, dan corona. Setiap lapisan punya peran berbeda dalam memindahkan energi.",
+    "facts": [
+      "Fotosfer adalah lapisan yang biasanya kita anggap sebagai “permukaan” Matahari.",
+      "Suhu fotosfer sekitar 5.500 °C.",
+      "Corona bisa mencapai jutaan derajat dan masih menjadi salah satu misteri penting fisika Matahari."
     ],
-    source: "https://science.nasa.gov/sun/facts/",
-    images: [
-      { src: "./assets/sun-structure-diagram.svg", alt: "Diagram lapisan Matahari dari inti hingga corona", credit: "ANTARA · data NASA", source: "https://science.nasa.gov/sun/facts/", caption: "Struktur internal dan atmosfer Matahari", fit: "contain" }
+    "source": "https://science.nasa.gov/sun/facts/",
+    "images": [
+      {
+        "src": "./assets/sun-structure-diagram.svg",
+        "alt": "Diagram lapisan Matahari dari inti hingga corona",
+        "credit": "ANTARA · data NASA",
+        "source": "https://science.nasa.gov/sun/facts/",
+        "caption": "Struktur internal dan atmosfer Matahari",
+        "fit": "contain"
+      }
     ]
   },
   {
-    title: "Permukaan yang Selalu Bergerak",
-    kicker: "FOTOSFER & GRANULASI",
-    subtitle: "Konveksi plasma membentuk granulasi, sementara medan magnet membentuk daerah aktif",
-    summary: "Fotosfer bukan permukaan padat. Pola granular muncul saat plasma panas naik, mendingin, lalu turun kembali. Daerah dengan medan magnet sangat kuat dapat menekan aliran panas dan tampak sebagai sunspot yang lebih gelap.",
-    facts: [
-      "Granulasi adalah jejak konveksi yang terlihat di fotosfer.",
-      "Sunspot lebih dingin daripada fotosfer di sekitarnya dan dapat bertahan dari hari hingga bulan.",
-      "Matahari berotasi secara diferensial: sekitar 25 hari di ekuator dan sekitar 36 hari di kutub."
+    "title": "Permukaannya Bukan Tanah",
+    "kicker": "TERNYATA...",
+    "subtitle": "Yang tampak seperti permukaan sebenarnya adalah lapisan plasma bercahaya",
+    "summary": "Kalau kamu bisa mendekat dengan aman, kamu tidak akan menemukan tanah untuk dipijak. Fotosfer adalah plasma panas. Pola kecil seperti butiran muncul karena material panas naik dan material yang lebih dingin turun.",
+    "facts": [
+      "Pola butiran itu disebut granulasi.",
+      "Granulasi menjadi petunjuk bahwa panas bergerak melalui konveksi.",
+      "Matahari juga tidak berputar sebagai benda padat; bagian ekuator dan kutub berotasi dengan laju berbeda."
     ],
-    source: "https://science.nasa.gov/sun/sunspots/",
-    images: [
-      { src: "./assets/sun-surface-diagram.svg", alt: "Diagram granulasi, sunspot, dan daerah aktif Matahari", credit: "ANTARA · data NASA", source: "https://science.nasa.gov/sun/sunspots/", caption: "Granulasi dan sunspot", fit: "contain" },
-      { src: "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003933/HMI_IcChangingSpots.00300.jpg", alt: "Sunspot pada fotosfer Matahari yang diamati Solar Dynamics Observatory", credit: "NASA/SDO/HMI", source: "https://svs.gsfc.nasa.gov/3933/", caption: "Sunspot dalam cahaya tampak · SDO/HMI", fit: "contain" }
+    "source": "https://science.nasa.gov/sun/facts/",
+    "images": [
+      {
+        "src": "./assets/sun-surface-diagram.svg",
+        "alt": "Diagram granulasi, sunspot, dan daerah aktif Matahari",
+        "credit": "ANTARA · data NASA",
+        "source": "https://science.nasa.gov/sun/sunspots/",
+        "caption": "Granulasi dan sunspot",
+        "fit": "contain"
+      }
     ]
   },
   {
-    title: "Medan Magnet & Letupan",
-    kicker: "REKOR & EKSTREM",
-    subtitle: "Medan magnet yang kusut menyimpan energi untuk flare, prominence, dan CME",
-    summary: "Plasma bermuatan membawa dan membengkokkan medan magnet Matahari. Ketika konfigurasi magnetik berubah cepat, energi dapat dilepaskan sebagai flare. Struktur magnetik juga menopang prominence dan dapat melontarkan awan plasma besar sebagai coronal mass ejection.",
-    facts: [
-      "Flare adalah pelepasan energi lokal yang sangat kuat dari daerah aktif.",
-      "Prominence adalah lengkungan plasma yang mengikuti medan magnet dan dapat bertahan jauh lebih lama.",
-      "CME membawa plasma dan medan magnet ke ruang antarplanet dan merupakan salah satu pemicu utama cuaca antariksa."
+    "title": "Bintik Matahari",
+    "kicker": "KENAPA ADA BINTIK GELAP?",
+    "subtitle": "Daerah yang lebih dingin tampak gelap dibanding sekelilingnya",
+    "summary": "Bintik Matahari terlihat gelap bukan karena benar-benar dingin, melainkan karena suhunya lebih rendah daripada fotosfer di sekitarnya. Bintik ini berkaitan dengan medan magnet yang sangat kuat.",
+    "facts": [
+      "Sunspot tetap sangat panas walaupun tampak lebih gelap.",
+      "Bintik dapat bertahan dari beberapa hari sampai berbulan-bulan.",
+      "Daerah aktif di sekitar sunspot sering menjadi tempat munculnya flare."
     ],
-    source: "https://science.nasa.gov/sun/solar-storms-and-flares/",
-    images: [
-      { src: "./assets/sun-magnetic-activity-diagram.svg", alt: "Diagram prominence, flare, dan coronal mass ejection", credit: "ANTARA · data NASA", source: "https://science.nasa.gov/sun/solar-storms-and-flares/", caption: "Aktivitas magnetik Matahari", fit: "contain" },
-      { src: "https://svs.gsfc.nasa.gov/vis/a010000/a014700/a014701/SDO_10-03-24_1219UTC_131-171_RedScreen_4k.jpg", alt: "Flare kuat yang direkam Solar Dynamics Observatory", credit: "NASA/SDO", source: "https://svs.gsfc.nasa.gov/14701/", caption: "Solar flare · SDO", fit: "contain" }
+    "source": "https://science.nasa.gov/sun/sunspots/",
+    "images": [
+      {
+        "src": "./assets/sun-surface-diagram.svg",
+        "alt": "Diagram granulasi, sunspot, dan daerah aktif Matahari",
+        "credit": "ANTARA · data NASA",
+        "source": "https://science.nasa.gov/sun/sunspots/",
+        "caption": "Granulasi dan sunspot",
+        "fit": "contain"
+      },
+      {
+        "src": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003933/HMI_IcChangingSpots.00300.jpg",
+        "alt": "Sunspot pada fotosfer Matahari yang diamati Solar Dynamics Observatory",
+        "credit": "NASA/SDO/HMI",
+        "source": "https://svs.gsfc.nasa.gov/3933/",
+        "caption": "Sunspot dalam cahaya tampak · SDO/HMI",
+        "fit": "contain"
+      }
     ]
   },
   {
-    title: "Angin Surya",
-    kicker: "CUACA ANTARIKSA",
-    subtitle: "Aliran plasma dari corona menghubungkan Matahari dengan seluruh Tata Surya",
-    summary: "Material yang lolos dari corona menjadi angin surya. Aliran partikel bermuatan ini membawa medan magnet Matahari dan membentuk heliosfer. Ketika kondisi angin surya dan letupan Matahari mencapai planet, keduanya dapat memicu aurora sekaligus mengganggu teknologi.",
-    facts: [
-      "Angin surya mengalir terus-menerus dari corona dan membentuk heliosfer.",
-      "Interaksi angin surya dengan magnetosfer Bumi dapat menghasilkan aurora.",
-      "Cuaca antariksa yang kuat dapat memengaruhi satelit, komunikasi, navigasi, dan jaringan listrik."
+    "title": "Flare dan CME",
+    "kicker": "SAAT MATAHARI MELEDAK",
+    "subtitle": "Ledakan energi dan awan plasma bisa terlontar ke ruang angkasa",
+    "summary": "Medan magnet Matahari bisa menjadi sangat rumit. Saat susunannya berubah cepat, energi dapat dilepaskan sebagai flare. Kadang Matahari juga melontarkan awan plasma besar yang disebut coronal mass ejection atau CME.",
+    "facts": [
+      "Flare adalah ledakan energi yang sangat terang di daerah aktif.",
+      "CME membawa plasma dan medan magnet keluar dari Matahari.",
+      "Flare dan CME adalah dua hal berbeda, walaupun keduanya dapat terjadi berdekatan."
     ],
-    source: "https://science.nasa.gov/sun/what-is-the-solar-wind/",
-    images: [
-      { src: "./assets/sun-solar-wind-diagram.svg", alt: "Diagram angin surya dari corona menuju magnetosfer Bumi", credit: "ANTARA · data NASA", source: "https://science.nasa.gov/sun/what-is-the-solar-wind/", caption: "Angin surya dan magnetosfer Bumi", fit: "contain" }
+    "source": "https://science.nasa.gov/sun/solar-storms-and-flares/",
+    "images": [
+      {
+        "src": "./assets/sun-magnetic-activity-diagram.svg",
+        "alt": "Diagram prominence, flare, dan coronal mass ejection",
+        "credit": "ANTARA · data NASA",
+        "source": "https://science.nasa.gov/sun/solar-storms-and-flares/",
+        "caption": "Aktivitas magnetik Matahari",
+        "fit": "contain"
+      },
+      {
+        "src": "https://svs.gsfc.nasa.gov/vis/a010000/a014700/a014701/SDO_10-03-24_1219UTC_131-171_RedScreen_4k.jpg",
+        "alt": "Flare kuat yang direkam Solar Dynamics Observatory",
+        "credit": "NASA/SDO",
+        "source": "https://svs.gsfc.nasa.gov/14701/",
+        "caption": "Solar flare · SDO",
+        "fit": "contain"
+      }
     ]
   },
   {
-    title: "Mengamati Bintang Terdekat",
-    kicker: "MISI HELIOFISIKA",
-    subtitle: "Armada observatorium mempelajari Matahari dari fotosfer hingga corona",
-    summary: "Tidak ada satu wahana yang dapat menjawab semua pertanyaan tentang Matahari. SDO memantau aktivitas secara terus-menerus, SOHO mempelajari interior hingga angin surya, Solar Orbiter mengamati Matahari dari perspektif baru, dan Parker Solar Probe terbang langsung menembus corona.",
-    facts: [
-      "Solar Dynamics Observatory diluncurkan pada 2010 untuk mengamati Matahari dengan resolusi tinggi dan cadence cepat.",
-      "SOHO adalah misi ESA-NASA yang telah mengamati Matahari sejak 1995.",
-      "Parker Solar Probe menjadi wahana pertama yang terbang melalui corona pada 2021."
+    "title": "Angin Surya dan Aurora",
+    "kicker": "SAMPAI KE BUMI",
+    "subtitle": "Matahari terus mengirim partikel ke seluruh Tata Surya",
+    "summary": "Matahari tidak hanya mengirim cahaya. Dari corona, partikel bermuatan terus mengalir sebagai angin surya. Ketika aliran ini berinteraksi dengan medan magnet Bumi, salah satu hasil indahnya bisa berupa aurora.",
+    "facts": [
+      "Angin surya ikut membentuk wilayah besar bernama heliosfer.",
+      "Aurora muncul ketika partikel bermuatan memicu cahaya di atmosfer atas Bumi.",
+      "Cuaca antariksa yang kuat juga dapat memengaruhi satelit, komunikasi, dan navigasi."
     ],
-    source: "https://science.nasa.gov/mission/parker-solar-probe/",
-    images: [
-      { src: "./assets/sun-missions-diagram.svg", alt: "Diagram misi utama pengamatan Matahari", credit: "ANTARA · data NASA dan ESA", source: "https://science.nasa.gov/mission/parker-solar-probe/", caption: "Armada pengamat Matahari", fit: "contain" }
+    "source": "https://science.nasa.gov/sun/what-is-the-solar-wind/",
+    "images": [
+      {
+        "src": "./assets/sun-solar-wind-diagram.svg",
+        "alt": "Diagram angin surya dari corona menuju magnetosfer Bumi",
+        "credit": "ANTARA · data NASA",
+        "source": "https://science.nasa.gov/sun/what-is-the-solar-wind/",
+        "caption": "Angin surya dan magnetosfer Bumi",
+        "fit": "contain"
+      }
+    ]
+  },
+  {
+    "title": "Siklus Aktivitas 11 Tahun",
+    "kicker": "MATAHARI PUNYA IRAMA",
+    "subtitle": "Jumlah bintik dan aktivitas Matahari naik-turun dalam sebuah siklus",
+    "summary": "Matahari tidak selalu sama aktifnya. Dalam kira-kira sebelas tahun, jumlah sunspot dan aktivitas magnetiknya biasanya naik menuju maksimum, lalu turun menuju minimum. Setelah itu polanya berulang lagi.",
+    "facts": [
+      "Siklus Matahari rata-rata berlangsung sekitar 11 tahun.",
+      "Saat maksimum Matahari, sunspot dan letupan biasanya lebih sering terjadi.",
+      "Siklus ini berkaitan dengan perubahan besar medan magnet Matahari."
+    ],
+    "source": "https://science.nasa.gov/sun/sunspots/",
+    "images": [
+      {
+        "src": "./assets/sun-magnetic-activity-diagram.svg",
+        "alt": "Diagram prominence, flare, dan coronal mass ejection",
+        "credit": "ANTARA · data NASA",
+        "source": "https://science.nasa.gov/sun/solar-storms-and-flares/",
+        "caption": "Aktivitas magnetik Matahari",
+        "fit": "contain"
+      }
+    ]
+  },
+  {
+    "title": "Wahana Pengamat Matahari",
+    "kicker": "BAGAIMANA KITA TAHU?",
+    "subtitle": "Ilmuwan memakai banyak “mata” untuk mempelajari Matahari",
+    "summary": "Mempelajari Matahari butuh lebih dari satu teleskop. SDO memantau aktivitasnya, SOHO mengamati Matahari dan angin surya, Solar Orbiter melihat dari sudut berbeda, sedangkan Parker Solar Probe berani terbang menembus corona.",
+    "facts": [
+      "SDO mengamati Matahari terus-menerus dalam banyak panjang gelombang.",
+      "SOHO adalah misi bersama ESA dan NASA yang aktif sejak 1995.",
+      "Parker Solar Probe menjadi wahana pertama yang terbang melalui corona Matahari."
+    ],
+    "source": "https://science.nasa.gov/mission/parker-solar-probe/",
+    "images": [
+      {
+        "src": "./assets/sun-missions-diagram.svg",
+        "alt": "Diagram misi utama pengamatan Matahari",
+        "credit": "ANTARA · data NASA dan ESA",
+        "source": "https://science.nasa.gov/mission/parker-solar-probe/",
+        "caption": "Armada pengamat Matahari",
+        "fit": "contain"
+      }
     ]
   }
 ]);

@@ -300,3 +300,21 @@
   backdrop-filter: blur(12px);
 }
 .mercury-texture-warning[hidden] { display: none; }
+
+
+/* 2026-10-03 CHILD EDUCATION MOBILE READABILITY
+   Keep the longer child-friendly lessons readable without turning the mobile
+   exploration sheet into tiny textbook text. */
+@media(max-width:700px){
+  .mercury-exploration{height:min(56dvh,420px)!important;max-height:calc(100dvh - 48px)!important}
+  .mercury-exploration h3{font-size:clamp(25px,7.4vw,29px)!important;line-height:1.05!important}
+  .mercury-topic-summary{font-size:12px!important;line-height:1.62!important}
+  .mercury-topic-facts li{font-size:10px!important;line-height:1.5!important}
+  .mercury-topic-facts{gap:8px!important;margin:15px 0 14px!important}
+}
+@media(max-width:340px){
+  .mercury-exploration{height:min(58dvh,420px)!important;left:4%!important;right:4%!important;padding:15px 15px 13px!important}
+  .mercury-exploration h3{font-size:24px!important}
+  .mercury-exploration-controls{margin-top:11px!important}
+  .mercury-exploration-close{margin-top:8px!important}
+}

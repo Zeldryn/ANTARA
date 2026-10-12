@@ -5,95 +5,256 @@ const SATURN_JUPITER_TEXTURE = "assets/textures/jupiter-hubble-inspired-4k.jpg";
 
 const SATURN_EXPLORATION_STOPS = Object.freeze([
   {
-    kicker: "IDENTITAS SATURNUS",
-    title: "Raksasa Bercincin",
-    subtitle: "Planet keenam dari Matahari dan raksasa gas terbesar kedua",
-    summary: "Saturnus adalah planet keenam dari Matahari dan planet terbesar kedua setelah Jupiter. Planet ini didominasi hidrogen dan helium, tanpa permukaan padat tempat wahana dapat mendarat.",
-    facts: [
-      "Diameter ekuator Saturnus sekitar 120.500 km, kira-kira sembilan kali lebar Bumi.",
-      "Jarak rata-ratanya dari Matahari sekitar 9,5 AU atau 1,4 miliar km.",
-      "Satu hari Saturnus berlangsung sekitar 10,7 jam, sementara satu tahunnya sekitar 29,4 tahun Bumi."
+    "title": "Saturnus",
+    "kicker": "KENALAN DULU",
+    "subtitle": "Raksasa gas keenam dari Matahari dengan cincin paling mencolok",
+    "summary": "Saturnus adalah planet terbesar kedua setelah Jupiter. Ia terkenal karena cincin luas yang mengelilinginya, tetapi planet ini juga punya atmosfer aktif dan keluarga bulan yang sangat menarik.",
+    "facts": [
+      "Saturnus adalah planet keenam dari Matahari.",
+      "Sebagian besar Saturnus tersusun dari hidrogen dan helium.",
+      "Saturnus tidak memiliki permukaan padat untuk dipijak."
     ],
-    source: "https://science.nasa.gov/saturn/facts/",
-    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia05/pia05425/PIA05425.jpg?crop=faces%2Cfocalpoint&fit=clip&h=649&w=1166", alt: "Citra Saturnus dan sistem cincinnya dari Cassini", credit: "NASA/JPL/Space Science Institute", source: "https://science.nasa.gov/saturn/facts/", caption: "Saturnus · raksasa gas keenam dari Matahari", fit: "contain" , type: "CITRA WAHANA" }]
+    "source": "https://science.nasa.gov/saturn/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia05/pia05425/PIA05425.jpg?crop=faces%2Cfocalpoint&fit=clip&h=649&w=1166",
+        "alt": "Citra Saturnus dan sistem cincinnya dari Cassini",
+        "credit": "NASA/JPL/Space Science Institute",
+        "source": "https://science.nasa.gov/saturn/facts/",
+        "caption": "Saturnus · raksasa gas keenam dari Matahari",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ]
   },
   {
-    kicker: "REKOR & EKSTREM",
-    title: "Arsitektur Es dan Debu",
-    subtitle: "Sistem cincin luas dengan celah dan struktur radial yang rumit",
-    summary: "Cincin Saturnus tersusun dari sangat banyak partikel es, material batuan, dan debu. Struktur cincinnya terbagi menjadi pita-pita dengan kepadatan berbeda, termasuk celah gelap Cassini Division yang memisahkan cincin A dan B.",
-    facts: [
-      "Cincin utama sangat lebar tetapi secara vertikal sangat tipis dibanding bentangnya.",
-      "Cassini Division terlihat sebagai celah gelap di antara dua wilayah cincin utama yang terang.",
-      "Partikel cincin mengorbit Saturnus secara individual, bukan sebagai satu cakram padat."
+    "title": "Cincin dari Es dan Batu",
+    "kicker": "KENAPA CINCINNYA TERLIHAT JELAS?",
+    "subtitle": "Miliaran partikel memantulkan cahaya Matahari di sekitar Saturnus",
+    "summary": "Cincin Saturnus bukan piringan padat. Cincin itu tersusun dari sangat banyak potongan es, batu, dan debu yang masing-masing mengorbit planet. Karena banyak materialnya terang dan kaya es, cincin terlihat sangat jelas.",
+    "facts": [
+      "Ukuran partikel cincin bervariasi dari butiran kecil sampai bongkahan besar.",
+      "Setiap bagian cincin mengorbit dengan kecepatan yang bergantung pada jaraknya dari Saturnus.",
+      "Gravitasi bulan-bulan kecil ikut membentuk celah dan struktur pada cincin."
     ],
-    source: "https://science.nasa.gov/saturn/facts/",
-    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06175/PIA06175.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1000&w=5890", alt: "Citra panorama cincin Saturnus dari Cassini", credit: "NASA/JPL/Space Science Institute", source: "https://science.nasa.gov/saturn/facts/", caption: "Struktur cincin dan Cassini Division", fit: "contain" , type: "CITRA WAHANA" }]
+    "source": "https://science.nasa.gov/saturn/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06175/PIA06175.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1000&w=5890",
+        "alt": "Citra panorama cincin Saturnus dari Cassini",
+        "credit": "NASA/JPL/Space Science Institute",
+        "source": "https://science.nasa.gov/saturn/facts/",
+        "caption": "Struktur cincin dan Cassini Division",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ]
   },
   {
-    kicker: "ATMOSFER DAN AWAN",
-    title: "Pita yang Lebih Lembut",
-    subtitle: "Atmosfer hidrogen-helium dengan jet dan badai cepat",
-    summary: "Saturnus diselimuti awan berwarna kuning, cokelat, dan abu-abu dengan pita yang lebih halus daripada Jupiter. Atmosfer atasnya mempunyai jet cepat dan badai yang dapat tumbuh besar secara periodik.",
-    facts: [
-      "Atmosfer Saturnus terutama tersusun dari hidrogen dan helium.",
-      "Kecepatan angin di wilayah ekuator dapat mencapai sekitar 500 meter per detik.",
-      "Kontras pita Saturnus cenderung lebih lembut daripada pita atmosfer Jupiter."
+    "title": "Lebar tapi Sangat Tipis",
+    "kicker": "TIPIS BANGET!",
+    "subtitle": "Sistem cincin membentang ratusan ribu kilometer tetapi ketebalannya kecil",
+    "summary": "Dari atas, cincin Saturnus terlihat sangat lebar. Tetapi kalau dilihat dari samping, cincin utama sangat tipis dibanding lebarnya. Ini membuat sistem cincin seperti lembaran raksasa yang sangat tipis.",
+    "facts": [
+      "Sistem cincin utama membentang hingga sekitar 282.000 km dari planet.",
+      "Ketebalan banyak bagian cincin utama biasanya hanya sekitar puluhan meter.",
+      "Cassini Division adalah celah besar yang memisahkan cincin A dan B."
     ],
-    source: "https://science.nasa.gov/saturn/facts/",
-    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06114/PIA06114.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1016&w=1020", alt: "Citra atmosfer Saturnus dari Cassini", credit: "NASA/JPL/Space Science Institute", source: "https://science.nasa.gov/saturn/facts/", caption: "Pita awan dan sirkulasi atmosfer Saturnus", fit: "contain" , type: "CITRA WAHANA" }]
+    "source": "https://science.nasa.gov/saturn/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06175/PIA06175.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1000&w=5890",
+        "alt": "Citra panorama cincin Saturnus dari Cassini",
+        "credit": "NASA/JPL/Space Science Institute",
+        "source": "https://science.nasa.gov/saturn/facts/",
+        "caption": "Struktur cincin dan Cassini Division",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ]
   },
   {
-    kicker: "HEXAGON KUTUB UTARA",
-    title: "Jet Enam Sisi",
-    subtitle: "Pola sirkulasi atmosfer yang mengelilingi kutub utara",
-    summary: "Kutub utara Saturnus memiliki pola jet berbentuk enam sisi yang terkenal sebagai hexagon. Fitur berskala planet ini pertama kali terlihat pada data Voyager dan kemudian diamati dengan detail tinggi oleh Cassini.",
-    facts: [
-      "Hexagon bukan struktur padat, melainkan pola aliran atmosfer.",
-      "Pola ini berputar bersama sistem atmosfer kutub utara Saturnus.",
-      "Cassini menghasilkan salah satu pandangan warna dan detail terbaik terhadap hexagon."
+    "title": "Saturnus Tidak Punya Tanah",
+    "kicker": "TAHUKAH KAMU?",
+    "subtitle": "Kalau turun ke dalam, gas berubah menjadi fluida yang semakin rapat",
+    "summary": "Saturnus bukan bola yang bisa didarati seperti Mars. Semakin masuk ke bawah awan, tekanannya naik dan material menjadi makin rapat. Jadi tidak ada garis jelas yang bisa disebut “permukaan tanah Saturnus”.",
+    "facts": [
+      "Saturnus adalah raksasa gas.",
+      "Kerapatan rata-rata Saturnus lebih rendah daripada air, walaupun tidak berarti planet ini bisa benar-benar “mengapung” di lautan biasa.",
+      "Bagian dalamnya diperkirakan memiliki lapisan hidrogen dan helium di sekitar inti yang lebih padat."
     ],
-    source: "https://science.nasa.gov/mission/cassini/about-the-mission/",
-    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia14/pia14646/PIA14646.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1016&w=1016", alt: "Citra hexagon kutub utara Saturnus dari Cassini", credit: "NASA/JPL-Caltech/Space Science Institute", source: "https://science.nasa.gov/mission/cassini/about-the-mission/", caption: "Hexagon kutub utara Saturnus", fit: "contain" , type: "CITRA WAHANA" }]
+    "source": "https://science.nasa.gov/saturn/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia05/pia05425/PIA05425.jpg?crop=faces%2Cfocalpoint&fit=clip&h=649&w=1166",
+        "alt": "Citra Saturnus dan sistem cincinnya dari Cassini",
+        "credit": "NASA/JPL/Space Science Institute",
+        "source": "https://science.nasa.gov/saturn/facts/",
+        "caption": "Saturnus · raksasa gas keenam dari Matahari",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ]
   },
   {
-    kicker: "BULAN-BULAN SATURNUS",
-    title: "Sistem Dunia Kecil",
-    subtitle: "Titan, Rhea, Iapetus, Dione, Tethys, Mimas, dan banyak lainnya",
-    summary: "Saturnus dikelilingi sistem bulan yang sangat beragam. Titan mendominasi dari sisi ukuran, sementara Enceladus menjadi salah satu objek paling menarik karena aktivitas plume dan bukti samudra air di bawah permukaannya.",
-    facts: [
-      "Titan adalah bulan terbesar Saturnus dan bulan terbesar kedua di Tata Surya.",
-      "Rhea, Iapetus, Dione, Tethys, dan Mimas memperlihatkan sejarah geologi yang berbeda-beda.",
-      "Interaksi beberapa bulan dengan cincin membantu membentuk dan mempertahankan struktur cincin tertentu."
+    "title": "Pita Awan Saturnus",
+    "kicker": "LIHAT GARIS-GARISNYA",
+    "subtitle": "Atmosfer Saturnus juga punya pita dan jet, hanya warnanya lebih lembut",
+    "summary": "Saturnus punya pola pita seperti Jupiter, tetapi kontras warnanya sering lebih halus. Di bawah tampilan lembut itu, anginnya tetap sangat cepat dan atmosfernya penuh badai serta gelombang.",
+    "facts": [
+      "Atmosfer Saturnus didominasi hidrogen dan helium.",
+      "Jet stream Saturnus dapat bergerak sangat cepat di sekitar ekuator.",
+      "Perubahan musim dapat mengubah warna dan pola awan yang terlihat."
     ],
-    source: "https://science.nasa.gov/saturn/moons/facts/",
-    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06475/PIA06475.jpg?crop=faces%2Cfocalpoint&fit=clip&h=870&w=1021", alt: "Saturnus bersama Dione, Enceladus, Tethys, Mimas, dan Rhea dalam citra Cassini", credit: "NASA/JPL/Space Science Institute", source: "https://science.nasa.gov/photojournal/family-portrait/", caption: "Family Portrait · Saturnus dan lima bulan · Cassini PIA06475", fit: "contain", type: "CITRA WAHANA" }]
+    "source": "https://science.nasa.gov/saturn/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06114/PIA06114.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1016&w=1020",
+        "alt": "Citra atmosfer Saturnus dari Cassini",
+        "credit": "NASA/JPL/Space Science Institute",
+        "source": "https://science.nasa.gov/saturn/facts/",
+        "caption": "Pita awan dan sirkulasi atmosfer Saturnus",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ]
   },
   {
-    kicker: "TITAN & ENCELADUS",
-    title: "Dua Dunia yang Mengubah Pertanyaan",
-    subtitle: "Danau hidrokarbon, atmosfer tebal, plume es, dan samudra tersembunyi",
-    summary: "Titan memiliki atmosfer tebal yang didominasi nitrogen serta sungai, danau, dan laut hidrokarbon cair di permukaannya. Enceladus memuntahkan uap air dan partikel es dari retakan di kutub selatan, memberi bukti kuat tentang samudra di bawah kerak es.",
-    facts: [
-      "Titan adalah satu-satunya bulan yang diketahui memiliki atmosfer tebal.",
-      "Titan memiliki badan cair stabil di permukaan, terutama metana dan etana.",
-      "Plume Enceladus memasok material ke cincin E Saturnus dan membawa material dari lingkungan samudra bawah permukaan."
+    "title": "Hexagon Kutub Utara",
+    "kicker": "BENTUK ENAM SISI?",
+    "subtitle": "Pola awan raksasa di kutub utara membentuk bentuk yang hampir geometris",
+    "summary": "Di kutub utara Saturnus ada pola awan berbentuk enam sisi yang terkenal sebagai hexagon. Ini bukan benda padat. Ia adalah pola jet stream dan gelombang atmosfer yang sangat besar.",
+    "facts": [
+      "Hexagon membentang sekitar 30.000 km.",
+      "Pola ini pertama kali terlihat pada data Voyager lalu diamati jauh lebih detail oleh Cassini.",
+      "Di bagian tengah hexagon terdapat sistem badai kutub yang berputar."
     ],
-    source: "https://science.nasa.gov/saturn/moons/titan/facts/",
-    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06440/PIA06440.jpg?crop=faces%2Cfocalpoint&fit=clip&h=718&w=504", alt: "Permukaan Titan dipotret Huygens", credit: "ESA/NASA/JPL/University of Arizona", source: "https://science.nasa.gov/photojournal/titans-surface/", caption: "Permukaan Titan dari Huygens · PIA06440", fit: "cover", type: "CITRA WAHANA" }, { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12713/PIA12713.jpg?crop=faces%2Cfocalpoint&fit=clip&h=826&w=826", alt: "Plume Enceladus dipotret Cassini", credit: "NASA/JPL/Space Science Institute", source: "https://science.nasa.gov/photojournal/enceladus-plumes/", caption: "Plume Enceladus dari Cassini · PIA12713", fit: "contain", type: "CITRA WAHANA" }]
+    "source": "https://science.nasa.gov/saturn/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia14/pia14646/PIA14646.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1016&w=1016",
+        "alt": "Citra hexagon kutub utara Saturnus dari Cassini",
+        "credit": "NASA/JPL-Caltech/Space Science Institute",
+        "source": "https://science.nasa.gov/mission/cassini/about-the-mission/",
+        "caption": "Hexagon kutub utara Saturnus",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ]
   },
   {
-    kicker: "EKSPLORASI SATURNUS",
-    title: "Dari Flyby ke Cassini-Huygens",
-    subtitle: "Empat dekade pengamatan jarak dekat mengubah pemahaman Saturnus",
-    summary: "Pioneer 11 membuka era flyby Saturnus, disusul Voyager 1 dan 2. Cassini kemudian mengorbit Saturnus dari 2004 hingga 2017, sementara wahana Huygens mendarat di Titan dan mengirim data langsung dari permukaannya.",
-    facts: [
-      "Pioneer 11 menjadi wahana pertama yang melintasi Saturnus pada 1979.",
-      "Voyager 1 dan 2 memperluas pemetaan cincin, atmosfer, dan bulan Saturnus pada awal 1980-an.",
-      "Cassini-Huygens mempelajari sistem Saturnus selama lebih dari satu dekade dan Huygens mendarat di Titan pada 2005."
+    "title": "Hari Saturnus",
+    "kicker": "HARI YANG CEPAT",
+    "subtitle": "Planet raksasa ini berputar hanya dalam sekitar sebelas jam",
+    "summary": "Walaupun ukurannya sangat besar, Saturnus berputar cepat. Satu hari hanya sekitar 10,7 jam. Rotasi cepat ikut membuat planet sedikit pepat di kutub dan menggembung di ekuator.",
+    "facts": [
+      "Satu hari Saturnus sekitar 10,7 jam.",
+      "Rotasi cepat membantu membentuk aliran angin yang kuat.",
+      "Karena Saturnus tidak punya permukaan padat, menentukan laju rotasi bagian dalam membutuhkan pengukuran medan dan gelombang."
     ],
-    source: "https://science.nasa.gov/mission/cassini/about-the-mission/",
-    images: [{ src: "./assets/saturn-missions-diagram.svg", alt: "Garis waktu eksplorasi Saturnus dari Pioneer hingga Cassini-Huygens", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/mission/cassini/about-the-mission/", caption: "Tonggak eksplorasi Saturnus", fit: "contain" }]
+    "source": "https://science.nasa.gov/saturn/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06114/PIA06114.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1016&w=1020",
+        "alt": "Citra atmosfer Saturnus dari Cassini",
+        "credit": "NASA/JPL/Space Science Institute",
+        "source": "https://science.nasa.gov/saturn/facts/",
+        "caption": "Pita awan dan sirkulasi atmosfer Saturnus",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ]
+  },
+  {
+    "title": "Sistem Bulan Saturnus",
+    "kicker": "PUNYA BANYAK TEMAN",
+    "subtitle": "Bulan-bulan Saturnus adalah kumpulan dunia dengan bentuk dan bahan berbeda",
+    "summary": "Saturnus tidak hanya menarik karena cincin. Di sekelilingnya ada banyak bulan, dari batu kecil tak beraturan sampai dunia besar seperti Titan. Beberapa bulan bahkan membantu membentuk tepi dan celah cincin.",
+    "facts": [
+      "Titan adalah bulan terbesar Saturnus.",
+      "Bulan kecil dapat bertindak seperti “penggembala” yang membantu membatasi bagian cincin.",
+      "Masing-masing bulan menyimpan sejarah tumbukan dan geologi yang berbeda."
+    ],
+    "source": "https://science.nasa.gov/saturn/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06475/PIA06475.jpg?crop=faces%2Cfocalpoint&fit=clip&h=870&w=1021",
+        "alt": "Saturnus bersama Dione, Enceladus, Tethys, Mimas, dan Rhea dalam citra Cassini",
+        "credit": "NASA/JPL/Space Science Institute",
+        "source": "https://science.nasa.gov/photojournal/family-portrait/",
+        "caption": "Family Portrait · Saturnus dan lima bulan · Cassini PIA06475",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ]
+  },
+  {
+    "title": "Titan dan Lautan Metana",
+    "kicker": "DUNIA BERKABUT",
+    "subtitle": "Bulan besar dengan atmosfer tebal dan cairan di permukaannya",
+    "summary": "Titan punya sesuatu yang sangat jarang untuk sebuah bulan: atmosfer tebal. Di permukaannya terdapat sungai, danau, dan laut, tetapi cairannya bukan air seperti di Bumi. Banyak di antaranya terdiri dari metana dan etana.",
+    "facts": [
+      "Titan memiliki atmosfer yang didominasi nitrogen.",
+      "Huygens mendarat di Titan pada 2005 dan mengirim foto dari permukaan.",
+      "Siklus metana Titan punya kemiripan menarik dengan siklus air di Bumi, walaupun suhunya jauh lebih dingin."
+    ],
+    "source": "https://science.nasa.gov/saturn/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06440/PIA06440.jpg?crop=faces%2Cfocalpoint&fit=clip&h=718&w=504",
+        "alt": "Permukaan Titan dipotret Huygens",
+        "credit": "ESA/NASA/JPL/University of Arizona",
+        "source": "https://science.nasa.gov/photojournal/titans-surface/",
+        "caption": "Permukaan Titan dari Huygens · PIA06440",
+        "fit": "cover",
+        "type": "CITRA WAHANA"
+      }
+    ]
+  },
+  {
+    "title": "Enceladus",
+    "kicker": "AIR MENYEMBUR DARI ES",
+    "subtitle": "Bulan kecil yang menyemburkan material dari samudra tersembunyi",
+    "summary": "Enceladus tampak seperti bola es kecil, tetapi di dekat kutub selatannya terdapat semburan material ke ruang angkasa. Data Cassini menunjukkan semburan itu berasal dari air dan material lain yang berhubungan dengan samudra di bawah kerak es.",
+    "facts": [
+      "Enceladus memiliki samudra global di bawah kerak es.",
+      "Plume di kutub selatan mengandung uap air dan partikel es.",
+      "Sebagian material plume memasok partikel ke cincin E Saturnus."
+    ],
+    "source": "https://science.nasa.gov/saturn/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12713/PIA12713.jpg?crop=faces%2Cfocalpoint&fit=clip&h=826&w=826",
+        "alt": "Plume Enceladus dipotret Cassini",
+        "credit": "NASA/JPL/Space Science Institute",
+        "source": "https://science.nasa.gov/photojournal/enceladus-plumes/",
+        "caption": "Plume Enceladus dari Cassini · PIA12713",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ]
+  },
+  {
+    "title": "Cassini-Huygens",
+    "kicker": "BAGAIMANA KITA TAHU?",
+    "subtitle": "Misi panjang yang mengubah pemahaman kita tentang Saturnus dan bulan-bulannya",
+    "summary": "Pioneer dan Voyager memberi pandangan awal, tetapi Cassini mengorbit Saturnus selama lebih dari satu dekade. Bersama pendarat Huygens di Titan, misi ini mengungkap detail cincin, badai, bulan, dan lingkungan Saturnus.",
+    "facts": [
+      "Cassini tiba di Saturnus pada 2004.",
+      "Huygens mendarat di Titan pada Januari 2005.",
+      "Misi Cassini berakhir pada 15 September 2017 dengan terjun terkontrol ke atmosfer Saturnus."
+    ],
+    "source": "https://science.nasa.gov/mission/cassini/about-the-mission/",
+    "images": [
+      {
+        "src": "./assets/saturn-missions-diagram.svg",
+        "alt": "Garis waktu eksplorasi Saturnus dari Pioneer hingga Cassini-Huygens",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://science.nasa.gov/mission/cassini/about-the-mission/",
+        "caption": "Tonggak eksplorasi Saturnus",
+        "fit": "contain"
+      }
+    ]
   }
 ]);
 
@@ -301,14 +462,106 @@ window.SaturnScene = class SaturnScene {
   P.__featureAwareV2 = true;
   const wrap=a=>Math.atan2(Math.sin(a),Math.cos(a)), near=(a,r)=>r+wrap(a-r);
   const VIEWS=[
-    {yaw:2.20,pitch:-.28,cameraZ:7.0,marker:null,kind:"",label:"SATURNUS",context:"PANORAMA"},
-    {yaw:2.28,pitch:-.18,cameraZ:6.55,marker:"ring",kind:"rings",label:"SISTEM CINCIN",context:"A RING · CASSINI DIVISION · B RING"},
-    {yaw:1.28,pitch:-.20,cameraZ:6.72,marker:null,kind:"atmosphere",label:"ATMOSFER SATURNUS",context:"PITA AWAN & JET"},
-    {yaw:2.10,pitch:.56,cameraZ:6.36,marker:"hexagon",kind:"hexagon",label:"HEXAGON KUTUB UTARA",context:"JET POLAR · WILAYAH KUTUB UTARA"},
-    {yaw:1.82,pitch:-.24,cameraZ:7.28,marker:null,kind:"moons",label:"SISTEM BULAN",context:"TITAN · RHEA · IAPETUS · DIONE"},
-    {yaw:2.36,pitch:-.20,cameraZ:7.18,marker:null,kind:"titan",label:"TITAN & ENCELADUS",context:"BULAN · BUKAN FITUR PERMUKAAN"},
-    {yaw:2.55,pitch:-.26,cameraZ:6.88,marker:null,kind:"",label:"EKSPLORASI SATURNUS",context:"PIONEER · VOYAGER · CASSINI-HUYGENS"}
-  ];
+  {
+    "yaw": 2.2,
+    "pitch": -0.28,
+    "cameraZ": 7.0,
+    "marker": null,
+    "kind": "",
+    "label": "SATURNUS",
+    "context": "PANORAMA"
+  },
+  {
+    "yaw": 2.28,
+    "pitch": -0.18,
+    "cameraZ": 6.55,
+    "marker": "ring",
+    "kind": "rings",
+    "label": "SISTEM CINCIN",
+    "context": "ES · BATU · DEBU"
+  },
+  {
+    "yaw": 2.34,
+    "pitch": -0.12,
+    "cameraZ": 6.68,
+    "marker": "ring",
+    "kind": "rings",
+    "label": "CINCIN TIPIS",
+    "context": "A RING · CASSINI DIVISION · B RING"
+  },
+  {
+    "yaw": 1.55,
+    "pitch": -0.15,
+    "cameraZ": 6.92,
+    "marker": null,
+    "kind": "atmosphere",
+    "label": "INTERIOR SATURNUS",
+    "context": "TANPA PERMUKAAN PADAT"
+  },
+  {
+    "yaw": 1.28,
+    "pitch": -0.2,
+    "cameraZ": 6.72,
+    "marker": null,
+    "kind": "atmosphere",
+    "label": "ATMOSFER SATURNUS",
+    "context": "PITA AWAN & JET"
+  },
+  {
+    "yaw": 2.1,
+    "pitch": 0.56,
+    "cameraZ": 6.36,
+    "marker": "hexagon",
+    "kind": "hexagon",
+    "label": "HEXAGON KUTUB UTARA",
+    "context": "JET POLAR"
+  },
+  {
+    "yaw": 1.78,
+    "pitch": -0.18,
+    "cameraZ": 6.8,
+    "marker": null,
+    "kind": "atmosphere",
+    "label": "ROTASI SATURNUS",
+    "context": "HARI ~10,7 JAM"
+  },
+  {
+    "yaw": 1.82,
+    "pitch": -0.24,
+    "cameraZ": 7.28,
+    "marker": null,
+    "kind": "moons",
+    "label": "SISTEM BULAN",
+    "context": "TITAN · RHEA · IAPETUS · DIONE"
+  },
+  {
+    "yaw": 2.36,
+    "pitch": -0.2,
+    "cameraZ": 7.18,
+    "marker": null,
+    "kind": "titan",
+    "label": "TITAN",
+    "context": "ATMOSFER TEBAL · LAUT METANA"
+  },
+  {
+    "yaw": 2.12,
+    "pitch": -0.15,
+    "cameraZ": 7.22,
+    "marker": null,
+    "kind": "moons",
+    "label": "ENCELADUS",
+    "context": "PLUME · SAMUDRA BAWAH ES"
+  },
+  {
+    "yaw": 2.55,
+    "pitch": -0.26,
+    "cameraZ": 6.88,
+    "marker": null,
+    "kind": "",
+    "label": "EKSPLORASI SATURNUS",
+    "context": "PIONEER · VOYAGER · CASSINI-HUYGENS"
+  }
+];
   P._ensureFeatureState=function(){if(this._featureStateReady)return;this._featureStateReady=true;this.focusState="IDLE_ROTATION";this.focusYaw=this.renderedRotation||2.2;this.focusYawTarget=this.focusYaw;this.focusPitch=-.28;this.focusPitchTarget=-.28;this.focusCameraZ=7;this.focusCameraZTarget=7;this.focusReticle=document.getElementById("saturn-focus-reticle");this.focusLabel=document.getElementById("saturn-focus-label");this.focusContext=document.getElementById("saturn-focus-context");this.ringAnnotation=document.getElementById("saturn-ring-annotation");};
 
   const originalCreate=P.createThreeScene;

@@ -13,3 +13,21 @@
 .is-sun .masthead{opacity:1;transition:opacity 2s}.is-sun .preparation{opacity:0}
 .sun-emergency-mercury{position:absolute;left:50%;top:49%;width:min(34vw,410px);aspect-ratio:1;border-radius:50%;display:none;background:radial-gradient(circle at 35% 32%,#a9a69e 0 7%,#76736c 38%,#4c4b47 69%,#232426 100%);box-shadow:inset -34px -16px 54px rgba(0,0,0,.68),0 0 28px rgba(185,177,160,.08)}
 @media(max-width:700px){.sun-emergency-mercury{top:38%;width:min(55vw,300px)}}
+
+
+/* 2026-10-03 CHILD EDUCATION MOBILE READABILITY
+   Keep the longer child-friendly lessons readable without turning the mobile
+   exploration sheet into tiny textbook text. */
+@media(max-width:700px){
+  .sun-exploration{height:min(56dvh,420px)!important;max-height:calc(100dvh - 48px)!important}
+  .sun-exploration h3{font-size:clamp(25px,7.4vw,29px)!important;line-height:1.05!important}
+  .sun-topic-summary{font-size:12px!important;line-height:1.62!important}
+  .sun-topic-facts li{font-size:10px!important;line-height:1.5!important}
+  .sun-topic-facts{gap:8px!important;margin:15px 0 14px!important}
+}
+@media(max-width:340px){
+  .sun-exploration{height:min(58dvh,420px)!important;left:4%!important;right:4%!important;padding:15px 15px 13px!important}
+  .sun-exploration h3{font-size:24px!important}
+  .sun-exploration-controls{margin-top:11px!important}
+  .sun-exploration-close{margin-top:8px!important}
+}

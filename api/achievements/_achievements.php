@@ -231,7 +231,7 @@ function antara_achievements_payload(PDO $pdo, int $userId): array
             $progressLabel=$current.' / '.$goal.' destinasi';
         }
         elseif ($code==='solar-master') {
-            $current=(int)($sync['summary']['overall']['completedMilestones'] ?? 0); $goal=(int)($sync['summary']['overall']['totalMilestones'] ?? 110);
+            $current=(int)($sync['summary']['overall']['completedMilestones'] ?? 0); $goal=(int)($sync['summary']['overall']['totalMilestones'] ?? 130);
             $progressLabel=$current.' / '.$goal.' milestone';
         }
         elseif ($code==='top-10') {

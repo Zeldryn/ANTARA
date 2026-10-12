@@ -48,216 +48,414 @@ const mercurySurfacePoint = (location, radius = 1) => {
 
 const MERCURY_EXPLORATION_STOPS = Object.freeze([
   {
-    images: [
+    "title": "Merkurius",
+    "kicker": "KENALAN DULU",
+    "subtitle": "Planet kecil yang berlari paling dekat dengan Matahari",
+    "summary": "Merkurius adalah planet utama terkecil sekaligus yang paling dekat dengan Matahari. Dari jauh ia terlihat sederhana, tetapi permukaannya menyimpan kawah, tebing, es kutub, dan petunjuk tentang awal Tata Surya.",
+    "facts": [
+      "Diameter Merkurius sekitar 4.880 km.",
+      "Jarak rata-ratanya dari Matahari sekitar 58 juta km.",
+      "Merkurius tidak memiliki bulan dan tidak memiliki cincin."
+    ],
+    "source": "https://science.nasa.gov/mercury/facts/",
+    "images": [
       {
-        src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533",
-        alt: "Mosaik global permukaan Merkurius dari citra MESSENGER dan Mariner 10",
-        credit: "NASA/JHU APL/Carnegie/USGS",
-        source: "https://science.nasa.gov/photojournal/full-global-mercury-mosaic/",
-        license: "NASA image policy",
-        licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Mosaik global Merkurius · MESSENGER",
-        fit: "cover"
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533",
+        "alt": "Mosaik global permukaan Merkurius dari citra MESSENGER dan Mariner 10",
+        "credit": "NASA/JHU APL/Carnegie/USGS",
+        "source": "https://science.nasa.gov/photojournal/full-global-mercury-mosaic/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Mosaik global Merkurius · MESSENGER",
+        "fit": "cover"
       }
     ],
-    title: "Planet Terkecil",
-    kicker: "POSISI & UKURAN",
-    subtitle: "Dunia batuan paling dekat dengan Matahari",
-    summary: "Merkurius adalah planet terdekat dari Matahari sekaligus planet utama terkecil di Tata Surya. Ukurannya hanya sedikit lebih besar daripada Bulan, tetapi permukaannya menyimpan sejarah tumbukan yang sangat panjang.",
-    facts: [
-      "Jari-jari Merkurius sekitar 2.440 km, dengan diameter sekitar 4.880 km.",
-      "Jarak rata-ratanya dari Matahari sekitar 58 juta km atau 0,39 AU.",
-      "Merkurius adalah planet batuan tanpa cincin dan tanpa satelit alami."
-    ],
-    source: "https://science.nasa.gov/mercury/facts/",
-    location: null,
-    orientation: { yaw: 0.62, pitch: 0.06, roll: MERCURY_EXPLORATION_ROLL },
-    shift: { x: 0, y: 0 }
+    "location": null,
+    "orientation": {
+      "yaw": 0.62,
+      "pitch": 0.06,
+      "roll": 0.055
+    },
+    "shift": {
+      "x": 0,
+      "y": 0
+    }
   },
   {
-    images: [
+    "title": "Planet Terkecil",
+    "kicker": "KECIL BANGET",
+    "subtitle": "Sedikit lebih besar daripada Bulan, tetapi tetap sebuah planet",
+    "summary": "Merkurius memang kecil, bahkan hanya sedikit lebih besar daripada Bulan kita. Namun ia cukup besar untuk berbentuk bulat, memiliki inti logam besar, dan mempunyai medan magnet sendiri.",
+    "facts": [
+      "Jari-jari Merkurius sekitar 2.440 km.",
+      "Gravitasi permukaannya sekitar 38% gravitasi Bumi.",
+      "Walaupun kecil, Merkurius adalah planet kedua paling padat setelah Bumi."
+    ],
+    "source": "https://science.nasa.gov/mercury/facts/",
+    "images": [
       {
-        src: "./assets/mercury-orbit-rotation.svg",
-        alt: "Diagram orbit Merkurius dan resonansi rotasi tiga banding dua",
-        credit: "ANTARA · data NASA Science",
-        source: "https://science.nasa.gov/mercury/facts/",
-        caption: "Orbit 88 hari dan resonansi spin-orbit 3:2",
-        fit: "contain"
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533",
+        "alt": "Mosaik global permukaan Merkurius dari citra MESSENGER dan Mariner 10",
+        "credit": "NASA/JHU APL/Carnegie/USGS",
+        "source": "https://science.nasa.gov/photojournal/full-global-mercury-mosaic/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Mosaik global Merkurius · MESSENGER",
+        "fit": "cover"
       }
     ],
-    title: "Tahun 88 Hari",
-    kicker: "ORBIT & ROTASI",
-    subtitle: "Gerak cepat mengelilingi Matahari, rotasi yang jauh lebih lambat",
-    summary: "Merkurius menyelesaikan satu orbit hanya dalam sekitar 88 hari Bumi. Rotasinya jauh lebih lambat dan terkunci dalam resonansi 3:2, sehingga tiga putaran pada sumbu terjadi selama dua kali orbit.",
-    facts: [
-      "Satu tahun Merkurius berlangsung sekitar 88 hari Bumi.",
-      "Rotasi siderealnya sekitar 59 hari Bumi.",
-      "Satu hari Matahari di Merkurius, dari siang ke siang berikutnya, berlangsung sekitar 176 hari Bumi."
-    ],
-    source: "https://science.nasa.gov/mercury/facts/",
-    location: null,
-    orientation: { yaw: 1.04, pitch: 0.04, roll: MERCURY_EXPLORATION_ROLL },
-    shift: { x: 0, y: 0 }
+    "location": null,
+    "orientation": {
+      "yaw": 0.82,
+      "pitch": 0.02,
+      "roll": 0.055
+    },
+    "shift": {
+      "x": 0,
+      "y": 0
+    }
   },
   {
-    images: [
+    "title": "Satu Tahun Cuma 88 Hari",
+    "kicker": "TAHUNNYA CEPAT",
+    "subtitle": "Merkurius mengelilingi Matahari lebih cepat daripada planet lain",
+    "summary": "Karena berada sangat dekat dengan Matahari, lintasan orbit Merkurius lebih pendek dan ia bergerak cepat. Hasilnya, satu tahun di Merkurius selesai hanya dalam sekitar 88 hari Bumi.",
+    "facts": [
+      "Merkurius adalah planet dengan tahun terpendek di Tata Surya.",
+      "Rotasi pada sumbunya jauh lebih lambat, sekitar 59 hari Bumi.",
+      "Rotasi dan orbitnya terikat dalam pola yang disebut resonansi 3:2."
+    ],
+    "source": "https://science.nasa.gov/mercury/facts/",
+    "images": [
       {
-        src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19247/PIA19247.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1550&w=2044",
-        alt: "Peta suhu maksimum wilayah kutub utara Merkurius dari data MESSENGER",
-        credit: "NASA/JHU APL/Carnegie",
-        source: "https://science.nasa.gov/photojournal/hot-and-cold/",
-        license: "NASA image policy",
-        licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Hot and Cold · suhu permukaan kutub Merkurius",
-        fit: "cover",
-        position: "50% 56%"
+        "src": "./assets/mercury-orbit-rotation.svg",
+        "alt": "Diagram orbit Merkurius dan resonansi rotasi tiga banding dua",
+        "credit": "ANTARA · data NASA Science",
+        "source": "https://science.nasa.gov/mercury/facts/",
+        "caption": "Orbit 88 hari dan resonansi spin-orbit 3:2",
+        "fit": "contain"
+      }
+    ],
+    "location": null,
+    "orientation": {
+      "yaw": 1.04,
+      "pitch": 0.04,
+      "roll": 0.055
+    },
+    "shift": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  {
+    "title": "Siang ke Siang 176 Hari",
+    "kicker": "TAPI HARINYA LAMA",
+    "subtitle": "Satu hari Matahari di Merkurius lebih panjang daripada satu tahunnya",
+    "summary": "Ini bagian yang bikin Merkurius terasa aneh. Kalau kamu menghitung dari satu tengah hari ke tengah hari berikutnya, waktunya sekitar 176 hari Bumi. Jadi “hari” di permukaan bisa dua kali lebih lama daripada tahunnya.",
+    "facts": [
+      "Satu rotasi Merkurius memakan sekitar 59 hari Bumi.",
+      "Gerak orbit dan rotasinya membuat hari Matahari berlangsung sekitar 176 hari Bumi.",
+      "Dari permukaan, gerak Matahari di langit bisa tampak sangat tidak biasa dibanding di Bumi."
+    ],
+    "source": "https://science.nasa.gov/mercury/facts/",
+    "images": [
+      {
+        "src": "./assets/mercury-orbit-rotation.svg",
+        "alt": "Diagram orbit Merkurius dan resonansi rotasi tiga banding dua",
+        "credit": "ANTARA · data NASA Science",
+        "source": "https://science.nasa.gov/mercury/facts/",
+        "caption": "Orbit 88 hari dan resonansi spin-orbit 3:2",
+        "fit": "contain"
+      }
+    ],
+    "location": null,
+    "orientation": {
+      "yaw": 1.22,
+      "pitch": 0.02,
+      "roll": 0.055
+    },
+    "shift": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  {
+    "title": "Dua Suhu yang Bertolak Belakang",
+    "kicker": "PANAS... LALU BEKU",
+    "subtitle": "Siangnya membakar, malamnya bisa sangat dingin",
+    "summary": "Dekat dengan Matahari tidak berarti seluruh Merkurius selalu panas. Karena hampir tidak punya atmosfer tebal untuk menyimpan panas, suhu siang dan malam bisa berbeda sangat jauh.",
+    "facts": [
+      "Suhu siang dapat mencapai sekitar 430 °C.",
+      "Pada malam hari suhu bisa turun hingga sekitar -180 °C.",
+      "Venus tetap lebih panas secara rata-rata karena atmosfernya mampu menahan panas dengan sangat kuat."
+    ],
+    "source": "https://science.nasa.gov/mercury/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19247/PIA19247.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1550&w=2044",
+        "alt": "Peta suhu maksimum wilayah kutub utara Merkurius dari data MESSENGER",
+        "credit": "NASA/JHU APL/Carnegie",
+        "source": "https://science.nasa.gov/photojournal/hot-and-cold/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Hot and Cold · suhu permukaan kutub Merkurius",
+        "fit": "cover",
+        "position": "50% 56%"
       },
       {
-        src: "./assets/mercury-temperature-diagram.svg",
-        alt: "Diagram edukasi kontras suhu sisi siang dan malam Merkurius",
-        credit: "ANTARA · data NASA Science",
-        source: "https://science.nasa.gov/mercury/facts/",
-        caption: "Kontras suhu siang dan malam Merkurius",
-        fit: "contain"
+        "src": "./assets/mercury-temperature-diagram.svg",
+        "alt": "Diagram edukasi kontras suhu sisi siang dan malam Merkurius",
+        "credit": "ANTARA · data NASA Science",
+        "source": "https://science.nasa.gov/mercury/facts/",
+        "caption": "Kontras suhu siang dan malam Merkurius",
+        "fit": "contain"
       }
     ],
-    title: "Panas dan Dingin Ekstrem",
-    kicker: "REKOR & EKSTREM",
-    subtitle: "Tanpa atmosfer tebal untuk menahan dan menyebarkan panas",
-    summary: "Kedekatannya dengan Matahari membuat sisi siang Merkurius sangat panas, tetapi malamnya bisa membeku ekstrem. Perbedaan ini terjadi karena Merkurius hampir tidak memiliki atmosfer tebal yang mampu menyimpan panas.",
-    facts: [
-      "Suhu permukaan pada siang hari dapat mencapai sekitar 430 °C.",
-      "Pada malam hari suhu dapat turun hingga sekitar -180 °C.",
-      "Wilayah kutub yang selalu teduh bahkan dapat mempertahankan es air di dalam kawah tertentu."
-    ],
-    source: "https://science.nasa.gov/mercury/facts/",
-    location: null,
-    orientation: { yaw: 1.42, pitch: 0.08, roll: MERCURY_EXPLORATION_ROLL },
-    shift: { x: 0, y: 0 }
+    "location": null,
+    "orientation": {
+      "yaw": 1.42,
+      "pitch": 0.08,
+      "roll": 0.055
+    },
+    "shift": {
+      "x": 0,
+      "y": 0
+    }
   },
   {
-    images: [
+    "title": "Ada Es Dekat Matahari",
+    "kicker": "TAHUKAH KAMU?",
+    "subtitle": "Kawah gelap di kutub bisa menyimpan es air",
+    "summary": "Kedengarannya mustahil, tetapi Merkurius punya es air. Beberapa kawah dekat kutub memiliki dasar yang tidak pernah terkena sinar Matahari langsung, sehingga tetap cukup dingin untuk menjaga es dalam waktu sangat lama.",
+    "facts": [
+      "Es ditemukan di wilayah yang selalu berada dalam bayangan permanen.",
+      "Daerah teduh di kutub dapat jauh lebih dingin daripada bagian Merkurius yang terkena Matahari.",
+      "Temuan ini diperkuat oleh pengamatan radar dan data wahana MESSENGER."
+    ],
+    "source": "https://science.nasa.gov/mercury/facts/",
+    "images": [
       {
-        src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19418/PIA19418.jpg?crop=faces%2Cfocalpoint&fit=clip&h=3094&w=4096",
-        alt: "Peta emisi sodium pada eksosfer dan ekor Merkurius dari MESSENGER",
-        credit: "NASA/JHU APL/Carnegie",
-        source: "https://science.nasa.gov/photojournal/mercurys-sodium-tail-2/",
-        license: "NASA image policy",
-        licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Mercury's Sodium Tail · MESSENGER MASCS/UVVS",
-        fit: "contain"
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19247/PIA19247.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1550&w=2044",
+        "alt": "Peta suhu maksimum wilayah kutub utara Merkurius dari data MESSENGER",
+        "credit": "NASA/JHU APL/Carnegie",
+        "source": "https://science.nasa.gov/photojournal/hot-and-cold/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Hot and Cold · suhu permukaan kutub Merkurius",
+        "fit": "cover",
+        "position": "50% 56%"
       },
       {
-        src: "./assets/mercury-exosphere-diagram.svg",
-        alt: "Diagram edukasi eksosfer tipis dan ekor sodium Merkurius",
-        credit: "ANTARA · data NASA MESSENGER",
-        source: "https://science.nasa.gov/photojournal/mercurys-sodium-tail-2/",
-        caption: "Eksosfer tipis dan ekor sodium",
-        fit: "contain"
+        "src": "./assets/mercury-temperature-diagram.svg",
+        "alt": "Diagram edukasi kontras suhu sisi siang dan malam Merkurius",
+        "credit": "ANTARA · data NASA Science",
+        "source": "https://science.nasa.gov/mercury/facts/",
+        "caption": "Kontras suhu siang dan malam Merkurius",
+        "fit": "contain"
       }
     ],
-    title: "Eksosfer yang Sangat Tipis",
-    kicker: "HAMPIR TANPA ATMOSFER",
-    subtitle: "Partikel tipis menggantikan selimut udara seperti di Bumi",
-    summary: "Merkurius tidak memiliki atmosfer padat. Di sekelilingnya hanya ada eksosfer sangat tipis yang tersusun dari atom-atom yang terlepas dari permukaan akibat angin Matahari dan tumbukan mikrometeoroid.",
-    facts: [
-      "Eksosfer Merkurius mengandung antara lain oksigen, natrium, hidrogen, helium, dan kalium.",
-      "Gravitasi permukaan Merkurius sekitar 3,7 m/s².",
-      "Merkurius memiliki 0 bulan dan 0 cincin."
-    ],
-    source: "https://science.nasa.gov/mercury/facts/",
-    location: null,
-    orientation: { yaw: 1.84, pitch: 0.02, roll: MERCURY_EXPLORATION_ROLL },
-    shift: { x: 0, y: 0 }
+    "location": null,
+    "orientation": {
+      "yaw": 1.55,
+      "pitch": 0.95,
+      "roll": 0.055
+    },
+    "shift": {
+      "x": 0,
+      "y": 0
+    }
   },
   {
-    images: [
+    "title": "Eksosfer dan Ekor Natrium",
+    "kicker": "HAMPIR TANPA UDARA",
+    "subtitle": "Merkurius punya selubung atom tipis, bukan atmosfer tebal",
+    "summary": "Merkurius tidak punya udara tebal seperti Bumi. Di sekelilingnya ada eksosfer yang sangat tipis, berisi atom-atom yang terlepas dari permukaan. Sebagian natrium bahkan membentuk ekor panjang menjauhi Matahari.",
+    "facts": [
+      "Eksosfernya mengandung antara lain oksigen, natrium, hidrogen, helium, dan kalium.",
+      "Angin surya dan tumbukan debu antariksa dapat membantu melepaskan atom dari permukaan.",
+      "Ekor natrium Merkurius dapat membentang jauh ke ruang angkasa."
+    ],
+    "source": "https://science.nasa.gov/mercury/facts/",
+    "images": [
       {
-        src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19213/PIA19213.jpg?crop=faces%2Cfocalpoint&fit=clip&h=3130&w=3130",
-        alt: "Mosaik MESSENGER memperlihatkan cekungan tumbukan Caloris di Merkurius",
-        credit: "NASA/JHU APL/Carnegie/USGS",
-        source: "https://science.nasa.gov/photojournal/the-mighty-caloris/",
-        license: "NASA image policy",
-        licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Caloris Basin · MESSENGER",
-        fit: "cover"
-      }
-    ],
-    title: "Caloris Planitia",
-    kicker: "CEKUNGAN TUMBUKAN",
-    subtitle: "Salah satu cekungan tumbukan terbesar di Tata Surya",
-    summary: "Caloris adalah bekas tumbukan raksasa yang menjadi salah satu ciri paling menonjol di Merkurius. Cekungan ini dikelilingi pegunungan cincin dan sebagian lantainya kemudian tertutup aliran lava.",
-    facts: [
-      "Caloris Basin berdiameter sekitar 1.525 km.",
-      "Pusat Caloris Basin berada sekitar 31,5° LU dan 162,7° BT pada pemetaan MESSENGER NASA.",
-      "Bentang tumbukan raksasa ini membantu ilmuwan mempelajari sejarah awal kerak Merkurius."
-    ],
-    source: "https://science.nasa.gov/photojournal/the-mighty-caloris/",
-    location: { label: "Caloris Basin", latitude: 31.5, longitudeEast: 162.7, source: "https://science.nasa.gov/photojournal/the-mighty-caloris/" },
-    shift: { x: 0.006, y: -0.005 }
-  },
-  {
-    images: [
-      {
-        src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia18/pia18151/PIA18151.jpg?crop=faces%2Cfocalpoint&fit=clip&h=703&w=1100",
-        alt: "Peta struktur tektonik Merkurius yang memperlihatkan ribuan punggungan dan tebing kontraksi",
-        credit: "NASA/JHU APL/Carnegie/USGS",
-        source: "https://science.nasa.gov/photojournal/the-incredible-shrinking-mercury/",
-        license: "NASA image policy",
-        licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Jejak kontraksi global Merkurius · MESSENGER",
-        fit: "cover"
-      }
-    ],
-    title: "Planet yang Menyusut",
-    kicker: "TEBING & KONTRAKSI",
-    subtitle: "Pendinginan interior meninggalkan tebing panjang di seluruh permukaan",
-    summary: "Saat interior Merkurius mendingin selama miliaran tahun, planet ini menyusut. Keraknya terdorong dan patah, membentuk tebing curam atau lobate scarps yang memotong kawah dan dataran tua.",
-    facts: [
-      "Lobate scarps adalah bukti bahwa kerak Merkurius mengalami pemendekan akibat kontraksi global.",
-      "Sebagian tebing memanjang hingga ratusan kilometer.",
-      "MESSENGER memetakan struktur tektonik ini dengan cakupan global yang jauh lebih lengkap."
-    ],
-    source: "https://science.nasa.gov/mercury/facts/",
-    location: null,
-    orientation: { yaw: 2.44, pitch: -0.04, roll: MERCURY_EXPLORATION_ROLL },
-    shift: { x: 0, y: 0 }
-  },
-  {
-    images: [
-      {
-        src: "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2024/09/bepicolombo_says_goodbye_to_mercury_for_the_fourth_time/26299692-11-eng-GB/BepiColombo_says_goodbye_to_Mercury_for_the_fourth_time.jpg",
-        alt: "Merkurius dipotret wahana ESA JAXA BepiColombo saat lintasan dekat 2024",
-        credit: "ESA/BepiColombo/MTM",
-        source: "https://www.esa.int/ESA_Multimedia/Images/2024/09/BepiColombo_says_goodbye_to_Mercury_for_the_fourth_time",
-        license: "CC BY-SA 3.0 IGO / ESA Standard Licence",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/igo/",
-        caption: "BepiColombo dekat Merkurius · M-CAM 2",
-        fit: "cover",
-        position: "50% 43%"
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19418/PIA19418.jpg?crop=faces%2Cfocalpoint&fit=clip&h=3094&w=4096",
+        "alt": "Peta emisi sodium pada eksosfer dan ekor Merkurius dari MESSENGER",
+        "credit": "NASA/JHU APL/Carnegie",
+        "source": "https://science.nasa.gov/photojournal/mercurys-sodium-tail-2/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Mercury's Sodium Tail · MESSENGER MASCS/UVVS",
+        "fit": "contain"
       },
       {
-        src: "./assets/mercury-missions-timeline.svg",
-        alt: "Linimasa eksplorasi Merkurius dari Mariner 10, MESSENGER hingga BepiColombo",
-        credit: "ANTARA · data NASA dan ESA",
-        source: "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo",
-        caption: "Linimasa eksplorasi Merkurius",
-        fit: "contain"
+        "src": "./assets/mercury-exosphere-diagram.svg",
+        "alt": "Diagram edukasi eksosfer tipis dan ekor sodium Merkurius",
+        "credit": "ANTARA · data NASA MESSENGER",
+        "source": "https://science.nasa.gov/photojournal/mercurys-sodium-tail-2/",
+        "caption": "Eksosfer tipis dan ekor sodium",
+        "fit": "contain"
       }
     ],
-    title: "Dari Mariner 10 ke BepiColombo",
-    kicker: "EKSPLORASI MERKURIUS",
-    subtitle: "Sedikit wahana pernah berani masuk ke lingkungan sedekat ini dengan Matahari",
-    summary: "Mariner 10 membuka era eksplorasi Merkurius pada 1970-an. MESSENGER kemudian menjadi wahana pertama yang mengorbit Merkurius dan memetakan planet ini secara global. Kini BepiColombo melanjutkan penyelidikan dengan dua orbiter ilmiah.",
-    facts: [
-      "Mariner 10 melakukan tiga lintasan dekat Merkurius pada 1974-1975.",
-      "MESSENGER mengorbit Merkurius selama lebih dari empat tahun dan menyelesaikan misinya pada 30 April 2015.",
-      "BepiColombo memulai fase kedatangan pada September 2026 setelah Mercury Transfer Module berhasil dipisahkan; penangkapan ke orbit Merkurius direncanakan 21 November 2026 dan fase sains utama mulai April 2027."
+    "location": null,
+    "orientation": {
+      "yaw": 1.84,
+      "pitch": 0.02,
+      "roll": 0.055
+    },
+    "shift": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  {
+    "title": "Inti Logam yang Sangat Besar",
+    "kicker": "YUK INTIP KE DALAM",
+    "subtitle": "Sebagian besar bagian dalam Merkurius ditempati inti logam",
+    "summary": "Untuk planet sekecil Merkurius, inti logamnya luar biasa besar. Inti ini mengambil porsi besar dari radius planet dan sebagian masih cair, sehingga Merkurius dapat menghasilkan medan magnet.",
+    "facts": [
+      "Inti logam Merkurius diperkirakan memiliki radius sekitar 85% radius planet.",
+      "Sebagian inti masih dalam keadaan cair.",
+      "Medan magnet permukaan Merkurius jauh lebih lemah daripada Bumi, tetapi benar-benar ada."
     ],
-    source: "https://www.esa.int/Enabling_Support/Operations/BepiColombo_begins_Mercury_arrival_with_MTM_separation_success",
-    location: null,
-    orientation: { yaw: 2.92, pitch: 0.05, roll: MERCURY_EXPLORATION_ROLL },
-    shift: { x: 0, y: 0 }
+    "source": "https://science.nasa.gov/mercury/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533",
+        "alt": "Mosaik global permukaan Merkurius dari citra MESSENGER dan Mariner 10",
+        "credit": "NASA/JHU APL/Carnegie/USGS",
+        "source": "https://science.nasa.gov/photojournal/full-global-mercury-mosaic/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Mosaik global Merkurius · MESSENGER",
+        "fit": "cover"
+      }
+    ],
+    "location": null,
+    "orientation": {
+      "yaw": 2.08,
+      "pitch": -0.02,
+      "roll": 0.055
+    },
+    "shift": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  {
+    "title": "Caloris Basin",
+    "kicker": "BEKAS TABRAKAN RAKSASA",
+    "subtitle": "Sebuah tumbukan besar meninggalkan cekungan hampir seukuran negara besar",
+    "summary": "Caloris adalah salah satu bekas tumbukan terbesar di Merkurius. Tabrakan purba membentuk cekungan raksasa, lalu bagian lantainya mengalami perubahan dan sebagian tertutup material vulkanik.",
+    "facts": [
+      "Diameter Caloris Basin sekitar 1.525 km.",
+      "Cekungan ini terbentuk sangat awal dalam sejarah Merkurius.",
+      "Bentang Caloris membantu ilmuwan membaca sejarah kerak dan aktivitas vulkanik planet ini."
+    ],
+    "source": "https://science.nasa.gov/photojournal/the-mighty-caloris/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19213/PIA19213.jpg?crop=faces%2Cfocalpoint&fit=clip&h=3130&w=3130",
+        "alt": "Mosaik MESSENGER memperlihatkan cekungan tumbukan Caloris di Merkurius",
+        "credit": "NASA/JHU APL/Carnegie/USGS",
+        "source": "https://science.nasa.gov/photojournal/the-mighty-caloris/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Caloris Basin · MESSENGER",
+        "fit": "cover"
+      }
+    ],
+    "location": {
+      "label": "Caloris Basin",
+      "latitude": 31.5,
+      "longitudeEast": 162.7,
+      "source": "https://science.nasa.gov/photojournal/the-mighty-caloris/"
+    },
+    "orientation": {
+      "yaw": 2.32,
+      "pitch": 0.03,
+      "roll": 0.055
+    },
+    "shift": {
+      "x": 0.006,
+      "y": -0.005
+    }
+  },
+  {
+    "title": "Merkurius Menyusut",
+    "kicker": "TERNYATA...",
+    "subtitle": "Saat bagian dalamnya mendingin, kulit planet ikut mengerut",
+    "summary": "Merkurius perlahan kehilangan panas sejak terbentuk. Saat bagian dalamnya mendingin dan menyusut, kerak di atasnya terdorong hingga membentuk tebing panjang yang disebut lobate scarps.",
+    "facts": [
+      "Beberapa tebing membentang ratusan kilometer.",
+      "Tebing dapat memotong kawah lama, jadi sebagian terbentuk setelah kawah tersebut.",
+      "Struktur ini menjadi bukti bahwa ukuran Merkurius sedikit menyusut sepanjang sejarahnya."
+    ],
+    "source": "https://science.nasa.gov/mercury/facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia18/pia18151/PIA18151.jpg?crop=faces%2Cfocalpoint&fit=clip&h=703&w=1100",
+        "alt": "Peta struktur tektonik Merkurius yang memperlihatkan ribuan punggungan dan tebing kontraksi",
+        "credit": "NASA/JHU APL/Carnegie/USGS",
+        "source": "https://science.nasa.gov/photojournal/the-incredible-shrinking-mercury/",
+        "license": "NASA image policy",
+        "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "caption": "Jejak kontraksi global Merkurius · MESSENGER",
+        "fit": "cover"
+      }
+    ],
+    "location": null,
+    "orientation": {
+      "yaw": 2.58,
+      "pitch": -0.04,
+      "roll": 0.055
+    },
+    "shift": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  {
+    "title": "Mariner, MESSENGER, BepiColombo",
+    "kicker": "BAGAIMANA KITA TAHU?",
+    "subtitle": "Tiga generasi misi membantu membuka rahasia Merkurius",
+    "summary": "Merkurius sulit dikunjungi karena berada dekat Matahari. Mariner 10 membuka jalan, MESSENGER kemudian mengorbit dan memetakan planet ini, dan kini BepiColombo sedang menjalani tahap kedatangan untuk mempelajarinya lebih rinci.",
+    "facts": [
+      "Mariner 10 melakukan tiga lintasan dekat pada 1974–1975.",
+      "MESSENGER menjadi wahana pertama yang mengorbit Merkurius dan mengakhiri misinya pada 2015.",
+      "BepiColombo memulai fase kedatangan pada September 2026 dan dijadwalkan masuk orbit Merkurius pada 21 November 2026."
+    ],
+    "source": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo/Latest_updates_BepiColombo_s_arrival_at_Mercury",
+    "images": [
+      {
+        "src": "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2024/09/bepicolombo_says_goodbye_to_mercury_for_the_fourth_time/26299692-11-eng-GB/BepiColombo_says_goodbye_to_Mercury_for_the_fourth_time.jpg",
+        "alt": "Merkurius dipotret wahana ESA JAXA BepiColombo saat lintasan dekat 2024",
+        "credit": "ESA/BepiColombo/MTM",
+        "source": "https://www.esa.int/ESA_Multimedia/Images/2024/09/BepiColombo_says_goodbye_to_Mercury_for_the_fourth_time",
+        "license": "CC BY-SA 3.0 IGO / ESA Standard Licence",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/igo/",
+        "caption": "BepiColombo dekat Merkurius · M-CAM 2",
+        "fit": "cover",
+        "position": "50% 43%"
+      },
+      {
+        "src": "./assets/mercury-missions-timeline.svg",
+        "alt": "Linimasa eksplorasi Merkurius dari Mariner 10, MESSENGER hingga BepiColombo",
+        "credit": "ANTARA · data NASA dan ESA",
+        "source": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo",
+        "caption": "Linimasa eksplorasi Merkurius",
+        "fit": "contain"
+      }
+    ],
+    "location": null,
+    "orientation": {
+      "yaw": 2.92,
+      "pitch": 0.05,
+      "roll": 0.055
+    },
+    "shift": {
+      "x": 0,
+      "y": 0
+    }
   }
 ]);
 

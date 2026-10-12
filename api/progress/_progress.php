@@ -12,13 +12,13 @@ function antara_progress_catalog(): array
         'sun' => [
             'name' => 'Matahari',
             'short' => 'MATAHARI',
-            'normal_total' => 7,
+            'normal_total' => 11,
             'full' => [],
         ],
         'mercury' => [
             'name' => 'Merkurius',
             'short' => 'MERKURIUS',
-            'normal_total' => 7,
+            'normal_total' => 11,
             'full' => [],
         ],
         'venus' => [
@@ -59,19 +59,19 @@ function antara_progress_catalog(): array
         'asteroid-belt' => [
             'name' => 'Sabuk Asteroid',
             'short' => 'SABUK ASTEROID',
-            'normal_total' => 7,
+            'normal_total' => 11,
             'full' => [],
         ],
         'jupiter' => [
             'name' => 'Jupiter',
             'short' => 'JUPITER',
-            'normal_total' => 7,
+            'normal_total' => 11,
             'full' => [],
         ],
         'saturn' => [
             'name' => 'Saturnus',
             'short' => 'SATURNUS',
-            'normal_total' => 7,
+            'normal_total' => 11,
             'full' => [],
         ],
         'uranus' => [

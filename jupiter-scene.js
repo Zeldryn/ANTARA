@@ -6,98 +6,254 @@ const JUPITER_RING_SOURCE = "https://science.nasa.gov/jupiter/jupiter-facts/";
 
 const JUPITER_EXPLORATION_STOPS = Object.freeze([
   {
-    kicker: "IDENTITAS JUPITER",
-    title: "Raksasa Tata Surya",
-    subtitle: "Planet terbesar yang menguasai wilayah luar Tata Surya",
-    summary: "Jupiter adalah planet terbesar di Tata Surya dan planet kelima dari Matahari. Ukurannya begitu besar sehingga lebih dari seribu Bumi dapat dimuat ke dalam volumenya, meskipun Jupiter sendiri didominasi gas dan fluida bertekanan tinggi.",
-    facts: [
-      "Jari-jari rata-rata Jupiter sekitar 69.911 km.",
-      "Jarak rata-ratanya dari Matahari sekitar 5,2 AU atau 778 juta km.",
-      "Jupiter terbentuk sekitar 4,6 miliar tahun lalu bersama Tata Surya."
+    "title": "Jupiter",
+    "kicker": "KENALAN DULU",
+    "subtitle": "Planet terbesar di Tata Surya dan dunia penuh awan raksasa",
+    "summary": "Jupiter adalah planet kelima dari Matahari dan yang terbesar di Tata Surya. Ia bukan dunia berbatu seperti Bumi. Sebagian besar yang kita lihat adalah lapisan awan tebal di atas planet raksasa yang didominasi hidrogen dan helium.",
+    "facts": [
+      "Diameter Jupiter sekitar 143.000 km.",
+      "Massanya lebih besar daripada gabungan semua planet lain jika dibandingkan satu per satu, tetapi masih jauh di bawah massa Matahari.",
+      "Jupiter tidak memiliki permukaan padat tempat kita bisa berdiri."
     ],
-    source: "https://science.nasa.gov/jupiter/jupiter-facts/",
-    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9JYWYARC4A8336KMKNTQ.tif?w=2000", alt: "Citra global Jupiter dengan pita atmosfer dan Bintik Merah Besar", credit: "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)", source: "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/", caption: "Jupiter · pita atmosfer global", fit: "contain" , type: "CITRA TELESKOP" }]
-  },
-  {
-    kicker: "ATMOSFER RAKSASA",
-    title: "Lautan Awan",
-    subtitle: "Pita atmosfer yang bergerak berlawanan arah",
-    summary: "Atmosfer Jupiter terutama tersusun dari hidrogen dan helium. Pita terang dan gelap yang terlihat dari jauh merupakan sistem awan dan jet atmosfer yang bergerak sangat cepat pada lintang berbeda.",
-    facts: [
-      "Jupiter tidak memiliki permukaan padat seperti Bumi atau Mars.",
-      "Awan teratas mengandung senyawa seperti amonia, sementara lapisan yang lebih dalam berada pada tekanan dan suhu jauh lebih tinggi.",
-      "Jet atmosfer pada lintang yang berdekatan dapat bergerak ke arah berlawanan dan membentuk batas pita yang tajam."
-    ],
-    source: "https://science.nasa.gov/jupiter/jupiter-facts/",
-    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9A3VN7VYXN5H6Z1GDG93.tif?w=2000", alt: "Peta atmosfer global Jupiter dari Hubble", credit: "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)", source: "https://science.nasa.gov/jupiter/jupiter-facts/", caption: "Zona, sabuk, dan badai atmosfer Jupiter", fit: "contain" , type: "CITRA TELESKOP" }]
-  },
-  {
-    kicker: "REKOR & EKSTREM",
-    title: "Bintik Merah Besar",
-    subtitle: "Antisiklon raksasa di belahan selatan Jupiter",
-    summary: "Bintik Merah Besar adalah badai berumur panjang yang menjadi salah satu ciri paling mudah dikenali pada Jupiter. Struktur awannya berputar berlawanan arah jarum jam dan ukurannya masih lebih besar daripada Bumi.",
-    facts: [
-      "Badai ini telah diamati selama berabad-abad, meskipun ukurannya berubah dari waktu ke waktu.",
-      "Awan di sekitar Bintik Merah Besar berinteraksi dengan jet atmosfer dan pusaran lain.",
-      "Data Juno menunjukkan struktur badai berlanjut ratusan kilometer ke bawah puncak awan."
-    ],
-    source: "https://science.nasa.gov/missions/juno/nasas-juno-probes-the-depths-of-jupiters-great-red-spot/",
-    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9JYWYARC4A8336KMKNTQ.tif?w=2000", alt: "Detail Bintik Merah Besar pada tekstur atmosfer Jupiter", credit: "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)", source: "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/", caption: "Bintik Merah Besar dan aliran awan sekitarnya", fit: "cover" , type: "CITRA TELESKOP" }]
-  },
-  {
-    kicker: "ROTASI CEPAT",
-    title: "Hari Kurang dari 10 Jam",
-    subtitle: "Rotasi cepat membentuk planet yang pepat di kutub",
-    summary: "Jupiter berotasi lebih cepat daripada planet lain. Satu hari Jupiter hanya sekitar 10 jam, dan atmosfernya menunjukkan rotasi diferensial karena bagian-bagian pada lintang berbeda tidak bergerak dengan laju yang sama.",
-    facts: [
-      "Rotasi cepat membuat diameter ekuator Jupiter lebih besar daripada diameter kutubnya.",
-      "Gerak rotasi membantu membentuk pola jet dan badai atmosfer yang sangat kompleks.",
-      "Dalam visualisasi ANTARA, rotasi dibuat lebih dinamis daripada planet batuan tetapi tetap nyaman diamati."
-    ],
-    source: "https://science.nasa.gov/jupiter/jupiter-facts/",
-    images: [{ src: "./assets/jupiter-rotation-diagram.svg", alt: "Diagram rotasi cepat Jupiter", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/jupiter/jupiter-facts/", caption: "Rotasi cepat dan aliran diferensial Jupiter", fit: "contain" }]
-  },
-  {
-    kicker: "MEDAN MAGNET",
-    title: "Magnetosfer Raksasa",
-    subtitle: "Lingkungan magnetik dan radiasi yang ekstrem",
-    summary: "Medan magnet Jupiter menciptakan magnetosfer raksasa yang menangkap partikel bermuatan dan menghasilkan sabuk radiasi intens. Interaksinya dengan angin surya dan bulan-bulan Jupiter membentuk lingkungan plasma yang sangat aktif.",
-    facts: [
-      "Magnetosfer Jupiter merupakan struktur terbesar di Tata Surya yang terkait langsung dengan sebuah planet.",
-      "Partikel bermuatan yang terperangkap dapat berbahaya bagi wahana antariksa.",
-      "Aurora Jupiter jauh lebih energik daripada aurora di Bumi."
-    ],
-    source: "https://science.nasa.gov/jupiter/jupiter-facts/",
-    images: [{ src: "./assets/jupiter-magnetosphere-diagram.svg", alt: "Diagram magnetosfer Jupiter", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/jupiter/jupiter-facts/", caption: "Lingkungan magnetik Jupiter", fit: "contain" }]
-  },
-  {
-    kicker: "BULAN & CINCIN",
-    title: "Sistem Jupiter",
-    subtitle: "Bulan Galilea dan cincin debu yang sangat redup",
-    summary: "Jupiter memiliki sistem bulan yang kaya. Empat bulan terbesarnya, Io, Europa, Ganymede, dan Callisto, dikenal sebagai bulan Galilea. Jupiter juga memiliki cincin tipis dan gelap yang terutama tersusun dari partikel debu kecil.",
-    facts: [
-      "Ganymede adalah bulan terbesar di Tata Surya dan ukurannya lebih besar daripada Merkurius.",
-      "Europa menyimpan bukti kuat mengenai samudra air asin di bawah kerak esnya.",
-      "Cincin Jupiter ditemukan Voyager 1 pada 1979 dan jauh lebih redup daripada cincin Saturnus."
-    ],
-    source: "https://science.nasa.gov/jupiter/jupiter-facts/",
-    images: [
-      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia01/pia01481/PIA01481.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1654&w=2081", alt: "Montase Jupiter dan bulan Galilea dari data Voyager", credit: "NASA/JPL", source: "https://science.nasa.gov/jupiter/moons/", caption: "Empat bulan Galilea", fit: "contain" , type: "CITRA WAHANA" },
-      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia09/pia09249/PIA09249.jpg?crop=faces%2Cfocalpoint&fit=clip&h=626&w=835", alt: "Citra cincin tipis Jupiter", credit: "NASA/Johns Hopkins University APL/Southwest Research Institute", source: "https://science.nasa.gov/photojournal/jupiters-main-ring-and-halo/", caption: "Cincin lokal Jupiter · halo, main ring, gossamer", fit: "contain" , type: "CITRA WAHANA" }
+    "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9JYWYARC4A8336KMKNTQ.tif?w=2000",
+        "alt": "Citra global Jupiter dengan pita atmosfer dan Bintik Merah Besar",
+        "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
+        "source": "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
+        "caption": "Jupiter · pita atmosfer global",
+        "fit": "contain",
+        "type": "CITRA TELESKOP"
+      }
     ]
   },
   {
-    kicker: "EKSPLORASI JUPITER",
-    title: "Dari Pioneer ke Juno",
-    subtitle: "Lima dekade eksplorasi raksasa gas",
-    summary: "Pioneer dan Voyager membuka era flyby Jupiter. Galileo menjadi wahana pertama yang mengorbit Jupiter, sedangkan Juno memasuki orbit polar pada 2016 untuk mempelajari atmosfer, gravitasi, medan magnet, dan interior planet dengan detail baru.",
-    facts: [
-      "Pioneer 10 menjadi wahana pertama yang melintasi sistem Jupiter pada 1973.",
-      "Voyager 1 dan 2 memotret atmosfer, cincin, serta bulan-bulannya pada 1979.",
-      "Galileo dan Juno memberikan pengamatan jangka panjang dari orbit Jupiter."
+    "title": "Seberapa Besar Jupiter?",
+    "kicker": "COBA BAYANGKAN...",
+    "subtitle": "Raksasa yang bisa menampung sangat banyak Bumi di dalam volumenya",
+    "summary": "Jupiter begitu besar sehingga ukuran Bumi tampak kecil jika diletakkan di sampingnya. Besarnya juga berarti gravitasinya sangat kuat dan mampu memengaruhi banyak objek jauh di sekitarnya.",
+    "facts": [
+      "Lebih dari 1.000 Bumi dapat muat dalam volume Jupiter secara kasar.",
+      "Gravitasi di puncak awan Jupiter sekitar 2,5 kali gravitasi permukaan Bumi.",
+      "Jupiter terbentuk sangat awal dan membantu membentuk arsitektur Tata Surya."
     ],
-    source: "https://science.nasa.gov/jupiter/exploration/",
-    images: [{ src: "./assets/jupiter-missions-diagram.svg", alt: "Garis waktu misi Pioneer, Voyager, Galileo, dan Juno", credit: "Visualisasi ANTARA", source: "https://science.nasa.gov/jupiter/exploration/", caption: "Tonggak eksplorasi Jupiter", fit: "contain" }]
+    "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9JYWYARC4A8336KMKNTQ.tif?w=2000",
+        "alt": "Citra global Jupiter dengan pita atmosfer dan Bintik Merah Besar",
+        "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
+        "source": "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
+        "caption": "Jupiter · pita atmosfer global",
+        "fit": "contain",
+        "type": "CITRA TELESKOP"
+      }
+    ]
+  },
+  {
+    "title": "Tidak Punya Permukaan Padat",
+    "kicker": "YUK INTIP KE DALAM",
+    "subtitle": "Semakin turun, gas berubah menjadi fluida yang makin rapat dan bertekanan tinggi",
+    "summary": "Kalau kita turun menembus awan Jupiter, tidak ada titik tempat tiba-tiba muncul tanah. Tekanan terus meningkat dan hidrogen berubah menjadi keadaan yang makin rapat. Jauh di dalam, hidrogen bahkan dapat berperilaku seperti logam cair.",
+    "facts": [
+      "Atmosfer Jupiter didominasi hidrogen dan helium.",
+      "Tekanan meningkat sangat cepat ke arah bagian dalam.",
+      "Ilmuwan memperkirakan bagian dalam Jupiter memiliki lapisan hidrogen metalik dan wilayah inti yang sangat padat."
+    ],
+    "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9A3VN7VYXN5H6Z1GDG93.tif?w=2000",
+        "alt": "Peta atmosfer global Jupiter dari Hubble",
+        "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
+        "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+        "caption": "Zona, sabuk, dan badai atmosfer Jupiter",
+        "fit": "contain",
+        "type": "CITRA TELESKOP"
+      }
+    ]
+  },
+  {
+    "title": "Sabuk dan Zona Awan",
+    "kicker": "LIHAT GARIS-GARISNYA",
+    "subtitle": "Pita terang dan gelap adalah jalur atmosfer yang bergerak berbeda arah",
+    "summary": "Garis-garis Jupiter bukan cat di permukaan. Itu adalah pita awan dan aliran angin raksasa. Beberapa daerah naik, beberapa turun, dan jet stream kuat memisahkan sabuk-sabuk yang bergerak berlawanan arah.",
+    "facts": [
+      "Pita terang sering disebut zone dan pita gelap disebut belt.",
+      "Jet stream timur-barat membatasi banyak pita tersebut.",
+      "Awan Jupiter mengandung bahan seperti amonia, air, dan senyawa lain pada ketinggian berbeda."
+    ],
+    "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9A3VN7VYXN5H6Z1GDG93.tif?w=2000",
+        "alt": "Peta atmosfer global Jupiter dari Hubble",
+        "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
+        "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+        "caption": "Zona, sabuk, dan badai atmosfer Jupiter",
+        "fit": "contain",
+        "type": "CITRA TELESKOP"
+      }
+    ]
+  },
+  {
+    "title": "Bintik Merah Besar",
+    "kicker": "BADAI YANG LEGENDARIS",
+    "subtitle": "Badai raksasa yang telah diamati selama ratusan tahun",
+    "summary": "Great Red Spot adalah pusaran badai besar di atmosfer Jupiter. Badai ini terus berubah ukuran dan bentuk, tetapi sudah diamati sejak lama sekali. Ia menjadi salah satu contoh paling terkenal tentang betapa aktifnya cuaca Jupiter.",
+    "facts": [
+      "Great Red Spot lebih lebar daripada Bumi.",
+      "Badai ini merupakan anticyclone yang berputar berlawanan arah dengan cyclone biasa di wilayah sekitarnya.",
+      "Data Juno menunjukkan struktur badai memanjang ratusan kilometer ke bawah puncak awan."
+    ],
+    "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9JYWYARC4A8336KMKNTQ.tif?w=2000",
+        "alt": "Detail Bintik Merah Besar pada tekstur atmosfer Jupiter",
+        "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
+        "source": "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
+        "caption": "Bintik Merah Besar dan aliran awan sekitarnya",
+        "fit": "cover",
+        "type": "CITRA TELESKOP"
+      }
+    ]
+  },
+  {
+    "title": "Berputar Kurang dari 10 Jam",
+    "kicker": "HARI SUPER CEPAT",
+    "subtitle": "Planet terbesar justru punya hari paling pendek di Tata Surya",
+    "summary": "Jupiter berputar sangat cepat. Satu putaran hanya sekitar 9,9 jam. Karena ia berupa fluida raksasa dan berputar cepat, bagian ekuatornya sedikit menggembung sehingga bentuk planet tidak benar-benar bulat sempurna.",
+    "facts": [
+      "Satu hari Jupiter sekitar 9,9 jam Bumi.",
+      "Rotasi cepat membantu membentuk pola pita dan aliran atmosfernya.",
+      "Bagian ekuator Jupiter lebih lebar daripada jarak kutub-ke-kutubnya."
+    ],
+    "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+    "images": [
+      {
+        "src": "./assets/jupiter-rotation-diagram.svg",
+        "alt": "Diagram rotasi cepat Jupiter",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+        "caption": "Rotasi cepat dan aliran diferensial Jupiter",
+        "fit": "contain"
+      }
+    ]
+  },
+  {
+    "title": "Kota Badai di Kutub",
+    "kicker": "TERNYATA KUTUBNYA RAMAI",
+    "subtitle": "Kutub Jupiter dipenuhi susunan cyclone besar",
+    "summary": "Ketika Juno melihat kutub Jupiter dari dekat, ilmuwan menemukan pemandangan yang berbeda dari pita ekuator. Cyclone-cyclone besar tersusun mengelilingi badai pusat, membentuk pola yang tampak seperti kumpulan pusaran.",
+    "facts": [
+      "Juno menemukan delapan cyclone mengelilingi kutub utara dalam pola mirip oktagon.",
+      "Di kutub selatan terdapat lima cyclone besar mengelilingi badai pusat.",
+      "Pola-pola ini dapat bertahan lama walaupun atmosfernya sangat dinamis."
+    ],
+    "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9JYWYARC4A8336KMKNTQ.tif?w=2000",
+        "alt": "Citra global Jupiter dengan pita atmosfer dan Bintik Merah Besar",
+        "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
+        "source": "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
+        "caption": "Jupiter · pita atmosfer global",
+        "fit": "contain",
+        "type": "CITRA TELESKOP"
+      }
+    ]
+  },
+  {
+    "title": "Medan Magnet Raksasa",
+    "kicker": "PELINDUNG ATAU BAHAYA?",
+    "subtitle": "Medan magnet Jupiter membentuk lingkungan radiasi yang sangat kuat",
+    "summary": "Jupiter punya medan magnet yang sangat besar. Medan ini menangkap partikel bermuatan dan membentuk magnetosfer luas. Hasilnya bisa berupa aurora yang indah, tetapi juga radiasi berbahaya bagi wahana antariksa.",
+    "facts": [
+      "Medan magnet Jupiter jauh lebih kuat daripada medan magnet Bumi.",
+      "Magnetosfernya dapat membentang sangat jauh ke belakang planet.",
+      "Daerah dekat Jupiter memiliki sabuk radiasi yang sangat intens."
+    ],
+    "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+    "images": [
+      {
+        "src": "./assets/jupiter-magnetosphere-diagram.svg",
+        "alt": "Diagram magnetosfer Jupiter",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+        "caption": "Lingkungan magnetik Jupiter",
+        "fit": "contain"
+      }
+    ]
+  },
+  {
+    "title": "Jupiter Juga Punya Cincin",
+    "kicker": "TAHUKAH KAMU?",
+    "subtitle": "Cincinnya tipis dan gelap, jadi jauh lebih sulit dilihat daripada Saturnus",
+    "summary": "Saturnus memang terkenal dengan cincin, tetapi Jupiter juga punya. Cincinnya terdiri dari partikel kecil dan debu, sehingga tampak sangat samar. Debu itu sebagian berasal dari tumbukan kecil pada bulan-bulan bagian dalam.",
+    "facts": [
+      "Cincin Jupiter ditemukan oleh Voyager 1 pada 1979.",
+      "Sistemnya mencakup halo, cincin utama, dan cincin gossamer yang samar.",
+      "Cincin Jupiter lebih mudah terlihat ketika diterangi dari belakang."
+    ],
+    "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia09/pia09249/PIA09249.jpg?crop=faces%2Cfocalpoint&fit=clip&h=626&w=835",
+        "alt": "Citra cincin tipis Jupiter",
+        "credit": "NASA/Johns Hopkins University APL/Southwest Research Institute",
+        "source": "https://science.nasa.gov/photojournal/jupiters-main-ring-and-halo/",
+        "caption": "Cincin lokal Jupiter · halo, main ring, gossamer",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ]
+  },
+  {
+    "title": "Io, Europa, Ganymede, Callisto",
+    "kicker": "EMPAT BULAN TERKENAL",
+    "subtitle": "Empat dunia besar yang masing-masing punya cerita sendiri",
+    "summary": "Galileo melihat empat bulan besar Jupiter pada 1610. Sekarang kita tahu setiap bulan itu sangat berbeda: Io penuh gunung api, Europa diduga punya samudra di bawah es, Ganymede sangat besar, dan Callisto dipenuhi kawah.",
+    "facts": [
+      "Io adalah dunia paling aktif secara vulkanik di Tata Surya.",
+      "Ganymede adalah bulan terbesar di Tata Surya, bahkan lebih besar daripada Merkurius.",
+      "Europa menjadi target penting karena bukti samudra cair di bawah kerak esnya."
+    ],
+    "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+    "images": [
+      {
+        "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia01/pia01481/PIA01481.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1654&w=2081",
+        "alt": "Montase Jupiter dan bulan Galilea dari data Voyager",
+        "credit": "NASA/JPL",
+        "source": "https://science.nasa.gov/jupiter/moons/",
+        "caption": "Empat bulan Galilea",
+        "fit": "contain",
+        "type": "CITRA WAHANA"
+      }
+    ]
+  },
+  {
+    "title": "Dari Pioneer sampai Juno",
+    "kicker": "BAGAIMANA KITA TAHU?",
+    "subtitle": "Setiap misi menambahkan bagian baru pada teka-teki Jupiter",
+    "summary": "Pioneer dan Voyager membuka pandangan awal dari dekat. Galileo kemudian mengorbit Jupiter selama bertahun-tahun. Sekarang Juno mempelajari atmosfer, gravitasi, magnet, dan bagian dalam planet untuk menjawab pertanyaan yang belum selesai.",
+    "facts": [
+      "Pioneer 10 menjadi wahana pertama yang melintasi Jupiter dari dekat pada 1973.",
+      "Galileo menjadi wahana pertama yang mengorbit Jupiter.",
+      "Juno tiba di Jupiter pada 2016 dan mempelajari planet dari orbit polar."
+    ],
+    "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
+    "images": [
+      {
+        "src": "./assets/jupiter-missions-diagram.svg",
+        "alt": "Garis waktu misi Pioneer, Voyager, Galileo, dan Juno",
+        "credit": "Visualisasi ANTARA",
+        "source": "https://science.nasa.gov/jupiter/exploration/",
+        "caption": "Tonggak eksplorasi Jupiter",
+        "fit": "contain"
+      }
+    ]
   }
 ]);
 
@@ -478,14 +634,106 @@ window.JupiterScene = class JupiterScene {
   const near = (a, ref) => ref + wrap(a - ref);
   const DEG = Math.PI / 180;
   const VIEWS = [
-    { yaw: 2.58, pitch: 0.00, cameraZ: 6.40, label: "JUPITER", context: "PANORAMA ATMOSFER", marker: null, semantic: "" },
-    { yaw: 1.18, pitch: 0.015, cameraZ: 6.16, label: "PITA AWAN JUPITER", context: "ZONA & SABUK EKUATORIAL", marker: null, semantic: "bands" },
-    { yaw: 0.56, pitch: -0.10, cameraZ: 5.82, label: "GREAT RED SPOT", context: "SEKITAR 22° LS · BADAI ATMOSFER", marker: "grs", semantic: "" },
-    { yaw: 2.18, pitch: 0.02, cameraZ: 6.28, label: "ROTASI CEPAT", context: "HARI JUPITER ~10 JAM", marker: null, semantic: "rotation" },
-    { yaw: 2.86, pitch: -0.20, cameraZ: 6.48, label: "MAGNETOSFER JUPITER", context: "MEDAN MAGNET & AURORA", marker: null, semantic: "magnetosphere" },
-    { yaw: 1.62, pitch: 0.055, cameraZ: 6.68, label: "SISTEM JUPITER", context: "BULAN GALILEA & CINCIN DEBU", marker: null, semantic: "moons" },
-    { yaw: 2.42, pitch: 0.01, cameraZ: 6.36, label: "EKSPLORASI JUPITER", context: "PIONEER · VOYAGER · GALILEO · JUNO", marker: null, semantic: "" }
-  ];
+  {
+    "yaw": 2.58,
+    "pitch": 0.0,
+    "cameraZ": 6.4,
+    "label": "JUPITER",
+    "context": "PANORAMA ATMOSFER",
+    "marker": null,
+    "semantic": ""
+  },
+  {
+    "yaw": 2.3,
+    "pitch": 0.0,
+    "cameraZ": 6.55,
+    "label": "SKALA JUPITER",
+    "context": "RADIUS & GRAVITASI",
+    "marker": null,
+    "semantic": ""
+  },
+  {
+    "yaw": 1.86,
+    "pitch": 0.0,
+    "cameraZ": 6.48,
+    "label": "INTERIOR JUPITER",
+    "context": "TANPA PERMUKAAN PADAT",
+    "marker": null,
+    "semantic": ""
+  },
+  {
+    "yaw": 1.18,
+    "pitch": 0.015,
+    "cameraZ": 6.16,
+    "label": "PITA AWAN JUPITER",
+    "context": "ZONA & SABUK EKUATORIAL",
+    "marker": null,
+    "semantic": "bands"
+  },
+  {
+    "yaw": 0.56,
+    "pitch": -0.1,
+    "cameraZ": 5.82,
+    "label": "GREAT RED SPOT",
+    "context": "BADAI ATMOSFER",
+    "marker": "grs",
+    "semantic": ""
+  },
+  {
+    "yaw": 2.18,
+    "pitch": 0.02,
+    "cameraZ": 6.28,
+    "label": "ROTASI CEPAT",
+    "context": "HARI JUPITER ~10 JAM",
+    "marker": null,
+    "semantic": "rotation"
+  },
+  {
+    "yaw": 2.02,
+    "pitch": 0.34,
+    "cameraZ": 6.6,
+    "label": "CYCLONE KUTUB",
+    "context": "POLA BADAI POLAR",
+    "marker": null,
+    "semantic": ""
+  },
+  {
+    "yaw": 2.86,
+    "pitch": -0.2,
+    "cameraZ": 6.48,
+    "label": "MAGNETOSFER JUPITER",
+    "context": "MEDAN MAGNET & AURORA",
+    "marker": null,
+    "semantic": "magnetosphere"
+  },
+  {
+    "yaw": 1.74,
+    "pitch": 0.03,
+    "cameraZ": 6.74,
+    "label": "CINCIN JUPITER",
+    "context": "HALO · MAIN RING · GOSSAMER",
+    "marker": null,
+    "semantic": ""
+  },
+  {
+    "yaw": 1.62,
+    "pitch": 0.055,
+    "cameraZ": 6.68,
+    "label": "BULAN GALILEA",
+    "context": "IO · EUROPA · GANYMEDE · CALLISTO",
+    "marker": null,
+    "semantic": "moons"
+  },
+  {
+    "yaw": 2.42,
+    "pitch": 0.01,
+    "cameraZ": 6.36,
+    "label": "EKSPLORASI JUPITER",
+    "context": "PIONEER · VOYAGER · GALILEO · JUNO",
+    "marker": null,
+    "semantic": ""
+  }
+];
 
   P._ensureFeatureState = function() {
     if (this._featureStateReady) return;

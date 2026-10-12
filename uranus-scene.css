@@ -2,3 +2,21 @@
 @media(max-width:900px) and (min-width:701px){.uranus-caption{left:5%;width:min(690px,88vw)}.uranus-exploration{left:4.5%;width:min(350px,43vw);padding:20px}.uranus-context-media{right:26px;width:min(330px,38vw)}.uranus-axis-line{left:66%}}
 @media(max-width:700px){.uranus-caption{left:18px;right:18px;bottom:24px;width:auto;text-align:center}.uranus-caption .eyebrow{justify-content:center}.uranus-caption .eyebrow span{display:none}.uranus-caption h2{font-size:clamp(58px,18vw,84px)}.uranus-whisper{margin:10px 0 15px;font-size:10px}.uranus-arrival-actions{grid-template-columns:minmax(0,1fr) minmax(0,1.18fr) minmax(0,1fr);gap:6px;width:100%}.uranus-arrival-actions>*{min-width:0}.uranus-planet-nav,.uranus-explore-button{min-width:0;min-height:50px;padding:8px 6px;gap:5px}.uranus-planet-nav small,.uranus-planet-nav strong{white-space:normal}.uranus-planet-nav small{font-size:5.5px;letter-spacing:.9px}.uranus-planet-nav strong{font-size:7.5px;letter-spacing:.8px}.uranus-explore-button{font-size:7.5px;letter-spacing:.05em}.uranus-exploration{top:auto;left:5%;right:5%;bottom:5.5%;width:auto;height:min(46dvh,340px);max-height:calc(100dvh - 48px);transform:translateY(18px);padding:16px 17px 14px}.uranus-scene.is-exploring .uranus-exploration{transform:none}.uranus-exploration h3{margin-top:15px;font-size:29px}.uranus-exploration-controls{margin-top:14px}.uranus-exploration-close{margin-top:10px}.uranus-context-media{top:70px;right:14px;width:190px}.uranus-credit{display:none}.uranus-axis-line{left:50%;top:14%;height:36%;transform:rotate(82deg)}.uranus-axis-label{left:65%;top:14%}.uranus-ring-annotation .ring-label{display:none}}
 @media(prefers-reduced-motion:reduce){.uranus-caption,.uranus-exploration,.uranus-context-media,.uranus-planet-nav,.uranus-explore-button{transition:none}.uranus-exploration.is-switching-next .uranus-topic-scroll,.uranus-exploration.is-switching-next h3,.uranus-exploration.is-switching-next .uranus-topic-subtitle,.uranus-exploration.is-switching-prev .uranus-topic-scroll,.uranus-exploration.is-switching-prev h3,.uranus-exploration.is-switching-prev .uranus-topic-subtitle{animation:none}}
+
+
+/* 2026-10-03 CHILD EDUCATION MOBILE READABILITY
+   Keep the longer child-friendly lessons readable without turning the mobile
+   exploration sheet into tiny textbook text. */
+@media(max-width:700px){
+  .uranus-exploration{height:min(56dvh,420px)!important;max-height:calc(100dvh - 48px)!important}
+  .uranus-exploration h3{font-size:clamp(25px,7.4vw,29px)!important;line-height:1.05!important}
+  .uranus-topic-summary{font-size:12px!important;line-height:1.62!important}
+  .uranus-topic-facts li{font-size:10px!important;line-height:1.5!important}
+  .uranus-topic-facts{gap:8px!important;margin:15px 0 14px!important}
+}
+@media(max-width:340px){
+  .uranus-exploration{height:min(58dvh,420px)!important;left:4%!important;right:4%!important;padding:15px 15px 13px!important}
+  .uranus-exploration h3{font-size:24px!important}
+  .uranus-exploration-controls{margin-top:11px!important}
+  .uranus-exploration-close{margin-top:8px!important}
+}

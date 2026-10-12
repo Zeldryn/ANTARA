@@ -6,6 +6,15 @@ require_once dirname(__DIR__) . '/progress/_progress.php';
 const ANTARA_COMPLETION_MIN_SECONDS = 300;
 const ANTARA_LEADERBOARD_LIMIT_MAX = 100;
 
+
+function antara_completion_required_milestones(): int
+{
+    return array_sum(array_map(
+        static fn(array $definition): int => (int)$definition['normal_total'] + count($definition['full']),
+        antara_progress_catalog()
+    ));
+}
+
 function antara_leaderboard_ensure_schema(PDO $pdo): void
 {
     $pdo->exec(
@@ -123,7 +132,8 @@ function antara_completion_sync(PDO $pdo, int $userId, array $summary): ?array
          (user_id, completed_at, completion_event_id, first_progress_at, elapsed_seconds, total_milestones, eligible, integrity_status, created_at, updated_at)
          VALUES (:user_id, :completed_at, :completion_event_id, :first_at, :elapsed, :total, :eligible, :status, NOW(), NOW())
          ON DUPLICATE KEY UPDATE
-           completion_event_id = COALESCE(completion_event_id, VALUES(completion_event_id)),
+           completed_at = IF(total_milestones <> VALUES(total_milestones), VALUES(completed_at), completed_at),
+           completion_event_id = IF(total_milestones <> VALUES(total_milestones), VALUES(completion_event_id), COALESCE(completion_event_id, VALUES(completion_event_id))),
            first_progress_at = VALUES(first_progress_at),
            elapsed_seconds = VALUES(elapsed_seconds),
            total_milestones = VALUES(total_milestones),
@@ -148,10 +158,7 @@ function antara_completion_sync(PDO $pdo, int $userId, array $summary): ?array
 function antara_completion_backfill(PDO $pdo): void
 {
     antara_leaderboard_ensure_schema($pdo);
-    $required = array_sum(array_map(
-        static fn(array $definition): int => (int)$definition['normal_total'] + count($definition['full']),
-        antara_progress_catalog()
-    ));
+    $required = antara_completion_required_milestones();
 
     $stmt = $pdo->prepare(
         'SELECT e.user_id
@@ -177,13 +184,17 @@ function antara_completion_entries(PDO $pdo, int $limit = 50): array
     $limit = max(1, min(ANTARA_LEADERBOARD_LIMIT_MAX, $limit));
     antara_completion_backfill($pdo);
 
+    $required = antara_completion_required_milestones();
     $sql = 'SELECT c.id, c.user_id, c.completed_at, c.completion_event_id, c.elapsed_seconds, u.username, u.full_name
             FROM exploration_completions c
             JOIN users u ON u.id = c.user_id
-            WHERE c.eligible = 1
+            WHERE c.eligible = 1 AND c.total_milestones = :required
             ORDER BY c.completed_at ASC, c.completion_event_id ASC, c.id ASC
             LIMIT ' . $limit;
-    $rows = $pdo->query($sql)->fetchAll();
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':required', $required, PDO::PARAM_INT);
+    $stmt->execute();
+    $rows = $stmt->fetchAll();
 
     $entries = [];
     foreach ($rows as $index => $row) {
@@ -201,24 +212,25 @@ function antara_completion_entries(PDO $pdo, int $limit = 50): array
 
 function antara_completion_user_rank(PDO $pdo, int $userId): ?array
 {
-    $stmt = $pdo->prepare('SELECT id, completed_at, completion_event_id, eligible, integrity_status FROM exploration_completions WHERE user_id = :user_id LIMIT 1');
+    $stmt = $pdo->prepare('SELECT id, completed_at, completion_event_id, eligible, integrity_status, total_milestones FROM exploration_completions WHERE user_id = :user_id LIMIT 1');
     $stmt->execute(['user_id' => $userId]);
     $row = $stmt->fetch();
     if (!$row) return null;
 
-    if (!(bool)$row['eligible']) {
+    $required = antara_completion_required_milestones();
+    if (!(bool)$row['eligible'] || (int)$row['total_milestones'] !== $required) {
         return [
             'rank' => null,
             'completedAt' => (string)$row['completed_at'],
             'eligible' => false,
-            'status' => (string)$row['integrity_status'],
+            'status' => (int)$row['total_milestones'] !== $required ? 'content-expanded' : (string)$row['integrity_status'],
         ];
     }
 
     $rankStmt = $pdo->prepare(
         'SELECT COUNT(*) + 1 AS rank_no
          FROM exploration_completions
-         WHERE eligible = 1 AND (
+         WHERE eligible = 1 AND total_milestones = :required AND (
            completed_at < :completed_at
            OR (completed_at = :completed_at AND COALESCE(completion_event_id, 18446744073709551615) < :completion_event_id)
            OR (completed_at = :completed_at AND COALESCE(completion_event_id, 18446744073709551615) = :completion_event_id AND id < :id)
@@ -228,6 +240,7 @@ function antara_completion_user_rank(PDO $pdo, int $userId): ?array
         'completed_at' => $row['completed_at'],
         'completion_event_id' => $row['completion_event_id'] !== null ? (int)$row['completion_event_id'] : PHP_INT_MAX,
         'id' => $row['id'],
+        'required' => $required,
     ]);
     return [
         'rank' => (int)$rankStmt->fetchColumn(),
