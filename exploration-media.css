@@ -111,7 +111,8 @@
 
 .earth-location-dot:not(.is-relocating) .exploration-marker-media,
 .mars-focus-reticle.is-marker-visible .exploration-marker-media,
-.venus-focus-reticle.is-marker-visible .exploration-marker-media {
+.venus-focus-reticle.is-marker-visible .exploration-marker-media,
+.mercury-focus-reticle.is-marker-visible .exploration-marker-media {
   opacity: 1;
   transform: none;
 }
