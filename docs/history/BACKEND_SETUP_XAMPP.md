@@ -181,3 +181,18 @@ Endpoint progress dan submit score memerlukan user yang sedang login.
 ```
 
 Frontend leaderboard dan progress ANTARA belum dipaksa memakai endpoint ini. API dan tabelnya sudah disiapkan agar integrasi berikutnya tidak perlu membongkar sistem akun.
+
+## Leaderboard aman
+
+Versi ini menambahkan dua jalur leaderboard:
+
+- **100% Penjelajahan**: dibuat otomatis dari progress akun dan timestamp database server.
+- **Permainan**: membaca hanya skor dari `verified_game_scores`; endpoint skor mentah lama dinonaktifkan.
+
+Jika database `antara` sudah pernah dibuat sebelum fitur leaderboard ini, import sekali:
+
+```sql
+SOURCE database/leaderboard-migration.sql;
+```
+
+Atau import file `database/leaderboard-migration.sql` melalui phpMyAdmin. Untuk instalasi database baru, `database/antara.sql` sudah memuat tabel yang diperlukan.

@@ -65,6 +65,46 @@ function antara_input(): array
     return $_POST;
 }
 
+
+function antara_enforce_write_origin(): void
+{
+    $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
+    if (!in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'], true)) {
+        return;
+    }
+
+    $fetchSite = strtolower(trim((string)($_SERVER['HTTP_SEC_FETCH_SITE'] ?? '')));
+    if ($fetchSite !== '' && !in_array($fetchSite, ['same-origin', 'none'], true)) {
+        antara_json(['success' => false, 'message' => 'Request lintas situs ditolak.'], 403);
+    }
+
+    $origin = trim((string)($_SERVER['HTTP_ORIGIN'] ?? ''));
+    if ($origin !== '') {
+        $originHost = strtolower((string)(parse_url($origin, PHP_URL_HOST) ?? ''));
+        $requestHost = strtolower(preg_replace('/:\\d+$/', '', (string)($_SERVER['HTTP_HOST'] ?? '')) ?? '');
+        if ($originHost === '' || $requestHost === '' || !hash_equals($requestHost, $originHost)) {
+            antara_json(['success' => false, 'message' => 'Origin request tidak valid.'], 403);
+        }
+    }
+}
+
+function antara_session_rate_limit(string $bucket, int $limit, int $windowSeconds): void
+{
+    $now = time();
+    $key = 'rate_' . preg_replace('/[^a-z0-9_-]/i', '_', $bucket);
+    $events = $_SESSION[$key] ?? [];
+    if (!is_array($events)) $events = [];
+    $events = array_values(array_filter($events, static fn($ts): bool => is_int($ts) && $ts > ($now - $windowSeconds)));
+
+    if (count($events) >= $limit) {
+        header('Retry-After: ' . $windowSeconds);
+        antara_json(['success' => false, 'message' => 'Terlalu banyak request. Coba lagi sebentar.'], 429);
+    }
+
+    $events[] = $now;
+    $_SESSION[$key] = $events;
+}
+
 function antara_user_payload(array $row): array
 {
     return [

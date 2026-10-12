@@ -15,9 +15,9 @@
   const escapeHtml = value => String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 
   const formatDate = value => {
-    if (!value) return "Belum tercatat";
+    if (!value) return "Waktu server";
     const date = new Date(String(value).replace(" ", "T"));
-    if (Number.isNaN(date.getTime())) return "Belum tercatat";
+    if (Number.isNaN(date.getTime())) return "Waktu server";
     return new Intl.DateTimeFormat("id-ID", { dateStyle:"medium", timeStyle:"short" }).format(date);
   };
 
@@ -47,18 +47,18 @@
 
   function boardCopy(board) {
     if (board === "game") return {
-      kicker:"BEST RECORD QUIZ",
-      title:"Peringkat Quiz ANTARA",
-      emptyKicker:"BELUM ADA BINTANG QUIZ",
-      emptyTitle:"Arena quiz masih kosong.",
-      emptyCopy:"Selesaikan satu tantangan 15 / 15. Setiap akun dinilai dari skor terbaiknya."
+      kicker:"SKOR TERVERIFIKASI",
+      title:"Leaderboard Permainan",
+      emptyKicker:"BELUM ADA SKOR TERVERIFIKASI",
+      emptyTitle:"Arena kompetitif masih kosong.",
+      emptyCopy:"Skor akan muncul setelah permainan ANTARA terhubung ke secure run server. Skor mentah dari browser tidak diterima."
     };
     return {
       kicker:"URUTAN PENYELESAIAN",
       title:"Penjelajah 100%",
       emptyKicker:"BELUM ADA PENJELAJAH 100%",
       emptyTitle:"Peringkat pertama masih kosong.",
-      emptyCopy:"Penjelajah pertama yang menuntaskan seluruh perjalanan akan membuka posisi ini."
+      emptyCopy:"Akun pertama yang menyelesaikan seluruh progress ANTARA secara valid akan muncul di sini."
     };
   }
 
@@ -72,34 +72,26 @@
   }
 
   function entryDetail(entry, board) {
-    if (board === "game") return { main:`BEST ${formatScore(entry.score)} poin`, sub:formatDate(entry.achievedAt) };
+    if (board === "game") return { main:`${formatScore(entry.score)} poin`, sub:formatDate(entry.achievedAt) };
     return { main:"100% selesai", sub:formatDate(entry.completedAt) };
-  }
-
-  const rankPlanets = ["earth","mars","jupiter","saturn","uranus","neptune","venus","mercury"];
-  function rankPlanet(entry) {
-    const index = Math.max(0, (Number(entry.rank) || 1) - 1) % rankPlanets.length;
-    return `assets/progress-planets/${rankPlanets[index]}.png`;
-  }
-
-  function avatarMarkup(entry, size = "podium") {
-    const label = escapeHtml(entry.name || entry.username || "Penjelajah");
-    const initial = escapeHtml((entry.name || entry.username || "P").trim().charAt(0).toUpperCase());
-    const avatar = String(entry.avatar || "").trim();
-    const classes = size === "row" ? "lb-avatar lb-avatar-row" : "lb-avatar lb-avatar-podium";
-    return avatar
-      ? `<span class="${classes}"><img src="${escapeHtml(avatar)}" alt="Foto profil ${label}" loading="lazy"></span>`
-      : `<span class="${classes} is-fallback" aria-hidden="true">${initial}</span>`;
   }
 
   function podiumCard(entry, board) {
     const detail = entryDetail(entry, board);
-    return `<article class="lb-podium-card" tabindex="0"> <span class="lb-podium-rank">${entry.rank}</span> <div class="lb-podium-visual">${avatarMarkup(entry, "podium")}<img class="lb-rank-planet" src="${rankPlanet(entry)}" alt="" loading="lazy"></div> <div><strong class="lb-podium-name">${escapeHtml(entry.name || entry.username)}</strong><span class="lb-podium-user">@${escapeHtml(entry.username)}</span></div> <span class="lb-podium-detail">${escapeHtml(detail.main)}<br>${escapeHtml(detail.sub)}</span> </article>`;
+    return `<article class="lb-podium-card">
+      <span class="lb-podium-rank">${entry.rank}</span>
+      <div><strong class="lb-podium-name">${escapeHtml(entry.name || entry.username)}</strong><span class="lb-podium-user">@${escapeHtml(entry.username)}</span></div>
+      <span class="lb-podium-detail">${escapeHtml(detail.main)}<br>${escapeHtml(detail.sub)}</span>
+    </article>`;
   }
 
   function rowCard(entry, board) {
     const detail = entryDetail(entry, board);
-    return `<article class="lb-row" tabindex="0"> <span class="lb-row-rank">#${entry.rank}</span> ${avatarMarkup(entry, "row")} <img class="lb-row-planet" src="${rankPlanet(entry)}" alt="" loading="lazy"> <div class="lb-row-person"><strong>${escapeHtml(entry.name || entry.username)}</strong><span>@${escapeHtml(entry.username)}</span></div> <div class="lb-row-detail"><strong>${escapeHtml(detail.main)}</strong><span>${escapeHtml(detail.sub)}</span></div> </article>`;
+    return `<article class="lb-row">
+      <span class="lb-row-rank">#${entry.rank}</span>
+      <div class="lb-row-person"><strong>${escapeHtml(entry.name || entry.username)}</strong><span>@${escapeHtml(entry.username)}</span></div>
+      <div class="lb-row-detail"><strong>${escapeHtml(detail.main)}</strong><span>${escapeHtml(detail.sub)}</span></div>
+    </article>`;
   }
 
   function renderMe(data, board) {
@@ -112,12 +104,12 @@
     }
     if (!data.me) {
       rankEl.textContent = "BELUM MASUK RANKING";
-      copyEl.textContent = board === "game" ? "Belum ada skor quiz untuk akun ini. Coba main satu sesi!" : "Selesaikan seluruh perjalanan ANTARA untuk mendapatkan nomor peringkat.";
+      copyEl.textContent = board === "game" ? "Belum ada skor permainan terverifikasi untuk akun ini." : "Selesaikan seluruh milestone ANTARA untuk mendapatkan nomor urutan penyelesaian.";
       return;
     }
     if (board === "completion" && data.me.eligible === false) {
-      rankEl.textContent = "BELUM MASUK PAPAN";
-      copyEl.textContent = "Progress kamu sudah penuh. Buka kembali halaman ini setelah perjalanan terakhir tersimpan.";
+      rankEl.textContent = "MENUNGGU VERIFIKASI";
+      copyEl.textContent = "Progress 100% terdeteksi, tetapi pola penyelesaiannya belum lolos pemeriksaan integritas otomatis.";
       return;
     }
     rankEl.textContent = `#${data.me.rank}`;
@@ -133,7 +125,7 @@
     podium.hidden = top.length === 0;
     list.innerHTML = rest.map(entry => rowCard(entry, board)).join("");
     empty.hidden = entries.length !== 0;
-    $("#lb-board-state").textContent = board === "game" ? "QUIZ ANTARA" : "PROGRESS ANTARA";
+    $("#lb-board-state").textContent = board === "game" ? "VERIFIED RUN" : "SERVER TIMESTAMP";
     renderMe(data, board);
   }
 
@@ -142,7 +134,7 @@
     list.innerHTML = "";
     empty.hidden = true;
     error.hidden = false;
-    $("#lb-error-copy").textContent = message || "Coba buka lagi sebentar.";
+    $("#lb-error-copy").textContent = message || "Periksa Apache, MySQL, dan koneksi database ANTARA.";
   }
 
   async function loadBoard(board = currentBoard) {
@@ -155,7 +147,7 @@
       tab.setAttribute("aria-selected", active ? "true" : "false");
     });
     try {
-      const url = board === "game" ? "api/leaderboard/get.php?type=game&game=quiz15&limit=50" : "api/leaderboard/get.php?type=completion&limit=50";
+      const url = board === "game" ? "api/leaderboard/get.php?type=game&game=general&limit=50" : "api/leaderboard/get.php?type=completion&limit=50";
       const { response, data } = await fetchJson(url);
       if (!response.ok || !data.success) throw new Error(data.message || "Leaderboard gagal dimuat.");
       renderBoard(data, board);

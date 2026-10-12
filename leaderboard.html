@@ -2,23 +2,78 @@
 <html lang="id">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Leaderboard ANTARA</title>
-  <style>
-    :root{color-scheme:dark;--gold:#d9af68;--cyan:#72b8da;--ink:#030b13;--panel:#071522}
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 50% 20%,#153a59 0,#071727 42%,#02070d 100%);color:#eef4f8;font-family:system-ui,sans-serif;overflow:hidden}
-    body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(114,184,218,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(114,184,218,.04) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(#0008,transparent 78%)}
-    main{position:relative;width:min(760px,calc(100% - 32px));padding:clamp(28px,5vw,54px);background:linear-gradient(180deg,rgba(7,21,34,.94),rgba(3,11,19,.96));clip-path:polygon(18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%,0 18px);border-top:1px solid rgba(217,175,104,.62);border-bottom:1px solid rgba(114,184,218,.46);box-shadow:0 30px 90px #0008;text-align:center}
-    main:before,main:after{content:"";position:absolute;height:1px;top:18px;width:24%;background:linear-gradient(90deg,var(--gold),transparent)}main:before{left:24px}main:after{right:24px;transform:scaleX(-1);background:linear-gradient(90deg,var(--cyan),transparent)}
-    .eyebrow{margin:0 0 10px;color:#91b7ca;font-size:10px;letter-spacing:.28em}.title{margin:0;color:#f2efe8;font-family:Georgia,serif;font-size:clamp(30px,6vw,58px);font-weight:500;letter-spacing:.02em}.status{margin:22px auto 0;max-width:460px;padding:18px;border:1px solid rgba(114,184,218,.18);color:#9db5c2;font-size:12px;line-height:1.7;letter-spacing:.06em}.back{display:inline-flex;align-items:center;gap:10px;margin-top:26px;padding:11px 18px;color:#f0e7d4;text-decoration:none;border:1px solid rgba(217,175,104,.48);clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);font-size:11px;letter-spacing:.14em}.back:hover{border-color:var(--gold);filter:brightness(1.15)}
-  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#02070d">
+  <title>Leaderboard | ANTARA</title>
+  <link rel="icon" type="image/png" href="assets/antara-logo.png">
+  <link rel="stylesheet" href="leaderboard.css?v=20261003-secure-leaderboard-1">
+  <script src="leaderboard.js?v=20261003-secure-leaderboard-1" defer></script>
 </head>
 <body>
-  <main>
-    <p class="eyebrow">ANTARA · DATA PENJELAJAH</p>
-    <h1 class="title">Leaderboard</h1>
-    <div class="status">Belum ada data peringkat yang terhubung. Halaman ini sudah menjadi tujuan resmi tombol LEADERBOARD dan siap dihubungkan ke backend leaderboard ANTARA.</div>
-    <a class="back" href="index.html">← KEMBALI KE KOKPIT</a>
+  <div class="lb-space" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="lb-topbar">
+    <a class="lb-back" href="index.html"><span aria-hidden="true">‹</span><b>KOKPIT</b></a>
+    <a class="lb-brand" href="index.html" aria-label="ANTARA">
+      <img src="assets/antara-logo.png" alt="">
+      <span><small>ANTARIKSA NUSANTARA</small><strong>LEADERBOARD</strong></span>
+    </a>
+    <div class="lb-account" id="lb-account"><i></i><span>MEMBACA AKUN...</span></div>
+  </header>
+
+  <main class="lb-shell">
+    <section class="lb-hero">
+      <div class="lb-hero-copy">
+        <p class="lb-eyebrow">ANTARA · DATA PENJELAJAH</p>
+        <h1>Peringkat para<br><span>penjelajah ANTARA.</span></h1>
+        <p>Leaderboard dibaca langsung dari database akun. Peringkat penyelesaian memakai waktu server ketika seluruh progress benar-benar mencapai 100%, sedangkan skor permainan hanya menampilkan run yang sudah diverifikasi server.</p>
+      </div>
+      <aside class="lb-security-card">
+        <div class="lb-shield" aria-hidden="true">✦</div>
+        <div><small>INTEGRITAS PERINGKAT</small><strong>Server verified</strong><p>Browser tidak menentukan urutan 100% dan tidak boleh mengirim skor permainan final secara mentah.</p></div>
+      </aside>
+    </section>
+
+    <nav class="lb-tabs" aria-label="Jenis leaderboard">
+      <button class="lb-tab is-active" type="button" data-board="completion" aria-selected="true">
+        <span>01</span><div><small>PENJELAJAHAN</small><strong>100% Selesai</strong></div>
+      </button>
+      <button class="lb-tab" type="button" data-board="game" aria-selected="false">
+        <span>02</span><div><small>KOMPETITIF</small><strong>Permainan</strong></div>
+      </button>
+    </nav>
+
+    <section class="lb-me" id="lb-me" aria-live="polite">
+      <div><small>POSISI AKUNMU</small><strong id="lb-me-rank">...</strong></div>
+      <p id="lb-me-copy">Menghubungkan identitas penjelajah dengan database.</p>
+    </section>
+
+    <section class="lb-board" aria-labelledby="lb-board-title">
+      <div class="lb-board-head">
+        <div><p id="lb-board-kicker">URUTAN PENYELESAIAN</p><h2 id="lb-board-title">Penjelajah 100%</h2></div>
+        <div class="lb-live"><i></i><span id="lb-board-state">DATA SERVER</span></div>
+      </div>
+
+      <div class="lb-podium" id="lb-podium" hidden></div>
+      <div class="lb-list" id="lb-list" aria-live="polite"></div>
+
+      <div class="lb-empty" id="lb-empty" hidden>
+        <span>✦</span>
+        <div><small id="lb-empty-kicker">BELUM ADA PENJELAJAH 100%</small><h3 id="lb-empty-title">Peringkat pertama masih kosong.</h3><p id="lb-empty-copy">Akun pertama yang menyelesaikan seluruh progress ANTARA secara valid akan muncul di sini.</p></div>
+      </div>
+
+      <div class="lb-error" id="lb-error" hidden>
+        <small>DATABASE BELUM MENJAWAB</small>
+        <h3>Leaderboard belum bisa dimuat.</h3>
+        <p id="lb-error-copy">Periksa Apache, MySQL, dan koneksi database ANTARA.</p>
+        <button type="button" id="lb-retry">COBA LAGI</button>
+      </div>
+    </section>
+
+    <section class="lb-note">
+      <strong>Catatan sistem</strong>
+      <p>Urutan 100% ditentukan oleh timestamp completion di server, bukan waktu perangkat pengguna. Untuk skor permainan, endpoint skor mentah dinonaktifkan. Hanya skor dari run yang tervalidasi yang boleh masuk tabel publik.</p>
+    </section>
   </main>
 </body>
 </html>
