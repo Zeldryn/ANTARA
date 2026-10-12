@@ -1,1 +1,1 @@
-Folder ANTARA -> C:\xampp\htdocs\ANTARA. Start Apache + MySQL. Open http://localhost/ANTARA/. Follow docs/DEPLOY_DATABASE.md. No file://.
+ANTARA -> C:\xampp\htdocs\ANTARA. Start Apache + MySQL. Open http://localhost/ANTARA/. Follow docs/DEPLOY_DATABASE.md for migrations and test.

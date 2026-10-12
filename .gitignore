@@ -1,7 +1,7 @@
 .tmp/
 __pycache__/
 
-# Packaging exclusions: local secrets and runtime state
+# Packaging: keep local secrets and runtime state outside Git
 .env
 .env.*
 *.pem

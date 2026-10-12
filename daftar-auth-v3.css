@@ -374,3 +374,21 @@ a { color: inherit; text-decoration: none; }
 }
 .account-session span { color: #688397; font-size: 8px; letter-spacing: .04em; word-break: break-word; }
 .auth-mode-switch[hidden] { display: none !important; }
+
+
+/* ANTARA OFFICIAL LOGO OVERRIDE 2026-10-03 */
+.antara-brand {
+  width: clamp(58px, 5vw, 76px);
+  line-height: 0;
+}
+.antara-brand .antara-logo-auth {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+@media (max-width: 700px) {
+  .antara-brand { width: 54px; }
+}

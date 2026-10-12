@@ -6577,3 +6577,35 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   }
 }
 
+
+
+/* ANTARA OFFICIAL LOGO OVERRIDE 2026-10-03 */
+.antara-logo-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.brand {
+  width: clamp(58px, 5.2vw, 76px);
+  min-width: 58px;
+  line-height: 0;
+}
+.brand .antara-logo-header { width: 100%; }
+.launch-brand-lockup {
+  width: clamp(58px, 4.8vw, 76px) !important;
+  gap: 0 !important;
+}
+.launch-brand-lockup .antara-logo-launch { width: 100%; }
+.cockpit-brand {
+  width: clamp(42px, 4vw, 62px);
+  line-height: 0;
+}
+.cockpit-brand .antara-logo-cockpit { width: 100%; }
+@media (max-width: 700px) {
+  .brand { width: 54px; min-width: 54px; }
+  .launch-brand-lockup { width: 54px !important; }
+  .cockpit-brand { width: 44px; }
+}
