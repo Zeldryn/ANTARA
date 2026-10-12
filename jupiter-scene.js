@@ -403,11 +403,11 @@ window.JupiterScene = class JupiterScene {
     this.topicKicker.textContent=stop.kicker;this.topicTitle.textContent=stop.title;this.topicSubtitle.textContent=stop.subtitle;this.topicSummary.textContent=stop.summary;this.topicFacts.replaceChildren(...stop.facts.map(f=>{const li=document.createElement("li");li.textContent=f;return li;}));
     this.topicSource.href=stop.source;this.topicCurrent.textContent=String(next+1).padStart(2,"0");this.topicPrev.disabled=next===0;this.topicNext.disabled=next===JUPITER_EXPLORATION_STOPS.length-1;Array.from(this.topicProgress.children).forEach((bar,i)=>bar.classList.toggle("is-active",i===next));
     window.ExplorationMedia?.render?.("jupiter",stop,this.contextMedia);
-    if(this.active)this.render(); if(announce&&this.exploring)document.getElementById("announcement").textContent=`Eksplorasi Jupiter ${next+1} dari ${JUPITER_EXPLORATION_STOPS.length}: ${stop.title}.`;
+    if(this.active)this.render(); if(this.exploring)window.AntaraProgress?.trackTopic("jupiter",next,stop.title); if(announce&&this.exploring)document.getElementById("announcement").textContent=`Eksplorasi Jupiter ${next+1} dari ${JUPITER_EXPLORATION_STOPS.length}: ${stop.title}.`;
   }
 
   enterExploration() {
-    if(!this.active||this.exploring||this.travelMode)return;this.exploring=true;this.explorationBlendTarget=1;this.element.classList.add("is-exploring");this.caption.inert=true;this.exploration.inert=false;if(this.motion.matches)this.explorationBlend=1;if(!this.frame){this.previous=performance.now();this.tick(this.previous);}document.getElementById("announcement").textContent=`Mode eksplorasi Jupiter dimulai. ${JUPITER_EXPLORATION_STOPS[this.topicIndex].title}.`;requestAnimationFrame(()=>this.topicTitle.focus({preventScroll:true}));
+    if(!this.active||this.exploring||this.travelMode)return;this.exploring=true;this.explorationBlendTarget=1;this.element.classList.add("is-exploring");this.caption.inert=true;this.exploration.inert=false;if(this.motion.matches)this.explorationBlend=1;if(!this.frame){this.previous=performance.now();this.tick(this.previous);}window.AntaraProgress?.trackTopic("jupiter",this.topicIndex,JUPITER_EXPLORATION_STOPS[this.topicIndex].title);document.getElementById("announcement").textContent=`Mode eksplorasi Jupiter dimulai. ${JUPITER_EXPLORATION_STOPS[this.topicIndex].title}.`;requestAnimationFrame(()=>this.topicTitle.focus({preventScroll:true}));
   }
 
   exitExploration() {
@@ -564,6 +564,7 @@ window.JupiterScene = class JupiterScene {
     this.topicSource.href=stop.source;this.topicCurrent.textContent=String(next+1).padStart(2,"0");this.topicPrev.disabled=next===0;this.topicNext.disabled=next===JUPITER_EXPLORATION_STOPS.length-1;Array.from(this.topicProgress.children).forEach((bar,i)=>bar.classList.toggle("is-active",i===next));
     window.ExplorationMedia?.render?.("jupiter",stop,this.contextMedia); this._applyTopicView(next, immediate || !this.exploring);
     if(this.active){ if(!this.frame){this.previous=performance.now();this.tick(this.previous);} else this.render(); }
+    if(this.exploring)window.AntaraProgress?.trackTopic("jupiter",next,stop.title);
     if(announce&&this.exploring)document.getElementById("announcement").textContent=`Eksplorasi Jupiter ${next+1} dari ${JUPITER_EXPLORATION_STOPS.length}: ${stop.title}.`;
   };
 

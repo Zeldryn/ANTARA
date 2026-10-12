@@ -341,6 +341,7 @@ window.VenusScene = class VenusScene {
       if (!this.motion.matches && !this.frame) { this.previous = performance.now(); this.tick(this.previous); }
       else this.render();
     }
+    if (this.exploring) window.AntaraProgress?.trackTopic("venus", nextIndex, stop.title);
     if (announce && this.exploring) document.getElementById("announcement").textContent = `Eksplorasi Venus ${nextIndex + 1} dari ${VENUS_EXPLORATION_STOPS.length}: ${stop.title}.`;
   }
 
@@ -371,6 +372,7 @@ window.VenusScene = class VenusScene {
       this.previous = performance.now();
       this.tick(this.previous);
     }
+    window.AntaraProgress?.trackTopic("venus", this.topicIndex, activeStop.title);
     document.getElementById("announcement").textContent = `Mode eksplorasi Venus dimulai. ${VENUS_EXPLORATION_STOPS[this.topicIndex].title}.`;
     this.topicTitle.focus({ preventScroll: true });
   }

@@ -824,6 +824,7 @@ window.SunScene = class SunScene {
       this.topicSource.href=stop.source; this.topicCurrent.textContent=String(this.topicIndex+1).padStart(2,"0"); [...this.topicProgress.children].forEach((el,i)=>el.classList.toggle("is-active",i===this.topicIndex));
       this.topicPrev.disabled=this.topicIndex===0; this.topicNext.disabled=this.topicIndex===total-1;
       if(this.exploring) window.ExplorationMedia?.render?.("sun",stop,this.contextMedia);
+      if(this.exploring) window.AntaraProgress?.trackTopic("sun",this.topicIndex,stop.title);
       if(announce) document.getElementById("announcement").textContent=`Topik Matahari: ${stop.title}.`;
       if(this.topicScroll) this.topicScroll.scrollTop=0;
     };

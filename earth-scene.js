@@ -549,6 +549,7 @@ window.EarthScene = class EarthScene {
         this.render();
       }
     }
+    if (this.exploring) window.AntaraProgress?.trackTopic("earth", this.topicIndex, stop.title);
     this.wake();
   }
 

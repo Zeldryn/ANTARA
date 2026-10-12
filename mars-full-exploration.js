@@ -2059,6 +2059,7 @@
       this.velocity.x = this.velocity.y = this.velocity.z = 0;
       this.showTutorial();
       this.showLandmarkInfo(this.currentLandmark);
+      window.AntaraProgress?.trackFull("mars", this.currentLandmark.id, this.currentLandmark.name);
       document.getElementById("announcement").textContent = `Eksplorasi penuh Mars aktif di ${this.currentLandmark.name}. Gunakan WASD atau kontrol layar untuk bergerak.`;
     }
 
@@ -2317,6 +2318,7 @@
         this.state = STATES.EXPLORING;
         this.travelVeil.classList.remove("is-visible");
         this.showLandmarkInfo(landmark);
+        window.AntaraProgress?.trackFull("mars", landmark.id, landmark.name);
         document.getElementById("announcement").textContent = `Tiba di ${landmark.name}. Eksplorasi bebas dilanjutkan.`;
       } catch (error) {
         console.warn("Mars landmark travel failed", error);

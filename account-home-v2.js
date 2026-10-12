@@ -121,7 +121,11 @@
 
         const emptyAction = event.target.closest('[data-empty-action]')?.dataset.emptyAction;
         if (emptyAction) {
-          const label = emptyAction === 'bio' ? 'Bio' : emptyAction === 'progress' ? 'Progress' : 'Pencapaian';
+          if (emptyAction === 'progress') {
+            window.location.href = 'progress.html';
+            return;
+          }
+          const label = emptyAction === 'bio' ? 'Bio' : 'Pencapaian';
           this.showToast(`${label} belum memiliki data. Modul ini siap dihubungkan nanti.`);
         }
       });
@@ -262,6 +266,23 @@
       $('#account-panel-title', this.overlay).textContent = tab === 'settings' ? 'PENGATURAN AKUN' : 'PROFIL PENJELAJAH';
       const content = $('[data-account-content]', this.overlay);
       content.innerHTML = tab === 'settings' ? this.settingsTemplate() : this.profileTemplate();
+      if (tab === 'profile') this.hydrateProgressCard(content);
+    }
+
+    async hydrateProgressCard(root) {
+      const value = $('[data-profile-progress]', root);
+      const detail = $('[data-profile-progress-detail]', root);
+      if (!value || !detail) return;
+      try {
+        const response = await fetch('api/progress/get.php', { credentials: 'same-origin', headers: { Accept: 'application/json' } });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || !payload.success) return;
+        const overall = payload.overall || {};
+        value.textContent = `${Number(overall.progress) || 0}%`;
+        detail.textContent = `${overall.completedMilestones || 0} dari ${overall.totalMilestones || 0} milestone tercatat. Klik untuk melihat detail.`;
+      } catch (error) {
+        console.warn('ANTARA profile progress summary', error);
+      }
     }
 
     profileTemplate() {
@@ -289,7 +310,7 @@
               <span class="account-empty-code">BIO</span><strong>BELUM ADA BIO</strong><small>Nanti bio penjelajah akan tampil di sini.</small>
             </button>
             <button type="button" class="account-empty-card" data-empty-action="progress">
-              <span class="account-empty-code">PROGRESS</span><strong>0%</strong><small>Belum ada progress eksplorasi yang ditampilkan.</small>
+              <span class="account-empty-code">PROGRESS</span><strong data-profile-progress>0%</strong><small data-profile-progress-detail>Memuat rekam jejak eksplorasi...</small>
             </button>
             <button type="button" class="account-empty-card" data-empty-action="achievement">
               <span class="account-empty-code">PENCAPAIAN</span><strong>0</strong><small>Belum ada badge atau pencapaian.</small>

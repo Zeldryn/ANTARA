@@ -3189,6 +3189,7 @@
       this.updateResponsiveUi();
       this.updateHUD();
       this.updateEducation(0);
+      window.AntaraProgress?.trackFull("venus", this.region.id, this.region.name);
       document.getElementById("announcement").textContent = `Eksplorasi Venus aktif di ${this.region.name}. Ikuti tujuan eksplorasi untuk menemukan fitur geologi.`;
     }
 

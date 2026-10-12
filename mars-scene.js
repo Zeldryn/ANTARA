@@ -465,6 +465,7 @@ window.MarsScene = class MarsScene {
       if (!this.motion.matches && !this.frame) { this.previous = performance.now(); this.tick(this.previous); }
       else this.render();
     }
+    if (this.exploring) window.AntaraProgress?.trackTopic("mars", nextIndex, stop.title);
     if (announce && this.exploring) document.getElementById("announcement").textContent = `Eksplorasi Mars ${nextIndex + 1} dari ${MARS_EXPLORATION_STOPS.length}: ${stop.title}.`;
   }
 
@@ -496,6 +497,7 @@ window.MarsScene = class MarsScene {
       this.previous = performance.now();
       this.tick(this.previous);
     }
+    window.AntaraProgress?.trackTopic("mars", this.topicIndex, selectedStop.title);
     document.getElementById("announcement").textContent = `Mode eksplorasi Mars dimulai. ${MARS_EXPLORATION_STOPS[this.topicIndex].title}.`;
     this.topicTitle.focus({ preventScroll: true });
   }

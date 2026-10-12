@@ -1662,6 +1662,7 @@
       this.updateResponsiveUi();
       this.updateHUD(true);
       this.updateEducation(true);
+      window.AntaraProgress?.trackFull("earth", this.region.id, this.region.name);
       document.getElementById("announcement").textContent = `Eksplorasi Bumi aktif di ${this.region.name}. Ikuti tujuan eksplorasi dan amati titik menarik di sekitar terrain.`;
     }
 

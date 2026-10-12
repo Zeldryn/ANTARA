@@ -48,10 +48,34 @@ Jalankan import. File SQL akan membuat database `antara` dan tabel:
 ```text
 users
 user_progress
+user_progress_events
 game_scores
 achievements
 user_achievements
 ```
+
+## Progress eksplorasi per akun
+
+Versi ini menyimpan milestone eksplorasi unik per akun di tabel `user_progress_events`. Membuka topik atau destinasi yang sama berkali-kali tidak menambah progress lagi.
+
+Untuk instalasi database baru, cukup import `database/antara.sql` seperti biasa.
+
+Untuk database ANTARA yang sudah pernah dibuat sebelumnya, import sekali file:
+
+```text
+database/progress-migration.sql
+```
+
+Backend juga akan mencoba membuat tabel tersebut otomatis saat endpoint progress pertama kali dipakai, selama user MySQL mempunyai izin `CREATE TABLE`. File migration tetap disediakan agar deployment ke server lomba bisa dilakukan secara eksplisit.
+
+Endpoint yang dipakai sistem progress:
+
+```text
+POST api/progress/mark.php
+GET  api/progress/get.php
+```
+
+`mark.php` mengambil `user_id` dari session login. Karena itu progress tidak dikirim berdasarkan ID user dari browser dan tidak dapat ditulis ke akun lain hanya dengan mengganti payload.
 
 ## 4. Cek koneksi backend
 

@@ -2,23 +2,86 @@
 <html lang="id">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Progress ANTARA</title>
-  <style>
-    :root{color-scheme:dark;--gold:#d9af68;--cyan:#72b8da;--ink:#030b13;--panel:#071522}
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 50% 20%,#153a59 0,#071727 42%,#02070d 100%);color:#eef4f8;font-family:system-ui,sans-serif;overflow:hidden}
-    body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(114,184,218,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(114,184,218,.04) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(#0008,transparent 78%)}
-    main{position:relative;width:min(760px,calc(100% - 32px));padding:clamp(28px,5vw,54px);background:linear-gradient(180deg,rgba(7,21,34,.94),rgba(3,11,19,.96));clip-path:polygon(18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%,0 18px);border-top:1px solid rgba(217,175,104,.62);border-bottom:1px solid rgba(114,184,218,.46);box-shadow:0 30px 90px #0008;text-align:center}
-    main:before,main:after{content:"";position:absolute;height:1px;top:18px;width:24%;background:linear-gradient(90deg,var(--gold),transparent)}main:before{left:24px}main:after{right:24px;transform:scaleX(-1);background:linear-gradient(90deg,var(--cyan),transparent)}
-    .eyebrow{margin:0 0 10px;color:#91b7ca;font-size:10px;letter-spacing:.28em}.title{margin:0;color:#f2efe8;font-family:Georgia,serif;font-size:clamp(30px,6vw,58px);font-weight:500;letter-spacing:.02em}.status{margin:22px auto 0;max-width:460px;padding:18px;border:1px solid rgba(114,184,218,.18);color:#9db5c2;font-size:12px;line-height:1.7;letter-spacing:.06em}.back{display:inline-flex;align-items:center;gap:10px;margin-top:26px;padding:11px 18px;color:#f0e7d4;text-decoration:none;border:1px solid rgba(217,175,104,.48);clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);font-size:11px;letter-spacing:.14em}.back:hover{border-color:var(--gold);filter:brightness(1.15)}
-  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#02070d">
+  <title>Progress Penjelajah | ANTARA</title>
+  <link rel="icon" type="image/png" href="assets/antara-logo.png">
+  <link rel="stylesheet" href="progress.css?v=20261003-account-progress-1">
+  <script src="progress.js?v=20261003-account-progress-1" defer></script>
 </head>
 <body>
-  <main>
-    <p class="eyebrow">ANTARA · REKAM JEJAK</p>
-    <h1 class="title">Progress</h1>
-    <div class="status">Progress eksplorasi akan menampilkan planet yang sudah dijelajahi, penemuan yang sudah diamati, dan perkembangan perjalananmu. Halaman ini sudah menjadi tujuan resmi tombol PROGRESS dan siap dihubungkan ke data akun ANTARA.</div>
-    <a class="back" href="index.html">← KEMBALI KE KOKPIT</a>
+  <div class="progress-space" aria-hidden="true"><i></i><i></i><i></i></div>
+  <header class="progress-topbar">
+    <a class="progress-back" href="index.html" aria-label="Kembali ke kokpit ANTARA">
+      <span aria-hidden="true">‹</span><b>KOKPIT</b>
+    </a>
+    <a class="progress-brand" href="index.html" aria-label="ANTARA">
+      <img src="assets/antara-logo.png" alt="">
+      <span><small>ANTARIKSA NUSANTARA</small><strong>REKAM JEJAK</strong></span>
+    </a>
+    <div class="progress-account" id="progress-account" aria-live="polite">
+      <span class="progress-account-dot"></span><span>MEMBACA AKUN...</span>
+    </div>
+  </header>
+
+  <main class="progress-shell">
+    <section class="progress-hero" aria-labelledby="progress-title">
+      <div class="progress-hero-copy">
+        <p class="progress-eyebrow">ANTARA · PROGRESS PENJELAJAH</p>
+        <h1 id="progress-title">Jejak perjalananmu,<br><span>tersimpan per akun.</span></h1>
+        <p class="progress-lead">Setiap topik Jelajah yang kamu buka dan setiap destinasi Eksplorasi Penuh yang benar-benar kamu masuki tercatat satu kali. Mengulang lokasi yang sama tidak menambah progress dua kali.</p>
+        <div class="progress-sync" id="progress-sync"><span></span>Sinkronisasi database aktif</div>
+      </div>
+
+      <div class="progress-orbit-card" id="overall-card" aria-label="Progress keseluruhan">
+        <div class="progress-orbit-ring" id="overall-ring" style="--progress:0">
+          <div class="progress-orbit-core">
+            <strong id="overall-percent">0%</strong>
+            <span>SELESAI</span>
+          </div>
+        </div>
+        <div class="progress-overall-copy">
+          <small>PROGRESS KESELURUHAN</small>
+          <strong id="overall-milestones">0 / 110 milestone</strong>
+          <span id="overall-updated">Belum ada aktivitas eksplorasi.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="progress-stats" aria-label="Ringkasan progress">
+      <article><small>OBJEK DIJELAJAHI</small><strong id="stat-explored">0 / 10</strong><span>Objek Tata Surya yang sudah memiliki rekam jejak</span></article>
+      <article><small>SELESAI 100%</small><strong id="stat-completed">0</strong><span>Objek dengan seluruh milestone terselesaikan</span></article>
+      <article><small>MILESTONE TERCATAT</small><strong id="stat-milestones">0</strong><span>Topik biasa + destinasi eksplorasi penuh unik</span></article>
+    </section>
+
+    <section class="progress-section" aria-labelledby="planet-progress-heading">
+      <div class="progress-section-heading">
+        <div><p>STATUS PER OBJEK</p><h2 id="planet-progress-heading">Peta Progress Tata Surya</h2></div>
+        <div class="progress-legend" aria-label="Legenda"><span><i class="legend-normal"></i>Jelajah biasa</span><span><i class="legend-full"></i>Eksplorasi penuh</span></div>
+      </div>
+      <div class="progress-grid" id="progress-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="progress-empty" id="progress-empty" hidden>
+      <span class="progress-empty-icon">✦</span>
+      <div><small>REKAM JEJAK MASIH KOSONG</small><h2>Mulai dari satu dunia.</h2><p>Buka Jelajah pada planet mana pun. Begitu satu topik benar-benar kamu lihat, progress akunmu langsung tercatat.</p></div>
+      <a href="index.html">MULAI MENJELAJAH</a>
+    </section>
+
+    <section class="progress-locked" id="progress-locked" hidden>
+      <img src="assets/antara-logo.png" alt="">
+      <small>IDENTITAS PENJELAJAH DIPERLUKAN</small>
+      <h1>Masuk dulu untuk membuka rekam jejak.</h1>
+      <p>Progress ANTARA disimpan per akun supaya perjalananmu tetap sama saat kamu kembali lagi nanti.</p>
+      <div><a href="daftar.html">MASUK / DAFTAR</a><a class="secondary" href="index.html">KEMBALI</a></div>
+    </section>
+
+    <section class="progress-error" id="progress-error" hidden>
+      <small>DATABASE BELUM MENJAWAB</small>
+      <h2>Progress belum bisa dimuat.</h2>
+      <p id="progress-error-message">Periksa Apache, MySQL, dan koneksi database ANTARA.</p>
+      <button type="button" id="progress-retry">COBA LAGI</button>
+    </section>
   </main>
 </body>
 </html>

@@ -2,12 +2,8 @@
 declare(strict_types=1);
 require_once dirname(__DIR__) . '/_bootstrap.php';
 require_once __DIR__ . '/_progress.php';
-require_once dirname(__DIR__) . '/leaderboard/_leaderboard.php';
-require_once dirname(__DIR__) . '/achievements/_achievements.php';
 
 antara_method('POST');
-antara_enforce_write_origin();
-antara_session_rate_limit('progress-mark', 18, 10);
 $userId = antara_require_user();
 $data = antara_input();
 $planet = strtolower(trim((string)($data['planet'] ?? '')));
@@ -30,7 +26,6 @@ if (function_exists('mb_strlen') && function_exists('mb_substr')) {
 $pdo = antara_db_or_fail();
 try {
     antara_progress_ensure_schema($pdo);
-    antara_leaderboard_ensure_schema($pdo);
     $pdo->beginTransaction();
 
     $insert = $pdo->prepare(
@@ -60,23 +55,12 @@ try {
         antara_progress_sync_legacy_summary($pdo, $userId, $planet, (int)$planetSummary['progress']);
     }
 
-    $completion = antara_completion_sync($pdo, $userId, $summary);
-
     $pdo->commit();
-    $achievementSummary = null;
-    try {
-        $achievementPayload = antara_achievements_payload($pdo, $userId);
-        $achievementSummary = $achievementPayload['summary'] ?? null;
-    } catch (Throwable $achievementError) {
-        error_log('ANTARA achievement sync after progress: ' . $achievementError->getMessage());
-    }
     antara_json([
         'success' => true,
         'added' => $added,
         'planet' => $planetSummary,
         'overall' => $summary['overall'],
-        'completion' => $completion,
-        'achievements' => $achievementSummary,
     ]);
 } catch (Throwable $e) {
     if ($pdo->inTransaction()) {

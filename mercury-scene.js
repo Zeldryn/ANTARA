@@ -458,6 +458,7 @@ window.MercuryScene = class MercuryScene {
       if (!this.motion.matches && !this.frame) { this.previous = performance.now(); this.tick(this.previous); }
       else this.render();
     }
+    if (this.exploring) window.AntaraProgress?.trackTopic("mercury", nextIndex, stop.title);
     if (announce && this.exploring) document.getElementById("announcement").textContent = `Eksplorasi Merkurius ${nextIndex + 1} dari ${MERCURY_EXPLORATION_STOPS.length}: ${stop.title}.`;
   }
 
@@ -488,6 +489,7 @@ window.MercuryScene = class MercuryScene {
       this.previous = performance.now();
       this.tick(this.previous);
     }
+    window.AntaraProgress?.trackTopic("mercury", this.topicIndex, activeStop.title);
     document.getElementById("announcement").textContent = `Mode eksplorasi Merkurius dimulai. ${MERCURY_EXPLORATION_STOPS[this.topicIndex].title}.`;
     this.topicTitle.focus({ preventScroll: true });
   }
