@@ -125,8 +125,11 @@
             window.location.href = 'progress.html';
             return;
           }
-          const label = emptyAction === 'bio' ? 'Bio' : 'Pencapaian';
-          this.showToast(`${label} belum memiliki data. Modul ini siap dihubungkan nanti.`);
+          if (emptyAction === 'achievement') {
+            window.location.href = 'pencapaian.html';
+            return;
+          }
+          this.showToast('Bio belum memiliki data.');
         }
       });
 
@@ -266,7 +269,7 @@
       $('#account-panel-title', this.overlay).textContent = tab === 'settings' ? 'PENGATURAN AKUN' : 'PROFIL PENJELAJAH';
       const content = $('[data-account-content]', this.overlay);
       content.innerHTML = tab === 'settings' ? this.settingsTemplate() : this.profileTemplate();
-      if (tab === 'profile') this.hydrateProgressCard(content);
+      if (tab === 'profile') { this.hydrateProgressCard(content); this.hydrateAchievementCard(content); }
     }
 
     async hydrateProgressCard(root) {
@@ -282,6 +285,22 @@
         detail.textContent = `${overall.completedMilestones || 0} dari ${overall.totalMilestones || 0} milestone tercatat. Klik untuk melihat detail.`;
       } catch (error) {
         console.warn('ANTARA profile progress summary', error);
+      }
+    }
+
+    async hydrateAchievementCard(root) {
+      const value = $('[data-profile-achievements]', root);
+      const detail = $('[data-profile-achievements-detail]', root);
+      if (!value || !detail) return;
+      try {
+        const response = await fetch('api/achievements/get.php', { credentials: 'same-origin', headers: { Accept: 'application/json' } });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || !payload.success) return;
+        const summary = payload.summary || {};
+        value.textContent = `${Number(summary.unlocked) || 0} / ${Number(summary.total) || 20}`;
+        detail.textContent = `${Number(summary.percent) || 0}% koleksi terbuka. Klik untuk melihat medali.`;
+      } catch (error) {
+        console.warn('ANTARA achievement summary', error);
       }
     }
 
@@ -313,7 +332,7 @@
               <span class="account-empty-code">PROGRESS</span><strong data-profile-progress>0%</strong><small data-profile-progress-detail>Memuat rekam jejak eksplorasi...</small>
             </button>
             <button type="button" class="account-empty-card" data-empty-action="achievement">
-              <span class="account-empty-code">PENCAPAIAN</span><strong>0</strong><small>Belum ada badge atau pencapaian.</small>
+              <span class="account-empty-code">PENCAPAIAN</span><strong data-profile-achievements>0 / 20</strong><small data-profile-achievements-detail>Memuat koleksi medali...</small>
             </button>
           </section>
         </div>`;

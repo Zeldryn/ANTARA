@@ -1237,6 +1237,7 @@ launchButton.addEventListener("click", () => {
   }
   if (phase !== "idle") return;
   phase = "preparing";
+  window.AntaraAchievements?.markActivity("first-launch");
   elapsed = 0;
   activeStatus = -1;
   activeDialogue = -1;

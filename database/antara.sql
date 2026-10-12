@@ -83,6 +83,18 @@ CREATE TABLE IF NOT EXISTS user_achievements (
   CONSTRAINT fk_user_achievements_achievement FOREIGN KEY (achievement_id) REFERENCES achievements(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS user_activity_events (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id BIGINT UNSIGNED NOT NULL,
+  event_key VARCHAR(80) NOT NULL,
+  event_label VARCHAR(160) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_user_activity_event (user_id, event_key),
+  KEY idx_user_activity_user (user_id),
+  CONSTRAINT fk_user_activity_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- Secure leaderboard: authoritative completion ranking and verified game scores.
 CREATE TABLE IF NOT EXISTS exploration_completions (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

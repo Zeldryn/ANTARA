@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/_bootstrap.php';
 require_once __DIR__ . '/_progress.php';
 require_once dirname(__DIR__) . '/leaderboard/_leaderboard.php';
+require_once dirname(__DIR__) . '/achievements/_achievements.php';
 
 antara_method('POST');
 antara_enforce_write_origin();
@@ -62,12 +63,20 @@ try {
     $completion = antara_completion_sync($pdo, $userId, $summary);
 
     $pdo->commit();
+    $achievementSummary = null;
+    try {
+        $achievementPayload = antara_achievements_payload($pdo, $userId);
+        $achievementSummary = $achievementPayload['summary'] ?? null;
+    } catch (Throwable $achievementError) {
+        error_log('ANTARA achievement sync after progress: ' . $achievementError->getMessage());
+    }
     antara_json([
         'success' => true,
         'added' => $added,
         'planet' => $planetSummary,
         'overall' => $summary['overall'],
         'completion' => $completion,
+        'achievements' => $achievementSummary,
     ]);
 } catch (Throwable $e) {
     if ($pdo->inTransaction()) {
