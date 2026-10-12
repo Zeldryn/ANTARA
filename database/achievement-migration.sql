@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS user_achievements (
   user_id BIGINT UNSIGNED NOT NULL,
   achievement_id BIGINT UNSIGNED NOT NULL,
   unlocked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  notified_at DATETIME NULL,
   PRIMARY KEY (id),
   UNIQUE KEY uq_user_achievement (user_id, achievement_id),
   KEY idx_user_achievements_user (user_id),
@@ -35,3 +36,14 @@ CREATE TABLE IF NOT EXISTS user_activity_events (
 ) ENGINE=InnoDB;
 
 -- The achievement catalog is seeded/updated automatically by api/achievements/_achievements.php.
+
+-- Upgrade path for projects that already had achievements before unlock notifications.
+SET @has_notified_at := (SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_achievements' AND COLUMN_NAME = 'notified_at');
+SET @add_notified_at := IF(@has_notified_at = 0, 'ALTER TABLE user_achievements ADD COLUMN notified_at DATETIME NULL AFTER unlocked_at', 'SELECT 1');
+PREPARE achievement_upgrade_stmt FROM @add_notified_at;
+EXECUTE achievement_upgrade_stmt;
+DEALLOCATE PREPARE achievement_upgrade_stmt;
+SET @seed_notified_at := IF(@has_notified_at = 0, 'UPDATE user_achievements SET notified_at = unlocked_at WHERE notified_at IS NULL', 'SELECT 1');
+PREPARE achievement_seed_stmt FROM @seed_notified_at;
+EXECUTE achievement_seed_stmt;
+DEALLOCATE PREPARE achievement_seed_stmt;

@@ -196,3 +196,27 @@ SOURCE database/leaderboard-migration.sql;
 ```
 
 Atau import file `database/leaderboard-migration.sql` melalui phpMyAdmin. Untuk instalasi database baru, `database/antara.sql` sudah memuat tabel yang diperlukan.
+
+## Achievement unlock notification
+
+Versi ini menambahkan notifikasi medali per akun. Achievement baru tetap dihitung server-side dari progress, aktivitas peluncuran, dan leaderboard. Browser hanya mengambil antrean notifikasi yang memang sudah dibuka oleh akun tersebut.
+
+Jika database `antara` sudah memiliki sistem achievement dari versi sebelumnya, import ulang migration achievement sekali:
+
+```sql
+SOURCE database/achievement-migration.sql;
+```
+
+Migration menambahkan `user_achievements.notified_at`. Medali lama ditandai sudah diumumkan agar pengguna tidak menerima spam toast lama setelah update. Medali yang terbuka setelah upgrade akan memiliki `notified_at = NULL` sampai endpoint notifikasi mengirimkannya ke akun terkait.
+
+Endpoint tambahan:
+
+```text
+GET api/achievements/notifications.php
+```
+
+Endpoint ini memerlukan session login. Hasil notifikasi diklaim dari database per `user_id`, jadi akun berbeda memiliki antrean medali berbeda.
+
+## Audio sejak halaman awal
+
+Homepage sekarang langsung mencoba memutar musik latar dan ambience fasilitas sebelum tombol `MULAI PERJALANAN` ditekan. Browser tertentu memblokir autoplay audio bersuara sebelum interaksi pengguna. Pada kondisi tersebut ANTARA tidak menganggap audio rusak: kontrol audio akan menunjukkan bahwa satu interaksi diperlukan, lalu musik dimulai pada klik/tap/keyboard pertama. Preferensi `SUARA MATI` tetap dihormati.

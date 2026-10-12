@@ -287,6 +287,106 @@ class MissionAudio {
   }
 }
 
+
+class OpeningAudio {
+  constructor(onStateChange, muted = false) {
+    this.onStateChange = onStateChange;
+    this.muted = muted;
+    this.blocked = false;
+    this.playing = false;
+    this.wantsPlayback = true;
+    this.fadeFrame = 0;
+    this.fadeToken = 0;
+    this.tracks = [
+      this.makeTrack(AUDIO_ASSETS.music, 0.18),
+      this.makeTrack(AUDIO_ASSETS.ambience, 0.085)
+    ];
+  }
+
+  makeTrack(src, volume) {
+    const audio = new Audio(src);
+    audio.loop = true;
+    audio.preload = "auto";
+    audio.volume = 0;
+    audio.muted = this.muted;
+    audio.setAttribute("playsinline", "");
+    return { audio, volume };
+  }
+
+  fadeTo(multiplier, duration = 700, onDone = null) {
+    cancelAnimationFrame(this.fadeFrame);
+    const token = ++this.fadeToken;
+    const startedAt = performance.now();
+    const from = this.tracks.map(({ audio, volume }) => ({ audio, from: audio.volume, to: volume * multiplier }));
+    const step = now => {
+      if (token !== this.fadeToken) return;
+      const t = duration <= 0 ? 1 : Math.min(1, (now - startedAt) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      for (const item of from) item.audio.volume = item.from + (item.to - item.from) * eased;
+      if (t < 1) this.fadeFrame = requestAnimationFrame(step);
+      else onDone?.();
+    };
+    if (duration <= 0) step(startedAt + 1);
+    else this.fadeFrame = requestAnimationFrame(step);
+  }
+
+  async start({ fromGesture = false } = {}) {
+    this.wantsPlayback = true;
+    if (this.muted || document.hidden) {
+      this.playing = false;
+      this.onStateChange?.();
+      return false;
+    }
+    let success = 0;
+    for (const { audio } of this.tracks) {
+      audio.muted = false;
+      try {
+        await audio.play();
+        success += 1;
+      } catch { /* Expected when the browser blocks audible autoplay. */ }
+    }
+    this.playing = success > 0;
+    if (this.playing) this.fadeTo(1, fromGesture ? 520 : 950);
+    this.blocked = success === 0 && !fromGesture;
+    if (fromGesture && success > 0) this.blocked = false;
+    this.onStateChange?.();
+    return this.playing;
+  }
+
+  setMuted(value) {
+    this.muted = Boolean(value);
+    for (const { audio } of this.tracks) audio.muted = this.muted;
+    if (!this.muted && this.wantsPlayback && !document.hidden) this.start({ fromGesture:true });
+    this.onStateChange?.();
+  }
+
+  stop({ reset = false, fade = 0 } = {}) {
+    this.wantsPlayback = false;
+    const finish = () => {
+      for (const { audio } of this.tracks) {
+        audio.pause();
+        if (reset) {
+          try { audio.currentTime = 0; } catch { /* Optional. */ }
+        }
+      }
+      this.playing = false;
+      this.onStateChange?.();
+    };
+    if (fade > 0 && this.playing) this.fadeTo(0, fade, finish);
+    else finish();
+  }
+
+  setBackground(hidden) {
+    if (hidden) {
+      for (const { audio } of this.tracks) audio.pause();
+      this.playing = false;
+      this.onStateChange?.();
+      return;
+    }
+    if (this.wantsPlayback && !this.muted) this.start();
+  }
+}
+
 // First-person cockpit renderer. The webpage stays interactive: cloud layers,
 // character rigs, speech, camera motion, and the Earth handoff all share one timeline.
 class LaunchVisual {
@@ -1143,26 +1243,52 @@ function setExperienceState(state) {
 
 setExperienceState("home");
 
+let openingAudio = null;
 const sound = new MissionAudio(() => {
+  const openingBlocked = phase === "idle" && Boolean(openingAudio?.blocked) && !sound.muted;
+  const openingPlaying = phase === "idle" && Boolean(openingAudio?.playing);
   audioToggle.classList.toggle("is-muted", sound.muted || sound.unavailable);
   audioToggle.setAttribute("aria-pressed", String(sound.muted));
   audioToggle.setAttribute("aria-label", sound.muted ? "Aktifkan audio" : "Bisukan audio");
-  audioLabel.textContent = sound.unavailable ? "AUDIO TIDAK TERSEDIA" : sound.muted ? "SUARA MATI" : sound.failedAssets.size ? "AUDIO TERBATAS" : sound.started && phase !== "idle" ? "SUARA AKTIF" : "AUDIO SIAP";
-  audioToggle.title = sound.unavailable ? "Audio tidak tersedia. Misi tetap dapat dilanjutkan." : !sound.started || phase === "idle" ? "Audio dimulai setelah Yuk, Berangkat! ditekan" : sound.muted ? "Aktifkan audio" : "Bisukan audio";
+  audioLabel.textContent = sound.unavailable ? "AUDIO TIDAK TERSEDIA" : sound.muted ? "SUARA MATI" : openingBlocked ? "KLIK UNTUK AUDIO" : sound.failedAssets.size ? "AUDIO TERBATAS" : openingPlaying || sound.started ? "SUARA AKTIF" : "AUDIO SIAP";
+  audioToggle.title = sound.unavailable ? "Audio tidak tersedia. Misi tetap dapat dilanjutkan." : sound.muted ? "Aktifkan audio" : openingBlocked ? "Browser menahan autoplay. Klik sekali di halaman untuk mengaktifkan suara." : "Bisukan audio";
   if (!sound.unavailable && sound.failedAssets.size) audioToggle.title = "Sebagian audio tidak dapat dimuat. Misi tetap dapat dilanjutkan.";
 });
+openingAudio = new OpeningAudio(() => sound.onStateChange(), sound.muted);
 sound.onStateChange();
 
 // One shared UI-audio bridge for components loaded before this file (notably
 // dynamically-rendered Earth/Mars/Venus image previews and the top-level lightbox).
+let pendingAchievementChime = false;
+const playAchievementChime = () => {
+  if (sound.muted) return;
+  if (sound.started && sound.context) {
+    sound.cue("ready", { gain: 0.26 });
+    pendingAchievementChime = false;
+    return;
+  }
+  try {
+    const chime = new Audio(AUDIO_ASSETS.ready);
+    chime.volume = 0.28;
+    chime.play().then(() => { pendingAchievementChime = false; }).catch(() => { pendingAchievementChime = true; });
+  } catch { pendingAchievementChime = true; }
+};
 window.AntariksaUIAudio = Object.freeze({
   click: () => sound.uiClick(),
-  hover: () => sound.hover()
+  hover: () => sound.hover(),
+  achievement: playAchievementChime
 });
 
-// Fetch quietly in advance, but never create/resume an AudioContext on page load.
-if ("requestIdleCallback" in window) requestIdleCallback(() => sound.preload(), { timeout: 2000 });
-else setTimeout(() => sound.preload(), 800);
+// Start the opening soundtrack immediately when the browser permits audible autoplay.
+// If autoplay is blocked, the exact same audio resumes on the first real interaction.
+sound.preload();
+openingAudio.start();
+const resumeOpeningAudio = () => {
+  if (phase === "idle" && !sound.muted && !openingAudio.playing) openingAudio.start({ fromGesture:true });
+  if (pendingAchievementChime && !sound.muted) playAchievementChime();
+};
+document.addEventListener("pointerdown", resumeOpeningAudio, true);
+document.addEventListener("keydown", resumeOpeningAudio, true);
 
 const FLIGHT_STATUS_TIMELINE = [
   { time: 0, text: "SIAP • BUMI" },
@@ -1245,6 +1371,7 @@ launchButton.addEventListener("click", () => {
   earthHandoffStarted = false;
   launchButton.disabled = true;
   setExperienceState("launch");
+  openingAudio.stop({ fade: 320 });
   sound.startMission();
   flight.start();
   companions.setJourneyPhase("prelaunch");
@@ -1727,6 +1854,7 @@ function resetMission() {
   resetPanoramaInteractionLocks();
   mission.classList.remove("is-earth", "is-mars", "is-venus", "is-mercury", "is-sun", "is-asteroid", "is-jupiter", "is-saturn", "is-uranus", "is-neptune", "is-preparing", "is-planet-transitioning");
   setExperienceState("home");
+  openingAudio.start({ fromGesture:true });
   launchButton.disabled = false;
   if (flightStatus) flightStatus.textContent = "SIAP • BUMI";
   sound.onStateChange();
@@ -1862,7 +1990,11 @@ audioToggle.addEventListener("click", () => {
   // gets feedback immediately after audio has been restored.
   if (willMute) sound.uiClick();
   sound.setMuted(willMute);
-  if (!willMute) sound.uiClick();
+  openingAudio.setMuted(willMute);
+  if (!willMute) {
+    if (phase === "idle") openingAudio.start({ fromGesture:true });
+    sound.uiClick();
+  }
 });
 
 // Every real interactive control gets one consistent UI sound. Use capture phase so
@@ -1899,9 +2031,13 @@ document.addEventListener("visibilitychange", () => {
     else orbits.unpauseAnimations?.();
   }
   sound.setBackground(document.hidden);
+  if (phase === "idle") openingAudio.setBackground(document.hidden);
   previousFrame = performance.now();
 });
-window.addEventListener("pagehide", () => sound.stop(0.15));
+window.addEventListener("pagehide", () => {
+  openingAudio.stop();
+  sound.stop(0.15);
+});
 
 // Small, compositor-only camera movement; disabled for touch and reduced motion.
 let pointerFrame = null;

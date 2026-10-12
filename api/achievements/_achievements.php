@@ -50,6 +50,7 @@ function antara_achievements_ensure_schema(PDO $pdo): void
             user_id BIGINT UNSIGNED NOT NULL,
             achievement_id BIGINT UNSIGNED NOT NULL,
             unlocked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            notified_at DATETIME NULL,
             PRIMARY KEY (id),
             UNIQUE KEY uq_user_achievement (user_id, achievement_id),
             KEY idx_user_achievements_user (user_id),
@@ -57,6 +58,13 @@ function antara_achievements_ensure_schema(PDO $pdo): void
             CONSTRAINT fk_user_achievements_achievement FOREIGN KEY (achievement_id) REFERENCES achievements(id) ON DELETE CASCADE
         ) ENGINE=InnoDB'
     );
+    $notifiedColumn = $pdo->query("SHOW COLUMNS FROM user_achievements LIKE 'notified_at'")->fetch();
+    if (!$notifiedColumn) {
+        $pdo->exec('ALTER TABLE user_achievements ADD COLUMN notified_at DATETIME NULL AFTER unlocked_at');
+        // Existing medals predate toast delivery, so mark them as already announced.
+        $pdo->exec('UPDATE user_achievements SET notified_at = unlocked_at WHERE notified_at IS NULL');
+    }
+
     $pdo->exec(
         'CREATE TABLE IF NOT EXISTS user_activity_events (
             id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

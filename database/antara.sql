@@ -76,6 +76,7 @@ CREATE TABLE IF NOT EXISTS user_achievements (
   user_id BIGINT UNSIGNED NOT NULL,
   achievement_id BIGINT UNSIGNED NOT NULL,
   unlocked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  notified_at DATETIME NULL,
   PRIMARY KEY (id),
   UNIQUE KEY uq_user_achievement (user_id, achievement_id),
   KEY idx_user_achievements_user (user_id),

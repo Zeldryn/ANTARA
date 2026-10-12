@@ -11,6 +11,7 @@
   <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/antara-logo.png" type="image/png">
   <link rel="stylesheet" href="styles.css?v=20261003-desktop-hud-readability-1">
+  <link rel="stylesheet" href="achievement-notify.css?v=20261003-achievement-toast-1">
   <link rel="stylesheet" href="account-home-v2.css?v=20261003-account-align-1">
   <link rel="stylesheet" href="start-auth-gate.css?v=20261003-startlock-1">
   <link rel="stylesheet" href="exploration-media.css?v=20260927-venusscience-2">
@@ -31,7 +32,7 @@
   <link rel="stylesheet" href="mobile-planet-actions-fix.css?v=20261001-all-planets-mobile-actions-2">
   <script src="exploration-media.js?v=20260927-venusscience-2" defer></script>
   <script src="progress-tracker.js?v=20261003-account-progress-1" defer></script>
-  <script src="achievement-client.js?v=20261003-achievements-1" defer></script>
+  <script src="achievement-client.js?v=20261003-achievement-toast-1" defer></script>
   <script src="earth-scene.js?v=20261003-account-progress-1" defer></script>
   <script src="earth-full-exploration.js?v=20261003-account-progress-1" defer></script>
   <script src="mars-scene.js?v=20261003-account-progress-1" defer></script>
@@ -48,7 +49,7 @@
   <script src="auth-client.js?v=20261002-account-dropdown-2" defer></script>
   <script src="account-home-v2.js?v=20261003-achievements-1" defer></script>
   <script src="start-auth-gate.js?v=20261003-startlock-1" defer></script>
-  <script src="script.js?v=20261003-achievements-1" defer></script>
+  <script src="script.js?v=20261003-opening-audio-achievement-toast-1" defer></script>
 </head>
 <body>
   <main class="mission" id="mission">
@@ -80,7 +81,7 @@
     </section>
 
     <footer class="mission-footer">
-      <button class="audio-control" id="audio-toggle" type="button" aria-label="Bisukan audio" aria-pressed="false" title="Audio dimulai setelah Yuk, Berangkat! ditekan">
+      <button class="audio-control" id="audio-toggle" type="button" aria-label="Bisukan audio" aria-pressed="false" title="Audio latar mencoba aktif saat ANTARA dibuka">
         <svg class="speaker-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-slash" d="m16 9 6 6m0-6-6 6"/></svg>
         <span id="audio-label">AUDIO SIAP</span>
       </button>
