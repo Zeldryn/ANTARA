@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run only against a TEST deployment. Creates one disposable account."""
 import argparse,http.cookiejar,json,secrets,urllib.request,urllib.error,urllib.parse
-STAGE=160
+STAGE=161
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('base_url',help='Example: http://localhost/ANTARA/')
 args=parser.parse_args();base=args.base_url.rstrip('/')+'/'

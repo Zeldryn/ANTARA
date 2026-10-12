@@ -6609,3 +6609,134 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .launch-brand-lockup { width: 54px !important; }
   .cockpit-brand { width: 44px; }
 }
+
+
+
+/* ========================================================================
+   2026-10-03 DESKTOP HUD READABILITY POLISH
+   Scope: PC / laptop home-launch cockpit lower telemetry only.
+   Goal: make ALTITUDE / FLIGHT STATUS / route readouts comfortably readable
+   without changing the overall cockpit composition or mobile layout.
+   ======================================================================== */
+@media (min-width: 1024px) {
+  .mission[data-experience="home"] .panel-heading,
+  .mission[data-experience="launch"] .panel-heading {
+    left: 6.5% !important;
+    right: 6.5% !important;
+    top: 7% !important;
+    font-size: 7.2px !important;
+    letter-spacing: .13em !important;
+    gap: 10px !important;
+  }
+  .mission[data-experience="home"] .panel-heading b,
+  .mission[data-experience="launch"] .panel-heading b {
+    font-size: 10px !important;
+    letter-spacing: .06em !important;
+  }
+
+  .mission[data-experience="home"] .altitude-chart,
+  .mission[data-experience="launch"] .altitude-chart {
+    left: 6.5% !important;
+    right: 6.5% !important;
+    top: 26% !important;
+    width: 87% !important;
+    height: 46% !important;
+  }
+
+  .mission[data-experience="home"] .climb-readout,
+  .mission[data-experience="launch"] .climb-readout {
+    left: 6.5% !important;
+    right: 6.5% !important;
+    bottom: 8% !important;
+  }
+  .mission[data-experience="home"] .climb-readout small,
+  .mission[data-experience="launch"] .climb-readout small {
+    font-size: 6.3px !important;
+    letter-spacing: .15em !important;
+  }
+  .mission[data-experience="home"] .climb-readout strong,
+  .mission[data-experience="launch"] .climb-readout strong {
+    font-size: 8.6px !important;
+  }
+
+  .mission[data-experience="home"] .flight-data-grid,
+  .mission[data-experience="launch"] .flight-data-grid {
+    left: 6.5% !important;
+    right: 6.5% !important;
+    top: 27% !important;
+    column-gap: 12px !important;
+    row-gap: 9px !important;
+  }
+  .mission[data-experience="home"] .flight-data-grid span,
+  .mission[data-experience="launch"] .flight-data-grid span {
+    font-size: 6.1px !important;
+    letter-spacing: .12em !important;
+  }
+  .mission[data-experience="home"] .flight-data-grid strong,
+  .mission[data-experience="launch"] .flight-data-grid strong {
+    font-size: 8.1px !important;
+  }
+
+  .mission[data-experience="home"] .mission-progress-panel .mission-track,
+  .mission[data-experience="launch"] .mission-progress-panel .mission-track {
+    left: 6.5% !important;
+    right: 6.5% !important;
+    top: 51% !important;
+    height: 40px !important;
+  }
+  .mission[data-experience="home"] .mission-progress-panel .rocket-marker,
+  .mission[data-experience="launch"] .mission-progress-panel .rocket-marker {
+    width: clamp(40px, 3.3vw, 56px) !important;
+  }
+
+  .mission[data-experience="home"] .dashboard-screen,
+  .mission[data-experience="launch"] .dashboard-screen {
+    min-width: 175px !important;
+    padding: 10px 14px !important;
+    font-size: 7.8px !important;
+    letter-spacing: 1.1px !important;
+  }
+
+  .mission[data-experience="home"] .cockpit-brand,
+  .mission[data-experience="launch"] .cockpit-brand {
+    width: clamp(54px, 4.1vw, 72px) !important;
+  }
+
+  .mission[data-experience="home"] .audio-control,
+  .mission[data-experience="launch"] .audio-control {
+    min-height: 38px !important;
+    padding: 6px 0 6px 10px !important;
+    font-size: 7.2px !important;
+    letter-spacing: 1.05px !important;
+    gap: 7px !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  .mission[data-experience="home"] .panel-heading,
+  .mission[data-experience="launch"] .panel-heading {
+    font-size: 7.8px !important;
+  }
+  .mission[data-experience="home"] .panel-heading b,
+  .mission[data-experience="launch"] .panel-heading b {
+    font-size: 10.8px !important;
+  }
+  .mission[data-experience="home"] .climb-readout small,
+  .mission[data-experience="launch"] .climb-readout small,
+  .mission[data-experience="home"] .flight-data-grid span,
+  .mission[data-experience="launch"] .flight-data-grid span {
+    font-size: 6.5px !important;
+  }
+  .mission[data-experience="home"] .climb-readout strong,
+  .mission[data-experience="launch"] .climb-readout strong,
+  .mission[data-experience="home"] .flight-data-grid strong,
+  .mission[data-experience="launch"] .flight-data-grid strong {
+    font-size: 8.8px !important;
+  }
+  .mission[data-experience="home"] .dashboard-screen,
+  .mission[data-experience="launch"] .dashboard-screen {
+    min-width: 188px !important;
+    font-size: 8.4px !important;
+  }
+}
+
