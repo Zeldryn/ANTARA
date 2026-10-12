@@ -6756,3 +6756,28 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .companion-a { left: .5%; }
   .companion-b { right: .5%; }
 }
+
+/* 2026-10-04 FINAL LAPTOP CHARACTER SCALE LOCK
+   The previous laptop patch was too subtle and could be visually overwhelmed by
+   the later square-sprite framing rules. This final rule targets only the wide
+   laptop band and locks Nara/Sora to a calmer PC-like scale. Large desktop and
+   mobile/tablet layouts are intentionally left unchanged. */
+@media (min-width: 1200px) and (max-width: 1799px) {
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a,
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(350px, 26vw, 410px) !important;
+    bottom: 9% !important;
+  }
+
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a {
+    left: 2.2% !important;
+  }
+
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    right: 2.2% !important;
+  }
+}

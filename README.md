@@ -1,6 +1,6 @@
-# ANTARA snapshot 172
+# ANTARA snapshot 173
 
-Original source: ANTARA-mobile-panorama-gap-exploration-reading-balanced-tested-2026-10-04.zip
-Commit suggestion: fix: balance mobile panorama spacing and exploration reading
+Original source: ANTARA-laptop-character-scale-lock-PC-like-tested-2026-10-04.zip
+Commit suggestion: fix: match laptop cockpit character scale to desktop
 
 Read LOCALHOST.txt before running. Runtime files are preserved from the original source.

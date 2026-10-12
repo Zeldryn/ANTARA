@@ -1,6 +1,6 @@
-# ANTARA 169-172: localhost dan database
+# ANTARA 173-182: localhost dan database
 
-Urutan: 169, 170, 171, 172 setelah 168. Judul commit ada di COMMIT_ORDER.txt.
+Urutan: 173 sampai 182 setelah 172. Judul commit ada di COMMIT_ORDER.txt.
 Setiap tahap berasal dari satu snapshot lengkap asli. Nomor merupakan urutan paket, bukan nomor atau tanggal commit GitHub asli.
 Salin isi ANTARA/ ke folder project Git yang sudah ada. Pertahankan .git dan konfigurasi rahasia lokal milikmu; terapkan juga daftar penghapusan di VERIFICATION.json.
 Folder docs/history berisi catatan sumber lama, bukan petunjuk terbaru.
@@ -14,14 +14,14 @@ Default localhost: 127.0.0.1:3306, database antara, root tanpa password. Simpan 
 Kode backend/API tetap disertakan. .env nyata, kredensial nyata, dump akun, cookie/session, dan runtime XAMPP dikeluarkan.
 
 ## Database
-SQL tahap 169-172 sama dengan tahap 163: tidak perlu migrasi baru jika database 163 sudah siap.
-Untuk database baru, pilih database di phpMyAdmin dan import export/antara-schema.sql.
+Tahap 173-176 memakai skema tahap 172. Tahap 177 menambah tabel quiz_run_questions. Untuk database tahap 172 yang sudah siap, import export/stage-177/quiz-game-migration.sql saat beralih ke 177 atau tahap setelahnya. Tahap 178-182 tidak menambah struktur tabel lagi. Migrasi memakai tabel game_runs yang sudah ada sejak tahap 159.
+Untuk database baru, pilih database di phpMyAdmin dan import export/stage-NNN/antara.sql sesuai tahap yang dipakai, misalnya export/stage-182/antara.sql untuk tahap terakhir.
 Jika database masih tahap 156, gunakan migrasi tahap 163 dari paket sebelumnya: progress-migration.sql, leaderboard-migration.sql, lalu achievement-migration.sql.
 SQL export hanya struktur, tidak berisi data pengguna; tidak memiliki CREATE DATABASE atau USE.
 Jangan mengganti konfigurasi database hosting dengan default localhost. Isi environment server melalui admin hosting.
 
 ## Verifikasi
-Pemeriksaan bundel ini: CRC ZIP, hash sumber/hasil, sintaks JavaScript, pemindaian pola rahasia, pemeriksaan SQL tanpa data akun, dan kesamaan skema/API terhadap tahap sebelumnya.
+Pemeriksaan bundel ini: CRC ZIP, hash sumber/hasil, sintaks JavaScript, pemindaian pola rahasia, pemeriksaan SQL tanpa data akun, dan perubahan skema/API terhadap tahap sebelumnya.
 PHP/MySQL dan render browser belum diuji langsung di lingkungan ini. Tidak ada klaim login/database sudah lulus uji runtime.
 Setelah database siap, jalankan python tools/deploy_smoke.py http://localhost/ANTARA/ pada database uji.
-Skrip membuat akun uji. Hapus akun tersebut setelah tes sesuai petunjuk skrip. Cek juga tampilan dan interaksi pada browser localhost.
+Skrip membuat akun uji. Hapus akun tersebut setelah tes sesuai petunjuk skrip. Skrip smoke bawaan berasal dari tahap 172 dan hanya memeriksa fitur inti lama. Kuis, timer, misi Mars, dan eksplorasi Merkurius perlu diuji terpisah pada browser serta backend localhost. Belum ada klaim tes runtime fitur tersebut.
