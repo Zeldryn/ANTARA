@@ -46,11 +46,21 @@
     ERROR: "ERROR"
   });
 
+  const MARS_QUALITY_STORAGE_KEY = "antara-mars-graphics-quality-v1";
+  const QUALITY_LABELS = Object.freeze({ LOW: "RENDAH", MEDIUM: "SEDANG", HIGH: "TINGGI" });
+  const QUALITY_PROFILES = Object.freeze({
+    LOW: Object.freeze({ name: "LOW", label: "RENDAH", radius: 1, nearSegments: 96, midSegments: 52, farSegments: 28, horizonSegments: 22, maxDpr: 1.45, minDpr: 0.92, supersample: 1, pixelBudget: 3000000, anisotropy: 4, imageryMaxZ: 6, themisMaxZ: 8, textureSize: 336 }),
+    MEDIUM: Object.freeze({ name: "MEDIUM", label: "SEDANG", radius: 2, nearSegments: 192, midSegments: 112, farSegments: 48, horizonSegments: 32, maxDpr: 2.0, minDpr: 1.0, supersample: 1.30, pixelBudget: 7200000, anisotropy: 8, imageryMaxZ: 7, themisMaxZ: 8, textureSize: 544 }),
+    HIGH: Object.freeze({ name: "HIGH", label: "TINGGI", radius: 3, nearSegments: 320, midSegments: 176, farSegments: 80, horizonSegments: 36, maxDpr: 2.4, minDpr: 1.10, supersample: 1.62, pixelBudget: 12000000, anisotropy: 16, imageryMaxZ: 7, themisMaxZ: 9, textureSize: 768 })
+  });
+
   const LANDMARKS = Object.freeze([
     {
       id: "jezero",
       name: "Kawah Jezero",
-      type: "Kawah tumbukan dan bekas danau purba",
+      type: "Delta sungai dan bekas danau purba",
+      summary: "Lokasi rover Perseverance. Di sini ilmuwan mencari jejak lingkungan yang dulu mungkin ramah bagi kehidupan mikroba.",
+      mission: "Pelajari bekas delta sungai dan cari petunjuk danau purba.",
       latitude: 18.41,
       longitudeEast: 77.69,
       heading: 0.18,
@@ -60,6 +70,8 @@
       id: "olympus",
       name: "Olympus Mons",
       type: "Gunung api perisai raksasa",
+      summary: "Gunung api terbesar di Tata Surya. Lerengnya sangat luas sehingga terasa seperti dataran tinggi raksasa.",
+      mission: "Bandingkan relief gunung api raksasa dengan dataran Mars di sekitarnya.",
       latitude: 18.65,
       longitudeEast: 226.20,
       heading: -0.65,
@@ -69,6 +81,8 @@
       id: "valles",
       name: "Valles Marineris",
       type: "Sistem ngarai raksasa",
+      summary: "Ngarai sepanjang ribuan kilometer yang menunjukkan betapa dramatis retakan kerak dan erosi kuno di Mars.",
+      mission: "Amati dinding curam dan lembah besar pada sistem ngarai Mars.",
       latitude: -14.01,
       longitudeEast: 301.41,
       heading: -0.12,
@@ -77,11 +91,24 @@
     {
       id: "gale",
       name: "Gale Crater",
-      type: "Kawah tumbukan, lokasi eksplorasi Curiosity",
+      type: "Kawah tumbukan dan lokasi rover Curiosity",
+      summary: "Kawah ini menyimpan lapisan batuan yang membantu ilmuwan membaca sejarah iklim kuno Mars.",
+      mission: "Cari petunjuk lapisan batuan yang merekam sejarah lingkungan Mars.",
       latitude: -5.37,
       longitudeEast: 137.81,
       heading: 0.44,
       source: "https://planetarynames.wr.usgs.gov/Feature/2071"
+    },
+    {
+      id: "hellas",
+      name: "Hellas Planitia",
+      type: "Cekungan tumbukan raksasa",
+      summary: "Salah satu cekungan tumbukan terbesar di Tata Surya, terkenal dengan dataran luas dan perubahan cuaca yang ekstrem.",
+      mission: "Jelajahi cekungan raksasa dan bandingkan permukaannya dengan lokasi Mars lain.",
+      latitude: -42.4,
+      longitudeEast: 70.5,
+      heading: 0.26,
+      source: "https://planetarynames.wr.usgs.gov/Feature/2481"
     }
   ]);
 
@@ -1677,6 +1704,15 @@
       this.fullscreenButton = document.getElementById("mars-fullscreen-toggle");
       this.locationButton = document.getElementById("mars-location-toggle");
       this.locationMenu = document.getElementById("mars-location-menu");
+      this.selector = document.getElementById("mars-region-selector");
+      this.selectorGrid = document.getElementById("mars-region-grid");
+      this.selectorClose = document.getElementById("mars-region-selector-close");
+      this.qualityPanel = document.getElementById("mars-quality-panel");
+      this.qualityOptions = document.getElementById("mars-quality-options");
+      this.qualityClose = document.getElementById("mars-quality-close");
+      this.qualityStart = document.getElementById("mars-quality-start");
+      this.qualitySelectedLabel = document.getElementById("mars-quality-selected-label");
+      this.qualityDeviceNote = document.getElementById("mars-quality-device-note");
       this.loading = document.getElementById("mars-full-loading");
       this.loadingProgress = document.getElementById("mars-full-loading-progress");
       this.loadingStatus = document.getElementById("mars-full-loading-status");
@@ -1699,8 +1735,21 @@
       this.hudLocation = document.getElementById("mars-hud-location");
       this.hudQuality = document.getElementById("mars-hud-quality");
       this.hudData = document.getElementById("mars-hud-data");
+      this.objectivesPanel = document.getElementById("mars-objectives-panel");
+      this.objectivesRegion = document.getElementById("mars-objectives-region");
+      this.objectivesIntro = document.getElementById("mars-objectives-intro");
+      this.objectivesList = document.getElementById("mars-objectives-list");
+      this.objectivesCollapse = document.getElementById("mars-objectives-collapse");
+      this.objectivesToggle = document.getElementById("mars-objectives-toggle");
+      this.discoveryCount = document.getElementById("mars-discovery-count");
+      this.discoveryBar = document.getElementById("mars-discovery-bar");
+      this.nextTarget = document.getElementById("mars-next-target");
+      this.nextTargetName = document.getElementById("mars-next-target-name");
+      this.nextTargetDistance = document.getElementById("mars-next-target-distance");
 
       this.state = STATES.IDLE;
+      this.setupOpen = false;
+      this.objectiveOpen = false;
       this.prepared = false;
       this.preparingPromise = null;
       this.resourceGeneration = 0;
@@ -1723,15 +1772,22 @@
       this.lookPitchTarget = this.pitch;
       this.velocity = { x: 0, y: 0, z: 0 };
       this.currentLandmark = LANDMARKS[0];
+      this.selectedLandmark = LANDMARKS[0];
+      this.completedMissionIds = new Set();
       this.transitionToken = 0;
       this.infoTimeout = null;
       this.tutorialTimeout = null;
-      this.quality = this.detectQuality();
+      this.recommendedQualityName = this.detectRecommendedQualityName();
+      this.selectedQualityName = this.readSavedQualityName() || this.recommendedQualityName;
+      this.quality = this.copyQualityProfile(this.selectedQualityName);
       this.input = new MarsInputManager(this);
       this.tick = this.tick.bind(this);
 
       this.root.inert = true;
       this.buildLocationMenu();
+      this.buildRegionSelector();
+      this.setQualityChoice(this.selectedQualityName, { persist: false });
+      this.renderObjectives();
       this.bindUI();
     }
 
@@ -1739,28 +1795,52 @@
       return this.state !== STATES.IDLE;
     }
 
-    detectQuality() {
+    copyQualityProfile(name) {
+      const key = QUALITY_PROFILES[name] ? name : "MEDIUM";
+      return { ...QUALITY_PROFILES[key] };
+    }
+
+    detectRecommendedQualityName() {
       const width = window.innerWidth;
       const cores = navigator.hardwareConcurrency || 4;
       const memory = navigator.deviceMemory || 4;
       const coarse = window.matchMedia("(pointer: coarse)").matches;
+      if (coarse || width <= 760 || cores <= 4 || memory <= 3) return "LOW";
+      if (cores >= 8 && memory >= 6) return "HIGH";
+      return "MEDIUM";
+    }
 
-      // Do not classify a strong high-DPI desktop as LOW simply because DPR makes
-      // its theoretical pixel count large. Quality selection is capability based;
-      // the render-pixel budget below controls the actual resolution separately.
-      if (coarse || width <= 760 || cores <= 4 || memory <= 3) {
-        return { name: "LOW", radius: 1, nearSegments: 96, midSegments: 52, farSegments: 28, horizonSegments: 22, maxDpr: 1.45, minDpr: 0.92, supersample: 1, pixelBudget: 3000000, anisotropy: 4, imageryMaxZ: 6, themisMaxZ: 8, textureSize: 336 };
+    readSavedQualityName() {
+      try {
+        const raw = localStorage.getItem(MARS_QUALITY_STORAGE_KEY);
+        return QUALITY_PROFILES[raw] ? raw : null;
+      } catch {
+        return null;
       }
-      if (cores >= 8 && memory >= 6) {
-        // Spend the geometry budget where a game would: dense centre chunk, progressively
-        // lighter rings toward the horizon. This is materially sharper near the camera
-        // without multiplying every distant tile to the same cost.
-        return { name: "HIGH", radius: 3, nearSegments: 320, midSegments: 176, farSegments: 80, horizonSegments: 36, maxDpr: 2.4, minDpr: 1.10, supersample: 1.62, pixelBudget: 12000000, anisotropy: 16, imageryMaxZ: 7, themisMaxZ: 9, textureSize: 768 };
-      }
-      return { name: "MEDIUM", radius: 2, nearSegments: 192, midSegments: 112, farSegments: 48, horizonSegments: 32, maxDpr: 2.0, minDpr: 1.0, supersample: 1.30, pixelBudget: 7200000, anisotropy: 8, imageryMaxZ: 7, themisMaxZ: 8, textureSize: 544 };
+    }
+
+    writeSavedQualityName(name) {
+      try { localStorage.setItem(MARS_QUALITY_STORAGE_KEY, name); } catch {}
+    }
+
+    setQualityChoice(name, { persist = true } = {}) {
+      const key = QUALITY_PROFILES[name] ? name : this.recommendedQualityName;
+      this.selectedQualityName = key;
+      this.quality = this.copyQualityProfile(key);
+      if (persist) this.writeSavedQualityName(key);
+      if (this.hudQuality) this.hudQuality.textContent = QUALITY_LABELS[key] || key;
+      this.qualityOptions?.querySelectorAll("[data-mars-quality]").forEach(button => {
+        const selected = button.dataset.marsQuality === key;
+        button.classList.toggle("is-selected", selected);
+        button.setAttribute("aria-checked", String(selected));
+      });
+      if (this.qualitySelectedLabel) this.qualitySelectedLabel.textContent = QUALITY_LABELS[key] || key;
+      if (this.qualityDeviceNote) this.qualityDeviceNote.textContent = `Rekomendasi perangkat saat ini: ${QUALITY_LABELS[this.recommendedQualityName]}. Kamu tetap bisa menggantinya sebelum masuk.`;
+      if (this.qualityStart) this.qualityStart.textContent = `MULAI EKSPLORASI · ${QUALITY_LABELS[key]}`;
     }
 
     calculateIdealDpr() {
+
       const width = Math.max(1, this.viewport?.clientWidth || window.innerWidth);
       const height = Math.max(1, this.viewport?.clientHeight || window.innerHeight);
       const cssPixels = width * height;
@@ -1771,10 +1851,24 @@
     }
 
     bindUI() {
-      this.entryButton.addEventListener("click", () => this.enter());
+      this.entryButton.addEventListener("click", () => this.openEntryFlow());
       this.exitButton.addEventListener("click", () => this.exit());
       this.errorReturn.addEventListener("click", () => this.failBackToOrbit());
       this.tutorialClose.addEventListener("click", () => this.dismissTutorial(true));
+      this.selectorClose?.addEventListener("click", () => this.closeEntryFlow());
+      this.qualityClose?.addEventListener("click", () => this.showSelectorPanel());
+      this.qualityStart?.addEventListener("click", () => this.enter());
+      this.selectorGrid?.addEventListener("click", event => {
+        const button = event.target.closest("[data-mars-region]");
+        if (!button) return;
+        this.selectLandmark(button.dataset.marsRegion);
+        this.showQualityPanel();
+      });
+      this.qualityOptions?.addEventListener("click", event => {
+        const button = event.target.closest("[data-mars-quality]");
+        if (!button) return;
+        this.setQualityChoice(button.dataset.marsQuality);
+      });
       this.locationButton.addEventListener("click", event => {
         event.stopPropagation();
         const open = !this.locationMenu.classList.contains("is-open");
@@ -1789,6 +1883,8 @@
         const landmark = LANDMARKS.find(item => item.id === button.dataset.landmark);
         if (landmark) this.travelToLandmark(landmark);
       });
+      this.objectivesCollapse?.addEventListener("click", () => this.collapseObjectives());
+      this.objectivesToggle?.addEventListener("click", () => this.expandObjectives());
       this.fullscreenButton.addEventListener("click", () => this.toggleFullscreen());
       document.addEventListener("fullscreenchange", () => this.updateFullscreenLabel());
       document.addEventListener("visibilitychange", () => {
@@ -1803,6 +1899,10 @@
         if (this.prepared) window.setTimeout(() => this.resize(), 120);
       });
       document.addEventListener("pointerdown", event => {
+        if (this.setupOpen && !event.target.closest("#mars-region-selector, #mars-quality-panel, #mars-full-explore-button")) {
+          if (!this.active) this.closeEntryFlow();
+          return;
+        }
         if (!this.active || !this.locationMenu.classList.contains("is-open")) return;
         if (event.target.closest("#mars-location-menu, #mars-location-toggle")) return;
         this.locationMenu.classList.remove("is-open");
@@ -1823,24 +1923,207 @@
       this.locationMenu.replaceChildren(fragment);
     }
 
+    buildRegionSelector() {
+      if (!this.selectorGrid) return;
+      const fragment = document.createDocumentFragment();
+      LANDMARKS.forEach(landmark => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "mars-region-card";
+        button.dataset.marsRegion = landmark.id;
+        button.innerHTML = `<small>DESTINASI MARS</small><strong>${landmark.name}</strong><span>${landmark.type}</span><p>${landmark.summary}</p><em>${formatCoordinate(landmark.latitude, landmark.longitudeEast)}</em>`;
+        fragment.append(button);
+      });
+      this.selectorGrid.replaceChildren(fragment);
+      this.selectLandmark(this.selectedLandmark?.id || LANDMARKS[0].id);
+    }
+
+    selectLandmark(id) {
+      const landmark = LANDMARKS.find(item => item.id === id) || LANDMARKS[0];
+      this.selectedLandmark = landmark;
+      this.selectorGrid?.querySelectorAll("[data-mars-region]").forEach(button => {
+        const selected = button.dataset.marsRegion === landmark.id;
+        button.classList.toggle("is-selected", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+      if (this.objectivesRegion) this.objectivesRegion.textContent = `Misi Mars · ${landmark.name}`;
+    }
+
+    resetMissionProgress() {
+      this.completedMissionIds = new Set();
+      this.renderObjectives();
+    }
+
+    renderObjectives() {
+      if (!this.objectivesList) return;
+      const fragment = document.createDocumentFragment();
+      LANDMARKS.forEach((landmark, index) => {
+        const item = document.createElement("li");
+        const done = this.completedMissionIds.has(landmark.id);
+        item.className = done ? "is-complete" : "";
+        item.innerHTML = `<span class="mars-objective-marker">${done ? "✓" : index + 1}</span><div><strong>${landmark.name}</strong><small>${landmark.mission}</small></div>`;
+        fragment.append(item);
+      });
+      this.objectivesList.replaceChildren(fragment);
+      const completed = this.completedMissionIds.size;
+      const total = LANDMARKS.length;
+      if (this.discoveryCount) this.discoveryCount.textContent = `${completed} / ${total}`;
+      if (this.discoveryBar) this.discoveryBar.style.width = `${(completed / total) * 100}%`;
+      if (this.objectivesToggle) this.objectivesToggle.textContent = `Tujuan · ${completed} / ${total}`;
+      this.updateNextTarget();
+    }
+
+    markMissionComplete(id) {
+      if (!id || this.completedMissionIds.has(id)) return;
+      this.completedMissionIds.add(id);
+      this.renderObjectives();
+    }
+
+    updateNextTarget(latitude = null, signedLongitude = null) {
+      if (!this.nextTarget || !this.nextTargetName || !this.nextTargetDistance) return;
+      const remaining = LANDMARKS.filter(item => !this.completedMissionIds.has(item.id));
+      if (!remaining.length) {
+        this.nextTarget.hidden = false;
+        this.nextTargetName.textContent = "Semua misi selesai!";
+        this.nextTargetDistance.textContent = "Kamu sudah mengunjungi lima lokasi utama Mars.";
+        return;
+      }
+      let lat = latitude;
+      let lon = signedLongitude;
+      if ((lat === null || lon === null) && this.currentLandmark) {
+        lat = this.currentLandmark.latitude;
+        lon = wrapLongitude(this.currentLandmark.longitudeEast > 180 ? this.currentLandmark.longitudeEast - 360 : this.currentLandmark.longitudeEast);
+      }
+      let best = remaining[0];
+      let bestDistance = Infinity;
+      if (lat !== null && lon !== null) {
+        for (const landmark of remaining) {
+          const landmarkLon = wrapLongitude(landmark.longitudeEast > 180 ? landmark.longitudeEast - 360 : landmark.longitudeEast);
+          const dLat = (lat - landmark.latitude) * KM_PER_DEG_LAT;
+          const dLon = shortestLongitudeDelta(landmarkLon, lon) * KM_PER_DEG_LAT * Math.max(0.08, Math.cos(lat * DEG));
+          const distance = Math.hypot(dLat, dLon);
+          if (distance < bestDistance) { best = landmark; bestDistance = distance; }
+        }
+      }
+      this.nextTarget.hidden = false;
+      this.nextTargetName.textContent = best.name;
+      this.nextTargetDistance.textContent = Number.isFinite(bestDistance) ? `${bestDistance.toFixed(bestDistance < 10 ? 1 : 0)} km lagi` : best.mission;
+    }
+
+    showObjectivesPanel() {
+      this.objectiveOpen = true;
+      if (this.objectivesIntro) this.objectivesIntro.textContent = "Mars di mode ini memakai sistem terrain terbaru ANTARA, jadi tampilannya sedikit berbeda dari Venus dan Bumi. Kunjungi lima lokasi utama berikut untuk mengenali variasi medan Mars.";
+      if (this.objectivesRegion) this.objectivesRegion.textContent = `Misi Mars · ${this.currentLandmark?.name || this.selectedLandmark?.name || "Mars"}`;
+      this.renderObjectives();
+      if (this.objectivesPanel) {
+        this.objectivesPanel.hidden = false;
+        this.objectivesPanel.setAttribute("aria-hidden", "false");
+      }
+      if (this.objectivesToggle) this.objectivesToggle.hidden = true;
+    }
+
+    collapseObjectives() {
+      this.objectiveOpen = false;
+      if (this.objectivesPanel) {
+        this.objectivesPanel.hidden = true;
+        this.objectivesPanel.setAttribute("aria-hidden", "true");
+      }
+      if (this.objectivesToggle && this.active) this.objectivesToggle.hidden = false;
+    }
+
+    expandObjectives() {
+      this.objectiveOpen = true;
+      if (this.objectivesPanel) {
+        this.objectivesPanel.hidden = false;
+        this.objectivesPanel.setAttribute("aria-hidden", "false");
+      }
+      if (this.objectivesToggle) this.objectivesToggle.hidden = true;
+    }
+
+    hideObjectives() {
+      this.objectiveOpen = false;
+      if (this.objectivesPanel) {
+        this.objectivesPanel.hidden = true;
+        this.objectivesPanel.setAttribute("aria-hidden", "true");
+      }
+      if (this.objectivesToggle) this.objectivesToggle.hidden = true;
+      if (this.nextTarget) this.nextTarget.hidden = true;
+    }
+
+    openEntryFlow() {
+      if (this.setupOpen || this.active || !this.mars.active) return;
+      if (this.mars.exploring) this.mars.exitExploration();
+      this.setupOpen = true;
+      this.root.hidden = false;
+      this.root.inert = false;
+      this.root.setAttribute("aria-hidden", "false");
+      this.root.className = "mars-full-exploration is-setup-open";
+      this.loading.hidden = true;
+      this.errorPanel.hidden = true;
+      this.hideObjectives();
+      this.mars.caption.inert = true;
+      document.getElementById("mission").classList.add("is-mars-full");
+      this.entryButton.disabled = true;
+      this.selectLandmark(this.selectedLandmark?.id || this.currentLandmark?.id || LANDMARKS[0].id);
+      this.showSelectorPanel();
+      document.getElementById("announcement").textContent = "Pilih lokasi pendaratan Mars, baca peringatan sistem render, lalu tentukan kualitas grafis sebelum masuk ke world Mars.";
+    }
+
+    closeEntryFlow() {
+      if (!this.setupOpen || this.active) return;
+      this.setupOpen = false;
+      this.selector.hidden = true;
+      this.qualityPanel.hidden = true;
+      this.root.className = "mars-full-exploration";
+      this.root.hidden = true;
+      this.root.inert = true;
+      this.root.setAttribute("aria-hidden", "true");
+      this.entryButton.disabled = false;
+      this.mars.caption.inert = false;
+      document.getElementById("mission").classList.remove("is-mars-full");
+      document.getElementById("announcement").textContent = "Kembali ke panorama Mars.";
+    }
+
+    showSelectorPanel() {
+      this.selector.hidden = false;
+      this.qualityPanel.hidden = true;
+      this.root.classList.add("is-selecting");
+      this.root.classList.remove("is-quality-open");
+    }
+
+    showQualityPanel() {
+      this.selector.hidden = true;
+      this.qualityPanel.hidden = false;
+      this.root.classList.remove("is-selecting");
+      this.root.classList.add("is-quality-open");
+      this.setQualityChoice(this.selectedQualityName, { persist: false });
+    }
+
     async enter() {
       if (this.active || !this.mars.active) return;
+      if (!this.setupOpen) this.openEntryFlow();
+      this.setupOpen = false;
       if (this.mars.exploring) this.mars.exitExploration();
       this.state = STATES.PREPARING;
       this.transitionToken += 1;
       const token = this.transitionToken;
+      const landmark = this.selectedLandmark || this.currentLandmark || LANDMARKS[0];
+      this.currentLandmark = landmark;
       this.root.hidden = false;
       this.root.inert = false;
       this.root.setAttribute("aria-hidden", "false");
-      this.root.classList.add("is-preparing");
-      this.root.classList.remove("is-error", "is-surface-visible", "is-active", "is-exiting");
+      this.root.className = "mars-full-exploration is-preparing";
+      this.selector.hidden = true;
+      this.qualityPanel.hidden = true;
       this.loading.hidden = false;
       this.errorPanel.hidden = true;
+      this.hideObjectives();
+      this.resetMissionProgress();
       this.setLoading(0.04, "MENGHUBUNGKAN DATA TOPOGRAFI MOLA");
       this.entryButton.disabled = true;
       this.mars.caption.inert = true;
       document.getElementById("mission").classList.add("is-mars-full");
-      document.getElementById("announcement").textContent = "Menyiapkan Eksplorasi Pengalaman Penuh Mars.";
+      document.getElementById("announcement").textContent = `Menyiapkan Eksplorasi Pengalaman Penuh Mars di ${landmark.name}.`;
 
       try {
         await this.prepare();
@@ -1848,7 +2131,6 @@
           if (this.state === STATES.IDLE) this.disposeSurface();
           return;
         }
-        const landmark = this.currentLandmark || LANDMARKS[0];
         this.terrain.setOrigin(landmark.latitude, landmark.longitudeEast);
         this.setLoading(0.18, `MEMUAT PERMUKAAN ${landmark.name.toUpperCase()}`);
         await this.terrain.ensureAround(landmark.latitude, wrapLongitude(landmark.longitudeEast > 180 ? landmark.longitudeEast - 360 : landmark.longitudeEast), {
@@ -1924,7 +2206,7 @@
         this.provider.maxCache = this.quality.name === "HIGH" ? 112 : this.quality.name === "MEDIUM" ? 84 : 52;
         this.imagery = new MarsImageryProvider(this.quality);
         this.terrain = new TerrainManager(THREE, this.scene, this.provider, this.imagery, this.mars.surface, this.quality);
-        this.hudQuality.textContent = this.quality.name;
+        this.hudQuality.textContent = QUALITY_LABELS[this.quality.name] || this.quality.name;
         this.hudData.textContent = this.imagery.sourceLabel;
         this.resize();
         if (generation !== this.resourceGeneration) {
@@ -1981,6 +2263,7 @@
       console.warn("Mars Full Exploration:", error);
       this.stopLoop();
       this.input.unbind();
+      this.setupOpen = false;
       this.state = STATES.ERROR;
       this.loading.hidden = true;
       this.errorPanel.hidden = false;
@@ -1988,16 +2271,21 @@
         ? "Data elevasi MOLA tidak dapat dimuat. Mode orbit Mars tetap aman. Periksa koneksi internet atau host tile MOLA secara lokal."
         : error.message;
       this.root.classList.add("is-error");
-      this.root.classList.remove("is-preparing", "is-active", "is-surface-visible");
+      this.root.classList.remove("is-preparing", "is-active", "is-surface-visible", "is-selecting", "is-quality-open");
+      this.hideObjectives();
       this.entryButton.disabled = false;
       document.getElementById("announcement").textContent = "Eksplorasi permukaan Mars belum dapat dimuat. Panorama Mars tetap tersedia.";
     }
 
     failBackToOrbit() {
       this.transitionToken += 1;
+      this.setupOpen = false;
       this.state = STATES.IDLE;
       this.stopLoop();
       this.input.unbind();
+      this.hideObjectives();
+      this.selector.hidden = true;
+      this.qualityPanel.hidden = true;
       this.root.className = "mars-full-exploration";
       this.root.hidden = true;
       this.root.inert = true;
@@ -2057,8 +2345,10 @@
       this.root.style.setProperty("--surface-opacity", "1");
       this.root.style.setProperty("--entry-progress", "1");
       this.velocity.x = this.velocity.y = this.velocity.z = 0;
+      this.showObjectivesPanel();
       this.showTutorial();
       this.showLandmarkInfo(this.currentLandmark);
+      this.markMissionComplete(this.currentLandmark.id);
       window.AntaraProgress?.trackFull("mars", this.currentLandmark.id, this.currentLandmark.name);
       document.getElementById("announcement").textContent = `Eksplorasi penuh Mars aktif di ${this.currentLandmark.name}. Gunakan WASD atau kontrol layar untuk bergerak.`;
     }
@@ -2268,6 +2558,7 @@
       this.hudAltitudeLimit.textContent = altitude >= MAX_EXPLORATION_ALTITUDE_KM - 0.02 ? "BATAS KETINGGIAN" : "MENDEKATI BATAS 30 KM";
       this.hudSpeed.textContent = formatSpeed(this.speed);
       this.hudLocation.textContent = this.nearestLocation(geo.latitude, geo.signedLongitude);
+      this.updateNextTarget(geo.latitude, geo.signedLongitude);
     }
 
     nearestLocation(latitude, signedLongitude) {
@@ -2318,6 +2609,7 @@
         this.state = STATES.EXPLORING;
         this.travelVeil.classList.remove("is-visible");
         this.showLandmarkInfo(landmark);
+        this.markMissionComplete(landmark.id);
         window.AntaraProgress?.trackFull("mars", landmark.id, landmark.name);
         document.getElementById("announcement").textContent = `Tiba di ${landmark.name}. Eksplorasi bebas dilanjutkan.`;
       } catch (error) {
@@ -2355,6 +2647,8 @@
       this.infoCoords.textContent = formatCoordinate(landmark.latitude, landmark.longitudeEast);
       this.infoSource.href = landmark.source;
       this.infoCard.classList.add("is-visible");
+      if (this.objectivesRegion) this.objectivesRegion.textContent = `Misi Mars · ${landmark.name}`;
+      this.updateNextTarget(landmark.latitude, wrapLongitude(landmark.longitudeEast > 180 ? landmark.longitudeEast - 360 : landmark.longitudeEast));
       this.infoTimeout = window.setTimeout(() => this.infoCard.classList.remove("is-visible"), 8500);
     }
 
@@ -2421,8 +2715,12 @@
     finishExit() {
       if (document.fullscreenElement === this.root) document.exitFullscreen().catch(() => {});
       this.state = STATES.IDLE;
+      this.setupOpen = false;
       this.stopLoop();
       this.input.unbind();
+      this.hideObjectives();
+      this.selector.hidden = true;
+      this.qualityPanel.hidden = true;
       this.root.className = "mars-full-exploration";
       this.root.hidden = true;
       this.root.inert = true;
@@ -2438,11 +2736,15 @@
     }
 
     onMarsStop() {
-      if (this.active) {
+      if (this.active || this.setupOpen) {
         this.transitionToken += 1;
         this.state = STATES.IDLE;
+        this.setupOpen = false;
         this.stopLoop();
         this.input.unbind();
+        this.hideObjectives();
+        this.selector.hidden = true;
+        this.qualityPanel.hidden = true;
         this.root.hidden = true;
         this.root.inert = true;
         this.root.setAttribute("aria-hidden", "true");

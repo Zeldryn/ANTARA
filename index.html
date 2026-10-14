@@ -935,6 +935,41 @@
         <div class="mars-full-viewport" id="mars-full-viewport" aria-label="Permukaan Mars tiga dimensi yang dapat dijelajahi"></div>
         <div class="mars-full-horizon" aria-hidden="true"></div>
 
+        <section class="mars-region-selector" id="mars-region-selector" aria-labelledby="mars-region-selector-title" hidden>
+          <div class="mars-region-selector-topline"><span>ANTARA · LOKASI PENDAKIAN MARS</span><button id="mars-region-selector-close" type="button" aria-label="Tutup pemilih destinasi Mars">×</button></div>
+          <h3 id="mars-region-selector-title">Pilih Lokasi Awal Mars</h3>
+          <p>Pilih satu lokasi utama sebelum masuk ke world Mars. Setelah itu kamu bisa menentukan kualitas grafis yang paling cocok untuk perangkatmu.</p>
+          <div class="mars-entry-warning"><strong>Perhatian Sistem Render</strong><span>Mars di ANTARA sudah memakai sistem terrain terbaru, jadi tampilannya memang sedikit berbeda dari Venus dan Bumi. Fokus utamanya tetap pengalaman jelajah, performa, dan pembacaan relief permukaan.</span></div>
+          <div class="mars-region-grid" id="mars-region-grid"></div>
+          <div class="mars-region-provenance">
+            <strong>SUMBER VISUAL MARS</strong>
+            <span>MOLA · NASA Trek · USGS Planetary Nomenclature</span>
+            <small>Topografi utama diambil dari data ilmiah Mars. Detail visual dekat permukaan diperkaya agar eksplorasi terasa lebih hidup tanpa menghilangkan karakter geologinya.</small>
+          </div>
+        </section>
+
+        <section class="mars-quality-panel" id="mars-quality-panel" aria-labelledby="mars-quality-title" hidden>
+          <div class="mars-quality-topline"><span>ANTARA · EKSPLORASI MARS</span><button id="mars-quality-close" type="button" aria-label="Kembali ke pemilih lokasi Mars">×</button></div>
+          <div class="mars-quality-copy">
+            <small>PERSIAPAN EKSPLORASI</small>
+            <h3 id="mars-quality-title">Tingkat Grafis Mars</h3>
+            <p>Pilih kualitas sebelum turun ke permukaan. Semua mode tetap menampilkan fitur penting Mars, tetapi detail, resolusi, dan jarak visual disesuaikan agar pengalaman tetap nyaman.</p>
+          </div>
+          <div class="mars-quality-options" id="mars-quality-options" role="radiogroup" aria-label="Kualitas grafis Mars">
+            <button type="button" class="mars-quality-option" data-mars-quality="LOW" role="radio" aria-checked="false">
+              <span><strong>RENDAH</strong><small>Performa terbaik</small></span><em>Cocok untuk HP dan perangkat hemat daya</em>
+            </button>
+            <button type="button" class="mars-quality-option" data-mars-quality="MEDIUM" role="radio" aria-checked="false">
+              <span><strong>SEDANG</strong><small>Seimbang</small></span><em>Rekomendasi aman untuk sebagian besar perangkat</em>
+            </button>
+            <button type="button" class="mars-quality-option" data-mars-quality="HIGH" role="radio" aria-checked="false">
+              <span><strong>TINGGI</strong><small>Visual terbaik</small></span><em>Pilih jika perangkatmu kuat dan stabil</em>
+            </button>
+          </div>
+          <div class="mars-quality-summary"><span id="mars-quality-device-note">Rekomendasi perangkat akan muncul di sini.</span><strong id="mars-quality-selected-label">SEDANG</strong></div>
+          <button class="mars-quality-start" id="mars-quality-start" type="button">MULAI EKSPLORASI</button>
+        </section>
+
         <aside class="mars-full-hud" data-mars-ui aria-label="Informasi penerbangan Mars">
           <div class="mars-hud-kicker">MARS</div>
           <h3>Eksplorasi</h3>
@@ -949,6 +984,25 @@
           </div>
           <div class="mars-hud-data" id="mars-hud-data">MOLA / PDS</div>
         </aside>
+
+        <aside class="mars-objectives-panel" id="mars-objectives-panel" data-mars-ui aria-label="Tujuan eksplorasi Mars" aria-live="polite" hidden>
+          <div class="mars-objectives-head">
+            <div><small>TUJUAN EKSPLORASI</small><strong id="mars-objectives-region">Misi Mars</strong></div>
+            <button id="mars-objectives-collapse" type="button" aria-label="Minimalkan tujuan eksplorasi">Minimalkan</button>
+          </div>
+          <p id="mars-objectives-intro"></p>
+          <div class="mars-discovery-progress">
+            <div><span>PROGRES MISI</span><strong id="mars-discovery-count">0 / 5</strong></div>
+            <div class="mars-discovery-track" aria-hidden="true"><i id="mars-discovery-bar"></i></div>
+          </div>
+          <ol id="mars-objectives-list" class="mars-objectives-list"></ol>
+          <div class="mars-next-target" id="mars-next-target" hidden>
+            <small>TARGET BERIKUTNYA</small>
+            <strong id="mars-next-target-name">-</strong>
+            <span id="mars-next-target-distance">-</span>
+          </div>
+        </aside>
+        <button class="mars-objectives-toggle" id="mars-objectives-toggle" type="button" data-mars-ui hidden>Tujuan · 0 / 5</button>
 
         <div class="mars-full-actions" data-mars-ui>
           <div class="mars-location-wrap">

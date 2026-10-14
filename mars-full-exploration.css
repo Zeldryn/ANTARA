@@ -474,3 +474,352 @@
     letter-spacing: .7px;
   }
 }
+
+/* Mars pre-entry flow and mission objectives (Venus-like structure, Mars content). */
+.mars-region-selector,
+.mars-quality-panel,
+.mars-objectives-panel,
+.mars-objectives-toggle {
+  position: absolute;
+  z-index: 30;
+}
+.mars-region-selector,
+.mars-quality-panel {
+  left: 50%;
+  top: 50%;
+  width: min(720px, calc(100vw - 34px));
+  max-height: min(82vh, 760px);
+  overflow: auto;
+  transform: translate(-50%, -50%);
+  padding: 18px 18px 17px;
+  border: 1px solid rgba(228, 196, 138, .26);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(30, 14, 11, .96), rgba(20, 9, 8, .94));
+  box-shadow: 0 28px 80px rgba(0, 0, 0, .45), inset 0 0 0 1px rgba(255, 169, 115, .04);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.mars-region-selector[hidden],
+.mars-quality-panel[hidden],
+.mars-objectives-panel[hidden],
+.mars-objectives-toggle[hidden] { display: none; }
+.mars-region-selector-topline,
+.mars-quality-topline,
+.mars-objectives-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+.mars-region-selector-topline span,
+.mars-quality-topline span,
+.mars-objectives-head small {
+  color: #ae8d6f;
+  font-size: 6.1px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.mars-region-selector-topline button,
+.mars-quality-topline button,
+.mars-objectives-head button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(226, 194, 142, .22);
+  border-radius: 10px;
+  background: rgba(34, 16, 12, .84);
+  color: #d3bc97;
+  cursor: pointer;
+}
+.mars-region-selector h3,
+.mars-quality-copy h3 {
+  margin: 12px 0 10px;
+  color: #f4dec0;
+  font: 400 clamp(24px, 2.6vw, 34px)/1.05 Georgia, "Times New Roman", serif;
+}
+.mars-region-selector > p,
+.mars-quality-copy p,
+.mars-objectives-panel > p {
+  margin: 0;
+  color: #bba99a;
+  font-size: 9px;
+  line-height: 1.65;
+}
+.mars-entry-warning,
+.mars-region-provenance,
+.mars-quality-summary,
+.mars-next-target {
+  margin-top: 16px;
+  padding: 14px 15px;
+  border: 1px solid rgba(219, 186, 129, .16);
+  border-radius: 12px;
+  background: rgba(65, 31, 21, .32);
+}
+.mars-entry-warning {
+  display: grid;
+  gap: 7px;
+}
+.mars-entry-warning strong,
+.mars-region-provenance strong,
+.mars-quality-summary strong,
+.mars-next-target strong,
+.mars-objectives-head strong {
+  color: #f2d5a4;
+  font-size: 8.7px;
+  letter-spacing: .3px;
+}
+.mars-entry-warning span,
+.mars-region-provenance span,
+.mars-region-provenance small,
+.mars-quality-summary span,
+.mars-next-target span,
+.mars-objective-list small {
+  display: block;
+  color: #b39e8c;
+  font-size: 7.4px;
+  line-height: 1.6;
+}
+.mars-region-grid,
+.mars-quality-options {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.mars-region-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mars-region-card,
+.mars-quality-option {
+  border: 1px solid rgba(228, 197, 145, .22);
+  border-radius: 14px;
+  background: rgba(32, 14, 10, .84);
+  color: #e8d5bc;
+  text-align: left;
+  padding: 14px 14px 13px;
+  cursor: pointer;
+  transition: transform .22s ease, border-color .22s ease, background .22s ease, box-shadow .22s ease;
+}
+.mars-region-card:hover,
+.mars-region-card.is-selected,
+.mars-quality-option:hover,
+.mars-quality-option.is-selected {
+  transform: translateY(-1px);
+  border-color: rgba(242, 201, 134, .56);
+  background: rgba(53, 24, 17, .92);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .24);
+}
+.mars-region-card small,
+.mars-quality-copy small {
+  display: block;
+  color: #b18e72;
+  font-size: 6px;
+  letter-spacing: 1.55px;
+  text-transform: uppercase;
+}
+.mars-region-card strong,
+.mars-quality-option strong {
+  display: block;
+  margin-top: 8px;
+  color: #f4dfbf;
+  font-size: 12px;
+  line-height: 1.3;
+}
+.mars-region-card span,
+.mars-quality-option small {
+  display: block;
+  margin-top: 4px;
+  color: #d1b78f;
+  font-size: 7px;
+  text-transform: uppercase;
+  letter-spacing: .9px;
+}
+.mars-region-card p,
+.mars-quality-option em {
+  margin: 8px 0 0;
+  color: #b5a497;
+  font-size: 8px;
+  font-style: normal;
+  line-height: 1.55;
+}
+.mars-region-card em {
+  display: inline-block;
+  margin-top: 10px;
+  color: #8e7868;
+  font-size: 6.3px;
+  font-style: normal;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.mars-quality-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+.mars-quality-option span { flex: 1; }
+.mars-quality-option em {
+  max-width: 185px;
+  text-align: right;
+}
+.mars-quality-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+.mars-quality-summary span {
+  margin: 0;
+  max-width: 70%;
+}
+.mars-quality-start {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 16px;
+  border: 1px solid rgba(236, 196, 128, .42);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(125, 62, 32, .94), rgba(74, 30, 18, .94));
+  color: #f9e7c6;
+  font-size: 7.4px;
+  font-weight: 700;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.mars-objectives-panel {
+  left: clamp(14px, 2vw, 26px);
+  top: min(calc(env(safe-area-inset-top, 0px) + 190px), 22vh);
+  width: min(340px, calc(100vw - 28px));
+  padding: 14px;
+  border: 1px solid rgba(223, 187, 127, .22);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(20, 10, 10, .94), rgba(37, 16, 13, .90));
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .35);
+}
+.mars-objectives-head button {
+  width: auto;
+  height: auto;
+  padding: 8px 10px;
+  font-size: 5.7px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.mars-discovery-progress { margin-top: 13px; }
+.mars-discovery-progress > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.mars-discovery-progress span {
+  color: #af967f;
+  font-size: 6px;
+  letter-spacing: 1.45px;
+  text-transform: uppercase;
+}
+.mars-discovery-track {
+  height: 5px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .08);
+  overflow: hidden;
+}
+.mars-discovery-track i {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #a6522f, #f1bf77);
+}
+.mars-objectives-list {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.mars-objectives-list li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+.mars-objective-marker {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(237, 197, 131, .28);
+  background: rgba(255, 255, 255, .04);
+  color: #e7c58e;
+  font-size: 8px;
+  font-weight: 700;
+}
+.mars-objectives-list li strong {
+  display: block;
+  color: #f1ddbd;
+  font-size: 8.6px;
+}
+.mars-objectives-list li small {
+  display: block;
+  margin-top: 3px;
+  color: #b19d8e;
+  font-size: 7.2px;
+  line-height: 1.55;
+}
+.mars-objectives-list li.is-complete .mars-objective-marker {
+  background: rgba(199, 126, 56, .18);
+  border-color: rgba(242, 201, 134, .45);
+  color: #ffe0a9;
+}
+.mars-objectives-list li.is-complete strong { color: #ffd8a0; }
+.mars-objectives-toggle {
+  left: clamp(14px, 2vw, 26px);
+  top: min(calc(env(safe-area-inset-top, 0px) + 190px), 22vh);
+  padding: 11px 14px;
+  border: 1px solid rgba(228, 195, 141, .24);
+  border-radius: 999px;
+  background: rgba(24, 11, 10, .9);
+  color: #f0d6ab;
+  font-size: 6.1px;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.mars-full-exploration.is-setup-open .mars-full-hud,
+.mars-full-exploration.is-setup-open .mars-full-actions,
+.mars-full-exploration.is-setup-open .mars-mobile-controls,
+.mars-full-exploration.is-setup-open .mars-control-hints,
+.mars-full-exploration.is-setup-open .mars-landmark-card { opacity: .18; pointer-events: none; }
+
+@media (max-width: 980px) {
+  .mars-region-grid { grid-template-columns: 1fr; }
+  .mars-quality-option { flex-direction: column; align-items: flex-start; }
+  .mars-quality-option em { max-width: none; text-align: left; }
+  .mars-objectives-panel,
+  .mars-objectives-toggle { top: auto; bottom: 96px; }
+}
+
+@media (max-width: 760px) {
+  .mars-region-selector,
+  .mars-quality-panel {
+    width: calc(100vw - 18px);
+    max-height: min(86vh, 760px);
+    padding: 14px 13px 14px;
+    border-radius: 14px;
+  }
+  .mars-region-selector h3,
+  .mars-quality-copy h3 { font-size: 24px; }
+  .mars-quality-summary { flex-direction: column; align-items: flex-start; }
+  .mars-quality-summary span { max-width: none; }
+  .mars-objectives-panel {
+    left: 9px;
+    right: 9px;
+    width: auto;
+    bottom: 86px;
+    top: auto;
+    padding: 12px;
+  }
+  .mars-objectives-toggle {
+    left: 10px;
+    top: auto;
+    bottom: 92px;
+  }
+}
