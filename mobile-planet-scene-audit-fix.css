@@ -502,7 +502,7 @@
   .mars-caption,
   .earth-caption,
   .venus-caption {
-    bottom: calc(16% - 14px) !important;
+    bottom: calc(16% - 38px) !important;
   }
 
   :is(
@@ -514,7 +514,7 @@
     .uranus-caption,
     .neptune-caption
   ) {
-    bottom: calc(16% + 16px) !important;
+    bottom: calc(16% - 8px) !important;
   }
 
   /* Restore reading room without letting the card swallow the panorama.
@@ -539,7 +539,7 @@
   .mars-caption,
   .earth-caption,
   .venus-caption {
-    bottom: calc(15% - 10px) !important;
+    bottom: calc(15% - 28px) !important;
   }
 
   :is(
@@ -551,7 +551,7 @@
     .uranus-caption,
     .neptune-caption
   ) {
-    bottom: calc(15% + 12px) !important;
+    bottom: calc(15% - 6px) !important;
   }
 
   :is(

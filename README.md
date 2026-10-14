@@ -1,6 +1,6 @@
-# ANTARA snapshot 173
+# ANTARA snapshot 174
 
-Original source: ANTARA-laptop-character-scale-lock-PC-like-tested-2026-10-04.zip
-Commit suggestion: fix: match laptop cockpit character scale to desktop
+Original source: ANTARA-mobile-all-planet-CTA-lowered-balanced-tested-2026-10-04.zip
+Commit suggestion: fix: lower mobile planet exploration buttons
 
 Read LOCALHOST.txt before running. Runtime files are preserved from the original source.
