@@ -1,21 +1,44 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/config/database.php';
+$privateDatabaseConfig = __DIR__ . '/config/database.php';
+if (is_file($privateDatabaseConfig)) {
+    require_once $privateDatabaseConfig;
+} else {
+    require_once __DIR__ . '/config/database-public.php';
+}
 
 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
     || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
 
+const ANTARA_SESSION_TTL = 2592000; // 30 days
+const ANTARA_REMEMBER_COOKIE = 'ANTARA_REMEMBER';
+
 if (session_status() !== PHP_SESSION_ACTIVE) {
+    // Keep the authenticated PHP session alive across browser restarts. The
+    // remember token below can recreate it if the PHP session file is cleaned.
+    ini_set('session.gc_maxlifetime', (string)ANTARA_SESSION_TTL);
     session_name('ANTARA_SESSION');
     session_set_cookie_params([
-        'lifetime' => 0,
+        'lifetime' => ANTARA_SESSION_TTL,
         'path' => '/',
         'secure' => $isHttps,
         'httponly' => true,
         'samesite' => 'Lax',
     ]);
     session_start();
+
+    // Rolling expiration. This refreshes only the opaque session id cookie,
+    // never account data in JavaScript-accessible storage.
+    if (session_id() !== '' && isset($_COOKIE[session_name()])) {
+        setcookie(session_name(), session_id(), [
+            'expires' => time() + ANTARA_SESSION_TTL,
+            'path' => '/',
+            'secure' => $isHttps,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+    }
 }
 
 header('Content-Type: application/json; charset=utf-8');
@@ -139,3 +162,122 @@ function antara_db_or_fail(): PDO
         ], 503);
     }
 }
+
+function antara_remember_ensure_schema(PDO $pdo): void
+{
+    $pdo->exec(
+        'CREATE TABLE IF NOT EXISTS user_remember_tokens (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            user_id BIGINT UNSIGNED NOT NULL,
+            token_hash CHAR(64) NOT NULL,
+            expires_at DATETIME NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            last_used_at DATETIME NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY uq_remember_token_hash (token_hash),
+            KEY idx_remember_user (user_id),
+            KEY idx_remember_expiry (expires_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
+    );
+}
+
+function antara_set_remember_cookie(string $token, int $expiresAt): void
+{
+    global $isHttps;
+    setcookie(ANTARA_REMEMBER_COOKIE, $token, [
+        'expires' => $expiresAt,
+        'path' => '/',
+        'secure' => $isHttps,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+}
+
+function antara_clear_remember_cookie(): void
+{
+    global $isHttps;
+    setcookie(ANTARA_REMEMBER_COOKIE, '', [
+        'expires' => time() - 3600,
+        'path' => '/',
+        'secure' => $isHttps,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+}
+
+function antara_issue_remember_token(PDO $pdo, int $userId): void
+{
+    if ($userId <= 0) return;
+    antara_remember_ensure_schema($pdo);
+
+    // Keep the token list small and revoke expired tokens while we are here.
+    $pdo->exec('DELETE FROM user_remember_tokens WHERE expires_at <= NOW()');
+
+    $token = bin2hex(random_bytes(32));
+    $hash = hash('sha256', $token);
+    $expiresAt = time() + ANTARA_SESSION_TTL;
+    $expiresSql = date('Y-m-d H:i:s', $expiresAt);
+    $stmt = $pdo->prepare(
+        'INSERT INTO user_remember_tokens (user_id, token_hash, expires_at, last_used_at)
+         VALUES (:user_id, :token_hash, :expires_at, NOW())'
+    );
+    $stmt->execute(['user_id' => $userId, 'token_hash' => $hash, 'expires_at' => $expiresSql]);
+    antara_set_remember_cookie($token, $expiresAt);
+}
+
+function antara_revoke_remember_token(?PDO $pdo = null): void
+{
+    $token = trim((string)($_COOKIE[ANTARA_REMEMBER_COOKIE] ?? ''));
+    if ($token !== '' && strlen($token) === 64 && ctype_xdigit($token)) {
+        try {
+            $pdo ??= antara_db();
+            antara_remember_ensure_schema($pdo);
+            $stmt = $pdo->prepare('DELETE FROM user_remember_tokens WHERE token_hash = :token_hash');
+            $stmt->execute(['token_hash' => hash('sha256', $token)]);
+        } catch (Throwable $e) {
+            error_log('ANTARA remember revoke error: ' . $e->getMessage());
+        }
+    }
+    antara_clear_remember_cookie();
+}
+
+function antara_restore_remembered_session(): void
+{
+    if ((int)($_SESSION['user_id'] ?? 0) > 0) return;
+
+    $token = trim((string)($_COOKIE[ANTARA_REMEMBER_COOKIE] ?? ''));
+    if ($token === '' || strlen($token) !== 64 || !ctype_xdigit($token)) return;
+
+    try {
+        $pdo = antara_db();
+        antara_remember_ensure_schema($pdo);
+        $stmt = $pdo->prepare(
+            'SELECT id, user_id FROM user_remember_tokens
+             WHERE token_hash = :token_hash AND expires_at > NOW() LIMIT 1'
+        );
+        $stmt->execute(['token_hash' => hash('sha256', $token)]);
+        $row = $stmt->fetch();
+        if (!$row) {
+            antara_clear_remember_cookie();
+            return;
+        }
+
+        session_regenerate_id(true);
+        $_SESSION['user_id'] = (int)$row['user_id'];
+
+        // Sliding 30-day window for an actively used remembered account.
+        $expiresAt = time() + ANTARA_SESSION_TTL;
+        $refresh = $pdo->prepare(
+            'UPDATE user_remember_tokens SET expires_at = :expires_at, last_used_at = NOW() WHERE id = :id'
+        );
+        $refresh->execute(['expires_at' => date('Y-m-d H:i:s', $expiresAt), 'id' => (int)$row['id']]);
+        antara_set_remember_cookie($token, $expiresAt);
+    } catch (Throwable $e) {
+        // A temporary DB outage must not destroy a valid browser token. The next
+        // request can retry restoration when the database is reachable again.
+        error_log('ANTARA remember restore error: ' . $e->getMessage());
+    }
+}
+
+antara_restore_remembered_session();
+

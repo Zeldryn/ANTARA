@@ -38,6 +38,7 @@ try {
 
     session_regenerate_id(true);
     $_SESSION['user_id'] = (int)$user['id'];
+    try { antara_issue_remember_token($pdo, (int)$user['id']); } catch (Throwable $rememberError) { error_log('ANTARA remember token issue error: ' . $rememberError->getMessage()); }
 
     antara_json([
         'success' => true,

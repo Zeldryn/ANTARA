@@ -10,7 +10,7 @@
   <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, Sabuk Asteroid, Jupiter, Saturnus, Uranus, Neptunus, dan keajaiban Tata Surya.">
   <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/antara-logo.png" type="image/png">
-  <link rel="stylesheet" href="styles.css?v=20261004-mobile-cockpit-logo-lift-1">
+  <link rel="stylesheet" href="styles.css?v=20261004-return-earth3d-5">
   <link rel="stylesheet" href="achievement-notify.css?v=20261003-achievement-toast-1">
   <link rel="stylesheet" href="account-home-v2.css?v=20261003-account-align-1">
   <link rel="stylesheet" href="start-auth-gate.css?v=20261003-startlock-1">
@@ -20,11 +20,12 @@
   <link rel="stylesheet" href="mars-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="mars-full-exploration.css?v=20261001-mobile-arrival-actions-1">
   <link rel="stylesheet" href="mercury-scene.css?v=20261003-education-expand-1">
-  <link rel="stylesheet" href="mercury-full-exploration.css?v=20261004-mercury-full-template-2">
   <link rel="stylesheet" href="sun-scene.css?v=20261003-education-expand-1">
   <link rel="stylesheet" href="venus-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="venus-full-exploration.css?v=20261003-consistency-1">
+  <link rel="stylesheet" href="mars-venus-template.css?v=20261004-parity-2">
   <link rel="stylesheet" href="full-exploration-ui-standard.css?v=20261003-mobilefix-4">
+  <link rel="stylesheet" href="mercury-full-exploration.css?v=20261004-mercury-parity-7">
   <link rel="stylesheet" href="asteroid-scene.css?v=20261003-education-expand-1">
   <link rel="stylesheet" href="jupiter-scene.css?v=20261003-education-expand-1">
   <link rel="stylesheet" href="saturn-scene.css?v=20261003-education-expand-1">
@@ -39,9 +40,9 @@
   <script src="earth-scene.js?v=20261003-account-progress-1" defer></script>
   <script src="earth-full-exploration.js?v=20261003-account-progress-1" defer></script>
   <script src="mars-scene.js?v=20261004-location-image-audit-2" defer></script>
-  <script src="mars-full-exploration.js?v=20261003-account-progress-1" defer></script>
-  <script src="mercury-scene.js?v=20261004-location-image-audit-2" defer></script>
-  <script src="mercury-full-exploration.js?v=20261004-mercury-full-template-2" defer></script>
+  <script src="mars-full-exploration.js?v=20261004-venus-parity-2" defer></script>
+  <script src="mercury-scene.js?v=20261004-mercury-info-exit-3" defer></script>
+  <script src="mercury-full-exploration.js?v=20261004-mercury-switch-session5-7" defer></script>
   <script src="sun-scene.js?v=20261003-education-expand-1" defer></script>
   <script src="venus-scene.js?v=20261003-account-progress-1" defer></script>
   <script src="venus-full-exploration.js?v=20261003-account-progress-1" defer></script>
@@ -50,10 +51,10 @@
   <script src="saturn-scene.js?v=20261004-progress-fix-1" defer></script>
   <script src="uranus-scene.js?v=20261004-location-image-audit-2" defer></script>
   <script src="neptune-scene.js?v=20261004-location-image-audit-2" defer></script>
-  <script src="auth-client.js?v=20261002-account-dropdown-2" defer></script>
+  <script src="auth-client.js?v=20261004-session-persist-1" defer></script>
   <script src="account-home-v2.js?v=20261003-achievements-1" defer></script>
   <script src="start-auth-gate.js?v=20261003-startlock-1" defer></script>
-  <script src="script.js?v=20261003-opening-audio-achievement-toast-1" defer></script>
+  <script src="script.js?v=20261004-return-earth3d-5" defer></script>
   <script src="mobile-planet-scene-audit-fix.js?v=20261004-mobile-reference-lock-2" defer></script>
   <script src="exploration-scroll-content.js?v=20261004-scroll-title-1" defer></script>
 </head>
@@ -85,6 +86,20 @@
         </span>
       </button>
     </section>
+
+    <button class="return-cockpit-button" id="return-cockpit-button" type="button" hidden aria-label="Kembali ke kokpit ANTARA">
+      <span class="return-cockpit-icon" aria-hidden="true">⌂</span>
+      <span><small>ANTARA</small><strong>KEMBALI KE KOKPIT</strong></span>
+    </button>
+
+    <div class="return-cockpit-transition" id="return-cockpit-transition" hidden aria-hidden="true">
+      <div class="return-cockpit-stars" aria-hidden="true"></div>
+      <div class="return-cockpit-route" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="return-cockpit-copy">
+        <small id="return-cockpit-kicker">RUTE KEMBALI ANTARA</small>
+        <strong id="return-cockpit-status">MENINGGALKAN PLANET</strong>
+      </div>
+    </div>
 
     <footer class="mission-footer">
       <button class="audio-control" id="audio-toggle" type="button" aria-label="Bisukan audio" aria-pressed="false" title="Audio latar mencoba aktif saat ANTARA dibuka">
@@ -678,7 +693,26 @@
             <span id="mercury-next-target-distance">-</span>
           </div>
         </aside>
-        <button class="venus-objectives-toggle" id="mercury-objectives-toggle" type="button" data-mercury-ui hidden>Tujuan · 0 / 5</button>
+        <button class="venus-objectives-toggle" id="mercury-objectives-toggle" type="button" data-mercury-ui hidden>Tujuan · 0 / 4</button>
+
+        <div class="venus-observation-prompt mercury-observation-prompt" id="mercury-observation-prompt" data-mercury-ui hidden>
+          <span class="venus-observation-key">E</span>
+          <div><small>ADA TITIK MENARIK</small><strong id="mercury-observation-prompt-title">Dekati titik tujuan</strong></div>
+          <button id="mercury-observe-button" type="button">AMATI</button>
+        </div>
+
+        <aside class="venus-observation-card mercury-observation-card" id="mercury-observation-card" data-mercury-ui aria-live="polite" aria-hidden="true" hidden>
+          <div class="venus-observation-card-head">
+            <div><small id="mercury-observation-type">COBA PERHATIKAN!</small><span id="mercury-observation-status">BARU KAMU LIHAT</span></div>
+            <button id="mercury-observation-close" type="button" aria-label="Tutup informasi pengamatan">×</button>
+          </div>
+          <h4 id="mercury-observation-title">Titik Menarik Merkurius</h4>
+          <p class="venus-observation-meta" id="mercury-observation-meta"></p>
+          <p class="venus-observation-lead" id="mercury-observation-lead"></p>
+          <div class="venus-observation-why"><small>KENAPA INI MENARIK?</small><p id="mercury-observation-why"></p></div>
+          <div class="venus-observation-source-note" id="mercury-observation-source-note"></div>
+          <a class="venus-observation-source" id="mercury-observation-source" href="https://science.nasa.gov/mercury/" target="_blank" rel="noopener noreferrer">Sumber data: NASA / MESSENGER ↗</a>
+        </aside>
 
         <div class="mars-full-actions venus-full-actions" data-mercury-ui hidden>
           <button class="venus-actions-menu-toggle" id="mercury-actions-menu-toggle" type="button" aria-expanded="false" aria-controls="mercury-actions-menu">Menu</button>
@@ -690,7 +724,7 @@
         </div>
 
         <div class="mars-control-hints" aria-hidden="true">
-          <span><b>WASD</b> Bergerak</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Cepat</span><span><b>ESC</b> Panel / Keluar</span>
+          <span><b>WASD</b> Bergerak</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Turun / Naik</span><span><b>E</b> Amati jika dekat goal</span><span><b>Shift</b> Cepat</span><span><b>ESC</b> Panel / Keluar</span>
         </div>
 
         <div class="mars-mobile-controls" data-mercury-ui aria-label="Kontrol eksplorasi Merkurius" hidden>
@@ -736,6 +770,7 @@
             <div class="mars-tutorial-item"><b>PANAH</b><span>Bergerak</span></div>
             <div class="mars-tutorial-item"><b>GESER</b><span>Lihat sekitar</span></div>
             <div class="mars-tutorial-item"><b>＋ / −</b><span>Ketinggian</span></div>
+            <div class="mars-tutorial-item"><b>AMATI</b><span>Temuan / goal</span></div>
             <div class="mars-tutorial-item"><b>MENU</b><span>Pilih wilayah</span></div>
           </div>
         </div>
@@ -1092,90 +1127,87 @@
 
 
 
-      <section class="mars-full-exploration" id="mars-full-exploration" aria-label="Eksplorasi penuh permukaan Mars" aria-hidden="true" hidden>
+      <section class="mars-full-exploration venus-full-exploration mars-venus-template" id="mars-full-exploration" aria-label="Eksplorasi penuh permukaan Mars" aria-hidden="true" hidden>
         <div class="mars-full-viewport" id="mars-full-viewport" aria-label="Permukaan Mars tiga dimensi yang dapat dijelajahi"></div>
-        <div class="mars-full-horizon" aria-hidden="true"></div>
+        <div class="mars-full-horizon venus-full-horizon" aria-hidden="true"></div>
+        <div class="mars-parity-vignette" aria-hidden="true"></div>
 
-        <section class="mars-region-selector" id="mars-region-selector" aria-labelledby="mars-region-selector-title" hidden>
-          <div class="mars-region-selector-topline"><span>ANTARA · LOKASI PENDAKIAN MARS</span><button id="mars-region-selector-close" type="button" aria-label="Tutup pemilih destinasi Mars">×</button></div>
-          <h3 id="mars-region-selector-title">Pilih Lokasi Awal Mars</h3>
-          <p>Pilih satu lokasi utama sebelum masuk ke world Mars. Setelah itu kamu bisa menentukan kualitas grafis yang paling cocok untuk perangkatmu.</p>
-          <div class="mars-entry-warning"><strong>Perhatian Sistem Render</strong><span>Mars di ANTARA sudah memakai sistem terrain terbaru, jadi tampilannya memang sedikit berbeda dari Venus dan Bumi. Fokus utamanya tetap pengalaman jelajah, performa, dan pembacaan relief permukaan.</span></div>
-          <div class="mars-region-grid" id="mars-region-grid"></div>
-          <div class="mars-region-provenance">
-            <strong>SUMBER VISUAL MARS</strong>
-            <span>MOLA · NASA Trek · USGS Planetary Nomenclature</span>
-            <small>Topografi utama diambil dari data ilmiah Mars. Detail visual dekat permukaan diperkaya agar eksplorasi terasa lebih hidup tanpa menghilangkan karakter geologinya.</small>
+        <section class="venus-quality-panel mars-quality-panel" id="mars-quality-panel" aria-labelledby="mars-quality-title" hidden>
+          <div class="venus-quality-topline mars-quality-topline"><span>ANTARA · EKSPLORASI MARS</span><button id="mars-quality-close" type="button" aria-label="Tutup pengaturan kualitas grafis">×</button></div>
+          <div class="venus-quality-copy mars-quality-copy">
+            <small>PERSIAPAN EKSPLORASI</small>
+            <h3 id="mars-quality-title">Kualitas Grafis</h3>
+            <p>Pilih kualitas sebelum turun ke permukaan. Sistem terrain Mars memakai MOLA serta imagery Viking/THEMIS, sehingga beban render dapat lebih berat daripada panorama planet biasa.</p>
           </div>
+          <div class="venus-quality-options mars-quality-options" id="mars-quality-options" role="radiogroup" aria-label="Kualitas grafis Mars">
+            <button type="button" class="venus-quality-option mars-quality-option" data-mars-quality="LOW" role="radio" aria-checked="false"><span><strong>RENDAH</strong><small>Performa terbaik</small></span><em data-quality-recommendation></em></button>
+            <button type="button" class="venus-quality-option mars-quality-option" data-mars-quality="MEDIUM" role="radio" aria-checked="false"><span><strong>SEDANG</strong><small>Seimbang</small></span><em data-quality-recommendation></em></button>
+            <button type="button" class="venus-quality-option mars-quality-option" data-mars-quality="HIGH" role="radio" aria-checked="false"><span><strong>TINGGI</strong><small>Visual terbaik</small></span><em data-quality-recommendation></em></button>
+          </div>
+          <div class="venus-quality-summary mars-quality-summary"><span id="mars-quality-device-note">Rekomendasi ditentukan dari kemampuan browser dan layar.</span><strong id="mars-quality-selected-label">SEDANG</strong></div>
+          <button class="venus-quality-start mars-quality-start" id="mars-quality-start" type="button">LANJUT PILIH DESTINASI</button>
         </section>
 
-        <section class="mars-quality-panel" id="mars-quality-panel" aria-labelledby="mars-quality-title" hidden>
-          <div class="mars-quality-topline"><span>ANTARA · EKSPLORASI MARS</span><button id="mars-quality-close" type="button" aria-label="Kembali ke pemilih lokasi Mars">×</button></div>
-          <div class="mars-quality-copy">
-            <small>PERSIAPAN EKSPLORASI</small>
-            <h3 id="mars-quality-title">Tingkat Grafis Mars</h3>
-            <p>Pilih kualitas sebelum turun ke permukaan. Semua mode tetap menampilkan fitur penting Mars, tetapi detail, resolusi, dan jarak visual disesuaikan agar pengalaman tetap nyaman.</p>
+        <section class="venus-region-selector mars-region-selector" id="mars-region-selector" aria-labelledby="mars-region-selector-title" hidden>
+          <div class="venus-region-selector-topline mars-region-selector-topline"><span>ANTARA · WILAYAH MOLA MARS</span><button id="mars-region-selector-close" type="button" aria-label="Tutup pemilih destinasi Mars">×</button></div>
+          <h3 id="mars-region-selector-title">Pilih Destinasi Mars</h3>
+          <p>Pilih satu wilayah sebelum turun ke permukaan. ANTARA akan memuat topografi MOLA dan imagery Mars yang sesuai, lalu membawa kamera ke lokasi pilihanmu.</p>
+          <div class="mars-entry-warning"><strong>Catatan Sistem Render Mars</strong><span>Mars memakai sistem terrain terbaru ANTARA berbasis streaming MOLA/Viking/THEMIS. Karena teknologinya berbeda, detail world dapat terasa sedikit berbeda dari Venus dan Bumi, tetapi template UI/UX dan alur eksplorasinya dibuat konsisten.</span></div>
+          <div class="venus-region-grid mars-region-grid" id="mars-region-grid"></div>
+          <div class="venus-region-provenance mars-region-provenance">
+            <strong>REFERENSI MEDAN</strong>
+            <span>MOLA / PDS · Viking MDIM 2.1 · THEMIS · IAU / USGS</span>
+            <small>World Mars tetap memakai renderer dan sumber terrain yang sudah ada. Template ini hanya menyamakan alur, panel, navigasi, dan informasi dengan Full Exploration Venus.</small>
           </div>
-          <div class="mars-quality-options" id="mars-quality-options" role="radiogroup" aria-label="Kualitas grafis Mars">
-            <button type="button" class="mars-quality-option" data-mars-quality="LOW" role="radio" aria-checked="false">
-              <span><strong>RENDAH</strong><small>Performa terbaik</small></span><em>Cocok untuk HP dan perangkat hemat daya</em>
-            </button>
-            <button type="button" class="mars-quality-option" data-mars-quality="MEDIUM" role="radio" aria-checked="false">
-              <span><strong>SEDANG</strong><small>Seimbang</small></span><em>Rekomendasi aman untuk sebagian besar perangkat</em>
-            </button>
-            <button type="button" class="mars-quality-option" data-mars-quality="HIGH" role="radio" aria-checked="false">
-              <span><strong>TINGGI</strong><small>Visual terbaik</small></span><em>Pilih jika perangkatmu kuat dan stabil</em>
-            </button>
-          </div>
-          <div class="mars-quality-summary"><span id="mars-quality-device-note">Rekomendasi perangkat akan muncul di sini.</span><strong id="mars-quality-selected-label">SEDANG</strong></div>
-          <button class="mars-quality-start" id="mars-quality-start" type="button">MULAI EKSPLORASI</button>
         </section>
 
         <aside class="mars-full-hud" data-mars-ui aria-label="Informasi penerbangan Mars">
           <div class="mars-hud-kicker">MARS</div>
           <h3>Eksplorasi</h3>
-          <div class="mars-hud-mode">FULL EXPLORATION</div>
-          <div class="mars-hud-location" id="mars-hud-location">Permukaan Mars</div>
-          <div class="mars-hud-coordinates" id="mars-hud-coordinates">18.410° N · 77.690° E</div>
+          <div class="mars-hud-mode">MOLA / VIKING / THEMIS · EKSPLORASI PENUH</div>
+          <div class="mars-hud-location" id="mars-hud-location">Pilih destinasi</div>
+          <div class="mars-hud-coordinates" id="mars-hud-coordinates">--</div>
           <div class="mars-hud-metrics">
-            <div class="mars-hud-metric mars-hud-altitude-metric"><small>Ketinggian</small><strong id="mars-hud-altitude">2.80 KM</strong><span id="mars-hud-altitude-limit" class="mars-hud-altitude-limit" hidden></span></div>
-            <div class="mars-hud-metric"><small>Kecepatan</small><strong id="mars-hud-speed">0 M/S</strong></div>
-            <div class="mars-hud-metric"><small>Kualitas</small><strong id="mars-hud-quality">AUTO</strong></div>
-            <div class="mars-hud-metric"><small>Terrain</small><strong>MOLA</strong></div>
+            <div class="mars-hud-metric mars-hud-altitude-metric venus-hud-metric-altitude"><small>Ketinggian</small><strong id="mars-hud-altitude">--</strong><span id="mars-hud-altitude-limit" class="mars-hud-altitude-limit" hidden></span></div>
+            <div class="mars-hud-metric venus-hud-metric-speed"><small>Kecepatan</small><strong id="mars-hud-speed">0 M/S</strong></div>
+            <div class="mars-hud-metric venus-hud-metric-distance"><small>Target</small><strong id="mars-hud-distance">--</strong></div>
+            <div class="mars-hud-metric venus-hud-metric-region"><small>Wilayah</small><strong id="mars-hud-region-type">--</strong></div>
+            <div class="mars-hud-metric venus-hud-metric-quality"><small>Kualitas</small><strong id="mars-hud-quality">SEDANG</strong></div>
           </div>
-          <div class="mars-hud-data" id="mars-hud-data">MOLA / PDS</div>
+          <div class="mars-hud-data" id="mars-hud-data">MOLA / PDS · IMAGERY MARS</div>
         </aside>
 
-        <aside class="mars-objectives-panel" id="mars-objectives-panel" data-mars-ui aria-label="Tujuan eksplorasi Mars" aria-live="polite" hidden>
-          <div class="mars-objectives-head">
-            <div><small>TUJUAN EKSPLORASI</small><strong id="mars-objectives-region">Misi Mars</strong></div>
+        <aside class="venus-objectives-panel mars-objectives-panel" id="mars-objectives-panel" data-mars-ui aria-label="Tujuan eksplorasi Mars" aria-live="polite" hidden>
+          <div class="venus-objectives-head mars-objectives-head">
+            <div><small>TUJUAN EKSPLORASI</small><strong id="mars-objectives-region">Mars</strong></div>
             <button id="mars-objectives-collapse" type="button" aria-label="Minimalkan tujuan eksplorasi">Minimalkan</button>
           </div>
           <p id="mars-objectives-intro"></p>
-          <div class="mars-discovery-progress">
-            <div><span>PROGRES MISI</span><strong id="mars-discovery-count">0 / 5</strong></div>
-            <div class="mars-discovery-track" aria-hidden="true"><i id="mars-discovery-bar"></i></div>
+          <div class="venus-discovery-progress mars-discovery-progress">
+            <div><span>PROGRES DESTINASI</span><strong id="mars-discovery-count">0 / 5</strong></div>
+            <div class="venus-discovery-track mars-discovery-track" aria-hidden="true"><i id="mars-discovery-bar"></i></div>
           </div>
-          <ol id="mars-objectives-list" class="mars-objectives-list"></ol>
-          <div class="mars-next-target" id="mars-next-target" hidden>
-            <small>TARGET BERIKUTNYA</small>
+          <ol id="mars-objectives-list" class="venus-objectives-list mars-objectives-list"></ol>
+          <div class="venus-next-target mars-next-target" id="mars-next-target" hidden>
+            <small>DESTINASI BERIKUTNYA</small>
             <strong id="mars-next-target-name">-</strong>
             <span id="mars-next-target-distance">-</span>
           </div>
         </aside>
-        <button class="mars-objectives-toggle" id="mars-objectives-toggle" type="button" data-mars-ui hidden>Tujuan · 0 / 5</button>
+        <button class="venus-objectives-toggle mars-objectives-toggle" id="mars-objectives-toggle" type="button" data-mars-ui hidden>Tujuan · 0 / 5</button>
 
-        <div class="mars-full-actions" data-mars-ui>
-          <div class="mars-location-wrap">
-            <button id="mars-location-toggle" type="button" aria-expanded="false" aria-controls="mars-location-menu">Lokasi</button>
-            <div class="mars-location-menu" id="mars-location-menu" role="menu" aria-label="Lokasi terkenal Mars"></div>
+        <div class="mars-full-actions venus-full-actions" id="mars-actions-root" data-mars-ui>
+          <button class="venus-actions-menu-toggle" id="mars-actions-menu-toggle" type="button" aria-expanded="false" aria-controls="mars-actions-menu">Menu</button>
+          <div class="venus-actions-menu" id="mars-actions-menu">
+            <button id="mars-location-toggle" type="button">Wilayah</button>
+            <button id="mars-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button>
+            <button class="mars-full-exit" id="mars-full-exit" type="button">Keluar dari Eksplorasi</button>
           </div>
-          <button id="mars-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button>
-          <button class="mars-full-exit" id="mars-full-exit" type="button">Keluar dari Eksplorasi</button>
+          <div id="mars-location-menu" hidden></div>
         </div>
 
         <div class="mars-control-hints" aria-hidden="true">
-          <span><b>WASD</b> Bergerak</span><span><b>Klik + Mouse</b> Lihat sekitar</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Percepat</span>
+          <span><b>WASD</b> Bergerak</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Cepat</span><span><b>ESC</b> Panel / Keluar</span>
         </div>
 
         <div class="mars-mobile-controls" data-mars-ui aria-label="Kontrol eksplorasi Mars">
@@ -1193,43 +1225,57 @@
           </div>
         </div>
 
-        <div class="mars-full-loading" id="mars-full-loading" data-mars-ui>
-          <div class="mars-full-loading-kicker">ANTARA · MARS SURFACE</div>
+        <div class="mars-full-loading" id="mars-full-loading" data-mars-ui hidden>
+          <div class="mars-full-loading-kicker">ANTARA · MEDAN MOLA MARS</div>
           <h3>Menyiapkan Permukaan Mars</h3>
-          <div class="mars-full-loading-status" id="mars-full-loading-status">MENGHUBUNGKAN DATA TOPOGRAFI MOLA</div>
+          <div class="mars-full-loading-status" id="mars-full-loading-status">MENYIAPKAN DESTINASI</div>
           <div class="mars-loading-track"><div class="mars-loading-progress" id="mars-full-loading-progress"></div></div>
         </div>
 
         <div class="mars-full-error" id="mars-full-error" data-mars-ui hidden>
-          <h3>Permukaan Belum Tersedia</h3>
-          <p id="mars-full-error-message">Data elevasi tidak dapat dimuat.</p>
+          <h3>Eksplorasi Belum Tersedia</h3>
+          <p id="mars-full-error-message">Wilayah Mars tidak dapat dimuat.</p>
           <button id="mars-full-error-return" type="button">Kembali ke Mars</button>
         </div>
 
         <div class="mars-full-tutorial" id="mars-full-tutorial" data-mars-ui>
           <div class="mars-full-tutorial-header"><span>Kontrol Eksplorasi</span><button id="mars-tutorial-close" type="button" aria-label="Tutup panduan">×</button></div>
-          <div class="mars-tutorial-grid mars-tutorial-desktop">
+          <div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-desktop">
             <div class="mars-tutorial-item"><b>W A S D</b><span>Bergerak</span></div>
             <div class="mars-tutorial-item"><b>KLIK + MOUSE</b><span>Lihat sekitar</span></div>
             <div class="mars-tutorial-item"><b>Q / E</b><span>Turun / Naik</span></div>
             <div class="mars-tutorial-item"><b>SHIFT</b><span>Percepat</span></div>
+            <div class="mars-tutorial-item"><b>ESC</b><span>Panel / Keluar</span></div>
           </div>
-          <div class="mars-tutorial-grid mars-tutorial-mobile">
+          <div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-mobile">
             <div class="mars-tutorial-item"><b>PANAH</b><span>Bergerak</span></div>
             <div class="mars-tutorial-item"><b>GESER</b><span>Lihat sekitar</span></div>
             <div class="mars-tutorial-item"><b>＋ / −</b><span>Ketinggian</span></div>
+            <div class="mars-tutorial-item"><b>MENU</b><span>Wilayah / Keluar</span></div>
           </div>
         </div>
 
-        <div class="mars-travel-veil" id="mars-travel-veil" aria-hidden="true"><span class="mars-travel-label" id="mars-travel-label">NAVIGASI MARS</span></div>
+        <div class="mars-travel-veil venus-travel-veil" id="mars-travel-veil" aria-hidden="true"><span class="mars-travel-label" id="mars-travel-label">NAVIGASI MARS</span></div>
 
-        <aside class="mars-landmark-card" id="mars-landmark-card" data-mars-ui aria-live="polite">
-          <small>LOKASI MARS</small>
-          <h4 id="mars-landmark-name">Kawah Jezero</h4>
+        <aside class="mars-landmark-card venus-location-card" id="mars-landmark-card" data-mars-ui aria-live="polite" aria-hidden="true">
+          <div class="venus-location-card-head">
+            <small>WILAYAH ILMIAH MARS · MOLA / NASA</small>
+            <button class="venus-location-minimize" id="mars-landmark-minimize" type="button" aria-label="Minimalkan informasi lokasi">Sembunyikan</button>
+          </div>
+          <h4 id="mars-landmark-name">Mars</h4>
           <p class="mars-landmark-type" id="mars-landmark-type"></p>
           <p class="mars-landmark-coords" id="mars-landmark-coords"></p>
-          <a class="mars-landmark-source" id="mars-landmark-source" href="#" target="_blank" rel="noopener noreferrer">Sumber koordinat: USGS ↗</a>
+          <div class="venus-landmark-media mars-landmark-media" id="mars-landmark-media" aria-hidden="true"><span id="mars-landmark-preview" class="mars-location-preview mars-location-preview-jezero"></span><b>Pratinjau morfologi</b></div>
+          <p class="venus-location-description" id="mars-landmark-description"></p>
+          <ul class="venus-location-facts" id="mars-landmark-facts"></ul>
+          <div class="venus-location-visualization-note" id="mars-landmark-visualization-note">World 3D tetap memakai renderer MOLA/Viking/THEMIS Mars. Pratinjau ini hanya membantu mengenali bentuk wilayah.</div>
+          <div class="venus-location-data-badge" id="mars-landmark-data-badge">MOLA / PDS · VIKING / THEMIS</div>
+          <div class="venus-location-sources">
+            <a class="mars-landmark-source" id="mars-landmark-source" href="https://science.nasa.gov/mars/" target="_blank" rel="noopener noreferrer">Referensi: NASA ↗</a>
+            <a class="mars-landmark-source" id="mars-landmark-coordinate-source" href="https://planetarynames.wr.usgs.gov/" target="_blank" rel="noopener noreferrer">Koordinat: IAU / USGS ↗</a>
+          </div>
         </aside>
+        <button class="venus-location-info-toggle" id="mars-info-toggle" type="button" hidden>Info Lokasi</button>
 
         <div class="mars-orientation-hint" aria-hidden="true">Putar perangkat untuk pengalaman terbaik</div>
       </section>

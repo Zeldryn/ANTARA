@@ -1147,6 +1147,558 @@ const CELESTIAL_SCENE_INSTANCES = Object.freeze({
   sun, mercury, venus, earth, mars, asteroid, jupiter, saturn, uranus, neptune
 });
 
+const CELESTIAL_DISPLAY_NAMES = Object.freeze({
+  sun: "Matahari",
+  mercury: "Merkurius",
+  venus: "Venus",
+  earth: "Bumi",
+  mars: "Mars",
+  asteroid: "Sabuk Asteroid",
+  jupiter: "Jupiter",
+  saturn: "Saturnus",
+  uranus: "Uranus",
+  neptune: "Neptunus"
+});
+const returnCockpitButton = document.getElementById("return-cockpit-button");
+const returnCockpitTransition = document.getElementById("return-cockpit-transition");
+const returnCockpitStatus = document.getElementById("return-cockpit-status");
+const returnCockpitKicker = document.getElementById("return-cockpit-kicker");
+let returningToCockpit = false;
+let returnCockpitFrame = null;
+
+function hasActiveFullExploration() {
+  if (phase === "earth") return Boolean(earth.fullExploring || (earthFull?.state && earthFull.state !== "idle"));
+  if (phase === "venus") return Boolean(venus.fullExplorationActive);
+  if (phase === "mars") return Boolean(mars.fullExplorationActive);
+  if (phase === "mercury") return Boolean(mercury.fullExplorationActive);
+  return false;
+}
+
+function fullExplorationDomVisible() {
+  return [
+    document.getElementById("earth-full-exploration"),
+    document.getElementById("venus-full-exploration"),
+    document.getElementById("mars-full-exploration"),
+    document.getElementById("mercury-full-exploration")
+  ].some(root => root && !root.hidden && root.getAttribute("aria-hidden") !== "true");
+}
+
+function syncReturnCockpitButton() {
+  if (!returnCockpitButton) return;
+  const visible = !returningToCockpit
+    && CELESTIAL_NAV_ORDER.includes(phase)
+    && !planetTransitionLocked
+    && !hasActiveFullExploration()
+    && !fullExplorationDomVisible();
+  returnCockpitButton.hidden = !visible;
+  returnCockpitButton.disabled = !visible;
+}
+
+const returnCockpitFullRoots = [
+  document.getElementById("earth-full-exploration"),
+  document.getElementById("venus-full-exploration"),
+  document.getElementById("mars-full-exploration"),
+  document.getElementById("mercury-full-exploration")
+].filter(Boolean);
+
+if (typeof MutationObserver !== "undefined") {
+  const returnCockpitFullObserver = new MutationObserver(() => syncReturnCockpitButton());
+  returnCockpitFullRoots.forEach(root => {
+    returnCockpitFullObserver.observe(root, {
+      attributes: true,
+      attributeFilter: ["hidden", "aria-hidden", "class"]
+    });
+  });
+}
+
+function waitForReturn(ms) {
+  return new Promise(resolve => window.setTimeout(resolve, ms));
+}
+
+function setReturnStatus(text, kicker = "RUTE KEMBALI ANTARA") {
+  if (returnCockpitStatus) returnCockpitStatus.textContent = text;
+  if (returnCockpitKicker) returnCockpitKicker.textContent = kicker;
+}
+
+function stopCelestialScenesForCockpitReturn() {
+  for (const scene of Object.values(CELESTIAL_SCENE_INSTANCES)) {
+    try { scene?.stop?.(); } catch (error) { console.warn("[ANTARA Return] scene stop failed", error); }
+  }
+  try { earthFull?.forceReset?.(); } catch {}
+  try { venusFull?.forceReset?.(); } catch {}
+  try { mercuryFull?.exit?.(true); } catch {}
+}
+
+function returnTravelEase(value) {
+  const v = Math.max(0, Math.min(1, Number(value) || 0));
+  return v * v * v * (v * (v * 6 - 15) + 10);
+}
+
+function returnTravelState(progress) {
+  const p = returnTravelEase(progress);
+  return {
+    progress: p,
+    pullback: returnTravelEase(p / 0.31),
+    pan: returnTravelEase((p - 0.23) / 0.39),
+    approach: returnTravelEase((p - 0.58) / 0.42)
+  };
+}
+
+function returnTravelDirection(sourcePhase) {
+  const sourceIndex = CELESTIAL_NAV_ORDER.indexOf(sourcePhase);
+  const earthIndex = CELESTIAL_NAV_ORDER.indexOf("earth");
+  if (sourceIndex < 0 || sourceIndex === earthIndex) return 0;
+  return sourceIndex < earthIndex ? 1 : -1;
+}
+
+function setReturnTransitionProgress({ background = 0, stars = 0 } = {}) {
+  if (!returnCockpitTransition) return;
+  returnCockpitTransition.style.setProperty("--return-bg-opacity", String(Math.max(0, Math.min(1, background))));
+  returnCockpitTransition.style.setProperty("--return-stars-opacity", String(Math.max(0, Math.min(1, stars))));
+}
+
+function prepareReturnSourceScene(sourcePhase) {
+  const scene = CELESTIAL_SCENE_INSTANCES[sourcePhase];
+  const element = scene?.element;
+  if (!element) return { scene, element: null };
+  element.classList.add("return-cockpit-source");
+  element.style.willChange = "transform, opacity, filter";
+  element.style.transformOrigin = "50% 50%";
+  return { scene, element };
+}
+
+function clearReturnSourceScene(element) {
+  if (!element) return;
+  element.classList.remove("return-cockpit-source");
+  element.style.removeProperty("will-change");
+  element.style.removeProperty("transform-origin");
+  element.style.removeProperty("transform");
+  element.style.removeProperty("opacity");
+  element.style.removeProperty("filter");
+}
+
+async function prepareReturnEarthDestination(sourcePhase) {
+  if (!earth?.element || !earth?.viewport) return null;
+  // Hide the viewport before waking EarthScene so async texture/WebGL preparation
+  // cannot flash the settled Earth at its normal panorama position.
+  earth.element.classList.add("return-cockpit-destination");
+  earth.viewport.style.opacity = sourcePhase === "earth" ? "1" : "0";
+  earth.viewport.style.willChange = "transform, opacity, filter";
+  earth.viewport.style.transformOrigin = "50% 50%";
+  if (sourcePhase !== "earth" || !earth.active) earth.start({ settled: true });
+  try { await earth.prepare?.(); } catch (error) { console.warn("[ANTARA Return] Earth renderer prepare fallback", error); }
+  try { earth.resize?.(); earth.render?.(); } catch {}
+  earth.element.hidden = false;
+  earth.element.style.opacity = "1";
+  earth.information?.classList.remove("is-visible");
+  if (earth.information) earth.information.inert = true;
+  return { element: earth.element, viewport: earth.viewport };
+}
+
+function clearReturnEarthDestination(destination) {
+  if (!destination) return;
+  destination.element?.classList.remove("return-cockpit-destination");
+  destination.element?.style.removeProperty("opacity");
+  if (destination.viewport) {
+    destination.viewport.style.removeProperty("will-change");
+    destination.viewport.style.removeProperty("transform-origin");
+    destination.viewport.style.removeProperty("transform");
+    destination.viewport.style.removeProperty("opacity");
+    destination.viewport.style.removeProperty("filter");
+  }
+}
+
+async function animatePlanetToEarthTransit(sourcePhase) {
+  const isEarth = sourcePhase === "earth";
+  const sourceBundle = isEarth ? { scene: earth, element: earth.element } : prepareReturnSourceScene(sourcePhase);
+  const { scene, element } = sourceBundle;
+  if (!returnCockpitTransition) return;
+
+  if (scene?.exploring && typeof scene.exitExploration === "function") {
+    try { scene.exitExploration(false); } catch {}
+    await waitForReturn(reducedMotion.matches ? 30 : 440);
+  }
+
+  const earthDestination = await prepareReturnEarthDestination(sourcePhase);
+  if (!earthDestination) throw new Error("Earth destination renderer unavailable");
+
+  if (isEarth) {
+    earth.element.classList.add("return-cockpit-source");
+  }
+
+  returnCockpitTransition.hidden = false;
+  returnCockpitTransition.setAttribute("aria-hidden", "false");
+  returnCockpitTransition.classList.add("is-visible", "is-routing", "is-interplanetary");
+  returnCockpitTransition.style.opacity = "1";
+  setReturnTransitionProgress({ background: 0, stars: 0 });
+
+  const direction = returnTravelDirection(sourcePhase);
+  const sourceName = CELESTIAL_DISPLAY_NAMES[sourcePhase]?.toUpperCase() || "ORBIT";
+  const duration = reducedMotion.matches ? 240 : isEarth ? 2450 : 6200;
+  const start = performance.now();
+  let statusStage = -1;
+
+  if (isEarth) setReturnStatus("MENJAUH SEJENAK DARI BUMI", "TRANSISI ORBIT ANTARA");
+  else setReturnStatus(`MENJAUH DARI ${sourceName}`, "TRANSISI ANTARPLANET ANTARA");
+
+  await new Promise(resolve => {
+    const frame = now => {
+      if (!returningToCockpit) { resolve(); return; }
+      const raw = Math.min(1, (now - start) / duration);
+      const state = returnTravelState(raw);
+      const dir = direction || 1;
+      const mobile = window.innerWidth <= 700;
+
+      // Source follows the same pullback + lateral pan language used by ANTARA's
+      // normal planet-to-planet travel. Earth itself is handled by its real renderer.
+      if (!isEarth && element) {
+        const sourceScale = 1 - state.pullback * 0.60 - state.pan * 0.17;
+        const sourceX = -dir * state.pan * (mobile ? 92 : 76);
+        const sourceY = -state.pullback * (mobile ? 1.5 : 2.6);
+        const sourceOpacity = 1 - returnTravelEase((state.progress - 0.52) / 0.34) * 0.92;
+        element.style.transform = `translate3d(${sourceX}vw, ${sourceY}vh, 0) scale(${Math.max(0.18, sourceScale)})`;
+        element.style.opacity = String(Math.max(0, sourceOpacity));
+        element.style.filter = `brightness(${1 - state.pullback * 0.20}) saturate(${1 - state.pullback * 0.14})`;
+      }
+
+      const viewport = earthDestination.viewport;
+      const earthBaseCorrectionX = mobile ? 0 : -12;
+      let earthTravelX;
+      let earthTravelY;
+      let earthScale;
+      let earthOpacity;
+      if (isEarth) {
+        earthTravelX = earthBaseCorrectionX * state.approach;
+        earthTravelY = -state.pullback * (mobile ? 0.8 : 1.4);
+        earthScale = 1 - state.pullback * 0.48 + state.approach * 0.23;
+        earthOpacity = 1;
+      } else {
+        earthTravelX = dir * (1 - state.pan) * (mobile ? 96 : 82) + earthBaseCorrectionX * state.approach;
+        earthTravelY = (1 - state.pan) * 1.5;
+        earthScale = 0.22 + state.pan * 0.18 + state.approach * 0.76;
+        earthOpacity = returnTravelEase((state.progress - 0.18) / 0.28);
+      }
+      viewport.style.opacity = String(Math.max(0, Math.min(1, earthOpacity)));
+      viewport.style.transform = `translate3d(${earthTravelX}vw, ${earthTravelY}vh, 0) scale(${Math.max(0.12, earthScale)})`;
+      viewport.style.filter = `brightness(${0.82 + state.approach * 0.18}) saturate(${0.88 + state.approach * 0.12})`;
+
+      const overlayTakeover = returnTravelEase((state.progress - 0.12) / 0.34);
+      setReturnTransitionProgress({
+        background: overlayTakeover * 0.86,
+        stars: returnTravelEase((state.progress - 0.08) / 0.30) * 0.82
+      });
+
+      let nextStage = 0;
+      if (state.approach > 0.08) nextStage = 2;
+      else if (state.pan > 0.08) nextStage = 1;
+      if (nextStage !== statusStage) {
+        statusStage = nextStage;
+        if (nextStage === 0) setReturnStatus(isEarth ? "MENYIAPKAN ORBIT BUMI" : `ZOOM OUT DARI ${sourceName}`, "TRANSISI ANTARPLANET ANTARA");
+        if (nextStage === 1) setReturnStatus(isEarth ? "MENYELARASKAN KAMERA BUMI" : "MELUNCUR MENUJU BUMI", "RUTE KEMBALI ANTARA");
+        if (nextStage === 2) setReturnStatus("ZOOM IN KE BUMI 3D", "RUTE KEMBALI ANTARA");
+      }
+
+      if (raw >= 1) { resolve(); return; }
+      returnCockpitFrame = requestAnimationFrame(frame);
+    };
+    returnCockpitFrame = requestAnimationFrame(frame);
+  });
+
+  if (!isEarth && element) element.style.opacity = "0";
+  earthDestination.viewport.style.opacity = "1";
+  earthDestination.viewport.style.transform = `translate3d(${window.innerWidth <= 700 ? 0 : -12}vw, 0, 0) scale(1.14)`;
+  earthDestination.viewport.style.filter = "brightness(1) saturate(1)";
+  setReturnTransitionProgress({ background: .86, stars: .82 });
+  setReturnStatus("TIBA DI ORBIT BUMI · MEMULAI PENURUNAN", "RUTE KEMBALI ANTARA");
+  await waitForReturn(reducedMotion.matches ? 30 : 420);
+  if (!isEarth) clearReturnSourceScene(element);
+  return earthDestination;
+}
+
+function returnDescentStatus(renderPhase) {
+  if (["approach", "earth-reveal", "space"].includes(renderPhase)) return "MENINGGALKAN ORBIT BUMI";
+  if (renderPhase === "upper-atmosphere") return "MEMASUKI ATMOSFER BUMI";
+  if (["above-clouds", "clouds", "cloud-approach"].includes(renderPhase)) return "MENEMBUS LAPISAN AWAN";
+  if (["climb", "liftoff", "ignition"].includes(renderPhase)) return "MENURUN MENUJU KOTA";
+  return "KOKPIT ANTARA DI DEPAN";
+}
+
+async function reverseLaunchIntoCockpit(earthDestination = null) {
+  mission.classList.remove("is-earth", "is-mars", "is-venus", "is-mercury", "is-sun", "is-asteroid", "is-jupiter", "is-saturn", "is-uranus", "is-neptune", "is-planet-transitioning");
+  setExperienceState("launch");
+  flight.stage.hidden = false;
+  flight.stage.style.transition = "none";
+  flight.stage.style.opacity = "1";
+  flight.resize();
+  flight.render(LAUNCH_TIMING.finish);
+  // Crossfade from the real EarthScene renderer into the existing launch/atmosphere
+  // timeline only after the launch stage is already showing its orbit frame.
+  stopCelestialScenesForCockpitReturn();
+  clearReturnEarthDestination(earthDestination);
+
+  if (returnCockpitTransition) {
+    returnCockpitTransition.style.transition = reducedMotion.matches ? "opacity .01s linear" : "opacity .7s ease";
+    returnCockpitTransition.style.opacity = "0";
+  }
+
+  const duration = reducedMotion.matches ? 220 : 9200;
+  const start = performance.now();
+  await new Promise(resolve => {
+    const frame = now => {
+      if (!returningToCockpit) { resolve(); return; }
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = progress * progress * (3 - 2 * progress);
+      const t = LAUNCH_TIMING.finish * (1 - eased);
+      const visualPhase = flight.render(t);
+      companions.setJourneyPhase(visualPhase);
+      if (flightStatus) flightStatus.textContent = returnDescentStatus(visualPhase);
+      if (returnCockpitStatus) returnCockpitStatus.textContent = returnDescentStatus(visualPhase);
+      if (progress >= 1) { resolve(); return; }
+      returnCockpitFrame = requestAnimationFrame(frame);
+    };
+    returnCockpitFrame = requestAnimationFrame(frame);
+  });
+}
+
+async function returnToCockpit() {
+  if (returningToCockpit || planetTransitionLocked || !CELESTIAL_NAV_ORDER.includes(phase) || hasActiveFullExploration()) return;
+  const sourcePhase = phase;
+  returningToCockpit = true;
+  planetTransitionLocked = true;
+  returnCockpitButton.hidden = true;
+  mission.classList.add("is-returning-cockpit");
+  phase = "returning-cockpit";
+  clearJourneyForUserId(journeyUserId);
+  openingAudio?.stop?.({ fade: 240 });
+  sound.travel(reducedMotion.matches ? .2 : 2.4);
+  announcement.textContent = `Kembali ke kokpit dari ${CELESTIAL_DISPLAY_NAMES[sourcePhase] || sourcePhase}.`;
+
+  try {
+    const earthDestination = await animatePlanetToEarthTransit(sourcePhase);
+    await reverseLaunchIntoCockpit(earthDestination);
+  } catch (error) {
+    console.warn("[ANTARA Return] cinematic fallback", error);
+  }
+
+  returningToCockpit = false;
+  planetTransitionLocked = false;
+  if (returnCockpitFrame) cancelAnimationFrame(returnCockpitFrame);
+  returnCockpitFrame = null;
+  if (returnCockpitTransition) {
+    returnCockpitTransition.classList.remove("is-visible", "is-routing");
+    returnCockpitTransition.hidden = true;
+    returnCockpitTransition.style.removeProperty("opacity");
+    returnCockpitTransition.style.removeProperty("transition");
+    returnCockpitTransition.style.removeProperty("--return-bg-opacity");
+    returnCockpitTransition.style.removeProperty("--return-stars-opacity");
+    returnCockpitTransition.classList.remove("is-interplanetary");
+  }
+  document.querySelectorAll(".return-cockpit-source").forEach(clearReturnSourceScene);
+  clearReturnEarthDestination({ element: earth?.element, viewport: earth?.viewport });
+  mission.classList.remove("is-returning-cockpit");
+  resetMission();
+  if (flightStatus) flightStatus.textContent = "KEMBALI DI KOKPIT · BUMI";
+  announcement.textContent = "Kembali di kokpit ANTARA. Akun tetap masuk dan perjalanan siap dimulai lagi.";
+  syncReturnCockpitButton();
+}
+
+returnCockpitButton?.addEventListener("click", returnToCockpit);
+
+// Per-account journey checkpoint. Authentication remains server-side; localStorage
+// contains only the last stable celestial scene so a page refresh does not throw an
+// authenticated explorer back into the cockpit.
+const JOURNEY_STATE_VERSION = 1;
+const JOURNEY_STATE_MAX_AGE = 5 * 60 * 1000;
+const JOURNEY_ACTIVITY_THROTTLE_MS = 1000;
+let journeyUserId = null;
+let journeyRestoreAttemptedFor = null;
+let journeyRestoreInProgress = false;
+let journeyLastActivityAt = 0;
+let journeyActivityWriteAt = 0;
+let journeyIdleTimer = null;
+
+function journeyStorageKey(userId) {
+  return `antara-journey-v${JOURNEY_STATE_VERSION}:user:${Number(userId)}`;
+}
+
+function journeyActivityStorageKey(userId) {
+  return `${journeyStorageKey(userId)}:activity`;
+}
+
+function normalizeJourneyUserId(user) {
+  const id = Number(user?.id || 0);
+  return Number.isInteger(id) && id > 0 ? id : null;
+}
+
+function getStableJourneySnapshot() {
+  if (!journeyUserId || !CELESTIAL_NAV_ORDER.includes(phase)) return null;
+  const scene = CELESTIAL_SCENE_INSTANCES[phase];
+  const infoMode = Boolean(scene?.exploring);
+  const topicIndex = infoMode && Number.isInteger(scene?.topicIndex) ? scene.topicIndex : 0;
+  return {
+    version: JOURNEY_STATE_VERSION,
+    phase,
+    mode: infoMode ? "info" : "panorama",
+    topicIndex,
+    updatedAt: Date.now()
+  };
+}
+
+function persistCurrentJourney() {
+  const snapshot = getStableJourneySnapshot();
+  if (!snapshot) return false;
+  snapshot.lastActivityAt = journeyLastActivityAt || Date.now();
+  try {
+    localStorage.setItem(journeyStorageKey(journeyUserId), JSON.stringify(snapshot));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function clearJourneyForUserId(userId) {
+  if (!userId) return;
+  try {
+    localStorage.removeItem(journeyStorageKey(userId));
+    localStorage.removeItem(journeyActivityStorageKey(userId));
+  } catch {}
+  if (journeyIdleTimer) {
+    window.clearTimeout(journeyIdleTimer);
+    journeyIdleTimer = null;
+  }
+}
+
+function readJourneyActivityAt(userId, fallback = 0) {
+  if (!userId) return fallback;
+  try {
+    const value = Number(localStorage.getItem(journeyActivityStorageKey(userId)) || 0);
+    return Number.isFinite(value) && value > 0 ? value : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function scheduleJourneyIdleExpiry() {
+  if (journeyIdleTimer) window.clearTimeout(journeyIdleTimer);
+  journeyIdleTimer = null;
+  if (!journeyUserId || phase === "idle" || !journeyLastActivityAt) return;
+  const remaining = JOURNEY_STATE_MAX_AGE - (Date.now() - journeyLastActivityAt);
+  if (remaining <= 0) {
+    clearJourneyForUserId(journeyUserId);
+    if (phase !== "idle") {
+      resetMission();
+      if (flightStatus) flightStatus.textContent = "SESI PERJALANAN BERAKHIR";
+      announcement.textContent = "Sesi penjelajahan berakhir setelah 5 menit tanpa aktivitas. Akun tetap masuk.";
+    }
+    return;
+  }
+  journeyIdleTimer = window.setTimeout(() => scheduleJourneyIdleExpiry(), remaining + 30);
+}
+
+function markJourneyActivity({ forceWrite = false } = {}) {
+  if (!journeyUserId) return;
+  const now = Date.now();
+  journeyLastActivityAt = now;
+  if (forceWrite || now - journeyActivityWriteAt >= JOURNEY_ACTIVITY_THROTTLE_MS) {
+    journeyActivityWriteAt = now;
+    try { localStorage.setItem(journeyActivityStorageKey(journeyUserId), String(now)); } catch {}
+  }
+  if (phase !== "idle") scheduleJourneyIdleExpiry();
+}
+
+function readJourneyForUser(user) {
+  const userId = normalizeJourneyUserId(user);
+  if (!userId) return null;
+  try {
+    const raw = localStorage.getItem(journeyStorageKey(userId));
+    if (!raw) return null;
+    const saved = JSON.parse(raw);
+    if (saved?.version !== JOURNEY_STATE_VERSION || !CELESTIAL_NAV_ORDER.includes(saved?.phase)) return null;
+    const fallbackActivityAt = Number(saved.lastActivityAt || saved.updatedAt || 0);
+    const lastActivityAt = readJourneyActivityAt(userId, fallbackActivityAt);
+    if (!Number.isFinite(lastActivityAt) || lastActivityAt <= 0 || Date.now() - lastActivityAt > JOURNEY_STATE_MAX_AGE) {
+      clearJourneyForUserId(userId);
+      return null;
+    }
+    saved.lastActivityAt = lastActivityAt;
+    return saved;
+  } catch {
+    return null;
+  }
+}
+
+function stopAllCelestialScenesForRestore() {
+  for (const scene of Object.values(CELESTIAL_SCENE_INSTANCES)) {
+    try { scene?.stop?.(); } catch (error) { console.warn("[ANTARA Journey] scene stop failed", error); }
+  }
+  try { earthFull?.forceReset?.(); } catch {}
+  try { venusFull?.forceReset?.(); } catch {}
+  try { mercuryFull?.exit?.(true); } catch {}
+}
+
+function restoreJourneyForUser(user) {
+  const userId = normalizeJourneyUserId(user);
+  if (!userId || journeyRestoreInProgress || journeyRestoreAttemptedFor === userId) return false;
+  journeyRestoreAttemptedFor = userId;
+  journeyUserId = userId;
+  const saved = readJourneyForUser(user);
+  if (!saved) return false;
+  journeyLastActivityAt = Number(saved.lastActivityAt || saved.updatedAt || Date.now());
+
+  const scene = CELESTIAL_SCENE_INSTANCES[saved.phase];
+  if (!scene?.start) return false;
+
+  journeyRestoreInProgress = true;
+  try {
+    cancelAnimationFrame(animationFrame);
+    animationFrame = null;
+    window.clearTimeout(launchScenePrewarmTimer);
+    openingAudio?.stop?.({ fade: 0 });
+    sound?.stop?.(0);
+    flight.reset();
+    stopAllCelestialScenesForRestore();
+
+    planetTransitionLocked = false;
+    activePlanetNavButton = null;
+    resetPanoramaInteractionLocks();
+    mission.classList.remove("is-earth", "is-mars", "is-venus", "is-mercury", "is-sun", "is-asteroid", "is-jupiter", "is-saturn", "is-uranus", "is-neptune", "is-preparing", "is-planet-transitioning");
+    mission.classList.add(`is-${saved.phase}`);
+
+    phase = saved.phase;
+    scene.start({ settled: true });
+    setExperienceState("planet");
+    flight.stage.style.transition = "none";
+    flight.stage.style.opacity = "0";
+    launchButton.disabled = false;
+    if (flightStatus) flightStatus.textContent = `SESI DIPULIHKAN · ${saved.phase.toUpperCase()}`;
+    announcement.textContent = `Sesi penjelajahan dipulihkan. Kembali ke ${saved.phase === "asteroid" ? "Sabuk Asteroid" : saved.phase}.`;
+    syncReturnCockpitButton();
+
+    if (saved.mode === "info" && typeof scene.enterExploration === "function") {
+      requestAnimationFrame(() => {
+        const maxIndex = Math.max(0, Number(scene.topicTotal?.textContent || 1) - 1);
+        const topicIndex = Math.max(0, Math.min(maxIndex, Number(saved.topicIndex) || 0));
+        try {
+          scene.setExplorationStop?.(topicIndex, { immediate: true, announce: false });
+          scene.enterExploration();
+        } catch (error) {
+          console.warn("[ANTARA Journey] info-mode restore skipped", error);
+        }
+      });
+    }
+
+    // Reopening/refreshing within the 5-minute window is itself user activity.
+    markJourneyActivity({ forceWrite: true });
+    persistCurrentJourney();
+    return true;
+  } catch (error) {
+    console.warn("[ANTARA Journey] restore failed", error);
+    return false;
+  } finally {
+    journeyRestoreInProgress = false;
+  }
+}
+
 function lockTransitionSceneInteraction(sourcePhase, destinationPhase) {
   for (const name of [sourcePhase, destinationPhase]) {
     const scene = CELESTIAL_SCENE_INSTANCES[name];
@@ -1180,6 +1732,7 @@ window.AntaraNavigation = Object.freeze({
 function beginPlanetTransition(expectedPhase, transitionPhase, triggerButton = null, destinationPhase = null) {
   if (planetTransitionLocked || phase !== expectedPhase) return false;
   planetTransitionLocked = true;
+  if (returnCockpitButton) returnCockpitButton.hidden = true;
   phase = transitionPhase;
   mission.classList.add("is-planet-transitioning");
   if (destinationPhase) {
@@ -1218,6 +1771,9 @@ function finishPlanetTransition(nextPhase) {
     marsPreviousButton.disabled = false;
     marsNextButton.disabled = false;
   }
+  persistCurrentJourney();
+  markJourneyActivity({ forceWrite: true });
+  syncReturnCockpitButton();
 }
 
 function abortPlanetTransition(fallbackPhase) {
@@ -1243,6 +1799,7 @@ function setExperienceState(state) {
 }
 
 setExperienceState("home");
+syncReturnCockpitButton();
 
 let openingAudio = null;
 const sound = new MissionAudio(() => {
@@ -1257,6 +1814,75 @@ const sound = new MissionAudio(() => {
 });
 openingAudio = new OpeningAudio(() => sound.onStateChange(), sound.muted);
 sound.onStateChange();
+
+window.addEventListener("antara:auth-change", event => {
+  const user = event.detail?.user ?? null;
+  const source = event.detail?.source || "unknown";
+  const userId = normalizeJourneyUserId(user);
+
+  if (userId) {
+    journeyUserId = userId;
+    const restored = restoreJourneyForUser(user);
+    if (!restored) {
+      journeyLastActivityAt = Date.now();
+      markJourneyActivity({ forceWrite: true });
+    }
+    return;
+  }
+
+  if (source === "logout") {
+    const previousUserId = journeyUserId;
+    clearJourneyForUserId(previousUserId);
+    journeyUserId = null;
+    journeyLastActivityAt = 0;
+    journeyRestoreAttemptedFor = null;
+    if (phase !== "idle") resetMission();
+    return;
+  }
+
+  // Only a confirmed server response may invalidate an active account. Temporary
+  // fetch errors no longer dispatch auth-change(null), so they cannot trigger this.
+  if (event.detail?.confirmed && source === "session-check") {
+    journeyUserId = null;
+    journeyLastActivityAt = 0;
+    if (journeyIdleTimer) { window.clearTimeout(journeyIdleTimer); journeyIdleTimer = null; }
+    if (phase !== "idle") resetMission();
+  }
+});
+
+// Covers the rare case where auth resolved before this listener was installed.
+if (window.ANTARAAuth?.currentUser) {
+  journeyUserId = normalizeJourneyUserId(window.ANTARAAuth.currentUser);
+  const restored = restoreJourneyForUser(window.ANTARAAuth.currentUser);
+  if (!restored && journeyUserId) {
+    journeyLastActivityAt = Date.now();
+    markJourneyActivity({ forceWrite: true });
+  }
+}
+
+window.addEventListener("pagehide", () => persistCurrentJourney());
+window.addEventListener("beforeunload", () => persistCurrentJourney());
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    persistCurrentJourney();
+    return;
+  }
+  if (journeyUserId && phase !== "idle") {
+    const inactiveFor = Date.now() - (journeyLastActivityAt || 0);
+    if (!journeyLastActivityAt || inactiveFor > JOURNEY_STATE_MAX_AGE) {
+      clearJourneyForUserId(journeyUserId);
+      resetMission();
+      if (flightStatus) flightStatus.textContent = "SESI PERJALANAN BERAKHIR";
+      announcement.textContent = "Kembali ke kokpit karena sesi penjelajahan tidak aktif selama lebih dari 5 menit. Akun tetap masuk.";
+    } else {
+      scheduleJourneyIdleExpiry();
+    }
+  }
+});
+
+for (const eventName of ["pointerdown", "keydown", "touchstart", "wheel"]) {
+  window.addEventListener(eventName, () => markJourneyActivity(), { capture: true, passive: eventName !== "keydown" });
+}
 
 // One shared UI-audio bridge for components loaded before this file (notably
 // dynamically-rendered Earth/Mars/Venus image previews and the top-level lightbox).
@@ -1342,6 +1968,7 @@ function advancePreparation(timestamp) {
 
   if (elapsed >= LAUNCH_TIMING.finish) {
     phase = "earth";
+    persistCurrentJourney();
     mission.classList.remove("is-preparing");
     if (flightStatus) flightStatus.textContent = "TIBA DI BUMI";
     announcement.textContent = "Sampai. Bumi, rumah kita, sekarang ada di depan.";
@@ -1351,6 +1978,7 @@ function advancePreparation(timestamp) {
     setTimeout(() => {
       flight.reset();
       setExperienceState("planet");
+      syncReturnCockpitButton();
     }, reducedMotion.matches ? 40 : 760);
     return;
   }
@@ -1829,6 +2457,7 @@ function travelNeptuneToUranus() {
 
 
 function resetMission() {
+  clearJourneyForUserId(journeyUserId);
   earthFull.forceReset?.();
   venusFull.forceReset?.();
   cancelAnimationFrame(animationFrame);
@@ -1846,6 +2475,7 @@ function resetMission() {
   mercury.stop();
   sun.stop();
   venus.stop();
+  asteroid.stop();
   jupiter.stop();
   saturn.stop();
   uranus.stop();
@@ -1857,6 +2487,7 @@ function resetMission() {
   setExperienceState("home");
   openingAudio.start({ fromGesture:true });
   launchButton.disabled = false;
+  syncReturnCockpitButton();
   if (flightStatus) flightStatus.textContent = "SIAP • BUMI";
   sound.onStateChange();
   launchButton.focus({ preventScroll: true });

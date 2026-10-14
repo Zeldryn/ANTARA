@@ -17,6 +17,7 @@ try {
     $user = $stmt->fetch();
 
     if (!$user) {
+        antara_revoke_remember_token($pdo);
         $_SESSION = [];
         session_destroy();
         antara_json(['success' => true, 'authenticated' => false, 'user' => null]);

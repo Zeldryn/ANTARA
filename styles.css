@@ -6790,3 +6790,199 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     top:14.5% !important;
   }
 }
+
+/* ANTARA return-to-cockpit cinematic */
+.return-cockpit-button {
+  position: absolute;
+  top: max(18px, env(safe-area-inset-top));
+  right: clamp(18px, 2.2vw, 34px);
+  z-index: 26;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 13px 8px 10px;
+  border: 1px solid rgba(197, 172, 127, .28);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(16, 20, 26, .88), rgba(8, 11, 16, .92));
+  box-shadow: 0 12px 34px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.025);
+  color: #e7ddca;
+  backdrop-filter: blur(9px);
+  cursor: pointer;
+  transition: transform .22s ease, border-color .22s ease, opacity .22s ease, background .22s ease;
+}
+.return-cockpit-button[hidden] { display:none !important; }
+.return-cockpit-button:hover,
+.return-cockpit-button:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(222, 197, 153, .52);
+  background: linear-gradient(180deg, rgba(28, 34, 42, .94), rgba(12, 16, 22, .96));
+  outline: none;
+}
+.return-cockpit-button:disabled { opacity:.48; cursor:default; transform:none; }
+.return-cockpit-icon {
+  display:grid;
+  place-items:center;
+  width:28px;
+  height:28px;
+  border:1px solid rgba(210,188,151,.22);
+  border-radius:8px;
+  color:#d8c29b;
+  font-size:14px;
+}
+.return-cockpit-button span:last-child { display:grid; gap:2px; text-align:left; }
+.return-cockpit-button small { color:#837b70; font:600 5.5px/1 system-ui,sans-serif; letter-spacing:1.5px; }
+.return-cockpit-button strong { color:#e9e0d1; font:700 6.5px/1 system-ui,sans-serif; letter-spacing:1.05px; white-space:nowrap; }
+
+.return-cockpit-transition {
+  position:absolute;
+  inset:0;
+  z-index:25;
+  overflow:hidden;
+  pointer-events:none;
+  background: radial-gradient(circle at 72% 46%, rgba(28,56,91,.14), transparent 28%), #02050a;
+  opacity:0;
+}
+.return-cockpit-transition[hidden] { display:none; }
+.return-cockpit-transition.is-visible { opacity:1; }
+.return-cockpit-stars {
+  position:absolute; inset:0;
+  opacity:.75;
+  background-image: radial-gradient(circle,rgba(218,232,249,.8) 0 1px,transparent 1.4px);
+  background-size:91px 91px;
+  background-position:18px 27px;
+}
+.return-cockpit-stars::after {
+  content:""; position:absolute; inset:0;
+  background-image: radial-gradient(circle,rgba(171,197,228,.58) 0 .8px,transparent 1.2px);
+  background-size:137px 137px; background-position:62px 8px;
+}
+.return-cockpit-route { position:absolute; left:38%; right:24%; top:50%; height:1px; opacity:0; background:linear-gradient(90deg,transparent,rgba(194,213,235,.34),transparent); }
+.return-cockpit-route i { position:absolute; top:-2px; width:5px; height:5px; border-radius:50%; background:#cdd9e6; box-shadow:0 0 9px rgba(205,217,230,.8); }
+.return-cockpit-route i:nth-child(1){left:15%}.return-cockpit-route i:nth-child(2){left:50%}.return-cockpit-route i:nth-child(3){left:82%}
+.return-cockpit-copy { position:absolute; left:50%; bottom:8%; transform:translateX(-50%); display:grid; gap:7px; text-align:center; opacity:0; }
+.return-cockpit-copy small { color:#748499; font:650 6px/1 system-ui,sans-serif; letter-spacing:2.1px; }
+.return-cockpit-copy strong { color:#d9e2ec; font:500 clamp(18px,2.1vw,28px)/1.1 Georgia,serif; letter-spacing:.2px; }
+.return-cockpit-transition.is-routing .return-cockpit-route,
+.return-cockpit-transition.is-routing .return-cockpit-copy { opacity:1; transition:opacity .5s ease; }
+
+.mission.is-returning-cockpit .return-cockpit-button { opacity:0; pointer-events:none; }
+.mission.is-returning-cockpit .masthead,
+.mission.is-returning-cockpit .mission-footer { transition:opacity .42s ease; opacity:0; }
+
+@media (max-width:700px) {
+  .return-cockpit-button { top:max(10px,env(safe-area-inset-top)); right:10px; min-height:39px; padding:6px 9px; gap:7px; }
+  .return-cockpit-icon { width:24px; height:24px; font-size:12px; }
+  .return-cockpit-button small { display:none; }
+  .return-cockpit-button strong { font-size:5.7px; }
+  .return-cockpit-copy { bottom:12%; width:88%; }
+}
+
+/* 2026-10-04: global return button must never overlap Full Exploration surfaces. */
+.mission:has(#earth-full-exploration:not([hidden])) .return-cockpit-button,
+.mission:has(#venus-full-exploration:not([hidden])) .return-cockpit-button,
+.mission:has(#mars-full-exploration:not([hidden])) .return-cockpit-button,
+.mission:has(#mercury-full-exploration:not([hidden])) .return-cockpit-button,
+.mission:has(.earth-full-exploration.is-active) .return-cockpit-button,
+.mission:has(.venus-full-exploration.is-active) .return-cockpit-button,
+.mission:has(.mars-full-exploration.is-active) .return-cockpit-button,
+.mission:has(.mercury-full-exploration.is-active) .return-cockpit-button,
+.mission:has(.is-full-exploring) .return-cockpit-button,
+.mission:has(.is-full-diving) .return-cockpit-button {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* 2026-10-04 Return to cockpit v2: reuse ANTARA's planet-to-planet motion language. */
+.return-cockpit-transition {
+  --return-bg-opacity: 0;
+  --return-stars-opacity: 0;
+  background: transparent !important;
+}
+.return-cockpit-transition::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:var(--return-bg-opacity);
+  background:
+    radial-gradient(circle at 70% 46%, rgba(28,56,91,.14), transparent 30%),
+    radial-gradient(circle at 24% 54%, rgba(54,38,26,.08), transparent 32%),
+    #02050a;
+  will-change:opacity;
+}
+.return-cockpit-transition .return-cockpit-stars {
+  z-index:1;
+  opacity:var(--return-stars-opacity) !important;
+  will-change:opacity,transform;
+}
+.return-cockpit-transition .return-cockpit-route,
+.return-cockpit-transition .return-cockpit-copy {
+  z-index:2;
+}
+.return-cockpit-transition.is-interplanetary .return-cockpit-stars {
+  transform:scale(1.025);
+}
+.return-cockpit-source {
+  z-index:24 !important;
+  pointer-events:none !important;
+}
+.return-cockpit-source :is(
+  .earth-information,
+  .venus-caption,
+  .mars-caption,
+  .mercury-caption,
+  .sun-caption,
+  .asteroid-caption,
+  .jupiter-caption,
+  .saturn-caption,
+  .uranus-caption,
+  .neptune-caption,
+  .earth-exploration,
+  .venus-exploration,
+  .mars-exploration,
+  .mercury-exploration,
+  .sun-exploration,
+  .asteroid-exploration,
+  .jupiter-exploration,
+  .saturn-exploration,
+  .uranus-exploration,
+  .neptune-exploration,
+  [class$="-credit"],
+  [class*="focus-reticle"],
+  [class*="context-media"]
+) {
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:none !important;
+}
+.return-cockpit-transition.is-interplanetary .return-cockpit-route {
+  opacity:.18;
+}
+.return-cockpit-transition.is-interplanetary .return-cockpit-copy {
+  opacity:1;
+}
+
+
+/* 2026-10-04 Return destination: reuse ANTARA's real EarthScene renderer. */
+.earth-scene.return-cockpit-destination {
+  z-index:26 !important;
+  background:transparent !important;
+  pointer-events:none !important;
+  overflow:visible;
+}
+.earth-scene.return-cockpit-destination .earth-space-haze,
+.earth-scene.return-cockpit-destination .earth-edge-shade,
+.earth-scene.return-cockpit-destination .earth-information,
+.earth-scene.return-cockpit-destination .earth-exploration,
+.earth-scene.return-cockpit-destination .earth-caption {
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+.earth-scene.return-cockpit-destination .earth-viewport {
+  opacity:0;
+  will-change:transform,opacity,filter;
+}

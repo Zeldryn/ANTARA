@@ -32,16 +32,24 @@
     currentUser: null,
 
     async getCurrentUser() {
-      try {
-        const payload = await jsonRequest('api/auth/me.php');
-        this.currentUser = payload.authenticated ? payload.user : null;
-        window.dispatchEvent(new CustomEvent('antara:auth-change', { detail: { user: this.currentUser } }));
-        return this.currentUser;
-      } catch (error) {
-        console.warn('[ANTARA Auth] Gagal membaca sesi:', error.message);
-        this.currentUser = null;
-        return null;
+      let lastError = null;
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        try {
+          const payload = await jsonRequest('api/auth/me.php');
+          this.currentUser = payload.authenticated ? payload.user : null;
+          window.dispatchEvent(new CustomEvent('antara:auth-change', { detail: { user: this.currentUser, source: 'session-check', confirmed: true } }));
+          return this.currentUser;
+        } catch (error) {
+          lastError = error;
+          if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 180 * (attempt + 1)));
+        }
       }
+
+      // A temporary network/database problem is not proof that the user logged
+      // out. Keep the last confirmed identity in memory and do not emit a fake
+      // logout event. A later refresh/check can recover via the server token.
+      console.warn('[ANTARA Auth] Sesi belum dapat diverifikasi:', lastError?.message || 'unknown error');
+      return this.currentUser;
     },
 
     async register(data) {
@@ -50,7 +58,7 @@
         body: JSON.stringify(data)
       });
       this.currentUser = payload.user ?? null;
-      window.dispatchEvent(new CustomEvent('antara:auth-change', { detail: { user: this.currentUser } }));
+      window.dispatchEvent(new CustomEvent('antara:auth-change', { detail: { user: this.currentUser, source: 'register', confirmed: true } }));
       return payload;
     },
 
@@ -60,14 +68,14 @@
         body: JSON.stringify({ identifier, password })
       });
       this.currentUser = payload.user ?? null;
-      window.dispatchEvent(new CustomEvent('antara:auth-change', { detail: { user: this.currentUser } }));
+      window.dispatchEvent(new CustomEvent('antara:auth-change', { detail: { user: this.currentUser, source: 'login', confirmed: true } }));
       return payload;
     },
 
     async logout() {
       const payload = await jsonRequest('api/auth/logout.php', { method: 'POST' });
       this.currentUser = null;
-      window.dispatchEvent(new CustomEvent('antara:auth-change', { detail: { user: null } }));
+      window.dispatchEvent(new CustomEvent('antara:auth-change', { detail: { user: null, source: 'logout', confirmed: true } }));
       return payload;
     }
   };

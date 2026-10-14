@@ -49,3 +49,10 @@ Venus Full Exploration keeps three source categories separate:
 - **Renderer detail**: procedural micro and meso enrichment below the DEM resolution. It remains subordinate to measured macro elevation.
 
 The HUD and location card report the active topography source. If no legitimate elevation source is available, Full Exploration reports an error instead of presenting procedural terrain as scientific data.
+
+
+## Follow-up media grounding update (2026-10-03)
+
+- Shared exploration media now **prioritizes authentic observational imagery before diagrams** whenever both are available in the same topic.
+- Shared exploration media now provides an **official-world fallback image** for concept-heavy Sun, Mercury, Jupiter, Saturn, Uranus, and Neptune topics that previously exposed only diagrams. This keeps child-facing topics visually grounded while preserving the educational diagram as a second visual when useful.
+- Feature detection for media placement was expanded so location/feature topics such as **Caloris Basin, Great Red Spot, Hexagon, Titan, Enceladus, Miranda, Triton, rings, storms, and clouds** are treated as stronger visual topics instead of detached abstract cards.

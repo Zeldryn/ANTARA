@@ -70,6 +70,7 @@ try {
     $userId = (int)$pdo->lastInsertId();
     session_regenerate_id(true);
     $_SESSION['user_id'] = $userId;
+    try { antara_issue_remember_token($pdo, $userId); } catch (Throwable $rememberError) { error_log('ANTARA remember token issue error: ' . $rememberError->getMessage()); }
 
     $user = [
         'id' => $userId,

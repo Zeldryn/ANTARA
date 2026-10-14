@@ -502,6 +502,11 @@ window.MercuryScene = class MercuryScene {
     this.cameraOffset = { x: 0, y: 0 };
     this.exploring = false;
     this.fullExplorationActive = false;
+    this.fullDiveBlend = 0;
+    this.fullDiveYawTarget = 0.6;
+    this.fullDivePitchTarget = 0.09;
+    this.fullDiveRollTarget = MERCURY_EXPLORATION_ROLL;
+    this.fullDiveLocationKey = "";
     this.explorationBlend = 0;
     this.explorationBlendTarget = 0;
     this.topicIndex = 0;
@@ -703,7 +708,7 @@ window.MercuryScene = class MercuryScene {
     if (!this.exploring) return;
     this.exploring = false;
     this.explorationBlendTarget = 0;
-    this.element.classList.remove("is-exploring", "is-full-exploring");
+    this.element.classList.remove("is-exploring", "is-full-exploring", "is-full-diving");
     this.focusReticle.classList.remove("is-marker-visible");
     this.focusReticle.classList.add("is-relocating");
     this.exploration.inert = true;
@@ -797,8 +802,26 @@ window.MercuryScene = class MercuryScene {
     this.fullExplorationActive = true;
     this.caption.inert = true;
     this.exploration.inert = true;
-    this.element.classList.add("is-full-exploring");
+    this.setFullExplorationTransition(0, location || { latitude: 0, longitudeEast: 0 });
     return true;
+  }
+
+  setFullExplorationTransition(blend, location) {
+    const nextBlend = Math.max(0, Math.min(1, Number(blend) || 0));
+    if (location && Number.isFinite(location.latitude) && Number.isFinite(location.longitudeEast)) {
+      const key = `${location.latitude.toFixed(4)},${location.longitudeEast.toFixed(4)}`;
+      if (key !== this.fullDiveLocationKey || this.fullDiveBlend < 0.001) {
+        const orientation = mercuryLocationOrientation(location);
+        this.fullDiveYawTarget = unwrapMercuryAngleNear(orientation.yaw, this.renderedRotation);
+        this.fullDivePitchTarget = orientation.pitch;
+        this.fullDiveRollTarget = 0.012;
+        this.fullDiveLocationKey = key;
+      }
+    }
+    this.fullDiveBlend = nextBlend;
+    this.element.classList.toggle("is-full-diving", nextBlend > 0.001);
+    this.element.classList.toggle("is-full-exploring", this.fullExplorationActive || nextBlend > 0.001);
+    if (this.active) this.render();
   }
 
   beginFullExploration(location) {
@@ -807,13 +830,15 @@ window.MercuryScene = class MercuryScene {
       const started = this.startFullExplorationTransition(location);
       if (!started) return false;
     }
-    this.element.classList.add("is-full-exploring");
+    this.setFullExplorationTransition(1, location || { latitude: 0, longitudeEast: 0 });
     return true;
   }
 
   endFullExploration() {
+    if (!this.fullExplorationActive && this.fullDiveBlend <= .001) return;
     this.fullExplorationActive = false;
-    this.element.classList.remove("is-full-exploring");
+    this.setFullExplorationTransition(0, null);
+    this.element.classList.remove("is-full-exploring", "is-full-diving");
     this.caption.inert = !this.active;
   }
 
@@ -918,6 +943,7 @@ window.MercuryScene = class MercuryScene {
     this.arrivalEuler = new THREE.Euler();
     this.arrivalQuaternion = new THREE.Quaternion();
     this.exploreQuaternion = new THREE.Quaternion();
+    this.fullDiveQuaternion = new THREE.Quaternion();
     this.yawQuaternion = new THREE.Quaternion();
     this.pitchQuaternion = new THREE.Quaternion();
     this.rollQuaternion = new THREE.Quaternion();
@@ -1041,13 +1067,15 @@ window.MercuryScene = class MercuryScene {
     this.element.hidden = false;
     this.exploring = false;
     this.fullExplorationActive = false;
+    this.fullDiveBlend = 0;
+    this.fullDiveLocationKey = "";
     this.explorationBlend = this.explorationBlendTarget = 0;
     this.topicYaw = this.topicYawTarget = 0.6;
     this.topicPitch = this.topicPitchTarget = 0.09;
     this.topicRoll = this.topicRollTarget = MERCURY_EXPLORATION_ROLL;
     this.topicShift = { x: 0, y: 0 };
     this.topicShiftTarget = { ...MERCURY_EXPLORATION_STOPS[0].shift };
-    this.element.classList.remove("is-exploring", "is-full-exploring");
+    this.element.classList.remove("is-exploring", "is-full-exploring", "is-full-diving");
     this.caption.inert = true;
     this.exploration.inert = true;
     this.caption.classList.remove("is-visible");
@@ -1070,9 +1098,11 @@ window.MercuryScene = class MercuryScene {
     this.frame = null;
     this.element.hidden = true;
     this.element.style.opacity = "0";
-    this.element.classList.remove("is-exploring", "is-full-exploring");
+    this.element.classList.remove("is-exploring", "is-full-exploring", "is-full-diving");
     this.exploring = false;
     this.fullExplorationActive = false;
+    this.fullDiveBlend = 0;
+    this.fullDiveLocationKey = "";
     this.explorationBlend = this.explorationBlendTarget = 0;
     this.caption.inert = true;
     this.exploration.inert = true;
@@ -1385,20 +1415,25 @@ window.MercuryScene = class MercuryScene {
       ? MERCURY_EXPLORATION_DISTANCE_SCALE_MOBILE
       : MERCURY_EXPLORATION_DISTANCE_SCALE_DESKTOP;
     const explorationFramingScale = 1 + this.explorationBlend * (explorationDistanceScale - 1);
-    this.distance = arrivalDistance * explorationFramingScale;
+    const dive = smooth(this.fullDiveBlend);
+    this.distance = Math.max(1.08, arrivalDistance * explorationFramingScale * (1 - dive * 0.76));
     const arrivalYaw = this.motion.matches ? 0.6 : 0.6 - t * 0.016;
     const exploreYaw = this.topicYaw + (this.motion.matches ? 0 : Math.sin(t * 0.14) * 0.012);
-    const fallbackYaw = arrivalYaw * (1 - this.explorationBlend) + exploreYaw * this.explorationBlend;
-    const fallbackPitch = 0.09 * (1 - this.explorationBlend) + this.topicPitch * this.explorationBlend;
-    const fallbackRoll = MERCURY_EXPLORATION_ROLL * (1 - this.explorationBlend) + this.topicRoll * this.explorationBlend;
+    const orbitYaw = arrivalYaw * (1 - this.explorationBlend) + exploreYaw * this.explorationBlend;
+    const orbitPitch = 0.09 * (1 - this.explorationBlend) + this.topicPitch * this.explorationBlend;
+    const orbitRoll = MERCURY_EXPLORATION_ROLL * (1 - this.explorationBlend) + this.topicRoll * this.explorationBlend;
+    const fallbackYaw = orbitYaw * (1 - dive) + this.fullDiveYawTarget * dive;
+    const fallbackPitch = orbitPitch * (1 - dive) + this.fullDivePitchTarget * dive;
+    const fallbackRoll = orbitRoll * (1 - dive) + this.fullDiveRollTarget * dive;
     this.renderedRotation = fallbackYaw;
     const reveal = smooth(t / (this.motion.matches ? 1 : 1.8));
     this.element.style.opacity = String(reveal);
     const caption = smooth((t - (this.motion.matches ? 1 : 9)) / 2.5);
-    this.caption.style.opacity = String(caption);
-    this.caption.style.transform = `translateY(${this.motion.matches ? 0 : (1 - caption) * 12}px)`;
-    this.credit.style.opacity = String(caption * 0.9);
-    this.credit.tabIndex = caption > 0.5 && !this.exploring && !this.fullExplorationActive ? 0 : -1;
+    const captionVisibility = caption * (1 - dive);
+    this.caption.style.opacity = String(captionVisibility);
+    this.caption.style.transform = `translateY(${this.motion.matches ? 0 : (1 - captionVisibility) * 12}px)`;
+    this.credit.style.opacity = String(captionVisibility * 0.9);
+    this.credit.tabIndex = captionVisibility > 0.5 && !this.exploring && !this.fullExplorationActive ? 0 : -1;
     if (caption > 0.5 && !this.announced) {
       this.announced = true;
       this.caption.inert = false;
@@ -1414,19 +1449,17 @@ window.MercuryScene = class MercuryScene {
       const exploreX = this.mobile ? this.topicShift.x * 0.7 : MERCURY_EXPLORATION_CENTER_X_DESKTOP + this.topicShift.x;
       const baseY = this.mobile ? 0.28 : 0.1;
       const exploreY = this.mobile ? 0.20 + this.topicShift.y : MERCURY_EXPLORATION_CENTER_Y_DESKTOP + this.topicShift.y;
-      const groupX = baseX * (1 - this.explorationBlend) + exploreX * this.explorationBlend;
-      const groupY = baseY * (1 - this.explorationBlend) + exploreY * this.explorationBlend;
+      const groupX = (baseX * (1 - this.explorationBlend) + exploreX * this.explorationBlend) * (1 - dive);
+      const groupY = (baseY * (1 - this.explorationBlend) + exploreY * this.explorationBlend) * (1 - dive);
       this.travelVenusGroup.visible = false;
       this.atmosphere.visible = true;
       this.planetGroup.visible = true;
       this.planet.material.opacity = 1;
       this.planet.material.transparent = false;
       this.planet.material.depthWrite = true;
-      this.planetGroup.position.set(halfHeight * this.camera.aspect * groupX, halfHeight * groupY + drift * (1 - this.explorationBlend * 0.45), 0);
+      this.planetGroup.position.set(halfHeight * this.camera.aspect * groupX, halfHeight * groupY + drift * (1 - this.explorationBlend * 0.45) * (1 - dive), 0);
 
-      // Preserve the arrival pose, but in exploration orient the real sphere from
-      // geographic latitude/longitude. Composition is Rz * Rx * Ry so the chosen
-      // surface normal points toward +Z while Mercury north remains upright.
+      // Preserve the arrival pose, then use the same planet-scale dive handoff as Venus.
       this.arrivalEuler.set(0.09, arrivalYaw, MERCURY_EXPLORATION_ROLL, "XYZ");
       this.arrivalQuaternion.setFromEuler(this.arrivalEuler);
       this.yawQuaternion.setFromAxisAngle(this.axisY, exploreYaw);
@@ -1434,8 +1467,15 @@ window.MercuryScene = class MercuryScene {
       this.rollQuaternion.setFromAxisAngle(this.axisZ, this.topicRoll);
       this.exploreQuaternion.copy(this.rollQuaternion).multiply(this.pitchQuaternion).multiply(this.yawQuaternion);
       this.planet.quaternion.copy(this.arrivalQuaternion).slerp(this.exploreQuaternion, this.explorationBlend);
+      if (dive > 0.0001) {
+        this.yawQuaternion.setFromAxisAngle(this.axisY, this.fullDiveYawTarget);
+        this.pitchQuaternion.setFromAxisAngle(this.axisX, this.fullDivePitchTarget);
+        this.rollQuaternion.setFromAxisAngle(this.axisZ, this.fullDiveRollTarget);
+        this.fullDiveQuaternion.copy(this.rollQuaternion).multiply(this.pitchQuaternion).multiply(this.yawQuaternion);
+        this.planet.quaternion.slerp(this.fullDiveQuaternion, dive);
+      }
 
-      const pointerStrength = 1 - this.explorationBlend * 0.55;
+      const pointerStrength = (1 - this.explorationBlend * 0.55) * (1 - dive);
       this.camera.position.set(this.motion.matches ? 0 : this.cameraOffset.x * 0.13 * pointerStrength, this.motion.matches ? 0 : -this.cameraOffset.y * 0.09 * pointerStrength, this.distance);
       this.camera.lookAt(0, 0, 0);
       this.renderer.render(this.scene, this.camera);
@@ -1449,10 +1489,10 @@ window.MercuryScene = class MercuryScene {
       planet.style.width = planet.style.height = `${radius * 2}px`;
       planet.style.backgroundPositionX = `${-fallbackYaw * 100}px`;
       this.focusReticle.style.setProperty("--marker-opacity", "0");
-      const cssLeft = this.mobile ? 50 + this.explorationBlend * this.topicShift.x * 60 : 64 + this.explorationBlend * (this.topicShift.x * 45);
-      const cssTop = this.mobile ? 36 - this.explorationBlend * (8 - this.topicShift.y * 35) : 45 + this.explorationBlend * (2 + this.topicShift.y * 35);
-      planet.style.left = `${cssLeft}%`;
-      planet.style.top = `${cssTop}%`;
+      const orbitLeft = this.mobile ? 50 + this.explorationBlend * this.topicShift.x * 60 : 64 + this.explorationBlend * (this.topicShift.x * 45);
+      const orbitTop = this.mobile ? 36 - this.explorationBlend * (8 - this.topicShift.y * 35) : 45 + this.explorationBlend * (2 + this.topicShift.y * 35);
+      planet.style.left = `${50 + (orbitLeft - 50) * (1 - dive)}%`;
+      planet.style.top = `${50 + (orbitTop - 50) * (1 - dive)}%`;
     }
   }
 

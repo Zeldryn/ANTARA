@@ -7,6 +7,7 @@
     CONFIGURING: "configuring",
     LOADING: "loading",
     EXPLORING: "exploring",
+    EXITING: "exiting",
     ERROR: "error"
   });
 
@@ -37,7 +38,7 @@
         "Bagian dalam basin diisi dataran vulkanik yang lebih halus daripada daerah sekitarnya.",
         "Di sisi berlawanan planet terdapat wilayah kacau yang diduga terkait gelombang tumbukan Caloris."
       ],
-      palette: { low: 0x4f4037, mid: 0x8b725d, high: 0xbfa17b, accent: 0xd9ba8f },
+      palette: { low: 0x141414, mid: 0x30302e, high: 0x66615a, accent: 0xbfa77d },
       terrain: {
         seed: 11,
         craters: [
@@ -68,7 +69,7 @@
         "Sebagian tebing di Merkurius dapat membentang ratusan kilometer.",
         "MESSENGER membantu memetakan scarp lebih rinci dibanding era Mariner 10."
       ],
-      palette: { low: 0x40352f, mid: 0x766155, high: 0xa78d73, accent: 0xd3b28c },
+      palette: { low: 0x121314, mid: 0x2c2d2d, high: 0x5b5955, accent: 0xb7a17f },
       terrain: {
         seed: 23,
         craters: [
@@ -101,7 +102,7 @@
         "Wilayah ini menampilkan peralihan antara basin besar dan medan kawah tua.",
         "Basin purba membantu ilmuwan menelusuri sejarah awal pemboman di Tata Surya dalam."
       ],
-      palette: { low: 0x3d322f, mid: 0x6e5d57, high: 0x9f8a7b, accent: 0xd1b695 },
+      palette: { low: 0x111112, mid: 0x292929, high: 0x575552, accent: 0xbba98c },
       terrain: {
         seed: 37,
         craters: [
@@ -132,7 +133,7 @@
         "Basin ini memiliki sistem cincin dan struktur tektonik di bagian dalamnya.",
         "MESSENGER menemukan detail Rembrandt yang jauh lebih lengkap setelah Mariner 10 tidak sempat memotretnya."
       ],
-      palette: { low: 0x413430, mid: 0x7b665c, high: 0xad9485, accent: 0xe0c199 },
+      palette: { low: 0x121214, mid: 0x2b2b2d, high: 0x5f5a56, accent: 0xc4ac89 },
       terrain: {
         seed: 51,
         craters: [
@@ -165,7 +166,7 @@
         "Walau dekat Matahari, dasar kawah yang selalu gelap dapat tetap sangat dingin.",
         "Temuan es kutub menjadikan Merkurius jauh lebih kompleks daripada dugaan awal."
       ],
-      palette: { low: 0x3c3534, mid: 0x69635e, high: 0xb6aa9b, accent: 0xe8ddcf },
+      palette: { low: 0x101112, mid: 0x292b2c, high: 0x626365, accent: 0xd4cec2 },
       terrain: {
         seed: 67,
         craters: [
@@ -182,6 +183,54 @@
 
   const REGION_BY_ID = new Map(REGIONS.map(region => [region.id, region]));
 
+  const MERCURY_EDUCATION = Object.freeze({
+    caloris: Object.freeze({
+      intro: "Jelajahi Caloris lewat empat titik pengamatan: tepi basin, dataran vulkanik, kawah sekunder, dan struktur ejecta.",
+      observations: Object.freeze([
+        { id: "caloris-rim", label: "Temukan tepi basin Caloris", title: "Tepi Basin Raksasa", type: "COBA PERHATIKAN!", x: -22, z: 18, interactRadius: 5.2, lead: "Relief di sini memperlihatkan peralihan dari dataran sekitar menuju cincin basin Caloris.", why: "Tepi basin membantu membaca skala energi tumbukan yang membentuk salah satu cekungan terbesar di Tata Surya.", source: "https://science.nasa.gov/photojournal/the-mighty-caloris/" },
+        { id: "caloris-plains", label: "Amati dataran halus di dalam basin", title: "Dataran Vulkanik Caloris", type: "TAHUKAH KAMU?", x: 14, z: 12, interactRadius: 5.0, lead: "Bagian dalam Caloris lebih halus daripada banyak medan kawah tua di sekitarnya.", why: "Dataran halus memberi petunjuk bahwa material vulkanik pernah mengisi bagian dalam basin setelah tumbukan besar.", source: "https://science.nasa.gov/mercury/" },
+        { id: "caloris-secondary", label: "Cari kawah sekunder di sekitar basin", title: "Kawah Sekunder", type: "COBA LIHAT!", x: -10, z: -16, interactRadius: 5.0, lead: "Kawah yang lebih kecil dapat terbentuk dari material ejecta yang jatuh kembali setelah tumbukan utama.", why: "Pola kawah sekunder membantu membedakan jejak tumbukan utama dari tabrakan kecil yang terjadi terpisah.", source: "https://science.nasa.gov/mercury/" },
+        { id: "caloris-ejecta", label: "Pelajari zona ejecta Caloris", title: "Jejak Ejecta", type: "TERNYATA...", x: 23, z: -20, interactRadius: 5.4, lead: "Material yang terlempar saat tumbukan besar dapat tersebar jauh dari pusat basin.", why: "Sebaran ejecta merekam arah dan skala proses tumbukan yang membentuk Caloris.", source: "https://science.nasa.gov/photojournal/the-mighty-caloris/" }
+      ])
+    }),
+    discovery: Object.freeze({
+      intro: "Ikuti empat titik di Discovery Rupes untuk memahami bagaimana Merkurius menyusut dan membentuk tebing panjang.",
+      observations: Object.freeze([
+        { id: "discovery-main-scarp", label: "Dekati tebing utama Discovery Rupes", title: "Tebing Penyusutan", type: "COBA PERHATIKAN!", x: -30, z: -9, interactRadius: 5.0, lead: "Scarp panjang ini menyerupai kerutan raksasa pada kerak Merkurius.", why: "Saat interior Merkurius mendingin, volumenya berkurang dan kerak terdorong membentuk sesar dorong serta tebing panjang.", source: "https://science.nasa.gov/photojournal/deformation-discovery/" },
+        { id: "discovery-offset", label: "Amati perubahan tinggi di dua sisi tebing", title: "Perbedaan Ketinggian", type: "COBA LIHAT!", x: 10, z: 4, interactRadius: 4.8, lead: "Dua sisi struktur tidak berada pada ketinggian yang sama.", why: "Perbedaan tinggi membantu mengenali perpindahan kerak akibat kompresi global Merkurius.", source: "https://science.nasa.gov/photojournal/deformation-discovery/" },
+        { id: "discovery-crater-cut", label: "Cari kawah yang dipotong struktur", title: "Scarp Memotong Medan Lama", type: "TERNYATA...", x: 28, z: 17, interactRadius: 5.0, lead: "Struktur tektonik dapat melintasi medan yang lebih tua, termasuk kawah.", why: "Hubungan potong-memotong membantu menentukan urutan kejadian geologi: struktur yang memotong biasanya lebih muda.", source: "https://science.nasa.gov/mercury/" },
+        { id: "discovery-ridge", label: "Ikuti punggungan sekunder", title: "Punggungan Sekunder", type: "COBA TELUSURI!", x: -12, z: -27, interactRadius: 5.2, lead: "Di sekitar scarp utama terdapat relief kecil yang memperkaya bentuk medan.", why: "Medan tektonik tidak selalu terdiri dari satu garis. Punggungan kecil membantu membaca deformasi yang lebih kompleks.", source: "https://science.nasa.gov/mercury/" }
+      ])
+    }),
+    beethoven: Object.freeze({
+      intro: "Baca Beethoven sebagai basin tua: tepi basin, dasar cekungan, kawah tumpang tindih, dan medan ejecta yang sudah sangat tererosi.",
+      observations: Object.freeze([
+        { id: "beethoven-rim", label: "Temukan tepi Beethoven Basin", title: "Tepi Basin Tua", type: "COBA PERHATIKAN!", x: -21, z: 18, interactRadius: 5.2, lead: "Tepi Beethoven tidak setajam basin yang lebih muda karena permukaannya telah lama dipenuhi tumbukan berikutnya.", why: "Derajat pelapukan dan tumpang tindih kawah memberi petunjuk umur relatif suatu medan.", source: "https://science.nasa.gov/photojournal/mapping-beethoven/" },
+        { id: "beethoven-floor", label: "Amati bagian dalam basin", title: "Dasar Beethoven", type: "TAHUKAH KAMU?", x: 2, z: 2, interactRadius: 5.0, lead: "Bagian dalam basin memperlihatkan relief yang lebih rendah dengan banyak bekas tumbukan tambahan.", why: "Dasar basin menyimpan rekaman panjang perubahan permukaan setelah tumbukan utama.", source: "https://science.nasa.gov/photojournal/mapping-beethoven/" },
+        { id: "beethoven-overlap", label: "Cari kawah yang saling bertumpuk", title: "Kawah Bertumpuk", type: "COBA LIHAT!", x: 23, z: 19, interactRadius: 5.0, lead: "Beberapa kawah tampak saling menimpa karena terbentuk pada waktu yang berbeda.", why: "Tumpang tindih kawah adalah salah satu cara sederhana untuk membaca urutan relatif kejadian geologi.", source: "https://science.nasa.gov/mercury/" },
+        { id: "beethoven-ejecta", label: "Amati medan kasar di luar basin", title: "Medan Ejecta Tua", type: "TERNYATA...", x: -25, z: -22, interactRadius: 5.3, lead: "Medan kasar di luar basin mencampur ejecta tua dengan kawah yang muncul kemudian.", why: "Campuran relief menunjukkan betapa lama permukaan Merkurius terus dibombardir setelah basin terbentuk.", source: "https://science.nasa.gov/mercury/" }
+      ])
+    }),
+    rembrandt: Object.freeze({
+      intro: "Cari empat petunjuk utama di Rembrandt: cincin basin, retakan interior, dataran, dan kawah yang memotong struktur lama.",
+      observations: Object.freeze([
+        { id: "rembrandt-ring", label: "Temukan pola cincin Rembrandt", title: "Cincin Basin Rembrandt", type: "COBA PERHATIKAN!", x: -20, z: 17, interactRadius: 5.2, lead: "Relief melingkar mengelilingi bagian dalam Rembrandt Basin.", why: "Cincin membantu memahami bagaimana kerak merespons tumbukan raksasa dan penyesuaian sesudahnya.", source: "https://science.nasa.gov/photojournal/rembrandt-basin-in-color/" },
+        { id: "rembrandt-fracture", label: "Cari struktur retak di interior", title: "Retakan Interior", type: "COBA LIHAT!", x: 9, z: -2, interactRadius: 4.8, lead: "Di dalam basin terdapat struktur yang memotong dataran dan membentuk pola tektonik.", why: "Retakan dapat muncul ketika kerak mengalami tarikan atau penyesuaian setelah basin terisi material baru.", source: "https://science.nasa.gov/photojournal/rembrandt-basin-in-color/" },
+        { id: "rembrandt-plains", label: "Bandingkan dataran dengan cincin basin", title: "Dataran Interior", type: "TAHUKAH KAMU?", x: 24, z: 18, interactRadius: 5.1, lead: "Dataran relatif halus kontras dengan relief cincin di sekitarnya.", why: "Perbedaan tekstur membantu memisahkan unit geologi yang terbentuk oleh proses dan waktu yang berbeda.", source: "https://science.nasa.gov/mercury/" },
+        { id: "rembrandt-younger", label: "Cari kawah lebih muda di atas struktur lama", title: "Kawah yang Lebih Muda", type: "TERNYATA...", x: -18, z: -24, interactRadius: 5.0, lead: "Kawah kecil yang memotong struktur basin menunjukkan kejadian yang terjadi sesudah basin terbentuk.", why: "Prinsip tumpang tindih membantu menyusun kronologi relatif tanpa harus mengetahui umur absolut setiap batuan.", source: "https://science.nasa.gov/mercury/" }
+      ])
+    }),
+    prokofiev: Object.freeze({
+      intro: "Prokofiev memperlihatkan paradoks Merkurius: sangat dekat Matahari, tetapi kawah kutub yang selalu gelap dapat menyimpan es.",
+      observations: Object.freeze([
+        { id: "prokofiev-shadow", label: "Masuki zona dasar kawah yang gelap", title: "Bayangan Permanen", type: "COBA PERHATIKAN!", x: -9, z: 4, interactRadius: 4.8, lead: "Bagian tertentu dari kawah kutub hampir tidak pernah menerima cahaya Matahari langsung.", why: "Tanpa pemanasan langsung, suhu lokal dapat tetap sangat rendah meskipun Merkurius dekat dengan Matahari.", source: "https://science.nasa.gov/photojournal/icy-view-of-prokofiev/" },
+        { id: "prokofiev-ice", label: "Pelajari area terkait endapan es", title: "Endapan Es Kutub", type: "TERNYATA...", x: 8, z: -4, interactRadius: 4.8, lead: "Data radar dan pengukuran MESSENGER mendukung keberadaan material kaya es di kawah kutub.", why: "Temuan ini mengubah gambaran Merkurius dari sekadar planet panas menjadi dunia dengan lingkungan ekstrem yang sangat kontras.", source: "https://science.nasa.gov/photojournal/icy-view-of-prokofiev/" },
+        { id: "prokofiev-rim", label: "Bandingkan tepi terang dengan dasar gelap", title: "Kontras Tepi dan Dasar", type: "COBA LIHAT!", x: 16, z: 15, interactRadius: 5.0, lead: "Tepi kawah dapat menerima cahaya kuat sementara dasar tertentu tetap berada dalam bayangan.", why: "Geometri kutub dan topografi kawah menciptakan mikro-lingkungan suhu yang sangat berbeda dalam jarak pendek.", source: "https://science.nasa.gov/mercury/" },
+        { id: "prokofiev-small-craters", label: "Cari kawah kecil di sekitar Prokofiev", title: "Medan Kawah Kutub", type: "COBA TELUSURI!", x: -22, z: -16, interactRadius: 5.2, lead: "Wilayah kutub tetap dipenuhi kawah kecil dan relief tua seperti bagian Merkurius lainnya.", why: "Kawah-kawah kecil menunjukkan bahwa proses tumbukan terus membentuk permukaan bahkan di wilayah yang menyimpan es.", source: "https://science.nasa.gov/mercury/" }
+      ])
+    })
+  });
+
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const lerp = (a, b, t) => a + (b - a) * t;
   const smoothStep = value => {
@@ -189,6 +238,7 @@
     return v * v * (3 - 2 * v);
   };
   const distance2D = (a, b) => Math.hypot((a.x || 0) - (b.x || 0), (a.z || 0) - (b.z || 0));
+  const wait = ms => new Promise(resolve => window.setTimeout(resolve, Math.max(0, ms)));
   const seeded = seed => {
     const x = Math.sin(seed * 127.1 + 311.7) * 43758.5453123;
     return x - Math.floor(x);
@@ -235,6 +285,19 @@
       this.nextTargetDistance = document.getElementById("mercury-next-target-distance");
       this.objectivesCollapse = document.getElementById("mercury-objectives-collapse");
       this.objectivesToggle = document.getElementById("mercury-objectives-toggle");
+      this.observationPrompt = document.getElementById("mercury-observation-prompt");
+      this.observationPromptTitle = document.getElementById("mercury-observation-prompt-title");
+      this.observeButton = document.getElementById("mercury-observe-button");
+      this.observationCard = document.getElementById("mercury-observation-card");
+      this.observationClose = document.getElementById("mercury-observation-close");
+      this.observationType = document.getElementById("mercury-observation-type");
+      this.observationStatus = document.getElementById("mercury-observation-status");
+      this.observationTitle = document.getElementById("mercury-observation-title");
+      this.observationMeta = document.getElementById("mercury-observation-meta");
+      this.observationLead = document.getElementById("mercury-observation-lead");
+      this.observationWhy = document.getElementById("mercury-observation-why");
+      this.observationSourceNote = document.getElementById("mercury-observation-source-note");
+      this.observationSource = document.getElementById("mercury-observation-source");
       this.landmarkCard = document.getElementById("mercury-landmark-card");
       this.landmarkName = document.getElementById("mercury-landmark-name");
       this.landmarkType = document.getElementById("mercury-landmark-type");
@@ -272,8 +335,14 @@
       this.qualityDeviceNote.textContent = this.deviceRecommendation();
       this.pointerLocked = false;
       this.dragging = false;
+      this.lookPointerId = null;
+      this.lookPointer = { x: 0, y: 0 };
       this.look = { yaw: 0, pitch: -0.18 };
+      this.altitudeOffset = 6.0;
       this.movement = { forward: 0, backward: 0, left: 0, right: 0, up: 0, down: 0, fast: 0 };
+      this.keys = new Set();
+      this.pointerActions = new Map();
+      this.regionSwitchInFlight = false;
       this.player = { x: 0, y: 11, z: 52, vx: 0, vz: 0 };
       this.clock = 0;
       this.frame = null;
@@ -283,7 +352,16 @@
       this.actionsMenuOpen = false;
       this.regionCards = [];
       this.objectiveItems = [];
+      this.discovered = new Set();
+      this.currentGoals = [];
+      this.goalMarkers = new Map();
+      this.goalTime = 0;
+      this.nearbyObservation = null;
+      this.selectedTarget = null;
+      this.activeObservation = null;
       this.progressAnim = 0;
+      this.transitionToken = 0;
+      this.selectorRestoreState = null;
 
       this.onPointerLockChange = this.onPointerLockChange.bind(this);
       this.onMouseMove = this.onMouseMove.bind(this);
@@ -340,22 +418,42 @@
       });
       this.objectivesCollapse?.addEventListener("click", () => this.setObjectivesCollapsed(true));
       this.objectivesToggle?.addEventListener("click", () => this.setObjectivesCollapsed(false));
-      this.landmarkMinimize?.addEventListener("click", () => this.setInfoMinimized(true));
-      this.infoToggle?.addEventListener("click", () => this.setInfoMinimized(false));
+      this.observeButton?.addEventListener("click", () => this.tryObserveNearby());
+      this.observationClose?.addEventListener("click", () => this.closeObservationCard(true));
+      this.landmarkMinimize?.addEventListener("click", event => { event.stopPropagation(); this.setInfoMinimized(true, false, true); });
+      this.infoToggle?.addEventListener("click", event => { event.stopPropagation(); this.setActionsMenu(false); this.setInfoMinimized(false, false, true); });
       this.tutorialClose?.addEventListener("click", () => this.tutorial.hidden = true);
       this.mobileControls.forEach(button => {
         const control = button.dataset.mercuryControl;
-        const begin = event => { event.preventDefault(); this.setControl(control, true); };
-        const endControl = event => { event.preventDefault(); this.setControl(control, false); };
-        button.addEventListener("pointerdown", begin);
+        button.addEventListener("pointerdown", event => {
+          if (!this.active || this.state !== STATES.EXPLORING || this.isObservationCardOpen()) return;
+          event.preventDefault();
+          event.stopPropagation();
+          button.setPointerCapture?.(event.pointerId);
+          this.pointerActions.set(event.pointerId, control);
+          button.classList.add("is-held");
+        });
+        const endControl = event => {
+          const action = this.pointerActions.get(event.pointerId);
+          this.pointerActions.delete(event.pointerId);
+          if (action) event.currentTarget?.classList?.remove("is-held");
+        };
         button.addEventListener("pointerup", endControl);
-        button.addEventListener("pointerleave", endControl);
         button.addEventListener("pointercancel", endControl);
+        button.addEventListener("lostpointercapture", endControl);
+        button.addEventListener("contextmenu", event => event.preventDefault());
       });
-      this.viewport?.addEventListener("click", () => {
+      window.addEventListener("blur", () => this.clearMovementInput());
+      this.viewport?.addEventListener("click", event => {
         if (!this.active || this.state !== STATES.EXPLORING) return;
+        if (event.pointerType && event.pointerType !== "mouse") return;
         if (document.pointerLockElement !== this.viewport) this.viewport.requestPointerLock?.();
       });
+      this.viewport?.addEventListener("pointerdown", event => this.onLookPointerDown(event));
+      this.viewport?.addEventListener("pointermove", event => this.onLookPointerMove(event));
+      this.viewport?.addEventListener("pointerup", event => this.onLookPointerUp(event));
+      this.viewport?.addEventListener("pointercancel", event => this.onLookPointerUp(event));
+      this.viewport?.addEventListener("contextmenu", event => event.preventDefault());
       document.addEventListener("pointerlockchange", this.onPointerLockChange);
       document.addEventListener("mousemove", this.onMouseMove);
       window.addEventListener("keydown", this.onKeyDown);
@@ -370,35 +468,82 @@
         button.type = "button";
         button.className = "venus-region-card mercury-region-card";
         button.dataset.mercuryRegion = region.id;
-        button.innerHTML = `<span class="venus-region-preview mercury-region-preview" aria-hidden="true"><img src="${region.image}" alt="" loading="lazy" referrerpolicy="no-referrer"><i></i><b>${region.short}</b></span><span class="venus-region-index">${String(index + 1).padStart(2, "0")}</span><strong>${region.name}</strong><span class="venus-region-descriptor">${region.descriptor}</span><small>${Math.abs(region.latitude).toFixed(2)}°${region.latitude >= 0 ? "N" : "S"} · ${region.longitudeEast.toFixed(2)}°E</small><em>${region.category}</em><span class="venus-region-source">NASA · MESSENGER / Mariner · referensi resmi</span>`;
-        button.addEventListener("click", () => {
-          this.selectRegion(region);
-          this.startSelectedRegion({ switchOnly: Boolean(this.currentRegion) });
-        });
+        button.innerHTML = `<span class="venus-region-preview mercury-region-preview mercury-region-preview-${region.id}" aria-hidden="true"><i></i><b>${region.short}</b></span><span class="venus-region-index">${String(index + 1).padStart(2, "0")}</span><strong>${region.name}</strong><span class="venus-region-descriptor">${region.descriptor}</span><small>${Math.abs(region.latitude).toFixed(2)}°${region.latitude >= 0 ? "N" : "S"} · ${region.longitudeEast.toFixed(2)}°E</small><em>${region.category}</em><span class="venus-region-source">NASA · MESSENGER / USGS</span>`;
+        button.addEventListener("click", () => this.handleRegionSelection(region));
         this.regionGrid.appendChild(button);
         return { region, button };
       });
       this.refreshRegionCards();
     }
 
+    educationFor(region = this.currentRegion) {
+      return region ? MERCURY_EDUCATION[region.id] || null : null;
+    }
+
+    discoveryStorageKey(region = this.currentRegion) {
+      return `antara-mercury-discoveries-${region?.id || "mercury"}-v1`;
+    }
+
+    loadDiscoveryState() {
+      const valid = new Set((this.currentGoals || []).map(goal => goal.id));
+      let saved = [];
+      try { saved = JSON.parse(sessionStorage.getItem(this.discoveryStorageKey()) || "[]"); } catch (_) { saved = []; }
+      this.discovered = new Set(Array.isArray(saved) ? saved.filter(id => valid.has(id)) : []);
+    }
+
+    saveDiscoveryState() {
+      try { sessionStorage.setItem(this.discoveryStorageKey(), JSON.stringify([...this.discovered])); } catch (_) {}
+    }
+
     buildObjectives() {
+      const education = this.educationFor();
+      const goals = education?.observations || [];
       this.objectivesList.replaceChildren();
-      this.objectiveItems = REGIONS.map((region, index) => {
+      this.objectiveItems = goals.map((goal, index) => {
         const item = document.createElement("li");
-        item.innerHTML = `<span class="venus-objective-marker">${String(index + 1).padStart(2, "0")}</span><div><strong>${region.name}</strong><small>${region.category} · ${region.descriptor}</small></div>`;
+        item.dataset.discovery = goal.id;
+        item.innerHTML = `<span class="venus-objective-marker">${String(index + 1).padStart(2, "0")}</span><div><strong>${goal.label}</strong><small>BELUM DIAMATI</small></div>`;
         this.objectivesList.appendChild(item);
-        return { region, item, marker: item.querySelector(".venus-objective-marker") };
+        return { goal, item, marker: item.querySelector(".venus-objective-marker"), status: item.querySelector("small") };
       });
       this.updateObjectives();
     }
 
     setControl(control, pressed) {
-      if (control === "forward") this.movement.forward = pressed ? 1 : 0;
-      if (control === "backward") this.movement.backward = pressed ? 1 : 0;
-      if (control === "left") this.movement.left = pressed ? 1 : 0;
-      if (control === "right") this.movement.right = pressed ? 1 : 0;
-      if (control === "up") this.movement.up = pressed ? 1 : 0;
-      if (control === "down") this.movement.down = pressed ? 1 : 0;
+      this.movement[control] = pressed ? 1 : 0;
+    }
+
+    actionActive(action) {
+      if ([...this.pointerActions.values()].includes(action)) return true;
+      if (action === "forward") return this.keys.has("w");
+      if (action === "backward") return this.keys.has("s");
+      if (action === "left") return this.keys.has("a");
+      if (action === "right") return this.keys.has("d");
+      if (action === "down") return this.keys.has("q");
+      if (action === "up") return this.keys.has("e");
+      return false;
+    }
+
+    movementAxes() {
+      let forward = Number(this.actionActive("forward")) - Number(this.actionActive("backward"));
+      let strafe = Number(this.actionActive("right")) - Number(this.actionActive("left"));
+      const vertical = Number(this.actionActive("up")) - Number(this.actionActive("down"));
+      const magnitude = Math.hypot(forward, strafe);
+      if (magnitude > 1) { forward /= magnitude; strafe /= magnitude; }
+      return { forward, strafe, vertical };
+    }
+
+    clearMovementInput() {
+      this.keys.clear();
+      this.pointerActions.clear();
+      this.movement.forward = 0;
+      this.movement.backward = 0;
+      this.movement.left = 0;
+      this.movement.right = 0;
+      this.movement.up = 0;
+      this.movement.down = 0;
+      this.movement.fast = 0;
+      this.root?.querySelectorAll(".is-held").forEach(button => button.classList.remove("is-held"));
     }
 
     setQuality(name, { persist = true } = {}) {
@@ -427,6 +572,23 @@
 
     refreshRegionCards() {
       this.regionCards.forEach(({ region, button }) => button.classList.toggle("is-selected", this.selectedRegion?.id === region.id));
+    }
+
+    async handleRegionSelection(region) {
+      if (!region || this.state !== STATES.SELECTING || this.regionSwitchInFlight) return;
+      const switchingFromWorld = Boolean(this.currentRegion);
+      if (switchingFromWorld && this.currentRegion.id === region.id) {
+        this.selectRegion(region);
+        this.closeSelectorToWorld();
+        return;
+      }
+      this.selectRegion(region);
+      this.regionSwitchInFlight = true;
+      try {
+        await this.startSelectedRegion({ switchOnly: switchingFromWorld, targetRegion: region });
+      } finally {
+        this.regionSwitchInFlight = false;
+      }
     }
 
     openEntryFlow() {
@@ -486,15 +648,28 @@
     }
 
     openSelectorFromWorld() {
-      if (this.state !== STATES.EXPLORING || !this.currentRegion) return;
+      if (!this.active || !this.currentRegion || this.state !== STATES.EXPLORING) return;
       this.setActionsMenu(false);
+      this.selectorRestoreState = {
+        objectivesCollapsed: this.objectivesCollapsed,
+        infoMinimized: this.infoMinimized
+      };
       this.selectorOpenedFromWorld = true;
       this.state = STATES.SELECTING;
       this.regionSelector.hidden = false;
+      this.qualityPanel.hidden = true;
+      this.closeObservationCard(false);
+      if (this.observationPrompt) this.observationPrompt.hidden = true;
       this.root.classList.add("is-selecting");
+      this.root.classList.remove("is-configuring", "is-info-open", "is-objectives-open");
       this.stopLoop();
-      this.setObjectivesCollapsed(true, true);
-      this.setInfoMinimized(true, true);
+      this.landmarkCard.hidden = true;
+      this.landmarkCard.classList.remove("is-visible");
+      this.landmarkCard.setAttribute("aria-hidden", "true");
+      this.infoToggle.hidden = true;
+      this.objectivesPanel.hidden = true;
+      this.objectivesPanel.setAttribute("aria-hidden", "true");
+      this.objectivesToggle.hidden = true;
       document.getElementById("announcement").textContent = "Pilih wilayah Merkurius lain untuk dijelajahi.";
       requestAnimationFrame(() => this.regionCards.find(item => item.region.id === this.currentRegion.id)?.button?.focus({ preventScroll: true }));
     }
@@ -506,8 +681,13 @@
       this.state = STATES.EXPLORING;
       this.root.classList.remove("is-selecting");
       this.root.classList.add("is-active", "is-surface-visible");
-      this.setObjectivesCollapsed(this.objectivesCollapsed, true);
-      this.setInfoMinimized(this.infoMinimized, true);
+      const restore = this.selectorRestoreState;
+      this.selectorRestoreState = null;
+      if (restore) {
+        this.objectivesCollapsed = Boolean(restore.objectivesCollapsed);
+        this.infoMinimized = Boolean(restore.infoMinimized);
+      }
+      this.syncSecondaryPanels();
       this.startLoop();
     }
 
@@ -521,11 +701,12 @@
     }
 
     setActionsMenu(open, focus = false) {
-      const mobile = window.matchMedia?.("(max-width: 760px), (pointer: coarse)")?.matches || false;
+      const mobile = window.matchMedia?.("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)")?.matches || false;
       const next = Boolean(open && mobile && this.state === STATES.EXPLORING);
       this.actionsMenuOpen = next;
       this.actionsRoot?.classList.toggle("is-open", next);
       this.actionsMenuToggle?.setAttribute("aria-expanded", String(next));
+      this.syncSecondaryPanels();
       if (focus && next) requestAnimationFrame(() => this.actionsMenu?.querySelector("button")?.focus({ preventScroll: true }));
     }
 
@@ -533,12 +714,20 @@
       const elements = [this.hud, this.actionsMenu?.parentElement, ...this.root.querySelectorAll("[data-mercury-ui].mars-mobile-controls")];
       elements.forEach(element => { if (element) element.hidden = !visible; });
       if (!visible) {
+        this.root.classList.remove("is-info-open", "is-objectives-open", "is-observation-open");
+        if (this.observationPrompt) this.observationPrompt.hidden = true;
+        if (this.observationCard) { this.observationCard.hidden = true; this.observationCard.setAttribute("aria-hidden", "true"); }
         this.objectivesPanel.hidden = true;
+        this.objectivesPanel.setAttribute("aria-hidden", "true");
         this.objectivesToggle.hidden = true;
         this.landmarkCard.hidden = true;
+        this.landmarkCard.classList.remove("is-visible");
+        this.landmarkCard.setAttribute("aria-hidden", "true");
         this.infoToggle.hidden = true;
         this.tutorial.hidden = true;
         this.boundaryHint.textContent = "";
+      } else {
+        this.syncSecondaryPanels();
       }
     }
 
@@ -576,18 +765,18 @@
     createWorld() {
       const THREE = this.THREE;
       this.scene = new THREE.Scene();
-      this.scene.background = new THREE.Color(0x05080c);
-      this.scene.fog = new THREE.FogExp2(0x0a090a, 0.011);
+      this.scene.background = new THREE.Color(0x030405);
+      this.scene.fog = new THREE.FogExp2(0x08090a, 0.0085);
       this.camera = new THREE.PerspectiveCamera(68, 1, 0.1, 600);
       this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
       this.renderer.outputColorSpace = THREE.SRGBColorSpace;
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, this.quality.maxDpr));
       this.viewport.replaceChildren(this.renderer.domElement);
 
-      const ambient = new THREE.HemisphereLight(0xd8c3a4, 0x1a1412, 1.22);
-      const sun = new THREE.DirectionalLight(0xffe4b7, 1.55);
+      const ambient = new THREE.HemisphereLight(0xbcb7ad, 0x090a0b, 0.72);
+      const sun = new THREE.DirectionalLight(0xffdfad, 1.72);
       sun.position.set(28, 44, 14);
-      const rim = new THREE.DirectionalLight(0x9a8470, 0.38);
+      const rim = new THREE.DirectionalLight(0x777a7e, 0.24);
       rim.position.set(-14, 10, -24);
       this.scene.add(ambient, sun, rim);
 
@@ -608,6 +797,196 @@
       this.terrainGroup = new THREE.Group();
       this.scene.add(this.terrainGroup);
       this.resize();
+    }
+
+    createMercuryMicroTexture(region) {
+      const THREE = this.THREE;
+      const size = this.quality.name === "HIGH" ? 320 : this.quality.name === "MEDIUM" ? 224 : 160;
+      const data = new Uint8Array(size * size * 4);
+      const seed = region.terrain.seed * 97;
+      for (let y = 0; y < size; y += 1) {
+        for (let x = 0; x < size; x += 1) {
+          const i = (y * size + x) * 4;
+          const ridge = Math.sin((x + seed) * 0.048) * 10 + Math.cos((y - seed) * 0.052) * 8;
+          const octave1 = (seeded(x * 17 + y * 131 + seed) - 0.5) * 28;
+          const octave2 = (seeded(x * 47 + y * 61 + seed * 5) - 0.5) * 14;
+          const octave3 = (seeded(x * 101 + y * 19 + seed * 9) - 0.5) * 8;
+          const streak = Math.sin((x * 0.12 + y * 0.03 + seed) * 0.75) * 6;
+          const speckDark = seeded(x * 211 + y * 43 + seed * 3) > 0.962 ? -34 : 0;
+          const speckLight = seeded(x * 151 + y * 29 + seed * 7) > 0.982 ? 18 : 0;
+          const value = clamp(Math.round(102 + ridge + octave1 + octave2 + octave3 + streak + speckDark + speckLight), 34, 172);
+          data[i] = Math.max(0, value - 3);
+          data[i + 1] = value;
+          data[i + 2] = Math.min(255, value + 2);
+          data[i + 3] = 255;
+        }
+      }
+      const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
+      texture.needsUpdate = true;
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(this.quality.name === "HIGH" ? 28 : this.quality.name === "MEDIUM" ? 22 : 16, this.quality.name === "LOW" ? 13 : 18);
+      texture.magFilter = THREE.LinearFilter;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.generateMipmaps = true;
+      return texture;
+    }
+
+    addRockField(group, region) {
+      const THREE = this.THREE;
+      const boulderCount = this.quality.name === "HIGH" ? 620 : this.quality.name === "MEDIUM" ? 360 : 180;
+      const debrisCount = this.quality.name === "HIGH" ? 1100 : this.quality.name === "MEDIUM" ? 620 : 280;
+      const radius = this.quality.worldRadius * 0.97;
+      const dummy = new THREE.Object3D();
+
+      const boulderGeo = new THREE.IcosahedronGeometry(1, 0);
+      const boulderMat = new THREE.MeshStandardMaterial({ color: 0x232427, roughness: 1, metalness: 0.01, flatShading: true });
+      const boulders = new THREE.InstancedMesh(boulderGeo, boulderMat, boulderCount);
+      for (let i = 0; i < boulderCount; i += 1) {
+        const angle = seeded(region.terrain.seed * 1000 + i * 13) * Math.PI * 2;
+        const distance = Math.sqrt(seeded(region.terrain.seed * 2000 + i * 29)) * radius;
+        const x = Math.cos(angle) * distance;
+        const z = Math.sin(angle) * distance;
+        const scale = 0.12 + Math.pow(seeded(region.terrain.seed * 3000 + i * 41), 2.15) * 1.65;
+        const y = this.heightAtLocal(x, z, region, true) + scale * 0.44;
+        dummy.position.set(x, y, z);
+        dummy.rotation.set(
+          seeded(i * 71 + region.terrain.seed) * Math.PI,
+          seeded(i * 97 + region.terrain.seed) * Math.PI * 2,
+          seeded(i * 113 + region.terrain.seed) * Math.PI
+        );
+        dummy.scale.set(scale * (0.72 + seeded(i * 151) * 0.62), scale * (0.52 + seeded(i * 181) * 0.60), scale);
+        dummy.updateMatrix();
+        boulders.setMatrixAt(i, dummy.matrix);
+      }
+      boulders.instanceMatrix.needsUpdate = true;
+      boulders.frustumCulled = true;
+      group.add(boulders);
+
+      const debrisGeo = new THREE.DodecahedronGeometry(0.55, 0);
+      const debrisMat = new THREE.MeshStandardMaterial({ color: 0x16181a, roughness: 1, metalness: 0.0, flatShading: true });
+      const debris = new THREE.InstancedMesh(debrisGeo, debrisMat, debrisCount);
+      for (let i = 0; i < debrisCount; i += 1) {
+        const angle = seeded(region.terrain.seed * 4000 + i * 17) * Math.PI * 2;
+        const distance = Math.sqrt(seeded(region.terrain.seed * 5000 + i * 31)) * radius;
+        const x = Math.cos(angle) * distance;
+        const z = Math.sin(angle) * distance;
+        const scale = 0.035 + Math.pow(seeded(region.terrain.seed * 6000 + i * 43), 2.1) * 0.28;
+        const y = this.heightAtLocal(x, z, region, true) + scale * 0.36;
+        dummy.position.set(x, y, z);
+        dummy.rotation.set(
+          seeded(i * 19 + region.terrain.seed) * Math.PI,
+          seeded(i * 37 + region.terrain.seed) * Math.PI * 2,
+          seeded(i * 59 + region.terrain.seed) * Math.PI
+        );
+        dummy.scale.set(scale * (0.8 + seeded(i * 67) * 0.5), scale * (0.55 + seeded(i * 79) * 0.55), scale);
+        dummy.updateMatrix();
+        debris.setMatrixAt(i, dummy.matrix);
+      }
+      debris.instanceMatrix.needsUpdate = true;
+      debris.frustumCulled = true;
+      group.add(debris);
+    }
+
+    microCraterHeight(x, z, seed, detailed = true) {
+      if (!detailed) return 0;
+      const cellSize = this.quality.name === "LOW" ? 12 : this.quality.name === "MEDIUM" ? 9 : 8;
+      const gx = Math.floor(x / cellSize);
+      const gz = Math.floor(z / cellSize);
+      let h = 0;
+      for (let oz = -1; oz <= 1; oz += 1) {
+        for (let ox = -1; ox <= 1; ox += 1) {
+          const cx = gx + ox;
+          const cz = gz + oz;
+          const hash = cx * 928371 + cz * 364479 + seed * 811;
+          if (seeded(hash) < 0.18) continue;
+          const centerX = (cx + 0.1 + seeded(hash + 11) * 0.8) * cellSize;
+          const centerZ = (cz + 0.1 + seeded(hash + 23) * 0.8) * cellSize;
+          const radius = 0.9 + seeded(hash + 37) * (this.quality.name === "HIGH" ? 3.6 : 2.9);
+          const d = Math.hypot(x - centerX, z - centerZ);
+          if (d > radius * 1.72) continue;
+          const depth = 0.18 + seeded(hash + 53) * 0.95;
+          const t = d / radius;
+          h += -depth * Math.exp(-Math.pow(t * 2.45, 2));
+          h += depth * 0.40 * Math.exp(-Math.pow((t - 1.02) * 7.8, 2));
+          h += depth * 0.08 * Math.exp(-Math.pow((t - 1.28) * 4.5, 2));
+        }
+      }
+      return h;
+    }
+
+    mediumCraterFieldHeight(x, z, seed, detailed = true) {
+      if (!detailed) return 0;
+      const cellSize = this.quality.name === "LOW" ? 22 : this.quality.name === "MEDIUM" ? 19 : 16;
+      const gx = Math.floor(x / cellSize);
+      const gz = Math.floor(z / cellSize);
+      let h = 0;
+      for (let oz = -1; oz <= 1; oz += 1) {
+        for (let ox = -1; ox <= 1; ox += 1) {
+          const cx = gx + ox;
+          const cz = gz + oz;
+          const hash = cx * 211331 + cz * 531497 + seed * 1499;
+          if (seeded(hash) < 0.58) continue;
+          const centerX = (cx + 0.12 + seeded(hash + 13) * 0.76) * cellSize;
+          const centerZ = (cz + 0.12 + seeded(hash + 29) * 0.76) * cellSize;
+          const radius = 2.8 + seeded(hash + 47) * (this.quality.name === "HIGH" ? 7.8 : 6.1);
+          const d = Math.hypot(x - centerX, z - centerZ);
+          if (d > radius * 1.8) continue;
+          const depth = 0.55 + seeded(hash + 59) * 1.9;
+          const t = d / radius;
+          h += -depth * Math.exp(-Math.pow(t * 1.95, 2));
+          h += depth * 0.52 * Math.exp(-Math.pow((t - 1.01) * 5.9, 2));
+          h += depth * 0.10 * Math.exp(-Math.pow((t - 1.36) * 3.8, 2));
+        }
+      }
+      return h;
+    }
+
+    addGoalMarkers(group, region) {
+      const THREE = this.THREE;
+      this.goalMarkers = new Map();
+      this.currentGoals = [...(MERCURY_EDUCATION[region.id]?.observations || [])];
+      const markerGroup = new THREE.Group();
+      markerGroup.name = "mercury-goal-markers";
+      const ringGeometry = new THREE.TorusGeometry(1.15, 0.055, 8, 42);
+      const stemGeometry = new THREE.CylinderGeometry(0.024, 0.045, 2.15, 7);
+      const coreGeometry = new THREE.OctahedronGeometry(0.20, 0);
+      for (const goal of this.currentGoals) {
+        const marker = new THREE.Group();
+        marker.position.set(goal.x, this.heightAtLocal(goal.x, goal.z, region, true) + 0.08, goal.z);
+        const ringMaterial = new THREE.MeshBasicMaterial({ color: 0xc7ccd2, transparent: true, opacity: 0.58, depthWrite: false, fog: true });
+        const stemMaterial = new THREE.MeshBasicMaterial({ color: 0x7f8791, transparent: true, opacity: 0.30, depthWrite: false, fog: true });
+        const coreMaterial = new THREE.MeshBasicMaterial({ color: 0xd0ba92, transparent: true, opacity: 0.92, depthWrite: false, fog: true });
+        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = 0.04;
+        const stem = new THREE.Mesh(stemGeometry, stemMaterial);
+        stem.position.y = 1.05;
+        const core = new THREE.Mesh(coreGeometry, coreMaterial);
+        core.position.y = 2.18;
+        marker.add(ring, stem, core);
+        marker.userData = { goal, ring, core, materials: { ring: ringMaterial, stem: stemMaterial, core: coreMaterial }, phase: seeded(region.terrain.seed * 31 + goal.x * 17 + goal.z * 23) * Math.PI * 2 };
+        markerGroup.add(marker);
+        this.goalMarkers.set(goal.id, marker);
+      }
+      group.add(markerGroup);
+    }
+
+    updateGoalMarkers(activeId, delta = 0) {
+      this.goalTime += delta;
+      for (const [id, marker] of this.goalMarkers) {
+        const active = id === activeId;
+        const discovered = this.discovered.has(id);
+        const { ring, core, materials } = marker.userData || {};
+        if (!ring || !core || !materials) continue;
+        const pulse = 1 + (active ? Math.sin(this.goalTime * 3.4 + marker.userData.phase) * 0.10 : 0);
+        marker.scale.setScalar(active ? 1.16 * pulse : discovered ? 0.84 : 1);
+        materials.ring.opacity = active ? 0.96 : discovered ? 0.18 : 0.58;
+        materials.stem.opacity = active ? 0.50 : discovered ? 0.10 : 0.30;
+        materials.core.opacity = active ? 1 : discovered ? 0.34 : 0.92;
+        materials.ring.color.setHex(active ? 0xf0f2f4 : discovered ? 0x737980 : 0xc7ccd2);
+        materials.core.color.setHex(active ? 0xffe0aa : discovered ? 0x8b8170 : 0xd0ba92);
+        core.rotation.y += delta * (active ? 1.7 : 0.5);
+      }
     }
 
     buildTerrain(region) {
@@ -637,16 +1016,27 @@
       for (let i = 0; i < position.count; i += 1) {
         const y = position.getY(i);
         const t = (y - minY) / Math.max(1, maxY - minY);
-        const color = low.clone().lerp(mid, smoothStep(t * 1.1)).lerp(high, Math.pow(t, 1.8));
-        const warm = clamp(Math.sin((position.getX(i) + position.getZ(i)) * 0.02) * 0.06 + 0.07, 0, 0.12);
-        color.offsetHSL(0.008, 0.01, warm - 0.04);
+        const color = low.clone().lerp(mid, smoothStep(t * 1.08)).lerp(high, Math.pow(t, 1.9));
+        const rockVariation = Math.sin((position.getX(i) + position.getZ(i)) * 0.031 + region.terrain.seed) * 0.028;
+        color.offsetHSL(0, -0.035, rockVariation - 0.018);
         colors.push(color.r, color.g, color.b);
       }
       geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-      const material = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.96, metalness: 0.04, flatShading: false });
+      const microTexture = this.createMercuryMicroTexture(region);
+      const material = new THREE.MeshStandardMaterial({
+        vertexColors: true,
+        map: microTexture,
+        bumpMap: microTexture,
+        bumpScale: this.quality.name === "HIGH" ? 0.86 : this.quality.name === "MEDIUM" ? 0.62 : 0.40,
+        roughness: 0.99,
+        metalness: 0.015,
+        flatShading: false
+      });
       const mesh = new THREE.Mesh(geometry, material);
       mesh.receiveShadow = false;
       group.add(mesh);
+      this.addRockField(group, region);
+      this.addGoalMarkers(group, region);
 
       const continuationGeometry = new THREE.PlaneGeometry(worldSize * 3, worldSize * 3, Math.max(16, Math.floor(segments * 0.4)), Math.max(16, Math.floor(segments * 0.4)));
       continuationGeometry.rotateX(-Math.PI / 2);
@@ -659,7 +1049,7 @@
         continuationPosition.setY(i, y);
         const t = clamp((y + 12) / 18, 0, 1);
         const color = new THREE.Color(region.palette.low).lerp(new THREE.Color(region.palette.mid), t * 0.72);
-        continuationColors.push(color.r * 0.9, color.g * 0.88, color.b * 0.86);
+        continuationColors.push(color.r * 0.58, color.g * 0.59, color.b * 0.60);
       }
       continuationGeometry.setAttribute("color", new THREE.Float32BufferAttribute(continuationColors, 3));
       continuationGeometry.computeVertexNormals();
@@ -669,7 +1059,7 @@
 
       const skyRing = new THREE.Mesh(
         new THREE.CylinderGeometry(this.quality.worldRadius * 1.9, this.quality.worldRadius * 2.4, 42, 48, 1, true),
-        new THREE.MeshBasicMaterial({ color: 0x15100f, transparent: true, opacity: 0.52, side: THREE.BackSide })
+        new THREE.MeshBasicMaterial({ color: 0x08090a, transparent: true, opacity: 0.76, side: THREE.BackSide })
       );
       skyRing.position.y = 10;
       group.add(skyRing);
@@ -679,18 +1069,25 @@
 
     heightAtLocal(x, z, region, detailed = true) {
       const style = region.terrain;
-      let height = Math.sin((x + style.seed * 4) * 0.045) * 1.6 + Math.cos((z - style.seed * 3) * 0.042) * 1.2;
-      height += Math.sin((x + z) * 0.06) * 0.65 + Math.cos((x - z) * 0.05) * 0.45;
+      let height = Math.sin((x + style.seed * 4) * 0.041) * 1.85 + Math.cos((z - style.seed * 3) * 0.039) * 1.45;
+      height += Math.sin((x + z) * 0.053) * 0.92 + Math.cos((x - z) * 0.047) * 0.72;
+      height += Math.sin(x * 0.018 + style.seed * 0.3) * 1.15 + Math.cos(z * 0.022 - style.seed * 0.2) * 0.95;
       if (detailed) {
-        height += Math.sin((x * 0.18) + style.seed) * 0.26;
-        height += Math.cos((z * 0.16) - style.seed * 0.7) * 0.22;
+        height += Math.sin((x * 0.15) + style.seed) * 0.46;
+        height += Math.cos((z * 0.14) - style.seed * 0.7) * 0.40;
+        height += Math.sin(x * 0.38 + z * 0.28 + style.seed) * 0.22;
+        height += Math.cos(x * 0.61 - z * 0.48 - style.seed) * 0.18;
+        height += Math.sin((x - z) * 0.21 + style.seed * 1.3) * 0.12;
+        height += this.mediumCraterFieldHeight(x, z, style.seed, true);
+        height += this.microCraterHeight(x, z, style.seed, true);
       }
       for (const crater of style.craters || []) {
         const d = Math.hypot(x - crater.x, z - crater.z);
-        const t = clamp(d / crater.r, 0, 1.6);
-        const bowl = -crater.depth * Math.exp(-Math.pow(t * 2.1, 2));
-        const rim = crater.depth * 0.42 * Math.exp(-Math.pow((t - 1.02) * 6.5, 2));
-        height += bowl + rim;
+        const t = clamp(d / crater.r, 0, 1.75);
+        const bowl = -crater.depth * Math.exp(-Math.pow(t * 2.0, 2));
+        const rim = crater.depth * 0.48 * Math.exp(-Math.pow((t - 1.02) * 6.1, 2));
+        const ejecta = crater.depth * 0.10 * Math.exp(-Math.pow((t - 1.32) * 3.3, 2));
+        height += bowl + rim + ejecta;
       }
       for (const dome of style.domes || []) {
         const d = Math.hypot(x - dome.x, z - dome.z);
@@ -707,7 +1104,8 @@
         const distance = Math.hypot(x - px, z - pz);
         const side = Math.sign((x - scarp.x1) * dz - (z - scarp.z1) * dx) || 1;
         const band = Math.exp(-Math.pow(distance / scarp.width, 2));
-        height += side * band * scarp.height * 0.55;
+        const wrinkle = Math.sin((u * 8.0 + style.seed * 0.3)) * 0.18;
+        height += side * band * scarp.height * (0.58 + wrinkle);
       }
       return height;
     }
@@ -715,22 +1113,38 @@
     applyRegion(region) {
       this.showLoading("MEMBENTUK MEDAN MERKURIUS", 58);
       while (this.terrainGroup.children.length) {
-        const child = this.terrainGroup.children.pop();
+        const child = this.terrainGroup.children[0];
+        this.terrainGroup.remove(child);
         child.traverse?.(node => {
           node.geometry?.dispose?.();
-          node.material?.dispose?.();
+          const disposeMaterial = material => {
+            if (!material) return;
+            const map = material.map || null;
+            const bumpMap = material.bumpMap || null;
+            map?.dispose?.();
+            if (bumpMap && bumpMap !== map) bumpMap.dispose?.();
+            material.dispose?.();
+          };
+          if (Array.isArray(node.material)) node.material.forEach(disposeMaterial);
+          else disposeMaterial(node.material);
         });
-        this.scene.remove(child);
       }
       const terrain = this.buildTerrain(region);
       this.terrainGroup.add(terrain.group);
       this.terrain = terrain;
       this.currentRegion = region;
+      this.currentGoals = [...(this.educationFor(region)?.observations || [])];
+      this.loadDiscoveryState();
+      this.buildObjectives();
+      this.nearbyObservation = null;
+      this.selectedTarget = null;
+      this.activeObservation = null;
       this.look.yaw = (region.heading || 0) * Math.PI / 180;
-      this.look.pitch = -0.19;
+      this.look.pitch = -0.14;
+      this.altitudeOffset = 6.0;
       this.player.x = 0;
       this.player.z = this.quality.worldRadius * 0.7;
-      this.player.y = this.heightAtLocal(this.player.x, this.player.z, region, true) + 8.5;
+      this.player.y = this.heightAtLocal(this.player.x, this.player.z, region, true) + this.altitudeOffset;
       this.updateRegionUi();
     }
 
@@ -743,7 +1157,7 @@
       this.hudQuality.textContent = this.quality.label;
       this.hudData.textContent = "MESSENGER MDIS / MLA · USGS / IAU";
       this.objectivesRegion.textContent = region.name;
-      this.objectivesIntro.textContent = `Lima misi Merkurius memakai sumber ilmiah yang jelas. Lokasi aktif saat ini adalah ${region.name}, tetapi kamu bisa berpindah ke empat destinasi lain dari menu Wilayah.`;
+      this.objectivesIntro.textContent = this.educationFor(region)?.intro || `Amati titik-titik geologi utama di ${region.name}.`;
       this.landmarkName.textContent = region.name;
       this.landmarkType.textContent = `${region.category} · ${region.descriptor}`;
       this.landmarkCoords.textContent = `${Math.abs(region.latitude).toFixed(1)}°${region.latitude >= 0 ? "LU" : "LS"} · ${region.longitudeEast.toFixed(1)}°BT`;
@@ -763,47 +1177,154 @@
     }
 
     updateObjectives() {
-      const total = REGIONS.length;
-      const done = this.visited.size;
+      const total = this.currentGoals.length;
+      const done = this.currentGoals.reduce((count, goal) => count + (this.discovered.has(goal.id) ? 1 : 0), 0);
       this.discoveryCount.textContent = `${done} / ${total}`;
-      this.discoveryBar.style.width = `${(done / total) * 100}%`;
+      this.discoveryBar.style.width = `${total ? (done / total) * 100 : 0}%`;
+      this.discoveryBar.style.transform = "none";
       this.objectivesToggle.textContent = `Tujuan · ${done} / ${total}`;
-      let next = null;
-      this.objectiveItems.forEach(({ region, item }) => {
-        const complete = this.visited.has(region.id);
-        const current = this.currentRegion?.id === region.id;
+      this.objectiveItems.forEach(({ goal, item, marker, status }) => {
+        const complete = this.discovered.has(goal.id);
         item.classList.toggle("is-complete", complete);
-        item.classList.toggle("is-current", current);
-        if (!complete && !next) next = region;
+        marker.textContent = complete ? "✓" : String(this.currentGoals.indexOf(goal) + 1).padStart(2, "0");
+        status.textContent = complete ? "SUDAH DIAMATI" : "BELUM DIAMATI";
       });
-      if (next) {
+      if (this.selectedTarget) {
+        const distance = Math.hypot(this.selectedTarget.x - this.player.x, this.selectedTarget.z - this.player.z);
         this.nextTarget.hidden = false;
-        this.nextTargetName.textContent = next.name;
-        this.nextTargetDistance.textContent = "Pilih lewat menu Wilayah";
+        this.nextTargetName.textContent = this.selectedTarget.title;
+        this.nextTargetDistance.textContent = `${distance < 10 ? distance.toFixed(1) : distance.toFixed(0)} m`;
+      } else if (total && done === total) {
+        this.nextTarget.hidden = false;
+        this.nextTargetName.textContent = "Semua tujuan selesai";
+        this.nextTargetDistance.textContent = `Empat titik ${this.currentRegion?.name || "Merkurius"} sudah diamati.`;
       } else {
-        this.nextTarget.hidden = false;
-        this.nextTargetName.textContent = "Semua misi selesai";
-        this.nextTargetDistance.textContent = "Kamu sudah membuka 5 destinasi Merkurius.";
+        this.nextTarget.hidden = true;
       }
     }
 
-    setObjectivesCollapsed(collapsed, force = false) {
-      this.objectivesCollapsed = collapsed;
-      this.objectivesPanel.hidden = collapsed;
-      this.objectivesToggle.hidden = !collapsed;
+    isObservationCardOpen() {
+      return Boolean(this.observationCard && !this.observationCard.hidden && this.observationCard.getAttribute("aria-hidden") !== "true");
+    }
+
+    updateEducation(delta = 0) {
+      if (this.state !== STATES.EXPLORING || !this.currentGoals.length) {
+        if (this.observationPrompt) this.observationPrompt.hidden = true;
+        return;
+      }
+      let nearest = null;
+      let nearestDistance = Infinity;
+      let nearestUndiscovered = null;
+      let nearestUndiscoveredDistance = Infinity;
+      for (const goal of this.currentGoals) {
+        const distance = Math.hypot(goal.x - this.player.x, goal.z - this.player.z);
+        if (distance < nearestDistance) { nearestDistance = distance; nearest = goal; }
+        if (!this.discovered.has(goal.id) && distance < nearestUndiscoveredDistance) { nearestUndiscoveredDistance = distance; nearestUndiscovered = goal; }
+      }
+      const interactionRadius = nearest?.interactRadius || 5.0;
+      this.nearbyObservation = nearest && nearestDistance <= interactionRadius ? nearest : null;
+      this.selectedTarget = nearestUndiscovered || nearest;
+      if (this.nearbyObservation && !this.isObservationCardOpen() && !this.actionsMenuOpen) {
+        this.observationPromptTitle.textContent = this.nearbyObservation.title;
+        this.observationPrompt.hidden = false;
+      } else {
+        this.observationPrompt.hidden = true;
+      }
+      const activeId = this.nearbyObservation?.id || this.selectedTarget?.id || null;
+      this.updateGoalMarkers(activeId, delta);
+      this.updateObjectives();
+    }
+
+    tryObserveNearby() {
+      if (this.state !== STATES.EXPLORING || !this.nearbyObservation) return false;
+      this.openObservationCard(this.nearbyObservation);
+      return true;
+    }
+
+    markDiscovery(goal) {
+      if (!goal || this.discovered.has(goal.id)) return false;
+      this.discovered.add(goal.id);
+      this.saveDiscoveryState();
+      this.updateObjectives();
+      return true;
+    }
+
+    openObservationCard(goal) {
+      if (!goal || !this.observationCard) return;
+      const isNew = this.markDiscovery(goal);
+      this.activeObservation = goal;
+      this.clearMovementInput();
+      if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+      this.setActionsMenu(false);
+      this.observationType.textContent = goal.type || "COBA PERHATIKAN!";
+      this.observationStatus.textContent = isNew ? "BARU KAMU LIHAT" : "SUDAH PERNAH KAMU LIHAT";
+      this.observationTitle.textContent = goal.title;
+      const distance = Math.hypot(goal.x - this.player.x, goal.z - this.player.z);
+      this.observationMeta.textContent = `${this.currentRegion?.name || "Merkurius"} · ${distance < 1 ? Math.round(distance * 1000) + " cm" : distance.toFixed(1) + " m"} dari posisimu`;
+      this.observationLead.textContent = goal.lead || "";
+      this.observationWhy.textContent = goal.why || "";
+      this.observationSourceNote.textContent = "Konteks lokasi dan penjelasan diringkas dari referensi NASA / MESSENGER yang dicantumkan.";
+      this.observationSource.href = goal.source || this.currentRegion?.source || "https://science.nasa.gov/mercury/";
+      this.observationCard.hidden = false;
+      this.observationCard.setAttribute("aria-hidden", "false");
+      this.root.classList.add("is-observation-open");
+      this.observationPrompt.hidden = true;
+      this.syncSecondaryPanels();
+      document.getElementById("announcement").textContent = `${goal.title}. Tujuan eksplorasi berhasil diamati.`;
+    }
+
+    closeObservationCard(focus = false) {
+      if (!this.observationCard) return;
+      this.observationCard.hidden = true;
+      this.observationCard.setAttribute("aria-hidden", "true");
+      this.root.classList.remove("is-observation-open");
+      this.activeObservation = null;
+      this.syncSecondaryPanels();
+      this.updateEducation(0);
+      if (focus) requestAnimationFrame(() => this.viewport?.focus?.({ preventScroll: true }));
+    }
+
+    syncSecondaryPanels() {
+      const exploring = this.state === STATES.EXPLORING;
+      const observationOpen = this.isObservationCardOpen();
+      const showObjectives = exploring && !this.objectivesCollapsed && !observationOpen;
+      const showInfo = exploring && !this.infoMinimized && !observationOpen;
+
+      this.root.classList.toggle("is-objectives-open", showObjectives);
+      this.root.classList.toggle("is-info-open", showInfo);
+
+      this.objectivesPanel.hidden = !showObjectives;
+      this.objectivesPanel.setAttribute("aria-hidden", String(!showObjectives));
+      this.objectivesToggle.hidden = !exploring || !this.objectivesCollapsed || this.actionsMenuOpen || observationOpen;
+
+      this.landmarkCard.hidden = !showInfo;
+      this.landmarkCard.classList.toggle("is-visible", showInfo);
+      this.landmarkCard.setAttribute("aria-hidden", String(!showInfo));
+      this.infoToggle.hidden = !exploring || !this.infoMinimized || this.actionsMenuOpen || observationOpen;
+    }
+
+    setObjectivesCollapsed(collapsed, force = false, focusToggle = false) {
+      this.objectivesCollapsed = Boolean(collapsed);
+      this.syncSecondaryPanels();
       if (!force) document.getElementById("announcement").textContent = collapsed ? "Panel tujuan diminimalkan." : "Panel tujuan dibuka kembali.";
+      if (focusToggle && collapsed && !this.objectivesToggle.hidden) requestAnimationFrame(() => this.objectivesToggle.focus({ preventScroll: true }));
     }
 
-    setInfoMinimized(minimized, force = false) {
-      this.infoMinimized = minimized;
-      this.landmarkCard.hidden = minimized;
-      this.infoToggle.hidden = !minimized;
-      if (!force) document.getElementById("announcement").textContent = minimized ? "Info lokasi disembunyikan." : "Info lokasi ditampilkan kembali.";
+    setInfoMinimized(minimized, force = false, focusPanel = false) {
+      this.infoMinimized = Boolean(minimized);
+      this.syncSecondaryPanels();
+      if (!force) document.getElementById("announcement").textContent = minimized ? "Info lokasi disembunyikan." : `Info lokasi ${this.currentRegion?.name || "Merkurius"} ditampilkan.`;
+      if (focusPanel && !minimized) requestAnimationFrame(() => this.landmarkCard.querySelector("button, a")?.focus({ preventScroll: true }));
+      if (focusPanel && minimized && !this.infoToggle.hidden) requestAnimationFrame(() => this.infoToggle.focus({ preventScroll: true }));
     }
 
-    async startSelectedRegion({ switchOnly = false } = {}) {
-      if (!this.selectedRegion || ![STATES.SELECTING, STATES.EXPLORING].includes(this.state)) return;
+    async startSelectedRegion({ switchOnly = false, targetRegion = null } = {}) {
+      const region = targetRegion || this.selectedRegion;
+      if (!region || ![STATES.SELECTING, STATES.EXPLORING].includes(this.state)) return false;
       const switching = Boolean(this.currentRegion) || switchOnly;
+      const token = ++this.transitionToken;
+      const transitionStartedAt = performance.now();
+      const minimumLoadingMs = switching ? 1050 : 420;
       this.state = STATES.LOADING;
       this.selectorOpenedFromWorld = false;
       this.hideError();
@@ -812,29 +1333,46 @@
       this.root.classList.remove("is-selecting", "is-configuring", "is-active", "is-error");
       this.root.classList.add("is-preparing");
       this.setUiVisible(false);
-      this.showLoading(switching ? `BERPINDAH KE ${this.selectedRegion.name.toUpperCase()}` : `MENYIAPKAN ${this.selectedRegion.name.toUpperCase()}`, switching ? 28 : 18);
+      this.clearMovementInput();
+      this.showLoading(switching ? `BERPINDAH KE ${region.name.toUpperCase()}` : `MENYIAPKAN ${region.name.toUpperCase()}`, switching ? 18 : 12);
       try {
+        // Give the loading card a real paint before the terrain rebuild starts.
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        if (switching) await wait(150);
         await this.ensureReady();
-        this.showLoading("MERENDER MEDAN MERKURIUS", 68);
-        this.applyRegion(this.selectedRegion);
-        this.showLoading("MENGATUR NAVIGASI", 94);
+        if (token !== this.transitionToken) return false;
+        this.showLoading(switching ? "MENGUNDUH DATA WILAYAH" : "MEMUAT DATA WILAYAH", 42);
+        if (switching) await wait(170);
+        if (token !== this.transitionToken) return false;
+        this.showLoading("MERENDER MEDAN MERKURIUS", 70);
+        this.applyRegion(region);
+        if (token !== this.transitionToken) return false;
+        this.showLoading("MENGATUR NAVIGASI & INFO LOKASI", 94);
+        const remaining = minimumLoadingMs - (performance.now() - transitionStartedAt);
+        if (remaining > 0) await wait(remaining);
+        if (token !== this.transitionToken) return false;
+
         this.state = STATES.EXPLORING;
         this.active = true;
         this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration is-active is-surface-visible";
         this.root.style.setProperty("--surface-opacity", "1");
         this.root.style.setProperty("--entry-progress", "1");
-        this.setUiVisible(true);
-        this.hideLoading();
-        this.mercury.beginFullExploration?.(this.selectedRegion);
-        this.setActionsMenu(false);
         this.objectivesCollapsed = true;
-        this.infoMinimized = true;
-        this.setObjectivesCollapsed(true, true);
-        this.setInfoMinimized(true, true);
-        this.tutorial.hidden = false;
+        // When switching regions, reveal the location card immediately so the change is obvious.
+        this.infoMinimized = !switching;
+        this.setUiVisible(true);
+        this.selectedRegion = region;
+        this.mercury.beginFullExploration?.(region);
+        this.setActionsMenu(false);
+        this.syncSecondaryPanels();
+        this.hideLoading();
+        this.tutorial.hidden = switching;
         this.resize();
         this.startLoop();
-        document.getElementById("announcement").textContent = `Eksplorasi penuh Merkurius aktif di ${this.selectedRegion.name}.`;
+        document.getElementById("announcement").textContent = switching
+          ? `Tiba di ${region.name}. Info lokasi dibuka otomatis.`
+          : `Eksplorasi penuh Merkurius aktif di ${region.name}.`;
+        return true;
       } catch (error) {
         console.error("Mercury Full Exploration:", error);
         this.showError(error?.message || "Eksplorasi Merkurius tidak dapat dimulai.");
@@ -853,14 +1391,21 @@
       const delta = Math.min((now - this.previous) / 1000, 0.05);
       this.previous = now;
       this.clock += delta;
-      const speed = this.quality.speed * (this.movement.fast ? 1.65 : 1);
-      const forward = this.movement.forward - this.movement.backward;
-      const strafe = this.movement.right - this.movement.left;
-      const vertical = this.movement.up - this.movement.down;
+      const speed = this.quality.speed * (this.keys.has("shift") ? 1.65 : 1);
+      const axes = this.movementAxes();
+      const forward = axes.forward;
+      const strafe = axes.strafe;
+      const vertical = axes.vertical;
       const sin = Math.sin(this.look.yaw);
       const cos = Math.cos(this.look.yaw);
-      this.player.x += (sin * forward + cos * strafe) * speed * delta;
-      this.player.z += (cos * forward - sin * strafe) * speed * delta;
+      // Match Venus / Three.js camera space. Forward follows camera view on XZ,
+      // while right is forward × up. This keeps D visually right at every yaw.
+      const forwardX = sin;
+      const forwardZ = cos;
+      const rightX = -cos;
+      const rightZ = sin;
+      this.player.x += (forwardX * forward + rightX * strafe) * speed * delta;
+      this.player.z += (forwardZ * forward + rightZ * strafe) * speed * delta;
       const radius = this.quality.worldRadius;
       const planarDistance = Math.hypot(this.player.x, this.player.z);
       if (planarDistance > radius) {
@@ -872,22 +1417,29 @@
         this.boundaryHint.textContent = "";
       }
       const ground = this.heightAtLocal(this.player.x, this.player.z, this.currentRegion, true);
-      const clearance = 2.6;
-      const targetY = ground + clearance + 4.2 + vertical * speed * 0.24;
-      this.player.y = Math.max(ground + clearance, this.player.y + (targetY - this.player.y) * Math.min(1, delta * 4));
+      const clearance = 2.4;
+      if (vertical !== 0) this.altitudeOffset = clamp(this.altitudeOffset + vertical * speed * delta * 0.72, clearance, 42);
+      const targetY = ground + Math.max(clearance, this.altitudeOffset);
+      this.player.y += (targetY - this.player.y) * Math.min(1, delta * 7.5);
+      if (this.player.y < ground + clearance) this.player.y = ground + clearance;
       this.updateCamera();
       this.updateHud(delta, speed);
+      this.updateEducation(delta);
       this.renderer.render(this.scene, this.camera);
     }
 
     updateCamera() {
-      const pitch = clamp(this.look.pitch, -1.1, 0.28);
-      const radius = 14;
-      const offsetX = Math.sin(this.look.yaw) * Math.cos(pitch) * radius;
-      const offsetZ = Math.cos(this.look.yaw) * Math.cos(pitch) * radius;
-      const offsetY = Math.sin(-pitch) * radius * 0.72 + 4.6;
-      this.camera.position.set(this.player.x - offsetX, this.player.y + offsetY, this.player.z - offsetZ);
-      this.camera.lookAt(this.player.x + Math.sin(this.look.yaw) * 18, this.player.y + 1.2 + Math.sin(-pitch) * 5, this.player.z + Math.cos(this.look.yaw) * 18);
+      const pitch = clamp(this.look.pitch, -1.38, 1.30);
+      const cosPitch = Math.cos(pitch);
+      const dirX = Math.sin(this.look.yaw) * cosPitch;
+      const dirY = Math.sin(pitch);
+      const dirZ = Math.cos(this.look.yaw) * cosPitch;
+      this.camera.position.set(this.player.x, this.player.y, this.player.z);
+      this.camera.lookAt(
+        this.player.x + dirX * 34,
+        this.player.y + dirY * 34,
+        this.player.z + dirZ * 34
+      );
     }
 
     updateHud(delta, speed) {
@@ -895,7 +1447,8 @@
       const distance = Math.hypot(this.player.x, this.player.z);
       const regionCenterDistance = distance2D({ x: this.player.x, z: this.player.z }, { x: 0, z: 0 });
       this.hudAltitude.textContent = `${altitude.toFixed(1)} M`;
-      const moveMagnitude = Math.hypot(this.movement.forward - this.movement.backward, this.movement.right - this.movement.left, this.movement.up - this.movement.down);
+      const axes = this.movementAxes();
+      const moveMagnitude = Math.hypot(axes.forward, axes.strafe, axes.vertical);
       this.hudSpeed.textContent = `${(moveMagnitude * speed).toFixed(0)} M/S`;
       this.hudDistance.textContent = `${regionCenterDistance.toFixed(0)} M`;
     }
@@ -904,38 +1457,77 @@
       this.pointerLocked = document.pointerLockElement === this.viewport;
     }
 
+    applyLookDelta(dx, dy, source = "mouse") {
+      const sensitivity = source === "touch" ? 0.0035 : source === "locked" ? 0.0020 : 0.0025;
+      this.look.yaw -= dx * sensitivity;
+      this.look.pitch = clamp(this.look.pitch - dy * sensitivity, -1.38, 1.30);
+    }
+
     onMouseMove(event) {
-      if (!this.active || !this.pointerLocked || this.state !== STATES.EXPLORING) return;
-      this.look.yaw -= event.movementX * 0.0025;
-      this.look.pitch = clamp(this.look.pitch - event.movementY * 0.0018, -1.05, 0.24);
+      if (!this.active || !this.pointerLocked || this.state !== STATES.EXPLORING || this.isObservationCardOpen()) return;
+      this.applyLookDelta(event.movementX || 0, event.movementY || 0, "locked");
+    }
+
+    onLookPointerDown(event) {
+      if (!this.active || this.state !== STATES.EXPLORING || this.isObservationCardOpen()) return;
+      if (event.target.closest("button, a, [data-mercury-ui], .venus-region-selector, .venus-quality-panel, .venus-location-card, .venus-objectives-panel")) return;
+      if (event.pointerType === "mouse") return;
+      this.lookPointerId = event.pointerId;
+      this.lookPointer.x = event.clientX;
+      this.lookPointer.y = event.clientY;
+      this.viewport.setPointerCapture?.(event.pointerId);
+      event.preventDefault();
+    }
+
+    onLookPointerMove(event) {
+      if (!this.active || this.state !== STATES.EXPLORING || this.isObservationCardOpen() || this.lookPointerId !== event.pointerId) return;
+      const dx = event.clientX - this.lookPointer.x;
+      const dy = event.clientY - this.lookPointer.y;
+      this.lookPointer.x = event.clientX;
+      this.lookPointer.y = event.clientY;
+      this.applyLookDelta(dx, dy, event.pointerType === "touch" ? "touch" : "mouse");
+      event.preventDefault();
+    }
+
+    onLookPointerUp(event) {
+      if (this.lookPointerId !== event.pointerId) return;
+      this.lookPointerId = null;
+      this.viewport.releasePointerCapture?.(event.pointerId);
     }
 
     onKeyDown(event) {
       if (!this.active) return;
-      if (event.key === "w" || event.key === "W") this.movement.forward = 1;
-      if (event.key === "s" || event.key === "S") this.movement.backward = 1;
-      if (event.key === "a" || event.key === "A") this.movement.left = 1;
-      if (event.key === "d" || event.key === "D") this.movement.right = 1;
-      if (event.key === "q" || event.key === "Q") this.movement.down = 1;
-      if (event.key === "e" || event.key === "E") this.movement.up = 1;
-      if (event.key === "Shift") this.movement.fast = 1;
-      if (event.key === "Escape") {
-        event.preventDefault();
-        if (this.regionSelector && !this.regionSelector.hidden && this.currentRegion) this.closeSelectorToWorld();
+      const key = event.key.toLowerCase();
+      if (!["w", "a", "s", "d", "q", "e", "shift", "escape"].includes(key)) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (key === "escape") {
+        if (event.repeat) return;
+        this.clearMovementInput();
+        if (this.isObservationCardOpen()) this.closeObservationCard(false);
+        else if (this.actionsMenuOpen) this.setActionsMenu(false);
+        else if (this.regionSelector && !this.regionSelector.hidden && this.currentRegion) this.closeSelectorToWorld();
         else if (this.qualityPanel && !this.qualityPanel.hidden && !this.currentRegion) this.cancelPreEntry();
+        else if (!this.infoMinimized) this.setInfoMinimized(true, false, false);
         else if (!this.objectivesCollapsed) this.setObjectivesCollapsed(true);
         else this.exit();
+        return;
       }
+      if (this.state !== STATES.EXPLORING || this.isObservationCardOpen()) return;
+      if (key === "e" && !event.repeat && this.tryObserveNearby()) {
+        this.keys.delete("e");
+        return;
+      }
+      this.keys.add(key);
     }
 
     onKeyUp(event) {
-      if (event.key === "w" || event.key === "W") this.movement.forward = 0;
-      if (event.key === "s" || event.key === "S") this.movement.backward = 0;
-      if (event.key === "a" || event.key === "A") this.movement.left = 0;
-      if (event.key === "d" || event.key === "D") this.movement.right = 0;
-      if (event.key === "q" || event.key === "Q") this.movement.down = 0;
-      if (event.key === "e" || event.key === "E") this.movement.up = 0;
-      if (event.key === "Shift") this.movement.fast = 0;
+      if (!this.active) return;
+      const key = event.key.toLowerCase();
+      if (!["w", "a", "s", "d", "q", "e", "shift"].includes(key)) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      this.keys.delete(key);
     }
 
     onResize() {
@@ -954,6 +1546,28 @@
       this.renderer.setSize(width, height, false);
     }
 
+    animateRetreatAltitude(targetAltitude, duration, token) {
+      if (!this.ready || !this.currentRegion || !this.renderer || !this.camera) return Promise.resolve();
+      const startAltitude = Math.max(2.4, this.altitudeOffset);
+      const start = performance.now();
+      const reduced = this.mercury.motion?.matches;
+      return new Promise(resolve => {
+        const frame = now => {
+          if (token !== this.transitionToken || this.state !== STATES.EXITING) return resolve();
+          const raw = clamp((now - start) / (reduced ? 120 : duration), 0, 1);
+          const eased = smoothStep(raw);
+          this.altitudeOffset = lerp(startAltitude, targetAltitude, eased);
+          const ground = this.heightAtLocal(this.player.x, this.player.z, this.currentRegion, true);
+          this.player.y = ground + this.altitudeOffset;
+          this.updateCamera();
+          this.updateHud(0, 0);
+          this.renderer.render(this.scene, this.camera);
+          if (raw < 1) requestAnimationFrame(frame); else resolve();
+        };
+        requestAnimationFrame(frame);
+      });
+    }
+
     async toggleFullscreen() {
       try {
         if (document.fullscreenElement) {
@@ -966,34 +1580,91 @@
       } catch (_) {}
     }
 
-    exit(silent = false) {
-      this.active = false;
-      this.state = STATES.HIDDEN;
+    async exit(silent = false) {
+      if (this.state === STATES.EXITING) return;
+      if ([STATES.CONFIGURING, STATES.SELECTING].includes(this.state) && !this.currentRegion) {
+        this.cancelPreEntry();
+        return;
+      }
+      if (!this.active || !this.currentRegion || this.state !== STATES.EXPLORING) {
+        this.finishExit(silent);
+        return;
+      }
+
+      this.state = STATES.EXITING;
+      const token = ++this.transitionToken;
       this.selectorOpenedFromWorld = false;
+      this.selectorRestoreState = null;
       this.setActionsMenu(false);
       this.stopLoop();
-      this.movement.forward = this.movement.backward = this.movement.left = this.movement.right = this.movement.up = this.movement.down = this.movement.fast = 0;
+      this.clearMovementInput();
+      this.lookPointerId = null;
       if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
       this.regionSelector.hidden = true;
       this.qualityPanel.hidden = true;
       this.hideLoading();
       this.hideError();
+      this.root.classList.remove("is-info-open", "is-objectives-open");
+      this.landmarkCard.classList.remove("is-visible");
+      this.landmarkCard.setAttribute("aria-hidden", "true");
+      this.objectivesPanel.setAttribute("aria-hidden", "true");
+      this.root.classList.add("is-exiting");
+      document.getElementById("announcement").textContent = "Meninggalkan permukaan Merkurius dan kembali ke panorama orbit.";
+
+      try { await this.animateRetreatAltitude(Math.max(this.altitudeOffset, 34), 1450, token); } catch (_) {}
+      if (token !== this.transitionToken || this.state !== STATES.EXITING) return;
+
+      const reduced = this.mercury.motion?.matches;
+      const duration = reduced ? 260 : 3200;
+      const start = performance.now();
+      await new Promise(resolve => {
+        const frame = now => {
+          if (token !== this.transitionToken || this.state !== STATES.EXITING) return resolve();
+          const raw = clamp((now - start) / duration, 0, 1);
+          const eased = smoothStep(raw);
+          this.root.style.setProperty("--surface-opacity", String(1 - smoothStep(raw / 0.62)));
+          this.root.style.setProperty("--entry-progress", String(1 - eased));
+          this.mercury.setFullExplorationTransition?.(1 - eased, this.currentRegion);
+          if (this.ready && this.renderer && this.scene && this.camera) this.renderer.render(this.scene, this.camera);
+          if (raw < 1) requestAnimationFrame(frame); else resolve();
+        };
+        requestAnimationFrame(frame);
+      });
+      if (token !== this.transitionToken || this.state !== STATES.EXITING) return;
+      this.finishExit(silent);
+    }
+
+    finishExit(silent = false) {
+      if (document.fullscreenElement === this.root) document.exitFullscreen?.().catch?.(() => {});
+      this.active = false;
+      this.state = STATES.HIDDEN;
+      this.selectorOpenedFromWorld = false;
+      this.selectorRestoreState = null;
+      this.setActionsMenu(false);
+      this.stopLoop();
       this.setUiVisible(false);
       this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration";
-      this.root.style.setProperty("--surface-opacity", "0");
-      this.root.style.setProperty("--entry-progress", "0");
+      this.root.style.removeProperty("--surface-opacity");
+      this.root.style.removeProperty("--entry-progress");
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");
       this.entryButton.disabled = false;
-      this.currentRegion = null;
+      const region = this.currentRegion;
+      this.mercury.setFullExplorationTransition?.(0, region);
       this.mercury.endFullExploration?.();
-      if (!silent) document.getElementById("announcement").textContent = "Keluar dari Eksplorasi Penuh Merkurius.";
-      if (!silent) this.entryButton?.focus({ preventScroll: true });
+      this.currentRegion = null;
+      this.infoMinimized = true;
+      this.objectivesCollapsed = true;
+      if (!silent) {
+        document.getElementById("announcement").textContent = "Kembali ke panorama Merkurius.";
+        this.entryButton?.focus({ preventScroll: true });
+      }
     }
 
     onMercuryStop() {
-      this.exit(true);
+      this.transitionToken += 1;
+      this.finishExit(true);
     }
   }
 

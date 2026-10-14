@@ -1,0 +1,23 @@
+ANTARA AUTH UI HOTFIX
+=====================
+
+1. Copy SEMUA isi folder hotfix ini ke:
+   C:\xampp\htdocs\
+
+2. Kalau Windows bertanya replace api/*, pilih Replace.
+
+3. File baru berikut WAJIB ikut tercopy:
+   daftar-auth-v3.js
+   auth-client-v3.js
+   daftar-auth-v3.css
+
+4. Buka URL baru ini agar HTML lama tidak dipakai cache:
+   http://localhost/daftar.html?v=auth3
+
+5. Di bagian atas form HARUS terlihat dua tombol:
+   DAFTAR | MASUK
+
+6. Tes daftar. Jika sukses, cek phpMyAdmin:
+   antara > users > Browse
+
+Tidak perlu import database ulang selama api/health.php masih menampilkan database=connected.

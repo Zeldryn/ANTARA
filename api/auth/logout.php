@@ -4,6 +4,9 @@ require_once dirname(__DIR__) . '/_bootstrap.php';
 
 antara_method('POST');
 
+// Revoke the long-lived browser token before destroying the PHP session.
+antara_revoke_remember_token();
+
 $_SESSION = [];
 if (ini_get('session.use_cookies')) {
     $params = session_get_cookie_params();
