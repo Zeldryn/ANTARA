@@ -34,13 +34,14 @@ try {
     foreach ($questionIds as $index => $questionId) {
         $q = $bank[$questionId];
         $level = (int)$q['level'];
+        $config = antara_quiz_level_config($level);
         $insert->execute([
             'run_id' => $runId,
             'position' => $index + 1,
             'question_id' => $questionId,
             'level' => $level,
             'correct_key' => (string)$q['answer'],
-            'time_limit_ms' => antara_quiz_question_time_ms($q),
+            'time_limit_ms' => (int)$config['timeMs'],
             'served_at' => $index === 0 ? date('Y-m-d H:i:s.u') : null,
         ]);
     }
@@ -56,9 +57,7 @@ try {
         'success' => true,
         'runToken' => $token,
         'gameCode' => ANTARA_QUIZ_GAME_CODE,
-        'questionCount' => ANTARA_QUIZ_STACK_SIZE,
-        'totalQuestionPool' => count($bank),
-        'stack' => antara_quiz_stack_progress($pdo, $runId),
+        'questionCount' => ANTARA_QUIZ_QUESTION_COUNT,
         'question' => antara_quiz_public_question($question),
         'score' => 0,
         'streak' => 0,

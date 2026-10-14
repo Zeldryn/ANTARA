@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/progress/_progress.php';
 require_once dirname(__DIR__) . '/leaderboard/_leaderboard.php';
+require_once dirname(__DIR__) . '/quiz/_quiz.php';
 
 function antara_achievement_catalog(): array
 {
@@ -17,6 +18,11 @@ function antara_achievement_catalog(): array
         'solar-master' => ['name'=>'Tata Surya 100%','description'=>'Menyelesaikan seluruh milestone eksplorasi ANTARA di semua objek.','icon'=>'assets/achievements/18-tata-surya-100.png','category'=>'special','tier'=>'legendary','sort'=>80],
         'top-10' => ['name'=>'Top 10','description'=>'Berhasil masuk 10 besar salah satu leaderboard resmi ANTARA.','icon'=>'assets/achievements/19-top-10.png','category'=>'special','tier'=>'legendary','sort'=>90],
         'rank-1' => ['name'=>'Juara #1','description'=>'Pernah mencapai posisi pertama di salah satu leaderboard resmi ANTARA.','icon'=>'assets/achievements/20-juara-1.png','category'=>'special','tier'=>'legendary','sort'=>100],
+        'quiz-first' => ['name'=>'Kuis Pertama','description'=>'Menyelesaikan satu run Quiz ANTARA sampai garis akhir.','icon'=>'assets/achievements/21-quiz-pertama.svg','category'=>'special','tier'=>'common','sort'=>110],
+        'quiz-streak-5' => ['name'=>'Orbit Streak x5','description'=>'Menjawab benar lima soal berturut-turut dalam satu run kuis.','icon'=>'assets/achievements/22-streak-5.svg','category'=>'special','tier'=>'rare','sort'=>120],
+        'quiz-speedster' => ['name'=>'Jawaban Kilat','description'=>'Menjawab benar sedikitnya lima soal dalam tiga detik atau kurang pada satu run.','icon'=>'assets/achievements/23-kilat-quiz.svg','category'=>'special','tier'=>'epic','sort'=>130],
+        'quiz-perfect' => ['name'=>'Lintasan Sempurna','description'=>'Menyelesaikan satu run kuis dengan 15 jawaban benar dari 15 soal.','icon'=>'assets/achievements/24-sempurna-quiz.svg','category'=>'special','tier'=>'legendary','sort'=>140],
+        'quiz-master' => ['name'=>'Komandan Kuis','description'=>'Mencapai skor terverifikasi 5.000 poin atau lebih dalam satu run Quiz ANTARA.','icon'=>'assets/achievements/25-master-quiz.svg','category'=>'special','tier'=>'legendary','sort'=>150],
 
         'sun-complete' => ['name'=>'Matahari Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Matahari.','icon'=>'assets/achievements/01-matahari.png','category'=>'planet','tier'=>'rare','sort'=>210,'planet'=>'sun'],
         'mercury-complete' => ['name'=>'Merkurius Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Merkurius.','icon'=>'assets/achievements/02-merkurius.png','category'=>'planet','tier'=>'rare','sort'=>220,'planet'=>'mercury'],
@@ -135,11 +141,45 @@ function antara_achievement_best_rank(PDO $pdo, int $userId): ?int
     if ($completion && ($completion['eligible'] ?? false) && isset($completion['rank'])) {
         $ranks[] = (int)$completion['rank'];
     }
-    $game = antara_verified_game_user_rank($pdo, $userId, 'general');
+    $game = antara_verified_game_user_rank($pdo, $userId, ANTARA_QUIZ_GAME_CODE);
     if ($game && isset($game['rank'])) {
         $ranks[] = (int)$game['rank'];
     }
     return $ranks ? min($ranks) : null;
+}
+
+function antara_quiz_achievement_stats(PDO $pdo, int $userId): array
+{
+    antara_quiz_ensure_schema($pdo);
+    $stmt = $pdo->prepare(
+        'SELECT r.id, r.server_score, r.finished_at,
+                COUNT(q.id) AS total_questions,
+                SUM(CASE WHEN q.is_correct = 1 THEN 1 ELSE 0 END) AS correct_count,
+                COALESCE(MAX(q.streak_after),0) AS best_streak,
+                SUM(CASE WHEN q.is_correct = 1 AND q.response_ms <= 3000 THEN 1 ELSE 0 END) AS fast_correct,
+                SUM(CASE WHEN q.level = 5 AND q.is_correct = 1 THEN 1 ELSE 0 END) AS expert_correct
+         FROM game_runs r
+         JOIN quiz_run_questions q ON q.run_id = r.id
+         WHERE r.user_id = :user_id AND r.game_code = :game_code AND r.status = \'finished\'
+         GROUP BY r.id, r.server_score, r.finished_at
+         ORDER BY r.finished_at ASC, r.id ASC'
+    );
+    $stmt->execute(['user_id'=>$userId,'game_code'=>ANTARA_QUIZ_GAME_CODE]);
+    $runs = $stmt->fetchAll();
+    $stats = [
+        'runs'=>count($runs),'firstFinishedAt'=>null,'bestScore'=>0,'bestStreak'=>0,
+        'bestCorrect'=>0,'bestFastCorrect'=>0,'perfect'=>false,'expertPerfect'=>false,
+    ];
+    foreach ($runs as $row) {
+        if ($stats['firstFinishedAt'] === null && !empty($row['finished_at'])) $stats['firstFinishedAt']=(string)$row['finished_at'];
+        $stats['bestScore']=max($stats['bestScore'],(int)$row['server_score']);
+        $stats['bestStreak']=max($stats['bestStreak'],(int)$row['best_streak']);
+        $stats['bestCorrect']=max($stats['bestCorrect'],(int)$row['correct_count']);
+        $stats['bestFastCorrect']=max($stats['bestFastCorrect'],(int)$row['fast_correct']);
+        if ((int)$row['total_questions'] >= ANTARA_QUIZ_QUESTION_COUNT && (int)$row['correct_count'] >= ANTARA_QUIZ_QUESTION_COUNT) $stats['perfect']=true;
+        if ((int)$row['expert_correct'] >= 3) $stats['expertPerfect']=true;
+    }
+    return $stats;
 }
 
 function antara_achievements_sync(PDO $pdo, int $userId): array
@@ -190,7 +230,14 @@ function antara_achievements_sync(PDO $pdo, int $userId): array
     if ($bestRank !== null && $bestRank <= 10) antara_achievement_unlock($pdo, $userId, 'top-10');
     if ($bestRank === 1) antara_achievement_unlock($pdo, $userId, 'rank-1');
 
-    return ['summary'=>$summary,'planets'=>$planetsByCode,'bestRank'=>$bestRank];
+    $quizStats = antara_quiz_achievement_stats($pdo, $userId);
+    if ($quizStats['runs'] >= 1) antara_achievement_unlock($pdo, $userId, 'quiz-first', $quizStats['firstFinishedAt']);
+    if ($quizStats['bestStreak'] >= 5) antara_achievement_unlock($pdo, $userId, 'quiz-streak-5');
+    if ($quizStats['bestFastCorrect'] >= 5) antara_achievement_unlock($pdo, $userId, 'quiz-speedster');
+    if ($quizStats['perfect']) antara_achievement_unlock($pdo, $userId, 'quiz-perfect');
+    if ($quizStats['bestScore'] >= 5000) antara_achievement_unlock($pdo, $userId, 'quiz-master');
+
+    return ['summary'=>$summary,'planets'=>$planetsByCode,'bestRank'=>$bestRank,'quiz'=>$quizStats];
 }
 
 function antara_achievements_payload(PDO $pdo, int $userId): array
@@ -230,6 +277,11 @@ function antara_achievements_payload(PDO $pdo, int $userId): array
             $data=antara_achievement_full_count($pdo,$userId,$planet); $current=min($goal,$data['count']);
             $progressLabel=$current.' / '.$goal.' destinasi';
         }
+        elseif ($code==='quiz-first') { $goal=1; $current=min(1,(int)($sync['quiz']['runs'] ?? 0)); $progressLabel=$current?'Run pertama selesai':'Selesaikan satu run kuis'; }
+        elseif ($code==='quiz-streak-5') { $goal=5; $current=min($goal,(int)($sync['quiz']['bestStreak'] ?? 0)); $progressLabel=$current.' / '.$goal.' streak'; }
+        elseif ($code==='quiz-speedster') { $goal=5; $current=min($goal,(int)($sync['quiz']['bestFastCorrect'] ?? 0)); $progressLabel=$current.' / '.$goal.' jawaban ≤ 3 detik'; }
+        elseif ($code==='quiz-perfect') { $goal=ANTARA_QUIZ_QUESTION_COUNT; $current=min($goal,(int)($sync['quiz']['bestCorrect'] ?? 0)); $progressLabel=$current.' / '.$goal.' benar'; }
+        elseif ($code==='quiz-master') { $goal=5000; $current=min($goal,(int)($sync['quiz']['bestScore'] ?? 0)); $progressLabel=number_format($current,0,',','.').' / '.number_format($goal,0,',','.').' poin'; }
         elseif ($code==='solar-master') {
             $current=(int)($sync['summary']['overall']['completedMilestones'] ?? 0); $goal=(int)($sync['summary']['overall']['totalMilestones'] ?? 130);
             $progressLabel=$current.' / '.$goal.' milestone';

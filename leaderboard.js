@@ -48,10 +48,10 @@
   function boardCopy(board) {
     if (board === "game") return {
       kicker:"SKOR TERVERIFIKASI",
-      title:"Leaderboard Permainan",
+      title:"Leaderboard Quiz ANTARA",
       emptyKicker:"BELUM ADA SKOR TERVERIFIKASI",
       emptyTitle:"Arena kompetitif masih kosong.",
-      emptyCopy:"Skor akan muncul setelah permainan ANTARA terhubung ke secure run server. Skor mentah dari browser tidak diterima."
+      emptyCopy:"Skor Quiz ANTARA muncul dari run yang dihitung dan diverifikasi server. Kecepatan, tingkat soal, dan streak ikut membentuk poin."
     };
     return {
       kicker:"URUTAN PENYELESAIAN",
@@ -147,7 +147,7 @@
       tab.setAttribute("aria-selected", active ? "true" : "false");
     });
     try {
-      const url = board === "game" ? "api/leaderboard/get.php?type=game&game=general&limit=50" : "api/leaderboard/get.php?type=completion&limit=50";
+      const url = board === "game" ? "api/leaderboard/get.php?type=game&game=quiz&limit=50" : "api/leaderboard/get.php?type=completion&limit=50";
       const { response, data } = await fetchJson(url);
       if (!response.ok || !data.success) throw new Error(data.message || "Leaderboard gagal dimuat.");
       renderBoard(data, board);

@@ -2,16 +2,111 @@
 <html lang="id">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Permainan ANTARA</title>
-  <style>
-    :root{color-scheme:dark;--gold:#d9af68;--cyan:#72b8da;--ink:#030b13}
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 50% 20%,#153a59 0,#071727 42%,#02070d 100%);color:#eef4f8;font-family:system-ui,sans-serif;overflow:hidden}
-    body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(114,184,218,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(114,184,218,.04) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(#0008,transparent 78%)}
-    main{position:relative;width:min(760px,calc(100% - 32px));padding:clamp(28px,5vw,54px);background:linear-gradient(180deg,rgba(7,21,34,.94),rgba(3,11,19,.96));clip-path:polygon(18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%,0 18px);border-top:1px solid rgba(114,184,218,.56);border-bottom:1px solid rgba(217,175,104,.52);box-shadow:0 30px 90px #0008;text-align:center}
-    main:before,main:after{content:"";position:absolute;height:1px;top:18px;width:24%;background:linear-gradient(90deg,var(--cyan),transparent)}main:before{left:24px}main:after{right:24px;transform:scaleX(-1);background:linear-gradient(90deg,var(--gold),transparent)}
-    .eyebrow{margin:0 0 10px;color:#91b7ca;font-size:10px;letter-spacing:.28em}.title{margin:0;color:#f2efe8;font-family:Georgia,serif;font-size:clamp(30px,6vw,58px);font-weight:500}.status{margin:22px auto 0;max-width:480px;padding:18px;border:1px solid rgba(114,184,218,.18);color:#9db5c2;font-size:12px;line-height:1.7;letter-spacing:.05em}.back{display:inline-flex;margin-top:26px;padding:11px 18px;color:#f0e7d4;text-decoration:none;border:1px solid rgba(217,175,104,.48);clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);font-size:11px;letter-spacing:.14em}.back:hover{border-color:var(--gold);filter:brightness(1.15)}
-  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#02070d">
+  <title>Quiz ANTARA | Permainan</title>
+  <link rel="icon" type="image/png" href="assets/antara-logo.png">
+  <link rel="stylesheet" href="achievement-notify.css?v=20261003-achievement-toast-1">
+  <link rel="stylesheet" href="permainan.css?v=20261004-quiz-mvp-1">
+  <script src="achievement-client.js?v=20261003-achievement-toast-1" defer></script>
+  <script src="permainan.js?v=20261004-quiz-mvp-1" defer></script>
 </head>
-<body><main><p class="eyebrow">ANTARA · SIMULASI</p><h1 class="title">Permainan</h1><div class="status">Area permainan ANTARA sudah menjadi tujuan resmi tombol PERMAINAN. Halaman ini siap dipakai untuk mode kompetitif, simulasi, atau aktivitas eksplorasi yang nanti kamu hubungkan ke sistem akun dan leaderboard.</div><a class="back" href="index.html">← KEMBALI KE KOKPIT</a></main></body>
+<body>
+  <div class="game-space" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <header class="game-topbar">
+    <a class="game-back" href="index.html" aria-label="Kembali ke kokpit ANTARA"><span>‹</span><b>KOKPIT</b></a>
+    <a class="game-brand" href="index.html" aria-label="ANTARA">
+      <img src="assets/antara-logo.png" alt="">
+      <span><small>ANTARIKSA NUSANTARA</small><strong>PERMAINAN</strong></span>
+    </a>
+    <div class="game-account" id="game-account"><i></i><span>MEMBACA AKUN...</span></div>
+  </header>
+
+  <main class="game-shell">
+    <section class="game-intro" id="game-intro">
+      <div class="game-intro-copy">
+        <p class="eyebrow">ANTARA · QUIZ NAVIGASI TATA SURYA</p>
+        <h1>Seberapa cepat<br><span>kamu mengenal langit?</span></h1>
+        <p class="lead">Lima tingkat kesulitan. Lima belas soal. Waktu makin pendek saat level naik, dan jawaban cepat menghasilkan poin lebih besar.</p>
+        <div class="level-track" aria-label="Tingkat kesulitan">
+          <span><b>01</b><small>PEMULA</small><em>10 dtk</em></span>
+          <span><b>02</b><small>DASAR</small><em>9 dtk</em></span>
+          <span><b>03</b><small>MENENGAH</small><em>8 dtk</em></span>
+          <span><b>04</b><small>SULIT</small><em>7 dtk</em></span>
+          <span><b>05</b><small>AHLI</small><em>6 dtk</em></span>
+        </div>
+        <div class="game-actions">
+          <button class="primary" id="game-start" type="button">MULAI QUIZ <span>→</span></button>
+          <a href="leaderboard.html">LEADERBOARD</a>
+          <a href="pencapaian.html">PENCAPAIAN</a>
+        </div>
+        <p class="game-login-note" id="game-login-note">Skor hanya masuk leaderboard jika kamu sudah masuk ke akun ANTARA.</p>
+      </div>
+      <aside class="game-brief">
+        <div><small>BANK SOAL</small><strong>300</strong><span>soal dari materi ANTARA</span></div>
+        <div><small>SOAL / RUN</small><strong>15</strong><span>3 soal per tingkat</span></div>
+        <div><small>SKOR</small><strong>SERVER</strong><span>level + waktu + streak</span></div>
+        <div><small>MODE</small><strong>4 PILIHAN</strong><span>A · B · C · D</span></div>
+      </aside>
+    </section>
+
+    <section class="quiz-stage" id="quiz-stage" hidden aria-live="polite">
+      <div class="quiz-hud">
+        <div class="quiz-hud-item"><small>SOAL</small><strong id="quiz-progress">01 / 15</strong></div>
+        <div class="quiz-hud-item"><small>SKOR</small><strong id="quiz-score">0</strong></div>
+        <div class="quiz-hud-item"><small>STREAK</small><strong id="quiz-streak">×0</strong></div>
+        <div class="quiz-hud-item quiz-level"><small>TINGKAT</small><strong id="quiz-level">PEMULA</strong></div>
+      </div>
+
+      <article class="quiz-card">
+        <div class="quiz-card-top">
+          <div>
+            <p id="quiz-planet">MATAHARI</p>
+            <span id="quiz-topic">TOPIK</span>
+          </div>
+          <div class="timer" id="quiz-timer" style="--timer:1" aria-label="Sisa waktu">
+            <div><strong id="quiz-time">10.0</strong><small>DETIK</small></div>
+          </div>
+        </div>
+        <div class="timer-bar" aria-hidden="true"><i id="quiz-timer-bar"></i></div>
+        <h2 id="quiz-question">Pertanyaan akan muncul di sini.</h2>
+        <div class="quiz-options" id="quiz-options"></div>
+        <section class="quiz-feedback" id="quiz-feedback" hidden>
+          <div class="quiz-feedback-head">
+            <span id="feedback-status">TEPAT</span>
+            <strong id="feedback-points">+0</strong>
+          </div>
+          <p class="correct-line" id="feedback-correct"></p>
+          <p id="feedback-explanation"></p>
+          <small id="feedback-reference"></small>
+          <button type="button" id="quiz-next">LANJUT <span>→</span></button>
+        </section>
+      </article>
+    </section>
+
+    <section class="result-stage" id="result-stage" hidden>
+      <p class="eyebrow">RUN SELESAI · SKOR TERVERIFIKASI</p>
+      <h1>Data perjalanan<br><span>berhasil dikirim.</span></h1>
+      <div class="result-score"><small>SKOR AKHIR</small><strong id="result-score">0</strong><span>POIN</span></div>
+      <div class="result-grid">
+        <div><small>BENAR</small><strong id="result-correct">0 / 15</strong></div>
+        <div><small>AKURASI</small><strong id="result-accuracy">0%</strong></div>
+        <div><small>STREAK TERBAIK</small><strong id="result-streak">×0</strong></div>
+        <div><small>RATA-RATA</small><strong id="result-speed">0.0s</strong></div>
+      </div>
+      <div class="result-actions">
+        <button type="button" id="result-retry">MAIN LAGI</button>
+        <a class="primary-link" href="leaderboard.html">LIHAT LEADERBOARD</a>
+        <a href="pencapaian.html">PENCAPAIAN</a>
+      </div>
+    </section>
+
+    <section class="game-error" id="game-error" hidden>
+      <small>SISTEM BELUM MENJAWAB</small>
+      <h2>Quiz belum bisa dijalankan.</h2>
+      <p id="game-error-copy">Periksa Apache, MySQL, dan koneksi database ANTARA.</p>
+      <div><button type="button" id="game-error-retry">COBA LAGI</button><a href="index.html">KEMBALI</a></div>
+    </section>
+  </main>
+</body>
 </html>
