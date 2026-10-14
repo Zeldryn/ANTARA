@@ -803,7 +803,7 @@ class CockpitCompanions {
 }
 
 const DIALOGUE_TIMELINE = Object.freeze([
-  { at: 0.00, phase: "prelaunch", speaker: "A", text: "Hai! Sudah Siap menjelajah Tata Surya Kita?", emotion: "happy", sprite: "happy", otherSprite: "idle", duration: 3000 },
+  { at: 0.00, phase: "prelaunch", speaker: "A", text: "Hai! Sudah Siap Menjelajah Tata Surya Kita?", emotion: "happy", sprite: "happy", otherSprite: "idle", duration: 3000 },
   { at: 3.20, phase: "prelaunch", speaker: "B", text: "Kita mulai dari rumah kita dulu: Bumi.", emotion: "explaining", sprite: "talking", otherSprite: "confident", duration: 3000 },
   { at: 6.30, phase: "ignition", speaker: "A", text: "Mesinnya hidup. Siap?", emotion: "excited", sprite: "excited", otherSprite: "supportive", duration: 3000 },
   { at: 9.40, phase: "climb", speaker: "B", text: "Lihat, langitnya makin luas.", emotion: "explaining", sprite: "talking", otherSprite: "confident", duration: 3000 },
@@ -814,6 +814,36 @@ const DIALOGUE_TIMELINE = Object.freeze([
   { at: 24.90, phase: "space", speaker: "A", text: "Sekarang tenang banget...", emotion: "thinking", sprite: "thinking", otherSprite: "curious", duration: 3000 },
   { at: 28.05, phase: "approach", speaker: "B", text: "Itu Bumi! Rumah kita.", emotion: "surprised", sprite: "surprised", otherSprite: "pointing", duration: 3000 }
 ]);
+
+function getExplorerDisplayName(user = null) {
+  const candidate = user ?? window.ANTARAAuth?.currentUser ?? window.AntaraAuth?.currentUser ?? window.ANTARA_USER ?? null;
+  const name = String(candidate?.name ?? candidate?.displayName ?? candidate?.username ?? "").trim();
+  return name;
+}
+
+function getNaraLaunchGreeting(user = null) {
+  const name = getExplorerDisplayName(user);
+  return name
+    ? `Hai! ${name} Sudah Siap Menjelajah Tata Surya Kita?`
+    : "Hai! Sudah Siap Menjelajah Tata Surya Kita?";
+}
+
+function getLaunchDialogueCue(index) {
+  const cue = DIALOGUE_TIMELINE[index];
+  if (!cue) return cue;
+  return index === 0 ? { ...cue, text: getNaraLaunchGreeting() } : cue;
+}
+
+const RETURN_SORA_CUE = Object.freeze({
+  speaker: "B",
+  text: "Hai, kita bertemu kembali.",
+  emotion: "happy",
+  sprite: "happy",
+  otherSprite: "supportive",
+  duration: 12000
+});
+
+const RETURN_HOME_STATUS = "KEMBALI KE BUMI...";
 
 class CockpitProfileHUD {
   constructor() {
@@ -910,6 +940,10 @@ class CockpitProfileHUD {
   setUser(user) {
     if (!this.root) return;
     this.user = this.normalizeUser(user);
+    const experience = document.getElementById("mission")?.dataset?.experience || "home";
+    if (experience === "home" || experience === "idle" || !experience) {
+      companions?.setDialogue?.({ ...DIALOGUE_TIMELINE[0], text: getNaraLaunchGreeting(this.user?.raw) }, true);
+    }
 
     if (!this.user) {
       this.root.dataset.profileState = "logged-out";
@@ -1043,7 +1077,7 @@ if (profileMoreTrigger && profileNavSuite) {
   }, { passive: true });
 }
 companions.setJourneyPhase("idle");
-companions.setDialogue(DIALOGUE_TIMELINE[0], true);
+companions.setDialogue(getLaunchDialogueCue(0), true);
 const earth = new EarthScene({ onNext: travelToMars });
 const earthFull = new EarthFullExploration(earth);
 const mars = new MarsScene();
@@ -1215,7 +1249,7 @@ function waitForReturn(ms) {
   return new Promise(resolve => window.setTimeout(resolve, ms));
 }
 
-function setReturnStatus(text, kicker = "RUTE KEMBALI ANTARA") {
+function setReturnStatus(text = RETURN_HOME_STATUS, kicker = "PERJALANAN PULANG ANTARA") {
   if (returnCockpitStatus) returnCockpitStatus.textContent = text;
   if (returnCockpitKicker) returnCockpitKicker.textContent = kicker;
 }
@@ -1336,10 +1370,8 @@ async function animatePlanetToEarthTransit(sourcePhase) {
   const sourceName = CELESTIAL_DISPLAY_NAMES[sourcePhase]?.toUpperCase() || "ORBIT";
   const duration = reducedMotion.matches ? 240 : isEarth ? 2450 : 6200;
   const start = performance.now();
-  let statusStage = -1;
 
-  if (isEarth) setReturnStatus("MENJAUH SEJENAK DARI BUMI", "TRANSISI ORBIT ANTARA");
-  else setReturnStatus(`MENJAUH DARI ${sourceName}`, "TRANSISI ANTARPLANET ANTARA");
+  setReturnStatus();
 
   await new Promise(resolve => {
     const frame = now => {
@@ -1388,15 +1420,7 @@ async function animatePlanetToEarthTransit(sourcePhase) {
         stars: returnTravelEase((state.progress - 0.08) / 0.30) * 0.82
       });
 
-      let nextStage = 0;
-      if (state.approach > 0.08) nextStage = 2;
-      else if (state.pan > 0.08) nextStage = 1;
-      if (nextStage !== statusStage) {
-        statusStage = nextStage;
-        if (nextStage === 0) setReturnStatus(isEarth ? "MENYIAPKAN ORBIT BUMI" : `ZOOM OUT DARI ${sourceName}`, "TRANSISI ANTARPLANET ANTARA");
-        if (nextStage === 1) setReturnStatus(isEarth ? "MENYELARASKAN KAMERA BUMI" : "MELUNCUR MENUJU BUMI", "RUTE KEMBALI ANTARA");
-        if (nextStage === 2) setReturnStatus("ZOOM IN KE BUMI 3D", "RUTE KEMBALI ANTARA");
-      }
+      setReturnStatus();
 
       if (raw >= 1) { resolve(); return; }
       returnCockpitFrame = requestAnimationFrame(frame);
@@ -1409,18 +1433,14 @@ async function animatePlanetToEarthTransit(sourcePhase) {
   earthDestination.viewport.style.transform = `translate3d(${window.innerWidth <= 700 ? 0 : -12}vw, 0, 0) scale(1.14)`;
   earthDestination.viewport.style.filter = "brightness(1) saturate(1)";
   setReturnTransitionProgress({ background: .86, stars: .82 });
-  setReturnStatus("TIBA DI ORBIT BUMI · MEMULAI PENURUNAN", "RUTE KEMBALI ANTARA");
+  setReturnStatus();
   await waitForReturn(reducedMotion.matches ? 30 : 420);
   if (!isEarth) clearReturnSourceScene(element);
   return earthDestination;
 }
 
-function returnDescentStatus(renderPhase) {
-  if (["approach", "earth-reveal", "space"].includes(renderPhase)) return "MENINGGALKAN ORBIT BUMI";
-  if (renderPhase === "upper-atmosphere") return "MEMASUKI ATMOSFER BUMI";
-  if (["above-clouds", "clouds", "cloud-approach"].includes(renderPhase)) return "MENEMBUS LAPISAN AWAN";
-  if (["climb", "liftoff", "ignition"].includes(renderPhase)) return "MENURUN MENUJU KOTA";
-  return "KOKPIT ANTARA DI DEPAN";
+function returnDescentStatus() {
+  return RETURN_HOME_STATUS;
 }
 
 async function reverseLaunchIntoCockpit(earthDestination = null) {
@@ -1471,7 +1491,8 @@ async function returnToCockpit() {
   clearJourneyForUserId(journeyUserId);
   openingAudio?.stop?.({ fade: 240 });
   sound.travel(reducedMotion.matches ? .2 : 2.4);
-  announcement.textContent = `Kembali ke kokpit dari ${CELESTIAL_DISPLAY_NAMES[sourcePhase] || sourcePhase}.`;
+  companions.setDialogue(RETURN_SORA_CUE, true);
+  announcement.textContent = `Sora: ${RETURN_SORA_CUE.text}`;
 
   try {
     const earthDestination = await animatePlanetToEarthTransit(sourcePhase);
@@ -1953,7 +1974,7 @@ function advancePreparation(timestamp) {
   const dialogue = DIALOGUE_TIMELINE.findLastIndex(item => elapsed >= item.at);
   if (dialogue !== activeDialogue && dialogue >= 0) {
     activeDialogue = dialogue;
-    const cue = DIALOGUE_TIMELINE[dialogue];
+    const cue = getLaunchDialogueCue(dialogue);
     companions.setDialogue(cue);
     announcement.textContent = `${cue.speaker === "A" ? "Nara" : "Sora"}: ${cue.text}`;
   }
@@ -2004,11 +2025,11 @@ launchButton.addEventListener("click", () => {
   sound.startMission();
   flight.start();
   companions.setJourneyPhase("prelaunch");
-  companions.setDialogue(DIALOGUE_TIMELINE[0], true);
+  companions.setDialogue(getLaunchDialogueCue(0), true);
   prewarmLaunchPlanetScenes();
   mission.classList.add("is-preparing");
   if (flightStatus) flightStatus.textContent = "SIAP BERANGKAT";
-  announcement.textContent = "Nara: Hai! Sudah Siap menjelajah Tata Surya Kita?";
+  announcement.textContent = `Nara: ${getNaraLaunchGreeting()}`;
   previousFrame = performance.now();
   animationFrame = requestAnimationFrame(advancePreparation);
 });
@@ -2465,7 +2486,7 @@ function resetMission() {
   phase = "idle";
   flight.reset();
   companions.setJourneyPhase("idle");
-  companions.setDialogue(DIALOGUE_TIMELINE[0], true);
+  companions.setDialogue(getLaunchDialogueCue(0), true);
   activeStatus = -1;
   activeDialogue = -1;
   activeFlightPhase = "idle";
