@@ -568,3 +568,46 @@
     max-height: min(39dvh, 285px) !important;
   }
 }
+
+/* 2026-10-04 EXPLORATION SCROLL CONTENT
+   Topic title + subtitle + lesson + source now live in one scroll region.
+   Keep the compact topline and bottom navigation fixed. */
+:is(
+  .sun-topic-scroll,
+  .mercury-topic-scroll,
+  .venus-topic-scroll,
+  .mars-topic-scroll,
+  .asteroid-topic-scroll,
+  .jupiter-topic-scroll,
+  .saturn-topic-scroll,
+  .uranus-topic-scroll,
+  .neptune-topic-scroll
+) {
+  padding-top: 2px;
+  padding-bottom: 8px;
+}
+
+:is(
+  .sun-topic-scroll,
+  .mercury-topic-scroll,
+  .venus-topic-scroll,
+  .mars-topic-scroll,
+  .asteroid-topic-scroll,
+  .jupiter-topic-scroll,
+  .saturn-topic-scroll,
+  .uranus-topic-scroll,
+  .neptune-topic-scroll
+) > :is(
+  .sun-topic-source,
+  .mercury-topic-source,
+  .venus-topic-source,
+  .mars-topic-source,
+  .asteroid-topic-source,
+  .jupiter-topic-source,
+  .saturn-topic-source,
+  .uranus-topic-source,
+  .neptune-topic-source
+) {
+  display: inline-flex;
+  margin-bottom: 2px;
+}

@@ -53,6 +53,7 @@
   <script src="start-auth-gate.js?v=20261003-startlock-1" defer></script>
   <script src="script.js?v=20261003-opening-audio-achievement-toast-1" defer></script>
   <script src="mobile-planet-scene-audit-fix.js?v=20261004-mobile-reference-lock-2" defer></script>
+  <script src="exploration-scroll-content.js?v=20261004-scroll-title-1" defer></script>
 </head>
 <body>
   <main class="mission" id="mission">
@@ -350,11 +351,11 @@
           <span class="mars-topic-kicker" id="earth-topic-kicker">PLANET BIRU</span>
           <span class="mars-topic-count"><span id="earth-topic-current">01</span> / <span id="earth-topic-total">14</span></span>
         </div>
-        <h3 id="earth-topic-title" tabindex="-1">Bumi</h3>
-        <div class="earth-topic-meta">
-          <p class="mars-topic-subtitle" id="earth-topic-subtitle"></p>
-        </div>
         <div class="mars-topic-scroll" id="earth-topic-scroll">
+          <h3 id="earth-topic-title" tabindex="-1">Bumi</h3>
+          <div class="earth-topic-meta">
+            <p class="mars-topic-subtitle" id="earth-topic-subtitle"></p>
+          </div>
           <p class="mars-topic-summary" id="earth-topic-summary"></p>
           <section class="earth-context" id="earth-topic-context-section" aria-labelledby="earth-context-heading" hidden>
             <h4 class="earth-content-heading" id="earth-context-heading">Konteks Ilmiah</h4>
@@ -362,9 +363,9 @@
           </section>
           <h4 class="earth-content-heading" id="earth-topic-facts-heading">Data Kunci</h4>
           <ul class="mars-topic-facts" id="earth-topic-facts"></ul>
+          <a class="mars-topic-source" id="earth-topic-source" href="https://science.nasa.gov/earth/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
+          <a class="exploration-photo-source" id="earth-photo-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
         </div>
-        <a class="mars-topic-source" id="earth-topic-source" href="https://science.nasa.gov/earth/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
-        <a class="exploration-photo-source" id="earth-photo-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
         <div class="mars-exploration-controls">
           <button class="mars-topic-nav mars-topic-prev" id="earth-topic-prev" type="button" aria-label="Topik Bumi sebelumnya">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
@@ -520,14 +521,14 @@
           <span class="sun-topic-kicker" id="sun-topic-kicker">IDENTITAS MATAHARI</span>
           <span class="sun-topic-count"><span id="sun-topic-current">01</span> / <span id="sun-topic-total">07</span></span>
         </div>
-        <h3 id="sun-topic-title" tabindex="-1">Bintang Kita</h3>
-        <p class="sun-topic-subtitle" id="sun-topic-subtitle"></p>
         <div class="sun-topic-scroll" id="sun-topic-scroll">
+          <h3 id="sun-topic-title" tabindex="-1">Bintang Kita</h3>
+          <p class="sun-topic-subtitle" id="sun-topic-subtitle"></p>
           <p class="sun-topic-summary" id="sun-topic-summary"></p>
           <ul class="sun-topic-facts" id="sun-topic-facts"></ul>
+          <a class="sun-topic-source" id="sun-topic-source" href="https://science.nasa.gov/sun/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
+          <a class="exploration-photo-source" id="sun-photo-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
         </div>
-        <a class="sun-topic-source" id="sun-topic-source" href="https://science.nasa.gov/sun/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
-        <a class="exploration-photo-source" id="sun-photo-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
         <div class="sun-exploration-controls">
           <button class="sun-topic-nav sun-topic-prev" id="sun-topic-prev" type="button" aria-label="Topik Matahari sebelumnya">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
@@ -584,14 +585,14 @@
           <span class="mercury-topic-kicker" id="mercury-topic-kicker">POSISI &amp; UKURAN</span>
           <span class="mercury-topic-count"><span id="mercury-topic-current">01</span> / <span id="mercury-topic-total">07</span></span>
         </div>
-        <h3 id="mercury-topic-title" tabindex="-1">Planet Terkecil</h3>
-        <p class="mercury-topic-subtitle" id="mercury-topic-subtitle"></p>
         <div class="mercury-topic-scroll" id="mercury-topic-scroll">
+          <h3 id="mercury-topic-title" tabindex="-1">Planet Terkecil</h3>
+          <p class="mercury-topic-subtitle" id="mercury-topic-subtitle"></p>
           <p class="mercury-topic-summary" id="mercury-topic-summary"></p>
           <ul class="mercury-topic-facts" id="mercury-topic-facts"></ul>
+          <a class="mercury-topic-source" id="mercury-topic-source" href="https://science.nasa.gov/mercury/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
+          <a class="exploration-photo-source" id="mercury-photo-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
         </div>
-        <a class="mercury-topic-source" id="mercury-topic-source" href="https://science.nasa.gov/mercury/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
-        <a class="exploration-photo-source" id="mercury-photo-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
         <div class="mercury-exploration-controls">
           <button class="mercury-topic-nav mercury-topic-prev" id="mercury-topic-prev" type="button" aria-label="Topik Merkurius sebelumnya">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
@@ -651,14 +652,14 @@
           <span class="venus-topic-kicker" id="venus-topic-kicker">SUHU EKSTREM</span>
           <span class="venus-topic-count"><span id="venus-topic-current">01</span> / <span id="venus-topic-total">14</span></span>
         </div>
-        <h3 id="venus-topic-title" tabindex="-1">Planet Terpanas</h3>
-        <p class="venus-topic-subtitle" id="venus-topic-subtitle"></p>
         <div class="venus-topic-scroll" id="venus-topic-scroll">
+          <h3 id="venus-topic-title" tabindex="-1">Planet Terpanas</h3>
+          <p class="venus-topic-subtitle" id="venus-topic-subtitle"></p>
           <p class="venus-topic-summary" id="venus-topic-summary"></p>
           <ul class="venus-topic-facts" id="venus-topic-facts"></ul>
+          <a class="venus-topic-source" id="venus-topic-source" href="https://science.nasa.gov/venus/venus-facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
+          <a class="exploration-photo-source" id="venus-photo-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
         </div>
-        <a class="venus-topic-source" id="venus-topic-source" href="https://science.nasa.gov/venus/venus-facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
-        <a class="exploration-photo-source" id="venus-photo-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
         <div class="venus-exploration-controls">
           <button class="venus-topic-nav venus-topic-prev" id="venus-topic-prev" type="button" aria-label="Topik Venus sebelumnya">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
@@ -908,14 +909,14 @@
           <span class="mars-topic-kicker" id="mars-topic-kicker">TITIK EKSPLORASI</span>
           <span class="mars-topic-count"><span id="mars-topic-current">01</span> / <span id="mars-topic-total">11</span></span>
         </div>
-        <h3 id="mars-topic-title" tabindex="-1">MARS</h3>
-        <p class="mars-topic-subtitle" id="mars-topic-subtitle"></p>
         <div class="mars-topic-scroll" id="mars-topic-scroll">
+          <h3 id="mars-topic-title" tabindex="-1">MARS</h3>
+          <p class="mars-topic-subtitle" id="mars-topic-subtitle"></p>
           <p class="mars-topic-summary" id="mars-topic-summary"></p>
           <ul class="mars-topic-facts" id="mars-topic-facts"></ul>
+          <a class="mars-topic-source" id="mars-topic-source" href="https://science.nasa.gov/mars/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
+          <a class="exploration-photo-source" id="mars-photo-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
         </div>
-        <a class="mars-topic-source" id="mars-topic-source" href="https://science.nasa.gov/mars/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science <span aria-hidden="true">↗</span></a>
-        <a class="exploration-photo-source" id="mars-photo-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
         <div class="mars-exploration-controls">
           <button class="mars-topic-nav mars-topic-prev" id="mars-topic-prev" type="button" aria-label="Topik Mars sebelumnya">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
@@ -1067,13 +1068,13 @@
           <span class="asteroid-topic-kicker" id="asteroid-topic-kicker">IDENTITAS SABUK ASTEROID</span>
           <span class="asteroid-topic-count"><span id="asteroid-topic-current">01</span> / <span id="asteroid-topic-total">07</span></span>
         </div>
-        <h3 id="asteroid-topic-title" tabindex="-1">Bukan Lorong Batu</h3>
-        <p class="asteroid-topic-subtitle" id="asteroid-topic-subtitle"></p>
-        <div class="asteroid-topic-scroll">
+        <div class="asteroid-topic-scroll" id="asteroid-topic-scroll">
+          <h3 id="asteroid-topic-title" tabindex="-1">Bukan Lorong Batu</h3>
+          <p class="asteroid-topic-subtitle" id="asteroid-topic-subtitle"></p>
           <p class="asteroid-topic-summary" id="asteroid-topic-summary"></p>
           <ul class="asteroid-topic-facts" id="asteroid-topic-facts"></ul>
-        </div>
         <a class="asteroid-topic-source" id="asteroid-topic-source" href="https://science.nasa.gov/solar-system/asteroids/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science ↗</a>
+        </div>
         <div class="asteroid-exploration-controls">
           <button class="asteroid-topic-nav" id="asteroid-topic-prev" type="button" aria-label="Topik Sabuk Asteroid sebelumnya">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
@@ -1142,13 +1143,13 @@
           <span class="jupiter-topic-kicker" id="jupiter-topic-kicker">IDENTITAS JUPITER</span>
           <span class="jupiter-topic-count"><span id="jupiter-topic-current">01</span> / <span id="jupiter-topic-total">07</span></span>
         </div>
-        <h3 id="jupiter-topic-title" tabindex="-1">Raksasa Tata Surya</h3>
-        <p class="jupiter-topic-subtitle" id="jupiter-topic-subtitle"></p>
-        <div class="jupiter-topic-scroll">
+        <div class="jupiter-topic-scroll" id="jupiter-topic-scroll">
+          <h3 id="jupiter-topic-title" tabindex="-1">Raksasa Tata Surya</h3>
+          <p class="jupiter-topic-subtitle" id="jupiter-topic-subtitle"></p>
           <p class="jupiter-topic-summary" id="jupiter-topic-summary"></p>
           <ul class="jupiter-topic-facts" id="jupiter-topic-facts"></ul>
-        </div>
         <a class="jupiter-topic-source" id="jupiter-topic-source" href="https://science.nasa.gov/jupiter/jupiter-facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science ↗</a>
+        </div>
         <div class="jupiter-exploration-controls">
           <button class="jupiter-topic-nav" id="jupiter-topic-prev" type="button" aria-label="Topik Jupiter sebelumnya">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
@@ -1212,13 +1213,13 @@
           <span class="saturn-topic-kicker" id="saturn-topic-kicker">IDENTITAS SATURNUS</span>
           <span class="saturn-topic-count"><span id="saturn-topic-current">01</span> / <span id="saturn-topic-total">07</span></span>
         </div>
-        <h3 id="saturn-topic-title" tabindex="-1">Raksasa Bercincin</h3>
-        <p class="saturn-topic-subtitle" id="saturn-topic-subtitle"></p>
-        <div class="saturn-topic-scroll">
+        <div class="saturn-topic-scroll" id="saturn-topic-scroll">
+          <h3 id="saturn-topic-title" tabindex="-1">Raksasa Bercincin</h3>
+          <p class="saturn-topic-subtitle" id="saturn-topic-subtitle"></p>
           <p class="saturn-topic-summary" id="saturn-topic-summary"></p>
           <ul class="saturn-topic-facts" id="saturn-topic-facts"></ul>
-        </div>
         <a class="saturn-topic-source" id="saturn-topic-source" href="https://science.nasa.gov/saturn/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science ↗</a>
+        </div>
         <div class="saturn-exploration-controls">
           <button class="saturn-topic-nav" id="saturn-topic-prev" type="button" aria-label="Topik Saturnus sebelumnya">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
@@ -1289,13 +1290,13 @@
           <span class="uranus-topic-kicker" id="uranus-topic-kicker">IDENTITAS URANUS</span>
           <span class="uranus-topic-count"><span id="uranus-topic-current">01</span> / <span id="uranus-topic-total">11</span></span>
         </div>
-        <h3 id="uranus-topic-title" tabindex="-1">Raksasa Es yang Menyamping</h3>
-        <p class="uranus-topic-subtitle" id="uranus-topic-subtitle"></p>
-        <div class="uranus-topic-scroll">
+        <div class="uranus-topic-scroll" id="uranus-topic-scroll">
+          <h3 id="uranus-topic-title" tabindex="-1">Raksasa Es yang Menyamping</h3>
+          <p class="uranus-topic-subtitle" id="uranus-topic-subtitle"></p>
           <p class="uranus-topic-summary" id="uranus-topic-summary"></p>
           <ul class="uranus-topic-facts" id="uranus-topic-facts"></ul>
-        </div>
         <a class="uranus-topic-source" id="uranus-topic-source" href="https://science.nasa.gov/uranus/facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science ↗</a>
+        </div>
         <div class="uranus-exploration-controls">
           <button class="uranus-topic-nav" id="uranus-topic-prev" type="button" aria-label="Topik Uranus sebelumnya">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
@@ -1363,13 +1364,13 @@
           <span class="neptune-topic-kicker" id="neptune-topic-kicker">IDENTITAS NEPTUNUS</span>
           <span class="neptune-topic-count"><span id="neptune-topic-current">01</span> / <span id="neptune-topic-total">11</span></span>
         </div>
-        <h3 id="neptune-topic-title" tabindex="-1">Raksasa Biru di Batas Jauh</h3>
-        <p class="neptune-topic-subtitle" id="neptune-topic-subtitle"></p>
-        <div class="neptune-topic-scroll">
+        <div class="neptune-topic-scroll" id="neptune-topic-scroll">
+          <h3 id="neptune-topic-title" tabindex="-1">Raksasa Biru di Batas Jauh</h3>
+          <p class="neptune-topic-subtitle" id="neptune-topic-subtitle"></p>
           <p class="neptune-topic-summary" id="neptune-topic-summary"></p>
           <ul class="neptune-topic-facts" id="neptune-topic-facts"></ul>
-        </div>
         <a class="neptune-topic-source" id="neptune-topic-source" href="https://science.nasa.gov/neptune/neptune-facts/" target="_blank" rel="noopener noreferrer">Sumber: NASA Science ↗</a>
+        </div>
         <div class="neptune-exploration-controls">
           <button class="neptune-topic-nav" id="neptune-topic-prev" type="button" aria-label="Topik Neptunus sebelumnya">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>
