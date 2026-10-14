@@ -206,7 +206,7 @@ function antara_achievements_sync(PDO $pdo, int $userId): array
     $firstFull = antara_achievement_first_event($pdo, $userId, 'full');
     if ($firstFull) antara_achievement_unlock($pdo, $userId, 'first-full', (string)$firstFull['created_at']);
 
-    foreach (['venus'=>5,'earth'=>5,'mars'=>4] as $planet=>$required) {
+    foreach (['venus'=>5,'earth'=>5,'mars'=>5] as $planet=>$required) {
         $data = antara_achievement_full_count($pdo, $userId, $planet);
         if ($data['count'] >= $required) {
             antara_achievement_unlock($pdo, $userId, $planet . '-master', $data['lastAt'] ? (string)$data['lastAt'] : null);
@@ -273,7 +273,7 @@ function antara_achievements_payload(PDO $pdo, int $userId): array
         elseif ($code==='first-explore') { $current=min(1,$normalCount); $progressLabel=$current?'Jelajah pertama tercatat':'Buka satu topik Jelajah'; }
         elseif ($code==='first-full') { $current=min(1,$fullCount); $progressLabel=$current?'Eksplorasi penuh tercatat':'Masuki satu destinasi penuh'; }
         elseif (in_array($code,['venus-master','earth-master','mars-master'],true)) {
-            $planet=str_replace('-master','',$code); $goal=$planet==='mars'?4:5;
+            $planet=str_replace('-master','',$code); $goal=5;
             $data=antara_achievement_full_count($pdo,$userId,$planet); $current=min($goal,$data['count']);
             $progressLabel=$current.' / '.$goal.' destinasi';
         }
@@ -283,7 +283,7 @@ function antara_achievements_payload(PDO $pdo, int $userId): array
         elseif ($code==='quiz-perfect') { $goal=ANTARA_QUIZ_QUESTION_COUNT; $current=min($goal,(int)($sync['quiz']['bestCorrect'] ?? 0)); $progressLabel=$current.' / '.$goal.' benar'; }
         elseif ($code==='quiz-master') { $goal=5000; $current=min($goal,(int)($sync['quiz']['bestScore'] ?? 0)); $progressLabel=number_format($current,0,',','.').' / '.number_format($goal,0,',','.').' poin'; }
         elseif ($code==='solar-master') {
-            $current=(int)($sync['summary']['overall']['completedMilestones'] ?? 0); $goal=(int)($sync['summary']['overall']['totalMilestones'] ?? 130);
+            $current=(int)($sync['summary']['overall']['completedMilestones'] ?? 0); $goal=(int)($sync['summary']['overall']['totalMilestones'] ?? 131);
             $progressLabel=$current.' / '.$goal.' milestone';
         }
         elseif ($code==='top-10') {

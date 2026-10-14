@@ -54,6 +54,7 @@ function antara_progress_catalog(): array
                 'olympus' => 'Olympus Mons',
                 'valles' => 'Valles Marineris',
                 'gale' => 'Gale Crater',
+                'hellas' => 'Hellas Planitia',
             ],
         ],
         'asteroid-belt' => [
