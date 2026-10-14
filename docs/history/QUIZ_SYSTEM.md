@@ -2,8 +2,9 @@
 
 ## Gameplay
 - 15 soal per run, 3 soal dari setiap level bank 300 soal ANTARA.
-- Level 1-5 memakai batas waktu 10, 9, 8, 7, dan 6 detik.
-- Skor dihitung di server dari base score level, bonus sisa waktu, dan streak.
+- Batas waktu bersifat adaptif per soal. Server menghitung beban baca dari teks pertanyaan + empat opsi, menambahkan waktu berpikir sesuai level, lalu membatasi hasil ke rentang yang wajar.
+- Rentang aktual bank saat ini: Pemula 17–22 dtk, Dasar 10–15 dtk, Menengah 10–14 dtk, Sulit 18–25 dtk, Ahli 20–28 dtk.
+- Skor dihitung di server dari base score level, bonus proporsi sisa waktu adaptif, dan streak.
 - Browser tidak dapat mengirim skor akhir mentah ke leaderboard.
 
 ## API

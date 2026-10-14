@@ -1,6 +1,6 @@
-# ANTARA snapshot 177
+# ANTARA snapshot 178
 
-Original source: ANTARA-quiz-MVP-300-bank-server-scored-tested-2026-10-04.zip
-Commit suggestion: feat: add 300-question quiz with server-side scoring
+Original source: ANTARA-quiz-adaptive-per-question-timer-tested-2026-10-04.zip
+Commit suggestion: feat: adapt quiz timers to each question
 
 Read LOCALHOST.txt before running. Runtime files are preserved from the original source.

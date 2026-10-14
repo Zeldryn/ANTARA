@@ -34,14 +34,13 @@ try {
     foreach ($questionIds as $index => $questionId) {
         $q = $bank[$questionId];
         $level = (int)$q['level'];
-        $config = antara_quiz_level_config($level);
         $insert->execute([
             'run_id' => $runId,
             'position' => $index + 1,
             'question_id' => $questionId,
             'level' => $level,
             'correct_key' => (string)$q['answer'],
-            'time_limit_ms' => (int)$config['timeMs'],
+            'time_limit_ms' => antara_quiz_question_time_ms($q),
             'served_at' => $index === 0 ? date('Y-m-d H:i:s.u') : null,
         ]);
     }

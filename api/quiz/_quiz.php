@@ -22,15 +22,43 @@ function antara_quiz_bank(): array
 
 function antara_quiz_level_config(int $level): array
 {
+    // Timer is intentionally NOT a flat countdown per level. The actual limit is
+    // calculated from each question's reading load (prompt + four answer choices)
+    // and then clamped to a sensible band for its cognitive difficulty.
     $configs = [
-        1 => ['label' => 'PEMULA',   'timeMs' => 10000, 'base' => 100],
-        2 => ['label' => 'DASAR',    'timeMs' => 9000,  'base' => 150],
-        3 => ['label' => 'MENENGAH', 'timeMs' => 8000,  'base' => 220],
-        4 => ['label' => 'SULIT',    'timeMs' => 7000,  'base' => 310],
-        5 => ['label' => 'AHLI',     'timeMs' => 6000,  'base' => 430],
+        1 => ['label' => 'PEMULA',   'base' => 100, 'thinkingMs' => 5000, 'minTimeMs' => 15000, 'maxTimeMs' => 22000],
+        2 => ['label' => 'DASAR',    'base' => 150, 'thinkingMs' => 4000, 'minTimeMs' => 10000, 'maxTimeMs' => 18000],
+        3 => ['label' => 'MENENGAH', 'base' => 220, 'thinkingMs' => 5000, 'minTimeMs' =>  9000, 'maxTimeMs' => 16000],
+        4 => ['label' => 'SULIT',    'base' => 310, 'thinkingMs' => 7000, 'minTimeMs' => 16000, 'maxTimeMs' => 25000],
+        5 => ['label' => 'AHLI',     'base' => 430, 'thinkingMs' => 9000, 'minTimeMs' => 18000, 'maxTimeMs' => 30000],
     ];
     if (!isset($configs[$level])) throw new InvalidArgumentException('Level kuis tidak valid.');
     return $configs[$level];
+}
+
+function antara_quiz_word_count(string $text): int
+{
+    if ($text === '') return 0;
+    preg_match_all("/[\\p{L}\\p{N}]+(?:[-’'][\\p{L}\\p{N}]+)*/u", $text, $matches);
+    return count($matches[0] ?? []);
+}
+
+function antara_quiz_question_time_ms(array $question): int
+{
+    $level = (int)($question['level'] ?? 0);
+    $config = antara_quiz_level_config($level);
+    $questionWords = antara_quiz_word_count((string)($question['question'] ?? ''));
+    $optionWords = 0;
+    foreach (($question['options'] ?? []) as $option) {
+        $optionWords += antara_quiz_word_count((string)$option);
+    }
+
+    // Reading model: prompts are read carefully (~189 wpm) while answer choices
+    // are scanned a little faster (~252 wpm). Then add level-specific thinking
+    // time. Round to whole seconds so the timer feels deliberate, not arbitrary.
+    $readingSeconds = ($questionWords / 3.15) + ($optionWords / 4.2);
+    $rawMs = (int)round(($readingSeconds * 1000 + (int)$config['thinkingMs']) / 1000) * 1000;
+    return max((int)$config['minTimeMs'], min((int)$config['maxTimeMs'], $rawMs));
 }
 
 function antara_quiz_ensure_schema(PDO $pdo): void

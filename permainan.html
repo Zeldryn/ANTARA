@@ -7,9 +7,9 @@
   <title>Quiz ANTARA | Permainan</title>
   <link rel="icon" type="image/png" href="assets/antara-logo.png">
   <link rel="stylesheet" href="achievement-notify.css?v=20261003-achievement-toast-1">
-  <link rel="stylesheet" href="permainan.css?v=20261004-quiz-mvp-1">
+  <link rel="stylesheet" href="permainan.css?v=20261004-adaptive-timer-2">
   <script src="achievement-client.js?v=20261003-achievement-toast-1" defer></script>
-  <script src="permainan.js?v=20261004-quiz-mvp-1" defer></script>
+  <script src="permainan.js?v=20261004-adaptive-timer-2" defer></script>
 </head>
 <body>
   <div class="game-space" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -27,13 +27,13 @@
       <div class="game-intro-copy">
         <p class="eyebrow">ANTARA · QUIZ NAVIGASI TATA SURYA</p>
         <h1>Seberapa cepat<br><span>kamu mengenal langit?</span></h1>
-        <p class="lead">Lima tingkat kesulitan. Lima belas soal. Waktu makin pendek saat level naik, dan jawaban cepat menghasilkan poin lebih besar.</p>
+        <p class="lead">Lima tingkat kesulitan. Lima belas soal. Waktu menyesuaikan panjang dan beban baca tiap soal, sementara jawaban yang lebih cepat tetap menghasilkan bonus poin lebih besar.</p>
         <div class="level-track" aria-label="Tingkat kesulitan">
-          <span><b>01</b><small>PEMULA</small><em>10 dtk</em></span>
-          <span><b>02</b><small>DASAR</small><em>9 dtk</em></span>
-          <span><b>03</b><small>MENENGAH</small><em>8 dtk</em></span>
-          <span><b>04</b><small>SULIT</small><em>7 dtk</em></span>
-          <span><b>05</b><small>AHLI</small><em>6 dtk</em></span>
+          <span><b>01</b><small>PEMULA</small><em>17–22 dtk</em></span>
+          <span><b>02</b><small>DASAR</small><em>10–15 dtk</em></span>
+          <span><b>03</b><small>MENENGAH</small><em>10–14 dtk</em></span>
+          <span><b>04</b><small>SULIT</small><em>18–25 dtk</em></span>
+          <span><b>05</b><small>AHLI</small><em>20–28 dtk</em></span>
         </div>
         <div class="game-actions">
           <button class="primary" id="game-start" type="button">MULAI QUIZ <span>→</span></button>
@@ -45,7 +45,7 @@
       <aside class="game-brief">
         <div><small>BANK SOAL</small><strong>300</strong><span>soal dari materi ANTARA</span></div>
         <div><small>SOAL / RUN</small><strong>15</strong><span>3 soal per tingkat</span></div>
-        <div><small>SKOR</small><strong>SERVER</strong><span>level + waktu + streak</span></div>
+        <div><small>SKOR</small><strong>SERVER</strong><span>level + kecepatan + streak</span></div>
         <div><small>MODE</small><strong>4 PILIHAN</strong><span>A · B · C · D</span></div>
       </aside>
     </section>
@@ -65,7 +65,7 @@
             <span id="quiz-topic">TOPIK</span>
           </div>
           <div class="timer" id="quiz-timer" style="--timer:1" aria-label="Sisa waktu">
-            <div><strong id="quiz-time">10.0</strong><small>DETIK</small></div>
+            <div><strong id="quiz-time">--</strong><small>DETIK</small></div>
           </div>
         </div>
         <div class="timer-bar" aria-hidden="true"><i id="quiz-timer-bar"></i></div>
