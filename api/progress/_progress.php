@@ -19,7 +19,13 @@ function antara_progress_catalog(): array
             'name' => 'Merkurius',
             'short' => 'MERKURIUS',
             'normal_total' => 11,
-            'full' => [],
+            'full' => [
+                'caloris' => 'Caloris Basin',
+                'discovery' => 'Discovery Rupes',
+                'beethoven' => 'Beethoven Basin',
+                'rembrandt' => 'Rembrandt Basin',
+                'prokofiev' => 'Prokofiev Crater',
+            ],
         ],
         'venus' => [
             'name' => 'Venus',

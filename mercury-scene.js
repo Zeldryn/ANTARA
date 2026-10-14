@@ -501,6 +501,7 @@ window.MercuryScene = class MercuryScene {
     this.pointer = { x: 0, y: 0 };
     this.cameraOffset = { x: 0, y: 0 };
     this.exploring = false;
+    this.fullExplorationActive = false;
     this.explorationBlend = 0;
     this.explorationBlendTarget = 0;
     this.topicIndex = 0;
@@ -558,6 +559,7 @@ window.MercuryScene = class MercuryScene {
       this.pointer.y = (event.clientY - rect.top) / rect.height - 0.5;
     });
     this.element.addEventListener("pointerleave", () => { this.pointer.x = this.pointer.y = 0; });
+    this.fullExploration = window.MercuryFullExploration ? new window.MercuryFullExploration(this) : null;
   }
 
   setVenusTravelSurface(surface) {
@@ -701,7 +703,7 @@ window.MercuryScene = class MercuryScene {
     if (!this.exploring) return;
     this.exploring = false;
     this.explorationBlendTarget = 0;
-    this.element.classList.remove("is-exploring");
+    this.element.classList.remove("is-exploring", "is-full-exploring");
     this.focusReticle.classList.remove("is-marker-visible");
     this.focusReticle.classList.add("is-relocating");
     this.exploration.inert = true;
@@ -787,6 +789,32 @@ window.MercuryScene = class MercuryScene {
     };
     if ("requestIdleCallback" in window) requestIdleCallback(work, { timeout: 2500 });
     else setTimeout(work, 700);
+  }
+
+
+  startFullExplorationTransition(location) {
+    if (!this.active || this.exploring || this.fullExplorationActive) return false;
+    this.fullExplorationActive = true;
+    this.caption.inert = true;
+    this.exploration.inert = true;
+    this.element.classList.add("is-full-exploring");
+    return true;
+  }
+
+  beginFullExploration(location) {
+    if (!this.active) return false;
+    if (!this.fullExplorationActive) {
+      const started = this.startFullExplorationTransition(location);
+      if (!started) return false;
+    }
+    this.element.classList.add("is-full-exploring");
+    return true;
+  }
+
+  endFullExploration() {
+    this.fullExplorationActive = false;
+    this.element.classList.remove("is-full-exploring");
+    this.caption.inert = false;
   }
 
   prepare() {
@@ -1012,13 +1040,14 @@ window.MercuryScene = class MercuryScene {
     this.announced = false;
     this.element.hidden = false;
     this.exploring = false;
+    this.fullExplorationActive = false;
     this.explorationBlend = this.explorationBlendTarget = 0;
     this.topicYaw = this.topicYawTarget = 0.6;
     this.topicPitch = this.topicPitchTarget = 0.09;
     this.topicRoll = this.topicRollTarget = MERCURY_EXPLORATION_ROLL;
     this.topicShift = { x: 0, y: 0 };
     this.topicShiftTarget = { ...MERCURY_EXPLORATION_STOPS[0].shift };
-    this.element.classList.remove("is-exploring");
+    this.element.classList.remove("is-exploring", "is-full-exploring");
     this.caption.inert = true;
     this.exploration.inert = true;
     this.caption.classList.remove("is-visible");
@@ -1041,12 +1070,14 @@ window.MercuryScene = class MercuryScene {
     this.frame = null;
     this.element.hidden = true;
     this.element.style.opacity = "0";
-    this.element.classList.remove("is-exploring");
+    this.element.classList.remove("is-exploring", "is-full-exploring");
     this.exploring = false;
+    this.fullExplorationActive = false;
     this.explorationBlend = this.explorationBlendTarget = 0;
     this.caption.inert = true;
     this.exploration.inert = true;
     this.credit.tabIndex = -1;
+    this.fullExploration?.onMercuryStop?.();
     this.time = 0;
   }
 
@@ -1367,7 +1398,7 @@ window.MercuryScene = class MercuryScene {
     this.caption.style.opacity = String(caption);
     this.caption.style.transform = `translateY(${this.motion.matches ? 0 : (1 - caption) * 12}px)`;
     this.credit.style.opacity = String(caption * 0.9);
-    this.credit.tabIndex = caption > 0.5 && !this.exploring ? 0 : -1;
+    this.credit.tabIndex = caption > 0.5 && !this.exploring && !this.fullExplorationActive ? 0 : -1;
     if (caption > 0.5 && !this.announced) {
       this.announced = true;
       this.caption.inert = false;

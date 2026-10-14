@@ -1,6 +1,6 @@
-# ANTARA snapshot 180
+# ANTARA snapshot 181
 
-Original source: ANTARA-achievement-progress-all-planets-guard-fixed-tested-2026-10-04.zip
-Commit suggestion: fix: guard achievement and progress tracking across planets
+Original source: ANTARA-mercury-full-exploration-sourced-tested-2026-10-04.zip
+Commit suggestion: feat: add sourced Mercury full exploration
 
 Read LOCALHOST.txt before running. Runtime files are preserved from the original source.
