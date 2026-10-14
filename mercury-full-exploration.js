@@ -24,12 +24,12 @@
       name: "Caloris Basin",
       short: "Caloris",
       category: "BASIN TUMBUKAN",
-      latitude: 30.8,
-      longitudeEast: 162.0,
+      latitude: 31.5,
+      longitudeEast: 162.7,
       heading: 0,
-      source: "https://science.nasa.gov/mercury/",
-      coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/967",
-      image: "https://science.nasa.gov/wp-content/uploads/2023/04/pia19423-mercury-caloris-basin.jpg",
+      source: "https://science.nasa.gov/photojournal/the-mighty-caloris/",
+      coordinateSource: "https://science.nasa.gov/photojournal/the-mighty-caloris/",
+      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19213/PIA19213.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1600",
       descriptor: "Basin tumbukan raksasa dengan cincin pegunungan dan dataran vulkanik di bagian dalam.",
       description: "Caloris Basin adalah salah satu cekungan tumbukan terbesar di Tata Surya. Daerah ini membantu kita memahami tabrakan purba, rekahan antipodal, dan bagaimana lava kemudian mengisi bagian dalam basin.",
       facts: [
@@ -55,12 +55,12 @@
       name: "Discovery Rupes",
       short: "Discovery Rupes",
       category: "TEBING KERUT",
-      latitude: 56.0,
-      longitudeEast: 38.0,
+      latitude: -55.0,
+      longitudeEast: 322.2,
       heading: 14,
-      source: "https://science.nasa.gov/mercury/",
-      coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/1543",
-      image: "https://www.nasa.gov/wp-content/uploads/2023/03/mercury-discovery-rupes.jpg",
+      source: "https://science.nasa.gov/photojournal/deformation-discovery/",
+      coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/1548",
+      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia17/pia17739/PIA17739.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1024&w=1024",
       descriptor: "Tebing raksasa yang terbentuk ketika Merkurius mendingin dan menyusut.",
       description: "Discovery Rupes adalah scarp panjang yang menjadi bukti bahwa Merkurius pernah menyusut secara global. Saat interiornya mendingin, kerak terdorong, terlipat, lalu membentuk tebing panjang seperti kerutan pada kulit buah.",
       facts: [
@@ -88,12 +88,12 @@
       name: "Beethoven Basin",
       short: "Beethoven",
       category: "BASIN PURBA",
-      latitude: -20.0,
-      longitudeEast: 124.0,
+      latitude: -21.0,
+      longitudeEast: 236.0,
       heading: -18,
-      source: "https://science.nasa.gov/mercury/",
-      coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/670",
-      image: "https://www.nasa.gov/wp-content/uploads/2023/03/mercury-beethoven-basin.jpg",
+      source: "https://science.nasa.gov/photojournal/mapping-beethoven/",
+      coordinateSource: "https://science.nasa.gov/photojournal/mapping-beethoven/",
+      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia14/pia14864/PIA14864.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1799&w=1018",
       descriptor: "Basin tua yang menunjukkan hubungan antara kawah besar, ejecta, dan dataran sekitarnya.",
       description: "Beethoven Basin adalah contoh basin tua yang dikelilingi jejak tumbukan dan relief berumur sangat lama. Di sini kamu bisa melihat bagaimana permukaan Merkurius menyimpan lapisan sejarah tabrakan berulang.",
       facts: [
@@ -119,12 +119,12 @@
       name: "Rembrandt Basin",
       short: "Rembrandt",
       category: "BASIN MULTI-CINCIN",
-      latitude: -33.0,
-      longitudeEast: 273.0,
+      latitude: -34.67,
+      longitudeEast: 100.4,
       heading: 22,
-      source: "https://science.nasa.gov/mercury/",
-      coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/12614",
-      image: "https://www.nasa.gov/wp-content/uploads/2023/03/rembrandt-basin-mercury.jpg",
+      source: "https://science.nasa.gov/photojournal/rembrandt-basin-in-color/",
+      coordinateSource: "https://science.nasa.gov/photojournal/rembrandt-basin-in-color/",
+      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia14/pia14497/PIA14497.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1514&w=1663",
       descriptor: "Basin raksasa dengan cincin patahan dan dataran luas yang menarik untuk dibandingkan dengan Caloris.",
       description: "Rembrandt Basin menunjukkan bahwa basin besar di Merkurius tidak semuanya sama. Struktur cincin, medan retak, dan variasi reliefnya membantu membandingkan proses tumbukan besar pada lokasi berbeda.",
       facts: [
@@ -152,12 +152,12 @@
       name: "Prokofiev Crater",
       short: "Prokofiev",
       category: "KUTUB UTARA",
-      latitude: 83.6,
-      longitudeEast: 117.1,
+      latitude: 85.42,
+      longitudeEast: 52.65,
       heading: -8,
-      source: "https://science.nasa.gov/mercury/",
-      coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/12636",
-      image: "https://www.nasa.gov/wp-content/uploads/2023/03/mercury-polar-ice.jpg",
+      source: "https://science.nasa.gov/photojournal/icy-view-of-prokofiev/",
+      coordinateSource: "https://science.nasa.gov/photojournal/icy-view-of-prokofiev/",
+      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia18/pia18748/PIA18748.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1200",
       descriptor: "Wilayah kutub yang terkenal karena endapan cerah terkait es air di kawah permanen gelap.",
       description: "Daerah kutub utara Merkurius menyimpan salah satu kejutan terbesar planet ini: es air di tempat yang tidak pernah terkena cahaya Matahari langsung. Prokofiev sering digunakan sebagai contoh kawasan kutub yang sangat dingin itu.",
       facts: [
@@ -249,6 +249,7 @@
       this.infoToggle = document.getElementById("mercury-info-toggle");
       this.locationToggle = document.getElementById("mercury-location-toggle");
       this.actionsMenu = document.getElementById("mercury-actions-menu");
+      this.actionsRoot = this.root.querySelector(".venus-full-actions");
       this.actionsMenuToggle = document.getElementById("mercury-actions-menu-toggle");
       this.fullscreenToggle = document.getElementById("mercury-fullscreen-toggle");
       this.exitButton = document.getElementById("mercury-full-exit");
@@ -263,7 +264,11 @@
       this.selectedRegion = REGIONS[0];
       this.currentRegion = null;
       this.visited = new Set();
-      this.quality = copyQualityProfile(localStorage.getItem(QUALITY_STORAGE_KEY));
+      this.selectorOpenedFromWorld = false;
+      this.recommendedQualityName = this.detectRecommendedQualityName();
+      let savedQuality = null;
+      try { savedQuality = localStorage.getItem(QUALITY_STORAGE_KEY); } catch (_) {}
+      this.quality = copyQualityProfile(savedQuality || this.recommendedQualityName);
       this.qualityDeviceNote.textContent = this.deviceRecommendation();
       this.pointerLocked = false;
       this.dragging = false;
@@ -273,8 +278,9 @@
       this.clock = 0;
       this.frame = null;
       this.previous = 0;
-      this.objectivesCollapsed = false;
-      this.infoMinimized = false;
+      this.objectivesCollapsed = true;
+      this.infoMinimized = true;
+      this.actionsMenuOpen = false;
       this.regionCards = [];
       this.objectiveItems = [];
       this.progressAnim = 0;
@@ -293,35 +299,45 @@
       this.setUiVisible(false);
     }
 
-    deviceRecommendation() {
+    detectRecommendedQualityName() {
       const memory = navigator.deviceMemory || 4;
-      if (window.innerWidth <= 768 || memory <= 4) return "Rekomendasi: RENDAH atau SEDANG untuk HP dan laptop ringan.";
-      if (memory >= 8) return "Rekomendasi: SEDANG atau TINGGI untuk perangkat yang lebih kuat.";
-      return "Rekomendasi: SEDANG untuk keseimbangan visual dan performa.";
+      const cores = navigator.hardwareConcurrency || 4;
+      const coarse = window.matchMedia?.("(pointer: coarse)")?.matches || false;
+      if (coarse || window.innerWidth <= 760 || memory <= 3 || cores <= 4) return "LOW";
+      if (memory >= 8 && cores >= 8 && window.innerWidth >= 1200) return "HIGH";
+      return "MEDIUM";
+    }
+
+    deviceRecommendation() {
+      return `Rekomendasi browser: ${QUALITY_PROFILES[this.recommendedQualityName]?.label || "SEDANG"}. Kamu tetap bebas memilih mode lain.`;
     }
 
     bindEvents() {
       this.entryButton?.addEventListener("click", () => this.openEntryFlow());
       this.regionClose?.addEventListener("click", () => {
-        if (this.state === STATES.EXPLORING) this.hideSelector();
-        else this.exit();
+        if (this.selectorOpenedFromWorld && this.currentRegion) this.closeSelectorToWorld();
+        else this.cancelPreEntry();
       });
-      this.qualityClose?.addEventListener("click", () => this.showSelector());
+      this.qualityClose?.addEventListener("click", () => this.cancelPreEntry());
       this.qualityOptions.forEach(button => {
         button.addEventListener("click", () => this.setQuality(button.dataset.mercuryQuality || "MEDIUM"));
       });
-      this.qualityStart?.addEventListener("click", () => this.startSelectedRegion());
-      this.errorReturn?.addEventListener("click", () => this.showSelector());
-      this.locationToggle?.addEventListener("click", () => {
-        if (this.regionSelector.hidden) this.showSelector(true);
-        else this.hideSelector();
+      this.qualityStart?.addEventListener("click", () => this.confirmQualitySelection());
+      this.errorReturn?.addEventListener("click", () => this.exit());
+      this.locationToggle?.addEventListener("click", () => { this.setActionsMenu(false); this.openSelectorFromWorld(); });
+      this.exitButton?.addEventListener("click", () => { this.setActionsMenu(false); this.exit(); });
+      this.actionsMenuToggle?.addEventListener("click", event => {
+        event.stopPropagation();
+        this.setActionsMenu(!this.actionsMenuOpen, true);
       });
-      this.exitButton?.addEventListener("click", () => this.exit());
-      this.actionsMenuToggle?.addEventListener("click", () => {
-        const expanded = this.actionsMenuToggle.getAttribute("aria-expanded") === "true";
-        this.actionsMenuToggle.setAttribute("aria-expanded", String(!expanded));
+      this.fullscreenToggle?.addEventListener("click", () => { this.setActionsMenu(false); this.toggleFullscreen(); });
+      this.landmarkImageWrap?.addEventListener("click", () => {
+        if (this.currentRegion?.image) window.open(this.currentRegion.image, "_blank", "noopener,noreferrer");
       });
-      this.fullscreenToggle?.addEventListener("click", () => this.toggleFullscreen());
+      document.addEventListener("pointerdown", event => {
+        if (!this.actionsMenuOpen || this.actionsRoot?.contains(event.target)) return;
+        this.setActionsMenu(false);
+      });
       this.objectivesCollapse?.addEventListener("click", () => this.setObjectivesCollapsed(true));
       this.objectivesToggle?.addEventListener("click", () => this.setObjectivesCollapsed(false));
       this.landmarkMinimize?.addEventListener("click", () => this.setInfoMinimized(true));
@@ -329,12 +345,12 @@
       this.tutorialClose?.addEventListener("click", () => this.tutorial.hidden = true);
       this.mobileControls.forEach(button => {
         const control = button.dataset.mercuryControl;
-        const start = event => { event.preventDefault(); this.setControl(control, true); };
-        const end = event => { event.preventDefault(); this.setControl(control, false); };
-        button.addEventListener("pointerdown", start);
-        button.addEventListener("pointerup", end);
-        button.addEventListener("pointerleave", end);
-        button.addEventListener("pointercancel", end);
+        const begin = event => { event.preventDefault(); this.setControl(control, true); };
+        const endControl = event => { event.preventDefault(); this.setControl(control, false); };
+        button.addEventListener("pointerdown", begin);
+        button.addEventListener("pointerup", endControl);
+        button.addEventListener("pointerleave", endControl);
+        button.addEventListener("pointercancel", endControl);
       });
       this.viewport?.addEventListener("click", () => {
         if (!this.active || this.state !== STATES.EXPLORING) return;
@@ -349,15 +365,15 @@
 
     populateRegionGrid() {
       this.regionGrid.replaceChildren();
-      this.regionCards = REGIONS.map(region => {
+      this.regionCards = REGIONS.map((region, index) => {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "venus-region-card";
-        button.innerHTML = `<small>${region.category}</small><strong>${region.name}</strong><span>${Math.abs(region.latitude).toFixed(1)}°${region.latitude >= 0 ? "N" : "S"} · ${region.longitudeEast.toFixed(1)}°E</span><p>${region.descriptor}</p><em>NASA / USGS / MESSENGER</em>`;
+        button.className = "venus-region-card mercury-region-card";
+        button.dataset.mercuryRegion = region.id;
+        button.innerHTML = `<span class="venus-region-preview mercury-region-preview" aria-hidden="true"><img src="${region.image}" alt="" loading="lazy" referrerpolicy="no-referrer"><i></i><b>${region.short}</b></span><span class="venus-region-index">${String(index + 1).padStart(2, "0")}</span><strong>${region.name}</strong><span class="venus-region-descriptor">${region.descriptor}</span><small>${Math.abs(region.latitude).toFixed(2)}°${region.latitude >= 0 ? "N" : "S"} · ${region.longitudeEast.toFixed(2)}°E</small><em>${region.category}</em><span class="venus-region-source">NASA · MESSENGER / Mariner · referensi resmi</span>`;
         button.addEventListener("click", () => {
           this.selectRegion(region);
-          if (this.state === STATES.EXPLORING) this.startSelectedRegion({ switchOnly: true });
-          else this.showQuality();
+          this.startSelectedRegion({ switchOnly: Boolean(this.currentRegion) });
         });
         this.regionGrid.appendChild(button);
         return { region, button };
@@ -388,11 +404,15 @@
     setQuality(name, { persist = true } = {}) {
       this.quality = copyQualityProfile(name);
       this.qualityOptions.forEach(button => {
-        const active = button.dataset.mercuryQuality === this.quality.name;
+        const optionName = button.dataset.mercuryQuality;
+        const active = optionName === this.quality.name;
         button.classList.toggle("is-selected", active);
         button.setAttribute("aria-checked", String(active));
+        const recommendation = button.querySelector("[data-quality-recommendation]");
+        if (recommendation) recommendation.textContent = optionName === this.recommendedQualityName ? "DIREKOMENDASIKAN" : "";
       });
       this.qualitySelectedLabel.textContent = this.quality.label;
+      this.qualityDeviceNote.textContent = this.deviceRecommendation();
       if (this.hudQuality) this.hudQuality.textContent = this.quality.label;
       if (persist) {
         try { localStorage.setItem(QUALITY_STORAGE_KEY, this.quality.name); } catch (_) {}
@@ -410,60 +430,121 @@
     }
 
     openEntryFlow() {
+      if (!this.mercury?.active || this.mercury?.exploring || this.active) return;
       if (!this.mercury?.startFullExplorationTransition?.(this.selectedRegion)) return;
       this.active = true;
+      this.selectorOpenedFromWorld = false;
+      this.entryButton.disabled = true;
       this.root.hidden = false;
+      this.root.inert = false;
       this.root.setAttribute("aria-hidden", "false");
-      this.root.classList.add("is-setup-open");
-      this.state = STATES.SELECTING;
-      this.showSelector();
-      this.hideQuality();
+      this.root.style.setProperty("--surface-opacity", "0");
+      this.root.style.setProperty("--entry-progress", "0");
+      this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration is-configuring";
+      this.state = STATES.CONFIGURING;
+      this.regionSelector.hidden = true;
+      this.qualityPanel.hidden = false;
       this.hideLoading();
       this.hideError();
       this.setUiVisible(false);
       this.boundaryHint.textContent = "";
-      this.tutorial.hidden = false;
-      this.objectivesCollapsed = false;
-      this.infoMinimized = false;
-      this.setObjectivesCollapsed(false, true);
-      this.setInfoMinimized(false, true);
       this.selectRegion(this.selectedRegion || REGIONS[0]);
+      this.setQuality(this.quality.name, { persist: false });
+      document.getElementById("announcement").textContent = "Pilih kualitas grafis untuk Eksplorasi Pengalaman Penuh Merkurius.";
+      requestAnimationFrame(() => this.qualityOptions.find(button => button.classList.contains("is-selected"))?.focus({ preventScroll: true }));
     }
 
-    showSelector(compact = false) {
-      this.state = this.state === STATES.EXPLORING ? STATES.EXPLORING : STATES.SELECTING;
+    confirmQualitySelection() {
+      if (this.state !== STATES.CONFIGURING) return;
+      this.setQuality(this.quality.name, { persist: true });
+      this.state = STATES.SELECTING;
+      this.qualityPanel.hidden = true;
       this.regionSelector.hidden = false;
-      this.root.classList.add("is-setup-open");
-      this.hideQuality();
-      this.regionClose.setAttribute("aria-label", this.state === STATES.EXPLORING ? "Tutup pemilih destinasi Merkurius" : "Tutup Eksplorasi Merkurius");
-      if (compact) this.regionSelector.scrollIntoView({ block: "nearest" });
+      this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration is-selecting";
+      document.getElementById("announcement").textContent = "Pilih destinasi Eksplorasi Pengalaman Penuh Merkurius.";
+      requestAnimationFrame(() => this.regionCards[0]?.button?.focus({ preventScroll: true }));
+    }
+
+    cancelPreEntry() {
+      if (this.selectorOpenedFromWorld || ![STATES.CONFIGURING, STATES.SELECTING, STATES.ERROR].includes(this.state)) return;
+      this.active = false;
+      this.state = STATES.HIDDEN;
+      this.selectorOpenedFromWorld = false;
+      this.qualityPanel.hidden = true;
+      this.regionSelector.hidden = true;
+      this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration";
+      this.root.hidden = true;
+      this.root.inert = true;
+      this.root.setAttribute("aria-hidden", "true");
+      this.root.style.setProperty("--surface-opacity", "0");
+      this.root.style.setProperty("--entry-progress", "0");
+      this.entryButton.disabled = false;
+      this.currentRegion = null;
+      this.mercury.endFullExploration?.();
+      document.getElementById("announcement").textContent = "Kembali ke panorama Merkurius.";
+      this.entryButton.focus({ preventScroll: true });
+    }
+
+    openSelectorFromWorld() {
+      if (this.state !== STATES.EXPLORING || !this.currentRegion) return;
+      this.setActionsMenu(false);
+      this.selectorOpenedFromWorld = true;
+      this.state = STATES.SELECTING;
+      this.regionSelector.hidden = false;
+      this.root.classList.add("is-selecting");
+      this.stopLoop();
+      this.setObjectivesCollapsed(true, true);
+      this.setInfoMinimized(true, true);
+      document.getElementById("announcement").textContent = "Pilih wilayah Merkurius lain untuk dijelajahi.";
+      requestAnimationFrame(() => this.regionCards.find(item => item.region.id === this.currentRegion.id)?.button?.focus({ preventScroll: true }));
+    }
+
+    closeSelectorToWorld() {
+      if (!this.currentRegion) return;
+      this.selectorOpenedFromWorld = false;
+      this.regionSelector.hidden = true;
+      this.state = STATES.EXPLORING;
+      this.root.classList.remove("is-selecting");
+      this.root.classList.add("is-active", "is-surface-visible");
+      this.setObjectivesCollapsed(this.objectivesCollapsed, true);
+      this.setInfoMinimized(this.infoMinimized, true);
+      this.startLoop();
     }
 
     hideSelector() {
       this.regionSelector.hidden = true;
-      if (this.qualityPanel.hidden) this.root.classList.remove("is-setup-open");
-    }
-
-    showQuality() {
-      this.state = STATES.CONFIGURING;
-      this.qualityPanel.hidden = false;
-      this.regionSelector.hidden = true;
-      this.root.classList.add("is-setup-open");
+      this.selectorOpenedFromWorld = false;
     }
 
     hideQuality() {
       this.qualityPanel.hidden = true;
     }
 
+    setActionsMenu(open, focus = false) {
+      const mobile = window.matchMedia?.("(max-width: 760px), (pointer: coarse)")?.matches || false;
+      const next = Boolean(open && mobile && this.state === STATES.EXPLORING);
+      this.actionsMenuOpen = next;
+      this.actionsRoot?.classList.toggle("is-open", next);
+      this.actionsMenuToggle?.setAttribute("aria-expanded", String(next));
+      if (focus && next) requestAnimationFrame(() => this.actionsMenu?.querySelector("button")?.focus({ preventScroll: true }));
+    }
+
     setUiVisible(visible) {
-      [this.hud, this.objectivesPanel, this.objectivesToggle, this.landmarkCard, this.infoToggle, this.actionsMenu.parentElement, this.tutorial, ...this.root.querySelectorAll("[data-mercury-ui].mars-mobile-controls")].forEach(element => {
-        if (!element) return;
-        if (visible) element.hidden = false;
-        else element.hidden = true;
-      });
+      const elements = [this.hud, this.actionsMenu?.parentElement, ...this.root.querySelectorAll("[data-mercury-ui].mars-mobile-controls")];
+      elements.forEach(element => { if (element) element.hidden = !visible; });
       if (!visible) {
+        this.objectivesPanel.hidden = true;
+        this.objectivesToggle.hidden = true;
+        this.landmarkCard.hidden = true;
+        this.infoToggle.hidden = true;
+        this.tutorial.hidden = true;
         this.boundaryHint.textContent = "";
       }
+    }
+
+    stopLoop() {
+      cancelAnimationFrame(this.frame);
+      this.frame = null;
     }
 
     showLoading(message = "MENYIAPKAN DESTINASI", progress = 18) {
@@ -476,6 +557,7 @@
     hideError() { this.errorCard.hidden = true; }
     showError(message) {
       this.state = STATES.ERROR;
+      this.root.classList.add("is-error");
       this.errorCard.hidden = false;
       this.errorMessage.textContent = message || "Eksplorasi Merkurius belum dapat dimuat.";
       this.hideLoading();
@@ -720,34 +802,41 @@
     }
 
     async startSelectedRegion({ switchOnly = false } = {}) {
-      if (!this.selectedRegion) return;
+      if (!this.selectedRegion || ![STATES.SELECTING, STATES.EXPLORING].includes(this.state)) return;
+      const switching = Boolean(this.currentRegion) || switchOnly;
       this.state = STATES.LOADING;
+      this.selectorOpenedFromWorld = false;
       this.hideError();
-      this.hideSelector();
-      this.hideQuality();
-      this.root.classList.remove("is-setup-open");
-      this.showLoading(switchOnly ? "BERPINDAH WILAYAH" : "MENYIAPKAN EKSPLORASI", switchOnly ? 32 : 18);
+      this.regionSelector.hidden = true;
+      this.qualityPanel.hidden = true;
+      this.root.classList.remove("is-selecting", "is-configuring", "is-active", "is-error");
+      this.root.classList.add("is-preparing");
+      this.setUiVisible(false);
+      this.showLoading(switching ? `BERPINDAH KE ${this.selectedRegion.name.toUpperCase()}` : `MENYIAPKAN ${this.selectedRegion.name.toUpperCase()}`, switching ? 28 : 18);
       try {
         await this.ensureReady();
-        this.showLoading("MERENDER MEDAN ILMIAH", 74);
+        this.showLoading("MERENDER MEDAN MERKURIUS", 68);
         this.applyRegion(this.selectedRegion);
-        this.showLoading("MENGATUR NAVIGASI", 92);
-        if (switchOnly) this.boundaryHint.textContent = `Berpindah ke ${this.selectedRegion.name}.`;
+        this.showLoading("MENGATUR NAVIGASI", 94);
         this.state = STATES.EXPLORING;
         this.active = true;
+        this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration is-active is-surface-visible";
+        this.root.style.setProperty("--surface-opacity", "1");
+        this.root.style.setProperty("--entry-progress", "1");
         this.setUiVisible(true);
         this.hideLoading();
-        this.tutorial.hidden = false;
-        this.root.hidden = false;
-        this.root.setAttribute("aria-hidden", "false");
         this.mercury.beginFullExploration?.(this.selectedRegion);
-        this.actionsMenuToggle.setAttribute("aria-expanded", "false");
-        this.setObjectivesCollapsed(this.objectivesCollapsed, true);
-        this.setInfoMinimized(this.infoMinimized, true);
+        this.setActionsMenu(false);
+        this.objectivesCollapsed = true;
+        this.infoMinimized = true;
+        this.setObjectivesCollapsed(true, true);
+        this.setInfoMinimized(true, true);
+        this.tutorial.hidden = false;
+        this.resize();
         this.startLoop();
-        document.getElementById("announcement").textContent = `Eksplorasi penuh Merkurius dimulai di ${this.selectedRegion.name}.`;
+        document.getElementById("announcement").textContent = `Eksplorasi penuh Merkurius aktif di ${this.selectedRegion.name}.`;
       } catch (error) {
-        console.error(error);
+        console.error("Mercury Full Exploration:", error);
         this.showError(error?.message || "Eksplorasi Merkurius tidak dapat dimulai.");
       }
     }
@@ -832,8 +921,8 @@
       if (event.key === "Shift") this.movement.fast = 1;
       if (event.key === "Escape") {
         event.preventDefault();
-        if (this.regionSelector && !this.regionSelector.hidden) this.hideSelector();
-        else if (this.qualityPanel && !this.qualityPanel.hidden) this.showSelector();
+        if (this.regionSelector && !this.regionSelector.hidden && this.currentRegion) this.closeSelectorToWorld();
+        else if (this.qualityPanel && !this.qualityPanel.hidden && !this.currentRegion) this.cancelPreEntry();
         else if (!this.objectivesCollapsed) this.setObjectivesCollapsed(true);
         else this.exit();
       }
@@ -878,26 +967,29 @@
     }
 
     exit(silent = false) {
-      if (!this.active && !this.root.hidden) {
-        this.root.hidden = true;
-        this.root.setAttribute("aria-hidden", "true");
-      }
       this.active = false;
       this.state = STATES.HIDDEN;
-      cancelAnimationFrame(this.frame);
-      this.frame = null;
+      this.selectorOpenedFromWorld = false;
+      this.setActionsMenu(false);
+      this.stopLoop();
       this.movement.forward = this.movement.backward = this.movement.left = this.movement.right = this.movement.up = this.movement.down = this.movement.fast = 0;
       if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
-      this.root.hidden = true;
-      this.root.setAttribute("aria-hidden", "true");
-      this.hideSelector();
-      this.hideQuality();
+      this.regionSelector.hidden = true;
+      this.qualityPanel.hidden = true;
       this.hideLoading();
       this.hideError();
       this.setUiVisible(false);
+      this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration";
+      this.root.style.setProperty("--surface-opacity", "0");
+      this.root.style.setProperty("--entry-progress", "0");
+      this.root.hidden = true;
+      this.root.inert = true;
+      this.root.setAttribute("aria-hidden", "true");
+      this.entryButton.disabled = false;
+      this.currentRegion = null;
       this.mercury.endFullExploration?.();
       if (!silent) document.getElementById("announcement").textContent = "Keluar dari Eksplorasi Penuh Merkurius.";
-      this.entryButton?.focus({ preventScroll: true });
+      if (!silent) this.entryButton?.focus({ preventScroll: true });
     }
 
     onMercuryStop() {

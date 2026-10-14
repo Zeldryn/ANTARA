@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="mars-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="mars-full-exploration.css?v=20261001-mobile-arrival-actions-1">
   <link rel="stylesheet" href="mercury-scene.css?v=20261003-education-expand-1">
-  <link rel="stylesheet" href="mercury-full-exploration.css?v=20261004-mercury-full-1">
+  <link rel="stylesheet" href="mercury-full-exploration.css?v=20261004-mercury-full-template-2">
   <link rel="stylesheet" href="sun-scene.css?v=20261003-education-expand-1">
   <link rel="stylesheet" href="venus-scene.css?v=20260927-venusscience-2">
   <link rel="stylesheet" href="venus-full-exploration.css?v=20261003-consistency-1">
@@ -41,7 +41,7 @@
   <script src="mars-scene.js?v=20261004-location-image-audit-2" defer></script>
   <script src="mars-full-exploration.js?v=20261003-account-progress-1" defer></script>
   <script src="mercury-scene.js?v=20261004-location-image-audit-2" defer></script>
-  <script src="mercury-full-exploration.js?v=20261004-mercury-full-1" defer></script>
+  <script src="mercury-full-exploration.js?v=20261004-mercury-full-template-2" defer></script>
   <script src="sun-scene.js?v=20261003-education-expand-1" defer></script>
   <script src="venus-scene.js?v=20261003-account-progress-1" defer></script>
   <script src="venus-full-exploration.js?v=20261003-account-progress-1" defer></script>
@@ -563,7 +563,7 @@
               <span>Jelajahi Merkurius</span>
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
             </button>
-            <button class="mars-full-explore-button venus-full-explore-button" id="mercury-full-explore-button" type="button">Eksplorasi Pengalaman Penuh</button>
+            <button class="mars-full-explore-button venus-full-explore-button mercury-full-explore-button" id="mercury-full-explore-button" type="button">Eksplorasi Pengalaman Penuh</button>
           </div>
           <button class="mercury-planet-nav mercury-planet-next" id="mercury-next-planet" type="button" aria-label="Planet selanjutnya: Venus">
             <span><small>Planet selanjutnya</small><strong>Venus</strong></span>
@@ -610,163 +610,164 @@
         <button class="mercury-exploration-close return-panorama-button" id="mercury-exploration-close" type="button">Kembali ke panorama Merkurius</button>
       </aside>
 
+      <section class="mars-full-exploration venus-full-exploration mercury-full-exploration" id="mercury-full-exploration" aria-label="Eksplorasi penuh permukaan Merkurius" aria-hidden="true" hidden>
+        <div class="mars-full-viewport" id="mercury-full-viewport" aria-label="Wilayah Merkurius tiga dimensi yang dapat dijelajahi"></div>
+        <div class="mars-full-horizon venus-full-horizon" aria-hidden="true"></div>
+        <div class="venus-cloud-entry" aria-hidden="true"></div>
+        <div class="venus-haze-vignette" aria-hidden="true"></div>
+        <div class="venus-heat-shimmer" aria-hidden="true"></div>
+
+        <section class="venus-quality-panel" id="mercury-quality-panel" aria-labelledby="mercury-quality-title" hidden>
+          <div class="venus-quality-topline"><span>ANTARA · EKSPLORASI MERKURIUS</span><button id="mercury-quality-close" type="button" aria-label="Tutup pengaturan kualitas grafis">×</button></div>
+          <div class="venus-quality-copy">
+            <small>PERSIAPAN EKSPLORASI</small>
+            <h3 id="mercury-quality-title">Kualitas Grafis</h3>
+            <p>Pilih kualitas sebelum turun ke permukaan. Template dan alurnya mengikuti Venus, tetapi sumber visual dan lokasi memakai referensi ilmiah Merkurius yang jelas.</p>
+          </div>
+          <div class="venus-quality-options" id="mercury-quality-options" role="radiogroup" aria-label="Kualitas grafis Merkurius">
+            <button type="button" class="venus-quality-option" data-mercury-quality="LOW" role="radio" aria-checked="false"><span><strong>RENDAH</strong><small>Performa terbaik</small></span><em data-quality-recommendation></em></button>
+            <button type="button" class="venus-quality-option" data-mercury-quality="MEDIUM" role="radio" aria-checked="false"><span><strong>SEDANG</strong><small>Seimbang</small></span><em data-quality-recommendation></em></button>
+            <button type="button" class="venus-quality-option" data-mercury-quality="HIGH" role="radio" aria-checked="false"><span><strong>TINGGI</strong><small>Visual terbaik</small></span><em data-quality-recommendation></em></button>
+          </div>
+          <div class="venus-quality-summary"><span id="mercury-quality-device-note">Rekomendasi ditentukan dari perangkat dan layar.</span><strong id="mercury-quality-selected-label">SEDANG</strong></div>
+          <button class="venus-quality-start" id="mercury-quality-start" type="button">MULAI EKSPLORASI</button>
+        </section>
+
+        <section class="venus-region-selector" id="mercury-region-selector" aria-labelledby="mercury-region-selector-title">
+          <div class="venus-region-selector-topline"><span>ANTARA · WILAYAH ILMIAH MERKURIUS</span><button id="mercury-region-selector-close" type="button" aria-label="Tutup pemilih destinasi Merkurius">×</button></div>
+          <h3 id="mercury-region-selector-title">Pilih Destinasi Merkurius</h3>
+          <p>Pilih satu wilayah dulu sebelum masuk ke world. ANTARA akan menjaga template seperti Venus, tetapi sumber lokasinya menonjolkan data MESSENGER, MLA, dan penamaan resmi IAU / USGS.</p>
+          <div class="venus-region-grid" id="mercury-region-grid"></div>
+          <div class="venus-region-provenance">
+            <strong>SUMBER UTAMA</strong>
+            <span>NASA / MESSENGER · MLA / MDIS · IAU / USGS</span>
+            <small>Topografi visual dibuat untuk pengalaman jelajah yang ringan dan konsisten, sedangkan identitas lokasi, koordinat, dan konteks ilmiah tetap mengikuti referensi resmi Merkurius.</small>
+          </div>
+        </section>
+
+        <aside class="mars-full-hud" data-mercury-ui aria-label="Informasi penerbangan Merkurius" hidden>
+          <div class="mars-hud-kicker">MERKURIUS</div>
+          <h3>Eksplorasi</h3>
+          <div class="mars-hud-mode">MESSENGER / MLA · EKSPLORASI PENUH</div>
+          <div class="mars-hud-location" id="mercury-hud-location">Pilih destinasi</div>
+          <div class="mars-hud-coordinates" id="mercury-hud-coordinates">--</div>
+          <div class="mars-hud-metrics">
+            <div class="mars-hud-metric"><small>Ketinggian</small><strong id="mercury-hud-altitude">--</strong></div>
+            <div class="mars-hud-metric"><small>Kecepatan</small><strong id="mercury-hud-speed">0 M/S</strong></div>
+            <div class="mars-hud-metric"><small>Jarak pusat</small><strong id="mercury-hud-distance">--</strong></div>
+            <div class="mars-hud-metric"><small>Wilayah</small><strong id="mercury-hud-region-type">--</strong></div>
+            <div class="mars-hud-metric"><small>Kualitas</small><strong id="mercury-hud-quality">SEDANG</strong></div>
+          </div>
+          <div class="mars-hud-data" id="mercury-hud-data">MESSENGER MDIS / MLA · USGS</div>
+        </aside>
+
+        <aside class="venus-objectives-panel" id="mercury-objectives-panel" data-mercury-ui aria-label="Tujuan eksplorasi Merkurius" aria-live="polite" hidden>
+          <div class="venus-objectives-head">
+            <div><small>TUJUAN EKSPLORASI</small><strong id="mercury-objectives-region">Merkurius</strong></div>
+            <button id="mercury-objectives-collapse" type="button" aria-label="Minimalkan tujuan eksplorasi">Minimalkan</button>
+          </div>
+          <p id="mercury-objectives-intro"></p>
+          <div class="venus-discovery-progress">
+            <div><span>PROGRES MISI</span><strong id="mercury-discovery-count">0 / 5</strong></div>
+            <div class="venus-discovery-track" aria-hidden="true"><i id="mercury-discovery-bar"></i></div>
+          </div>
+          <ol id="mercury-objectives-list" class="venus-objectives-list"></ol>
+          <div class="venus-next-target" id="mercury-next-target" hidden>
+            <small>DESTINASI BERIKUTNYA</small>
+            <strong id="mercury-next-target-name">-</strong>
+            <span id="mercury-next-target-distance">-</span>
+          </div>
+        </aside>
+        <button class="venus-objectives-toggle" id="mercury-objectives-toggle" type="button" data-mercury-ui hidden>Tujuan · 0 / 5</button>
+
+        <div class="mars-full-actions venus-full-actions" data-mercury-ui hidden>
+          <button class="venus-actions-menu-toggle" id="mercury-actions-menu-toggle" type="button" aria-expanded="false" aria-controls="mercury-actions-menu">Menu</button>
+          <div class="venus-actions-menu" id="mercury-actions-menu">
+            <button id="mercury-location-toggle" type="button">Wilayah</button>
+            <button id="mercury-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button>
+            <button class="mars-full-exit" id="mercury-full-exit" type="button">Keluar dari Eksplorasi</button>
+          </div>
+        </div>
+
+        <div class="mars-control-hints" aria-hidden="true">
+          <span><b>WASD</b> Bergerak</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Cepat</span><span><b>ESC</b> Panel / Keluar</span>
+        </div>
+
+        <div class="mars-mobile-controls" data-mercury-ui aria-label="Kontrol eksplorasi Merkurius" hidden>
+          <div class="mars-mobile-dpad" aria-label="Kontrol arah">
+            <button type="button" data-mercury-control="forward" aria-label="Maju">▲</button>
+            <button type="button" data-mercury-control="left" aria-label="Geser ke kiri">◀</button>
+            <span class="mars-dpad-core" aria-hidden="true"></span>
+            <button type="button" data-mercury-control="right" aria-label="Geser ke kanan">▶</button>
+            <button type="button" data-mercury-control="backward" aria-label="Mundur">▼</button>
+          </div>
+          <div class="mars-mobile-altitude" aria-label="Kontrol ketinggian">
+            <button type="button" data-mercury-control="up" aria-label="Naik">＋</button>
+            <span class="mars-mobile-altitude-label">TINGGI</span>
+            <button type="button" data-mercury-control="down" aria-label="Turun">−</button>
+          </div>
+        </div>
+
+        <div class="venus-boundary-hint" id="mercury-boundary-hint" aria-live="polite"></div>
+
+        <div class="mars-full-loading" id="mercury-full-loading" data-mercury-ui hidden>
+          <div class="mars-full-loading-kicker">ANTARA · MEDAN MERKURIUS</div>
+          <h3>Menuruni Permukaan Merkurius</h3>
+          <div class="mars-full-loading-status" id="mercury-full-loading-status">MENYIAPKAN DESTINASI</div>
+          <div class="mars-loading-track"><div class="mars-loading-progress" id="mercury-full-loading-progress"></div></div>
+        </div>
+
+        <div class="mars-full-error" id="mercury-full-error" data-mercury-ui hidden>
+          <h3>Eksplorasi Belum Tersedia</h3>
+          <p id="mercury-full-error-message">Wilayah Merkurius tidak dapat dimuat.</p>
+          <button id="mercury-full-error-return" type="button">Kembali ke Merkurius</button>
+        </div>
+
+        <div class="mars-full-tutorial" id="mercury-full-tutorial" data-mercury-ui hidden>
+          <div class="mars-full-tutorial-header"><span>Kontrol Eksplorasi</span><button id="mercury-tutorial-close" type="button" aria-label="Tutup panduan">×</button></div>
+          <div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-desktop">
+            <div class="mars-tutorial-item"><b>W A S D</b><span>Bergerak</span></div>
+            <div class="mars-tutorial-item"><b>KLIK + MOUSE</b><span>Lihat sekitar</span></div>
+            <div class="mars-tutorial-item"><b>Q / E</b><span>Turun / Naik</span></div>
+            <div class="mars-tutorial-item"><b>SHIFT</b><span>Percepat</span></div>
+            <div class="mars-tutorial-item"><b>ESC</b><span>Tutup panel / Keluar</span></div>
+          </div>
+          <div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-mobile">
+            <div class="mars-tutorial-item"><b>PANAH</b><span>Bergerak</span></div>
+            <div class="mars-tutorial-item"><b>GESER</b><span>Lihat sekitar</span></div>
+            <div class="mars-tutorial-item"><b>＋ / −</b><span>Ketinggian</span></div>
+            <div class="mars-tutorial-item"><b>MENU</b><span>Pilih wilayah</span></div>
+          </div>
+        </div>
+
+        <aside class="mars-landmark-card venus-location-card" id="mercury-landmark-card" data-mercury-ui aria-live="polite" aria-hidden="true" hidden>
+          <div class="venus-location-card-head">
+            <small>WILAYAH ILMIAH MERKURIUS · DATA RESMI</small>
+            <button class="venus-location-minimize" id="mercury-landmark-minimize" type="button" aria-label="Minimalkan informasi lokasi">Sembunyikan</button>
+          </div>
+          <h4 id="mercury-landmark-name">Merkurius</h4>
+          <p class="mars-landmark-type" id="mercury-landmark-type"></p>
+          <p class="mars-landmark-coords" id="mercury-landmark-coords"></p>
+          <button class="venus-landmark-media" id="mercury-landmark-media" type="button" aria-label="Perbesar referensi lokasi Merkurius">
+            <img id="mercury-landmark-image" src="" alt="" loading="lazy" referrerpolicy="no-referrer">
+            <span>Referensi lokasi</span>
+          </button>
+          <p class="venus-location-description" id="mercury-landmark-description"></p>
+          <ul class="venus-location-facts" id="mercury-landmark-facts"></ul>
+          <div class="venus-location-data-badge">MESSENGER / MLA / MDIS · KONTEN ANTARA</div>
+          <div class="venus-location-sources">
+            <a class="mars-landmark-source" id="mercury-landmark-source" href="https://science.nasa.gov/mercury/" target="_blank" rel="noopener noreferrer">Referensi ilmiah: NASA ↗</a>
+            <a class="mars-landmark-source" id="mercury-landmark-coordinate-source" href="https://planetarynames.wr.usgs.gov/" target="_blank" rel="noopener noreferrer">Koordinat: IAU / USGS ↗</a>
+          </div>
+        </aside>
+        <button class="venus-location-info-toggle" id="mercury-info-toggle" type="button" hidden>Info Lokasi</button>
+
+        <div class="mars-orientation-hint" aria-hidden="true">Putar perangkat untuk pengalaman terbaik</div>
+      </section>
+
       <a class="mercury-credit" href="https://astrogeology.usgs.gov/search/map/mercury_messenger_mdis_global_basemap_bdr_166m" target="_blank" rel="noopener noreferrer">Basemap MESSENGER MDIS · NASA/USGS</a>
     </section>
 
-    <section class="mars-full-exploration venus-full-exploration mercury-full-exploration" id="mercury-full-exploration" aria-label="Eksplorasi penuh permukaan Merkurius" aria-hidden="true" hidden>
-      <div class="mars-full-viewport" id="mercury-full-viewport" aria-label="Wilayah Merkurius tiga dimensi yang dapat dijelajahi"></div>
-      <div class="mars-full-horizon venus-full-horizon" aria-hidden="true"></div>
-      <div class="venus-cloud-entry" aria-hidden="true"></div>
-      <div class="venus-haze-vignette" aria-hidden="true"></div>
-      <div class="venus-heat-shimmer" aria-hidden="true"></div>
-
-      <section class="venus-quality-panel" id="mercury-quality-panel" aria-labelledby="mercury-quality-title" hidden>
-        <div class="venus-quality-topline"><span>ANTARA · EKSPLORASI MERKURIUS</span><button id="mercury-quality-close" type="button" aria-label="Tutup pengaturan kualitas grafis">×</button></div>
-        <div class="venus-quality-copy">
-          <small>PERSIAPAN EKSPLORASI</small>
-          <h3 id="mercury-quality-title">Kualitas Grafis</h3>
-          <p>Pilih kualitas sebelum turun ke permukaan. Template dan alurnya mengikuti Venus, tetapi sumber visual dan lokasi memakai referensi ilmiah Merkurius yang jelas.</p>
-        </div>
-        <div class="venus-quality-options" id="mercury-quality-options" role="radiogroup" aria-label="Kualitas grafis Merkurius">
-          <button type="button" class="venus-quality-option" data-mercury-quality="LOW" role="radio" aria-checked="false"><span><strong>RENDAH</strong><small>Performa terbaik</small></span><em data-quality-recommendation></em></button>
-          <button type="button" class="venus-quality-option" data-mercury-quality="MEDIUM" role="radio" aria-checked="false"><span><strong>SEDANG</strong><small>Seimbang</small></span><em data-quality-recommendation></em></button>
-          <button type="button" class="venus-quality-option" data-mercury-quality="HIGH" role="radio" aria-checked="false"><span><strong>TINGGI</strong><small>Visual terbaik</small></span><em data-quality-recommendation></em></button>
-        </div>
-        <div class="venus-quality-summary"><span id="mercury-quality-device-note">Rekomendasi ditentukan dari perangkat dan layar.</span><strong id="mercury-quality-selected-label">SEDANG</strong></div>
-        <button class="venus-quality-start" id="mercury-quality-start" type="button">MULAI EKSPLORASI</button>
-      </section>
-
-      <section class="venus-region-selector" id="mercury-region-selector" aria-labelledby="mercury-region-selector-title">
-        <div class="venus-region-selector-topline"><span>ANTARA · WILAYAH ILMIAH MERKURIUS</span><button id="mercury-region-selector-close" type="button" aria-label="Tutup pemilih destinasi Merkurius">×</button></div>
-        <h3 id="mercury-region-selector-title">Pilih Destinasi Merkurius</h3>
-        <p>Pilih satu wilayah dulu sebelum masuk ke world. ANTARA akan menjaga template seperti Venus, tetapi sumber lokasinya menonjolkan data MESSENGER, MLA, dan penamaan resmi IAU / USGS.</p>
-        <div class="venus-region-grid" id="mercury-region-grid"></div>
-        <div class="venus-region-provenance">
-          <strong>SUMBER UTAMA</strong>
-          <span>NASA / MESSENGER · MLA / MDIS · IAU / USGS</span>
-          <small>Topografi visual dibuat untuk pengalaman jelajah yang ringan dan konsisten, sedangkan identitas lokasi, koordinat, dan konteks ilmiah tetap mengikuti referensi resmi Merkurius.</small>
-        </div>
-      </section>
-
-      <aside class="mars-full-hud" data-mercury-ui aria-label="Informasi penerbangan Merkurius" hidden>
-        <div class="mars-hud-kicker">MERKURIUS</div>
-        <h3>Eksplorasi</h3>
-        <div class="mars-hud-mode">MESSENGER / MLA · EKSPLORASI PENUH</div>
-        <div class="mars-hud-location" id="mercury-hud-location">Pilih destinasi</div>
-        <div class="mars-hud-coordinates" id="mercury-hud-coordinates">--</div>
-        <div class="mars-hud-metrics">
-          <div class="mars-hud-metric"><small>Ketinggian</small><strong id="mercury-hud-altitude">--</strong></div>
-          <div class="mars-hud-metric"><small>Kecepatan</small><strong id="mercury-hud-speed">0 M/S</strong></div>
-          <div class="mars-hud-metric"><small>Jarak pusat</small><strong id="mercury-hud-distance">--</strong></div>
-          <div class="mars-hud-metric"><small>Wilayah</small><strong id="mercury-hud-region-type">--</strong></div>
-          <div class="mars-hud-metric"><small>Kualitas</small><strong id="mercury-hud-quality">SEDANG</strong></div>
-        </div>
-        <div class="mars-hud-data" id="mercury-hud-data">MESSENGER MDIS / MLA · USGS</div>
-      </aside>
-
-      <aside class="venus-objectives-panel" id="mercury-objectives-panel" data-mercury-ui aria-label="Tujuan eksplorasi Merkurius" aria-live="polite" hidden>
-        <div class="venus-objectives-head">
-          <div><small>TUJUAN EKSPLORASI</small><strong id="mercury-objectives-region">Merkurius</strong></div>
-          <button id="mercury-objectives-collapse" type="button" aria-label="Minimalkan tujuan eksplorasi">Minimalkan</button>
-        </div>
-        <p id="mercury-objectives-intro"></p>
-        <div class="venus-discovery-progress">
-          <div><span>PROGRES MISI</span><strong id="mercury-discovery-count">0 / 5</strong></div>
-          <div class="venus-discovery-track" aria-hidden="true"><i id="mercury-discovery-bar"></i></div>
-        </div>
-        <ol id="mercury-objectives-list" class="venus-objectives-list"></ol>
-        <div class="venus-next-target" id="mercury-next-target" hidden>
-          <small>DESTINASI BERIKUTNYA</small>
-          <strong id="mercury-next-target-name">-</strong>
-          <span id="mercury-next-target-distance">-</span>
-        </div>
-      </aside>
-      <button class="venus-objectives-toggle" id="mercury-objectives-toggle" type="button" data-mercury-ui hidden>Tujuan · 0 / 5</button>
-
-      <div class="mars-full-actions venus-full-actions" data-mercury-ui hidden>
-        <button class="venus-actions-menu-toggle" id="mercury-actions-menu-toggle" type="button" aria-expanded="false" aria-controls="mercury-actions-menu">Menu</button>
-        <div class="venus-actions-menu" id="mercury-actions-menu">
-          <button id="mercury-location-toggle" type="button">Wilayah</button>
-          <button id="mercury-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button>
-          <button class="mars-full-exit" id="mercury-full-exit" type="button">Keluar dari Eksplorasi</button>
-        </div>
-      </div>
-
-      <div class="mars-control-hints" aria-hidden="true">
-        <span><b>WASD</b> Bergerak</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Cepat</span><span><b>ESC</b> Panel / Keluar</span>
-      </div>
-
-      <div class="mars-mobile-controls" data-mercury-ui aria-label="Kontrol eksplorasi Merkurius" hidden>
-        <div class="mars-mobile-dpad" aria-label="Kontrol arah">
-          <button type="button" data-mercury-control="forward" aria-label="Maju">▲</button>
-          <button type="button" data-mercury-control="left" aria-label="Geser ke kiri">◀</button>
-          <span class="mars-dpad-core" aria-hidden="true"></span>
-          <button type="button" data-mercury-control="right" aria-label="Geser ke kanan">▶</button>
-          <button type="button" data-mercury-control="backward" aria-label="Mundur">▼</button>
-        </div>
-        <div class="mars-mobile-altitude" aria-label="Kontrol ketinggian">
-          <button type="button" data-mercury-control="up" aria-label="Naik">＋</button>
-          <span class="mars-mobile-altitude-label">TINGGI</span>
-          <button type="button" data-mercury-control="down" aria-label="Turun">−</button>
-        </div>
-      </div>
-
-      <div class="venus-boundary-hint" id="mercury-boundary-hint" aria-live="polite"></div>
-
-      <div class="mars-full-loading" id="mercury-full-loading" data-mercury-ui hidden>
-        <div class="mars-full-loading-kicker">ANTARA · MEDAN MERKURIUS</div>
-        <h3>Menuruni Permukaan Merkurius</h3>
-        <div class="mars-full-loading-status" id="mercury-full-loading-status">MENYIAPKAN DESTINASI</div>
-        <div class="mars-loading-track"><div class="mars-loading-progress" id="mercury-full-loading-progress"></div></div>
-      </div>
-
-      <div class="mars-full-error" id="mercury-full-error" data-mercury-ui hidden>
-        <h3>Eksplorasi Belum Tersedia</h3>
-        <p id="mercury-full-error-message">Wilayah Merkurius tidak dapat dimuat.</p>
-        <button id="mercury-full-error-return" type="button">Kembali ke Merkurius</button>
-      </div>
-
-      <div class="mars-full-tutorial" id="mercury-full-tutorial" data-mercury-ui hidden>
-        <div class="mars-full-tutorial-header"><span>Kontrol Eksplorasi</span><button id="mercury-tutorial-close" type="button" aria-label="Tutup panduan">×</button></div>
-        <div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-desktop">
-          <div class="mars-tutorial-item"><b>W A S D</b><span>Bergerak</span></div>
-          <div class="mars-tutorial-item"><b>KLIK + MOUSE</b><span>Lihat sekitar</span></div>
-          <div class="mars-tutorial-item"><b>Q / E</b><span>Turun / Naik</span></div>
-          <div class="mars-tutorial-item"><b>SHIFT</b><span>Percepat</span></div>
-          <div class="mars-tutorial-item"><b>ESC</b><span>Tutup panel / Keluar</span></div>
-        </div>
-        <div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-mobile">
-          <div class="mars-tutorial-item"><b>PANAH</b><span>Bergerak</span></div>
-          <div class="mars-tutorial-item"><b>GESER</b><span>Lihat sekitar</span></div>
-          <div class="mars-tutorial-item"><b>＋ / −</b><span>Ketinggian</span></div>
-          <div class="mars-tutorial-item"><b>MENU</b><span>Pilih wilayah</span></div>
-        </div>
-      </div>
-
-      <aside class="mars-landmark-card venus-location-card" id="mercury-landmark-card" data-mercury-ui aria-live="polite" aria-hidden="true" hidden>
-        <div class="venus-location-card-head">
-          <small>WILAYAH ILMIAH MERKURIUS · DATA RESMI</small>
-          <button class="venus-location-minimize" id="mercury-landmark-minimize" type="button" aria-label="Minimalkan informasi lokasi">Sembunyikan</button>
-        </div>
-        <h4 id="mercury-landmark-name">Merkurius</h4>
-        <p class="mars-landmark-type" id="mercury-landmark-type"></p>
-        <p class="mars-landmark-coords" id="mercury-landmark-coords"></p>
-        <button class="venus-landmark-media" id="mercury-landmark-media" type="button" aria-label="Perbesar referensi lokasi Merkurius">
-          <img id="mercury-landmark-image" src="" alt="" loading="lazy" referrerpolicy="no-referrer">
-          <span>Referensi lokasi</span>
-        </button>
-        <p class="venus-location-description" id="mercury-landmark-description"></p>
-        <ul class="venus-location-facts" id="mercury-landmark-facts"></ul>
-        <div class="venus-location-data-badge">MESSENGER / MLA / MDIS · KONTEN ANTARA</div>
-        <div class="venus-location-sources">
-          <a class="mars-landmark-source" id="mercury-landmark-source" href="https://science.nasa.gov/mercury/" target="_blank" rel="noopener noreferrer">Referensi ilmiah: NASA ↗</a>
-          <a class="mars-landmark-source" id="mercury-landmark-coordinate-source" href="https://planetarynames.wr.usgs.gov/" target="_blank" rel="noopener noreferrer">Koordinat: IAU / USGS ↗</a>
-        </div>
-      </aside>
-      <button class="venus-location-info-toggle" id="mercury-info-toggle" type="button" hidden>Info Lokasi</button>
-
-      <div class="mars-orientation-hint" aria-hidden="true">Putar perangkat untuk pengalaman terbaik</div>
-    </section>
     <section class="venus-scene" id="venus-scene" aria-labelledby="venus-title" hidden>
       <div class="venus-space-haze" aria-hidden="true"></div>
       <div class="venus-viewport" id="venus-viewport" role="img" aria-label="Venus, planet berbatu yang tertutup atmosfer tebal, berputar perlahan di luar angkasa."></div>

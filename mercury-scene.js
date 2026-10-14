@@ -814,7 +814,7 @@ window.MercuryScene = class MercuryScene {
   endFullExploration() {
     this.fullExplorationActive = false;
     this.element.classList.remove("is-full-exploring");
-    this.caption.inert = false;
+    this.caption.inert = !this.active;
   }
 
   prepare() {
