@@ -338,6 +338,7 @@
       this.lookPointerId = null;
       this.lookPointer = { x: 0, y: 0 };
       this.look = { yaw: 0, pitch: -0.18 };
+      this.lookTarget = { yaw: 0, pitch: -0.18 };
       this.altitudeOffset = 6.0;
       this.movement = { forward: 0, backward: 0, left: 0, right: 0, up: 0, down: 0, fast: 0 };
       this.keys = new Set();
@@ -603,6 +604,8 @@
       this.root.style.setProperty("--surface-opacity", "0");
       this.root.style.setProperty("--entry-progress", "0");
       this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration is-configuring";
+      document.getElementById("mission")?.classList.add("is-mercury-full-selecting");
+      document.getElementById("mission")?.classList.remove("is-mercury-full");
       this.state = STATES.CONFIGURING;
       this.regionSelector.hidden = true;
       this.qualityPanel.hidden = false;
@@ -635,6 +638,7 @@
       this.qualityPanel.hidden = true;
       this.regionSelector.hidden = true;
       this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration";
+      document.getElementById("mission")?.classList.remove("is-mercury-full", "is-mercury-full-selecting");
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");
@@ -1149,6 +1153,8 @@
       this.activeObservation = null;
       this.look.yaw = (region.heading || 0) * Math.PI / 180;
       this.look.pitch = -0.14;
+      this.lookTarget.yaw = this.look.yaw;
+      this.lookTarget.pitch = this.look.pitch;
       this.altitudeOffset = 6.0;
       this.player.x = 0;
       this.player.z = this.quality.worldRadius * 0.7;
@@ -1376,6 +1382,8 @@
         this.state = STATES.EXPLORING;
         this.active = true;
         this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration is-active is-surface-visible";
+        document.getElementById("mission")?.classList.remove("is-mercury-full-selecting");
+        document.getElementById("mission")?.classList.add("is-mercury-full");
         this.root.style.setProperty("--surface-opacity", "1");
         this.root.style.setProperty("--entry-progress", "1");
         this.objectivesCollapsed = true;
@@ -1412,6 +1420,7 @@
       const delta = Math.min((now - this.previous) / 1000, 0.05);
       this.previous = now;
       this.clock += delta;
+      this.updateLook(delta);
       const speed = this.quality.speed * (this.keys.has("shift") ? 1.65 : 1);
       const axes = this.movementAxes();
       const forward = axes.forward;
@@ -1479,9 +1488,18 @@
     }
 
     applyLookDelta(dx, dy, source = "mouse") {
-      const sensitivity = source === "touch" ? 0.0035 : source === "locked" ? 0.0020 : 0.0025;
-      this.look.yaw -= dx * sensitivity;
-      this.look.pitch = clamp(this.look.pitch - dy * sensitivity, -1.38, 1.30);
+      // Mercury intentionally uses a calmer camera than the old direct-look path.
+      // Desktop pointer-lock is tuned below Venus' raw sensitivity, then eased per frame.
+      const sensitivity = source === "touch" ? 0.0030 : source === "locked" ? 0.00135 : 0.0017;
+      this.lookTarget.yaw -= dx * sensitivity;
+      this.lookTarget.pitch = clamp(this.lookTarget.pitch - dy * sensitivity, -1.34, 1.22);
+    }
+
+    updateLook(delta) {
+      const response = 1 - Math.exp(-delta * 18);
+      this.look.yaw += (this.lookTarget.yaw - this.look.yaw) * response;
+      this.look.pitch += (this.lookTarget.pitch - this.look.pitch) * response;
+      this.look.pitch = clamp(this.look.pitch, -1.34, 1.22);
     }
 
     onMouseMove(event) {
@@ -1623,6 +1641,7 @@
       this.hideError();
       this.setUiVisible(false);
       this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration";
+      document.getElementById("mission")?.classList.remove("is-mercury-full", "is-mercury-full-selecting");
       this.root.style.removeProperty("--surface-opacity");
       this.root.style.removeProperty("--entry-progress");
       this.root.hidden = true;
@@ -1713,6 +1732,7 @@
       this.stopLoop();
       this.setUiVisible(false);
       this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration";
+      document.getElementById("mission")?.classList.remove("is-mercury-full", "is-mercury-full-selecting");
       this.root.style.removeProperty("--surface-opacity");
       this.root.style.removeProperty("--entry-progress");
       this.root.hidden = true;
