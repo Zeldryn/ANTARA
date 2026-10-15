@@ -9526,3 +9526,241 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 .profile-primary-cluster .profile-nav-suite.is-open {
   z-index: 80 !important;
 }
+
+/* ========================================================================
+   2026-10-07 FINAL LAPTOP HUD + CHARACTER SCALE LOCK
+   User QA: normal laptop layouts must show all nav items directly. MORE is
+   reserved for genuinely narrow viewports. Character scale is reduced on
+   laptop-class widths so Nara/Sora do not dominate the cockpit.
+   ======================================================================== */
+
+/* Laptop / desktop characters: one shared scale family, deliberately smaller. */
+@media (min-width: 900px) and (max-width: 1700px) {
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a,
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(220px, 19.5vw, 315px) !important;
+    bottom: 8.2% !important;
+  }
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a {
+    left: 1.8% !important;
+  }
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    right: 1.8% !important;
+  }
+}
+
+/* From 900 CSS px upward the full HUD is always visible. This final cascade
+   intentionally beats all older 701-1199 MORE/drawer rules. */
+@media (min-width: 900px) {
+  .cockpit-profile-hud,
+  .mission[data-experience="home"] .cockpit-profile-hud,
+  .mission[data-experience="launch"] .cockpit-profile-hud {
+    --nav-avatar: 34px !important;
+    --nav-avatar-login-gap: 10px !important;
+    --nav-login-width: 150px !important;
+    --nav-module-gap: 4px !important;
+    --nav-bridge-width: 12px !important;
+    --nav-height: 32px !important;
+    overflow: visible !important;
+  }
+
+  .profile-primary-cluster {
+    width: auto !important;
+    max-width: 96% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+  }
+
+  .profile-primary-cluster .profile-avatar-module,
+  .profile-primary-cluster .profile-login-trigger,
+  .profile-primary-cluster .profile-nav-bridge,
+  .profile-primary-cluster .profile-nav-suite {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+  }
+
+  .profile-primary-cluster .profile-avatar-module {
+    flex: 0 0 var(--nav-avatar) !important;
+    width: var(--nav-avatar) !important;
+    height: var(--nav-avatar) !important;
+    margin: 0 var(--nav-avatar-login-gap) 0 0 !important;
+  }
+
+  .profile-primary-cluster .profile-login-trigger {
+    flex: 0 0 var(--nav-login-width) !important;
+    width: var(--nav-login-width) !important;
+    height: var(--nav-height) !important;
+    margin: 0 var(--nav-module-gap) 0 0 !important;
+  }
+
+  .profile-primary-cluster .profile-nav-bridge {
+    display: grid !important;
+    flex: 0 0 var(--nav-bridge-width) !important;
+    width: var(--nav-bridge-width) !important;
+    height: 14px !important;
+    margin: 0 var(--nav-module-gap) 0 0 !important;
+  }
+
+  .profile-primary-cluster .profile-more-trigger {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite,
+  .profile-primary-cluster .profile-nav-suite.is-open {
+    display: flex !important;
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    width: auto !important;
+    padding: 0 !important;
+    grid-template-columns: none !important;
+    align-items: center !important;
+    gap: var(--nav-module-gap) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite::before,
+  .profile-primary-cluster .profile-nav-suite::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite .hud-nav-module {
+    height: var(--nav-height) !important;
+    min-width: 0 !important;
+    padding: 0 6px !important;
+    grid-template-columns: 21px minmax(0,1fr) !important;
+    gap: 4px !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite .hud-nav-leaderboard { width: 112px !important; }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-progress { width: 96px !important; }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-achievement { width: 116px !important; }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-game { width: 98px !important; }
+  .profile-primary-cluster .hud-nav-icon { width: 20px !important; height: 20px !important; }
+  .profile-primary-cluster .hud-nav-icon svg { width: 16px !important; height: 16px !important; }
+  .profile-primary-cluster .hud-nav-copy small { display: block !important; font-size: 4.6px !important; }
+  .profile-primary-cluster .hud-nav-copy strong { font-size: 6.4px !important; letter-spacing: .075em !important; }
+
+  /* A stale opened MORE state must not keep hiding the title once desktop HUD
+     is active. */
+  .mission.profile-more-open .intro-title-stack {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: none !important;
+    transform: translateX(-50%) !important;
+  }
+}
+
+/* Wider laptops/desktops get slightly roomier labels without switching layout. */
+@media (min-width: 1200px) {
+  .cockpit-profile-hud,
+  .mission[data-experience="home"] .cockpit-profile-hud,
+  .mission[data-experience="launch"] .cockpit-profile-hud {
+    --nav-login-width: 174px !important;
+    --nav-module-gap: 6px !important;
+    --nav-bridge-width: 16px !important;
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-leaderboard { width: 132px !important; }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-progress { width: 110px !important; }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-achievement { width: 132px !important; }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-game { width: 116px !important; }
+  .profile-primary-cluster .hud-nav-copy small { font-size: 5px !important; }
+  .profile-primary-cluster .hud-nav-copy strong { font-size: 7px !important; }
+}
+
+/* Final all-desktop character cap. Prevent old >1700px rules from making the
+   guides jump back to 500–600px on wide monitors. */
+@media (min-width: 900px) {
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a,
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(220px, 18vw, 380px) !important;
+    bottom: 8.2% !important;
+  }
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a { left: 1.8% !important; }
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b { right: 1.8% !important; }
+}
+
+/* Tablet / sub-laptop transition band: keep both guides proportional while
+   MORE remains the navigation pattern. */
+@media (min-width: 701px) and (max-width: 899px) {
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a,
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(190px, 26vw, 230px) !important;
+    bottom: 9% !important;
+  }
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a { left: -1% !important; }
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b { right: -1% !important; }
+}
+
+/* ========================================================================
+   2026-10-07 LAPTOP NAV TYPOGRAPHY BALANCE
+   Login/register is a secondary action; the four navigation modules receive
+   slightly larger, clearer labels on laptop/desktop viewports.
+   ======================================================================== */
+@media (min-width: 900px) {
+  .cockpit-profile-hud[data-profile-state="logged-out"] .profile-login-trigger .profile-hud-copy strong {
+    font-size: 7.8px !important;
+    font-weight: 650 !important;
+    line-height: 1 !important;
+    letter-spacing: .08em !important;
+    white-space: nowrap !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite .hud-nav-copy {
+    gap: 2px !important;
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-copy small {
+    display: block !important;
+    font-size: 5px !important;
+    line-height: 1 !important;
+    letter-spacing: .10em !important;
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-copy strong {
+    font-size: 7.15px !important;
+    line-height: 1.03 !important;
+    letter-spacing: .078em !important;
+    font-weight: 680 !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  .cockpit-profile-hud[data-profile-state="logged-out"] .profile-login-trigger .profile-hud-copy strong {
+    font-size: 8.2px !important;
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-copy small {
+    font-size: 5.35px !important;
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-copy strong {
+    font-size: 7.75px !important;
+  }
+}

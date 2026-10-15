@@ -955,9 +955,9 @@ class CockpitProfileHUD {
     if (!this.user) {
       this.root.dataset.profileState = "logged-out";
       if (this.kicker) this.kicker.textContent = "";
-      this.primary.textContent = "MASUK KE ANTARA";
+      this.primary.textContent = "MASUK / DAFTAR";
       this.secondary.textContent = "";
-      this.trigger.setAttribute("aria-label", "Masuk ke ANTARA");
+      this.trigger.setAttribute("aria-label", "Masuk atau daftar ANTARA");
       this.trigger.removeAttribute("aria-expanded");
       this.avatarImage.hidden = true;
       this.avatarImage.removeAttribute("src");
@@ -1078,7 +1078,7 @@ if (profileMoreTrigger && profileNavSuite) {
     if (!profileNavSuite.contains(event.target) && !profileMoreTrigger.contains(event.target)) closeProfileMore();
   });
   const shouldUseExpandedHud = () => (
-    window.matchMedia("(min-width: 1280px), (min-width: 1024px) and (min-height: 700px) and (orientation: landscape)").matches
+    window.matchMedia("(min-width: 900px)").matches
   );
   window.addEventListener("resize", () => {
     // Close MORE as soon as the full laptop/desktop HUD fits comfortably again.
