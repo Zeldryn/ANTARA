@@ -169,6 +169,8 @@
       this.root = document.getElementById(options.rootId || 'solar-system-observer');
       this.canvas = document.getElementById(options.canvasId || 'solar-system-canvas');
       this.labelLayer = document.getElementById(options.labelLayerId || 'solar-system-label-layer');
+      this.hoverCard = null;
+      this.hoveredKey = null;
       this.backButton = document.getElementById(options.backButtonId || 'solar-system-back');
       this.clockValue = document.getElementById(options.clockValueId || 'solar-system-clock-value');
       this.detailKicker = document.getElementById(options.detailKickerId || 'solar-system-detail-kicker');
@@ -209,7 +211,7 @@
       this.textureLoader = null;
       this.canvasRect = null;
 
-      if (!this.root || !this.canvas || !this.labelLayer || !this.backButton) return;
+      if (!this.root || !this.canvas || !this.backButton) return;
 
       this.bodyData = BODY_DATA.map((body, index) => ({
         ...body,
@@ -229,7 +231,12 @@
       this.handleBack = this.handleBack.bind(this);
 
       this.backButton.addEventListener('click', this.handleBack);
-      this.buildLabels();
+      this.buildHoverCard();
+      if (this.labelLayer) {
+        this.labelLayer.replaceChildren();
+        this.labelLayer.hidden = true;
+        this.labelLayer.setAttribute('aria-hidden', 'true');
+      }
     }
 
     computeOrbitRadius(semiMajorAu, kind) {
@@ -239,27 +246,60 @@
       return Number(base.toFixed(3));
     }
 
-    buildLabels() {
-      const frag = document.createDocumentFragment();
-      for (const body of this.bodyData) {
-        if (body.key === 'sun') continue;
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'solar-system-label';
-        button.dataset.key = body.key;
-        button.dataset.kind = body.kind;
-        button.innerHTML = `<small>${body.kind === 'asteroid' ? 'KORIDOR' : 'PANORAMA'}</small><strong>${body.name}</strong><span>${body.short}</span>`;
-        button.addEventListener('mouseenter', () => this.setDetail(body.key));
-        button.addEventListener('focus', () => this.setDetail(body.key));
-        button.addEventListener('click', event => {
-          event.preventDefault();
-          event.stopPropagation();
-          this.selectPlanet(body.key);
-        });
-        frag.appendChild(button);
-        this.labels.set(body.key, button);
+    buildHoverCard() {
+      const card = document.createElement('div');
+      card.className = 'solar-system-hover-card';
+      card.hidden = true;
+      card.setAttribute('aria-hidden', 'true');
+      card.innerHTML = '<small>OBJEK TATA SURYA</small><strong></strong><span></span><em>Klik untuk membuka panorama</em>';
+      this.root.appendChild(card);
+      this.hoverCard = card;
+    }
+
+    showHoverCard(key, clientX, clientY) {
+      const body = this.bodyData.find(item => item.key === key);
+      if (!body || !this.hoverCard) return;
+      this.hoveredKey = key;
+      this.hoverCard.querySelector('strong').textContent = body.name;
+      this.hoverCard.querySelector('span').textContent = `${body.distanceLabel} · ${body.orbitLabel}`;
+      this.hoverCard.hidden = false;
+      this.hoverCard.setAttribute('aria-hidden', 'false');
+      this.positionHoverCard(clientX, clientY);
+      this.setDetail(key);
+      this.canvas.classList.add('is-hovering-body');
+    }
+
+    positionHoverCard(clientX, clientY) {
+      if (!this.hoverCard || this.hoverCard.hidden) return;
+      const rect = this.root.getBoundingClientRect();
+      const cardRect = this.hoverCard.getBoundingClientRect();
+      const pad = 14;
+      const offset = 18;
+      let left = clientX - rect.left + offset;
+      let top = clientY - rect.top + offset;
+      if (left + cardRect.width > rect.width - pad) left = clientX - rect.left - cardRect.width - offset;
+      if (top + cardRect.height > rect.height - pad) top = clientY - rect.top - cardRect.height - offset;
+      left = Math.max(pad, Math.min(left, rect.width - cardRect.width - pad));
+      top = Math.max(pad, Math.min(top, rect.height - cardRect.height - pad));
+      this.hoverCard.style.transform = `translate3d(${Math.round(left)}px, ${Math.round(top)}px, 0)`;
+    }
+
+    clearHoverCard() {
+      this.hoveredKey = null;
+      if (this.hoverCard) {
+        this.hoverCard.hidden = true;
+        this.hoverCard.setAttribute('aria-hidden', 'true');
       }
-      this.labelLayer.appendChild(frag);
+      this.canvas?.classList.remove('is-hovering-body');
+    }
+
+    pickBodyAtPointer() {
+      if (!this.raycaster || !this.camera || !this.clickTargets.length) return null;
+      this.raycaster.setFromCamera(this.pointer, this.camera);
+      const intersections = this.raycaster.intersectObjects(this.clickTargets, true);
+      const hit = intersections.find(entry => entry.object?.userData?.bodyKey || entry.object?.parent?.userData?.bodyKey);
+      if (!hit) return null;
+      return hit.object.userData.bodyKey || hit.object.parent?.userData?.bodyKey || null;
     }
 
     async ensureReady() {
@@ -486,6 +526,20 @@
         mesh.userData.bodyKey = body.key;
         group.add(mesh);
 
+        // Invisible interaction proxy keeps small inner planets easy to hover/click
+        // without visually inflating their model any further.
+        if (body.key !== 'sun') {
+          const hitRadius = Math.max(body.displayRadius * 1.7, 0.82);
+          const hitProxy = new T.Mesh(
+            new T.SphereGeometry(hitRadius, 12, 8),
+            new T.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, colorWrite: false })
+          );
+          hitProxy.userData.bodyKey = body.key;
+          hitProxy.userData.interactionProxy = true;
+          group.add(hitProxy);
+          this.clickTargets.push(hitProxy);
+        }
+
         if (body.key === 'sun') {
           const glow = new T.Mesh(new T.SphereGeometry(body.displayRadius * 1.20, 32, 22), new T.MeshBasicMaterial({ color: 0xffc26c, transparent: true, opacity: 0.12, side: T.BackSide }));
           group.add(glow);
@@ -575,6 +629,7 @@
       this.animationFrame = null;
       this.lastTimestamp = 0;
       this.lastRenderTimestamp = 0;
+      this.clearHoverCard();
       this.root.hidden = true;
       this.root.setAttribute('aria-hidden', 'true');
     }
@@ -597,9 +652,6 @@
     setDetail(key) {
       const body = this.bodyData.find(item => item.key === key) || this.bodyData[0];
       this.currentHighlightedKey = body.key;
-      for (const [labelKey, label] of this.labels.entries()) {
-        label.classList.toggle('is-active', labelKey === body.key);
-      }
       if (this.detailKicker) this.detailKicker.textContent = body.key === 'sun' ? 'PUSAT SISTEM' : body.kind === 'asteroid' ? 'WILAYAH DIAMATI' : 'PLANET TERSOROT';
       if (this.detailName) this.detailName.textContent = body.name;
       if (this.detailLead) this.detailLead.textContent = body.lead;
@@ -613,6 +665,8 @@
       if (!this.isOpen) return;
       this.drag.active = true;
       this.drag.moved = false;
+      this.canvas.classList.add('is-dragging');
+      this.clearHoverCard();
       this.drag.x = event.clientX;
       this.drag.y = event.clientY;
       this.canvas.setPointerCapture?.(event.pointerId);
@@ -620,8 +674,17 @@
 
     handlePointerMove(event) {
       if (!this.isOpen) return;
+      if (!this.drag.active && event.target !== this.canvas) {
+        this.clearHoverCard();
+        return;
+      }
       this.updatePointer(event.clientX, event.clientY);
-      if (!this.drag.active) return;
+      if (!this.drag.active) {
+        const key = this.pickBodyAtPointer();
+        if (key) this.showHoverCard(key, event.clientX, event.clientY);
+        else this.clearHoverCard();
+        return;
+      }
       const dx = event.clientX - this.drag.x;
       const dy = event.clientY - this.drag.y;
       if (Math.abs(dx) + Math.abs(dy) > 2) this.drag.moved = true;
@@ -635,7 +698,12 @@
     handlePointerUp(event) {
       if (!this.isOpen) return;
       this.drag.active = false;
+      this.canvas.classList.remove('is-dragging');
       this.canvas.releasePointerCapture?.(event.pointerId);
+      this.updatePointer(event.clientX, event.clientY);
+      const key = this.pickBodyAtPointer();
+      if (key) this.showHoverCard(key, event.clientX, event.clientY);
+      else this.clearHoverCard();
     }
 
     handleWheel(event) {
@@ -664,11 +732,7 @@
     handleCanvasClick(event) {
       if (!this.isOpen || this.drag.moved || !this.raycaster || !this.camera) return;
       this.updatePointer(event.clientX, event.clientY);
-      this.raycaster.setFromCamera(this.pointer, this.camera);
-      const intersections = this.raycaster.intersectObjects(this.clickTargets, true);
-      const hit = intersections.find(entry => entry.object?.userData?.bodyKey || entry.object?.parent?.userData?.bodyKey);
-      if (!hit) return;
-      const key = hit.object.userData.bodyKey || hit.object.parent?.userData?.bodyKey;
+      const key = this.pickBodyAtPointer();
       if (key) this.selectPlanet(key);
     }
 
@@ -686,7 +750,6 @@
       this.orbit.azimuth += this.drag.active ? 0 : deltaSeconds * 0.035;
       this.updateBodies(deltaSeconds);
       this.updateCamera();
-      this.updateLabels();
       this.renderer.render(this.scene, this.camera);
       if (this.clockValue) {
         this.clockValue.textContent = `Hari ke-${Math.round(this.simDays).toLocaleString('id-ID')}`;
@@ -746,26 +809,7 @@
       this.camera.lookAt(0, 0, 0);
     }
 
-    updateLabels() {
-      const width = this.root.clientWidth || window.innerWidth;
-      const height = this.root.clientHeight || window.innerHeight;
-      for (const body of this.bodyData) {
-        if (body.key === 'sun') continue;
-        const label = this.labels.get(body.key);
-        const record = this.bodyMap.get(body.key);
-        if (!label || !record) continue;
-        const source = body.kind === 'asteroid' ? record.anchor : record.group.position;
-        this.tmpVec.copy(source).project(this.camera);
-        const visible = this.tmpVec.z < 1 && this.tmpVec.z > -1;
-        const x = (this.tmpVec.x * 0.5 + 0.5) * width;
-        const y = (-this.tmpVec.y * 0.5 + 0.5) * height;
-        label.style.left = `${x}px`;
-        label.style.top = `${y}px`;
-        const inside = x > -80 && x < width + 80 && y > -60 && y < height + 60;
-        label.style.opacity = visible && inside ? '1' : '0';
-        label.style.pointerEvents = visible && inside ? 'auto' : 'none';
-      }
-    }
+
   }
 
   window.ANTARASolarSystemExplorer = SolarSystemExplorer;
