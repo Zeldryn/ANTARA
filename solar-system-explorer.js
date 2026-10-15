@@ -173,6 +173,11 @@
       this.hoveredKey = null;
       this.backButton = document.getElementById(options.backButtonId || 'solar-system-back');
       this.clockValue = document.getElementById(options.clockValueId || 'solar-system-clock-value');
+      this.speedNote = document.getElementById('solar-system-speed-note');
+      this.speedInput = document.getElementById('solar-system-speed-input');
+      this.speedDown = document.getElementById('solar-system-speed-down');
+      this.speedUp = document.getElementById('solar-system-speed-up');
+      this.speedPause = document.getElementById('solar-system-speed-pause');
       this.detailKicker = document.getElementById(options.detailKickerId || 'solar-system-detail-kicker');
       this.detailName = document.getElementById(options.detailNameId || 'solar-system-detail-name');
       this.detailLead = document.getElementById(options.detailLeadId || 'solar-system-detail-lead');
@@ -192,7 +197,8 @@
       this.camera = null;
       this.clock = null;
       this.simDays = 0;
-      this.simDaysPerSecond = 12;
+      this.simDaysPerSecond = this.readSavedSpeed();
+      this.lastNonZeroSpeed = this.simDaysPerSecond > 0 ? this.simDaysPerSecond : 12;
       this.pointer = { x: 0, y: 0 };
       this.drag = { active: false, x: 0, y: 0, moved: false };
       this.orbit = { azimuth: -0.48, polar: 1.06, radius: 54, minRadius: 20, maxRadius: 92 };
@@ -229,13 +235,77 @@
       this.handleCanvasClick = this.handleCanvasClick.bind(this);
       this.animate = this.animate.bind(this);
       this.handleBack = this.handleBack.bind(this);
+      this.handleSpeedInput = this.handleSpeedInput.bind(this);
 
       this.backButton.addEventListener('click', this.handleBack);
+      this.speedInput?.addEventListener('change', this.handleSpeedInput);
+      this.speedInput?.addEventListener('blur', this.handleSpeedInput);
+      this.speedDown?.addEventListener('click', () => this.adjustSpeed(-1));
+      this.speedUp?.addEventListener('click', () => this.adjustSpeed(1));
+      this.speedPause?.addEventListener('click', () => this.togglePause());
+      this.syncSpeedControls();
       this.buildHoverCard();
       if (this.labelLayer) {
         this.labelLayer.replaceChildren();
         this.labelLayer.hidden = true;
         this.labelLayer.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    readSavedSpeed() {
+      try {
+        const value = Number(localStorage.getItem('antara-solar-system-speed-v1'));
+        return Number.isFinite(value) ? Math.max(0, Math.min(365, value)) : 12;
+      } catch {
+        return 12;
+      }
+    }
+
+    setSpeed(value, { persist = true } = {}) {
+      const numeric = Number(value);
+      const next = Number.isFinite(numeric) ? Math.max(0, Math.min(365, Math.round(numeric * 2) / 2)) : 12;
+      this.simDaysPerSecond = next;
+      if (next > 0) this.lastNonZeroSpeed = next;
+      if (persist) {
+        try { localStorage.setItem('antara-solar-system-speed-v1', String(next)); } catch {}
+      }
+      this.syncSpeedControls();
+    }
+
+    adjustSpeed(direction) {
+      const current = this.simDaysPerSecond;
+      const step = current < 4 ? 0.5 : current < 20 ? 2 : current < 60 ? 5 : 15;
+      this.setSpeed(current + step * direction);
+    }
+
+    togglePause() {
+      if (this.simDaysPerSecond > 0) {
+        this.lastNonZeroSpeed = this.simDaysPerSecond;
+        this.setSpeed(0);
+      } else {
+        this.setSpeed(this.lastNonZeroSpeed || 12);
+      }
+    }
+
+    handleSpeedInput() {
+      const raw = String(this.speedInput?.value ?? '').trim();
+      if (raw === '') {
+        this.syncSpeedControls();
+        return;
+      }
+      this.setSpeed(raw);
+    }
+
+    syncSpeedControls() {
+      const speed = this.simDaysPerSecond;
+      if (this.speedInput && document.activeElement !== this.speedInput) this.speedInput.value = String(speed);
+      if (this.speedPause) {
+        const paused = speed === 0;
+        this.speedPause.textContent = paused ? 'LANJUT' : 'JEDA';
+        this.speedPause.setAttribute('aria-pressed', String(paused));
+      }
+      if (this.speedNote) {
+        this.speedNote.textContent = speed === 0 ? 'Simulasi dijeda' : `1 detik ≈ ${Number.isInteger(speed) ? speed : speed.toFixed(1)} hari Bumi`;
       }
     }
 

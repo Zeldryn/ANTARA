@@ -78,6 +78,7 @@ try {
         'username' => $username,
         'email' => $email,
         'avatar_url' => null,
+        'bio' => '',
         'created_at' => date('Y-m-d H:i:s'),
     ];
 

@@ -1,0 +1,2 @@
+ALTER TABLE users
+  ADD COLUMN bio VARCHAR(280) NULL AFTER avatar_url;

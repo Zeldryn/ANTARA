@@ -128,6 +128,28 @@ function antara_session_rate_limit(string $bucket, int $limit, int $windowSecond
     $_SESSION[$key] = $events;
 }
 
+function antara_ensure_users_bio_column(PDO $pdo): bool
+{
+    static $checked = null;
+    if ($checked !== null) return $checked;
+
+    try {
+        $column = $pdo->query("SHOW COLUMNS FROM users LIKE 'bio'")->fetch();
+        if ($column) {
+            $checked = true;
+            return true;
+        }
+
+        $pdo->exec("ALTER TABLE users ADD COLUMN bio VARCHAR(280) NULL AFTER avatar_url");
+        $checked = true;
+        return true;
+    } catch (Throwable $e) {
+        error_log('ANTARA bio schema check error: ' . $e->getMessage());
+        $checked = false;
+        return false;
+    }
+}
+
 function antara_user_payload(array $row): array
 {
     return [
@@ -137,6 +159,7 @@ function antara_user_payload(array $row): array
         'email' => (string)$row['email'],
         'role' => 'PENJELAJAH ANTARA',
         'avatar' => $row['avatar_url'] ?? null,
+        'bio' => isset($row['bio']) ? (string)$row['bio'] : '',
         'createdAt' => $row['created_at'] ?? null,
     ];
 }

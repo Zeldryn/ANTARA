@@ -8,9 +8,11 @@ $userId = antara_require_user();
 $data = antara_input();
 $action = strtolower(trim((string)($data['action'] ?? 'profile')));
 $pdo = antara_db_or_fail();
+$hasBio = antara_ensure_users_bio_column($pdo);
+$bioColumn = $hasBio ? ', bio' : '';
 
 try {
-    $stmt = $pdo->prepare('SELECT id, full_name, username, email, password_hash, avatar_url, created_at FROM users WHERE id = :id LIMIT 1');
+    $stmt = $pdo->prepare('SELECT id, full_name, username, email, password_hash, avatar_url' . $bioColumn . ', created_at FROM users WHERE id = :id LIMIT 1');
     $stmt->execute(['id' => $userId]);
     $current = $stmt->fetch();
 
@@ -122,6 +124,7 @@ try {
         $fullName = trim((string)($data['fullName'] ?? $current['full_name']));
         $username = trim((string)($data['username'] ?? $current['username']));
         $email = strtolower(trim((string)($data['email'] ?? $current['email'])));
+        $bio = trim((string)($data['bio'] ?? ($current['bio'] ?? '')));
         $errors = [];
 
         if ($fullName === '' || strlen($fullName) < 2 || strlen($fullName) > 60) {
@@ -132,6 +135,13 @@ try {
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 254) {
             $errors['email'] = 'Alamat email tidak valid.';
+        }
+        $bioLength = function_exists('mb_strlen') ? mb_strlen($bio) : strlen($bio);
+        if ($bioLength > 280) {
+            $errors['bio'] = 'Bio maksimal 280 karakter.';
+        }
+        if ($bio !== '' && !$hasBio) {
+            $errors['bio'] = 'Penyimpanan bio belum siap di database.';
         }
 
         if ($errors) {
@@ -152,17 +162,29 @@ try {
             antara_json(['success' => false, 'message' => 'Username atau email sudah digunakan akun lain.', 'errors' => $errors], 409);
         }
 
-        $update = $pdo->prepare('UPDATE users SET full_name = :full_name, username = :username, email = :email, updated_at = NOW() WHERE id = :id');
-        $update->execute([
-            'full_name' => $fullName,
-            'username' => $username,
-            'email' => $email,
-            'id' => $userId,
-        ]);
+        if ($hasBio) {
+            $update = $pdo->prepare('UPDATE users SET full_name = :full_name, username = :username, email = :email, bio = :bio, updated_at = NOW() WHERE id = :id');
+            $update->execute([
+                'full_name' => $fullName,
+                'username' => $username,
+                'email' => $email,
+                'bio' => $bio !== '' ? $bio : null,
+                'id' => $userId,
+            ]);
+        } else {
+            $update = $pdo->prepare('UPDATE users SET full_name = :full_name, username = :username, email = :email, updated_at = NOW() WHERE id = :id');
+            $update->execute([
+                'full_name' => $fullName,
+                'username' => $username,
+                'email' => $email,
+                'id' => $userId,
+            ]);
+        }
 
         $current['full_name'] = $fullName;
         $current['username'] = $username;
         $current['email'] = $email;
+        if ($hasBio) $current['bio'] = $bio;
 
         antara_json([
             'success' => true,

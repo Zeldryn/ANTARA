@@ -843,7 +843,7 @@ const RETURN_SORA_CUE = Object.freeze({
   duration: 12000
 });
 
-const RETURN_HOME_STATUS = "KEMBALI KE BUMI...";
+const RETURN_HOME_STATUS = "KEMBALI KE BUMI";
 
 class CockpitProfileHUD {
   constructor() {

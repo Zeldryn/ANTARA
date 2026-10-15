@@ -7702,3 +7702,111 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .solar-system-hover-card { display: none !important; }
   .solar-system-instructions { font-size: 10.5px; }
 }
+
+
+/* 2026-10-05 Return route typography refinement */
+.return-cockpit-copy small {
+  color:#7f9bb8 !important;
+  font-family:"Segoe UI",Inter,system-ui,sans-serif !important;
+  font-size:clamp(7px,.55vw,9px) !important;
+  font-weight:700 !important;
+  line-height:1 !important;
+  letter-spacing:.28em !important;
+  text-transform:uppercase;
+}
+.return-cockpit-copy strong {
+  color:#edf5fb !important;
+  font-family:"Segoe UI",Inter,system-ui,sans-serif !important;
+  font-size:clamp(20px,2vw,31px) !important;
+  font-weight:650 !important;
+  line-height:1.08 !important;
+  letter-spacing:.11em !important;
+  text-transform:uppercase;
+  text-shadow:0 0 22px rgba(126,177,222,.12);
+}
+
+/* 2026-10-05 Solar System custom time controls */
+.solar-system-speed-control {
+  display:grid;
+  grid-template-columns:34px auto 34px minmax(112px,1fr);
+  gap:6px;
+  align-items:stretch;
+  margin-top:11px;
+  padding-top:10px;
+  border-top:1px solid rgba(126,170,212,.12);
+}
+.solar-system-speed-control > button {
+  min-width:34px;
+  height:34px;
+  border:1px solid rgba(136,181,222,.2);
+  border-radius:9px;
+  background:rgba(8,16,27,.72);
+  color:#d9ecfb;
+  font:700 12px/1 system-ui,sans-serif;
+  cursor:pointer;
+  transition:border-color .15s ease,background .15s ease,transform .15s ease;
+}
+.solar-system-speed-control > button:hover,
+.solar-system-speed-control > button:focus-visible {
+  border-color:rgba(163,208,247,.48);
+  background:rgba(18,34,51,.92);
+  outline:none;
+}
+.solar-system-speed-control > button:active { transform:translateY(1px); }
+#solar-system-speed-pause {
+  min-width:62px;
+  padding:0 9px;
+  font-size:9px;
+  letter-spacing:.12em;
+}
+#solar-system-speed-pause[aria-pressed="true"] {
+  border-color:rgba(222,192,126,.45);
+  color:#f2d7a0;
+  background:rgba(63,48,24,.54);
+}
+.solar-system-speed-control label {
+  min-width:0;
+  display:grid;
+  grid-template-columns:auto minmax(48px,1fr);
+  align-items:center;
+  gap:7px;
+  height:34px;
+  padding:0 8px 0 10px;
+  border:1px solid rgba(136,181,222,.18);
+  border-radius:9px;
+  background:rgba(5,12,21,.64);
+}
+.solar-system-speed-control label span {
+  margin:0;
+  color:#7198ba;
+  font:700 7px/1 system-ui,sans-serif;
+  letter-spacing:.12em;
+  white-space:nowrap;
+}
+.solar-system-speed-control input {
+  width:100%;
+  min-width:0;
+  border:0;
+  outline:0;
+  padding:0;
+  background:transparent;
+  color:#f4f9fd;
+  text-align:right;
+  font:700 12px/1 system-ui,sans-serif;
+}
+.solar-system-speed-control input::-webkit-inner-spin-button { opacity:.55; }
+@media (max-width:700px) {
+  .return-cockpit-copy strong {
+    font-size:clamp(18px,6vw,26px) !important;
+    letter-spacing:.075em !important;
+  }
+  .solar-system-speed-control {
+    grid-template-columns:32px minmax(54px,auto) 32px minmax(100px,1fr);
+    gap:5px;
+    margin-top:8px;
+    padding-top:8px;
+  }
+  .solar-system-speed-control > button,
+  .solar-system-speed-control label { height:32px; }
+  .solar-system-speed-control label span { font-size:6px; }
+}

@@ -13,10 +13,12 @@ if ($identifier === '' || $password === '') {
 }
 
 $pdo = antara_db_or_fail();
+$hasBio = antara_ensure_users_bio_column($pdo);
+$bioColumn = $hasBio ? ', bio' : '';
 
 try {
     $stmt = $pdo->prepare(
-        'SELECT id, full_name, username, email, password_hash, avatar_url, created_at FROM users WHERE username = :username_identifier OR email = :email_identifier LIMIT 1'
+        'SELECT id, full_name, username, email, password_hash, avatar_url' . $bioColumn . ', created_at FROM users WHERE username = :username_identifier OR email = :email_identifier LIMIT 1'
     );
     $stmt->execute(['username_identifier' => $identifier, 'email_identifier' => strtolower($identifier)]);
     $user = $stmt->fetch();

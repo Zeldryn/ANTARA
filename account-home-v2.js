@@ -137,7 +137,14 @@
             window.location.href = 'pencapaian.html';
             return;
           }
-          this.showToast('Bio belum memiliki data.');
+          if (emptyAction === 'bio') {
+            this.renderPanel('settings');
+            window.requestAnimationFrame(() => {
+              const bioInput = this.overlay.querySelector('[name="bio"]');
+              bioInput?.focus({ preventScroll: false });
+              bioInput?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+          }
         }
       });
 
@@ -155,6 +162,13 @@
         const file = input.files[0];
         input.value = '';
         void this.uploadAvatar(file);
+      });
+
+      this.overlay.addEventListener('input', event => {
+        const bio = event.target.closest('textarea[name="bio"]');
+        if (!bio) return;
+        const counter = bio.closest('.account-bio-field')?.querySelector('[data-bio-counter]');
+        if (counter) counter.textContent = `${bio.value.length} / 280`;
       });
 
       document.addEventListener('click', event => {
@@ -378,8 +392,10 @@
           </section>
 
           <section class="account-profile-empty-grid">
-            <button type="button" class="account-empty-card account-empty-bio" data-empty-action="bio">
-              <span class="account-empty-code">BIO</span><strong>BELUM ADA BIO</strong><small>Nanti bio penjelajah akan tampil di sini.</small>
+            <button type="button" class="account-empty-card account-empty-bio ${u.bio ? 'has-bio' : ''}" data-empty-action="bio">
+              <span class="account-empty-code">BIO</span>
+              <strong>${u.bio ? 'BIO PENJELAJAH' : 'TAMBAH BIO'}</strong>
+              <small>${u.bio ? escapeHtml(u.bio) : 'Ceritakan sedikit tentang dirimu sebagai penjelajah ANTARA.'}</small>
             </button>
             <button type="button" class="account-empty-card" data-empty-action="progress">
               <span class="account-empty-code">PROGRESS</span><strong data-profile-progress>0%</strong><small data-profile-progress-detail>Memuat rekam jejak eksplorasi...</small>
@@ -401,6 +417,7 @@
               <label><span>NAMA</span><input name="fullName" maxlength="60" value="${escapeHtml(u.name || '')}" autocomplete="name" required></label>
               <label><span>USERNAME</span><input name="username" maxlength="20" value="${escapeHtml(u.username || '')}" autocomplete="username" required></label>
               <label><span>EMAIL</span><input name="email" type="email" maxlength="254" value="${escapeHtml(u.email || '')}" autocomplete="email" required></label>
+              <label class="account-bio-field"><span>BIO <em data-bio-counter>${String(u.bio || '').length} / 280</em></span><textarea name="bio" maxlength="280" rows="4" placeholder="Contoh: Mahasiswa IT yang suka eksplorasi antariksa, coding, dan belajar hal baru.">${escapeHtml(u.bio || '')}</textarea></label>
               <div class="account-form-message" data-form-message></div>
               <button type="submit" class="account-save-button">SIMPAN IDENTITAS</button>
             </form>
@@ -551,7 +568,7 @@
         button.dataset.originalLabel ||= button.textContent;
         button.textContent = busy ? 'MENYIMPAN...' : button.dataset.originalLabel;
       }
-      $$('input', form).forEach(input => { input.disabled = busy; });
+      $$('input, textarea', form).forEach(input => { input.disabled = busy; });
     }
 
     async saveIdentity(form) {
@@ -563,7 +580,8 @@
           action: 'profile',
           fullName: fd.get('fullName'),
           username: fd.get('username'),
-          email: fd.get('email')
+          email: fd.get('email'),
+          bio: fd.get('bio')
         });
         this.currentUser = result.user;
         if (window.ANTARAAuth) window.ANTARAAuth.currentUser = result.user;
