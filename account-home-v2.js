@@ -115,8 +115,16 @@
         const tab = event.target.closest('[data-account-tab]')?.dataset.accountTab;
         if (tab) this.renderPanel(tab);
 
-        if (event.target.closest('[data-avatar-early]')) {
-          this.showToast('Foto profil masih EARLY ACCESS. Fitur ini belum dibuka.');
+        const avatarUpload = event.target.closest('[data-avatar-upload]');
+        if (avatarUpload) {
+          const scope = avatarUpload.closest('[data-avatar-scope]') || this.overlay;
+          scope.querySelector('[data-avatar-input]')?.click();
+          return;
+        }
+
+        if (event.target.closest('[data-avatar-remove]')) {
+          void this.removeAvatar();
+          return;
         }
 
         const emptyAction = event.target.closest('[data-empty-action]')?.dataset.emptyAction;
@@ -139,6 +147,14 @@
         event.preventDefault();
         if (form.matches('[data-account-profile-form]')) this.saveIdentity(form);
         if (form.matches('[data-account-password-form]')) this.savePassword(form);
+      });
+
+      this.overlay.addEventListener('change', event => {
+        const input = event.target.closest('[data-avatar-input]');
+        if (!input || !input.files?.[0]) return;
+        const file = input.files[0];
+        input.value = '';
+        void this.uploadAvatar(file);
       });
 
       document.addEventListener('click', event => {
@@ -172,9 +188,42 @@
       return String(name || '?').trim().split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]?.toUpperCase() || '').join('') || '?';
     }
 
+    avatarMarkup(user = this.currentUser) {
+      const avatar = String(user?.avatar || '').trim();
+      if (avatar) {
+        return `<img class="account-avatar-image" src="${escapeHtml(avatar)}" alt="Foto profil ${escapeHtml(user?.name || 'Penjelajah ANTARA')}">`;
+      }
+      return `<span class="account-avatar-fallback">${escapeHtml(this.initials(user?.name))}</span>`;
+    }
+
+    renderAvatarNode(node, user = this.currentUser) {
+      if (!node) return;
+      node.replaceChildren();
+      const avatar = String(user?.avatar || '').trim();
+      if (!avatar) {
+        const fallback = document.createElement('span');
+        fallback.className = 'account-avatar-fallback';
+        fallback.textContent = this.initials(user?.name);
+        node.appendChild(fallback);
+        return;
+      }
+      const image = document.createElement('img');
+      image.className = 'account-avatar-image';
+      image.alt = `Foto profil ${user?.name || 'Penjelajah ANTARA'}`;
+      image.src = avatar;
+      image.addEventListener('error', () => {
+        node.replaceChildren();
+        const fallback = document.createElement('span');
+        fallback.className = 'account-avatar-fallback';
+        fallback.textContent = this.initials(user?.name);
+        node.appendChild(fallback);
+      }, { once: true });
+      node.appendChild(image);
+    }
+
     syncMenu() {
       if (!this.currentUser || !this.menu) return;
-      $('[data-account-menu-initials]', this.menu).textContent = this.initials(this.currentUser.name);
+      this.renderAvatarNode($('[data-account-menu-initials]', this.menu), this.currentUser);
       $('[data-account-menu-name]', this.menu).textContent = this.currentUser.name || 'Penjelajah';
       $('[data-account-menu-username]', this.menu).textContent = this.currentUser.username ? `@${this.currentUser.username}` : (this.currentUser.email || 'ANTARA ID');
       if (!this.overlay.hidden) {
@@ -309,9 +358,13 @@
       return `
         <div class="account-profile-layout">
           <section class="account-id-card">
-            <div class="account-profile-avatar-wrap">
-              <div class="account-profile-avatar">${escapeHtml(this.initials(u.name))}</div>
-              <button type="button" class="account-avatar-edit" data-avatar-early>GANTI FOTO <span>EARLY ACCESS</span></button>
+            <div class="account-profile-avatar-wrap" data-avatar-scope>
+              <div class="account-profile-avatar">${this.avatarMarkup(u)}</div>
+              <input class="account-avatar-input" data-avatar-input type="file" accept="image/jpeg,image/png,image/webp" hidden>
+              <div class="account-avatar-actions">
+                <button type="button" class="account-avatar-edit" data-avatar-upload>GANTI FOTO</button>
+                ${u.avatar ? '<button type="button" class="account-avatar-remove" data-avatar-remove>HAPUS</button>' : ''}
+              </div>
             </div>
             <div class="account-profile-copy">
               <small>IDENTITAS AKTIF</small>
@@ -364,12 +417,106 @@
             </form>
           </section>
 
-          <section class="account-settings-card account-settings-note">
+          <section class="account-settings-card account-settings-note" data-avatar-scope>
             <header><small>PROFIL</small><h3>FOTO PROFIL</h3></header>
-            <p>Upload foto profil belum dibuka pada versi ini.</p>
-            <button type="button" class="account-early-button" data-avatar-early>COBA FITUR <span>EARLY ACCESS</span></button>
+            <p>Pilih JPG, PNG, atau WebP. Foto akan dipotong persegi dan dikompres otomatis agar tetap ringan.</p>
+            <input class="account-avatar-input" data-avatar-input type="file" accept="image/jpeg,image/png,image/webp" hidden>
+            <div class="account-avatar-settings-actions">
+              <button type="button" class="account-early-button" data-avatar-upload>PILIH FOTO</button>
+              ${u.avatar ? '<button type="button" class="account-avatar-remove" data-avatar-remove>HAPUS FOTO</button>' : ''}
+            </div>
           </section>
         </div>`;
+    }
+
+    async prepareAvatar(file) {
+      if (!(file instanceof File) || !/^image\/(jpeg|png|webp)$/i.test(file.type)) {
+        throw new Error('Format foto harus JPG, PNG, atau WebP.');
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        throw new Error('Foto asli maksimal 10 MB.');
+      }
+
+      const url = URL.createObjectURL(file);
+      try {
+        const image = await new Promise((resolve, reject) => {
+          const node = new Image();
+          node.decoding = 'async';
+          node.onload = () => resolve(node);
+          node.onerror = () => reject(new Error('Foto tidak dapat dibaca browser.'));
+          node.src = url;
+        });
+        const width = image.naturalWidth || image.width;
+        const height = image.naturalHeight || image.height;
+        if (!width || !height) throw new Error('Resolusi foto tidak valid.');
+
+        const side = Math.min(width, height);
+        const sx = Math.max(0, (width - side) / 2);
+        const sy = Math.max(0, (height - side) / 2);
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+        const ctx = canvas.getContext('2d', { alpha: false });
+        if (!ctx) throw new Error('Browser tidak dapat memproses foto.');
+        ctx.fillStyle = '#07111d';
+        ctx.fillRect(0, 0, 512, 512);
+        ctx.drawImage(image, sx, sy, side, side, 0, 0, 512, 512);
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.84));
+        if (!blob) throw new Error('Foto gagal dikompres.');
+        return new File([blob], 'avatar.jpg', { type: 'image/jpeg', lastModified: Date.now() });
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    setAvatarBusy(busy) {
+      $$('[data-avatar-upload], [data-avatar-remove]', this.overlay).forEach(button => {
+        button.disabled = busy;
+      });
+    }
+
+    async uploadAvatar(file) {
+      this.setAvatarBusy(true);
+      this.showToast('Memproses foto profil...');
+      try {
+        const prepared = await this.prepareAvatar(file);
+        const fd = new FormData();
+        fd.append('action', 'avatar');
+        fd.append('avatar', prepared, 'avatar.jpg');
+        const response = await fetch('api/account/update.php', {
+          method: 'POST',
+          credentials: 'same-origin',
+          cache: 'no-store',
+          headers: { Accept: 'application/json' },
+          body: fd
+        });
+        let data = {};
+        try { data = await response.json(); } catch { data = { success: false, message: 'Respons server tidak valid.' }; }
+        if (!response.ok || !data.success || !data.user) throw new Error(data.message || 'Foto profil gagal disimpan.');
+        this.currentUser = data.user;
+        if (window.ANTARAAuth) window.ANTARAAuth.currentUser = data.user;
+        window.dispatchEvent(new CustomEvent('antara:auth-change', { detail: { user: data.user, source: 'avatar-update', confirmed: true } }));
+        this.showToast('Foto profil berhasil diperbarui.');
+      } catch (error) {
+        this.showToast(error.message || 'Foto profil gagal diperbarui.', 'error');
+      } finally {
+        this.setAvatarBusy(false);
+      }
+    }
+
+    async removeAvatar() {
+      this.setAvatarBusy(true);
+      try {
+        const result = await this.requestUpdate({ action: 'avatar-remove' });
+        this.currentUser = result.user;
+        if (window.ANTARAAuth) window.ANTARAAuth.currentUser = result.user;
+        window.dispatchEvent(new CustomEvent('antara:auth-change', { detail: { user: result.user, source: 'avatar-remove', confirmed: true } }));
+        this.showToast('Foto profil dihapus.');
+      } catch (error) {
+        this.showToast(error.message || 'Foto profil gagal dihapus.', 'error');
+      } finally {
+        this.setAvatarBusy(false);
+      }
     }
 
     async requestUpdate(payload) {

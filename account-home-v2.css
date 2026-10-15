@@ -213,3 +213,113 @@
   .account-quick-head { padding-left:5px;padding-right:5px; }
   .account-quick-actions button { padding-left:5px;padding-right:5px; }
 }
+
+/* 2026-10-05 Profile readability + custom avatar upload */
+.account-quick-identity strong {
+  font-size: 13px;
+  line-height: 1.2;
+  letter-spacing: .035em;
+}
+.account-quick-identity small {
+  font-size: 10.5px;
+  line-height: 1.25;
+  letter-spacing: .055em;
+  color: #8fc8e3;
+}
+.account-profile-copy > small {
+  font-size: 10px;
+  letter-spacing: .15em;
+}
+.account-profile-copy > p {
+  font-size: 15px;
+  line-height: 1.4;
+  color: #a7c7d7;
+  font-weight: 700;
+  letter-spacing: .025em;
+}
+.account-profile-copy dt { font-size: 8.5px; }
+.account-profile-copy dd { font-size: 12px; }
+.account-panel-header small { font-size: 9.5px; }
+.account-panel-tabs button { font-size: 10px; }
+.account-settings-card header small { font-size: 8.5px; }
+.account-settings-card header h3 { font-size: 14px; }
+.account-settings-card label span { font-size: 8.5px; }
+
+.account-quick-avatar,
+.account-profile-avatar {
+  overflow: hidden;
+  position: relative;
+}
+.account-avatar-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: inherit;
+}
+.account-avatar-fallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+.account-avatar-actions,
+.account-avatar-settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.account-avatar-edit,
+.account-early-button,
+.account-avatar-remove {
+  appearance: none;
+  min-height: 32px;
+  border: 1px solid rgba(115,184,215,.28);
+  background: rgba(42,101,130,.10);
+  color: #c9e3ed;
+  padding: 8px 11px;
+  font: 750 8px/1 system-ui,sans-serif;
+  letter-spacing: .11em;
+  cursor: pointer;
+  transition: border-color .14s ease, background .14s ease, color .14s ease, opacity .14s ease;
+}
+.account-avatar-edit:hover,
+.account-early-button:hover,
+.account-avatar-edit:focus-visible,
+.account-early-button:focus-visible {
+  outline: none;
+  border-color: rgba(218,174,98,.48);
+  color: #f0f8fb;
+  background: rgba(54,121,151,.15);
+}
+.account-avatar-remove {
+  border-color: rgba(212,126,103,.24);
+  background: rgba(160,75,59,.06);
+  color: #d9aaa0;
+}
+.account-avatar-remove:hover,
+.account-avatar-remove:focus-visible {
+  outline: none;
+  border-color: rgba(225,137,112,.48);
+  background: rgba(170,73,55,.12);
+  color: #f0c0b5;
+}
+.account-avatar-edit:disabled,
+.account-early-button:disabled,
+.account-avatar-remove:disabled {
+  opacity: .46;
+  cursor: wait;
+}
+.account-avatar-input { display: none !important; }
+
+@media (max-width:700px) {
+  .account-quick-identity strong { font-size: 12px; }
+  .account-quick-identity small { font-size: 9.5px; }
+  .account-profile-copy > small { font-size: 9px; }
+  .account-profile-copy > p { font-size: 14px; }
+  .account-profile-copy dt { font-size: 8px; }
+  .account-profile-copy dd { font-size: 11.5px; }
+}

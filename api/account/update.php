@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/_bootstrap.php';
 
 antara_method('POST');
+antara_enforce_write_origin();
 $userId = antara_require_user();
 $data = antara_input();
 $action = strtolower(trim((string)($data['action'] ?? 'profile')));
@@ -17,6 +18,104 @@ try {
         $_SESSION = [];
         session_destroy();
         antara_json(['success' => false, 'message' => 'Sesi akun tidak ditemukan. Silakan masuk kembali.'], 401);
+    }
+
+    if ($action === 'avatar') {
+        if (!isset($_FILES['avatar']) || !is_array($_FILES['avatar'])) {
+            antara_json(['success' => false, 'message' => 'Pilih foto profil terlebih dahulu.'], 422);
+        }
+
+        $file = $_FILES['avatar'];
+        $uploadError = (int)($file['error'] ?? UPLOAD_ERR_NO_FILE);
+        if ($uploadError !== UPLOAD_ERR_OK) {
+            antara_json(['success' => false, 'message' => 'Upload foto profil gagal. Coba pilih foto lain.'], 422);
+        }
+
+        $tmpName = (string)($file['tmp_name'] ?? '');
+        $size = (int)($file['size'] ?? 0);
+        if ($tmpName === '' || !is_uploaded_file($tmpName) || $size <= 0 || $size > 3 * 1024 * 1024) {
+            antara_json(['success' => false, 'message' => 'Foto profil maksimal 3 MB setelah diproses.'], 422);
+        }
+
+        $imageInfo = @getimagesize($tmpName);
+        if (!is_array($imageInfo) || empty($imageInfo[0]) || empty($imageInfo[1])) {
+            antara_json(['success' => false, 'message' => 'File yang dipilih bukan gambar yang valid.'], 422);
+        }
+        if ((int)$imageInfo[0] > 4096 || (int)$imageInfo[1] > 4096) {
+            antara_json(['success' => false, 'message' => 'Resolusi foto terlalu besar.'], 422);
+        }
+
+        if (class_exists('finfo')) {
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mime = (string)$finfo->file($tmpName);
+        } else {
+            $mime = (string)($imageInfo['mime'] ?? '');
+        }
+        $extensions = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+        ];
+        if (!isset($extensions[$mime])) {
+            antara_json(['success' => false, 'message' => 'Format foto harus JPG, PNG, atau WebP.'], 422);
+        }
+
+        $webRoot = dirname(__DIR__, 2);
+        $relativeDir = 'assets/uploads/avatars';
+        $uploadDir = $webRoot . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'avatars';
+        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
+            throw new RuntimeException('Direktori avatar tidak dapat dibuat.');
+        }
+
+        $filename = sprintf('u%d-%s.%s', $userId, bin2hex(random_bytes(12)), $extensions[$mime]);
+        $destination = $uploadDir . DIRECTORY_SEPARATOR . $filename;
+        if (!move_uploaded_file($tmpName, $destination)) {
+            throw new RuntimeException('File avatar tidak dapat disimpan.');
+        }
+        @chmod($destination, 0644);
+
+        $avatarUrl = $relativeDir . '/' . $filename;
+        $previousAvatar = trim((string)($current['avatar_url'] ?? ''));
+        $update = $pdo->prepare('UPDATE users SET avatar_url = :avatar_url, updated_at = NOW() WHERE id = :id');
+        $update->execute(['avatar_url' => $avatarUrl, 'id' => $userId]);
+        $current['avatar_url'] = $avatarUrl;
+
+        if ($previousAvatar !== '' && str_starts_with($previousAvatar, $relativeDir . '/')) {
+            $oldPath = $webRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $previousAvatar);
+            if (is_file($oldPath) && realpath(dirname($oldPath)) === realpath($uploadDir)) {
+                @unlink($oldPath);
+            }
+        }
+
+        antara_json([
+            'success' => true,
+            'message' => 'Foto profil berhasil diperbarui.',
+            'user' => antara_user_payload($current),
+        ]);
+    }
+
+    if ($action === 'avatar-remove') {
+        $webRoot = dirname(__DIR__, 2);
+        $relativeDir = 'assets/uploads/avatars';
+        $uploadDir = $webRoot . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'avatars';
+        $previousAvatar = trim((string)($current['avatar_url'] ?? ''));
+
+        $update = $pdo->prepare('UPDATE users SET avatar_url = NULL, updated_at = NOW() WHERE id = :id');
+        $update->execute(['id' => $userId]);
+        $current['avatar_url'] = null;
+
+        if ($previousAvatar !== '' && str_starts_with($previousAvatar, $relativeDir . '/')) {
+            $oldPath = $webRoot . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $previousAvatar);
+            if (is_file($oldPath) && is_dir($uploadDir) && realpath(dirname($oldPath)) === realpath($uploadDir)) {
+                @unlink($oldPath);
+            }
+        }
+
+        antara_json([
+            'success' => true,
+            'message' => 'Foto profil dihapus.',
+            'user' => antara_user_payload($current),
+        ]);
     }
 
     if ($action === 'profile') {

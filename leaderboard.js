@@ -104,7 +104,7 @@
     }
     if (!data.me) {
       rankEl.textContent = "BELUM MASUK RANKING";
-      copyEl.textContent = board === "game" ? "Belum ada skor permainan terverifikasi untuk akun ini." : "Selesaikan seluruh milestone ANTARA untuk mendapatkan nomor urutan penyelesaian.";
+      copyEl.textContent = board === "game" ? "Belum ada skor quiz terverifikasi untuk akun ini." : "Selesaikan seluruh milestone ANTARA untuk mendapatkan nomor urutan penyelesaian.";
       return;
     }
     if (board === "completion" && data.me.eligible === false) {
