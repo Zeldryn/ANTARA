@@ -8831,3 +8831,134 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 .mission.is-solar-system-mode .cockpit-profile-hud > .audio-orb-dock {
   display: none !important;
 }
+
+/* ========================================================================
+   2026-10-05 MOBILE PANORAMA ACTION DOCK
+   Keep global actions below Prev/Next instead of competing with the ANTARA logo.
+   Desktop/tablet-wide placement remains unchanged.
+   ======================================================================== */
+@media (max-width:700px), (pointer:coarse) and (max-width:900px) {
+  .planet-quick-actions {
+    top:auto !important;
+    bottom:max(10px, env(safe-area-inset-bottom)) !important;
+    left:12px !important;
+    right:12px !important;
+    width:auto !important;
+    max-width:none !important;
+    display:grid !important;
+    grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr) !important;
+    align-items:stretch !important;
+    gap:9px !important;
+    z-index:29 !important;
+    pointer-events:none;
+  }
+  .planet-quick-actions .solar-system-button,
+  .planet-quick-actions .return-cockpit-button {
+    pointer-events:auto;
+    width:100% !important;
+    min-width:0 !important;
+    min-height:50px !important;
+    height:50px !important;
+    padding:7px 10px !important;
+    gap:8px !important;
+    border-radius:13px !important;
+    box-shadow:0 10px 28px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.035) !important;
+  }
+  .planet-quick-actions .solar-system-icon,
+  .planet-quick-actions .return-cockpit-icon {
+    width:29px !important;
+    height:29px !important;
+    min-width:29px !important;
+    flex:0 0 29px !important;
+  }
+  .planet-quick-actions .solar-system-button small,
+  .planet-quick-actions .return-cockpit-button small {
+    display:block !important;
+    font-size:5.7px !important;
+    line-height:1 !important;
+    letter-spacing:.075em !important;
+  }
+  .planet-quick-actions .solar-system-button strong,
+  .planet-quick-actions .return-cockpit-button strong {
+    font-size:7.15px !important;
+    line-height:1.14 !important;
+    letter-spacing:.055em !important;
+    white-space:normal !important;
+  }
+
+  /* Reserve a deliberate gap below each planet's Prev / Explore / Next row. */
+  .earth-scene .earth-caption,
+  .mars-scene .mars-caption,
+  .mercury-scene .mercury-caption,
+  .venus-scene .venus-caption,
+  .sun-scene .sun-caption,
+  .asteroid-scene .asteroid-caption,
+  .jupiter-scene .jupiter-caption,
+  .saturn-scene .saturn-caption,
+  .uranus-scene .uranus-caption,
+  .neptune-scene .neptune-caption {
+    bottom:calc(max(10px, env(safe-area-inset-bottom)) + 72px) !important;
+  }
+
+  /* Global dock is for panorama mode. Educational/info panels get the screen alone. */
+  .mission:has(.earth-scene.is-exploring) .planet-quick-actions,
+  .mission:has(.mars-scene.is-exploring) .planet-quick-actions,
+  .mission:has(.mercury-scene.is-exploring) .planet-quick-actions,
+  .mission:has(.venus-scene.is-exploring) .planet-quick-actions,
+  .mission:has(.sun-scene.is-exploring) .planet-quick-actions,
+  .mission:has(.asteroid-scene.is-exploring) .planet-quick-actions,
+  .mission:has(.jupiter-scene.is-exploring) .planet-quick-actions,
+  .mission:has(.saturn-scene.is-exploring) .planet-quick-actions,
+  .mission:has(.uranus-scene.is-exploring) .planet-quick-actions,
+  .mission:has(.neptune-scene.is-exploring) .planet-quick-actions {
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+  }
+}
+
+/* Very short landscape phones: preserve the same hierarchy with a slimmer dock. */
+@media (max-width:700px) and (max-height:430px),
+       (pointer:coarse) and (max-width:900px) and (max-height:430px) {
+  .planet-quick-actions {
+    left:10px !important;
+    right:10px !important;
+    bottom:max(6px, env(safe-area-inset-bottom)) !important;
+    gap:7px !important;
+  }
+  .planet-quick-actions .solar-system-button,
+  .planet-quick-actions .return-cockpit-button {
+    height:44px !important;
+    min-height:44px !important;
+    padding:5px 8px !important;
+    gap:6px !important;
+    border-radius:11px !important;
+  }
+  .planet-quick-actions .solar-system-icon,
+  .planet-quick-actions .return-cockpit-icon {
+    width:26px !important;
+    height:26px !important;
+    min-width:26px !important;
+    flex-basis:26px !important;
+  }
+  .planet-quick-actions .solar-system-button small,
+  .planet-quick-actions .return-cockpit-button small {
+    font-size:5.1px !important;
+  }
+  .planet-quick-actions .solar-system-button strong,
+  .planet-quick-actions .return-cockpit-button strong {
+    font-size:6.45px !important;
+  }
+  .earth-scene .earth-caption,
+  .mars-scene .mars-caption,
+  .mercury-scene .mercury-caption,
+  .venus-scene .venus-caption,
+  .sun-scene .sun-caption,
+  .asteroid-scene .asteroid-caption,
+  .jupiter-scene .jupiter-caption,
+  .saturn-scene .saturn-caption,
+  .uranus-scene .uranus-caption,
+  .neptune-scene .neptune-caption {
+    bottom:calc(max(6px, env(safe-area-inset-bottom)) + 60px) !important;
+  }
+}
