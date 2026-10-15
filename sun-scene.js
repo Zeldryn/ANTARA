@@ -5,11 +5,11 @@ const SUN_INFO_STOPS = Object.freeze([
     "title": "Matahari",
     "kicker": "KENALAN DULU",
     "subtitle": "Bintang yang membuat Tata Surya kita tetap terang dan terikat",
-    "summary": "Matahari bukan planet. Ia adalah bintang terdekat dari Bumi dan menjadi pusat Tata Surya. Cahaya dan panasnya membantu membuat Bumi layak dihuni, sementara gravitasinya menjaga planet-planet tetap mengorbit.",
+    "summary": "Matahari bukan planet. Matahari adalah bintang besar di tengah Tata Surya kita. Cahaya dan panasnya membantu kehidupan di Bumi. Tarikannya juga menjaga planet-planet tetap berjalan mengelilinginya.",
     "facts": [
       "Usia Matahari sekitar 4,5 miliar tahun.",
       "Jarak rata-rata Bumi ke Matahari sekitar 150 juta km.",
-      "Sekitar 99,8% massa Tata Surya berada di Matahari."
+      "Sekitar 99,8% isi Tata Surya berada di Matahari."
     ],
     "source": "https://science.nasa.gov/sun/facts/",
     "images": [
@@ -23,10 +23,10 @@ const SUN_INFO_STOPS = Object.freeze([
       },
       {
         "src": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003988/SDOHMIintensity_Jewelbox.01000.jpg",
-        "alt": "Fotosfer Matahari dalam cahaya tampak yang direkam Solar Dynamics Observatory",
+        "alt": "Bagian terang Matahari yang kita lihat Matahari dalam cahaya tampak yang direkam Solar Dynamics Observatory",
         "credit": "NASA/SDO/HMI",
         "source": "https://svs.gsfc.nasa.gov/3988/",
-        "caption": "Fotosfer Matahari · SDO/HMI",
+        "caption": "Bagian terang Matahari yang kita lihat Matahari · SDO/HMI",
         "fit": "contain"
       }
     ]
@@ -34,12 +34,12 @@ const SUN_INFO_STOPS = Object.freeze([
   {
     "title": "Seberapa Besar Matahari?",
     "kicker": "COBA BAYANGKAN...",
-    "subtitle": "Bola plasma raksasa yang jauh lebih besar daripada Bumi",
-    "summary": "Kalau Bumi terasa besar, Matahari berada di skala yang berbeda. Diameternya sekitar 1,4 juta km. Ukuran sebesar itu membuat Matahari mampu menjadi “jangkar gravitasi” untuk seluruh Tata Surya.",
+    "subtitle": "Bola gas superpanas raksasa yang jauh lebih besar daripada Bumi",
+    "summary": "Kalau Bumi terasa besar, Matahari berada di skala yang berbeda. Diameternya sekitar 1,4 juta km. Ukuran sebesar itu membuat Matahari mampu menjadi “pusat tarikan” untuk seluruh Tata Surya.",
     "facts": [
       "Diameter Matahari sekitar 109 kali diameter Bumi.",
       "Lebih dari satu juta Bumi dapat muat di dalam volume Matahari secara kasar.",
-      "Matahari tersusun dari plasma, bukan permukaan batu padat."
+      "Matahari tersusun dari gas superpanas, bukan permukaan batu padat."
     ],
     "source": "https://science.nasa.gov/sun/facts/",
     "images": [
@@ -57,7 +57,7 @@ const SUN_INFO_STOPS = Object.freeze([
     "title": "8 Menit Menuju Bumi",
     "kicker": "CAHAYA JUGA BUTUH WAKTU",
     "subtitle": "Sinar Matahari yang kamu lihat sebenarnya memulai perjalanan beberapa menit lalu",
-    "summary": "Cahaya sangat cepat, tetapi ruang antara Matahari dan Bumi juga sangat luas. Karena itu, cahaya Matahari memerlukan sekitar delapan menit untuk sampai ke kita. Jadi kita selalu melihat Matahari sedikit “di masa lalu”.",
+    "summary": "Cahaya sangat cepat. Tapi ruang antara Matahari dan Bumi juga sangat luas. Karena itu, cahaya Matahari butuh sekitar delapan menit untuk sampai ke kita. Jadi kita selalu melihat Matahari sedikit “di masa lalu”.",
     "facts": [
       "Cahaya bergerak sekitar 300.000 km setiap detik di ruang hampa.",
       "Jarak Bumi-Matahari rata-rata disebut 1 satuan astronomi atau 1 AU.",
@@ -76,23 +76,23 @@ const SUN_INFO_STOPS = Object.freeze([
     ]
   },
   {
-    "title": "Mesin Fusi",
+    "title": "Mesin Energi Matahari",
     "kicker": "DARI MANA ENERGINYA?",
     "subtitle": "Inti Matahari bekerja seperti mesin energi raksasa",
-    "summary": "Di bagian paling dalam Matahari, suhu dan tekanannya sangat tinggi. Di sana inti hidrogen dapat bergabung menjadi helium. Proses ini disebut fusi, dan dari sinilah energi Matahari berasal.",
+    "summary": "Di tengah Matahari, panasnya luar biasa. Di sana gas ringan bernama hidrogen bergabung menjadi gas ringan bernama helium. Saat itu terjadi, Matahari membuat energi yang kemudian menjadi cahaya dan panas.",
     "facts": [
       "Suhu inti Matahari sekitar 15 juta °C.",
-      "Fusi mengubah sebagian kecil massa menjadi energi.",
-      "Energi dari inti tidak langsung keluar; ia harus melewati lapisan-lapisan Matahari terlebih dahulu."
+      "Cara Matahari membuat energi mengubah sebagian kecil massa menjadi energi.",
+      "Energi dari inti tidak langsung keluar. ia harus melewati lapisan-lapisan Matahari terlebih dahulu."
     ],
     "source": "https://science.nasa.gov/sun/facts/",
     "images": [
       {
         "src": "./assets/sun-fusion-diagram.svg",
-        "alt": "Diagram sederhana fusi proton-proton di inti Matahari",
+        "alt": "Diagram sederhana cara Matahari membuat energi proton-proton di inti Matahari",
         "credit": "ANTARA · data NASA",
         "source": "https://science.nasa.gov/sun/facts/",
-        "caption": "Fusi hidrogen di inti Matahari",
+        "caption": "Cara Matahari membuat energi gas ringan bernama hidrogen di inti Matahari",
         "fit": "contain"
       }
     ]
@@ -100,21 +100,21 @@ const SUN_INFO_STOPS = Object.freeze([
   {
     "title": "Lapisan-Lapisan Matahari",
     "kicker": "YUK INTIP KE DALAM",
-    "subtitle": "Dari inti yang sangat panas sampai corona yang membentang jauh",
-    "summary": "Matahari punya beberapa lapisan. Ada inti, zona radiatif, zona konveksi, lalu bagian atmosfer seperti fotosfer, kromosfer, dan corona. Setiap lapisan punya peran berbeda dalam memindahkan energi.",
+    "subtitle": "Dari inti yang sangat panas sampai lapisan paling luar Matahari yang membentang jauh",
+    "summary": "Matahari punya beberapa lapisan. Ada bagian tengah yang sangat panas, lapisan tempat energi bergerak, dan lapisan tempat panas naik dan turun. Di luarnya ada bagian terang yang kita lihat dan lapisan paling luar yang membentang jauh.",
     "facts": [
-      "Fotosfer adalah lapisan yang biasanya kita anggap sebagai “permukaan” Matahari.",
-      "Suhu fotosfer sekitar 5.500 °C.",
-      "Corona bisa mencapai jutaan derajat dan masih menjadi salah satu misteri penting fisika Matahari."
+      "Bagian terang Matahari yang kita lihat adalah lapisan yang biasanya kita anggap sebagai “permukaan” Matahari.",
+      "Suhu bagian terang Matahari yang kita lihat sekitar 5.500 °C.",
+      "Lapisan paling luar Matahari bisa mencapai jutaan derajat dan masih menjadi salah satu misteri penting fisika Matahari."
     ],
     "source": "https://science.nasa.gov/sun/facts/",
     "images": [
       {
         "src": "./assets/sun-structure-diagram.svg",
-        "alt": "Diagram lapisan Matahari dari inti hingga corona",
+        "alt": "Diagram lapisan Matahari dari inti hingga lapisan paling luar Matahari",
         "credit": "ANTARA · data NASA",
         "source": "https://science.nasa.gov/sun/facts/",
-        "caption": "Struktur internal dan atmosfer Matahari",
+        "caption": "Bagian dalam dan udara Matahari",
         "fit": "contain"
       }
     ]
@@ -122,21 +122,21 @@ const SUN_INFO_STOPS = Object.freeze([
   {
     "title": "Permukaannya Bukan Tanah",
     "kicker": "TERNYATA...",
-    "subtitle": "Yang tampak seperti permukaan sebenarnya adalah lapisan plasma bercahaya",
-    "summary": "Kalau kamu bisa mendekat dengan aman, kamu tidak akan menemukan tanah untuk dipijak. Fotosfer adalah plasma panas. Pola kecil seperti butiran muncul karena material panas naik dan material yang lebih dingin turun.",
+    "subtitle": "Yang tampak seperti permukaan sebenarnya adalah lapisan gas superpanas bercahaya",
+    "summary": "Kalau kamu bisa mendekat dengan aman, kamu tidak akan menemukan tanah untuk dipijak. Bagian terang Matahari yang kita lihat adalah gas yang sangat panas. Pola kecil seperti butiran muncul karena bahan panas naik dan bahan yang lebih dingin turun.",
     "facts": [
-      "Pola butiran itu disebut granulasi.",
-      "Granulasi menjadi petunjuk bahwa panas bergerak melalui konveksi.",
-      "Matahari juga tidak berputar sebagai benda padat; bagian ekuator dan kutub berotasi dengan laju berbeda."
+      "Pola butiran itu disebut pola bintik kecil.",
+      "Pola bintik kecil menunjukkan panas bergerak melalui gerakan panas naik dan turun.",
+      "Matahari juga tidak berputar sebagai benda padat. bagian ekuator dan kutub berputar dengan laju berbeda."
     ],
     "source": "https://science.nasa.gov/sun/facts/",
     "images": [
       {
         "src": "./assets/sun-surface-diagram.svg",
-        "alt": "Diagram granulasi, sunspot, dan daerah aktif Matahari",
+        "alt": "Diagram pola bintik kecil, bintik Matahari, dan daerah aktif Matahari",
         "credit": "ANTARA · data NASA",
         "source": "https://science.nasa.gov/sun/sunspots/",
-        "caption": "Granulasi dan sunspot",
+        "caption": "Pola bintik kecil dan bintik Matahari",
         "fit": "contain"
       }
     ]
@@ -145,80 +145,80 @@ const SUN_INFO_STOPS = Object.freeze([
     "title": "Bintik Matahari",
     "kicker": "KENAPA ADA BINTIK GELAP?",
     "subtitle": "Daerah yang lebih dingin tampak gelap dibanding sekelilingnya",
-    "summary": "Bintik Matahari terlihat gelap bukan karena benar-benar dingin, melainkan karena suhunya lebih rendah daripada fotosfer di sekitarnya. Bintik ini berkaitan dengan medan magnet yang sangat kuat.",
+    "summary": "Bintik Matahari terlihat gelap bukan karena benar-benar dingin, melainkan karena suhunya lebih rendah daripada bagian terang Matahari yang kita lihat di sekitarnya. Bintik ini berhubungan dengan gaya magnet yang sangat kuat.",
     "facts": [
-      "Sunspot tetap sangat panas walaupun tampak lebih gelap.",
+      "Bintik Matahari tetap sangat panas meski tampak lebih gelap.",
       "Bintik dapat bertahan dari beberapa hari sampai berbulan-bulan.",
-      "Daerah aktif di sekitar sunspot sering menjadi tempat munculnya flare."
+      "Daerah aktif di sekitar bintik Matahari sering menjadi tempat munculnya ledakan cahaya Matahari."
     ],
     "source": "https://science.nasa.gov/sun/sunspots/",
     "images": [
       {
         "src": "./assets/sun-surface-diagram.svg",
-        "alt": "Diagram granulasi, sunspot, dan daerah aktif Matahari",
+        "alt": "Diagram pola bintik kecil, bintik Matahari, dan daerah aktif Matahari",
         "credit": "ANTARA · data NASA",
         "source": "https://science.nasa.gov/sun/sunspots/",
-        "caption": "Granulasi dan sunspot",
+        "caption": "Pola bintik kecil dan bintik Matahari",
         "fit": "contain"
       },
       {
         "src": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003933/HMI_IcChangingSpots.00300.jpg",
-        "alt": "Sunspot pada fotosfer Matahari yang diamati Solar Dynamics Observatory",
+        "alt": "Bintik Matahari pada bagian terang Matahari yang kita lihat Matahari yang diamati Solar Dynamics Observatory",
         "credit": "NASA/SDO/HMI",
         "source": "https://svs.gsfc.nasa.gov/3933/",
-        "caption": "Sunspot dalam cahaya tampak · SDO/HMI",
+        "caption": "Bintik Matahari dalam cahaya tampak · SDO/HMI",
         "fit": "contain"
       }
     ]
   },
   {
-    "title": "Flare dan CME",
+    "title": "Ledakan dan Semburan Matahari",
     "kicker": "SAAT MATAHARI MELEDAK",
-    "subtitle": "Ledakan energi dan awan plasma bisa terlontar ke ruang angkasa",
-    "summary": "Medan magnet Matahari bisa menjadi sangat rumit. Saat susunannya berubah cepat, energi dapat dilepaskan sebagai flare. Kadang Matahari juga melontarkan awan plasma besar yang disebut coronal mass ejection atau CME.",
+    "subtitle": "Ledakan energi dan awan gas superpanas bisa terlontar ke ruang angkasa",
+    "summary": "Gaya magnet Matahari bisa menjadi sangat rumit. Saat susunannya berubah cepat, energi bisa dilepaskan sebagai ledakan cahaya Matahari. Kadang Matahari juga melontarkan awan gas superpanas besar yang disebut semburan besar dari Matahari atau SEMBURAN BESAR DARI MATAHARI.",
     "facts": [
-      "Flare adalah ledakan energi yang sangat terang di daerah aktif.",
-      "CME membawa plasma dan medan magnet keluar dari Matahari.",
-      "Flare dan CME adalah dua hal berbeda, walaupun keduanya dapat terjadi berdekatan."
+      "Ledakan cahaya Matahari adalah ledakan energi yang sangat terang di daerah aktif.",
+      "SEMBURAN BESAR DARI MATAHARI membawa gas superpanas dan gaya magnet keluar dari Matahari.",
+      "Ledakan cahaya Matahari dan SEMBURAN BESAR DARI MATAHARI adalah dua hal berbeda, meski keduanya bisa terjadi berdekatan."
     ],
     "source": "https://science.nasa.gov/sun/solar-storms-and-flares/",
     "images": [
       {
         "src": "./assets/sun-magnetic-activity-diagram.svg",
-        "alt": "Diagram prominence, flare, dan coronal mass ejection",
+        "alt": "Diagram lengkungan gas panas, ledakan cahaya Matahari, dan semburan besar dari Matahari",
         "credit": "ANTARA · data NASA",
         "source": "https://science.nasa.gov/sun/solar-storms-and-flares/",
-        "caption": "Aktivitas magnetik Matahari",
+        "caption": "Aktivitas magnet Matahari",
         "fit": "contain"
       },
       {
         "src": "https://svs.gsfc.nasa.gov/vis/a010000/a014700/a014701/SDO_10-03-24_1219UTC_131-171_RedScreen_4k.jpg",
-        "alt": "Flare kuat yang direkam Solar Dynamics Observatory",
+        "alt": "Ledakan cahaya Matahari kuat yang direkam Solar Dynamics Observatory",
         "credit": "NASA/SDO",
         "source": "https://svs.gsfc.nasa.gov/14701/",
-        "caption": "Solar flare · SDO",
+        "caption": "Ledakan cahaya Matahari · SDO",
         "fit": "contain"
       }
     ]
   },
   {
-    "title": "Angin Surya dan Aurora",
+    "title": "Angin dari Matahari dan Aurora",
     "kicker": "SAMPAI KE BUMI",
-    "subtitle": "Matahari terus mengirim partikel ke seluruh Tata Surya",
-    "summary": "Matahari tidak hanya mengirim cahaya. Dari corona, partikel bermuatan terus mengalir sebagai angin surya. Ketika aliran ini berinteraksi dengan medan magnet Bumi, salah satu hasil indahnya bisa berupa aurora.",
+    "subtitle": "Matahari terus mengirim butiran kecil ke seluruh Tata Surya",
+    "summary": "Matahari tidak hanya mengirim cahaya. Dari lapisan paling luar Matahari, butiran sangat kecil dari Matahari terus mengalir sebagai angin dari Matahari. Ketika aliran ini bertemu dengan perisai magnet Bumi, salah satu hasil indahnya bisa berupa aurora.",
     "facts": [
-      "Angin surya ikut membentuk wilayah besar bernama heliosfer.",
-      "Aurora muncul ketika partikel bermuatan memicu cahaya di atmosfer atas Bumi.",
-      "Cuaca antariksa yang kuat juga dapat memengaruhi satelit, komunikasi, dan navigasi."
+      "Angin dari Matahari ikut membentuk wilayah besar bernama daerah besar yang dipenuhi angin Matahari.",
+      "Aurora muncul ketika butiran sangat kecil dari Matahari memicu cahaya di udara atas Bumi.",
+      "Cuaca antariksa yang kuat juga bisa mengubah satelit, komunikasi, dan navigasi."
     ],
     "source": "https://science.nasa.gov/sun/what-is-the-solar-wind/",
     "images": [
       {
         "src": "./assets/sun-solar-wind-diagram.svg",
-        "alt": "Diagram angin surya dari corona menuju magnetosfer Bumi",
+        "alt": "Diagram angin dari Matahari dari lapisan paling luar Matahari menuju perisai magnet Bumi",
         "credit": "ANTARA · data NASA",
         "source": "https://science.nasa.gov/sun/what-is-the-solar-wind/",
-        "caption": "Angin surya dan magnetosfer Bumi",
+        "caption": "Angin dari Matahari dan perisai magnet Bumi",
         "fit": "contain"
       }
     ]
@@ -227,39 +227,39 @@ const SUN_INFO_STOPS = Object.freeze([
     "title": "Siklus Aktivitas 11 Tahun",
     "kicker": "MATAHARI PUNYA IRAMA",
     "subtitle": "Jumlah bintik dan aktivitas Matahari naik-turun dalam sebuah siklus",
-    "summary": "Matahari tidak selalu sama aktifnya. Dalam kira-kira sebelas tahun, jumlah sunspot dan aktivitas magnetiknya biasanya naik menuju maksimum, lalu turun menuju minimum. Setelah itu polanya berulang lagi.",
+    "summary": "Matahari tidak selalu sama aktifnya. Dalam kira-kira sebelas tahun, jumlah bintik Matahari dan aktivitas magnetnya biasanya naik menuju maksimum, lalu turun menuju minimum. Setelah itu polanya berulang lagi.",
     "facts": [
       "Siklus Matahari rata-rata berlangsung sekitar 11 tahun.",
-      "Saat maksimum Matahari, sunspot dan letupan biasanya lebih sering terjadi.",
-      "Siklus ini berkaitan dengan perubahan besar medan magnet Matahari."
+      "Saat maksimum Matahari, bintik Matahari dan letupan biasanya lebih sering terjadi.",
+      "Siklus ini berhubungan dengan perubahan besar gaya magnet Matahari."
     ],
     "source": "https://science.nasa.gov/sun/sunspots/",
     "images": [
       {
         "src": "./assets/sun-magnetic-activity-diagram.svg",
-        "alt": "Diagram prominence, flare, dan coronal mass ejection",
+        "alt": "Diagram lengkungan gas panas, ledakan cahaya Matahari, dan semburan besar dari Matahari",
         "credit": "ANTARA · data NASA",
         "source": "https://science.nasa.gov/sun/solar-storms-and-flares/",
-        "caption": "Aktivitas magnetik Matahari",
+        "caption": "Aktivitas magnet Matahari",
         "fit": "contain"
       }
     ]
   },
   {
-    "title": "Wahana Pengamat Matahari",
+    "title": "Robot Pengamat Matahari",
     "kicker": "BAGAIMANA KITA TAHU?",
     "subtitle": "Ilmuwan memakai banyak “mata” untuk mempelajari Matahari",
-    "summary": "Mempelajari Matahari butuh lebih dari satu teleskop. SDO memantau aktivitasnya, SOHO mengamati Matahari dan angin surya, Solar Orbiter melihat dari sudut berbeda, sedangkan Parker Solar Probe berani terbang menembus corona.",
+    "summary": "Mempelajari Matahari butuh lebih dari satu teleskop. SDO memantau aktivitasnya, SOHO mengamati Matahari dan angin dari Matahari, Solar Orbiter melihat dari sudut berbeda, sedangkan Parker Solar Probe berani terbang menembus lapisan paling luar Matahari.",
     "facts": [
-      "SDO mengamati Matahari terus-menerus dalam banyak panjang gelombang.",
+      "SDO mengamati Matahari terus-menerus dalam banyak jenis cahaya.",
       "SOHO adalah misi bersama ESA dan NASA yang aktif sejak 1995.",
-      "Parker Solar Probe menjadi wahana pertama yang terbang melalui corona Matahari."
+      "Parker Solar Probe menjadi robot antariksa pertama yang terbang melalui lapisan paling luar Matahari Matahari."
     ],
     "source": "https://science.nasa.gov/mission/parker-solar-probe/",
     "images": [
       {
         "src": "./assets/sun-missions-diagram.svg",
-        "alt": "Diagram misi utama pengamatan Matahari",
+        "alt": "Diagram misi utama melihat dan mempelajari Matahari",
         "credit": "ANTARA · data NASA dan ESA",
         "source": "https://science.nasa.gov/mission/parker-solar-probe/",
         "caption": "Armada pengamat Matahari",
@@ -402,7 +402,7 @@ window.SunScene = class SunScene {
         this.resize();
         if (this.renderer?.compileAsync) await this.renderer.compileAsync(this.scene, this.camera);
       } catch (error) {
-        console.warn("Sun WebGL renderer unavailable; using Canvas fallback.", error);
+        console.warn("Sun WebGL mesin gambar 3D unavailable. using Canvas fallback.", error);
         this.createCanvasFallback();
       }
       if (this.active) this.render();
@@ -451,150 +451,8 @@ window.SunScene = class SunScene {
         uFlareDirection: { value: this.solarActiveDirections[0].clone() }
       },
       toneMapped: false,
-      vertexShader: `varying vec3 vWorldNormal; varying vec3 vWorld; varying vec2 vUv;
-        void main(){ vWorldNormal=normalize(mat3(modelMatrix)*normal); vUv=uv; vec4 world=modelMatrix*vec4(position,1.0); vWorld=world.xyz; gl_Position=projectionMatrix*viewMatrix*world; }`,
-      fragmentShader: `precision highp float; varying vec3 vWorldNormal; varying vec3 vWorld; varying vec2 vUv; uniform float uTime; uniform float uFlare; uniform float uActivity; uniform vec4 uRegionStrengthsA; uniform vec4 uRegionStrengthsB; uniform vec3 uFlareDirection;
-        float hash(vec3 p){ p=fract(p*.3183099+.1); p*=17.; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
-        float noise(vec3 p){ vec3 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(mix(hash(i+vec3(0,0,0)),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z); }
-        float fbm4(vec3 p){ float v=0.; float a=.53; for(int i=0;i<4;i++){v+=a*noise(p); p=p*2.07+vec3(3.7,1.9,5.3); a*=.48;} return v; }
-        float fbm5(vec3 p){ float v=0.; float a=.52; for(int i=0;i<5;i++){v+=a*noise(p); p=p*2.03+vec3(4.1,2.3,5.9); a*=.49;} return v; }
-        mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
-        vec3 driftDirection(vec3 d,float yaw,float pitch){d.xz=rot(yaw)*d.xz;d.yz=rot(pitch)*d.yz;return normalize(d);}
-        float regionMask(vec3 n,vec3 d,float edge,float wobble,float phase){float irregular=(fbm4(n*10.7+vec3(phase,-phase*.63,phase*.37))-.48)*wobble;return smoothstep(edge,edge+.060,dot(n,d)+irregular);}
-        float contour(float v,float bands,float width){float f=abs(fract(v*bands)-.5);return 1.0-smoothstep(width,width*2.5,f);}
-        void main(){
-          vec3 n=normalize(vWorldNormal); float t=uTime;
-
-          float slowA=fbm5(n*2.7+vec3(t*.0052,-t*.0034,t*.0026));
-          float slowB=fbm4(n*5.7+vec3(-t*.0071,t*.0051,-t*.0038)+slowA*1.7);
-          vec3 flowVec=vec3(
-            fbm4(n*4.7+vec3(7.1,t*.0042,-3.4)),
-            fbm4(n*4.9+vec3(-2.8,5.7,-t*.0047)),
-            fbm4(n*5.1+vec3(t*.0033,-6.3,2.1))
-          )-.5;
-          vec3 warped=normalize(n+flowVec*.165+(slowA-.5)*.072+(slowB-.5)*.045);
-
-          vec3 q=warped*15.8+flowVec*3.35;
-          float convectA=fbm5(q+vec3(t*.022,-t*.014,t*.010));
-          float convectB=fbm4(q*1.72+vec3(-t*.031,t*.023,-t*.015)+slowA*1.95);
-          float convectC=fbm4(q*3.15+vec3(t*.041,-t*.033,t*.024));
-          float convection=clamp(convectA*.50+convectB*.33+convectC*.17,0.0,1.0);
-
-          float edgeProbe=fbm4(q+vec3(.14,-.11,.08));
-          float localGradient=clamp(abs(convectA-edgeProbe)*5.8,0.0,1.0);
-          float folded=1.0-abs(convectB*2.0-1.0);
-          float microFold=1.0-abs(convectC*2.0-1.0);
-          float cellCore=smoothstep(.42,.86,microFold)*(.58+.42*convectB);
-          float lane=smoothstep(.12,.70,localGradient)*(.45+.55*(1.0-folded));
-          float granulation=clamp(convection*.76+cellCore*.24-lane*.15,0.0,1.0);
-
-          float streakSourceA=fbm5(warped*5.9+flowVec*2.2+vec3(t*.014,-t*.020,t*.011));
-          float streakSourceB=fbm4(warped*9.7+vec3(-t*.024,t*.015,t*.019)+slowB*2.3);
-          float streakSourceC=fbm4(warped*14.8+flowVec*1.4+vec3(t*.029,t*.011,-t*.023));
-          float streakA=contour(streakSourceA+slowA*.32,5.2,.040);
-          float streakB=contour(streakSourceB+streakSourceA*.28,6.8,.032);
-          float streakC=contour(streakSourceC+streakSourceB*.21,8.4,.025);
-          float lineDistribution=.42+.58*smoothstep(.30,.76,fbm4(warped*3.35+vec3(-t*.010,t*.007,t*.005)+slowA*.9));
-          float plasmaLines=clamp(streakA*.78+streakB*.54+streakC*.32,0.0,1.0);
-          plasmaLines*=lineDistribution*(.44+.56*smoothstep(.34,.80,convection));
-          float lineHalo=clamp(contour(streakSourceA+slowA*.32,5.2,.080)*.48+contour(streakSourceB+streakSourceA*.28,6.8,.060)*.34,0.0,1.0)*lineDistribution;
-
-          vec3 d0=driftDirection(vec3(-.49,.29,.82),.050*sin(t*.025),.030*sin(t*.018+1.1));
-          vec3 d1=driftDirection(vec3(.43,-.27,.86),.045*sin(t*.021+2.4),.034*sin(t*.017+.7));
-          vec3 d2=driftDirection(vec3(.08,.57,.82),.052*sin(t*.019+4.1),.028*sin(t*.023+2.2));
-          vec3 d3=driftDirection(vec3(.58,.24,.78),.046*sin(t*.022+5.0),.032*sin(t*.016+3.5));
-          vec3 d4=driftDirection(vec3(-.18,-.58,.79),.050*sin(t*.020+1.7),.031*sin(t*.018+5.2));
-          vec3 d5=driftDirection(vec3(-.66,-.08,.75),.047*sin(t*.023+3.6),.027*sin(t*.015+2.8));
-          vec3 d6=driftDirection(vec3(.31,.49,.815),.042*sin(t*.018+5.5),.036*sin(t*.020+4.4));
-          vec3 d7=driftDirection(vec3(-.34,.55,.76),.049*sin(t*.016+.8),.030*sin(t*.024+6.1));
-
-          float ar0=regionMask(n,d0,.890,.066,t*.004);
-          float ar1=regionMask(n,d1,.905,.062,t*.004+2.3);
-          float ar2=regionMask(n,d2,.918,.060,t*.004+4.7);
-          float ar3=regionMask(n,d3,.910,.064,t*.004+7.1);
-          float ar4=regionMask(n,d4,.915,.060,t*.004+8.4);
-          float ar5=regionMask(n,d5,.902,.064,t*.004+10.2);
-          float ar6=regionMask(n,d6,.922,.056,t*.004+12.1);
-          float ar7=regionMask(n,d7,.914,.059,t*.004+13.8);
-
-          float flash0=.58+.42*sin(t*.83+0.2); float flash1=.60+.40*sin(t*.69+2.1);
-          float flash2=.62+.38*sin(t*.91+4.7); float flash3=.58+.42*sin(t*.74+1.5);
-          float flash4=.64+.36*sin(t*.79+5.8); float flash5=.59+.41*sin(t*.87+3.3);
-          float flash6=.61+.39*sin(t*.72+6.4); float flash7=.60+.40*sin(t*.95+4.0);
-          flash0*=flash0;flash1*=flash1;flash2*=flash2;flash3*=flash3;flash4*=flash4;flash5*=flash5;flash6*=flash6;flash7*=flash7;
-
-          float activeField=clamp(
-            ar0*uRegionStrengthsA.x*(.62+.38*flash0)+ar1*uRegionStrengthsA.y*(.62+.38*flash1)+
-            ar2*uRegionStrengthsA.z*(.62+.38*flash2)+ar3*uRegionStrengthsA.w*(.62+.38*flash3)+
-            ar4*uRegionStrengthsB.x*(.62+.38*flash4)+ar5*uRegionStrengthsB.y*(.62+.38*flash5)+
-            ar6*uRegionStrengthsB.z*(.62+.38*flash6)+ar7*uRegionStrengthsB.w*(.62+.38*flash7),0.0,2.15);
-          float eruptionField=clamp(
-            ar0*uRegionStrengthsA.x*pow(flash0,3.2)+ar1*uRegionStrengthsA.y*pow(flash1,3.2)+
-            ar2*uRegionStrengthsA.z*pow(flash2,3.2)+ar3*uRegionStrengthsA.w*pow(flash3,3.2)+
-            ar4*uRegionStrengthsB.x*pow(flash4,3.2)+ar5*uRegionStrengthsB.y*pow(flash5,3.2)+
-            ar6*uRegionStrengthsB.z*pow(flash6,3.2)+ar7*uRegionStrengthsB.w*pow(flash7,3.2),0.0,1.65);
-          float eruptionEdges=clamp(
-            4.0*ar0*(1.0-ar0)*uRegionStrengthsA.x*pow(flash0,4.0)+
-            4.0*ar1*(1.0-ar1)*uRegionStrengthsA.y*pow(flash1,4.0)+
-            4.0*ar2*(1.0-ar2)*uRegionStrengthsA.z*pow(flash2,4.0)+
-            4.0*ar3*(1.0-ar3)*uRegionStrengthsA.w*pow(flash3,4.0)+
-            4.0*ar4*(1.0-ar4)*uRegionStrengthsB.x*pow(flash4,4.0)+
-            4.0*ar5*(1.0-ar5)*uRegionStrengthsB.y*pow(flash5,4.0)+
-            4.0*ar6*(1.0-ar6)*uRegionStrengthsB.z*pow(flash6,4.0)+
-            4.0*ar7*(1.0-ar7)*uRegionStrengthsB.w*pow(flash7,4.0),0.0,1.6);
-
-          float spotTexture0=smoothstep(.47,.70,fbm4(n*30.0+vec3(t*.003,-t*.002,t*.001)));
-          float spotTexture1=smoothstep(.49,.72,fbm4(n*35.0+vec3(-t*.002,t*.0025,-t*.0015)+4.3));
-          float spotTexture2=smoothstep(.51,.74,fbm4(n*32.0+vec3(t*.0016,t*.0011,-t*.0021)+7.8));
-          float pen0=regionMask(n,d0,.934,.046,t*.003+.6)*(.62+.38*spotTexture0)*(.30+.70*uRegionStrengthsA.x);
-          float pen1=regionMask(n,d1,.947,.043,t*.003+3.1)*(.64+.36*spotTexture1)*(.30+.70*uRegionStrengthsA.y);
-          float pen4=regionMask(n,d4,.952,.041,t*.003+5.8)*(.66+.34*spotTexture2)*(.26+.62*uRegionStrengthsB.x);
-          float pen5=regionMask(n,d5,.958,.038,t*.003+8.2)*(.68+.32*spotTexture0)*(.24+.58*uRegionStrengthsB.y);
-          float umbra0=regionMask(n,d0,.970,.029,t*.002+.8)*spotTexture0*(.38+.62*uRegionStrengthsA.x);
-          float umbra1=regionMask(n,d1,.976,.027,t*.002+3.7)*spotTexture1*(.40+.60*uRegionStrengthsA.y);
-          float umbra4=regionMask(n,d4,.978,.025,t*.002+6.3)*spotTexture2*(.34+.56*uRegionStrengthsB.x);
-          float umbra=clamp(umbra0+.78*umbra1+.58*umbra4,0.0,1.0);
-          float penumbra=clamp(pen0+.78*pen1+.52*pen4+.38*pen5-umbra*.48,0.0,1.0);
-
-          vec3 deepOrange=vec3(1.00,.105,.0025);
-          vec3 hotOrange=vec3(1.00,.235,.006);
-          vec3 goldenOrange=vec3(1.00,.405,.016);
-          vec3 hotGold=vec3(1.00,.625,.065);
-          vec3 whiteGold=vec3(1.00,.865,.34);
-
-          vec3 col=mix(deepOrange,hotOrange,.42+.30*slowA);
-          col=mix(col,goldenOrange,.28+.50*granulation);
-          col=mix(col,hotGold,smoothstep(.58,.91,granulation)*(.22+.14*convectC));
-          col=mix(col,vec3(1.00,.285,.004),lane*.13);
-          col*=.94+.07*slowB+.11*convection;
-
-          col+=vec3(1.00,.46,.018)*lineHalo*(.075+.065*uActivity);
-          col+=vec3(1.00,.74,.105)*plasmaLines*(.17+.14*uActivity);
-          col+=whiteGold*pow(plasmaLines,2.6)*(.050+.050*uActivity);
-
-          col=mix(col,vec3(.50,.105,.006),penumbra*.48);
-          col=mix(col,vec3(.125,.013,.0018),umbra*.72);
-
-          float facing=max(dot(n,normalize(cameraPosition-vWorld)),0.0);
-          float limb=.88+.14*pow(facing,.38);
-          col*=limb;
-          col=mix(col,vec3(1.00,.39,.014),(1.0-facing)*.095);
-
-          float faculae=smoothstep(.55,.79,fbm4(warped*18.0+vec3(t*.018,-t*.013,t*.010)))*pow(1.0-facing,.54)*(1.0-umbra);
-          col+=vec3(1.00,.71,.12)*faculae*(.060+.070*uActivity);
-          col+=vec3(1.00,.64,.055)*activeField*(.085+.135*uActivity)*(1.0-umbra*.58);
-          col+=whiteGold*pow(activeField*.62,2.0)*(.040+.060*uActivity);
-          col+=vec3(1.00,.93,.48)*eruptionField*(.075+.115*uActivity);
-          col+=vec3(1.00,.78,.16)*eruptionEdges*(.11+.14*uActivity);
-
-          float flareCore=smoothstep(.961,.997,dot(n,normalize(uFlareDirection))+(fbm4(n*25.0+vec3(t*.021))-.48)*.030);
-          float flareHalo=smoothstep(.888,.982,dot(n,normalize(uFlareDirection))+(fbm4(n*10.0-vec3(t*.009))-.48)*.044);
-          col+=vec3(1.00,.975,.62)*(flareCore*.98+flareHalo*.28)*uFlare;
-
-          col=clamp(col,vec3(0.0),vec3(1.0));
-          gl_FragColor=vec4(col,1.0);
-          #include <colorspace_fragment>
-        }`
+      vertexShader: `varying vec3 vWorldNormal; varying vec3 vWorld; varying vec2 vUv; void main(){ vWorldNormal=normalize(mat3(modelMatrix)*normal); vUv=uv; vec4 world=modelMatrix*vec4(position,1.0); vWorld=world.xyz; gl_Position=projectionMatrix*viewMatrix*world; }`,
+      fragmentShader: `precision highp float; varying vec3 vWorldNormal; varying vec3 vWorld; varying vec2 vUv; uniform float uTime; uniform float uFlare; uniform float uActivity; uniform vec4 uRegionStrengthsA; uniform vec4 uRegionStrengthsB; uniform vec3 uFlareDirection; float hash(vec3 p){ p=fract(p*.3183099+.1); p*=17.; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); } float noise(vec3 p){ vec3 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(mix(hash(i+vec3(0,0,0)),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z); } float fbm4(vec3 p){ float v=0.; float a=.53; for(int i=0; i<4; i++){v+=a*noise(p); p=p*2.07+vec3(3.7,1.9,5.3); a*=.48; } return v; } float fbm5(vec3 p){ float v=0.; float a=.52; for(int i=0; i<5; i++){v+=a*noise(p); p=p*2.03+vec3(4.1,2.3,5.9); a*=.49; } return v; } mat2 rot(float a){float c=cos(a),s=sin(a); return mat2(c,-s,s,c); } vec3 driftDirection(vec3 d,float yaw,float pitch){d.xz=rot(yaw)*d.xz; d.yz=rot(pitch)*d.yz; return normalize(d); } float regionMask(vec3 n,vec3 d,float edge,float wobble,float phase){float irregular=(fbm4(n*10.7+vec3(phase,-phase*.63,phase*.37))-.48)*wobble; return smoothstep(edge,edge+.060,dot(n,d)+irregular); } float contour(float v,float bands,float width){float f=abs(fract(v*bands)-.5); return 1.0-smoothstep(width,width*2.5,f); } void main(){ vec3 n=normalize(vWorldNormal); float t=uTime; float slowA=fbm5(n*2.7+vec3(t*.0052,-t*.0034,t*.0026)); float slowB=fbm4(n*5.7+vec3(-t*.0071,t*.0051,-t*.0038)+slowA*1.7); vec3 flowVec=vec3( fbm4(n*4.7+vec3(7.1,t*.0042,-3.4)), fbm4(n*4.9+vec3(-2.8,5.7,-t*.0047)), fbm4(n*5.1+vec3(t*.0033,-6.3,2.1)) )-.5; vec3 warped=normalize(n+flowVec*.165+(slowA-.5)*.072+(slowB-.5)*.045); vec3 q=warped*15.8+flowVec*3.35; float convectA=fbm5(q+vec3(t*.022,-t*.014,t*.010)); float convectB=fbm4(q*1.72+vec3(-t*.031,t*.023,-t*.015)+slowA*1.95); float convectC=fbm4(q*3.15+vec3(t*.041,-t*.033,t*.024)); float convection=clamp(convectA*.50+convectB*.33+convectC*.17,0.0,1.0); float edgeProbe=fbm4(q+vec3(.14,-.11,.08)); float localGradient=clamp(abs(convectA-edgeProbe)*5.8,0.0,1.0); float folded=1.0-abs(convectB*2.0-1.0); float microFold=1.0-abs(convectC*2.0-1.0); float cellCore=smoothstep(.42,.86,microFold)*(.58+.42*convectB); float lane=smoothstep(.12,.70,localGradient)*(.45+.55*(1.0-folded)); float granulation=clamp(convection*.76+cellCore*.24-lane*.15,0.0,1.0); float streakSourceA=fbm5(warped*5.9+flowVec*2.2+vec3(t*.014,-t*.020,t*.011)); float streakSourceB=fbm4(warped*9.7+vec3(-t*.024,t*.015,t*.019)+slowB*2.3); float streakSourceC=fbm4(warped*14.8+flowVec*1.4+vec3(t*.029,t*.011,-t*.023)); float streakA=contour(streakSourceA+slowA*.32,5.2,.040); float streakB=contour(streakSourceB+streakSourceA*.28,6.8,.032); float streakC=contour(streakSourceC+streakSourceB*.21,8.4,.025); float lineDistribution=.42+.58*smoothstep(.30,.76,fbm4(warped*3.35+vec3(-t*.010,t*.007,t*.005)+slowA*.9)); float plasmaLines=clamp(streakA*.78+streakB*.54+streakC*.32,0.0,1.0); plasmaLines*=lineDistribution*(.44+.56*smoothstep(.34,.80,convection)); float lineHalo=clamp(contour(streakSourceA+slowA*.32,5.2,.080)*.48+contour(streakSourceB+streakSourceA*.28,6.8,.060)*.34,0.0,1.0)*lineDistribution; vec3 d0=driftDirection(vec3(-.49,.29,.82),.050*sin(t*.025),.030*sin(t*.018+1.1)); vec3 d1=driftDirection(vec3(.43,-.27,.86),.045*sin(t*.021+2.4),.034*sin(t*.017+.7)); vec3 d2=driftDirection(vec3(.08,.57,.82),.052*sin(t*.019+4.1),.028*sin(t*.023+2.2)); vec3 d3=driftDirection(vec3(.58,.24,.78),.046*sin(t*.022+5.0),.032*sin(t*.016+3.5)); vec3 d4=driftDirection(vec3(-.18,-.58,.79),.050*sin(t*.020+1.7),.031*sin(t*.018+5.2)); vec3 d5=driftDirection(vec3(-.66,-.08,.75),.047*sin(t*.023+3.6),.027*sin(t*.015+2.8)); vec3 d6=driftDirection(vec3(.31,.49,.815),.042*sin(t*.018+5.5),.036*sin(t*.020+4.4)); vec3 d7=driftDirection(vec3(-.34,.55,.76),.049*sin(t*.016+.8),.030*sin(t*.024+6.1)); float ar0=regionMask(n,d0,.890,.066,t*.004); float ar1=regionMask(n,d1,.905,.062,t*.004+2.3); float ar2=regionMask(n,d2,.918,.060,t*.004+4.7); float ar3=regionMask(n,d3,.910,.064,t*.004+7.1); float ar4=regionMask(n,d4,.915,.060,t*.004+8.4); float ar5=regionMask(n,d5,.902,.064,t*.004+10.2); float ar6=regionMask(n,d6,.922,.056,t*.004+12.1); float ar7=regionMask(n,d7,.914,.059,t*.004+13.8); float flash0=.58+.42*sin(t*.83+0.2); float flash1=.60+.40*sin(t*.69+2.1); float flash2=.62+.38*sin(t*.91+4.7); float flash3=.58+.42*sin(t*.74+1.5); float flash4=.64+.36*sin(t*.79+5.8); float flash5=.59+.41*sin(t*.87+3.3); float flash6=.61+.39*sin(t*.72+6.4); float flash7=.60+.40*sin(t*.95+4.0); flash0*=flash0; flash1*=flash1; flash2*=flash2; flash3*=flash3; flash4*=flash4; flash5*=flash5; flash6*=flash6; flash7*=flash7; float activeField=clamp( ar0*uRegionStrengthsA.x*(.62+.38*flash0)+ar1*uRegionStrengthsA.y*(.62+.38*flash1)+ ar2*uRegionStrengthsA.z*(.62+.38*flash2)+ar3*uRegionStrengthsA.w*(.62+.38*flash3)+ ar4*uRegionStrengthsB.x*(.62+.38*flash4)+ar5*uRegionStrengthsB.y*(.62+.38*flash5)+ ar6*uRegionStrengthsB.z*(.62+.38*flash6)+ar7*uRegionStrengthsB.w*(.62+.38*flash7),0.0,2.15); float eruptionField=clamp( ar0*uRegionStrengthsA.x*pow(flash0,3.2)+ar1*uRegionStrengthsA.y*pow(flash1,3.2)+ ar2*uRegionStrengthsA.z*pow(flash2,3.2)+ar3*uRegionStrengthsA.w*pow(flash3,3.2)+ ar4*uRegionStrengthsB.x*pow(flash4,3.2)+ar5*uRegionStrengthsB.y*pow(flash5,3.2)+ ar6*uRegionStrengthsB.z*pow(flash6,3.2)+ar7*uRegionStrengthsB.w*pow(flash7,3.2),0.0,1.65); float eruptionEdges=clamp( 4.0*ar0*(1.0-ar0)*uRegionStrengthsA.x*pow(flash0,4.0)+ 4.0*ar1*(1.0-ar1)*uRegionStrengthsA.y*pow(flash1,4.0)+ 4.0*ar2*(1.0-ar2)*uRegionStrengthsA.z*pow(flash2,4.0)+ 4.0*ar3*(1.0-ar3)*uRegionStrengthsA.w*pow(flash3,4.0)+ 4.0*ar4*(1.0-ar4)*uRegionStrengthsB.x*pow(flash4,4.0)+ 4.0*ar5*(1.0-ar5)*uRegionStrengthsB.y*pow(flash5,4.0)+ 4.0*ar6*(1.0-ar6)*uRegionStrengthsB.z*pow(flash6,4.0)+ 4.0*ar7*(1.0-ar7)*uRegionStrengthsB.w*pow(flash7,4.0),0.0,1.6); float spotTexture0=smoothstep(.47,.70,fbm4(n*30.0+vec3(t*.003,-t*.002,t*.001))); float spotTexture1=smoothstep(.49,.72,fbm4(n*35.0+vec3(-t*.002,t*.0025,-t*.0015)+4.3)); float spotTexture2=smoothstep(.51,.74,fbm4(n*32.0+vec3(t*.0016,t*.0011,-t*.0021)+7.8)); float pen0=regionMask(n,d0,.934,.046,t*.003+.6)*(.62+.38*spotTexture0)*(.30+.70*uRegionStrengthsA.x); float pen1=regionMask(n,d1,.947,.043,t*.003+3.1)*(.64+.36*spotTexture1)*(.30+.70*uRegionStrengthsA.y); float pen4=regionMask(n,d4,.952,.041,t*.003+5.8)*(.66+.34*spotTexture2)*(.26+.62*uRegionStrengthsB.x); float pen5=regionMask(n,d5,.958,.038,t*.003+8.2)*(.68+.32*spotTexture0)*(.24+.58*uRegionStrengthsB.y); float umbra0=regionMask(n,d0,.970,.029,t*.002+.8)*spotTexture0*(.38+.62*uRegionStrengthsA.x); float umbra1=regionMask(n,d1,.976,.027,t*.002+3.7)*spotTexture1*(.40+.60*uRegionStrengthsA.y); float umbra4=regionMask(n,d4,.978,.025,t*.002+6.3)*spotTexture2*(.34+.56*uRegionStrengthsB.x); float umbra=clamp(umbra0+.78*umbra1+.58*umbra4,0.0,1.0); float penumbra=clamp(pen0+.78*pen1+.52*pen4+.38*pen5-umbra*.48,0.0,1.0); vec3 deepOrange=vec3(1.00,.105,.0025); vec3 hotOrange=vec3(1.00,.235,.006); vec3 goldenOrange=vec3(1.00,.405,.016); vec3 hotGold=vec3(1.00,.625,.065); vec3 whiteGold=vec3(1.00,.865,.34); vec3 col=mix(deepOrange,hotOrange,.42+.30*slowA); col=mix(col,goldenOrange,.28+.50*granulation); col=mix(col,hotGold,smoothstep(.58,.91,granulation)*(.22+.14*convectC)); col=mix(col,vec3(1.00,.285,.004),lane*.13); col*=.94+.07*slowB+.11*convection; col+=vec3(1.00,.46,.018)*lineHalo*(.075+.065*uActivity); col+=vec3(1.00,.74,.105)*plasmaLines*(.17+.14*uActivity); col+=whiteGold*pow(plasmaLines,2.6)*(.050+.050*uActivity); col=mix(col,vec3(.50,.105,.006),penumbra*.48); col=mix(col,vec3(.125,.013,.0018),umbra*.72); float facing=max(dot(n,normalize(cameraPosition-vWorld)),0.0); float limbShade=.88+.14*pow(facing,.38); col*=limbShade; col=mix(col,vec3(1.00,.39,.014),(1.0-facing)*.095); float faculae=smoothstep(.55,.79,fbm4(warped*18.0+vec3(t*.018,-t*.013,t*.010)))*pow(1.0-facing,.54)*(1.0-umbra); col+=vec3(1.00,.71,.12)*faculae*(.060+.070*uActivity); col+=vec3(1.00,.64,.055)*activeField*(.085+.135*uActivity)*(1.0-umbra*.58); col+=whiteGold*pow(activeField*.62,2.0)*(.040+.060*uActivity); col+=vec3(1.00,.93,.48)*eruptionField*(.075+.115*uActivity); col+=vec3(1.00,.78,.16)*eruptionEdges*(.11+.14*uActivity); float flareCore=smoothstep(.961,.997,dot(n,normalize(uFlareDirection))+(fbm4(n*25.0+vec3(t*.021))-.48)*.030); float flareHalo=smoothstep(.888,.982,dot(n,normalize(uFlareDirection))+(fbm4(n*10.0-vec3(t*.009))-.48)*.044); col+=vec3(1.00,.975,.62)*(flareCore*.98+flareHalo*.28)*uFlare; col=clamp(col,vec3(0.0),vec3(1.0)); gl_FragColor=vec4(col,1.0);\n#include <colorspace_fragment>\n}`
     });
     this.photosphereMaterial = photosphereMaterial;
     this.photosphere = new THREE.Mesh(new THREE.SphereGeometry(1, 144, 104), photosphereMaterial);
@@ -605,8 +463,8 @@ window.SunScene = class SunScene {
 
     this.chromosphere = new THREE.Mesh(new THREE.SphereGeometry(1.018, 96, 64), new THREE.ShaderMaterial({
       uniforms: { uTime: { value: 0 }, uFlare: { value: 0 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false,
-      vertexShader: `varying vec3 vWorldNormal; varying vec3 vWorld; void main(){vWorldNormal=normalize(mat3(modelMatrix)*normal); vec4 w=modelMatrix*vec4(position,1.); vWorld=w.xyz; gl_Position=projectionMatrix*viewMatrix*w;}`,
-      fragmentShader: `varying vec3 vWorldNormal; varying vec3 vWorld; uniform float uTime; uniform float uFlare; void main(){float rim=pow(1.-max(dot(normalize(vWorldNormal),normalize(cameraPosition-vWorld)),0.),3.0); float pulse=.76+.18*sin(uTime*.42+vWorldNormal.y*21.); gl_FragColor=vec4(1.0,.43,.045,rim*(.175+.105*pulse+.075*uFlare));\n#include <colorspace_fragment>\n}`
+      vertexShader: `varying vec3 vWorldNormal; varying vec3 vWorld; void main(){vWorldNormal=normalize(mat3(modelMatrix)*normal); vec4 w=modelMatrix*vec4(position,1.); vWorld=w.xyz; gl_Position=projectionMatrix*viewMatrix*w; }`,
+      fragmentShader: `varying vec3 vWorldNormal; varying vec3 vWorld; uniform float uTime; uniform float uFlare; void main(){float rim=pow(1.-max(dot(normalize(vWorldNormal),normalize(cameraPosition-vWorld)),0.),3.0); float pulse=.76+.18*sin(uTime*.42+vWorldNormal.y*21.); gl_FragColor=vec4(1.0,.43,.045,rim*(.175+.105*pulse+.075*uFlare)); \n\n#include <colorspace_fragment>\n\n}`
     }));
     this.sunGroup.add(this.chromosphere);
 
@@ -639,33 +497,8 @@ window.SunScene = class SunScene {
     const material = new THREE.ShaderMaterial({
       uniforms: { uTime: { value: 0 }, uOpacity: { value: baseOpacity }, uSeed: { value: seed }, uFlare: { value: 0 } },
       transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending, toneMapped: false,
-      vertexShader: `varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-      fragmentShader: `precision highp float; varying vec2 vUv; uniform float uTime; uniform float uOpacity; uniform float uSeed; uniform float uFlare;
-        float h(float x){return fract(sin(x*127.1+uSeed*91.7)*43758.5453);}
-        void main(){
-          vec2 p=vUv-.5; float r=length(p)*2.; float a=atan(p.y,p.x); if(r<.395||r>1.) discard;
-          float bend=.22*sin(a*2.0-uTime*.018+uSeed)+.10*sin(a*7.0+uTime*.026);
-          float wave=sin(a*5.0+bend+uSeed*2.1+uTime*.058)*.5+.5;
-          float wave2=sin(a*9.0-bend*1.6-uTime*.041+uSeed*4.7)*.5+.5;
-          float wave3=sin(a*15.0+uTime*.027+uSeed*7.3)*.5+.5;
-          float streams=pow(.13+.87*wave,3.0)*.46+pow(.12+.88*wave2,4.0)*.35+pow(.17+.83*wave3,5.0)*.19;
-          float hotA=pow(.5+.5*sin(a*3.0-uTime*.31+uSeed*1.7),5.0)*(.55+.45*sin(uTime*.77+uSeed));
-          float hotB=pow(.5+.5*sin(a*5.0+uTime*.23+uSeed*3.3),7.0)*(.58+.42*sin(uTime*.63+uSeed*2.1));
-          float hotC=pow(.5+.5*sin(a*8.0-uTime*.18+uSeed*5.1),9.0)*(.60+.40*sin(uTime*.91+uSeed*.8));
-          float localHeat=clamp(hotA*.58+hotB*.40+hotC*.28,0.0,1.35);
-          float asym=.58+.24*sin(a*2.1+uSeed+uTime*.021)+.18*sin(a*3.7-uTime*.015+uSeed*.7);
-          float radialRipple=1.0+.035*sin(a*6.0-uTime*.032+uSeed*3.0)+.018*sin(a*11.0+uTime*.023);
-          float fall=pow(1.-smoothstep(.39,1.,r/radialRipple),1.58);
-          float inner=smoothstep(.39,.475,r);
-          float shimmer=.86+.14*sin(uTime*.64+a*13.0+uSeed*2.0);
-          float alpha=inner*fall*(.12+.88*streams)*clamp(asym,.28,1.1)*uOpacity*shimmer;
-          alpha*=1.0+localHeat*.95+uFlare*.32;
-          float radial=clamp((r-.39)*1.76,0.,1.);
-          vec3 col=mix(vec3(1.,.94,.48),vec3(1.,.28,.012),radial);
-          col=mix(col,vec3(1.,.52,.028),clamp(localHeat*.62,0.0,1.0));
-          gl_FragColor=vec4(col,alpha);
-          #include <colorspace_fragment>
-        }`
+      vertexShader: `varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+      fragmentShader: `precision highp float; varying vec2 vUv; uniform float uTime; uniform float uOpacity; uniform float uSeed; uniform float uFlare; float h(float x){return fract(sin(x*127.1+uSeed*91.7)*43758.5453); } void main(){ vec2 p=vUv-.5; float r=length(p)*2.; float a=atan(p.y,p.x); if(r<.395||r>1.) discard; float bend=.22*sin(a*2.0-uTime*.018+uSeed)+.10*sin(a*7.0+uTime*.026); float wave=sin(a*5.0+bend+uSeed*2.1+uTime*.058)*.5+.5; float wave2=sin(a*9.0-bend*1.6-uTime*.041+uSeed*4.7)*.5+.5; float wave3=sin(a*15.0+uTime*.027+uSeed*7.3)*.5+.5; float streams=pow(.13+.87*wave,3.0)*.46+pow(.12+.88*wave2,4.0)*.35+pow(.17+.83*wave3,5.0)*.19; float hotA=pow(.5+.5*sin(a*3.0-uTime*.31+uSeed*1.7),5.0)*(.55+.45*sin(uTime*.77+uSeed)); float hotB=pow(.5+.5*sin(a*5.0+uTime*.23+uSeed*3.3),7.0)*(.58+.42*sin(uTime*.63+uSeed*2.1)); float hotC=pow(.5+.5*sin(a*8.0-uTime*.18+uSeed*5.1),9.0)*(.60+.40*sin(uTime*.91+uSeed*.8)); float localHeat=clamp(hotA*.58+hotB*.40+hotC*.28,0.0,1.35); float asym=.58+.24*sin(a*2.1+uSeed+uTime*.021)+.18*sin(a*3.7-uTime*.015+uSeed*.7); float radialRipple=1.0+.035*sin(a*6.0-uTime*.032+uSeed*3.0)+.018*sin(a*11.0+uTime*.023); float fall=pow(1.-smoothstep(.39,1.,r/radialRipple),1.58); float inner=smoothstep(.39,.475,r); float shimmer=.86+.14*sin(uTime*.64+a*13.0+uSeed*2.0); float alpha=inner*fall*(.12+.88*streams)*clamp(asym,.28,1.1)*uOpacity*shimmer; alpha*=1.0+localHeat*.95+uFlare*.32; float radial=clamp((r-.39)*1.76,0.,1.); vec3 col=mix(vec3(1.,.94,.48),vec3(1.,.28,.012),radial); col=mix(col,vec3(1.,.52,.028),clamp(localHeat*.62,0.0,1.0)); gl_FragColor=vec4(col,alpha);\n#include <colorspace_fragment>\n}`
     });
     return new THREE.Mesh(geometry, material);
   }
@@ -732,8 +565,8 @@ window.SunScene = class SunScene {
     const material = new THREE.ShaderMaterial({
       uniforms: { uTime: { value: 0 }, uPhase: { value: spec.phase }, uStrength: { value: .72 + index * .04 } },
       transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, toneMapped: false,
-      vertexShader: `attribute float aAlong; varying vec2 vUv; varying float vAlong; uniform float uTime; uniform float uPhase; void main(){vUv=uv;vAlong=aAlong;vec3 p=position;float arch=sin(3.14159265*aAlong);float wobble=(sin(aAlong*17.0+uTime*.39+uPhase)*.009+sin(aAlong*31.0-uTime*.27+uPhase)*.0045+sin(aAlong*53.0+uTime*.18+uPhase*2.0)*.0025)*arch;p.xy+=normalize(p.xy)*wobble;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}`,
-      fragmentShader: `precision highp float; varying vec2 vUv; varying float vAlong; uniform float uTime; uniform float uPhase; uniform float uStrength; void main(){float edge=1.0-abs(vUv.y*2.0-1.0);edge=smoothstep(0.0,.76,edge);float taper=pow(max(sin(3.14159265*vAlong),0.0),.52);float pulse=.68+.32*sin(vAlong*14.0-uTime*.36+uPhase);float pulse2=.72+.28*sin(vAlong*29.0+uTime*.21+uPhase*1.7);float strands=.58+.42*sin(vAlong*47.0+uTime*.18+uPhase*2.0);float attach=1.0-smoothstep(0.0,.22,min(vAlong,1.0-vAlong));float core=pow(edge,2.6);float alpha=edge*taper*max(.18,pulse*pulse2)*(.62+.38*strands)*uStrength;vec3 col=mix(vec3(1.0,.16,.006),vec3(1.0,.82,.18),.24+.46*edge+.24*attach);col=mix(col,vec3(1.0,.95,.50),core*.28);gl_FragColor=vec4(col,alpha*.96);\n#include <colorspace_fragment>\n}`
+      vertexShader: `attribute float aAlong; varying vec2 vUv; varying float vAlong; uniform float uTime; uniform float uPhase; void main(){vUv=uv; vAlong=aAlong; vec3 p=position; float arch=sin(3.14159265*aAlong); float wobble=(sin(aAlong*17.0+uTime*.39+uPhase)*.009+sin(aAlong*31.0-uTime*.27+uPhase)*.0045+sin(aAlong*53.0+uTime*.18+uPhase*2.0)*.0025)*arch; p.xy+=normalize(p.xy)*wobble; gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0); }`,
+      fragmentShader: `precision highp float; varying vec2 vUv; varying float vAlong; uniform float uTime; uniform float uPhase; uniform float uStrength; void main(){float edge=1.0-abs(vUv.y*2.0-1.0); edge=smoothstep(0.0,.76,edge); float taper=pow(max(sin(3.14159265*vAlong),0.0),.52); float pulse=.68+.32*sin(vAlong*14.0-uTime*.36+uPhase); float pulse2=.72+.28*sin(vAlong*29.0+uTime*.21+uPhase*1.7); float strands=.58+.42*sin(vAlong*47.0+uTime*.18+uPhase*2.0); float attach=1.0-smoothstep(0.0,.22,min(vAlong,1.0-vAlong)); float core=pow(edge,2.6); float alpha=edge*taper*max(.18,pulse*pulse2)*(.62+.38*strands)*uStrength; vec3 col=mix(vec3(1.0,.16,.006),vec3(1.0,.82,.18),.24+.46*edge+.24*attach); col=mix(col,vec3(1.0,.95,.50),core*.28); gl_FragColor=vec4(col,alpha*.96); \n\n#include <colorspace_fragment>\n\n}`
     });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.renderOrder = 3;
@@ -778,8 +611,8 @@ window.SunScene = class SunScene {
     geometry.setAttribute("aSize", new THREE.BufferAttribute(size,1));
     const material = new THREE.ShaderMaterial({
       uniforms: { uPixelRatio: { value: Math.min(window.devicePixelRatio||1,2) } }, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, toneMapped:false,
-      vertexShader:`attribute float aLife; attribute float aSize; varying float vLife; uniform float uPixelRatio; void main(){vLife=aLife; vec4 mv=modelViewMatrix*vec4(position,1.); gl_PointSize=(2.5+5.6*aSize)*uPixelRatio*(3.5/max(-mv.z,1.)); gl_Position=projectionMatrix*mv;}`,
-      fragmentShader:`varying float vLife; void main(){vec2 q=gl_PointCoord-.5; float d=length(q); if(d>.5)discard; float a=smoothstep(.5,.07,d)*smoothstep(0.,.16,vLife)*smoothstep(1.,.48,vLife); vec3 c=mix(vec3(1.,.10,.004),vec3(1.,.88,.30),vLife); c=mix(c,vec3(1.,.97,.67),pow(vLife,3.0)*.28); gl_FragColor=vec4(c,a*.92);\n#include <colorspace_fragment>\n}`
+      vertexShader:`attribute float aLife; attribute float aSize; varying float vLife; uniform float uPixelRatio; void main(){vLife=aLife; vec4 mv=modelViewMatrix*vec4(position,1.); gl_PointSize=(2.5+5.6*aSize)*uPixelRatio*(3.5/max(-mv.z,1.)); gl_Position=projectionMatrix*mv; }`,
+      fragmentShader:`varying float vLife; void main(){vec2 q=gl_PointCoord-.5; float d=length(q); if(d>.5)discard; float a=smoothstep(.5,.07,d)*smoothstep(0.,.16,vLife)*smoothstep(1.,.48,vLife); vec3 c=mix(vec3(1.,.10,.004),vec3(1.,.88,.30),vLife); c=mix(c,vec3(1.,.97,.67),pow(vLife,3.0)*.28); gl_FragColor=vec4(c,a*.92); \n\n#include <colorspace_fragment>\n\n}`
     });
     this.particleGeometry=geometry; this.particles=new THREE.Points(geometry,material); this.particles.renderOrder=4; this.sunGroup.add(this.particles);
   }
@@ -836,7 +669,7 @@ window.SunScene = class SunScene {
 
   createCssFallback() {
     this.mode="css"; this.element.dataset.renderer=this.mode;
-    this.viewport.innerHTML='<div class="sun-emergency-corona" aria-hidden="true"></div><div class="sun-emergency-sphere" aria-hidden="true"></div><div class="sun-emergency-mercury" aria-hidden="true"></div>';
+    this.viewport.innerHTML='<div class="sun-emergency-lapisan paling luar Matahari" aria-hidden="true"></div><div class="sun-emergency-sphere" aria-hidden="true"></div><div class="sun-emergency-mercury" aria-hidden="true"></div>';
     this.resize();
   }
 
@@ -1016,7 +849,7 @@ window.SunScene = class SunScene {
       if(this.travelMercuryGroup)this.travelMercuryGroup.visible=false;
       this.camera.position.set(cameraX,cameraY,layout.distance); this.camera.lookAt(cameraX*.24,cameraY*.16,0); this.renderer.render(this.scene,this.camera);
     } else if(this.mode==="canvas") this.drawCanvasSun(layout,blend); else {
-      const sphere=this.viewport.querySelector(".sun-emergency-sphere"), corona=this.viewport.querySelector(".sun-emergency-corona"); const left=50+(this.mobile?0:7)+blend*(this.mobile?0:6); const top=(this.mobile?38:49)-blend*(this.mobile?8:0); if(sphere){sphere.style.left=`${left}%`;sphere.style.top=`${top}%`;sphere.style.transform=`translate(-50%,-50%) scale(${groupScale}) rotate(${this.renderedRotation*.18}rad)`;} if(corona){corona.style.left=`${left}%`;corona.style.top=`${top}%`;corona.style.transform=`translate(-50%,-50%) scale(${groupScale*(1+.03*Math.sin(this.time*.2))})`;}
+      const sphere=this.viewport.querySelector(".sun-emergency-sphere"), corona=this.viewport.querySelector(".sun-emergency-lapisan paling luar Matahari"); const left=50+(this.mobile?0:7)+blend*(this.mobile?0:6); const top=(this.mobile?38:49)-blend*(this.mobile?8:0); if(sphere){sphere.style.left=`${left}%`;sphere.style.top=`${top}%`;sphere.style.transform=`translate(-50%,-50%) scale(${groupScale}) rotate(${this.renderedRotation*.18}rad)`;} if(corona){corona.style.left=`${left}%`;corona.style.top=`${top}%`;corona.style.transform=`translate(-50%,-50%) scale(${groupScale*(1+.03*Math.sin(this.time*.2))})`;}
     }
   }
 
@@ -1033,7 +866,7 @@ window.SunScene = class SunScene {
       this.camera.position.set(0,0,layout.distance*(1+.42*Math.sin(s.cross*Math.PI))); this.camera.lookAt(0,0,0); this.renderer.toneMappingExposure=1.18+.07*(reverse?s.arrive:1-s.depart*.20); this.renderer.render(this.scene,this.camera);
     } else if(this.mode==="canvas") this.drawCanvasTravel(s,reverse,{sunX,sunScale,mercuryX,mercuryScale,sunP,mercuryP,layout});
     else if(this.mode==="css") {
-      const sphere=this.viewport.querySelector(".sun-emergency-sphere"), corona=this.viewport.querySelector(".sun-emergency-corona"), mercury=this.viewport.querySelector(".sun-emergency-mercury");
+      const sphere=this.viewport.querySelector(".sun-emergency-sphere"), corona=this.viewport.querySelector(".sun-emergency-lapisan paling luar Matahari"), mercury=this.viewport.querySelector(".sun-emergency-mercury");
       const toPercent=x=>50+(x-layout.x)/(layout.half*(this.width/this.height))*20;
       if(sphere){sphere.style.left=`${toPercent(sunX)}%`;sphere.style.opacity=String(sunP);sphere.style.transform=`translate(-50%,-50%) scale(${sunScale})`;}
       if(corona){corona.style.left=`${toPercent(sunX)}%`;corona.style.opacity=String(.7*sunP);corona.style.transform=`translate(-50%,-50%) scale(${sunScale})`;}

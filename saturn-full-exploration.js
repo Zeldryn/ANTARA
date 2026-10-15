@@ -2,7 +2,7 @@
 
 (() => {
   const STORAGE_KEY = "antara-saturn-full-quality-v3";
-  const DISCOVERY_PREFIX = "antara-saturn-pov-discovery-v1:";
+  const DISCOVERY_PREFIX = "antara-saturn-mode terbang-discovery-v1:";
   const QUALITY = Object.freeze({
     LOW: { name: "LOW", label: "RENDAH", dpr: 1.0, clouds: 220, streaks: 7, markerSegments: 28 },
     MEDIUM: { name: "MEDIUM", label: "SEDANG", dpr: 1.35, clouds: 360, streaks: 10, markerSegments: 40 },
@@ -33,7 +33,7 @@
       id: "hexagon",
       name: "Hexagon Kutub Utara",
       short: "HEXAGON",
-      category: "JET STREAM POLAR",
+      category: "ARUS ANGIN CEPAT POLAR",
       descriptor: "Terbang di atas pola enam sisi raksasa di kutub Saturnus",
       locationLabel: "Kutub utara Saturnus",
       preview: "hexagon",
@@ -41,9 +41,9 @@
       imageAlt: "Diagram edukasi hexagon kutub utara Saturnus",
       imageCaption: "Hexagon kutub utara · ANTARA berbasis Cassini",
       source: SOURCES.hexagon,
-      lead: "Saturnus tidak punya tanah untuk didarati. Di wilayah kutub utara, kamu terbang di atas pola jet stream raksasa berbentuk enam sisi yang mengurung badai kutub di tengahnya.",
+      lead: "Saturnus tidak punya tanah untuk didarati. Di wilayah kutub utara, kamu terbang di atas pola arus angin cepat raksasa berbentuk enam sisi yang mengurung badai kutub di tengahnya.",
       facts: [
-        "Hexagon adalah pola gelombang atmosfer, bukan bangunan atau benda padat.",
+        "Hexagon adalah pola gelombang udara, bukan bangunan atau benda padat.",
         "Lebarnya sekitar 30.000 kilometer sehingga lebih besar dari diameter Bumi.",
         "Voyager pertama kali melihatnya, lalu Cassini mengamatinya jauh lebih detail."
       ],
@@ -52,44 +52,44 @@
       turbulence: 1.05,
       spawn: { x: -20, y: 14, z: 42, yaw: Math.PI * 0.88, pitch: -0.08 },
       observations: [
-        { id: "hexagon-edge", name: "Tepi Hexagon", category: "BATAS GELOMBANG", position: [4, 8, -15], radius: 11, source: SOURCES.hexagon, lead: "Garis sudut pada hexagon menandai jalur jet stream yang stabil di atmosfer utara Saturnus.", why: "Bentuk hampir geometris seperti ini sangat jarang pada atmosfer planet dan membantu ilmuwan menguji model fluida berotasi cepat.", facts: ["Hexagon bukan permukaan padat.", "Ia tersusun dari aliran atmosfer dan perbedaan kecepatan angin.", "Bentuknya bisa bertahan sangat lama."] },
-        { id: "hexagon-vortex", name: "Pusaran Kutub", category: "POLAR VORTEX", position: [-26, -2, 7], radius: 10, source: SOURCES.hexagon, lead: "Di tengah hexagon terdapat badai kutub yang berputar cepat.", why: "Pusaran ini menunjukkan kutub Saturnus bukan wilayah tenang, melainkan pusat dinamika cuaca skala besar.", facts: ["Cassini melihat mata badai kutub di pusat struktur ini.", "Awan di sekitarnya bergerak sangat cepat.", "Pusaran membantu memetakan energi di kutub Saturnus."] },
-        { id: "hexagon-haze", name: "Kabut Tinggi", category: "AEROSOL", position: [24, 18, 20], radius: 9, source: SOURCES.facts, lead: "Lapisan kabut halus menutupi bagian atas atmosfer dan memperlembut tampilan warna Saturnus.", why: "Kabut atas membantu ilmuwan membaca struktur vertikal atmosfer dan perubahan musim Saturnus.", facts: ["Atmosfer atas Saturnus tampak lebih lembut daripada Jupiter.", "Aerosol dan partikel kecil menyebarkan cahaya Matahari.", "Warna kutub dapat berubah menurut musim."] }
+        { id: "hexagon-edge", name: "Tepi Hexagon", category: "BATAS GELOMBANG", position: [4, 8, -15], radius: 11, source: SOURCES.hexagon, lead: "Garis sudut pada hexagon menandai jalur arus angin cepat yang cukup tetap di udara utara Saturnus.", why: "Bentuk hampir geometris seperti ini sangat jarang pada udara planet dan membantu ilmuwan menguji model bahan yang bisa mengalir berputar cepat.", facts: ["Hexagon bukan permukaan padat.", "Ia tersusun dari aliran udara dan perbedaan kecepatan angin.", "Bentuknya bisa bertahan sangat lama."] },
+        { id: "hexagon-pusaran badai", name: "Pusaran Kutub", category: "POLAR PUSARAN BADAI", position: [-26, -2, 7], radius: 10, source: SOURCES.hexagon, lead: "Di tengah hexagon terdapat badai kutub yang berputar cepat.", why: "Pusaran ini menunjukkan kutub Saturnus bukan wilayah tenang, melainkan pusat gerakan cuaca skala besar.", facts: ["Cassini melihat mata badai kutub di pusat bentuk ini.", "Awan di sekitarnya bergerak sangat cepat.", "Pusaran membantu membuat peta energi di kutub Saturnus."] },
+        { id: "hexagon-kabut tipis", name: "Kabut Tinggi", category: "KABUT TIPIS", position: [24, 18, 20], radius: 9, source: SOURCES.facts, lead: "Lapisan kabut halus menutupi bagian atas udara dan memperlembut tampilan warna Saturnus.", why: "Kabut atas membantu ilmuwan melihat bentuk atas-bawah udara dan perubahan musim Saturnus.", facts: ["Udara atas Saturnus tampak lebih lembut daripada Jupiter.", "Butiran kecil di udara dan butiran kecil menyebarkan cahaya Matahari.", "Warna kutub dapat berubah menurut musim."] }
       ]
     },
     {
       id: "storms",
       name: "Pita Awan & Badai Besar",
       short: "STORMS",
-      category: "JET STREAM GLOBAL",
+      category: "ARUS ANGIN CEPAT DI SELURUH PLANET",
       descriptor: "Masuk ke pita awan pucat dan sel badai Saturnus",
       locationLabel: "Lintang tengah Saturnus",
       preview: "rings",
       image: "./assets/saturn-atmosphere-diagram.svg",
-      imageAlt: "Diagram edukasi atmosfer Saturnus",
-      imageCaption: "Atmosfer Saturnus · ANTARA berbasis NASA",
+      imageAlt: "Diagram edukasi udara Saturnus",
+      imageCaption: "Udara Saturnus · ANTARA berbasis NASA",
       source: SOURCES.storms,
-      lead: "Warna Saturnus tampak lebih lembut dibanding Jupiter, tetapi atmosfernya tetap penuh pita, gelombang, dan badai yang digerakkan angin sangat cepat.",
+      lead: "Warna Saturnus tampak lebih lembut dibanding Jupiter. Tapi udaranya tetap penuh pita, gelombang, dan badai yang digerakkan angin sangat cepat.",
       facts: [
-        "Jet stream ekuatorial Saturnus dapat bergerak sangat cepat.",
+        "Arus angin cepat ekuatorial Saturnus dapat bergerak sangat cepat.",
         "Planet ini kadang memunculkan badai besar musiman yang dikenal sebagai Great White Spot.",
-        "Tidak ada permukaan padat; semua yang kamu lihat adalah lapisan atmosfer."
+        "Tidak ada permukaan padat. semua yang kamu lihat adalah lapisan udara."
       ],
       palette: { sky: 0x5d5648, fog: 0x95846d, fogDensity: 0.0105, cloud: "#ece2cb", cloud2: "#b19879", accent: 0xe3d0ad, lightning: 0xffefd4 },
       wind: { x: 1.28, z: 0.22 },
       turbulence: 0.82,
       spawn: { x: -32, y: 7, z: 40, yaw: Math.PI * 0.84, pitch: -0.04 },
       observations: [
-        { id: "storms-belt", name: "Pita Awan", category: "BELT / ZONE", position: [10, 12, -6], radius: 10, source: SOURCES.facts, lead: "Pita terang dan lebih gelap di Saturnus berasal dari sirkulasi atmosfer pada lintang berbeda.", why: "Membandingkan pita awan membantu kita memahami bagaimana rotasi cepat mengatur cuaca skala planet.", facts: ["Pita Saturnus biasanya lebih halus daripada milik Jupiter.", "Komposisi awan atas tetap didominasi es amonia.", "Warna dan kontras bisa berubah mengikuti musim."] },
-        { id: "storms-cell", name: "Sel Badai", category: "KONVEKSI", position: [-18, -6, -18], radius: 10, source: SOURCES.storms, lead: "Sel badai ini mewakili wilayah konveksi yang mengangkat material dari lapisan lebih dalam.", why: "Badai membantu memindahkan panas dari interior Saturnus ke atmosfer atas.", facts: ["Great White Spot adalah contoh badai raksasa periodik Saturnus.", "Konveksi kuat dapat mengubah pola awan dalam waktu relatif singkat.", "Data Cassini membantu memetakan struktur badai seperti ini."] },
-        { id: "storms-deep", name: "Lapisan Lebih Dalam", category: "TEKANAN", position: [28, -20, 19], radius: 10, source: SOURCES.facts, lead: "Semakin turun, tekanan naik dan jenis awan berubah dari es amonia menuju lapisan yang lebih hangat dan rapat.", why: "Profil vertikal atmosfer membantu ilmuwan memahami komposisi, suhu, dan energi internal Saturnus.", facts: ["Bagian atas atmosfer mengandung es amonia.", "Di bawahnya dapat terbentuk awan ammonium hydrosulfide dan air.", "Tidak ada garis batas tegas antara atmosfer dan bagian dalam Saturnus."] }
+        { id: "storms-belt", name: "Pita Awan", category: "BELT / ZONE", position: [10, 12, -6], radius: 10, source: SOURCES.facts, lead: "Pita terang dan lebih gelap di Saturnus berasal dari sirkulasi udara pada lintang berbeda.", why: "Membandingkan pita awan membuat kita lebih mudah tahu bagaimana putaran cepat mengatur cuaca skala planet.", facts: ["Pita Saturnus biasanya lebih halus daripada milik Jupiter.", "Isi awan atas tetap paling banyak berisi es gas bernama amonia.", "Warna dan perbedaan bisa berubah mengikuti musim."] },
+        { id: "storms-cell", name: "Sel Badai", category: "PANAS NAIK DAN TURUN", position: [-18, -6, -18], radius: 10, source: SOURCES.storms, lead: "Sel badai ini mewakili wilayah gerakan panas naik dan turun yang mengangkat bahan dari lapisan lebih dalam.", why: "Badai membantu memindahkan panas dari bagian dalam Saturnus ke udara atas.", facts: ["Great White Spot adalah contoh badai raksasa periodik Saturnus.", "Gerakan panas naik dan turun kuat dapat mengubah pola awan dalam waktu cukup singkat.", "Data Cassini membantu membuat peta bentuk badai seperti ini."] },
+        { id: "storms-deep", name: "Lapisan Lebih Dalam", category: "TEKANAN", position: [28, -20, 19], radius: 10, source: SOURCES.facts, lead: "Semakin turun, tekanan naik dan jenis awan berubah dari es gas bernama amonia menuju lapisan yang lebih hangat dan rapat.", why: "Bentuk atas-bawah udara membuat ilmuwan lebih mudah tahu isi, suhu, dan energi internal Saturnus.", facts: ["Bagian atas udara mengandung es gas bernama amonia.", "Di bawahnya dapat terbentuk awan ammonium hydrosulfide dan air.", "Tidak ada garis batas tegas antara udara dan bagian dalam Saturnus."] }
       ]
     },
     {
       id: "rings",
       name: "Cincin & Cassini Division",
       short: "RINGS",
-      category: "PARTIKEL ES",
+      category: "BUTIRAN ES",
       descriptor: "Terbang sejajar bidang cincin dan melewati celah Cassini Division",
       locationLabel: "Bidang cincin Saturnus",
       preview: "cassini",
@@ -97,9 +97,9 @@
       imageAlt: "Diagram edukasi cincin Saturnus",
       imageCaption: "Sistem cincin Saturnus · ANTARA berbasis Cassini",
       source: SOURCES.rings,
-      lead: "Di sini kamu tidak menginjak tanah. Kamu terbang di koridor edukasi yang meniru bidang cincin Saturnus: hamparan partikel es, celah, dan bayangan yang membelah cahaya.",
+      lead: "Di sini kamu tidak menginjak tanah. Kamu terbang di jalur jelajah yang meniru bidang cincin Saturnus: hamparan butiran kecil es, celah, dan bayangan yang membelah cahaya.",
       facts: [
-        "Cincin Saturnus tersusun dari partikel es, debu, dan pecahan batu dengan ukuran beragam.",
+        "Cincin Saturnus tersusun dari butiran kecil es, debu, dan pecahan batu dengan ukuran beragam.",
         "Cassini Division adalah celah besar antara cincin A dan B.",
         "Banyak bagian cincin sangat lebar namun ketebalannya kecil dibanding lebarnya."
       ],
@@ -108,27 +108,27 @@
       turbulence: 0.35,
       spawn: { x: -24, y: 2, z: 46, yaw: Math.PI * 0.9, pitch: -0.03 },
       observations: [
-        { id: "rings-a", name: "A Ring", category: "RING PLANE", position: [8, 1, -16], radius: 10, source: SOURCES.rings, lead: "Bagian ini mewakili salah satu sabuk cincin terang yang kaya partikel es.", why: "Cincin menunjukkan bagaimana gaya gravitasi dan tumbukan kecil membentuk struktur sangat tipis tetapi sangat luas.", facts: ["Banyak partikel cincin memantulkan cahaya dengan baik karena kaya es.", "Setiap partikel mengorbit Saturnus secara individual.", "Tepi cincin dapat dipengaruhi resonansi gravitasi dengan bulan-bulan Saturnus."] },
-        { id: "rings-division", name: "Cassini Division", category: "CELAH CINCIN", position: [-25, 4, 4], radius: 10, source: SOURCES.rings, lead: "Cassini Division tampak seperti celah gelap yang memisahkan cincin utama Saturnus.", why: "Celah ini membantu menjelaskan bagaimana resonansi orbital membersihkan atau mengganggu material cincin.", facts: ["Cassini Division tidak sepenuhnya kosong, tetapi jauh lebih renggang.", "Resonansi dengan bulan Mimas ikut berperan pada struktur ini.", "Kontras antar cincin membuat sistem Saturnus sangat ikonik."] },
-        { id: "rings-rain", name: "Ring Rain", category: "INTERAKSI", position: [27, 8, 20], radius: 9, source: SOURCES.cassini, lead: "Sebagian material cincin dapat perlahan jatuh ke atmosfer Saturnus sebagai 'ring rain'.", why: "Fenomena ini menunjukkan cincin tidak abadi dan terus berinteraksi dengan planet induknya.", facts: ["Partikel bermuatan dapat mengikuti garis medan magnet ke atmosfer Saturnus.", "Cassini membantu mengukur keterkaitan antara cincin dan atmosfer.", "Ilmuwan memperkirakan cincin berevolusi sepanjang waktu."] }
+        { id: "rings-a", name: "A Ring", category: "RING PLANE", position: [8, 1, -16], radius: 10, source: SOURCES.rings, lead: "Bagian ini mewakili salah satu sabuk cincin terang yang kaya butiran kecil es.", why: "Cincin menunjukkan bagaimana gaya tarikan dan tabrakan kecil membentuk bentuk sangat tipis tetapi sangat luas.", facts: ["Banyak butiran kecil cincin memantulkan cahaya dengan baik karena kaya es.", "Setiap butiran kecil mengelilingi Saturnus secara individual.", "Tepi cincin dapat dipengaruhi pola gerak khusus tarikan dengan bulan-bulan Saturnus."] },
+        { id: "rings-division", name: "Cassini Division", category: "CELAH CINCIN", position: [-25, 4, 4], radius: 10, source: SOURCES.rings, lead: "Cassini Division tampak seperti celah gelap yang memisahkan cincin utama Saturnus.", why: "Celah ini membantu menjelaskan bagaimana pola gerak khusus jalur membersihkan atau mengganggu bahan cincin.", facts: ["Cassini Division tidak sepenuhnya kosong. Tapi jauh lebih renggang.", "Pola gerak khusus dengan bulan Mimas ikut berperan pada bentuk ini.", "Perbedaan antar cincin membuat sistem Saturnus sangat ikonik."] },
+        { id: "rings-rain", name: "Ring Rain", category: "SALING PENGARUH", position: [27, 8, 20], radius: 9, source: SOURCES.cassini, lead: "Sebagian bahan cincin bisa perlahan jatuh ke udara Saturnus sebagai 'ring rain'.", why: "Fenomena ini menunjukkan cincin tidak abadi dan terus bertemu dengan planet induknya.", facts: ["Butiran sangat kecil dari Matahari dapat mengikuti garis gaya magnet ke udara Saturnus.", "Cassini membantu mengukur keterkaitan antara cincin dan udara.", "Ilmuwan memperkirakan cincin berevolusi sepanjang waktu."] }
       ]
     },
     {
       id: "titan",
       name: "Koridor Titan",
       short: "TITAN",
-      category: "BULAN BERATMOSFER",
+      category: "BULAN PUNYA UDARA",
       descriptor: "Mendekati Titan dan terbang di koridor kabut oranyenya",
-      locationLabel: "Orbit Titan",
+      locationLabel: "Jalur mengelilingi Titan",
       preview: "titan",
       image: "./assets/saturn-titan-enceladus.svg",
       imageAlt: "Diagram Titan dan Enceladus pada sistem Saturnus",
       imageCaption: "Titan · ANTARA berbasis Cassini-Huygens",
       source: SOURCES.titan,
-      lead: "Titan adalah bulan terbesar Saturnus. Dalam simulasi ini kamu terbang pada koridor edukasi dekat Titan sambil melihat kabut tebal dan petunjuk tentang danau hidrokarbon di bawahnya.",
+      lead: "Titan adalah bulan terbesar Saturnus. Dalam tampilan 3D ini kamu terbang pada jalur jelajah dekat Titan sambil melihat kabut tebal dan petunjuk tentang danau cairan dingin yang bukan air di bawahnya.",
       facts: [
-        "Titan memiliki atmosfer tebal yang didominasi nitrogen.",
-        "Di permukaannya terdapat sungai, danau, dan laut metana-etana.",
+        "Titan punya udara tebal yang paling banyak berisi nitrogen.",
+        "Di permukaannya ada sungai, danau, dan laut gas bernama metana-etana.",
         "Huygens mendarat di Titan pada 2005 dan mengirim foto langsung dari permukaan."
       ],
       palette: { sky: 0x3d3023, fog: 0x8c6f47, fogDensity: 0.0102, cloud: "#e0ba82", cloud2: "#8f6738", accent: 0xf2cb8b, lightning: 0xffe1b0 },
@@ -136,37 +136,37 @@
       turbulence: 0.46,
       spawn: { x: -18, y: 10, z: 42, yaw: Math.PI * 0.86, pitch: -0.03 },
       observations: [
-        { id: "titan-haze", name: "Kabut Atmosfer Titan", category: "HAZE", position: [7, 9, -13], radius: 11, source: SOURCES.titan, lead: "Kabut oranye Titan membuat permukaannya sulit dilihat pada cahaya tampak.", why: "Kabut dan aerosol Titan menjadi kunci untuk memahami kimia organik di atmosfer bulan ini.", facts: ["Atmosfer Titan didominasi nitrogen.", "Kabut terbentuk dari proses fotokimia di atmosfer atas.", "Warna oranye Titan berasal dari aerosol kompleks yang disebut tholin."] },
-        { id: "titan-lakes", name: "Jejak Laut Metana", category: "HIDROKARBON", position: [-20, -8, 0], radius: 10, source: SOURCES.titan, lead: "Radar Cassini menunjukkan keberadaan laut dan danau metana-etana di Titan, terutama di daerah kutub.", why: "Titan adalah satu-satunya dunia selain Bumi yang diketahui memiliki cairan stabil di permukaannya.", facts: ["Cairan Titan terutama metana dan etana, bukan air.", "Ada hujan, aliran sungai, dan penguapan dalam siklus metana Titan.", "Suhu permukaannya sangat dingin, sekitar -179 °C."] },
-        { id: "titan-huygens", name: "Jejak Huygens", category: "MISI", position: [27, 4, 19], radius: 9, source: SOURCES.titan, lead: "Pendarat Huygens turun melalui atmosfer Titan dan mengambil data langsung selama penurunan hingga permukaan.", why: "Misi ini memberi gambaran paling langsung tentang rupa permukaan Titan dan sifat atmosfernya.", facts: ["Huygens adalah bagian dari misi Cassini-Huygens.", "Ia mendarat pada Januari 2005.", "Foto Huygens menunjukkan lanskap yang dibentuk cairan di masa lalu atau kini."] }
+        { id: "titan-kabut tipis", name: "Kabut Udara Titan", category: "KABUT TIPIS", position: [7, 9, -13], radius: 11, source: SOURCES.titan, lead: "Kabut oranye Titan membuat permukaannya sulit dilihat pada cahaya tampak.", why: "Kabut dan butiran kecil di udara Titan menjadi kunci untuk memahami kimia organik di udara bulan ini.", facts: ["Udara Titan paling banyak berisi nitrogen.", "Kabut terbentuk dari cara fotokimia di udara atas.", "Warna oranye Titan berasal dari butiran kecil di udara rumit yang disebut tholin."] },
+        { id: "titan-lakes", name: "Jejak Laut Gas bernama metana", category: "CAIRAN DINGIN", position: [-20, -8, 0], radius: 10, source: SOURCES.titan, lead: "Radar Cassini menunjukkan keberadaan laut dan danau gas bernama metana-etana di Titan, terutama di daerah kutub.", why: "Titan adalah satu-satunya dunia selain Bumi yang diketahui punya cairan cukup tetap di permukaannya.", facts: ["Cairan Titan terutama gas bernama metana dan etana, bukan air.", "Ada hujan, aliran sungai, dan penguapan dalam siklus gas bernama metana Titan.", "Suhu permukaannya sangat dingin, sekitar -179 °C."] },
+        { id: "titan-huygens", name: "Jejak Huygens", category: "MISI", position: [27, 4, 19], radius: 9, source: SOURCES.titan, lead: "Pendarat Huygens turun melalui udara Titan dan mengambil data langsung selama penurunan hingga permukaan.", why: "Misi ini memberi gambaran paling langsung tentang rupa permukaan Titan dan sifat udaranya.", facts: ["Huygens adalah bagian dari misi Cassini-Huygens.", "Ia mendarat pada Januari 2005.", "Foto Huygens menunjukkan lanskap yang dibentuk cairan di masa lalu atau kini."] }
       ]
     },
     {
       id: "enceladus",
-      name: "Koridor Plume Enceladus",
+      name: "Koridor Semburan Enceladus",
       short: "ENCELADUS",
       category: "BULAN ES AKTIF",
-      descriptor: "Melewati semburan es Enceladus dan partikel cincin E",
-      locationLabel: "Orbit Enceladus",
+      descriptor: "Melewati semburan es Enceladus dan butiran kecil cincin E",
+      locationLabel: "Jalur mengelilingi Enceladus",
       preview: "enceladus",
       image: "./assets/saturn-titan-enceladus.svg",
       imageAlt: "Diagram Titan dan Enceladus pada sistem Saturnus",
       imageCaption: "Enceladus · ANTARA berbasis Cassini",
       source: SOURCES.enceladus,
-      lead: "Enceladus tampak kecil dan terang, tetapi dari retakan kutub selatannya keluar semburan uap air dan partikel es. Di koridor ini kamu terbang di dekat plume yang memberi bahan pada cincin E Saturnus.",
+      lead: "Enceladus tampak kecil dan terang. Tapi dari retakan kutub selatannya keluar semburan uap air dan butiran kecil es. Di koridor ini kamu terbang di dekat semburan yang memberi bahan pada cincin E Saturnus.",
       facts: [
-        "Enceladus memiliki samudra global di bawah kerak es.",
-        "Plume kutub selatannya menyemburkan uap air, es, dan molekul lain ke ruang angkasa.",
-        "Material plume ikut memasok partikel ke cincin E Saturnus."
+        "Enceladus punya samudra di seluruh planet di bawah kerak es.",
+        "Semburan kutub selatannya menyemburkan uap air, es, dan zat kecil lain ke ruang angkasa.",
+        "Bahan semburan ikut memasok butiran kecil ke cincin E Saturnus."
       ],
       palette: { sky: 0x0f1620, fog: 0x516676, fogDensity: 0.0082, cloud: "#e7edf0", cloud2: "#9eb4c2", accent: 0xeef9ff, lightning: 0xf3fdff },
       wind: { x: 0.15, z: 0.62 },
       turbulence: 0.28,
       spawn: { x: -24, y: 8, z: 44, yaw: Math.PI * 0.92, pitch: -0.06 },
       observations: [
-        { id: "enceladus-tiger", name: "Tiger Stripes", category: "RETAKAN POLAR", position: [5, 4, -16], radius: 10, source: SOURCES.enceladus, lead: "Retakan di kutub selatan Enceladus menjadi jalur keluarnya material dari bawah permukaan.", why: "Retakan ini adalah penghubung langsung ke samudra bawah es yang membuat Enceladus sangat menarik secara astrobiologi.", facts: ["Empat retakan utama ini dijuluki tiger stripes.", "Daerah kutub selatan lebih hangat daripada lingkungan sekitarnya.", "Retakan aktif memancarkan plume ke ruang angkasa."] },
-        { id: "enceladus-plume", name: "Plume Es", category: "JET", position: [-24, 14, 8], radius: 10, source: SOURCES.enceladus, lead: "Semburan plume membawa uap air, butir es, dan senyawa lain ke luar angkasa.", why: "Cassini bisa menganalisis komposisi plume tanpa harus mendarat atau mengebor lapisan es.", facts: ["Plume mengandung air, garam, dan molekul organik sederhana.", "Aktivitas ini mengindikasikan adanya air cair di bawah kerak.", "Plume menjadi salah satu alasan Enceladus dianggap calon lingkungan layak huni. "] },
-        { id: "enceladus-ocean", name: "Petunjuk Samudra", category: "ASTROBIOLOGI", position: [29, -3, 19], radius: 9, source: SOURCES.enceladus, lead: "Data Cassini menunjukkan Enceladus menyimpan samudra global di bawah lapisan esnya.", why: "Air cair, energi, dan bahan kimia menjadikan Enceladus salah satu target terpenting dalam pencarian lingkungan yang mungkin mendukung kehidupan.", facts: ["Samudra Enceladus berada di bawah lapisan es global.", "Analisis partikel plume memberi petunjuk adanya interaksi air-batuan di dasar samudra.", "Cincin E Saturnus sebagian besar dipasok oleh aktivitas Enceladus."] }
+        { id: "enceladus-tiger", name: "Tiger Stripes", category: "RETAKAN POLAR", position: [5, 4, -16], radius: 10, source: SOURCES.enceladus, lead: "Retakan di kutub selatan Enceladus menjadi jalur keluarnya bahan dari bawah permukaan.", why: "Retakan ini adalah penghubung langsung ke samudra bawah es yang membuat Enceladus sangat menarik secara astrobiologi.", facts: ["Empat retakan utama ini dijuluki tiger stripes.", "Daerah kutub selatan lebih hangat daripada lingkungan sekitarnya.", "Retakan aktif memancarkan semburan ke ruang angkasa."] },
+        { id: "enceladus-semburan", name: "Semburan Es", category: "JET", position: [-24, 14, 8], radius: 10, source: SOURCES.enceladus, lead: "Semburan semburan membawa uap air, butir es, dan senyawa lain ke luar angkasa.", why: "Cassini bisa menganalisis isi semburan tanpa harus mendarat atau mengebor lapisan es.", facts: ["Semburan mengandung air, garam, dan zat kecil organik sederhana.", "Aktivitas ini mengindikasikan adanya air cair di bawah kerak.", "Semburan menjadi salah satu alasan Enceladus dianggap calon lingkungan layak huni. "] },
+        { id: "enceladus-ocean", name: "Petunjuk Samudra", category: "ASTROBIOLOGI", position: [29, -3, 19], radius: 9, source: SOURCES.enceladus, lead: "Data Cassini menunjukkan Enceladus menyimpan samudra di seluruh planet di bawah lapisan esnya.", why: "Air cair, energi, dan bahan kimia menjadikan Enceladus salah satu target terpenting dalam pencarian lingkungan yang mungkin mendukung kehidupan.", facts: ["Samudra Enceladus berada di bawah lapisan es di seluruh planet.", "Analisis butiran kecil semburan menunjukkan adanya saling pengaruh air-batuan di dasar samudra.", "Cincin E Saturnus sebagian besar dipasok oleh aktivitas Enceladus."] }
       ]
     }
   ]);
@@ -534,15 +534,15 @@
       }
       if (this.destination.id === "titan") {
         if (pressure < 0.9) return "KABUT TITAN";
-        if (pressure < 2.1) return "ATMOSFER N2";
-        return "KORIDOR FLYBY";
+        if (pressure < 2.1) return "UDARA N2";
+        return "KORIDOR TERBANG LEWAT DEKAT";
       }
       if (this.destination.id === "enceladus") {
-        if (pressure < 0.9) return "PLUME ES";
+        if (pressure < 0.9) return "SEMBURAN ES";
         if (pressure < 2.1) return "RING E";
-        return "KORIDOR FLYBY";
+        return "KORIDOR TERBANG LEWAT DEKAT";
       }
-      if (pressure < 0.95) return "KABUT ATAS / ES AMONIA";
+      if (pressure < 0.95) return "KABUT ATAS / ES GAS AMONIA";
       if (pressure < 2.2) return "LAPISAN MENENGAH";
       return "AWAN LEBIH DALAM";
     }
@@ -656,6 +656,8 @@
       this.hudLocation = document.getElementById("saturn-full-hud-location");
       this.hudDepth = document.getElementById("saturn-full-hud-depth");
       this.hudSpeed = document.getElementById("saturn-full-hud-speed");
+      this.hudAltitude = document.getElementById("saturn-full-hud-altitude");
+      this.hudTarget = document.getElementById("saturn-full-hud-target");
       this.hudPressure = document.getElementById("saturn-full-hud-pressure");
       this.hudType = document.getElementById("saturn-full-hud-region-type");
       this.hudQuality = document.getElementById("saturn-full-hud-quality");
@@ -781,7 +783,7 @@
       });
       if (this.qualityLabel) this.qualityLabel.textContent = this.quality.label;
       if (this.hudQuality) this.hudQuality.textContent = this.quality.label;
-      if (this.qualityNote) this.qualityNote.textContent = `Rekomendasi perangkat: ${QUALITY[this.recommendedQuality].label}. Kualitas mengatur jumlah awan, partikel cincin, detail marker, dan ketajaman renderer.`;
+      if (this.qualityNote) this.qualityNote.textContent = `Rekomendasi perangkat: ${QUALITY[this.recommendedQuality].label}. Kualitas mengatur jumlah awan, butiran kecil cincin, detail marker, dan ketajaman mesin gambar 3D.`;
       if (this.renderer) {
         this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, this.quality.dpr));
         this.resize();
@@ -959,8 +961,20 @@
       });
     }
 
+    syncSavedDestinationProgress() {
+      for (const destination of DESTINATIONS) {
+        try {
+          const saved = JSON.parse(localStorage.getItem(`${DISCOVERY_PREFIX}${destination.id}`) || "[]");
+          if (Array.isArray(saved) && saved.length > 0) {
+            window.AntaraProgress?.trackFull?.("saturn", destination.id, destination.name);
+          }
+        } catch {}
+      }
+    }
+
     openEntryFlow() {
       if (!this.saturn.active || this.saturn.travelMode || this.saturn.fullExplorationActive) return;
+      this.syncSavedDestinationProgress();
       if (this.saturn.exploring) this.saturn.exitExploration();
       this.state = "configuring";
       this.saturn.fullExplorationActive = true;
@@ -997,7 +1011,7 @@
       if (this.renderer) return;
       await this.saturn.prepare();
       const T = this.saturn.THREE;
-      if (!T) throw new Error("WebGL2 tidak tersedia. Eksplorasi penuh Saturnus memerlukan renderer 3D.");
+      if (!T) throw new Error("WebGL2 tidak tersedia. Jelajah penuh Saturnus memerlukan mesin gambar 3D 3D.");
       this.THREE = T;
       const canvas = document.createElement("canvas");
       canvas.className = "saturn-full-canvas";
@@ -1050,7 +1064,7 @@
     async loadingSequence(token, label) {
       const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
       const stages = reduced ? [[100, 50, "SIAP TERBANG"]] : [
-        [22, 180, "MEMUAT DATA ATMOSFER"],
+        [22, 180, "MEMUAT DATA UDARA"],
         [48, 220, "MEMBENTUK LAPISAN AWAN"],
         [71, 220, "MENYIAPKAN ARUS & TURBULENSI"],
         [91, 200, "MENGUNCI BATAS EKSPLORASI"],
@@ -1076,7 +1090,7 @@
       this.qualityPanel.hidden = true;
       if (this.errorPanel) this.errorPanel.hidden = true;
       this.root.classList.add("is-preparing");
-      this.showLoading(`MEMASUKI ${destination.name.toUpperCase()}`, "MENYIAPKAN ATMOSFER", 7);
+      this.showLoading(`MEMASUKI ${destination.name.toUpperCase()}`, "MENYIAPKAN UDARA", 7);
       try {
         await this.prepareRenderer();
         if (token !== this.transitionToken) return;
@@ -1095,6 +1109,8 @@
         this.root.classList.remove("is-preparing");
         this.root.classList.add("is-active");
         this.state = "exploring";
+        window.AntaraProgress?.trackFull?.("saturn", destination.id, destination.name);
+        if (this.actionsRoot) this.actionsRoot.hidden = false;
         const compactUi = this.isMobileUi();
         this.infoOpen = !compactUi;
         this.objectiveOpen = !compactUi;
@@ -1102,7 +1118,7 @@
         this.syncPanels();
         this.startLoop();
         this.showTutorial();
-        document.getElementById("announcement").textContent = `Tiba di ${destination.name}. Kamu sekarang menjelajahi simulasi 3D Saturnus.`;
+        document.getElementById("announcement").textContent = `Tiba di ${destination.name}. Kamu sekarang menjelajahi tampilan 3D 3D Saturnus.`;
       } catch (error) {
         console.error("Saturn Full Exploration failed", error);
         if (token !== this.transitionToken) return;
@@ -1225,9 +1241,9 @@
       if (this.boundaryHint) {
         this.boundaryHint.classList.toggle("is-visible", boundary > 0.3);
         if (boundary > 0.3) {
-          if (this.camera.position.y < this.world.minY + 5) this.boundaryHint.textContent = "BATAS TEKANAN SIMULASI · TEKANAN MENINGKAT TERLALU CEPAT";
-          else if (this.camera.position.y > this.world.maxY - 5) this.boundaryHint.textContent = "BATAS LAPISAN ATAS · ARUS MEMBALIKKAN WAHANA";
-          else this.boundaryHint.textContent = boundary > 0.82 ? "BATAS EKSPLORASI · ARUS JET MEMBALIKKAN WAHANA" : "MENDEKATI BATAS EKSPLORASI";
+          if (this.camera.position.y < this.world.minY + 5) this.boundaryHint.textContent = "BATAS TEKANAN TAMPILAN 3D · TEKANAN MENINGKAT TERLALU CEPAT";
+          else if (this.camera.position.y > this.world.maxY - 5) this.boundaryHint.textContent = "BATAS LAPISAN ATAS · ARUS MEMBALIKKAN ROBOT ANTARIKSA";
+          else this.boundaryHint.textContent = boundary > 0.82 ? "BATAS EKSPLORASI · ARUS JET MEMBALIKKAN ROBOT ANTARIKSA" : "MENDEKATI BATAS EKSPLORASI";
         }
       }
     }
@@ -1257,7 +1273,7 @@
         else {
           const [x, y, z] = next.position;
           const distance = Math.hypot(this.camera.position.x - x, this.camera.position.y - y, this.camera.position.z - z);
-          this.nextTargetDistance.textContent = `${distance.toFixed(distance < 10 ? 1 : 0)} unit simulasi · dekati penanda`;
+          this.nextTargetDistance.textContent = `${distance.toFixed(distance < 10 ? 1 : 0)} unit tampilan 3D · dekati penanda`;
         }
       }
     }
@@ -1268,7 +1284,6 @@
       const fresh = !this.discovered.has(observation.id);
       this.discovered.add(observation.id);
       this.saveDiscoveryState();
-      if (fresh) window.AntaraProgress?.trackFull?.("saturn", `${this.current.id}:${observation.id}`, `${this.current.name} - ${observation.name}`);
       this.activeObservation = observation;
       this.observationPrompt.hidden = true;
       this.observationTitle.textContent = observation.name;
@@ -1321,7 +1336,7 @@
     buildObjectives() {
       if (!this.current || !this.objectivesList) return;
       if (this.objectivesRegion) this.objectivesRegion.textContent = this.current.name;
-      if (this.objectivesIntro) this.objectivesIntro.textContent = "Terbang mendekati penanda ilmiah. Saat cukup dekat, tekan E atau tombol AMATI untuk mencatat temuan.";
+      if (this.objectivesIntro) this.objectivesIntro.textContent = "Terbang mendekati penanda sains. Saat cukup dekat, tekan E atau tombol AMATI untuk mencatat temuan.";
       const fragment = document.createDocumentFragment();
       this.current.observations.forEach((observation, index) => {
         const done = this.discovered.has(observation.id);
@@ -1345,7 +1360,7 @@
       this.hudLocation.textContent = destination.name;
       this.hudType.textContent = destination.category;
       this.hudQuality.textContent = this.quality.label;
-      this.hudData.textContent = "NASA / JPL · MODEL ATMOSFER EDUKASI TERKOMPRESI";
+      this.hudData.textContent = "NASA / JPL · MODEL UDARA SEDERHANA";
       this.infoName.textContent = destination.name;
       this.infoType.textContent = `${destination.category} · ${destination.descriptor}`;
       this.infoCoords.textContent = destination.locationLabel;
@@ -1366,8 +1381,22 @@
       if (!this.world || !this.camera) return;
       const pressure = this.world.pressureAt(this.camera.position.y);
       const depth = this.world.maxY - this.camera.position.y;
-      this.hudDepth.textContent = `${depth.toFixed(1)} KM RELATIF · ${this.world.layerAtPressure(pressure)}`;
+      this.hudDepth.textContent = `${depth.toFixed(1)} KM CUKUP · ${this.world.layerAtPressure(pressure)}`;
       this.hudSpeed.textContent = `${Math.round(this.speed)} M/S SIM`;
+      const altitude = Math.max(0, this.camera.position.y - this.world.minY);
+      if (this.hudAltitude) this.hudAltitude.textContent = `${altitude.toFixed(1)} KM CUKUP`;
+      const remaining = this.current?.observations?.filter(obs => !this.discovered.has(obs.id)) || [];
+      if (this.hudTarget) {
+        if (!remaining.length) this.hudTarget.textContent = "SELESAI";
+        else {
+          let nearestDistance = Infinity;
+          for (const obs of remaining) {
+            const [x, y, z] = obs.position;
+            nearestDistance = Math.min(nearestDistance, Math.hypot(this.camera.position.x - x, this.camera.position.y - y, this.camera.position.z - z));
+          }
+          this.hudTarget.textContent = `${nearestDistance.toFixed(nearestDistance < 10 ? 1 : 0)} UNIT`;
+        }
+      }
       this.hudPressure.textContent = `${pressure.toFixed(pressure < 1 ? 2 : 1)} BAR SIM`;
       this.hudLocation.textContent = this.current.name;
       this.hudType.textContent = this.current.category;
@@ -1479,18 +1508,14 @@
     }
 
     showTutorial() {
-      let seen = false;
-      try { seen = sessionStorage.getItem("antara-saturn-pov-tutorial") === "1"; } catch {}
-      if (seen) return;
       this.tutorial.classList.add("is-visible");
-      window.setTimeout(() => this.hideTutorial(false), 9000);
+      window.clearTimeout(this.tutorialTimeout);
+      this.tutorialTimeout = window.setTimeout(() => this.hideTutorial(false), 9000);
     }
 
-    hideTutorial(persist = false) {
+    hideTutorial() {
       this.tutorial.classList.remove("is-visible");
-      if (persist) {
-        try { sessionStorage.setItem("antara-saturn-pov-tutorial", "1"); } catch {}
-      }
+      window.clearTimeout(this.tutorialTimeout);
     }
 
     showError(error) {

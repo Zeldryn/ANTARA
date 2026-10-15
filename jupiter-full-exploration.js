@@ -34,73 +34,73 @@
       short: "GREAT RED SPOT",
       category: "BADAI ANTISIKLON",
       descriptor: "Masuk ke tepi pusaran badai raksasa Jupiter",
-      locationLabel: "Atmosfer selatan Jupiter",
+      locationLabel: "Udara selatan Jupiter",
       preview: "grs",
       image: "./assets/jupiter-great-red-spot.jpg",
-      imageAlt: "Great Red Spot Jupiter pada citra Cassini",
+      imageAlt: "Great Red Spot Jupiter pada gambar Cassini",
       imageCaption: "Great Red Spot · Cassini / NASA",
       source: SOURCES.grs,
-      lead: "Di sini kamu tidak berdiri di atas tanah. Kamu terbang di antara lapisan awan yang ikut berputar di sekitar Great Red Spot. Juno menunjukkan pusaran ini tidak hanya hidup di permukaan awan, tetapi memanjang jauh ke bawah.",
+      lead: "Di sini kamu tidak berdiri di atas tanah. Kamu terbang di antara lapisan awan yang ikut berputar di sekitar Great Red Spot. Juno menunjukkan pusaran ini tidak hanya hidup di permukaan awan. Tapi memanjang jauh ke bawah.",
       facts: [
-        "Great Red Spot adalah anticyclone raksasa yang telah diamati selama berabad-abad.",
+        "Great Red Spot adalah antibadai berputar raksasa yang telah diamati selama berabad-abad.",
         "Pengukuran Juno membatasi kedalaman Great Red Spot hingga kira-kira 500 km di bawah puncak awan.",
-        "Jupiter sendiri didominasi hidrogen dan helium, sehingga seluruh pemandangan ini adalah atmosfer, bukan permukaan padat."
+        "Jupiter sendiri paling banyak berisi gas ringan bernama hidrogen dan gas ringan bernama helium. Jadi seluruh pemandangan ini adalah udara, bukan permukaan padat."
       ],
       palette: { sky: 0x5b2f24, fog: 0x8d5b48, fogDensity: 0.0125, cloud: "#e5c3a2", cloud2: "#a65e4b", accent: 0xe6b38d, lightning: 0xffdec0 },
       wind: { x: 1.15, z: -0.45 },
       turbulence: 1.35,
       spawn: { x: -20, y: 9, z: 44, yaw: Math.PI * 0.93, pitch: -0.05 },
       observations: [
-        { id: "grs-wall", name: "Dinding Pusaran", category: "ARUS BADAI", position: [4, 5, -15], radius: 11, source: SOURCES.grs, lead: "Awan di sisi pusaran bergerak sebagai bagian dari sistem badai besar yang saling menggeser.", why: "Struktur vertikal dan gerak awan membantu ilmuwan menebak bagaimana energi badai disimpan dan dipindahkan.", facts: ["Great Red Spot merupakan anticyclone.", "Juno menemukan struktur badai jauh lebih dalam daripada lapisan awan yang terlihat.", "Warna merahnya berasal dari kimia atmosfer yang masih dipelajari."] },
-        { id: "grs-shear", name: "Zona Geser Angin", category: "JET STREAM", position: [-28, -3, -6], radius: 10, source: SOURCES.facts, lead: "Di tepi badai, aliran atmosfer bertemu dengan jet timur-barat Jupiter.", why: "Perbedaan arah dan kecepatan angin membantu menjaga pusaran tetap terorganisasi.", facts: ["Sabuk dan zona Jupiter dipisahkan jet stream kuat.", "Arah aliran dapat berlawanan pada lintang yang berdekatan.", "Rotasi Jupiter yang sangat cepat ikut membentuk pola pita global."] },
-        { id: "grs-deep", name: "Awan Lebih Dalam", category: "LAPISAN TEKANAN", position: [24, -22, 22], radius: 10, source: SOURCES.facts, lead: "Semakin turun, tekanan bertambah dan komposisi awan berubah.", why: "Lapisan awan yang berbeda memberi petunjuk tentang suhu, tekanan, dan sirkulasi di atmosfer dalam Jupiter.", facts: ["Lapisan atas diperkirakan didominasi es amonia.", "Di bawahnya dapat terbentuk kristal ammonium hydrosulfide.", "Awan air diperkirakan berada lebih dalam pada tekanan yang lebih tinggi."] }
+        { id: "grs-wall", name: "Dinding Pusaran", category: "ARUS BADAI", position: [4, 5, -15], radius: 11, source: SOURCES.grs, lead: "Awan di sisi pusaran bergerak sebagai bagian dari sistem badai besar yang saling menggeser.", why: "Bentuk atas-bawah dan gerak awan membantu ilmuwan menebak bagaimana energi badai disimpan dan dipindahkan.", facts: ["Great Red Spot adalah antibadai berputar.", "Juno menemukan bentuk badai jauh lebih dalam daripada lapisan awan yang terlihat.", "Warna merahnya berasal dari kimia udara yang masih dipelajari."] },
+        { id: "grs-shear", name: "Zona Geser Angin", category: "ARUS ANGIN CEPAT", position: [-28, -3, -6], radius: 10, source: SOURCES.facts, lead: "Di tepi badai, aliran udara bertemu dengan jet timur-barat Jupiter.", why: "Perbedaan arah dan kecepatan angin membantu menjaga pusaran tetap terorganisasi.", facts: ["Sabuk dan zona Jupiter dipisahkan arus angin cepat kuat.", "Arah aliran dapat berlawanan pada lintang yang berdekatan.", "Putaran Jupiter yang sangat cepat ikut membentuk pola pita di seluruh planet."] },
+        { id: "grs-deep", name: "Awan Lebih Dalam", category: "LAPISAN TEKANAN", position: [24, -22, 22], radius: 10, source: SOURCES.facts, lead: "Semakin turun, tekanan bertambah dan isi awan berubah.", why: "Lapisan awan yang berbeda menunjukkan tentang suhu, tekanan, dan sirkulasi di udara dalam Jupiter.", facts: ["Lapisan atas kira-kira paling banyak berisi es gas bernama amonia.", "Di bawahnya dapat terbentuk kristal ammonium hydrosulfide.", "Awan air kira-kira berada lebih dalam pada tekanan yang lebih tinggi."] }
       ]
     },
     {
       id: "bands",
       name: "Sabuk & Zona Awan",
       short: "BELTS & ZONES",
-      category: "JET STREAM GLOBAL",
+      category: "ARUS ANGIN CEPAT DI SELURUH PLANET",
       descriptor: "Terbang di antara pita terang dan gelap Jupiter",
       locationLabel: "Lintang rendah hingga menengah",
       preview: "bands",
       image: "./assets/jupiter-global-card.jpg",
-      imageAlt: "Portrait global Jupiter dari Cassini",
+      imageAlt: "Portrait di seluruh planet Jupiter dari Cassini",
       imageCaption: "Belts & Zones · Cassini / NASA",
       source: SOURCES.facts,
-      lead: "Pita terang dan gelap Jupiter bukan garis pada permukaan. Ini adalah lapisan awan dan aliran atmosfer yang bergerak dengan pola berbeda.",
+      lead: "Pita terang dan gelap Jupiter bukan garis pada permukaan. Ini adalah lapisan awan dan aliran udara yang bergerak dengan pola berbeda.",
       facts: [
         "Pita gelap disebut belts dan pita terang disebut zones.",
         "Jet timur-barat dapat mencapai sekitar 150 m/s pada lintang rendah menurut NASA fact sheet.",
-        "Rotasi cepat Jupiter membantu mengatur atmosfer menjadi pita-pita panjang."
+        "Putaran cepat Jupiter membantu mengatur udara menjadi pita-pita panjang."
       ],
       palette: { sky: 0x6b5a49, fog: 0xa99174, fogDensity: 0.0108, cloud: "#efe2c6", cloud2: "#8a6b56", accent: 0xe8d6b3, lightning: 0xffefce },
       wind: { x: 1.65, z: 0.18 },
       turbulence: 0.7,
       spawn: { x: -34, y: 4, z: 38, yaw: Math.PI * 0.83, pitch: -0.02 },
       observations: [
-        { id: "bands-zone", name: "Zona Terang", category: "UPWELLING", position: [12, 15, -5], radius: 10, source: SOURCES.facts, lead: "Zona terang mewakili wilayah awan yang berbeda dari belt gelap di sebelahnya.", why: "Perbedaan kecerahan dan gerak menunjukkan sirkulasi vertikal serta komposisi awan yang berubah.", facts: ["Zones biasanya terlihat lebih terang.", "Awan Jupiter mengandung amonia dan air pada lapisan berbeda.", "Batas zona sering menjadi lokasi gelombang dan pusaran kecil."] },
-        { id: "bands-belt", name: "Sabuk Gelap", category: "BELT", position: [-16, -7, -17], radius: 10, source: SOURCES.facts, lead: "Sabuk gelap adalah bagian dari struktur pita global yang mengelilingi Jupiter.", why: "Membandingkan belt dan zone membantu menjelaskan sirkulasi atmosfer pada planet yang tidak punya permukaan.", facts: ["Belts tampak lebih gelap daripada zones.", "Jet stream kuat mengalir di batas antar pita.", "Pola pita dapat berubah tetapi tetap menjadi ciri utama Jupiter."] },
-        { id: "bands-jet", name: "Batas Jet", category: "SHEAR", position: [34, 2, 17], radius: 9, source: SOURCES.facts, lead: "Di batas pita, dua aliran dapat bergerak dengan arah berbeda dan menciptakan shear.", why: "Shear memicu gelombang, filamen, dan pusaran kecil yang membuat atmosfer Jupiter tampak hidup.", facts: ["Jupiter memiliki banyak jet timur-barat.", "Kecepatan angin berubah menurut lintang.", "Rotasi planet sekitar 9,9 jam memperkuat organisasi atmosfernya."] }
+        { id: "bands-zone", name: "Zona Terang", category: "UPWELLING", position: [12, 15, -5], radius: 10, source: SOURCES.facts, lead: "Zona terang mewakili wilayah awan yang berbeda dari belt gelap di sebelahnya.", why: "Perbedaan kecerahan dan gerak menunjukkan sirkulasi atas-bawah serta isi awan yang berubah.", facts: ["Zones biasanya terlihat lebih terang.", "Awan Jupiter mengandung gas bernama amonia dan air pada lapisan berbeda.", "Batas zona sering menjadi lokasi gelombang dan pusaran kecil."] },
+        { id: "bands-belt", name: "Sabuk Gelap", category: "BELT", position: [-16, -7, -17], radius: 10, source: SOURCES.facts, lead: "Sabuk gelap adalah bagian dari bentuk pita di seluruh planet yang mengelilingi Jupiter.", why: "Membandingkan belt dan zone membantu menjelaskan sirkulasi udara pada planet yang tidak punya permukaan.", facts: ["Belts tampak lebih gelap daripada zones.", "Arus angin cepat kuat mengalir di batas antar pita.", "Pola pita dapat berubah tetapi tetap menjadi ciri utama Jupiter."] },
+        { id: "bands-jet", name: "Batas Jet", category: "SHEAR", position: [34, 2, 17], radius: 9, source: SOURCES.facts, lead: "Di batas pita, dua aliran bisa bergerak dengan arah berbeda dan menciptakan shear.", why: "Shear memicu gelombang, filamen, dan pusaran kecil yang membuat udara Jupiter tampak hidup.", facts: ["Jupiter punya banyak jet timur-barat.", "Kecepatan angin berubah menurut lintang.", "Putaran planet sekitar 9,9 jam memperkuat organisasi udaranya."] }
       ]
     },
     {
       id: "lightning",
       name: "Badai Petir Jovian",
       short: "JOVIAN LIGHTNING",
-      category: "KONVEKSI & PETIR",
+      category: "GERAKAN PANAS NAIK DAN TURUN & PETIR",
       descriptor: "Turun menuju awan air dan kilatan petir Jupiter",
-      locationLabel: "Atmosfer konvektif Jupiter",
+      locationLabel: "Udara konvektif Jupiter",
       preview: "lightning",
       image: "./assets/jupiter-atmosphere-diagram.svg",
-      imageAlt: "Diagram lapisan atmosfer Jupiter",
-      imageCaption: "Lapisan awan Jupiter · visualisasi ANTARA berbasis NASA",
+      imageAlt: "Diagram lapisan udara Jupiter",
+      imageCaption: "Lapisan awan Jupiter · gambar bantu belajar ANTARA berbasis NASA",
       source: SOURCES.lightning,
-      lead: "Juno menemukan petir pada Jupiter bisa muncul lebih tinggi daripada perkiraan lama. Amonia dan air dapat bercampur pada kondisi tertentu, membentuk proses yang tidak punya padanan langsung di cuaca Bumi.",
+      lead: "Juno menemukan petir pada Jupiter bisa muncul lebih tinggi daripada perkiraan lama. Gas amonia dan air bisa bercampur pada kondisi tertentu, membentuk cara yang tidak punya padanan langsung di cuaca Bumi.",
       facts: [
         "Petir dalam telah lama dikaitkan dengan awan air yang berada puluhan kilometer di bawah awan terlihat.",
         "Juno juga mendeteksi shallow lightning pada ketinggian yang lebih tinggi.",
-        "Model Juno mengaitkan proses ini dengan campuran amonia-air dan pembentukan mushballs."
+        "Model Juno mengaitkan cara ini dengan campuran gas bernama amonia-air dan pembentukan mushballs."
       ],
       palette: { sky: 0x28333c, fog: 0x6d7780, fogDensity: 0.0145, cloud: "#d7dde0", cloud2: "#7e898f", accent: 0xddeeff, lightning: 0xe9f5ff },
       wind: { x: 0.65, z: 1.15 },
@@ -108,9 +108,9 @@
       lightning: true,
       spawn: { x: -22, y: 18, z: 46, yaw: Math.PI * 0.92, pitch: -0.12 },
       observations: [
-        { id: "lightning-shallow", name: "Shallow Lightning", category: "PETIR DANGKAL", position: [7, 13, -12], radius: 11, source: SOURCES.lightning, lead: "Kilatan ini merepresentasikan petir yang ditemukan Juno pada ketinggian lebih tinggi dari lokasi petir air klasik.", why: "Penemuan ini mengubah gambaran tentang bagaimana amonia dan air bergerak di atmosfer Jupiter.", facts: ["Juno mengamati kilatan kecil pada sisi malam Jupiter.", "Kilatan dangkal terjadi lebih tinggi daripada petir yang hanya bergantung pada awan air dalam.", "Amonia menurunkan titik beku campuran air sehingga memungkinkan proses unik."] },
-        { id: "lightning-water", name: "Awan Air Dalam", category: "WATER CLOUD", position: [-24, -25, -4], radius: 10, source: SOURCES.facts, lead: "Lapisan lebih dalam diperkirakan mengandung awan air dan menjadi lokasi konveksi kuat.", why: "Awan air adalah bagian penting untuk memahami energi internal, badai, dan petir Jupiter.", facts: ["NASA menempatkan awan air di bawah lapisan amonia dan ammonium hydrosulfide.", "Tekanan dan suhu meningkat saat turun.", "Petir dalam menunjukkan adanya konveksi lembap yang kuat."] },
-        { id: "lightning-mushball", name: "Zona Mushball", category: "AMONIA-AIR", position: [30, -6, 18], radius: 10, source: SOURCES.lightning, lead: "Juno mengusulkan bahwa campuran amonia dan air dapat membentuk bola es lembek yang membawa amonia lebih jauh ke bawah.", why: "Proses ini membantu menjelaskan mengapa amonia tampak berkurang dari sebagian besar atmosfer atas Jupiter.", facts: ["Mushballs adalah hipotesis fisik yang didukung kombinasi pengamatan dan model Juno.", "Mereka dapat membawa amonia ke kedalaman yang lebih besar.", "Proses ini terkait dengan badai konvektif dan shallow lightning."] }
+        { id: "lightning-shallow", name: "Shallow Lightning", category: "PETIR DANGKAL", position: [7, 13, -12], radius: 11, source: SOURCES.lightning, lead: "Kilatan ini merepresentasikan petir yang ditemukan Juno pada ketinggian lebih tinggi dari lokasi petir air klasik.", why: "Penemuan ini mengubah gambaran tentang bagaimana gas bernama amonia dan air bergerak di udara Jupiter.", facts: ["Juno mengamati kilatan kecil pada sisi malam Jupiter.", "Kilatan dangkal terjadi lebih tinggi daripada petir yang hanya bergantung pada awan air dalam.", "Gas amonia menurunkan titik beku campuran air sehingga memungkinkan cara unik."] },
+        { id: "lightning-water", name: "Awan Air Dalam", category: "WATER CLOUD", position: [-24, -25, -4], radius: 10, source: SOURCES.facts, lead: "Lapisan lebih dalam kira-kira mengandung awan air dan menjadi lokasi gerakan panas naik dan turun kuat.", why: "Awan air adalah bagian penting untuk memahami energi internal, badai, dan petir Jupiter.", facts: ["NASA menempatkan awan air di bawah lapisan gas bernama amonia dan ammonium hydrosulfide.", "Tekanan dan suhu meningkat saat turun.", "Petir dalam menunjukkan adanya gerakan panas naik dan turun lembap yang kuat."] },
+        { id: "lightning-mushball", name: "Zona Mushball", category: "AMONIA-AIR", position: [30, -6, 18], radius: 10, source: SOURCES.lightning, lead: "Juno mengusulkan bahwa campuran gas bernama amonia dan air dapat membentuk bola es lembek yang membawa gas bernama amonia lebih jauh ke bawah.", why: "Cara ini membantu menjelaskan mengapa gas bernama amonia tampak berkurang dari sebagian besar udara atas Jupiter.", facts: ["Mushballs adalah hipotesis fisik yang didukung kombinasi melihat dan mempelajari dan model Juno.", "Mereka dapat membawa gas bernama amonia ke kedalaman yang lebih besar.", "Cara ini berhubungan dengan badai konvektif dan shallow lightning."] }
       ]
     },
     {
@@ -118,45 +118,45 @@
       name: "5-Micron Hot Spot",
       short: "HOT SPOT",
       category: "CELAH AWAN",
-      descriptor: "Masuk ke wilayah kering yang membuka pandangan ke atmosfer lebih dalam",
+      descriptor: "Masuk ke wilayah kering yang membuka pandangan ke udara lebih dalam",
       locationLabel: "Hot spot ekuatorial Jupiter",
       preview: "hotspot",
       image: "./assets/jupiter-global-card.jpg",
       imageAlt: "Hot spot Jupiter dari data Juno",
       imageCaption: "Jupiter hot spot · Juno / NASA",
       source: SOURCES.hotspot,
-      lead: "Hot spot adalah celah relatif pada dek awan. Dari wilayah seperti inilah radiasi inframerah dari atmosfer lebih dalam dapat lolos dengan lebih mudah.",
+      lead: "Hot spot adalah celah cukup pada dek awan. Dari wilayah seperti inilah energi cahaya panas dari udara lebih dalam dapat lolos dengan lebih mudah.",
       facts: [
-        "Galileo Probe masuk dekat sebuah hot spot pada 1995 dan mengukur atmosfer secara langsung.",
-        "Probe mengirim data selama sekitar 58 menit sambil turun ke atmosfer Jupiter.",
-        "Hot spot yang dimasuki Galileo ternyata sangat kering dibanding rata-rata global."
+        "Galileo Probe masuk dekat sebuah hot spot pada 1995 dan mengukur udara secara langsung.",
+        "Probe mengirim data selama sekitar 58 menit sambil turun ke udara Jupiter.",
+        "Hot spot yang dimasuki Galileo ternyata sangat kering dibanding rata-rata di seluruh planet."
       ],
       palette: { sky: 0x4a3c2d, fog: 0x7a654d, fogDensity: 0.0087, cloud: "#c9b18d", cloud2: "#554537", accent: 0xf0c37e, lightning: 0xffd194 },
       wind: { x: 1.3, z: -0.1 },
       turbulence: 0.55,
       spawn: { x: -30, y: 10, z: 45, yaw: Math.PI * 0.9, pitch: -0.08 },
       observations: [
-        { id: "hotspot-window", name: "Jendela Inframerah", category: "CLOUD BREAK", position: [10, 6, -13], radius: 10, source: SOURCES.hotspot, lead: "Awan lebih tipis memungkinkan kita melihat lebih jauh ke atmosfer dalam pada panjang gelombang tertentu.", why: "Hot spot membantu ilmuwan memetakan struktur vertikal dan kandungan uap air Jupiter.", facts: ["Hot spot tampak terang pada panjang gelombang inframerah tertentu.", "Wilayah ini dapat lebih kering daripada lingkungan sekitarnya.", "Juno mengamati hot spot bersama struktur awan dan shallow lightning di sekitarnya."] },
-        { id: "hotspot-probe", name: "Jejak Galileo Probe", category: "IN-SITU", position: [-22, -16, 3], radius: 10, source: SOURCES.probe, lead: "Galileo Probe menjadi wahana pertama yang langsung memasuki atmosfer Jupiter pada 7 Desember 1995.", why: "Pengukuran langsung memberi data tekanan, suhu, komposisi, awan, angin, dan petir yang tidak bisa diperoleh hanya dari jauh.", facts: ["Probe mengirim data selama sekitar 58 menit.", "Sinyalnya hilang setelah mencapai tekanan sekitar puluhan atmosfer.", "Probe tidak pernah menemukan tanah karena Jupiter memang tidak punya permukaan padat."] },
-        { id: "hotspot-downdraft", name: "Arus Turun Kering", category: "DOWNWELLING", position: [29, -5, 21], radius: 10, source: SOURCES.probe, lead: "Hot spot Galileo adalah wilayah yang relatif kering dengan udara yang bergerak turun.", why: "Arus turun dapat membersihkan awan dan membuat wilayah menjadi transparan pada inframerah.", facts: ["Galileo mengukur kandungan air yang lebih rendah dari perkiraan karena masuk ke wilayah yang tidak representatif secara global.", "Juno kemudian membantu memperbarui gambaran tentang distribusi air Jupiter.", "Hot spot menunjukkan cuaca lokal Jupiter sangat bervariasi."] }
+        { id: "hotspot-window", name: "Jendela Inframerah", category: "CLOUD BREAK", position: [10, 6, -13], radius: 10, source: SOURCES.hotspot, lead: "Awan lebih tipis memungkinkan kita melihat lebih jauh ke udara dalam pada jenis cahaya tertentu.", why: "Hot spot membantu ilmuwan membuat peta bentuk atas-bawah dan kandungan uap air Jupiter.", facts: ["Hot spot tampak terang pada cahaya panas tertentu.", "Wilayah ini dapat lebih kering daripada lingkungan sekitarnya.", "Juno mengamati hot spot bersama bentuk awan dan shallow lightning di sekitarnya."] },
+        { id: "hotspot-probe", name: "Jejak Galileo Probe", category: "IN-SITU", position: [-22, -16, 3], radius: 10, source: SOURCES.probe, lead: "Galileo Probe menjadi robot antariksa pertama yang langsung memasuki udara Jupiter pada 7 Desember 1995.", why: "Pengukuran langsung memberi data tekanan, suhu, isi, awan, angin, dan petir yang tidak bisa diperoleh hanya dari jauh.", facts: ["Probe mengirim data selama sekitar 58 menit.", "Sinyalnya hilang setelah mencapai tekanan sekitar puluhan udara.", "Probe tidak pernah menemukan tanah karena Jupiter memang tidak punya permukaan padat."] },
+        { id: "hotspot-downdraft", name: "Arus Turun Kering", category: "DOWNWELLING", position: [29, -5, 21], radius: 10, source: SOURCES.probe, lead: "Hot spot Galileo adalah wilayah yang cukup kering dengan udara yang bergerak turun.", why: "Arus turun dapat membersihkan awan dan membuat wilayah menjadi transparan pada cahaya panas.", facts: ["Galileo mengukur kandungan air yang lebih rendah dari perkiraan karena masuk ke wilayah yang tidak representatif secara di seluruh planet.", "Juno kemudian membantu memperbarui gambaran tentang penyebaran air Jupiter.", "Hot spot menunjukkan cuaca lokal Jupiter sangat berbeda-beda."] }
       ]
     },
     {
       id: "polar",
       name: "Siklon Kutub",
       short: "POLAR CYCLONES",
-      category: "ATMOSFER POLAR",
+      category: "UDARA POLAR",
       descriptor: "Terbang di sekitar pusaran yang memenuhi kutub Jupiter",
       locationLabel: "Kutub utara Jupiter",
       preview: "polar",
       image: "./assets/jupiter-global-card.jpg",
-      imageAlt: "Salah satu siklon circumpolar Jupiter pada citra JunoCam",
-      imageCaption: "Circumpolar Cyclone · JunoCam / NASA",
+      imageAlt: "Salah satu siklon circumpolar Jupiter pada gambar JunoCam",
+      imageCaption: "Circumpolar Badai berputar · JunoCam / NASA",
       source: SOURCES.polar,
       lead: "Di kutub, pola pita berubah menjadi kumpulan pusaran raksasa. Juno melihat satu siklon pusat di kutub utara yang dikelilingi delapan siklon besar.",
       facts: [
-        "Kutub utara memiliki siklon pusat yang dikelilingi delapan siklon circumpolar besar.",
-        "Pusaran-pusaran ini dapat bertahan walaupun atmosfer di sekitarnya sangat turbulen.",
+        "Kutub utara punya siklon pusat yang dikelilingi delapan siklon circumpolar besar.",
+        "Pusaran-pusaran ini dapat bertahan meski udara di sekitarnya sangat turbulen.",
         "Juno adalah misi pertama yang memberi pandangan jelas ke wilayah kutub Jupiter."
       ],
       palette: { sky: 0x35404a, fog: 0x71808a, fogDensity: 0.0118, cloud: "#cbd3d5", cloud2: "#6d777d", accent: 0xd2e1e3, lightning: 0xe9f8ff },
@@ -164,9 +164,9 @@
       turbulence: 1.05,
       spawn: { x: -34, y: 13, z: 34, yaw: Math.PI * 0.78, pitch: -0.06 },
       observations: [
-        { id: "polar-center", name: "Siklon Pusat", category: "POLAR VORTEX", position: [3, 4, -16], radius: 11, source: SOURCES.polar, lead: "Pusaran pusat menjadi jangkar pola badai di kutub utara Jupiter.", why: "Susunan yang stabil menantang model sederhana tentang bagaimana badai besar seharusnya saling bertabrakan.", facts: ["Kutub utara memiliki satu siklon pusat.", "Delapan siklon besar mengelilinginya.", "Geometri kumpulan badai dapat bertahan dalam jangka panjang."] },
-        { id: "polar-ring", name: "Siklon Circumpolar", category: "CIRCUMPOLAR", position: [-27, -3, 8], radius: 10, source: SOURCES.polar, lead: "Siklon besar lain mengitari pusat tanpa langsung menyatu dengannya.", why: "Interaksi antar vortex memberi petunjuk tentang dinamika fluida pada planet berotasi cepat.", facts: ["JunoCam memotret detail pusaran circumpolar.", "Masing-masing badai dapat berukuran sangat besar.", "Kutub Jupiter tampak sangat berbeda dari pita ekuatornya."] },
-        { id: "polar-haze", name: "Kabut Kutub", category: "HAZE", position: [25, 18, 20], radius: 9, source: SOURCES.facts, lead: "Lapisan kabut tinggi memberi tekstur tambahan di atas sistem badai kutub.", why: "Partikel aerosol dan awan tinggi membantu melacak sirkulasi di atas pusaran besar.", facts: ["Atmosfer atas Jupiter memiliki haze dan awan amonia.", "Cahaya Matahari menyebar melalui partikel kecil di ketinggian tinggi.", "Struktur awan atas dapat bergerak berbeda dari lapisan yang lebih dalam."] }
+        { id: "polar-center", name: "Siklon Pusat", category: "POLAR PUSARAN BADAI", position: [3, 4, -16], radius: 11, source: SOURCES.polar, lead: "Pusaran pusat menjadi jangkar pola badai di kutub utara Jupiter.", why: "Susunan yang cukup tetap menantang model sederhana tentang bagaimana badai besar seharusnya saling bertabrakan.", facts: ["Kutub utara punya satu siklon pusat.", "Delapan siklon besar mengelilinginya.", "Geometri kumpulan badai dapat bertahan dalam jangka panjang."] },
+        { id: "polar-ring", name: "Siklon Circumpolar", category: "CIRCUMPOLAR", position: [-27, -3, 8], radius: 10, source: SOURCES.polar, lead: "Siklon besar lain mengitari pusat tanpa langsung menyatu dengannya.", why: "Saling pengaruh antar pusaran badai menunjukkan tentang gerakan bahan yang bisa mengalir pada planet berputar cepat.", facts: ["JunoCam memotret detail pusaran circumpolar.", "Masing-masing badai dapat berukuran sangat besar.", "Kutub Jupiter tampak sangat berbeda dari pita ekuatornya."] },
+        { id: "polar-kabut tipis", name: "Kabut Kutub", category: "KABUT TIPIS", position: [25, 18, 20], radius: 9, source: SOURCES.facts, lead: "Lapisan kabut tinggi memberi tekstur tambahan di atas sistem badai kutub.", why: "Butiran kecil butiran kecil di udara dan awan tinggi membantu melacak sirkulasi di atas pusaran besar.", facts: ["Udara atas Jupiter punya kabut tipis dan awan gas bernama amonia.", "Cahaya Matahari menyebar melalui butiran kecil di ketinggian tinggi.", "Bentuk awan atas dapat bergerak berbeda dari lapisan yang lebih dalam."] }
       ]
     }
   ]);
@@ -472,7 +472,7 @@
     }
 
     layerAtPressure(pressure) {
-      if (pressure < 0.95) return "AWAN AMONIA";
+      if (pressure < 0.95) return "AWAN GAS AMONIA";
       if (pressure < 2.2) return "NH4SH / AWAN MENENGAH";
       return "AWAN AIR LEBIH DALAM";
     }
@@ -574,6 +574,7 @@
 
       this.viewport = document.getElementById("jupiter-full-viewport");
       this.inputLayer = document.getElementById("jupiter-full-orbit-input");
+      this.hud = this.root.querySelector(".mars-full-hud");
       this.qualityPanel = document.getElementById("jupiter-quality-panel");
       this.qualityOptions = document.getElementById("jupiter-quality-options");
       this.qualityClose = document.getElementById("jupiter-quality-close");
@@ -586,6 +587,8 @@
       this.hudLocation = document.getElementById("jupiter-full-hud-location");
       this.hudDepth = document.getElementById("jupiter-full-hud-depth");
       this.hudSpeed = document.getElementById("jupiter-full-hud-speed");
+      this.hudAltitude = document.getElementById("jupiter-full-hud-altitude");
+      this.hudTarget = document.getElementById("jupiter-full-hud-target");
       this.hudPressure = document.getElementById("jupiter-full-hud-pressure");
       this.hudType = document.getElementById("jupiter-full-hud-region-type");
       this.hudQuality = document.getElementById("jupiter-full-hud-quality");
@@ -711,7 +714,7 @@
       });
       if (this.qualityLabel) this.qualityLabel.textContent = this.quality.label;
       if (this.hudQuality) this.hudQuality.textContent = this.quality.label;
-      if (this.qualityNote) this.qualityNote.textContent = `Rekomendasi perangkat: ${QUALITY[this.recommendedQuality].label}. Kualitas mengatur jumlah awan, ketajaman, dan detail efek atmosfer.`;
+      if (this.qualityNote) this.qualityNote.textContent = `Rekomendasi perangkat: ${QUALITY[this.recommendedQuality].label}. Kualitas mengatur jumlah awan, ketajaman, dan detail efek udara.`;
       if (this.renderer) {
         this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, this.quality.dpr));
         this.resize();
@@ -889,8 +892,20 @@
       });
     }
 
+    syncSavedDestinationProgress() {
+      for (const destination of DESTINATIONS) {
+        try {
+          const saved = JSON.parse(localStorage.getItem(`${DISCOVERY_PREFIX}${destination.id}`) || "[]");
+          if (Array.isArray(saved) && saved.length > 0) {
+            window.AntaraProgress?.trackFull?.("jupiter", destination.id, destination.name);
+          }
+        } catch {}
+      }
+    }
+
     openEntryFlow() {
       if (!this.jupiter.active || this.jupiter.travelMode || this.jupiter.fullExplorationActive) return;
+      this.syncSavedDestinationProgress();
       if (this.jupiter.exploring) this.jupiter.exitExploration();
       this.state = "configuring";
       this.jupiter.fullExplorationActive = true;
@@ -905,7 +920,7 @@
       if (this.errorPanel) this.errorPanel.hidden = true;
       this.hideWorldUi();
       this.root.classList.remove("is-active", "is-preparing", "is-exiting");
-      document.getElementById("announcement").textContent = "Pilih kualitas grafis sebelum masuk ke atmosfer Jupiter.";
+      document.getElementById("announcement").textContent = "Pilih kualitas grafis sebelum masuk ke udara Jupiter.";
     }
 
     closeEntryFlow() {
@@ -920,14 +935,14 @@
       this.state = "selecting";
       this.qualityPanel.hidden = true;
       this.selector.hidden = false;
-      document.getElementById("announcement").textContent = "Pilih wilayah atmosfer Jupiter yang ingin dimasuki.";
+      document.getElementById("announcement").textContent = "Pilih wilayah udara Jupiter yang ingin dimasuki.";
     }
 
     async prepareRenderer() {
       if (this.renderer) return;
       await this.jupiter.prepare();
       const T = this.jupiter.THREE;
-      if (!T) throw new Error("WebGL2 tidak tersedia. Eksplorasi atmosfer Jupiter memerlukan renderer 3D.");
+      if (!T) throw new Error("WebGL2 tidak tersedia. Eksplorasi udara Jupiter memerlukan mesin gambar 3D 3D.");
       this.THREE = T;
       const canvas = document.createElement("canvas");
       canvas.className = "jupiter-full-canvas";
@@ -980,7 +995,7 @@
     async loadingSequence(token, label) {
       const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
       const stages = reduced ? [[100, 50, "SIAP TERBANG"]] : [
-        [22, 180, "MEMUAT DATA ATMOSFER"],
+        [22, 180, "MEMUAT DATA UDARA"],
         [48, 220, "MEMBENTUK LAPISAN AWAN"],
         [71, 220, "MENYIAPKAN ARUS & TURBULENSI"],
         [91, 200, "MENGUNCI BATAS EKSPLORASI"],
@@ -1006,7 +1021,7 @@
       this.qualityPanel.hidden = true;
       if (this.errorPanel) this.errorPanel.hidden = true;
       this.root.classList.add("is-preparing");
-      this.showLoading(`MEMASUKI ${destination.name.toUpperCase()}`, "MENYIAPKAN ATMOSFER", 7);
+      this.showLoading(`MEMASUKI ${destination.name.toUpperCase()}`, "MENYIAPKAN UDARA", 7);
       try {
         await this.prepareRenderer();
         if (token !== this.transitionToken) return;
@@ -1024,7 +1039,10 @@
         this.loading.hidden = true;
         this.root.classList.remove("is-preparing");
         this.root.classList.add("is-active");
+        if (this.hud) this.hud.hidden = false;
         this.state = "exploring";
+        window.AntaraProgress?.trackFull?.("jupiter", destination.id, destination.name);
+        if (this.actionsRoot) this.actionsRoot.hidden = false;
         const compactUi = this.isMobileUi();
         this.infoOpen = !compactUi;
         this.objectiveOpen = !compactUi;
@@ -1032,7 +1050,7 @@
         this.syncPanels();
         this.startLoop();
         this.showTutorial();
-        document.getElementById("announcement").textContent = `Tiba di ${destination.name}. Kamu sekarang terbang bebas di atmosfer Jupiter.`;
+        document.getElementById("announcement").textContent = `Tiba di ${destination.name}. Kamu sekarang terbang bebas di udara Jupiter.`;
       } catch (error) {
         console.error("Jupiter Full Exploration failed", error);
         if (token !== this.transitionToken) return;
@@ -1155,9 +1173,9 @@
       if (this.boundaryHint) {
         this.boundaryHint.classList.toggle("is-visible", boundary > 0.3);
         if (boundary > 0.3) {
-          if (this.camera.position.y < this.world.minY + 5) this.boundaryHint.textContent = "BATAS TEKANAN SIMULASI · TEKANAN MENINGKAT TERLALU CEPAT";
-          else if (this.camera.position.y > this.world.maxY - 5) this.boundaryHint.textContent = "BATAS LAPISAN ATAS · ARUS MEMBALIKKAN WAHANA";
-          else this.boundaryHint.textContent = boundary > 0.82 ? "BATAS EKSPLORASI · ARUS JET MEMBALIKKAN WAHANA" : "MENDEKATI BATAS EKSPLORASI";
+          if (this.camera.position.y < this.world.minY + 5) this.boundaryHint.textContent = "BATAS TEKANAN TAMPILAN 3D · TEKANAN MENINGKAT TERLALU CEPAT";
+          else if (this.camera.position.y > this.world.maxY - 5) this.boundaryHint.textContent = "BATAS LAPISAN ATAS · ARUS MEMBALIKKAN ROBOT ANTARIKSA";
+          else this.boundaryHint.textContent = boundary > 0.82 ? "BATAS EKSPLORASI · ARUS JET MEMBALIKKAN ROBOT ANTARIKSA" : "MENDEKATI BATAS EKSPLORASI";
         }
       }
     }
@@ -1187,7 +1205,7 @@
         else {
           const [x, y, z] = next.position;
           const distance = Math.hypot(this.camera.position.x - x, this.camera.position.y - y, this.camera.position.z - z);
-          this.nextTargetDistance.textContent = `${distance.toFixed(distance < 10 ? 1 : 0)} unit simulasi · dekati penanda`;
+          this.nextTargetDistance.textContent = `${distance.toFixed(distance < 10 ? 1 : 0)} unit tampilan 3D · dekati penanda`;
         }
       }
     }
@@ -1198,7 +1216,6 @@
       const fresh = !this.discovered.has(observation.id);
       this.discovered.add(observation.id);
       this.saveDiscoveryState();
-      if (fresh) window.AntaraProgress?.trackFull?.("jupiter", `${this.current.id}:${observation.id}`, `${this.current.name} - ${observation.name}`);
       this.activeObservation = observation;
       this.observationPrompt.hidden = true;
       this.observationTitle.textContent = observation.name;
@@ -1251,7 +1268,7 @@
     buildObjectives() {
       if (!this.current || !this.objectivesList) return;
       if (this.objectivesRegion) this.objectivesRegion.textContent = this.current.name;
-      if (this.objectivesIntro) this.objectivesIntro.textContent = "Terbang mendekati penanda ilmiah. Saat cukup dekat, tekan E atau tombol AMATI untuk mencatat temuan.";
+      if (this.objectivesIntro) this.objectivesIntro.textContent = "Terbang mendekati penanda sains. Saat cukup dekat, tekan E atau tombol AMATI untuk mencatat temuan.";
       const fragment = document.createDocumentFragment();
       this.current.observations.forEach((observation, index) => {
         const done = this.discovered.has(observation.id);
@@ -1275,7 +1292,7 @@
       this.hudLocation.textContent = destination.name;
       this.hudType.textContent = destination.category;
       this.hudQuality.textContent = this.quality.label;
-      this.hudData.textContent = "NASA / JPL · MODEL ATMOSFER EDUKASI TERKOMPRESI";
+      this.hudData.textContent = "NASA / JPL · MODEL UDARA SEDERHANA";
       this.infoName.textContent = destination.name;
       this.infoType.textContent = `${destination.category} · ${destination.descriptor}`;
       this.infoCoords.textContent = destination.locationLabel;
@@ -1296,8 +1313,22 @@
       if (!this.world || !this.camera) return;
       const pressure = this.world.pressureAt(this.camera.position.y);
       const depth = this.world.maxY - this.camera.position.y;
-      this.hudDepth.textContent = `${depth.toFixed(1)} KM RELATIF · ${this.world.layerAtPressure(pressure)}`;
+      this.hudDepth.textContent = `${depth.toFixed(1)} KM CUKUP · ${this.world.layerAtPressure(pressure)}`;
       this.hudSpeed.textContent = `${Math.round(this.speed)} M/S SIM`;
+      const altitude = Math.max(0, this.camera.position.y - this.world.minY);
+      if (this.hudAltitude) this.hudAltitude.textContent = `${altitude.toFixed(1)} KM CUKUP`;
+      const remaining = this.current?.observations?.filter(obs => !this.discovered.has(obs.id)) || [];
+      if (this.hudTarget) {
+        if (!remaining.length) this.hudTarget.textContent = "SELESAI";
+        else {
+          let nearestDistance = Infinity;
+          for (const obs of remaining) {
+            const [x, y, z] = obs.position;
+            nearestDistance = Math.min(nearestDistance, Math.hypot(this.camera.position.x - x, this.camera.position.y - y, this.camera.position.z - z));
+          }
+          this.hudTarget.textContent = `${nearestDistance.toFixed(nearestDistance < 10 ? 1 : 0)} UNIT`;
+        }
+      }
       this.hudPressure.textContent = `${pressure.toFixed(pressure < 1 ? 2 : 1)} BAR SIM`;
       this.hudLocation.textContent = this.current.name;
       this.hudType.textContent = this.current.category;
@@ -1327,6 +1358,7 @@
       this.objectives.setAttribute("aria-hidden", String(!showObjectives));
       this.objectivesToggle.hidden = !exploring || showObjectives || observationOpen || this.actionsOpen || mobileSecondaryOpen;
       this.actionsRoot.hidden = !exploring;
+      if (this.hud) this.hud.hidden = !exploring;
       this.root.classList.toggle("is-info-open", showInfo);
       this.root.classList.toggle("is-objectives-open", showObjectives);
       this.root.classList.toggle("is-observation-open", observationOpen);
@@ -1346,6 +1378,7 @@
       this.mobileHeld.clear();
       this.drag = null;
       this.actionsRoot.hidden = true;
+      if (this.hud) this.hud.hidden = true;
       this.info.hidden = true;
       this.objectives.hidden = true;
       this.infoToggle.hidden = true;
@@ -1361,6 +1394,7 @@
       this.keys.clear();
       this.mobileHeld.clear();
       this.state = "selecting-world";
+      if (this.hud) this.hud.hidden = true;
       this.selector.hidden = false;
       this.info.hidden = true;
       this.objectives.hidden = true;
@@ -1374,6 +1408,7 @@
       if (this.state !== "selecting-world") return;
       this.state = "exploring";
       this.selector.hidden = true;
+      if (this.hud) this.hud.hidden = false;
       this.syncPanels();
     }
 
@@ -1409,18 +1444,14 @@
     }
 
     showTutorial() {
-      let seen = false;
-      try { seen = sessionStorage.getItem("antara-jupiter-atmosphere-tutorial") === "1"; } catch {}
-      if (seen) return;
       this.tutorial.classList.add("is-visible");
-      window.setTimeout(() => this.hideTutorial(false), 9000);
+      window.clearTimeout(this.tutorialTimeout);
+      this.tutorialTimeout = window.setTimeout(() => this.hideTutorial(false), 9000);
     }
 
-    hideTutorial(persist = false) {
+    hideTutorial() {
       this.tutorial.classList.remove("is-visible");
-      if (persist) {
-        try { sessionStorage.setItem("antara-jupiter-atmosphere-tutorial", "1"); } catch {}
-      }
+      window.clearTimeout(this.tutorialTimeout);
     }
 
     showError(error) {

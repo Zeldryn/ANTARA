@@ -22,21 +22,21 @@
   const REGIONS = Object.freeze([
     {
       id: "caloris",
-      name: "Caloris Basin",
+      name: "Caloris Basin (Cekungan Besar)",
       short: "Caloris",
-      category: "BASIN TUMBUKAN",
+      category: "BEKAS TABRAKAN BESAR",
       latitude: 31.5,
       longitudeEast: 162.7,
       heading: 0,
       source: "https://science.nasa.gov/photojournal/the-mighty-caloris/",
       coordinateSource: "https://science.nasa.gov/photojournal/the-mighty-caloris/",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19213/PIA19213.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1600",
-      descriptor: "Basin tumbukan raksasa dengan cincin pegunungan dan dataran vulkanik di bagian dalam.",
-      description: "Caloris Basin adalah salah satu cekungan tumbukan terbesar di Tata Surya. Daerah ini membantu kita memahami tabrakan purba, rekahan antipodal, dan bagaimana lava kemudian mengisi bagian dalam basin.",
+      descriptor: "Cekungan besar bekas tabrakan raksasa dengan cincin pegunungan dan dataran dari gunung api di bagian dalam.",
+      description: "Caloris Basin adalah cekungan raksasa bekas tabrakan. Bekasnya masih terlihat sampai sekarang. Setelah tabrakan besar itu, lava pernah mengisi sebagian daerah di dalamnya.",
       facts: [
-        "Diameter Caloris Basin sekitar 1.550 kilometer.",
-        "Bagian dalam basin diisi dataran vulkanik yang lebih halus daripada daerah sekitarnya.",
-        "Di sisi berlawanan planet terdapat wilayah kacau yang diduga terkait gelombang tumbukan Caloris."
+        "Diameter Caloris Cekungan besar sekitar 1.550 kilometer.",
+        "Bagian dalam cekungan besar diisi dataran dari gunung api yang lebih halus daripada daerah sekitarnya.",
+        "Di sisi berlawanan planet terdapat wilayah kacau yang diduga terkait gelombang tabrakan Caloris."
       ],
       palette: { low: 0x141414, mid: 0x30302e, high: 0x66615a, accent: 0xbfa77d },
       terrain: {
@@ -55,7 +55,7 @@
       id: "discovery",
       name: "Discovery Rupes",
       short: "Discovery Rupes",
-      category: "TEBING KERUT",
+      category: "TEBING PANJANG",
       latitude: -55.0,
       longitudeEast: 322.2,
       heading: 14,
@@ -63,11 +63,11 @@
       coordinateSource: "https://planetarynames.wr.usgs.gov/Feature/1548",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia17/pia17739/PIA17739.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1024&w=1024",
       descriptor: "Tebing raksasa yang terbentuk ketika Merkurius mendingin dan menyusut.",
-      description: "Discovery Rupes adalah scarp panjang yang menjadi bukti bahwa Merkurius pernah menyusut secara global. Saat interiornya mendingin, kerak terdorong, terlipat, lalu membentuk tebing panjang seperti kerutan pada kulit buah.",
+      description: "Discovery Rupes adalah tebing panjang panjang yang menunjukkan Merkurius pernah menyusut secara di seluruh planet. Saat bagian dalamnya mendingin, kerak terdorong, terlipat, lalu membentuk tebing panjang seperti kerutan pada kulit buah.",
       facts: [
-        "Lobate scarp seperti Discovery Rupes adalah ciri khas penyusutan global Merkurius.",
+        "Tebing kerut panjang seperti Discovery Rupes adalah ciri khas penyusutan di seluruh planet Merkurius.",
         "Sebagian tebing di Merkurius dapat membentang ratusan kilometer.",
-        "MESSENGER membantu memetakan scarp lebih rinci dibanding era Mariner 10."
+        "MESSENGER membantu membuat peta tebing panjang lebih rinci dibanding era Mariner 10."
       ],
       palette: { low: 0x121314, mid: 0x2c2d2d, high: 0x5b5955, accent: 0xb7a17f },
       terrain: {
@@ -86,21 +86,21 @@
     },
     {
       id: "beethoven",
-      name: "Beethoven Basin",
+      name: "Beethoven Cekungan besar",
       short: "Beethoven",
-      category: "BASIN PURBA",
+      category: "CEKUNGAN SANGAT TUA",
       latitude: -21.0,
       longitudeEast: 236.0,
       heading: -18,
       source: "https://science.nasa.gov/photojournal/mapping-beethoven/",
       coordinateSource: "https://science.nasa.gov/photojournal/mapping-beethoven/",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia14/pia14864/PIA14864.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1799&w=1018",
-      descriptor: "Basin tua yang menunjukkan hubungan antara kawah besar, ejecta, dan dataran sekitarnya.",
-      description: "Beethoven Basin adalah contoh basin tua yang dikelilingi jejak tumbukan dan relief berumur sangat lama. Di sini kamu bisa melihat bagaimana permukaan Merkurius menyimpan lapisan sejarah tabrakan berulang.",
+      descriptor: "Cekungan besar tua yang menunjukkan hubungan antara kawah besar, batu dan debu yang terpental, dan dataran sekitarnya.",
+      description: "Beethoven Basin adalah contoh cekungan besar tua yang dikelilingi jejak tabrakan dan bentuk naik-turun tanah berumur sangat lama. Di sini kamu bisa melihat bagaimana permukaan Merkurius menyimpan lapisan sejarah tabrakan berulang.",
       facts: [
-        "Beethoven Basin berdiameter sekitar 630 kilometer.",
-        "Wilayah ini menampilkan peralihan antara basin besar dan medan kawah tua.",
-        "Basin purba membantu ilmuwan menelusuri sejarah awal pemboman di Tata Surya dalam."
+        "Beethoven Cekungan besar berdiameter sekitar 630 kilometer.",
+        "Wilayah ini menampilkan perubahan antara cekungan besar besar dan medan kawah tua.",
+        "Cekungan besar yang sangat tua membantu ilmuwan melihat apa yang terjadi dulu awal pemboman di Tata Surya dalam."
       ],
       palette: { low: 0x111112, mid: 0x292929, high: 0x575552, accent: 0xbba98c },
       terrain: {
@@ -117,20 +117,20 @@
     },
     {
       id: "rembrandt",
-      name: "Rembrandt Basin",
+      name: "Rembrandt Cekungan besar",
       short: "Rembrandt",
-      category: "BASIN MULTI-CINCIN",
+      category: "CEKUNGAN BANYAK LINGKARAN",
       latitude: -34.67,
       longitudeEast: 100.4,
       heading: 22,
       source: "https://science.nasa.gov/photojournal/rembrandt-basin-in-color/",
       coordinateSource: "https://science.nasa.gov/photojournal/rembrandt-basin-in-color/",
       image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia14/pia14497/PIA14497.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1514&w=1663",
-      descriptor: "Basin raksasa dengan cincin patahan dan dataran luas yang menarik untuk dibandingkan dengan Caloris.",
-      description: "Rembrandt Basin menunjukkan bahwa basin besar di Merkurius tidak semuanya sama. Struktur cincin, medan retak, dan variasi reliefnya membantu membandingkan proses tumbukan besar pada lokasi berbeda.",
+      descriptor: "Cekungan besar raksasa dengan cincin patahan dan dataran luas yang menarik untuk dibandingkan dengan Caloris.",
+      description: "Rembrandt Basin menunjukkan bahwa cekungan besar besar di Merkurius tidak semuanya sama. Bentuk cincin, medan retak, dan variasi bentuk tanahnya membantu membandingkan cara tabrakan besar pada lokasi berbeda.",
       facts: [
         "Rembrandt berdiameter sekitar 715 kilometer.",
-        "Basin ini memiliki sistem cincin dan struktur tektonik di bagian dalamnya.",
+        "Cekungan besar ini punya sistem cincin dan bentuk gerakan kulit planet di bagian dalamnya.",
         "MESSENGER menemukan detail Rembrandt yang jauh lebih lengkap setelah Mariner 10 tidak sempat memotretnya."
       ],
       palette: { low: 0x121214, mid: 0x2b2b2d, high: 0x5f5a56, accent: 0xc4ac89 },
@@ -163,8 +163,8 @@
       description: "Daerah kutub utara Merkurius menyimpan salah satu kejutan terbesar planet ini: es air di tempat yang tidak pernah terkena cahaya Matahari langsung. Prokofiev sering digunakan sebagai contoh kawasan kutub yang sangat dingin itu.",
       facts: [
         "Radar dan data neutron menunjukkan keberadaan endapan es di kawah kutub Merkurius.",
-        "Walau dekat Matahari, dasar kawah yang selalu gelap dapat tetap sangat dingin.",
-        "Temuan es kutub menjadikan Merkurius jauh lebih kompleks daripada dugaan awal."
+        "Walau dekat Matahari, dasar kawah yang selalu gelap bisa tetap sangat dingin.",
+        "Temuan es kutub menjadikan Merkurius jauh lebih rumit daripada dugaan awal."
       ],
       palette: { low: 0x101112, mid: 0x292b2c, high: 0x626365, accent: 0xd4cec2 },
       terrain: {
@@ -185,48 +185,48 @@
 
   const MERCURY_EDUCATION = Object.freeze({
     caloris: Object.freeze({
-      intro: "Jelajahi Caloris lewat empat titik pengamatan: tepi basin, dataran vulkanik, kawah sekunder, dan struktur ejecta.",
+      intro: "Jelajahi empat bagian Caloris: tepinya, dataran bekas lava, kawah kecil, serta batu dan debu yang pernah terpental.",
       observations: Object.freeze([
-        { id: "caloris-rim", label: "Temukan tepi basin Caloris", title: "Tepi Basin Raksasa", type: "COBA PERHATIKAN!", x: -22, z: 18, interactRadius: 5.2, lead: "Relief di sini memperlihatkan peralihan dari dataran sekitar menuju cincin basin Caloris.", why: "Tepi basin membantu membaca skala energi tumbukan yang membentuk salah satu cekungan terbesar di Tata Surya.", source: "https://science.nasa.gov/photojournal/the-mighty-caloris/" },
-        { id: "caloris-plains", label: "Amati dataran halus di dalam basin", title: "Dataran Vulkanik Caloris", type: "TAHUKAH KAMU?", x: 14, z: 12, interactRadius: 5.0, lead: "Bagian dalam Caloris lebih halus daripada banyak medan kawah tua di sekitarnya.", why: "Dataran halus memberi petunjuk bahwa material vulkanik pernah mengisi bagian dalam basin setelah tumbukan besar.", source: "https://science.nasa.gov/mercury/" },
-        { id: "caloris-secondary", label: "Cari kawah sekunder di sekitar basin", title: "Kawah Sekunder", type: "COBA LIHAT!", x: -10, z: -16, interactRadius: 5.0, lead: "Kawah yang lebih kecil dapat terbentuk dari material ejecta yang jatuh kembali setelah tumbukan utama.", why: "Pola kawah sekunder membantu membedakan jejak tumbukan utama dari tabrakan kecil yang terjadi terpisah.", source: "https://science.nasa.gov/mercury/" },
-        { id: "caloris-ejecta", label: "Pelajari zona ejecta Caloris", title: "Jejak Ejecta", type: "TERNYATA...", x: 23, z: -20, interactRadius: 5.4, lead: "Material yang terlempar saat tumbukan besar dapat tersebar jauh dari pusat basin.", why: "Sebaran ejecta merekam arah dan skala proses tumbukan yang membentuk Caloris.", source: "https://science.nasa.gov/photojournal/the-mighty-caloris/" }
+        { id: "caloris-rim", label: "Temukan tepi cekungan besar Caloris", title: "Tepi Cekungan besar Raksasa", type: "COBA PERHATIKAN!", x: -22, z: 18, interactRadius: 5.2, lead: "Tanah di sini berubah dari dataran biasa menjadi tepi Caloris yang besar.", why: "Tepi Caloris menunjukkan betapa kuat tabrakan yang membuat cekungan raksasa ini.", source: "https://science.nasa.gov/photojournal/the-mighty-caloris/" },
+        { id: "caloris-plains", label: "Amati dataran halus di dalam cekungan besar", title: "Dataran Dari gunung api Caloris", type: "TAHUKAH KAMU?", x: 14, z: 12, interactRadius: 5.0, lead: "Bagian dalam Caloris lebih halus daripada banyak medan kawah tua di sekitarnya.", why: "Dataran halus menunjukkan bahan dari gunung api pernah mengisi bagian dalam cekungan besar setelah tabrakan besar.", source: "https://science.nasa.gov/mercury/" },
+        { id: "caloris-secondary", label: "Cari kawah kecil tambahan di sekitar cekungan besar", title: "Kawah Kecil Tambahan", type: "COBA LIHAT!", x: -10, z: -16, interactRadius: 5.0, lead: "Kawah yang lebih kecil dapat terbentuk dari bahan batu dan debu yang terpental yang jatuh kembali setelah tabrakan utama.", why: "Kawah-kawah kecil membantu kita melihat mana bekas tabrakan besar dan mana tabrakan kecil.", source: "https://science.nasa.gov/mercury/" },
+        { id: "caloris-batu dan debu yang terpental", label: "Pelajari zona batu dan debu yang terpental Caloris", title: "Jejak Batu dan debu yang terpental", type: "TERNYATA...", x: 23, z: -20, interactRadius: 5.4, lead: "Bahan yang terlempar saat tabrakan besar dapat tersebar jauh dari pusat cekungan besar.", why: "Penyebaran batu dan debu yang terpental menyimpan bekas arah dan skala cara tabrakan yang membentuk Caloris.", source: "https://science.nasa.gov/photojournal/the-mighty-caloris/" }
       ])
     }),
     discovery: Object.freeze({
       intro: "Ikuti empat titik di Discovery Rupes untuk memahami bagaimana Merkurius menyusut dan membentuk tebing panjang.",
       observations: Object.freeze([
-        { id: "discovery-main-scarp", label: "Dekati tebing utama Discovery Rupes", title: "Tebing Penyusutan", type: "COBA PERHATIKAN!", x: -30, z: -9, interactRadius: 5.0, lead: "Scarp panjang ini menyerupai kerutan raksasa pada kerak Merkurius.", why: "Saat interior Merkurius mendingin, volumenya berkurang dan kerak terdorong membentuk sesar dorong serta tebing panjang.", source: "https://science.nasa.gov/photojournal/deformation-discovery/" },
-        { id: "discovery-offset", label: "Amati perubahan tinggi di dua sisi tebing", title: "Perbedaan Ketinggian", type: "COBA LIHAT!", x: 10, z: 4, interactRadius: 4.8, lead: "Dua sisi struktur tidak berada pada ketinggian yang sama.", why: "Perbedaan tinggi membantu mengenali perpindahan kerak akibat kompresi global Merkurius.", source: "https://science.nasa.gov/photojournal/deformation-discovery/" },
-        { id: "discovery-crater-cut", label: "Cari kawah yang dipotong struktur", title: "Scarp Memotong Medan Lama", type: "TERNYATA...", x: 28, z: 17, interactRadius: 5.0, lead: "Struktur tektonik dapat melintasi medan yang lebih tua, termasuk kawah.", why: "Hubungan potong-memotong membantu menentukan urutan kejadian geologi: struktur yang memotong biasanya lebih muda.", source: "https://science.nasa.gov/mercury/" },
-        { id: "discovery-ridge", label: "Ikuti punggungan sekunder", title: "Punggungan Sekunder", type: "COBA TELUSURI!", x: -12, z: -27, interactRadius: 5.2, lead: "Di sekitar scarp utama terdapat relief kecil yang memperkaya bentuk medan.", why: "Medan tektonik tidak selalu terdiri dari satu garis. Punggungan kecil membantu membaca deformasi yang lebih kompleks.", source: "https://science.nasa.gov/mercury/" }
+        { id: "discovery-main-tebing panjang", label: "Dekati tebing utama Discovery Rupes", title: "Tebing Penyusutan", type: "COBA PERHATIKAN!", x: -30, z: -9, interactRadius: 5.0, lead: "Tebing panjang panjang ini menyerupai kerutan raksasa pada kerak Merkurius.", why: "Saat bagian dalam Merkurius mendingin, volumenya berkurang dan kerak terdorong membentuk sesar dorong serta tebing panjang.", source: "https://science.nasa.gov/photojournal/deformation-discovery/" },
+        { id: "discovery-offset", label: "Amati perubahan tinggi di dua sisi tebing", title: "Perbedaan Ketinggian", type: "COBA LIHAT!", x: 10, z: 4, interactRadius: 4.8, lead: "Dua sisi bentuk tidak berada pada ketinggian yang sama.", why: "Perbedaan tinggi membantu mengenali perpindahan kerak akibat dorongan kuat di seluruh planet Merkurius.", source: "https://science.nasa.gov/photojournal/deformation-discovery/" },
+        { id: "discovery-crater-cut", label: "Cari kawah yang dipotong bentuk", title: "Tebing panjang Memotong Medan Lama", type: "TERNYATA...", x: 28, z: 17, interactRadius: 5.0, lead: "Bentuk gerakan kulit planet bisa melintasi medan yang lebih tua, termasuk kawah.", why: "Hubungan potong-memotong membantu menentukan urutan kejadian tanah dan batu: bentuk yang memotong biasanya lebih muda.", source: "https://science.nasa.gov/mercury/" },
+        { id: "discovery-ridge", label: "Ikuti punggungan tambahan", title: "Punggungan Kecil Tambahan", type: "COBA TELUSURI!", x: -12, z: -27, interactRadius: 5.2, lead: "Di sekitar tebing panjang utama ada bentuk naik-turun tanah kecil yang memperkaya bentuk medan.", why: "Medan gerakan kulit planet tidak selalu berisi satu garis. Punggungan kecil membantu melihat perubahan bentuk yang lebih rumit.", source: "https://science.nasa.gov/mercury/" }
       ])
     }),
     beethoven: Object.freeze({
-      intro: "Baca Beethoven sebagai basin tua: tepi basin, dasar cekungan, kawah tumpang tindih, dan medan ejecta yang sudah sangat tererosi.",
+      intro: "Baca Beethoven sebagai cekungan besar tua: tepi cekungan besar, dasar cekungan, kawah tumpang tindih, dan medan batu dan debu yang terpental yang sudah sangat tererosi.",
       observations: Object.freeze([
-        { id: "beethoven-rim", label: "Temukan tepi Beethoven Basin", title: "Tepi Basin Tua", type: "COBA PERHATIKAN!", x: -21, z: 18, interactRadius: 5.2, lead: "Tepi Beethoven tidak setajam basin yang lebih muda karena permukaannya telah lama dipenuhi tumbukan berikutnya.", why: "Derajat pelapukan dan tumpang tindih kawah memberi petunjuk umur relatif suatu medan.", source: "https://science.nasa.gov/photojournal/mapping-beethoven/" },
-        { id: "beethoven-floor", label: "Amati bagian dalam basin", title: "Dasar Beethoven", type: "TAHUKAH KAMU?", x: 2, z: 2, interactRadius: 5.0, lead: "Bagian dalam basin memperlihatkan relief yang lebih rendah dengan banyak bekas tumbukan tambahan.", why: "Dasar basin menyimpan rekaman panjang perubahan permukaan setelah tumbukan utama.", source: "https://science.nasa.gov/photojournal/mapping-beethoven/" },
-        { id: "beethoven-overlap", label: "Cari kawah yang saling bertumpuk", title: "Kawah Bertumpuk", type: "COBA LIHAT!", x: 23, z: 19, interactRadius: 5.0, lead: "Beberapa kawah tampak saling menimpa karena terbentuk pada waktu yang berbeda.", why: "Tumpang tindih kawah adalah salah satu cara sederhana untuk membaca urutan relatif kejadian geologi.", source: "https://science.nasa.gov/mercury/" },
-        { id: "beethoven-ejecta", label: "Amati medan kasar di luar basin", title: "Medan Ejecta Tua", type: "TERNYATA...", x: -25, z: -22, interactRadius: 5.3, lead: "Medan kasar di luar basin mencampur ejecta tua dengan kawah yang muncul kemudian.", why: "Campuran relief menunjukkan betapa lama permukaan Merkurius terus dibombardir setelah basin terbentuk.", source: "https://science.nasa.gov/mercury/" }
+        { id: "beethoven-rim", label: "Temukan tepi Beethoven Cekungan besar", title: "Tepi Cekungan besar Tua", type: "COBA PERHATIKAN!", x: -21, z: 18, interactRadius: 5.2, lead: "Tepi Beethoven tidak setajam cekungan besar yang lebih muda karena permukaannya telah lama dipenuhi tabrakan berikutnya.", why: "Derajat pelapukan dan tumpang tindih kawah menunjukkan umur cukup suatu medan.", source: "https://science.nasa.gov/photojournal/mapping-beethoven/" },
+        { id: "beethoven-floor", label: "Amati bagian dalam cekungan besar", title: "Dasar Beethoven", type: "TAHUKAH KAMU?", x: 2, z: 2, interactRadius: 5.0, lead: "Bagian dalam cekungan besar memperlihatkan bentuk naik-turun tanah yang lebih rendah dengan banyak bekas tabrakan tambahan.", why: "Dasar cekungan besar masih punya banyak bekas kejadian lama perubahan permukaan setelah tabrakan utama.", source: "https://science.nasa.gov/photojournal/mapping-beethoven/" },
+        { id: "beethoven-overlap", label: "Cari kawah yang saling bertumpuk", title: "Kawah Bertumpuk", type: "COBA LIHAT!", x: 23, z: 19, interactRadius: 5.0, lead: "Beberapa kawah tampak saling menimpa karena terbentuk pada waktu yang berbeda.", why: "Tumpang tindih kawah adalah salah satu cara sederhana untuk melihat urutan cukup kejadian tanah dan batu.", source: "https://science.nasa.gov/mercury/" },
+        { id: "beethoven-batu dan debu yang terpental", label: "Amati medan kasar di luar cekungan besar", title: "Medan Batu dan debu yang terpental Tua", type: "TERNYATA...", x: -25, z: -22, interactRadius: 5.3, lead: "Medan kasar di luar cekungan besar mencampur batu dan debu yang terpental tua dengan kawah yang muncul kemudian.", why: "Campuran bentuk naik-turun tanah menunjukkan betapa lama permukaan Merkurius terus dibombardir setelah cekungan besar terbentuk.", source: "https://science.nasa.gov/mercury/" }
       ])
     }),
     rembrandt: Object.freeze({
-      intro: "Cari empat petunjuk utama di Rembrandt: cincin basin, retakan interior, dataran, dan kawah yang memotong struktur lama.",
+      intro: "Cari empat petunjuk utama di Rembrandt: cincin cekungan besar, retakan bagian dalam, dataran, dan kawah yang memotong bentuk lama.",
       observations: Object.freeze([
-        { id: "rembrandt-ring", label: "Temukan pola cincin Rembrandt", title: "Cincin Basin Rembrandt", type: "COBA PERHATIKAN!", x: -20, z: 17, interactRadius: 5.2, lead: "Relief melingkar mengelilingi bagian dalam Rembrandt Basin.", why: "Cincin membantu memahami bagaimana kerak merespons tumbukan raksasa dan penyesuaian sesudahnya.", source: "https://science.nasa.gov/photojournal/rembrandt-basin-in-color/" },
-        { id: "rembrandt-fracture", label: "Cari struktur retak di interior", title: "Retakan Interior", type: "COBA LIHAT!", x: 9, z: -2, interactRadius: 4.8, lead: "Di dalam basin terdapat struktur yang memotong dataran dan membentuk pola tektonik.", why: "Retakan dapat muncul ketika kerak mengalami tarikan atau penyesuaian setelah basin terisi material baru.", source: "https://science.nasa.gov/photojournal/rembrandt-basin-in-color/" },
-        { id: "rembrandt-plains", label: "Bandingkan dataran dengan cincin basin", title: "Dataran Interior", type: "TAHUKAH KAMU?", x: 24, z: 18, interactRadius: 5.1, lead: "Dataran relatif halus kontras dengan relief cincin di sekitarnya.", why: "Perbedaan tekstur membantu memisahkan unit geologi yang terbentuk oleh proses dan waktu yang berbeda.", source: "https://science.nasa.gov/mercury/" },
-        { id: "rembrandt-younger", label: "Cari kawah lebih muda di atas struktur lama", title: "Kawah yang Lebih Muda", type: "TERNYATA...", x: -18, z: -24, interactRadius: 5.0, lead: "Kawah kecil yang memotong struktur basin menunjukkan kejadian yang terjadi sesudah basin terbentuk.", why: "Prinsip tumpang tindih membantu menyusun kronologi relatif tanpa harus mengetahui umur absolut setiap batuan.", source: "https://science.nasa.gov/mercury/" }
+        { id: "rembrandt-ring", label: "Temukan pola cincin Rembrandt", title: "Cincin Cekungan besar Rembrandt", type: "COBA PERHATIKAN!", x: -20, z: 17, interactRadius: 5.2, lead: "Bentuk naik-turun tanah melingkar mengelilingi bagian dalam Rembrandt Basin.", why: "Cincin membuat lebih mudah tahu bagaimana kerak merespons tabrakan raksasa dan penyesuaian sesudahnya.", source: "https://science.nasa.gov/photojournal/rembrandt-basin-in-color/" },
+        { id: "rembrandt-fracture", label: "Cari bentuk retak di bagian dalam", title: "Retakan Bagian dalam", type: "COBA LIHAT!", x: 9, z: -2, interactRadius: 4.8, lead: "Di dalam cekungan besar terdapat bentuk yang memotong dataran dan membentuk pola gerakan kulit planet.", why: "Retakan dapat muncul ketika kerak mengalami tarikan atau penyesuaian setelah cekungan besar terisi bahan baru.", source: "https://science.nasa.gov/photojournal/rembrandt-basin-in-color/" },
+        { id: "rembrandt-plains", label: "Bandingkan dataran dengan cincin cekungan besar", title: "Dataran Bagian dalam", type: "TAHUKAH KAMU?", x: 24, z: 18, interactRadius: 5.1, lead: "Dataran cukup halus perbedaan jelas dengan bentuk naik-turun tanah cincin di sekitarnya.", why: "Perbedaan tekstur membantu memisahkan unit tanah dan batu yang terbentuk oleh cara dan waktu yang berbeda.", source: "https://science.nasa.gov/mercury/" },
+        { id: "rembrandt-younger", label: "Cari kawah lebih muda di atas bentuk lama", title: "Kawah yang Lebih Muda", type: "TERNYATA...", x: -18, z: -24, interactRadius: 5.0, lead: "Kawah kecil yang memotong bentuk cekungan besar menunjukkan kejadian yang terjadi sesudah cekungan besar terbentuk.", why: "Prinsip tumpang tindih membantu menyusun urutan kejadian cukup tanpa harus mengetahui umur absolut setiap batuan.", source: "https://science.nasa.gov/mercury/" }
       ])
     }),
     prokofiev: Object.freeze({
-      intro: "Prokofiev memperlihatkan paradoks Merkurius: sangat dekat Matahari, tetapi kawah kutub yang selalu gelap dapat menyimpan es.",
+      intro: "Prokofiev memperlihatkan paradoks Merkurius: sangat dekat Matahari. Tapi kawah kutub yang selalu gelap dapat menyimpan es.",
       observations: Object.freeze([
-        { id: "prokofiev-shadow", label: "Masuki zona dasar kawah yang gelap", title: "Bayangan Permanen", type: "COBA PERHATIKAN!", x: -9, z: 4, interactRadius: 4.8, lead: "Bagian tertentu dari kawah kutub hampir tidak pernah menerima cahaya Matahari langsung.", why: "Tanpa pemanasan langsung, suhu lokal dapat tetap sangat rendah meskipun Merkurius dekat dengan Matahari.", source: "https://science.nasa.gov/photojournal/icy-view-of-prokofiev/" },
-        { id: "prokofiev-ice", label: "Pelajari area terkait endapan es", title: "Endapan Es Kutub", type: "TERNYATA...", x: 8, z: -4, interactRadius: 4.8, lead: "Data radar dan pengukuran MESSENGER mendukung keberadaan material kaya es di kawah kutub.", why: "Temuan ini mengubah gambaran Merkurius dari sekadar planet panas menjadi dunia dengan lingkungan ekstrem yang sangat kontras.", source: "https://science.nasa.gov/photojournal/icy-view-of-prokofiev/" },
-        { id: "prokofiev-rim", label: "Bandingkan tepi terang dengan dasar gelap", title: "Kontras Tepi dan Dasar", type: "COBA LIHAT!", x: 16, z: 15, interactRadius: 5.0, lead: "Tepi kawah dapat menerima cahaya kuat sementara dasar tertentu tetap berada dalam bayangan.", why: "Geometri kutub dan topografi kawah menciptakan mikro-lingkungan suhu yang sangat berbeda dalam jarak pendek.", source: "https://science.nasa.gov/mercury/" },
-        { id: "prokofiev-small-craters", label: "Cari kawah kecil di sekitar Prokofiev", title: "Medan Kawah Kutub", type: "COBA TELUSURI!", x: -22, z: -16, interactRadius: 5.2, lead: "Wilayah kutub tetap dipenuhi kawah kecil dan relief tua seperti bagian Merkurius lainnya.", why: "Kawah-kawah kecil menunjukkan bahwa proses tumbukan terus membentuk permukaan bahkan di wilayah yang menyimpan es.", source: "https://science.nasa.gov/mercury/" }
+        { id: "prokofiev-shadow", label: "Masuki zona dasar kawah yang gelap", title: "Bayangan Permanen", type: "COBA PERHATIKAN!", x: -9, z: 4, interactRadius: 4.8, lead: "Bagian tertentu dari kawah kutub hampir tidak pernah menerima cahaya Matahari langsung.", why: "Tanpa pemanasan langsung, suhu lokal bisa tetap sangat rendah meski Merkurius dekat dengan Matahari.", source: "https://science.nasa.gov/photojournal/icy-view-of-prokofiev/" },
+        { id: "prokofiev-ice", label: "Pelajari area terkait endapan es", title: "Endapan Es Kutub", type: "TERNYATA...", x: 8, z: -4, interactRadius: 4.8, lead: "Data radar dan pengukuran MESSENGER mendukung keberadaan bahan kaya es di kawah kutub.", why: "Temuan ini mengubah gambaran Merkurius dari sekadar planet panas menjadi dunia dengan lingkungan sangat kuat yang sangat perbedaan.", source: "https://science.nasa.gov/photojournal/icy-view-of-prokofiev/" },
+        { id: "prokofiev-rim", label: "Bandingkan tepi terang dengan dasar gelap", title: "Perbedaan Tepi dan Dasar", type: "COBA LIHAT!", x: 16, z: 15, interactRadius: 5.0, lead: "Tepi kawah dapat menerima cahaya kuat sementara dasar tertentu tetap berada dalam bayangan.", why: "Geometri kutub dan bentuk tinggi-rendah tanah kawah menciptakan mikro-lingkungan suhu yang sangat berbeda dalam jarak pendek.", source: "https://science.nasa.gov/mercury/" },
+        { id: "prokofiev-small-craters", label: "Cari kawah kecil di sekitar Prokofiev", title: "Medan Kawah Kutub", type: "COBA TELUSURI!", x: -22, z: -16, interactRadius: 5.2, lead: "Wilayah kutub tetap dipenuhi kawah kecil dan bentuk naik-turun tanah tua seperti bagian Merkurius lainnya.", why: "Kawah-kawah kecil menunjukkan bahwa cara tabrakan terus membentuk permukaan bahkan di wilayah yang menyimpan es.", source: "https://science.nasa.gov/mercury/" }
       ])
     })
   });
@@ -255,7 +255,7 @@
       this.regionClose = document.getElementById("mercury-region-selector-close");
       this.qualityPanel = document.getElementById("mercury-quality-panel");
       this.qualityClose = document.getElementById("mercury-quality-close");
-      this.qualityOptions = Array.from(document.querySelectorAll("#mercury-quality-options .venus-quality-option"));
+      this.qualityOptions = Array.from(document.querySelectorAll("#mercury-quality-options.venus-quality-option"));
       this.qualityDeviceNote = document.getElementById("mercury-quality-device-note");
       this.qualitySelectedLabel = document.getElementById("mercury-quality-selected-label");
       this.qualityStart = document.getElementById("mercury-quality-start");
@@ -615,7 +615,7 @@
       this.boundaryHint.textContent = "";
       this.selectRegion(this.selectedRegion || REGIONS[0]);
       this.setQuality(this.quality.name, { persist: false });
-      document.getElementById("announcement").textContent = "Pilih kualitas grafis untuk Eksplorasi Pengalaman Penuh Merkurius.";
+      document.getElementById("announcement").textContent = "Pilih kualitas grafis untuk Jelajah Penuh Merkurius.";
       requestAnimationFrame(() => this.qualityOptions.find(button => button.classList.contains("is-selected"))?.focus({ preventScroll: true }));
     }
 
@@ -626,7 +626,7 @@
       this.qualityPanel.hidden = true;
       this.regionSelector.hidden = false;
       this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration is-selecting";
-      document.getElementById("announcement").textContent = "Pilih destinasi Eksplorasi Pengalaman Penuh Merkurius.";
+      document.getElementById("announcement").textContent = "Pilih destinasi Jelajah Penuh Merkurius.";
       requestAnimationFrame(() => this.regionCards[0]?.button?.focus({ preventScroll: true }));
     }
 
@@ -1171,7 +1171,7 @@
       this.hudQuality.textContent = this.quality.label;
       this.hudData.textContent = "MESSENGER MDIS / MLA · USGS / IAU";
       this.objectivesRegion.textContent = region.name;
-      this.objectivesIntro.textContent = this.educationFor(region)?.intro || `Amati titik-titik geologi utama di ${region.name}.`;
+      this.objectivesIntro.textContent = this.educationFor(region)?.intro || `Amati titik-titik tanah dan batu utama di ${region.name}.`;
       this.landmarkName.textContent = region.name;
       this.landmarkType.textContent = `${region.category} · ${region.descriptor}`;
       this.landmarkCoords.textContent = `${Math.abs(region.latitude).toFixed(1)}°${region.latitude >= 0 ? "LU" : "LS"} · ${region.longitudeEast.toFixed(1)}°BT`;
@@ -1277,7 +1277,7 @@
       this.observationMeta.textContent = `${this.currentRegion?.name || "Merkurius"} · ${distance < 1 ? Math.round(distance * 1000) + " cm" : distance.toFixed(1) + " m"} dari posisimu`;
       this.observationLead.textContent = goal.lead || "";
       this.observationWhy.textContent = goal.why || "";
-      this.observationSourceNote.textContent = "Konteks lokasi dan penjelasan diringkas dari referensi NASA / MESSENGER yang dicantumkan.";
+      this.observationSourceNote.textContent = "Gambaran lokasi dan penjelasan diringkas dari gambar NASA / MESSENGER yang dicantumkan.";
       this.observationSource.href = goal.source || this.currentRegion?.source || "https://science.nasa.gov/mercury/";
       this.observationCard.hidden = false;
       this.observationCard.setAttribute("aria-hidden", "false");
@@ -1374,7 +1374,7 @@
         this.showLoading("MERENDER MEDAN MERKURIUS", 70);
         this.applyRegion(region);
         if (token !== this.transitionToken) return false;
-        this.showLoading("MENGATUR NAVIGASI & INFO LOKASI", 94);
+        this.showLoading("MENGATUR PETUNJUK ARAH & INFO LOKASI", 94);
         const remaining = minimumLoadingMs - (performance.now() - transitionStartedAt);
         if (remaining > 0) await wait(remaining);
         if (token !== this.transitionToken) return false;
@@ -1400,7 +1400,7 @@
         this.startLoop();
         document.getElementById("announcement").textContent = switching
           ? `Tiba di ${region.name}. Info lokasi dibuka otomatis.`
-          : `Eksplorasi penuh Merkurius aktif di ${region.name}.`;
+          : `Jelajah penuh Merkurius aktif di ${region.name}.`;
         return true;
       } catch (error) {
         console.error("Mercury Full Exploration:", error);
@@ -1509,7 +1509,7 @@
 
     onLookPointerDown(event) {
       if (!this.active || this.state !== STATES.EXPLORING || this.isObservationCardOpen() || this.actionsMenuOpen) return;
-      if (event.target.closest("button, a, [data-mercury-ui], .venus-region-selector, .venus-quality-panel, .venus-location-card, .venus-objectives-panel")) return;
+      if (event.target.closest("button, a, [data-mercury-ui],.venus-region-selector,.venus-quality-panel,.venus-location-card,.venus-objectives-panel")) return;
       if (event.pointerType === "mouse") return;
       this.lookPointerId = event.pointerId;
       this.lookPointer.x = event.clientX;
@@ -1622,6 +1622,31 @@
       this.tutorial.hidden = true;
     }
 
+    disposeFullWorld() {
+      this.stopLoop();
+      try {
+        this.scene?.traverse?.(node => {
+          node.geometry?.dispose?.();
+          const materials = Array.isArray(node.material) ? node.material : node.material ? [node.material] : [];
+          materials.forEach(material => {
+            Object.values(material || {}).forEach(value => {
+              if (value && value.isTexture) value.dispose?.();
+            });
+            material?.dispose?.();
+          });
+        });
+      } catch (_) {}
+      try { this.renderer?.renderLists?.dispose?.(); } catch (_) {}
+      try { this.renderer?.dispose?.(); } catch (_) {}
+      if (this.viewport) this.viewport.replaceChildren();
+      this.renderer = null;
+      this.scene = null;
+      this.camera = null;
+      this.terrainGroup = null;
+      this.terrain = null;
+      this.ready = false;
+    }
+
     forceReset() {
       this.transitionToken += 1;
       this.active = false;
@@ -1651,6 +1676,7 @@
       const region = this.currentRegion;
       this.mercury.setFullExplorationTransition?.(0, region);
       this.mercury.endFullExploration?.();
+      this.disposeFullWorld();
       this.currentRegion = null;
       this.infoMinimized = true;
       this.objectivesCollapsed = true;
@@ -1697,7 +1723,7 @@
       this.landmarkCard.setAttribute("aria-hidden", "true");
       this.objectivesPanel.setAttribute("aria-hidden", "true");
       this.root.classList.add("is-exiting");
-      document.getElementById("announcement").textContent = "Meninggalkan permukaan Merkurius dan kembali ke panorama orbit.";
+      document.getElementById("announcement").textContent = "Meninggalkan permukaan Merkurius dan kembali ke panorama jalur mengelilingi.";
 
       try { await this.animateRetreatAltitude(Math.max(this.altitudeOffset, 34), 1450, token); } catch (_) {}
       if (token !== this.transitionToken || this.state !== STATES.EXITING) return;
@@ -1742,6 +1768,7 @@
       const region = this.currentRegion;
       this.mercury.setFullExplorationTransition?.(0, region);
       this.mercury.endFullExploration?.();
+      this.disposeFullWorld();
       this.currentRegion = null;
       this.infoMinimized = true;
       this.objectivesCollapsed = true;

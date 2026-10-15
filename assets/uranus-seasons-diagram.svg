@@ -1,26 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" role="img" aria-labelledby="t d">
-  <title id="t">Diagram musim Uranus</title>
-  <desc id="d">Ilustrasi orbit sederhana yang menunjukkan mengapa musim Uranus sangat panjang.</desc>
-  <defs>
-    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#081319"/><stop offset="1" stop-color="#142933"/></linearGradient>
-  </defs>
-  <rect width="900" height="600" fill="url(#bg)"/>
-  <circle cx="170" cy="300" r="48" fill="#ffd77d"/>
-  <ellipse cx="500" cy="300" rx="250" ry="160" fill="none" stroke="#4b6f7a" stroke-width="4" stroke-dasharray="9 11"/>
-  <g>
-    <circle cx="500" cy="140" r="42" fill="#9fdfe1"/>
-    <line x1="480" y1="94" x2="520" y2="186" stroke="#f4f4de" stroke-width="6"/>
-    <text x="545" y="142" font-size="18" fill="#ecfbfb" font-family="Arial">Kutub utara lama menghadap Matahari</text>
-  </g>
-  <g>
-    <circle cx="500" cy="460" r="42" fill="#9fdfe1"/>
-    <line x1="480" y1="414" x2="520" y2="506" stroke="#f4f4de" stroke-width="6"/>
-    <text x="545" y="462" font-size="18" fill="#ecfbfb" font-family="Arial">Enam bulan kemudian kutub lain lebih terang</text>
-  </g>
-  <g font-family="Arial, Helvetica, sans-serif" fill="#edf8f8">
-    <text x="70" y="84" font-size="34" font-weight="700">Musim Uranus Sangat Panjang</text>
-    <text x="70" y="124" font-size="22" fill="#c2dddd">Satu tahun Uranus ≈ 84 tahun Bumi, sehingga satu musimnya ≈ 21 tahun Bumi.</text>
-    <text x="114" y="378" font-size="18" fill="#fff2c8">Matahari</text>
-    <text x="394" y="560" font-size="20" fill="#bddbdf">Perubahan orientasi sumbu membuat kutub Uranus bergantian menerima cahaya sangat lama.</text>
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<svg aria-labelledby="t d" role="img" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+<title id="t">Diagram musim Uranus</title>
+<desc id="d">Ilustrasi jalur mengelilingi sederhana yang menunjukkan mengapa musim Uranus sangat panjang.</desc>
+<defs>
+<linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#081319"/><stop offset="1" stop-color="#142933"/></linearGradient>
+</defs>
+<rect fill="url(#bg)" height="600" width="900"/>
+<circle cx="170" cy="300" fill="#ffd77d" r="48"/>
+<ellipse cx="500" cy="300" fill="none" rx="250" ry="160" stroke="#4b6f7a" stroke-dasharray="9 11" stroke-width="4"/>
+<g>
+<circle cx="500" cy="140" fill="#9fdfe1" r="42"/>
+<line stroke="#f4f4de" stroke-width="6" x1="480" x2="520" y1="94" y2="186"/>
+<text fill="#ecfbfb" font-family="Arial" font-size="18" x="545" y="142">Kutub utara lama menghadap Matahari</text>
+</g>
+<g>
+<circle cx="500" cy="460" fill="#9fdfe1" r="42"/>
+<line stroke="#f4f4de" stroke-width="6" x1="480" x2="520" y1="414" y2="506"/>
+<text fill="#ecfbfb" font-family="Arial" font-size="18" x="545" y="462">Enam bulan kemudian kutub lain lebih terang</text>
+</g>
+<g fill="#edf8f8" font-family="Arial, Helvetica, sans-serif">
+<text font-size="34" font-weight="700" x="70" y="84">Musim Uranus Sangat Panjang</text>
+<text fill="#c2dddd" font-size="22" x="70" y="124">Satu tahun Uranus ≈ 84 tahun Bumi. Jadi satu musimnya ≈ 21 tahun Bumi.</text>
+<text fill="#fff2c8" font-size="18" x="114" y="378">Matahari</text>
+<text fill="#bddbdf" font-size="20" x="394" y="560">Perubahan arah sumbu membuat kutub Uranus bergantian menerima cahaya sangat lama.</text>
+</g>
 </svg>

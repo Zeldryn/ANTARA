@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once dirname(__DIR__) . '/_bootstrap.php';
+require_once dirname(__DIR__) . '/achievements/_achievements.php';
 
 antara_method('POST');
 $data = antara_input();
@@ -82,10 +83,19 @@ try {
         'created_at' => date('Y-m-d H:i:s'),
     ];
 
+    $notifications = [];
+    try {
+        antara_achievements_sync($pdo, $userId);
+        $notifications = antara_achievement_claim_notifications($pdo, $userId, 10);
+    } catch (Throwable $achievementError) {
+        error_log('ANTARA register achievement notification error: ' . $achievementError->getMessage());
+    }
+
     antara_json([
         'success' => true,
         'message' => 'Identitas ANTARA berhasil dibuat.',
         'user' => antara_user_payload($user),
+        'notifications' => $notifications,
     ], 201);
 } catch (PDOException $e) {
     if ((string)$e->getCode() === '23000') {

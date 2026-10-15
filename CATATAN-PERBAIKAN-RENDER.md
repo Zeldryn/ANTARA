@@ -19,3 +19,12 @@ Browser pengujian tidak tersedia dan unduhannya gagal. Pengujian visual seluruh 
 
 Pemakaian:
 Ekstrak sebagai folder proyek bersih di htdocs, lalu buka lewat localhost. Gunakan pengaturan database lokal milikmu yang sesuai. Refresh halaman dengan Ctrl+F5.
+
+## Perbaikan responsif F12 dan audio
+
+- Tombol Tujuan Mars sebelumnya memiliki top dan bottom bersamaan tanpa height, sehingga bisa memanjang. Tujuan dan Info di delapan planet sekarang memiliki tinggi terbatas, dengan satu sisi vertikal aktif pada setiap mode.
+- Pergantian pointer coarse/fine dari DevTools menyegarkan panel eksplorasi yang sedang terbuka.
+- Audio pada panorama PC dipindahkan ke kanan bawah.
+- Tombol audio disembunyikan dan tidak bisa difokuskan selama kartu jelajah atau jelajah penuh terbuka, termasuk layar pemilihan tujuan/kualitas. Pengaturan mute tetap dipertahankan.
+- Tombol audio pada panorama mobile mengikuti titik tengah logo header ANTARA.
+- 144 pemeriksaan cascade CSS lolos pada delapan kombinasi ukuran/pointer dan delapan planet. Tes fungsi audio untuk masuk/keluar mode dan perubahan posisi logo juga lolos. Pengujian ini bukan pengujian visual browser.

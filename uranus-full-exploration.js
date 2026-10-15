@@ -2,7 +2,7 @@
 
 (() => {
   const STORAGE_KEY = "antara-uranus-full-quality-v3";
-  const DISCOVERY_PREFIX = "antara-uranus-pov-discovery-v1:";
+  const DISCOVERY_PREFIX = "antara-uranus-mode terbang-discovery-v1:";
   const QUALITY = Object.freeze({
     LOW: { name: "LOW", label: "RENDAH", dpr: 1.0, clouds: 220, streaks: 7, markerSegments: 28 },
     MEDIUM: { name: "MEDIUM", label: "SEDANG", dpr: 1.35, clouds: 360, streaks: 10, markerSegments: 40 },
@@ -30,34 +30,34 @@
   const DESTINATIONS = Object.freeze([
     {
       id: "methane-winds",
-      name: "Atmosfer Metana & Angin",
+      name: "Udara Gas bernama metana & Angin",
       short: "METHANE WINDS",
-      category: "ATMOSFER ICE GIANT",
+      category: "UDARA RAKSASA ES",
       descriptor: "Terbang di antara kabut biru-hijau dan jet angin Uranus",
-      locationLabel: "Atmosfer atas Uranus",
+      locationLabel: "Udara atas Uranus",
       preview: "axis",
       image: "./assets/uranus-methane-diagram.svg",
-      imageAlt: "Diagram edukasi metana pada atmosfer Uranus",
-      imageCaption: "Atmosfer metana Uranus · ANTARA berbasis NASA",
+      imageAlt: "Diagram edukasi gas bernama metana pada udara Uranus",
+      imageCaption: "Udara gas bernama metana Uranus · ANTARA berbasis NASA",
       source: SOURCES.facts,
-      lead: "Warna biru-hijau Uranus berasal dari metana yang menyerap cahaya merah. Di balik tampilannya yang tenang, angin atmosfer Uranus dapat melaju sangat cepat.",
+      lead: "Warna biru-hijau Uranus berasal dari gas bernama metana yang menyerap cahaya merah. Di balik tampilannya yang tenang, angin udara Uranus bisa melaju sangat cepat.",
       facts: [
-        "Atmosfer Uranus didominasi hidrogen dan helium dengan metana serta jejak air dan amonia.",
-        "Metana menyerap cahaya merah dan membantu memberi warna biru-hijau khas Uranus.",
+        "Udara Uranus paling banyak berisi gas ringan bernama hidrogen dan gas ringan bernama helium dengan gas bernama metana serta jejak air dan gas bernama amonia.",
+        "Gas bernama metana menyerap cahaya merah dan membantu memberi warna biru-hijau khas Uranus.",
         "NASA mencatat kecepatan angin Uranus dapat mencapai sekitar 900 km/jam."
       ],
       palette: { sky: 0x2f6f76, fog: 0x6faeb2, fogDensity: 0.0108, cloud: "#bfe9e8", cloud2: "#6bb5b7", accent: 0xb7f3f0, lightning: 0xe8ffff },
       wind: { x: 1.45, z: 0.28 }, turbulence: 0.64,
       spawn: { x: -30, y: 9, z: 42, yaw: Math.PI * 0.88, pitch: -0.04 },
       observations: [
-        { id: "methane-haze", name: "Kabut Metana", category: "ABSORPSI CAHAYA", position: [8, 12, -14], radius: 10, source: SOURCES.facts, lead: "Kabut dan gas metana membuat lapisan atas Uranus tampak lembut dan berwarna cyan.", why: "Spektrum cahaya membantu ilmuwan mengidentifikasi gas yang tidak bisa dilihat langsung.", facts: ["Metana hanya sebagian kecil atmosfer, tetapi sangat berpengaruh pada warna planet.", "Metana menyerap kuat pada panjang gelombang merah.", "Lapisan kabut dapat berubah secara musiman."] },
-        { id: "methane-jet", name: "Jet Angin Cepat", category: "JET STREAM", position: [-22, -5, -12], radius: 10, source: SOURCES.facts, lead: "Arus atmosfer Uranus bergerak cepat meskipun planet tampak relatif tenang dari jauh.", why: "Kecepatan dan arah jet membantu menjelaskan sirkulasi pada ice giant yang menerima sedikit energi Matahari.", facts: ["Angin dapat mencapai sekitar 900 km/jam.", "Di ekuator, sebagian angin bergerak berlawanan arah rotasi planet.", "Lebih dekat kutub, arah angin dapat berubah mengikuti rotasi."] },
-        { id: "methane-cold", name: "Lapisan Sangat Dingin", category: "TEMPERATUR", position: [28, -18, 18], radius: 10, source: SOURCES.facts, lead: "Uranus memiliki salah satu atmosfer planet terdingin di Tata Surya.", why: "Suhu ekstrem membantu membentuk awan, kabut, dan struktur atmosfer yang berbeda dari raksasa gas.", facts: ["NASA mencatat temperatur minimum atmosfer sekitar 49 K atau -224 °C.", "Uranus memancarkan sedikit panas internal dibanding planet raksasa lain.", "Tidak ada permukaan padat di bawah awan untuk didarati."] }
+        { id: "methane-kabut tipis", name: "Kabut Gas bernama metana", category: "MENYERAP CAHAYA", position: [8, 12, -14], radius: 10, source: SOURCES.facts, lead: "Kabut dan gas bernama metana membuat lapisan atas Uranus tampak lembut dan berwarna cyan.", why: "Warna cahaya membantu ilmuwan mengenali gas yang tidak bisa dilihat langsung.", facts: ["Gas bernama metana hanya sebagian kecil udara. Tapi sangat berpengaruh pada warna planet.", "Gas bernama metana menyerap kuat pada jenis cahaya merah.", "Lapisan kabut dapat berubah secara musiman."] },
+        { id: "methane-jet", name: "Jet Angin Cepat", category: "ARUS ANGIN CEPAT", position: [-22, -5, -12], radius: 10, source: SOURCES.facts, lead: "Arus udara Uranus bergerak cepat meski planet tampak cukup tenang dari jauh.", why: "Kecepatan dan arah jet membantu menjelaskan sirkulasi pada raksasa es yang menerima sedikit energi Matahari.", facts: ["Angin dapat mencapai sekitar 900 km/jam.", "Di bagian tengah planet, sebagian angin bergerak berlawanan arah putaran planet.", "Lebih dekat kutub, arah angin bisa berubah mengikuti putaran."] },
+        { id: "methane-cold", name: "Lapisan Sangat Dingin", category: "TEMPERATUR", position: [28, -18, 18], radius: 10, source: SOURCES.facts, lead: "Uranus punya salah satu udara planet terdingin di Tata Surya.", why: "Suhu sangat kuat membantu membentuk awan, kabut, dan bentuk udara yang berbeda dari raksasa gas.", facts: ["NASA mencatat suhu minimum udara sekitar 49 K atau -224 °C.", "Uranus memancarkan sedikit panas internal dibanding planet raksasa lain.", "Tidak ada permukaan padat di bawah awan untuk didarati."] }
       ]
     },
     {
       id: "polar-seasons",
-      name: "Kutub & Musim Ekstrem",
+      name: "Kutub & Musim Sangat berat",
       short: "POLAR SEASONS",
       category: "SUMBU MIRING 97.8°",
       descriptor: "Masuk ke wilayah kutub yang menerima musim puluhan tahun",
@@ -67,46 +67,46 @@
       imageAlt: "Diagram musim dan kemiringan sumbu Uranus",
       imageCaption: "Musim Uranus · ANTARA berbasis NASA",
       source: SOURCES.facts,
-      lead: "Uranus seolah berguling mengitari Matahari karena sumbu rotasinya hampir rebah. Akibatnya, kutub dapat mengalami siang atau malam sangat panjang selama bagian besar orbitnya.",
+      lead: "Uranus seolah berguling mengitari Matahari karena arah putarnya hampir rebah. Akibatnya, kutub bisa mengalami siang atau malam sangat panjang selama bagian besar jalurnya.",
       facts: [
         "Kemiringan sumbu Uranus sekitar 97,8 derajat.",
         "Satu musim Uranus berlangsung kira-kira dua dekade karena satu tahun Uranus sekitar 84 tahun Bumi.",
-        "Observasi modern menunjukkan atmosfer dapat menjadi lebih dinamis saat kondisi musim berubah."
+        "Observasi sekarang menunjukkan udara dapat menjadi lebih yang terus berubah saat kondisi musim berubah."
       ],
       palette: { sky: 0x255c68, fog: 0x5e98a2, fogDensity: 0.0114, cloud: "#d1f2ef", cloud2: "#72b3b5", accent: 0xd7ffff, lightning: 0xf0ffff },
       wind: { x: 0.42, z: 0.72 }, turbulence: 0.72,
       spawn: { x: -22, y: 15, z: 40, yaw: Math.PI * 0.9, pitch: -0.08 },
       observations: [
-        { id: "polar-cap", name: "Tudung Kutub", category: "POLAR CAP", position: [4, 7, -16], radius: 11, source: SOURCES.system, lead: "Wilayah kutub Uranus dapat tampak berbeda karena musim, kabut, dan distribusi awan.", why: "Perubahan kutub memberi laboratorium alami untuk melihat atmosfer bereaksi terhadap pencahayaan musiman ekstrem.", facts: ["Uranus mengalami musim sangat panjang.", "Kutub dapat menghadap Matahari selama bertahun-tahun.", "Webb dan teleskop modern melihat struktur polar lebih jelas daripada Voyager 2."] },
-        { id: "polar-cloud", name: "Awan Cerah", category: "CUACA DINAMIS", position: [-25, 2, 5], radius: 10, source: SOURCES.facts, lead: "Awan cerah sesekali muncul di atmosfer Uranus dan berubah cukup cepat.", why: "Awan diskret menunjukkan Uranus lebih dinamis daripada kesan polos dari citra Voyager 2.", facts: ["Voyager 2 melihat relatif sedikit awan diskret.", "Observasi kemudian menemukan fitur awan yang berubah cepat.", "Musim memengaruhi struktur atmosfer yang terlihat."] },
-        { id: "polar-tilt", name: "Garis Sumbu Rebahan", category: "ROTASI", position: [27, 18, 20], radius: 9, source: SOURCES.facts, lead: "Sumbu Uranus hampir berada di bidang orbit, berbeda drastis dari sebagian besar planet.", why: "Kemiringan ekstrem ini memengaruhi musim, orientasi cincin, dan geometri medan magnet Uranus.", facts: ["Kemiringan aksial sekitar 97,8°.", "Planet tampak berputar menyamping.", "Penyebab pastinya masih menjadi topik penelitian evolusi awal Tata Surya."] }
+        { id: "polar-cap", name: "Tudung Kutub", category: "TUDUNG KUTUB", position: [4, 7, -16], radius: 11, source: SOURCES.system, lead: "Wilayah kutub Uranus bisa tampak berbeda karena musim, kabut, dan penyebaran awan.", why: "Perubahan kutub memberi laboratorium alami untuk melihat udara bereaksi terhadap pencahayaan musiman yang sangat panjang.", facts: ["Uranus mengalami musim sangat panjang.", "Kutub dapat menghadap Matahari selama bertahun-tahun.", "Webb dan teleskop sekarang melihat bentuk polar lebih jelas daripada Voyager 2."] },
+        { id: "polar-cloud", name: "Awan Cerah", category: "CUACA YANG TERUS BERUBAH", position: [-25, 2, 5], radius: 10, source: SOURCES.facts, lead: "Awan cerah sesekali muncul di udara Uranus dan berubah cukup cepat.", why: "Awan terpisah menunjukkan Uranus lebih yang terus berubah daripada kesan polos dari gambar Voyager 2.", facts: ["Voyager 2 melihat cukup sedikit awan terpisah.", "Observasi kemudian menemukan bagian awan yang berubah cepat.", "Musim mengubah bentuk udara yang terlihat."] },
+        { id: "polar-tilt", name: "Garis Sumbu Rebahan", category: "ROTASI", position: [27, 18, 20], radius: 9, source: SOURCES.facts, lead: "Sumbu Uranus hampir berada di bidang jalur mengelilingi, berbeda drastis dari sebagian besar planet.", why: "Kemiringan sangat kuat ini mengubah musim, arah cincin, dan geometri gaya magnet Uranus.", facts: ["Kemiringan aksial sekitar 97,8°.", "Planet tampak berputar menyamping.", "Penyebab pastinya masih menjadi topik penelitian perubahan dari dulu sampai sekarang awal Tata Surya."] }
       ]
     },
     {
       id: "magnetosphere",
-      name: "Magnetosfer Miring",
+      name: "Perisai magnet Miring",
       short: "MAGNETOSPHERE",
-      category: "MEDAN MAGNET ASIMETRIS",
-      descriptor: "Terbang di koridor medan magnet yang miring dan offset",
-      locationLabel: "Magnetosfer Uranus",
+      category: "GAYA MAGNET ASIMETRIS",
+      descriptor: "Terbang di koridor gaya magnet yang miring dan offset",
+      locationLabel: "Perisai magnet Uranus",
       preview: "voyager",
       image: "./assets/uranus-magnetosphere-diagram.svg",
-      imageAlt: "Diagram magnetosfer Uranus",
-      imageCaption: "Magnetosfer Uranus · ANTARA berbasis NASA",
+      imageAlt: "Diagram perisai magnet Uranus",
+      imageCaption: "Perisai magnet Uranus · ANTARA berbasis NASA",
       source: SOURCES.magnetosphere,
-      lead: "Medan magnet Uranus tidak rapi mengikuti sumbu rotasinya. Sumbu magnetnya miring sekitar 60° dan pusat medan juga bergeser dari pusat planet.",
+      lead: "Gaya magnet Uranus tidak rapi mengikuti arah putarnya. Sumbu magnetnya miring sekitar 60° dan pusat medan juga bergeser dari pusat planet.",
       facts: [
-        "Sumbu magnet Uranus miring hampir 60 derajat dari sumbu rotasi.",
-        "Medan magnetnya juga offset sekitar sepertiga radius planet dari pusat.",
-        "Rotasi menyamping membuat ekor magnetosfer membentuk geometri seperti pembuka botol di ruang angkasa."
+        "Arah magnet Uranus miring hampir 60 derajat dari arah putar.",
+        "Gaya magnetnya juga offset sekitar sepertiga radius planet dari pusat.",
+        "Putaran menyamping membuat ekor perisai magnet membentuk geometri seperti pembuka botol di ruang angkasa."
       ],
       palette: { sky: 0x101c2b, fog: 0x304d67, fogDensity: 0.0078, cloud: "#8bdadf", cloud2: "#466e92", accent: 0xaefcff, lightning: 0xe5ffff },
       wind: { x: 0.18, z: 0.38 }, turbulence: 0.32,
       spawn: { x: -24, y: 8, z: 46, yaw: Math.PI * 0.9, pitch: -0.04 },
       observations: [
-        { id: "mag-axis", name: "Sumbu Magnet 60°", category: "MAGNETIC AXIS", position: [7, 8, -15], radius: 10, source: SOURCES.magnetosphere, lead: "Arah medan magnet utama Uranus jauh dari sumbu rotasi planet.", why: "Kemiringan ini menciptakan lingkungan plasma dan aurora yang sangat tidak simetris.", facts: ["Sumbu magnet berbeda jauh dari sumbu rotasi.", "Medan juga tidak berpusat tepat di tengah planet.", "Voyager 2 mengukur struktur aneh ini saat flyby 1986."] },
-        { id: "mag-aurora", name: "Koridor Aurora", category: "AURORA", position: [-26, 12, 7], radius: 10, source: SOURCES.magnetosphere, lead: "Aurora Uranus tidak selalu muncul tepat di kutub geografis karena geometri medan magnetnya yang miring.", why: "Aurora membantu melacak interaksi angin Matahari dengan medan magnet planet.", facts: ["Aurora Uranus berbeda orientasi dari Bumi, Jupiter, dan Saturnus.", "Lokasinya dipengaruhi medan magnet yang miring dan offset.", "Pengamatan ultraviolet modern masih mempelajari variasinya."] },
-        { id: "mag-tail", name: "Ekor Corkscrew", category: "MAGNETOTAIL", position: [30, -2, 20], radius: 9, source: SOURCES.magnetosphere, lead: "Ekor magnetosfer Uranus memanjang jauh dari Matahari dan dipelintir oleh rotasi planet.", why: "Bentuk corkscrew adalah konsekuensi langsung dari kombinasi rotasi menyamping dan medan magnet miring.", facts: ["Magnetotail membentang jutaan kilometer.", "Garis medannya terpuntir saat Uranus berotasi.", "Struktur ini salah satu ciri magnetosfer paling unik di Tata Surya."] }
+        { id: "mag-axis", name: "Arah magnet 60°", category: "MAGNETIC AXIS", position: [7, 8, -15], radius: 10, source: SOURCES.magnetosphere, lead: "Arah gaya magnet utama Uranus jauh dari arah putar planet.", why: "Kemiringan ini menciptakan lingkungan gas superpanas dan aurora yang sangat tidak simetris.", facts: ["Arah magnet berbeda jauh dari arah putar.", "Medan juga tidak berpusat tepat di tengah planet.", "Voyager 2 mengukur bentuk aneh ini saat terbang lewat dekat 1986."] },
+        { id: "mag-aurora", name: "Koridor Aurora", category: "AURORA", position: [-26, 12, 7], radius: 10, source: SOURCES.magnetosphere, lead: "Aurora Uranus tidak selalu muncul tepat di kutub geografis karena geometri gaya magnetnya yang miring.", why: "Aurora membantu melacak saling pengaruh angin Matahari dengan gaya magnet planet.", facts: ["Aurora Uranus berbeda arah dari Bumi, Jupiter, dan Saturnus.", "Lokasinya dipengaruhi gaya magnet yang miring dan offset.", "Melihat dan mempelajari cahaya khusus sekarang masih mempelajari variasinya."] },
+        { id: "mag-tail", name: "Ekor Corkscrew", category: "MAGNETOTAIL", position: [30, -2, 20], radius: 9, source: SOURCES.magnetosphere, lead: "Ekor perisai magnet Uranus memanjang jauh dari Matahari dan dipelintir oleh putaran planet.", why: "Bentuk corkscrew adalah konsekuensi langsung dari kombinasi putaran menyamping dan gaya magnet miring.", facts: ["Magnetotail membentang jutaan kilometer.", "Garis medannya terpuntir saat Uranus berputar.", "Bentuk ini salah satu ciri perisai magnet paling unik di Tata Surya."] }
       ]
     },
     {
@@ -114,35 +114,35 @@
       name: "Cincin Gelap Uranus",
       short: "DARK RINGS",
       category: "SISTEM CINCIN SEMPIT",
-      descriptor: "Terbang di antara cincin tipis, gelap, dan nyaris vertikal",
+      descriptor: "Terbang di antara cincin tipis, gelap, dan nyaris atas-bawah",
       locationLabel: "Bidang cincin Uranus",
       preview: "rings",
       image: "./assets/uranus-rings-diagram.svg",
       imageAlt: "Diagram cincin Uranus",
       imageCaption: "Cincin Uranus · ANTARA berbasis NASA/Voyager 2",
       source: SOURCES.rings,
-      lead: "Cincin Uranus jauh lebih gelap dan sempit daripada cincin Saturnus. Karena planetnya rebah, orientasi cincin juga tampak dramatis terhadap bidang orbit.",
+      lead: "Cincin Uranus jauh lebih gelap dan sempit daripada cincin Saturnus. Karena planetnya rebah, arah cincin juga tampak dramatis terhadap bidang jalur mengelilingi.",
       facts: [
-        "Uranus memiliki sistem cincin yang sempit dan relatif gelap.",
+        "Uranus punya sistem cincin yang sempit dan cukup gelap.",
         "Voyager 2 mempelajari sembilan cincin yang sudah diketahui dan menemukan cincin tambahan.",
-        "Material cincin mungkin berasal dari bulan kecil yang hancur akibat tumbukan atau gaya gravitasi."
+        "Bahan cincin mungkin berasal dari bulan kecil yang hancur akibat tabrakan atau gaya tarikan."
       ],
       palette: { sky: 0x091117, fog: 0x253944, fogDensity: 0.0068, cloud: "#a7cbcf", cloud2: "#485c65", accent: 0xc9eff0, lightning: 0xf0ffff },
       wind: { x: 0.10, z: -0.03 }, turbulence: 0.18,
       spawn: { x: -22, y: 3, z: 47, yaw: Math.PI * 0.91, pitch: -0.02 },
       observations: [
-        { id: "rings-epsilon", name: "Cincin Epsilon", category: "CINCIN UTAMA", position: [8, 1, -16], radius: 10, source: SOURCES.rings, lead: "Epsilon adalah salah satu cincin utama Uranus yang paling menonjol.", why: "Cincin tipis memberi petunjuk tentang interaksi gravitasi dengan bulan penggembala kecil.", facts: ["Cincin Uranus lebih gelap daripada cincin Saturnus.", "Ketebalan dan opasitas tiap cincin dapat berbeda tajam.", "Sebagian struktur dipertahankan oleh interaksi orbital dengan bulan kecil."] },
-        { id: "rings-gap", name: "Koridor Gelap", category: "GAP", position: [-24, 4, 4], radius: 10, source: SOURCES.voyager, lead: "Di antara cincin-cincin sempit terdapat wilayah yang jauh lebih renggang.", why: "Distribusi material membantu menguji sejarah pembentukan dan penghancuran bulan kecil Uranus.", facts: ["Sistem cincin mungkin relatif muda.", "Partikel cincin bisa berasal dari pecahan bulan.", "Voyager 2 melihat variasi ketebalan dan opasitas yang besar."] },
-        { id: "rings-shepherd", name: "Jejak Bulan Penggembala", category: "RESONANSI", position: [29, 9, 19], radius: 9, source: SOURCES.voyager, lead: "Bulan kecil di sekitar cincin dapat membantu menjaga tepian cincin tetap sempit.", why: "Gravitasi bulan kecil mampu mengatur detail atmosfer tanpa menyentuhnya langsung.", facts: ["Voyager 2 menemukan banyak bulan kecil di sistem Uranus.", "Beberapa bulan berinteraksi kuat dengan cincin.", "Resonansi membantu membentuk tepi dan celah sistem cincin."] }
+        { id: "rings-epsilon", name: "Cincin Epsilon", category: "CINCIN UTAMA", position: [8, 1, -16], radius: 10, source: SOURCES.rings, lead: "Epsilon adalah salah satu cincin utama Uranus yang paling menonjol.", why: "Cincin tipis menunjukkan tentang saling tarik dengan bulan penggembala kecil.", facts: ["Cincin Uranus lebih gelap daripada cincin Saturnus.", "Ketebalan dan seberapa mudah cahaya menembus tiap cincin bisa berbeda tajam.", "Sebagian bentuk dipertahankan oleh saling pengaruh jalur dengan bulan kecil."] },
+        { id: "rings-gap", name: "Koridor Gelap", category: "GAP", position: [-24, 4, 4], radius: 10, source: SOURCES.voyager, lead: "Di antara cincin-cincin sempit terdapat wilayah yang jauh lebih renggang.", why: "Penyebaran bahan membantu menguji sejarah pembentukan dan penghancuran bulan kecil Uranus.", facts: ["Sistem cincin mungkin cukup muda.", "Butiran kecil cincin bisa berasal dari pecahan bulan.", "Voyager 2 melihat variasi ketebalan dan seberapa mudah cahaya menembus yang besar."] },
+        { id: "rings-shepherd", name: "Jejak Bulan Penggembala", category: "POLA GERAK", position: [29, 9, 19], radius: 9, source: SOURCES.voyager, lead: "Bulan kecil di sekitar cincin dapat membantu menjaga tepian cincin tetap sempit.", why: "Tarikan bulan kecil mampu mengatur detail udara tanpa menyentuhnya langsung.", facts: ["Voyager 2 menemukan banyak bulan kecil di sistem Uranus.", "Beberapa bulan saling bertemu kuat dengan cincin.", "Pola gerak khusus membantu membentuk tepi dan celah sistem cincin."] }
       ]
     },
     {
       id: "miranda",
       name: "Koridor Miranda & Voyager 2",
       short: "MIRANDA",
-      category: "BULAN ES / FLYBY",
+      category: "BULAN ES / TERBANG LEWAT DEKAT",
       descriptor: "Dekati Miranda dan lintasan historis Voyager 2",
-      locationLabel: "Orbit Miranda",
+      locationLabel: "Jalur mengelilingi Miranda",
       preview: "miranda",
       image: "./assets/uranus-miranda-diagram.svg",
       imageAlt: "Diagram edukasi bulan Miranda",
@@ -150,17 +150,17 @@
       source: SOURCES.moons,
       lead: "Miranda adalah bulan kecil dengan permukaan luar biasa kacau: ngarai patahan sangat dalam, dataran bertingkat, dan campuran wilayah tua serta muda. Voyager 2 memberi pandangan dekat terbaik pada 1986.",
       facts: [
-        "Miranda adalah yang terkecil dan terdalam orbitnya dari lima bulan besar Uranus.",
+        "Miranda adalah yang terkecil dan terdalam jalurnya dari lima bulan besar Uranus.",
         "Ngarai patahannya dapat mencapai sekitar 20 km atau kira-kira 12 kali kedalaman Grand Canyon.",
-        "Voyager 2 melintas Uranus pada 24 Januari 1986 dan sampai sekarang menjadi satu-satunya wahana yang pernah mengunjungi planet ini."
+        "Voyager 2 melintas Uranus pada 24 Januari 1986 dan sampai sekarang menjadi satu-satunya robot antariksa yang pernah mengunjungi planet ini."
       ],
       palette: { sky: 0x0b1620, fog: 0x3d5868, fogDensity: 0.0074, cloud: "#e0eaec", cloud2: "#8fa7af", accent: 0xe9fbff, lightning: 0xf5ffff },
       wind: { x: 0.12, z: 0.18 }, turbulence: 0.20,
       spawn: { x: -24, y: 10, z: 44, yaw: Math.PI * 0.92, pitch: -0.05 },
       observations: [
-        { id: "miranda-canyon", name: "Ngarai Patahan", category: "TEKTONIK ES", position: [5, 5, -16], radius: 10, source: SOURCES.moons, lead: "Permukaan Miranda terpotong ngarai raksasa yang menunjukkan sejarah geologi kompleks.", why: "Relief ekstrem pada bulan sekecil Miranda menantang model sederhana tentang evolusi dunia es kecil.", facts: ["Ngarai dapat mencapai sekitar 20 km dalam.", "Sebagian permukaan tampak sangat tua, sebagian lain lebih muda.", "Struktur ini kemungkinan berkaitan dengan deformasi internal dan tumbukan masa lalu."] },
-        { id: "miranda-corona", name: "Corona Terrain", category: "MEDAN CAMPURAN", position: [-24, 10, 8], radius: 10, source: SOURCES.moons, lead: "Miranda memiliki wilayah corona dengan pola punggungan dan blok medan yang tampak ditempel ulang.", why: "Corona memberi petunjuk bahwa interior Miranda pernah cukup aktif untuk merombak permukaannya.", facts: ["Miranda memiliki campuran terrain yang sangat berbeda.", "Ada punggungan, patahan, dan dataran bertingkat.", "Asal pasti beberapa struktur masih diperdebatkan."] },
-        { id: "miranda-voyager", name: "Jejak Voyager 2", category: "MISI 1986", position: [30, 4, 20], radius: 9, source: SOURCES.voyager, lead: "Voyager 2 melintas Uranus pada Januari 1986 dan hanya memiliki beberapa jam pengamatan dekat.", why: "Satu flyby singkat menghasilkan sebagian besar citra resolusi dekat yang masih menjadi fondasi eksplorasi Uranus hingga sekarang.", facts: ["Closest approach Uranus sekitar 81.500 km.", "Voyager 2 menemukan 10 bulan baru saat encounter Uranus.", "Wahana juga mengukur medan magnet Uranus yang sangat miring."] }
+        { id: "miranda-canyon", name: "Ngarai Patahan", category: "GERAKAN KULIT PLANET ES", position: [5, 5, -16], radius: 10, source: SOURCES.moons, lead: "Permukaan Miranda terpotong ngarai raksasa yang menunjukkan sejarah tanah dan batu rumit.", why: "Bentuk naik-turun tanah sangat kuat pada bulan sekecil Miranda menantang model sederhana tentang perubahan dari dulu sampai sekarang dunia es kecil.", facts: ["Ngarai dapat mencapai sekitar 20 km dalam.", "Sebagian permukaan tampak sangat tua, sebagian lain lebih muda.", "Bentuk ini kemungkinan berhubungan dengan perubahan bentuk internal dan tabrakan masa lalu."] },
+        { id: "miranda-lapisan paling luar Matahari", name: "Lapisan paling luar Matahari Permukaan 3D", category: "MEDAN CAMPURAN", position: [-24, 10, 8], radius: 10, source: SOURCES.moons, lead: "Miranda punya wilayah lapisan paling luar Matahari dengan pola punggungan dan blok medan yang tampak ditempel ulang.", why: "Lapisan paling luar Matahari menunjukkan bagian dalam Miranda pernah cukup aktif untuk merombak permukaannya.", facts: ["Miranda punya campuran permukaan 3D yang sangat berbeda.", "Ada punggungan, patahan, dan dataran bertingkat.", "Asal pasti beberapa bentuk masih diperdebatkan."] },
+        { id: "miranda-voyager", name: "Jejak Voyager 2", category: "MISI 1986", position: [30, 4, 20], radius: 9, source: SOURCES.voyager, lead: "Voyager 2 melintas Uranus pada Januari 1986 dan hanya punya beberapa jam melihat dan mempelajari dekat.", why: "Satu terbang lewat dekat singkat membuat sebagian besar gambar detail dekat yang masih menjadi fondasi eksplorasi Uranus hingga sekarang.", facts: ["Closest approach Uranus sekitar 81.500 km.", "Voyager 2 menemukan 10 bulan baru saat encounter Uranus.", "Robot antariksa juga mengukur gaya magnet Uranus yang sangat miring."] }
       ]
     }
   ]);
@@ -511,16 +511,16 @@
       if (this.destination.id === "magnetosphere") {
         if (pressure < 0.9) return "MEDAN LUAR";
         if (pressure < 2.0) return "KORIDOR AURORA";
-        return "MAGNETOSFER DALAM";
+        return "PERISAI MAGNET DALAM";
       }
       if (this.destination.id === "miranda") {
-        if (pressure < 0.9) return "FLYBY MIRANDA";
+        if (pressure < 0.9) return "TERBANG LEWAT DEKAT MIRANDA";
         if (pressure < 2.0) return "KORIDOR VOYAGER";
         return "SISTEM BULAN";
       }
-      if (pressure < 0.95) return "KABUT METANA ATAS";
-      if (pressure < 2.2) return "AWAN H2S / AMONIA";
-      return "ATMOSFER LEBIH DALAM";
+      if (pressure < 0.95) return "KABUT GAS metana ATAS";
+      if (pressure < 2.2) return "AWAN AWAN GAS";
+      return "UDARA LEBIH DALAM";
     }
 
     boundaryFactor(position) {
@@ -632,6 +632,8 @@
       this.hudLocation = document.getElementById("uranus-full-hud-location");
       this.hudDepth = document.getElementById("uranus-full-hud-depth");
       this.hudSpeed = document.getElementById("uranus-full-hud-speed");
+      this.hudAltitude = document.getElementById("uranus-full-hud-altitude");
+      this.hudTarget = document.getElementById("uranus-full-hud-target");
       this.hudPressure = document.getElementById("uranus-full-hud-pressure");
       this.hudType = document.getElementById("uranus-full-hud-region-type");
       this.hudQuality = document.getElementById("uranus-full-hud-quality");
@@ -757,7 +759,7 @@
       });
       if (this.qualityLabel) this.qualityLabel.textContent = this.quality.label;
       if (this.hudQuality) this.hudQuality.textContent = this.quality.label;
-      if (this.qualityNote) this.qualityNote.textContent = `Rekomendasi perangkat: ${QUALITY[this.recommendedQuality].label}. Kualitas mengatur jumlah awan, detail atmosfer, detail marker, dan ketajaman renderer.`;
+      if (this.qualityNote) this.qualityNote.textContent = `Rekomendasi perangkat: ${QUALITY[this.recommendedQuality].label}. Kualitas mengatur jumlah awan, detail udara, detail marker, dan ketajaman mesin gambar 3D.`;
       if (this.renderer) {
         this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, this.quality.dpr));
         this.resize();
@@ -935,8 +937,20 @@
       });
     }
 
+    syncSavedDestinationProgress() {
+      for (const destination of DESTINATIONS) {
+        try {
+          const saved = JSON.parse(localStorage.getItem(`${DISCOVERY_PREFIX}${destination.id}`) || "[]");
+          if (Array.isArray(saved) && saved.length > 0) {
+            window.AntaraProgress?.trackFull?.("uranus", destination.id, destination.name);
+          }
+        } catch {}
+      }
+    }
+
     openEntryFlow() {
       if (!this.uranus.active || this.uranus.travelMode || this.uranus.fullExplorationActive) return;
+      this.syncSavedDestinationProgress();
       if (this.uranus.exploring) this.uranus.exitExploration();
       this.state = "configuring";
       this.uranus.fullExplorationActive = true;
@@ -973,7 +987,7 @@
       if (this.renderer) return;
       await this.uranus.prepare();
       const T = this.uranus.THREE;
-      if (!T) throw new Error("WebGL2 tidak tersedia. Eksplorasi penuh Uranus memerlukan renderer 3D.");
+      if (!T) throw new Error("WebGL2 tidak tersedia. Jelajah penuh Uranus memerlukan mesin gambar 3D 3D.");
       this.THREE = T;
       const canvas = document.createElement("canvas");
       canvas.className = "uranus-full-canvas";
@@ -1028,7 +1042,7 @@
       const stages = reduced ? [[100, 50, "SIAP TERBANG"]] : [
         [22, 180, "MEMUAT DATA WILAYAH"],
         [48, 220, "MEMBENTUK LINGKUNGAN 3D"],
-        [71, 220, "MENYIAPKAN DINAMIKA LOKAL"],
+        [71, 220, "MENYIAPKAN GERAKAN LOKAL"],
         [91, 200, "MENGUNCI BATAS EKSPLORASI"],
         [100, 180, "SIAP MENJELAJAH"]
       ];
@@ -1071,6 +1085,8 @@
         this.root.classList.remove("is-preparing");
         this.root.classList.add("is-active");
         this.state = "exploring";
+        window.AntaraProgress?.trackFull?.("uranus", destination.id, destination.name);
+        if (this.actionsRoot) this.actionsRoot.hidden = false;
         const compactUi = this.isMobileUi();
         this.infoOpen = !compactUi;
         this.objectiveOpen = !compactUi;
@@ -1078,7 +1094,7 @@
         this.syncPanels();
         this.startLoop();
         this.showTutorial();
-        document.getElementById("announcement").textContent = `Tiba di ${destination.name}. Kamu sekarang menjelajahi simulasi 3D Uranus.`;
+        document.getElementById("announcement").textContent = `Tiba di ${destination.name}. Kamu sekarang menjelajahi tampilan 3D 3D Uranus.`;
       } catch (error) {
         console.error("Uranus Full Exploration failed", error);
         if (token !== this.transitionToken) return;
@@ -1202,9 +1218,9 @@
         this.boundaryHint.classList.toggle("is-visible", boundary > 0.3);
         if (boundary > 0.3) {
           const atmospheric = ["methane-winds", "polar-seasons"].includes(this.current?.id);
-          if (this.camera.position.y < this.world.minY + 5) this.boundaryHint.textContent = atmospheric ? "BATAS TEKANAN SIMULASI · KONDISI MAKIN EKSTREM" : "BATAS KORIDOR BAWAH · AUTOPILOT MEMBALIKKAN WAHANA";
-          else if (this.camera.position.y > this.world.maxY - 5) this.boundaryHint.textContent = atmospheric ? "BATAS LAPISAN ATAS · ARUS MEMBALIKKAN WAHANA" : "BATAS KORIDOR ATAS · AUTOPILOT MEMBALIKKAN WAHANA";
-          else this.boundaryHint.textContent = boundary > 0.82 ? (atmospheric ? "BATAS EKSPLORASI · ARUS MEMBALIKKAN WAHANA" : "BATAS EKSPLORASI · AUTOPILOT MENGOREKSI JALUR") : "MENDEKATI BATAS EKSPLORASI";
+          if (this.camera.position.y < this.world.minY + 5) this.boundaryHint.textContent = atmospheric ? "BATAS TEKANAN TAMPILAN 3D · KONDISI MAKIN SANGAT BERAT" : "BATAS KORIDOR BAWAH · AUTOPILOT MEMBALIKKAN ROBOT ANTARIKSA";
+          else if (this.camera.position.y > this.world.maxY - 5) this.boundaryHint.textContent = atmospheric ? "BATAS LAPISAN ATAS · ARUS MEMBALIKKAN ROBOT ANTARIKSA" : "BATAS KORIDOR ATAS · AUTOPILOT MEMBALIKKAN ROBOT ANTARIKSA";
+          else this.boundaryHint.textContent = boundary > 0.82 ? (atmospheric ? "BATAS EKSPLORASI · ARUS MEMBALIKKAN ROBOT ANTARIKSA" : "BATAS EKSPLORASI · AUTOPILOT MENGOREKSI JALUR") : "MENDEKATI BATAS EKSPLORASI";
         }
       }
     }
@@ -1234,7 +1250,7 @@
         else {
           const [x, y, z] = next.position;
           const distance = Math.hypot(this.camera.position.x - x, this.camera.position.y - y, this.camera.position.z - z);
-          this.nextTargetDistance.textContent = `${distance.toFixed(distance < 10 ? 1 : 0)} unit simulasi · dekati penanda`;
+          this.nextTargetDistance.textContent = `${distance.toFixed(distance < 10 ? 1 : 0)} unit tampilan 3D · dekati penanda`;
         }
       }
     }
@@ -1245,7 +1261,6 @@
       const fresh = !this.discovered.has(observation.id);
       this.discovered.add(observation.id);
       this.saveDiscoveryState();
-      if (fresh) window.AntaraProgress?.trackFull?.("uranus", `${this.current.id}:${observation.id}`, `${this.current.name} - ${observation.name}`);
       this.activeObservation = observation;
       this.observationPrompt.hidden = true;
       this.observationTitle.textContent = observation.name;
@@ -1298,7 +1313,7 @@
     buildObjectives() {
       if (!this.current || !this.objectivesList) return;
       if (this.objectivesRegion) this.objectivesRegion.textContent = this.current.name;
-      if (this.objectivesIntro) this.objectivesIntro.textContent = "Terbang mendekati penanda ilmiah. Saat cukup dekat, tekan E atau tombol AMATI untuk mencatat temuan.";
+      if (this.objectivesIntro) this.objectivesIntro.textContent = "Terbang mendekati penanda sains. Saat cukup dekat, tekan E atau tombol AMATI untuk mencatat temuan.";
       const fragment = document.createDocumentFragment();
       this.current.observations.forEach((observation, index) => {
         const done = this.discovered.has(observation.id);
@@ -1322,7 +1337,7 @@
       this.hudLocation.textContent = destination.name;
       this.hudType.textContent = destination.category;
       this.hudQuality.textContent = this.quality.label;
-      this.hudData.textContent = "NASA / JPL · VOYAGER 2 · MODEL URANUS EDUKASI TERKOMPRESI";
+      this.hudData.textContent = "NASA / JPL · VOYAGER 2 · MODEL SEDERHANA URANUS";
       this.infoName.textContent = destination.name;
       this.infoType.textContent = `${destination.category} · ${destination.descriptor}`;
       this.infoCoords.textContent = destination.locationLabel;
@@ -1343,10 +1358,24 @@
       if (!this.world || !this.camera) return;
       const pressure = this.world.pressureAt(this.camera.position.y);
       const depth = this.world.maxY - this.camera.position.y;
-      this.hudDepth.textContent = `${depth.toFixed(1)} KM RELATIF · ${this.world.layerAtPressure(pressure)}`;
+      this.hudDepth.textContent = `${depth.toFixed(1)} KM CUKUP · ${this.world.layerAtPressure(pressure)}`;
       this.hudSpeed.textContent = `${Math.round(this.speed)} M/S SIM`;
+      const altitude = Math.max(0, this.camera.position.y - this.world.minY);
+      if (this.hudAltitude) this.hudAltitude.textContent = `${altitude.toFixed(1)} KM CUKUP`;
+      const remaining = this.current?.observations?.filter(obs => !this.discovered.has(obs.id)) || [];
+      if (this.hudTarget) {
+        if (!remaining.length) this.hudTarget.textContent = "SELESAI";
+        else {
+          let nearestDistance = Infinity;
+          for (const obs of remaining) {
+            const [x, y, z] = obs.position;
+            nearestDistance = Math.min(nearestDistance, Math.hypot(this.camera.position.x - x, this.camera.position.y - y, this.camera.position.z - z));
+          }
+          this.hudTarget.textContent = `${nearestDistance.toFixed(nearestDistance < 10 ? 1 : 0)} UNIT`;
+        }
+      }
       if (["rings", "magnetosphere", "miranda"].includes(this.current.id)) {
-        this.hudPressure.textContent = this.current.id === "rings" ? "VAKUM · RING SIM" : this.current.id === "magnetosphere" ? "FIELD · SIM" : "VAKUM · FLYBY";
+        this.hudPressure.textContent = this.current.id === "rings" ? "VAKUM · RING SIM" : this.current.id === "magnetosphere" ? "FIELD · SIM" : "VAKUM · TERBANG LEWAT DEKAT";
       } else {
         this.hudPressure.textContent = `${pressure.toFixed(pressure < 1 ? 2 : 1)} BAR SIM`;
       }
@@ -1460,18 +1489,14 @@
     }
 
     showTutorial() {
-      let seen = false;
-      try { seen = sessionStorage.getItem("antara-uranus-pov-tutorial") === "1"; } catch {}
-      if (seen) return;
       this.tutorial.classList.add("is-visible");
-      window.setTimeout(() => this.hideTutorial(false), 9000);
+      window.clearTimeout(this.tutorialTimeout);
+      this.tutorialTimeout = window.setTimeout(() => this.hideTutorial(false), 9000);
     }
 
-    hideTutorial(persist = false) {
+    hideTutorial() {
       this.tutorial.classList.remove("is-visible");
-      if (persist) {
-        try { sessionStorage.setItem("antara-uranus-pov-tutorial", "1"); } catch {}
-      }
+      window.clearTimeout(this.tutorialTimeout);
     }
 
     showError(error) {

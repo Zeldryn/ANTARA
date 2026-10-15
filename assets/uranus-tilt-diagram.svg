@@ -1,27 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" role="img" aria-labelledby="t d">
-  <title id="t">Diagram kemiringan sumbu Uranus</title>
-  <desc id="d">Ilustrasi sederhana yang memperlihatkan Uranus dengan sumbu rotasi 97,77 derajat.</desc>
-  <defs>
-    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#07121a"/><stop offset="1" stop-color="#112733"/></linearGradient>
-    <radialGradient id="planet" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#c2ffff"/><stop offset="0.55" stop-color="#96dde0"/><stop offset="1" stop-color="#4e9da6"/></radialGradient>
-  </defs>
-  <rect width="900" height="600" fill="url(#bg)"/>
-  <g opacity="0.5" stroke="#d9edf0" stroke-dasharray="10 10"><line x1="150" y1="300" x2="750" y2="300"/></g>
-  <g>
-    <circle cx="450" cy="300" r="140" fill="url(#planet)"/>
-    <ellipse cx="450" cy="300" rx="200" ry="48" fill="none" stroke="#c7edf0" stroke-width="6" opacity="0.35"/>
-    <line x1="390" y1="118" x2="510" y2="482" stroke="#f7f5d6" stroke-width="8"/>
-    <polygon points="390,118 378,148 406,142" fill="#f7f5d6"/>
-    <polygon points="510,482 498,452 526,458" fill="#f7f5d6"/>
-    <path d="M552 236 A120 120 0 0 1 578 356" fill="none" stroke="#ffd27a" stroke-width="7"/>
-    <polygon points="585,352 569,344 572,363" fill="#ffd27a"/>
-  </g>
-  <g font-family="Arial, Helvetica, sans-serif" fill="#edf8f8">
-    <text x="72" y="88" font-size="34" font-weight="700">Kemiringan Sumbu Uranus</text>
-    <text x="72" y="128" font-size="22" fill="#b8d7db">Uranus berputar hampir menyamping terhadap bidang orbitnya.</text>
-    <text x="605" y="294" font-size="44" font-weight="700" fill="#ffe299">97,77°</text>
-    <text x="604" y="326" font-size="18" fill="#cfe8ea">kemiringan sumbu rotasi</text>
-    <text x="150" y="284" font-size="18" fill="#cfe8ea">bidang orbit (acuan sederhana)</text>
-    <text x="324" y="95" font-size="18" fill="#f5f4da">sumbu rotasi</text>
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<svg aria-labelledby="t d" role="img" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+<title id="t">Diagram kemiringan sumbu Uranus</title>
+<desc id="d">Ilustrasi sederhana yang memperlihatkan Uranus dengan arah putar 97,77 derajat.</desc>
+<defs>
+<linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#07121a"/><stop offset="1" stop-color="#112733"/></linearGradient>
+<radialGradient cx="50%" cy="40%" id="planet" r="60%"><stop offset="0" stop-color="#c2ffff"/><stop offset="0.55" stop-color="#96dde0"/><stop offset="1" stop-color="#4e9da6"/></radialGradient>
+</defs>
+<rect fill="url(#bg)" height="600" width="900"/>
+<g opacity="0.5" stroke="#d9edf0" stroke-dasharray="10 10"><line x1="150" x2="750" y1="300" y2="300"/></g>
+<g>
+<circle cx="450" cy="300" fill="url(#planet)" r="140"/>
+<ellipse cx="450" cy="300" fill="none" opacity="0.35" rx="200" ry="48" stroke="#c7edf0" stroke-width="6"/>
+<line stroke="#f7f5d6" stroke-width="8" x1="390" x2="510" y1="118" y2="482"/>
+<polygon fill="#f7f5d6" points="390,118 378,148 406,142"/>
+<polygon fill="#f7f5d6" points="510,482 498,452 526,458"/>
+<path d="M552 236 A120 120 0 0 1 578 356" fill="none" stroke="#ffd27a" stroke-width="7"/>
+<polygon fill="#ffd27a" points="585,352 569,344 572,363"/>
+</g>
+<g fill="#edf8f8" font-family="Arial, Helvetica, sans-serif">
+<text font-size="34" font-weight="700" x="72" y="88">Kemiringan Sumbu Uranus</text>
+<text fill="#b8d7db" font-size="22" x="72" y="128">Uranus berputar hampir menyamping terhadap bidang jalurnya.</text>
+<text fill="#ffe299" font-size="44" font-weight="700" x="605" y="294">97,77°</text>
+<text fill="#cfe8ea" font-size="18" x="604" y="326">kemiringan arah putar</text>
+<text fill="#cfe8ea" font-size="18" x="150" y="284">bidang jalur mengelilingi (acuan sederhana)</text>
+<text fill="#f5f4da" font-size="18" x="324" y="95">arah putar</text>
+</g>
 </svg>

@@ -817,7 +817,7 @@ const DIALOGUE_TIMELINE = Object.freeze([
   { at: 12.50, phase: "cloud-approach", speaker: "A", text: "Awan mulai kelihatan di depan.", emotion: "explaining", sprite: "pointing", otherSprite: "curious", duration: 3000 },
   { at: 15.60, phase: "clouds", speaker: "B", text: "Sedikit berguncang. Kita sedang melewati awan.", emotion: "surprised", sprite: "surprised", otherSprite: "surprised", duration: 3000 },
   { at: 18.70, phase: "above-clouds", speaker: "A", text: "Keren... kita sudah di atas awan.", emotion: "excited", sprite: "excited", otherSprite: "smile", duration: 3000 },
-  { at: 21.80, phase: "upper-atmosphere", speaker: "B", text: "Langitnya makin gelap. Atmosfer mulai menipis.", emotion: "explaining", sprite: "talking", otherSprite: "thinking", duration: 3000 },
+  { at: 21.80, phase: "upper-atmosphere", speaker: "B", text: "Langitnya makin gelap. Udara mulai menipis.", emotion: "explaining", sprite: "talking", otherSprite: "thinking", duration: 3000 },
   { at: 24.90, phase: "space", speaker: "A", text: "Sekarang tenang banget...", emotion: "thinking", sprite: "thinking", otherSprite: "curious", duration: 3000 },
   { at: 28.05, phase: "approach", speaker: "B", text: "Itu Bumi! Rumah kita.", emotion: "surprised", sprite: "surprised", otherSprite: "pointing", duration: 3000 }
 ]);
@@ -1358,7 +1358,7 @@ async function prepareReturnEarthDestination(sourcePhase) {
   earth.viewport.style.willChange = "transform, opacity, filter";
   earth.viewport.style.transformOrigin = "50% 50%";
   if (sourcePhase !== "earth" || !earth.active) earth.start({ settled: true });
-  try { await earth.prepare?.(); } catch (error) { console.warn("[ANTARA Return] Earth renderer prepare fallback", error); }
+  try { await earth.prepare?.(); } catch (error) { console.warn("[ANTARA Return] Earth mesin gambar 3D prepare fallback", error); }
   try { earth.resize?.(); earth.render?.(); } catch {}
   earth.element.hidden = false;
   earth.element.style.opacity = "1";
@@ -1392,7 +1392,7 @@ async function animatePlanetToEarthTransit(sourcePhase) {
   }
 
   const earthDestination = await prepareReturnEarthDestination(sourcePhase);
-  if (!earthDestination) throw new Error("Earth destination renderer unavailable");
+  if (!earthDestination) throw new Error("Earth destination mesin gambar 3D unavailable");
 
   if (isEarth) {
     earth.element.classList.add("return-cockpit-source");
@@ -1495,7 +1495,7 @@ async function reverseLaunchIntoCockpit(earthDestination = null) {
   clearReturnEarthDestination(earthDestination);
 
   if (returnCockpitTransition) {
-    returnCockpitTransition.style.transition = reducedMotion.matches ? "opacity .01s linear" : "opacity .7s ease";
+    returnCockpitTransition.style.transition = reducedMotion.matches ? "opacity.01s linear" : "opacity.7s ease";
     returnCockpitTransition.style.opacity = "0";
   }
 
@@ -1889,14 +1889,58 @@ const introPanel = document.querySelector(".intro");
 function syncAudioDockPlacement(state = mission?.dataset?.experience || "home") {
   if (!audioDock) return;
   const journeyMode = state === "planet";
+  const exploring = Boolean(mission.querySelector(
+    '[id$="-full-exploration"]:not([hidden]), [id$="-scene"].is-exploring:not([hidden])'
+  ));
+  mission.dataset.audioHidden = String(exploring);
+  audioDock.inert = exploring;
+  audioDock.setAttribute("aria-hidden", String(exploring));
   if (journeyMode) {
     if (audioDock.parentElement !== mission) mission.appendChild(audioDock);
     audioDock.dataset.audioPlacement = "journey";
+    const logo = mission.querySelector(".masthead .brand");
+    const rect = logo?.getBoundingClientRect();
+    if (rect?.height > 0) {
+      mission.style.setProperty("--audio-mobile-top", `${Math.max(8, rect.top + rect.height / 2 - 20)}px`);
+    }
     return;
   }
   if (profileNavSuite && audioDock.parentElement !== profileNavSuite) profileNavSuite.appendChild(audioDock);
   audioDock.dataset.audioPlacement = "hud";
 }
+
+// Scene classes and hidden flags change on entry/exit, including responsive mode switches.
+let audioPlacementFrame = null;
+function scheduleAudioDockPlacement() {
+  if (audioPlacementFrame !== null) return;
+  audioPlacementFrame = requestAnimationFrame(() => {
+    audioPlacementFrame = null;
+    syncAudioDockPlacement();
+  });
+}
+new MutationObserver(records => {
+  if (records.some(({ target }) => target === mission || /-(scene|full-exploration)$/.test(target.id))) {
+    scheduleAudioDockPlacement();
+  }
+}).observe(mission, {
+  subtree: true, attributes: true, attributeFilter: ["class", "hidden", "data-experience"]
+});
+window.addEventListener("resize", scheduleAudioDockPlacement);
+window.addEventListener("orientationchange", scheduleAudioDockPlacement);
+// DevTools can change the primary pointer without changing the viewport size.
+function refreshExplorationResponsiveMode() {
+  for (const explorer of [earthFull, mercuryFull, venusFull, mars.fullExploration, jupiterFull, saturnFull, uranusFull, neptuneFull]) {
+    if (!explorer?.root || explorer.root.hidden) continue;
+    explorer.updateResponsiveUi?.();
+    explorer.syncSecondaryPanels?.();
+    explorer.syncPanels?.();
+    explorer.resize?.();
+  }
+  scheduleAudioDockPlacement();
+}
+window.matchMedia("(pointer: coarse)").addEventListener("change", refreshExplorationResponsiveMode);
+mission.querySelector(".antara-logo-header")?.addEventListener("load", scheduleAudioDockPlacement);
+scheduleAudioDockPlacement();
 
 function setExperienceState(state) {
   mission.dataset.experience = state;
@@ -2065,7 +2109,7 @@ const FLIGHT_STATUS_TIMELINE = [
   { time: LAUNCH_TIMING.cloudApproach, text: "MENDEKATI AWAN" },
   { time: LAUNCH_TIMING.clouds, text: "MELEWATI AWAN" },
   { time: LAUNCH_TIMING.aboveClouds, text: "DI ATAS AWAN" },
-  { time: LAUNCH_TIMING.upperAtmosphere, text: "ATMOSFER MENIPIS" },
+  { time: LAUNCH_TIMING.upperAtmosphere, text: "UDARA MENIPIS" },
   { time: LAUNCH_TIMING.space, text: "RUANG ANGKASA" },
   { time: LAUNCH_TIMING.earthReveal, text: "BUMI DI DEPAN" },
   { time: LAUNCH_TIMING.approach, text: "MENDEKATI BUMI" }
@@ -2114,7 +2158,7 @@ function advancePreparation(timestamp) {
     if (flightStatus) flightStatus.textContent = "TIBA DI BUMI";
     announcement.textContent = "Sampai. Bumi, rumah kita, sekarang ada di depan.";
     if (!earthHandoffStarted) earth.start();
-    flight.stage.style.transition = reducedMotion.matches ? "opacity .01s linear" : "opacity .72s ease";
+    flight.stage.style.transition = reducedMotion.matches ? "opacity.01s linear" : "opacity.72s ease";
     requestAnimationFrame(() => { flight.stage.style.opacity = "0"; });
     setTimeout(() => {
       flight.reset();
@@ -2261,13 +2305,20 @@ function travelSunToMercury() {
   });
 }
 
-function travelMercuryToVenus() {
+async function travelMercuryToVenus() {
   if (mercury.exploring || mercury.fullExplorationActive || !beginPlanetTransition("mercury", "mercury-venus-transition", mercuryNextButton, "venus")) return;
   setExperienceState("planet");
+  if (flightStatus) flightStatus.textContent = "MENYIAPKAN VENUS";
+  announcement.textContent = "Menyiapkan render Venus sebelum meninggalkan Merkurius.";
+
+  // Preload the real Venus sphere before Mercury starts its travel animation.
+  // Without this, Mercury temporarily renders a lightweight fallback Venus and
+  // the real texture only appears after the destination scene catches up.
+  try { await venus.prepare(); } catch (error) { console.warn("Venus prewarm failed", error); }
+  if (phase !== "mercury-venus-transition") return;
+  mercury.setVenusTravelSurface(venus.surface);
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU VENUS";
   announcement.textContent = "Meninggalkan Merkurius. Kamera bergeser menuju Venus.";
-
-  mercury.setVenusTravelSurface(venus.surface);
   sound.travel(reducedMotion.matches ? 0.4 : 6.2);
   mercury.beginTravelToVenus({
     onReveal: () => {
@@ -2570,7 +2621,7 @@ function travelUranusToNeptune() {
       mission.classList.add("is-neptune");
       finishPlanetTransition("neptune");
       if (flightStatus) flightStatus.textContent = "TIBA DI ORBIT NEPTUNUS";
-      announcement.textContent = "Tiba di Neptunus, planet utama terjauh dengan atmosfer biru yang sangat aktif.";
+      announcement.textContent = "Tiba di Neptunus, planet utama terjauh dengan udara biru yang sangat aktif.";
     }
   });
 }

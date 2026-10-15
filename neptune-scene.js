@@ -9,7 +9,7 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
     "title": "Neptunus",
     "kicker": "KENALAN DULU",
     "subtitle": "Planet kedelapan dan planet utama paling jauh dari Matahari",
-    "summary": "Neptunus adalah dunia biru gelap di bagian jauh Tata Surya. Ia adalah raksasa es dengan atmosfer aktif, angin sangat cepat, badai besar, cincin samar, dan bulan unik bernama Triton.",
+    "summary": "Neptunus adalah dunia biru gelap di bagian jauh Tata Surya. Ia adalah raksasa es dengan udara aktif, angin sangat cepat, badai besar, cincin samar, dan bulan unik bernama Triton.",
     "facts": [
       "Diameter Neptunus sekitar 49.500 km.",
       "Jarak rata-ratanya dari Matahari sekitar 30 AU atau 4,5 miliar km.",
@@ -19,12 +19,12 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/0/PIA01492-1.jpg?crop=faces%2Cfocalpoint&fit=clip&h=2185&w=2188",
-        "alt": "Citra global Neptunus oleh Voyager 2",
+        "alt": "Gambar di seluruh planet Neptunus oleh Voyager 2",
         "credit": "NASA/JPL",
         "source": "https://science.nasa.gov/neptune/neptune-facts/",
         "caption": "Neptunus · raksasa es terjauh dalam urutan delapan planet",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ],
     "semantic": "identity"
@@ -33,22 +33,22 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
     "title": "Matahari Terlihat Jauh Lebih Redup",
     "kicker": "JAUH BANGET",
     "subtitle": "Di Neptunus, siang hari akan terasa seperti senja yang sangat terang di Bumi",
-    "summary": "Neptunus berada lebih dari 30 kali jarak Bumi ke Matahari. Cahaya Matahari masih sampai ke sana, tetapi jauh lebih redup. Bahkan satu tahun Neptunus memakan sekitar 165 tahun Bumi.",
+    "summary": "Neptunus berada lebih dari 30 kali jarak Bumi ke Matahari. Cahaya Matahari masih sampai ke sana. Tapi jauh lebih redup. Bahkan satu tahun Neptunus memakan sekitar 165 tahun Bumi.",
     "facts": [
       "Cahaya Matahari di Neptunus sekitar 900 kali lebih redup daripada di Bumi menurut NASA.",
-      "Satu orbit Neptunus memerlukan sekitar 165 tahun Bumi.",
-      "Neptunus menyelesaikan orbit pertamanya sejak ditemukan pada 1846 pada tahun 2011."
+      "Satu jalur mengelilingi Neptunus memerlukan sekitar 165 tahun Bumi.",
+      "Neptunus menyelesaikan jalur mengelilingi pertamanya sejak ditemukan pada 1846 pada tahun 2011."
     ],
     "source": "https://science.nasa.gov/neptune/neptune-facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/0/PIA01492-1.jpg?crop=faces%2Cfocalpoint&fit=clip&h=2185&w=2188",
-        "alt": "Citra global Neptunus oleh Voyager 2",
+        "alt": "Gambar di seluruh planet Neptunus oleh Voyager 2",
         "credit": "NASA/JPL",
         "source": "https://science.nasa.gov/neptune/neptune-facts/",
         "caption": "Neptunus · raksasa es terjauh dalam urutan delapan planet",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ],
     "semantic": "identity"
@@ -56,44 +56,44 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Bukan Bola Es Padat",
     "kicker": "YUK INTIP KE DALAM",
-    "subtitle": "Raksasa es berisi lapisan fluida panas dan padat di bawah atmosfer",
-    "summary": "Nama “raksasa es” bisa menipu. Neptunus bukan bola es keras. Di bawah atmosfer hidrogen, helium, dan metana, para ilmuwan memperkirakan ada lapisan kaya air, metana, dan amonia dalam keadaan sangat panas dan bertekanan tinggi.",
+    "subtitle": "Raksasa es berisi lapisan bahan yang bisa mengalir panas dan padat di bawah udara",
+    "summary": "Nama “raksasa es” bisa menipu. Neptunus bukan bola es keras. Di bawah udara berisi gas ringan bernama hidrogen, gas ringan bernama helium, dan gas bernama metana, para ilmuwan memperkirakan ada lapisan kaya air, gas bernama metana, dan gas bernama amonia dalam keadaan sangat panas dan bertekanan tinggi.",
     "facts": [
-      "Neptunus tidak memiliki permukaan padat tempat kita dapat berdiri.",
+      "Neptunus tidak punya permukaan padat tempat kita dapat berdiri.",
       "Tekanan meningkat tajam ketika masuk lebih dalam.",
-      "Komposisi bagian dalamnya berbeda dari Jupiter dan Saturnus yang lebih kaya hidrogen-helium."
+      "Isi bagian dalamnya berbeda dari Jupiter dan Saturnus yang lebih kaya gas ringan bernama hidrogen-gas ringan bernama helium."
     ],
     "source": "https://science.nasa.gov/neptune/neptune-facts/",
     "images": [
       {
         "src": "./assets/neptune-interior-diagram.svg",
-        "alt": "Diagram konseptual struktur interior Neptunus",
-        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "alt": "Gambar sederhana bentuk bagian dalam Neptunus",
+        "credit": "Gambar bantu belajar ANTARA berdasarkan NASA Science",
         "source": "https://science.nasa.gov/neptune/neptune-facts/",
-        "caption": "Struktur konseptual interior Neptunus",
+        "caption": "Bentuk konseptual bagian dalam Neptunus",
         "fit": "contain"
       }
     ],
-    "semantic": "interior"
+    "semantic": "bagian dalam"
   },
   {
-    "title": "Metana dan Warna Neptunus",
+    "title": "Kenapa Neptunus Berwarna Biru?",
     "kicker": "KENAPA BIRU?",
-    "subtitle": "Metana membantu menyerap cahaya merah, sementara awan dan kabut membentuk tampilan akhirnya",
-    "summary": "Atmosfer Neptunus mengandung metana yang menyerap sebagian cahaya merah. Itu membantu memberi rona biru. Tetapi warna planet tidak hanya ditentukan metana; kabut dan struktur awan juga berperan.",
+    "subtitle": "Gas bernama metana membantu menyerap cahaya merah, sementara awan dan kabut membentuk tampilan akhirnya",
+    "summary": "Udara Neptunus mengandung gas bernama metana yang menyerap sebagian cahaya merah. Itu membantu memberi rona biru. Tetapi warna planet tidak hanya ditentukan gas bernama metana. kabut dan bentuk awan juga berperan.",
     "facts": [
-      "Atmosfer Neptunus terutama tersusun dari hidrogen dan helium dengan sedikit metana.",
-      "Pemrosesan citra modern menunjukkan warna Uranus dan Neptunus lebih mirip daripada banyak gambar lama yang sangat biru.",
-      "Neptunus tetap menampilkan pola awan dan badai yang lebih kontras."
+      "Udara Neptunus terutama tersusun dari gas ringan bernama hidrogen dan gas ringan bernama helium dengan sedikit gas bernama metana.",
+      "Pemrosesan gambar sekarang menunjukkan warna Uranus dan Neptunus lebih mirip daripada banyak gambar lama yang sangat biru.",
+      "Neptunus tetap menampilkan pola awan dan badai yang lebih perbedaan."
     ],
     "source": "https://science.nasa.gov/neptune/neptune-facts/",
     "images": [
       {
         "src": "./assets/neptune-methane-diagram.svg",
-        "alt": "Diagram pengaruh metana terhadap warna atmosfer Neptunus",
-        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "alt": "Diagram pengaruh gas bernama metana terhadap warna udara Neptunus",
+        "credit": "Gambar bantu belajar ANTARA berdasarkan NASA Science",
         "source": "https://science.nasa.gov/neptune/neptune-facts/",
-        "caption": "Metana menyerap merah dan membantu membentuk rona biru",
+        "caption": "Gas bernama metana menyerap merah dan membantu membentuk rona biru",
         "fit": "contain"
       }
     ],
@@ -102,21 +102,21 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Dunia Paling Berangin",
     "kicker": "ANGIN TERCEPAT",
-    "subtitle": "Awan bisa didorong melintasi atmosfer dengan kecepatan lebih dari 2.000 km/jam",
-    "summary": "Aneh tetapi nyata: jauh dari Matahari, Neptunus justru memiliki angin tercepat di antara planet. Aliran atmosfernya bisa mendorong awan dengan kecepatan luar biasa, jauh melampaui badai terkuat di Bumi.",
+    "subtitle": "Awan bisa didorong melintasi udara dengan kecepatan lebih dari 2.000 km/jam",
+    "summary": "Aneh tetapi nyata: jauh dari Matahari, Neptunus justru punya angin tercepat di antara planet. Aliran udaranya bisa mendorong awan dengan kecepatan luar biasa, jauh melampaui badai terkuat di Bumi.",
     "facts": [
       "Angin Neptunus dapat melampaui 1.200 mil per jam atau sekitar 2.000 km/jam.",
       "Kecepatannya dapat beberapa kali lebih besar daripada angin terkuat di Bumi.",
-      "Ilmuwan masih mempelajari bagaimana Neptunus mempertahankan atmosfer seaktif ini dengan energi Matahari yang sangat sedikit."
+      "Ilmuwan masih mempelajari bagaimana Neptunus mempertahankan udara seaktif ini dengan energi Matahari yang sangat sedikit."
     ],
     "source": "https://science.nasa.gov/neptune/neptune-facts/",
     "images": [
       {
         "src": "./assets/neptune-winds-diagram.svg",
-        "alt": "Diagram aliran angin cepat di atmosfer Neptunus",
-        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "alt": "Diagram aliran angin cepat di udara Neptunus",
+        "credit": "Gambar bantu belajar ANTARA berdasarkan NASA Science",
         "source": "https://science.nasa.gov/neptune/neptune-facts/",
-        "caption": "Aliran atmosfer Neptunus dapat melampaui 2.000 km/jam",
+        "caption": "Aliran udara Neptunus dapat melampaui 2.000 km/jam",
         "fit": "contain"
       }
     ],
@@ -125,12 +125,12 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Great Dark Spot",
     "kicker": "BADAINYA BISA HILANG",
-    "subtitle": "Badai raksasa Neptunus dapat muncul, berubah, lalu lenyap",
-    "summary": "Voyager 2 melihat sebuah badai gelap besar pada 1989. Badai itu kemudian menghilang, tetapi badai gelap baru muncul di tempat lain. Jadi dark spot bukan “noda permanen” di permukaan, melainkan sistem cuaca yang hidup.",
+    "subtitle": "Badai raksasa Neptunus bisa muncul, berubah, lalu lenyap",
+    "summary": "Voyager 2 melihat sebuah badai gelap besar pada 1989. Badai itu kemudian menghilang. Tapi badai gelap baru muncul di tempat lain. Jadi dark spot bukan “noda permanen” di permukaan, melainkan sistem cuaca yang hidup.",
     "facts": [
       "Voyager 2 melihat Great Dark Spot 1989 di sekitar 22,5° lintang selatan.",
-      "Badai gelap yang diamati Voyager kemudian menghilang dari pengamatan.",
-      "Teleskop Hubble telah melihat dark vortex baru muncul pada waktu dan lokasi berbeda."
+      "Badai gelap yang diamati Voyager kemudian menghilang dari melihat dan mempelajari.",
+      "Teleskop Hubble telah melihat dark pusaran badai baru muncul pada waktu dan lokasi berbeda."
     ],
     "source": "https://science.nasa.gov/photojournal/neptune-through-a-clear-filter/",
     "images": [
@@ -139,9 +139,9 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
         "alt": "Great Dark Spot Neptunus dipotret Voyager 2",
         "credit": "NASA/JPL",
         "source": "https://science.nasa.gov/neptune/neptune-facts/",
-        "caption": "Dark vortex · badai atmosfer yang dapat berevolusi dan menghilang",
+        "caption": "Dark pusaran badai · badai udara yang bisa berevolusi dan menghilang",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ],
     "semantic": "storm"
@@ -149,12 +149,12 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Awan Tinggi Neptunus",
     "kicker": "LIHAT AWAN PUTIHNYA",
-    "subtitle": "Garis putih terang membantu ilmuwan membaca gerak atmosfer",
-    "summary": "Di atas warna biru Neptunus, kadang terlihat awan putih terang. Awan tinggi ini dapat tersusun dari kristal metana beku dan bergerak mengikuti angin sangat cepat.",
+    "subtitle": "Garis putih terang membantu ilmuwan membaca gerak udara",
+    "summary": "Di atas warna biru Neptunus, kadang terlihat awan putih terang. Awan tinggi ini bisa tersusun dari kristal es metana dan bergerak mengikuti angin sangat cepat.",
     "facts": [
       "Awan tinggi dapat terlihat sebagai garis atau streak putih.",
       "Gerak awan membantu ilmuwan mengukur kecepatan angin.",
-      "Awan sering berkaitan dengan sistem badai dan gelombang atmosfer di bawahnya."
+      "Awan sering berhubungan dengan sistem badai dan gelombang udara di bawahnya."
     ],
     "source": "https://science.nasa.gov/neptune/neptune-facts/",
     "images": [
@@ -165,7 +165,7 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
         "source": "https://science.nasa.gov/neptune/neptune-facts/",
         "caption": "Awan tinggi terang menelusuri cuaca Neptunus",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ],
     "semantic": "clouds"
@@ -174,22 +174,22 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
     "title": "Neptunus Juga Punya Cincin",
     "kicker": "TAHUKAH KAMU?",
     "subtitle": "Cincinnya tipis, gelap, dan punya bagian terang yang disebut arc",
-    "summary": "Cincin Neptunus jauh lebih sulit dilihat daripada cincin Saturnus. Beberapa bagian cincin tidak terlihat merata, tetapi memiliki kumpulan material yang lebih terang dan dikenal sebagai arc.",
+    "summary": "Cincin Neptunus jauh lebih sulit dilihat daripada cincin Saturnus. Beberapa bagian cincin tidak terlihat merata. Tapi punya kumpulan bahan yang lebih terang dan dikenal sebagai arc.",
     "facts": [
-      "Neptunus memiliki setidaknya lima cincin utama.",
+      "Neptunus punya setidaknya lima cincin utama.",
       "Ada beberapa arc cincin yang menonjol, terutama pada cincin luar.",
-      "Material cincin sangat gelap dan kaya debu."
+      "Bahan cincin sangat gelap dan kaya debu."
     ],
     "source": "https://science.nasa.gov/neptune/neptune-facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia02/pia02207/PIA02207.jpg?crop=faces%2Cfocalpoint&fit=clip&h=675&w=550",
-        "alt": "Citra cincin Neptunus oleh Voyager 2",
+        "alt": "Gambar cincin Neptunus oleh Voyager 2",
         "credit": "NASA/JPL",
         "source": "https://science.nasa.gov/resource/neptunes-rings/",
-        "caption": "Cincin Neptunus · tipis, gelap, dan memiliki arc",
+        "caption": "Cincin Neptunus · tipis, gelap, dan punya arc",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ],
     "semantic": "rings"
@@ -197,45 +197,45 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Triton",
     "kicker": "BULAN YANG MELAWAN ARAH",
-    "subtitle": "Bulan terbesar Neptunus mengorbit berlawanan arah dengan rotasi planet",
-    "summary": "Triton bergerak dengan cara yang tidak biasa: orbitnya retrograde, berlawanan dengan arah rotasi Neptunus. Ini menjadi petunjuk kuat bahwa Triton mungkin dulu adalah objek bebas yang kemudian ditangkap gravitasi Neptunus.",
+    "subtitle": "Bulan terbesar Neptunus mengelilingi berlawanan arah dengan putaran planet",
+    "summary": "Triton bergerak dengan cara yang tidak biasa: jalurnya berlawanan dengan arah putaran Neptunus. Ini sangat mungkin berarti Triton mungkin dulu adalah benda bebas yang kemudian ditangkap tarikan Neptunus.",
     "facts": [
       "Triton berdiameter sekitar 2.700 km.",
-      "Voyager 2 melihat geyser material es menyembur hingga sekitar 8 km.",
+      "Voyager 2 melihat geyser bahan es menyembur hingga sekitar 8 km.",
       "Permukaan Triton sangat dingin dan kaya es nitrogen."
     ],
     "source": "https://science.nasa.gov/neptune/moons/triton/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia02/pia02246/PIA02246.jpg?crop=faces%2Cfocalpoint&fit=clip&h=450&w=450",
-        "alt": "Citra Triton oleh Voyager 2",
+        "alt": "Gambar Triton oleh Voyager 2",
         "credit": "NASA/JPL",
         "source": "https://science.nasa.gov/neptune/moons/triton/",
-        "caption": "Triton · bulan besar yang mengorbit secara retrograde",
+        "caption": "Triton · bulan besar yang mengelilingi dengan arah berlawanan",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ],
     "semantic": "triton"
   },
   {
-    "title": "Medan Magnet yang Miring",
+    "title": "Gaya magnet yang Miring",
     "kicker": "KOMPAS NEPTUNUS",
-    "subtitle": "Medan magnetnya tidak sejajar dengan sumbu rotasi planet",
-    "summary": "Neptunus punya medan magnet yang miring tajam. Karena sumbu magnet tidak sejajar dengan putaran planet, bentuk magnetosfer berubah-ubah saat Neptunus berotasi.",
+    "subtitle": "Gaya magnetnya tidak sejajar dengan arah putar planet",
+    "summary": "Neptunus punya gaya magnet yang miring tajam. Karena arah magnet tidak sejajar dengan putaran planet, bentuk perisai magnet berubah-ubah saat Neptunus berputar.",
     "facts": [
-      "Sumbu medan magnet Neptunus miring sekitar 47° dari sumbu rotasi.",
-      "Medan magnetnya sekitar 27 kali lebih kuat daripada Bumi menurut NASA.",
-      "Kemiringan besar ini mirip dengan keanehan magnetik Uranus."
+      "Sumbu gaya magnet Neptunus miring sekitar 47° dari arah putar.",
+      "Gaya magnetnya sekitar 27 kali lebih kuat daripada Bumi menurut NASA.",
+      "Kemiringan besar ini mirip dengan keanehan magnet Uranus."
     ],
     "source": "https://science.nasa.gov/neptune/neptune-facts/",
     "images": [
       {
         "src": "./assets/neptune-magnetosphere-diagram.svg",
-        "alt": "Diagram medan magnet Neptunus yang miring",
-        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "alt": "Diagram gaya magnet Neptunus yang miring",
+        "credit": "Gambar bantu belajar ANTARA berdasarkan NASA Science",
         "source": "https://science.nasa.gov/neptune/neptune-facts/",
-        "caption": "Magnetosfer Neptunus miring sekitar 47°",
+        "caption": "Perisai magnet Neptunus miring sekitar 47°",
         "fit": "contain"
       }
     ],
@@ -244,12 +244,12 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Voyager 2 dan Setelah Neptunus",
     "kicker": "SATU KUNJUNGAN, PERJALANAN LANJUT",
-    "subtitle": "Satu-satunya flyby dekat membuka Neptunus, tetapi Tata Surya masih berlanjut jauh di luarnya",
-    "summary": "Voyager 2 terbang dekat Neptunus pada 1989 dan sampai sekarang masih menjadi satu-satunya wahana yang pernah mengunjunginya dari dekat. Namun Neptunus bukan tepi Tata Surya; di luar orbitnya masih ada Sabuk Kuiper dan banyak dunia es lain.",
+    "subtitle": "Satu-satunya terbang lewat dekat dekat membuka Neptunus. Tapi Tata Surya masih berlanjut jauh di luarnya",
+    "summary": "Voyager 2 terbang dekat Neptunus pada 1989 dan sampai sekarang masih menjadi satu-satunya robot antariksa yang pernah mengunjunginya dari dekat. Namun Neptunus bukan tepi Tata Surya. di luar jalurnya masih ada Sabuk Kuiper dan banyak dunia es lain.",
     "facts": [
-      "Voyager 2 melakukan pendekatan terdekat ke Neptunus pada 25 Agustus 1989.",
-      "Belum ada wahana yang pernah mengorbit Neptunus.",
-      "Di luar orbit Neptunus terdapat Sabuk Kuiper, rumah bagi Pluto dan banyak objek trans-Neptunus."
+      "Voyager 2 melakukan cara terdekat ke Neptunus pada 25 Agustus 1989.",
+      "Belum ada robot antariksa yang pernah mengelilingi Neptunus.",
+      "Di luar jalur mengelilingi Neptunus ada Sabuk Kuiper, rumah bagi Pluto dan banyak benda trans-Neptunus."
     ],
     "source": "https://science.nasa.gov/neptune/exploration/",
     "semantic": "voyager",
@@ -257,15 +257,15 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
       {
         "src": "./assets/neptune-voyager-diagram.svg",
         "alt": "Diagram Voyager 2 melintas dekat Neptunus",
-        "credit": "Visualisasi ANTARA berdasarkan NASA/JPL",
+        "credit": "Gambar bantu belajar ANTARA berdasarkan NASA/JPL",
         "source": "https://science.nasa.gov/neptune/exploration/",
-        "caption": "Voyager 2 · flyby Neptunus, Agustus 1989",
+        "caption": "Voyager 2 · terbang lewat dekat Neptunus, Agustus 1989",
         "fit": "contain"
       },
       {
         "src": "./assets/neptune-final-diagram.svg",
         "alt": "Diagram Neptunus sebagai planet terakhir dalam urutan delapan planet dengan wilayah trans-Neptunus di luar",
-        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "credit": "Gambar bantu belajar ANTARA berdasarkan NASA Science",
         "source": "https://science.nasa.gov/neptune/",
         "caption": "Neptunus menutup urutan planet, bukan keseluruhan Tata Surya",
         "fit": "contain"
@@ -296,7 +296,7 @@ window.NeptuneScene = class NeptuneScene {
     if(this.loading)return this.loading;
     this.loading=Promise.allSettled([import("./assets/vendor/three/three.module.min.js"),this.loadImage(NEPTUNE_TEXTURE),this.loadImage(NEPTUNE_BUMP),this.loadImage(NEPTUNE_URANUS_TEXTURE)]).then(async([mod,surface,bump,uranus])=>{
       this.surface=surface.status==="fulfilled"?surface.value:this.makeFallbackSurface(); this.bumpSurface=bump.status==="fulfilled"?bump.value:null; this.uranusSurface=uranus.status==="fulfilled"?uranus.value:null;
-      if(mod.status==="fulfilled"){try{this.createThreeScene(mod.value);}catch(e){console.warn("Neptune WebGL unavailable; using Canvas fallback.",e);this.createCanvasFallback();}} else this.createCanvasFallback();
+      if(mod.status==="fulfilled"){try{this.createThreeScene(mod.value);}catch(e){console.warn("Neptune WebGL unavailable. using Canvas fallback.",e);this.createCanvasFallback();}} else this.createCanvasFallback();
       this.resize(); if(this.renderer?.compileAsync)await this.renderer.compileAsync(this.scene,this.camera); this.element.dataset.ready="true"; if(this.active)this.render();
     }).catch(e=>{console.error("Neptune preparation failed",e);this.surface=this.surface||this.makeFallbackSurface();this.createCanvasFallback();this.resize();this.element.dataset.ready="fallback";});
     return this.loading;
@@ -317,7 +317,7 @@ window.NeptuneScene = class NeptuneScene {
     this.planet=new THREE.Mesh(new THREE.SphereGeometry(1,160,112),this.neptuneMaterial);this.planet.scale.y=.985;this.planet.rotation.y=this.renderedRotation;this.axialGroup.add(this.planet);
     const cloudTex=tex.clone();cloudTex.needsUpdate=true;const cloudMat=new THREE.MeshStandardMaterial({map:cloudTex,transparent:true,opacity:.13,depthWrite:false,roughness:.92,color:0xbfe7ff});this.cloudLayer=new THREE.Mesh(new THREE.SphereGeometry(1.010,144,100),cloudMat);this.cloudLayer.scale.y=.985;this.axialGroup.add(this.cloudLayer);
     const highTex=tex.clone();highTex.needsUpdate=true;const highMat=new THREE.MeshBasicMaterial({map:highTex,transparent:true,opacity:.055,depthWrite:false,color:0xcdefff,blending:THREE.AdditiveBlending});this.highCloudLayer=new THREE.Mesh(new THREE.SphereGeometry(1.016,128,90),highMat);this.highCloudLayer.scale.y=.985;this.axialGroup.add(this.highCloudLayer);
-    const atmMat=new THREE.ShaderMaterial({transparent:true,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:`varying vec3 vN;varying vec3 vW;void main(){vN=normalize(mat3(modelMatrix)*normal);vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}`,fragmentShader:`precision highp float;varying vec3 vN;varying vec3 vW;void main(){vec3 V=normalize(cameraPosition-vW);float rim=pow(1.-max(dot(normalize(vN),V),0.),3.15);gl_FragColor=vec4(vec3(.18,.58,.98)*rim*.38,rim*.27);}`});this.atmosphere=new THREE.Mesh(new THREE.SphereGeometry(1.038,112,80),atmMat);this.atmosphere.scale.y=.985;this.axialGroup.add(this.atmosphere);
+    const atmMat=new THREE.ShaderMaterial({transparent:true,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:`varying vec3 vN; varying vec3 vW; void main(){vN=normalize(mat3(modelMatrix)*normal); vec4 w=modelMatrix*vec4(position,1.); vW=w.xyz; gl_Position=projectionMatrix*viewMatrix*w; }`,fragmentShader:`precision highp float; varying vec3 vN; varying vec3 vW; void main(){vec3 V=normalize(cameraPosition-vW); float rim=pow(1.-max(dot(normalize(vN),V),0.),3.15); gl_FragColor=vec4(vec3(.18,.58,.98)*rim*.38,rim*.27); }`});this.atmosphere=new THREE.Mesh(new THREE.SphereGeometry(1.038,112,80),atmMat);this.atmosphere.scale.y=.985;this.axialGroup.add(this.atmosphere);
     this.ringGroup=this.createRingSystem(THREE);this.axialGroup.add(this.ringGroup);this.createSemanticObjects(THREE);this.createUranusFallback(THREE);this.createStars(THREE);
     this.hemi=new THREE.HemisphereLight(0x9fd8ff,0x061329,.92);this.scene.add(this.hemi);this.key=new THREE.DirectionalLight(0xdaf2ff,2.9);this.key.position.set(-4.8,3.0,5.8);this.scene.add(this.key);this.fill=new THREE.DirectionalLight(0x4078c7,.46);this.fill.position.set(4.2,-1.3,2.2);this.scene.add(this.fill);
     canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();this.createCanvasFallback();this.resize();if(this.active)this.render();},{once:true});this.mode="webgl";this.element.dataset.renderer="webgl";

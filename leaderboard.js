@@ -94,23 +94,12 @@
 
   function podiumCard(entry, board) {
     const detail = entryDetail(entry, board);
-    return `<article class="lb-podium-card" tabindex="0">
-      <span class="lb-podium-rank">${entry.rank}</span>
-      <div class="lb-podium-visual">${avatarMarkup(entry, "podium")}<img class="lb-rank-planet" src="${rankPlanet(entry)}" alt="" loading="lazy"></div>
-      <div><strong class="lb-podium-name">${escapeHtml(entry.name || entry.username)}</strong><span class="lb-podium-user">@${escapeHtml(entry.username)}</span></div>
-      <span class="lb-podium-detail">${escapeHtml(detail.main)}<br>${escapeHtml(detail.sub)}</span>
-    </article>`;
+    return `<article class="lb-podium-card" tabindex="0"> <span class="lb-podium-rank">${entry.rank}</span> <div class="lb-podium-visual">${avatarMarkup(entry, "podium")}<img class="lb-rank-planet" src="${rankPlanet(entry)}" alt="" loading="lazy"></div> <div><strong class="lb-podium-name">${escapeHtml(entry.name || entry.username)}</strong><span class="lb-podium-user">@${escapeHtml(entry.username)}</span></div> <span class="lb-podium-detail">${escapeHtml(detail.main)}<br>${escapeHtml(detail.sub)}</span> </article>`;
   }
 
   function rowCard(entry, board) {
     const detail = entryDetail(entry, board);
-    return `<article class="lb-row" tabindex="0">
-      <span class="lb-row-rank">#${entry.rank}</span>
-      ${avatarMarkup(entry, "row")}
-      <img class="lb-row-planet" src="${rankPlanet(entry)}" alt="" loading="lazy">
-      <div class="lb-row-person"><strong>${escapeHtml(entry.name || entry.username)}</strong><span>@${escapeHtml(entry.username)}</span></div>
-      <div class="lb-row-detail"><strong>${escapeHtml(detail.main)}</strong><span>${escapeHtml(detail.sub)}</span></div>
-    </article>`;
+    return `<article class="lb-row" tabindex="0"> <span class="lb-row-rank">#${entry.rank}</span> ${avatarMarkup(entry, "row")} <img class="lb-row-planet" src="${rankPlanet(entry)}" alt="" loading="lazy"> <div class="lb-row-person"><strong>${escapeHtml(entry.name || entry.username)}</strong><span>@${escapeHtml(entry.username)}</span></div> <div class="lb-row-detail"><strong>${escapeHtml(detail.main)}</strong><span>${escapeHtml(detail.sub)}</span></div> </article>`;
   }
 
   function renderMe(data, board) {

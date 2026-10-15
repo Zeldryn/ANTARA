@@ -34,51 +34,14 @@
       this.menu.className = 'account-quick-menu';
       this.menu.id = 'account-quick-menu';
       this.menu.hidden = true;
-      this.menu.innerHTML = `
-        <div class="account-quick-head">
-          <span class="account-quick-avatar" data-account-menu-initials>?</span>
-          <span class="account-quick-identity">
-            <strong data-account-menu-name>Penjelajah</strong>
-            <small data-account-menu-username>@antara</small>
-          </span>
-        </div>
-        <div class="account-quick-actions">
-          <button type="button" data-account-action="profile">
-            <span class="account-quick-icon" aria-hidden="true">◎</span>
-            <span><strong>PROFIL</strong><small>Lihat identitas penjelajah</small></span>
-          </button>
-          <button type="button" data-account-action="settings">
-            <span class="account-quick-icon" aria-hidden="true">⚙</span>
-            <span><strong>PENGATURAN</strong><small>Nama, email, dan keamanan</small></span>
-          </button>
-          <button type="button" class="account-quick-logout" data-account-action="logout">
-            <span class="account-quick-icon" aria-hidden="true">↪</span>
-            <span><strong>KELUAR</strong><small>Akhiri sesi ANTARA</small></span>
-          </button>
-        </div>`;
+      this.menu.innerHTML = ` <div class="account-quick-head"> <span class="account-quick-avatar" data-account-menu-initials>?</span> <span class="account-quick-identity"> <strong data-account-menu-name>Penjelajah</strong> <small data-account-menu-username>@antara</small> </span> </div> <div class="account-quick-actions"> <button type="button" data-account-action="profile"> <span class="account-quick-icon" aria-hidden="true">◎</span> <span><strong>PROFIL</strong><small>Lihat identitas penjelajah</small></span> </button> <button type="button" data-account-action="settings"> <span class="account-quick-icon" aria-hidden="true">⚙</span> <span><strong>PENGATURAN</strong><small>Nama, email, dan keamanan</small></span> </button> <button type="button" class="account-quick-logout" data-account-action="logout"> <span class="account-quick-icon" aria-hidden="true">↪</span> <span><strong>KELUAR</strong><small>Akhiri sesi ANTARA</small></span> </button> </div>`;
       document.body.appendChild(this.menu);
 
       this.overlay = document.createElement('div');
       this.overlay.className = 'account-overlay';
       this.overlay.id = 'account-overlay';
       this.overlay.hidden = true;
-      this.overlay.innerHTML = `
-        <section class="account-panel" role="dialog" aria-modal="true" aria-labelledby="account-panel-title">
-          <div class="account-panel-scan" aria-hidden="true"></div>
-          <header class="account-panel-header">
-            <div>
-              <small>ANTARA ID / PERSONAL CONSOLE</small>
-              <h2 id="account-panel-title">PROFIL PENJELAJAH</h2>
-            </div>
-            <button type="button" class="account-panel-close" data-account-close aria-label="Tutup panel akun">×</button>
-          </header>
-          <nav class="account-panel-tabs" aria-label="Menu akun ANTARA">
-            <button type="button" data-account-tab="profile" class="is-active">PROFIL</button>
-            <button type="button" data-account-tab="settings">PENGATURAN</button>
-          </nav>
-          <div class="account-panel-content" data-account-content></div>
-        </section>
-        <div class="account-toast" role="status" aria-live="polite" data-account-toast></div>`;
+      this.overlay.innerHTML = ` <section class="account-panel" role="dialog" aria-modal="true" aria-labelledby="account-panel-title"> <div class="account-panel-scan" aria-hidden="true"></div> <header class="account-panel-header"> <div> <small>ANTARA ID / PERSONAL CONSOLE</small> <h2 id="account-panel-title">PROFIL PENJELAJAH</h2> </div> <button type="button" class="account-panel-close" data-account-close aria-label="Tutup panel akun">×</button> </header> <nav class="account-panel-tabs" aria-label="Menu akun ANTARA"> <button type="button" data-account-tab="profile" class="is-active">PROFIL</button> <button type="button" data-account-tab="settings">PENGATURAN</button> </nav> <div class="account-panel-content" data-account-content></div> </section> <div class="account-toast" role="status" aria-live="polite" data-account-toast></div>`;
       document.body.appendChild(this.overlay);
       this.panel = $('.account-panel', this.overlay);
     }
@@ -235,13 +198,24 @@
       node.appendChild(image);
     }
 
+    publishUser(user, source = 'local') {
+      this.currentUser = user ?? null;
+      if (window.ANTARAAuth?.setCurrentUser) {
+        window.ANTARAAuth.setCurrentUser(this.currentUser, source);
+        return;
+      }
+      window.dispatchEvent(new CustomEvent('antara:auth-change', {
+        detail: { user: this.currentUser, source, confirmed: true }
+      }));
+    }
+
     syncMenu() {
       if (!this.currentUser || !this.menu) return;
       this.renderAvatarNode($('[data-account-menu-initials]', this.menu), this.currentUser);
       $('[data-account-menu-name]', this.menu).textContent = this.currentUser.name || 'Penjelajah';
       $('[data-account-menu-username]', this.menu).textContent = this.currentUser.username ? `@${this.currentUser.username}` : (this.currentUser.email || 'ANTARA ID');
       if (!this.overlay.hidden) {
-        const activeTab = $('.account-panel-tabs .is-active', this.overlay)?.dataset.accountTab || 'profile';
+        const activeTab = $('.account-panel-tabs.is-active', this.overlay)?.dataset.accountTab || 'profile';
         this.renderPanel(activeTab);
       }
     }
@@ -369,80 +343,12 @@
 
     profileTemplate() {
       const u = this.currentUser;
-      return `
-        <div class="account-profile-layout">
-          <section class="account-id-card">
-            <div class="account-profile-avatar-wrap" data-avatar-scope>
-              <div class="account-profile-avatar">${this.avatarMarkup(u)}</div>
-              <input class="account-avatar-input" data-avatar-input type="file" accept="image/jpeg,image/png,image/webp" hidden>
-              <div class="account-avatar-actions">
-                <button type="button" class="account-avatar-edit" data-avatar-upload>GANTI FOTO</button>
-                ${u.avatar ? '<button type="button" class="account-avatar-remove" data-avatar-remove>HAPUS</button>' : ''}
-              </div>
-            </div>
-            <div class="account-profile-copy">
-              <h3>${escapeHtml(u.name || 'Penjelajah ANTARA')}</h3>
-              <p>${escapeHtml(u.username ? `@${u.username}` : 'Username belum tersedia')}</p>
-              <dl>
-                <div><dt>EMAIL</dt><dd>${escapeHtml(u.email || 'Belum tersedia')}</dd></div>
-                <div><dt>BERGABUNG</dt><dd>${escapeHtml(formatJoined(u.createdAt))}</dd></div>
-              </dl>
-            </div>
-          </section>
-
-          <section class="account-profile-empty-grid">
-            <button type="button" class="account-empty-card account-empty-bio ${u.bio ? 'has-bio' : ''}" data-empty-action="bio">
-              <span class="account-empty-code">BIO</span>
-              <strong>${u.bio ? 'BIO PENJELAJAH' : 'TAMBAH BIO'}</strong>
-              <small>${u.bio ? escapeHtml(u.bio) : 'Ceritakan sedikit tentang dirimu sebagai penjelajah ANTARA.'}</small>
-            </button>
-            <button type="button" class="account-empty-card" data-empty-action="progress">
-              <span class="account-empty-code">PROGRESS</span><strong data-profile-progress>0%</strong><small data-profile-progress-detail>Memuat rekam jejak eksplorasi...</small>
-            </button>
-            <button type="button" class="account-empty-card" data-empty-action="achievement">
-              <span class="account-empty-code">PENCAPAIAN</span><strong data-profile-achievements>0 / 30</strong><small data-profile-achievements-detail>Memuat koleksi medali...</small>
-            </button>
-          </section>
-        </div>`;
+      return ` <div class="account-profile-layout"> <section class="account-id-card"> <div class="account-profile-avatar-wrap" data-avatar-scope> <div class="account-profile-avatar">${this.avatarMarkup(u)}</div> <input class="account-avatar-input" data-avatar-input type="file" accept="image/jpeg,image/png,image/webp" hidden> <div class="account-avatar-actions"> <button type="button" class="account-avatar-edit" data-avatar-upload>GANTI FOTO</button> ${u.avatar ? '<button type="button" class="account-avatar-remove" data-avatar-remove>HAPUS</button>' : ''} </div> </div> <div class="account-profile-copy"> <h3>${escapeHtml(u.name || 'Penjelajah ANTARA')}</h3> <p>${escapeHtml(u.username ? `@${u.username}` : 'Username belum tersedia')}</p> <dl> <div><dt>EMAIL</dt><dd>${escapeHtml(u.email || 'Belum tersedia')}</dd></div> <div><dt>BERGABUNG</dt><dd>${escapeHtml(formatJoined(u.createdAt))}</dd></div> </dl> </div> </section> <section class="account-profile-empty-grid"> <button type="button" class="account-empty-card account-empty-bio ${u.bio ? 'has-bio' : ''}" data-empty-action="bio"> <span class="account-empty-code">BIO</span> <strong>${u.bio ? 'BIO PENJELAJAH' : 'TAMBAH BIO'}</strong> <small>${u.bio ? escapeHtml(u.bio) : 'Ceritakan sedikit tentang dirimu sebagai penjelajah ANTARA.'}</small> </button> <button type="button" class="account-empty-card" data-empty-action="progress"> <span class="account-empty-code">PROGRESS</span><strong data-profile-progress>0%</strong><small data-profile-progress-detail>Memuat rekam jejak eksplorasi...</small> </button> <button type="button" class="account-empty-card" data-empty-action="achievement"> <span class="account-empty-code">PENCAPAIAN</span><strong data-profile-achievements>0 / 30</strong><small data-profile-achievements-detail>Memuat koleksi medali...</small> </button> </section> </div>`;
     }
 
     settingsTemplate() {
       const u = this.currentUser;
-      return `
-        <div class="account-settings-layout">
-          <section class="account-settings-card">
-            <header><small>IDENTITAS</small><h3>DATA AKUN</h3></header>
-            <form data-account-profile-form novalidate>
-              <label><span>NAMA</span><input name="fullName" maxlength="60" value="${escapeHtml(u.name || '')}" autocomplete="name" required></label>
-              <label><span>USERNAME</span><input name="username" maxlength="20" value="${escapeHtml(u.username || '')}" autocomplete="username" required></label>
-              <label><span>EMAIL</span><input name="email" type="email" maxlength="254" value="${escapeHtml(u.email || '')}" autocomplete="email" required></label>
-              <label class="account-bio-field"><span>BIO <em data-bio-counter>${String(u.bio || '').length} / 280</em></span><textarea name="bio" maxlength="280" rows="4" placeholder="Contoh: Mahasiswa IT yang suka eksplorasi antariksa, coding, dan belajar hal baru.">${escapeHtml(u.bio || '')}</textarea></label>
-              <div class="account-form-message" data-form-message></div>
-              <button type="submit" class="account-save-button">SIMPAN IDENTITAS</button>
-            </form>
-          </section>
-
-          <section class="account-settings-card">
-            <header><small>KEAMANAN</small><h3>GANTI KATA SANDI</h3></header>
-            <form data-account-password-form novalidate>
-              <label><span>KATA SANDI SAAT INI</span><input name="currentPassword" type="password" autocomplete="current-password" required></label>
-              <label><span>KATA SANDI BARU</span><input name="newPassword" type="password" minlength="8" autocomplete="new-password" required></label>
-              <label><span>ULANGI KATA SANDI BARU</span><input name="confirmPassword" type="password" minlength="8" autocomplete="new-password" required></label>
-              <div class="account-form-message" data-form-message></div>
-              <button type="submit" class="account-save-button">PERBARUI KATA SANDI</button>
-            </form>
-          </section>
-
-          <section class="account-settings-card account-settings-note" data-avatar-scope>
-            <header><small>PROFIL</small><h3>FOTO PROFIL</h3></header>
-            <p>Pilih JPG, PNG, atau WebP. Foto akan dipotong persegi dan dikompres otomatis agar tetap ringan.</p>
-            <input class="account-avatar-input" data-avatar-input type="file" accept="image/jpeg,image/png,image/webp" hidden>
-            <div class="account-avatar-settings-actions">
-              <button type="button" class="account-early-button" data-avatar-upload>PILIH FOTO</button>
-              ${u.avatar ? '<button type="button" class="account-avatar-remove" data-avatar-remove>HAPUS FOTO</button>' : ''}
-            </div>
-          </section>
-        </div>`;
+      return ` <div class="account-settings-layout"> <section class="account-settings-card"> <header><small>IDENTITAS</small><h3>DATA AKUN</h3></header> <form data-account-profile-form novalidate> <label><span>NAMA</span><input name="fullName" maxlength="60" value="${escapeHtml(u.name || '')}" autocomplete="name" required></label> <label><span>USERNAME</span><input name="username" maxlength="20" value="${escapeHtml(u.username || '')}" autocomplete="username" required></label> <label><span>EMAIL</span><input name="email" type="email" maxlength="254" value="${escapeHtml(u.email || '')}" autocomplete="email" required></label> <label class="account-bio-field"><span>BIO <em data-bio-counter>${String(u.bio || '').length} / 280</em></span><textarea name="bio" maxlength="280" rows="4" placeholder="Contoh: Mahasiswa IT yang suka eksplorasi antariksa, coding, dan belajar hal baru.">${escapeHtml(u.bio || '')}</textarea></label> <div class="account-form-message" data-form-message></div> <button type="submit" class="account-save-button">SIMPAN IDENTITAS</button> </form> </section> <section class="account-settings-card"> <header><small>KEAMANAN</small><h3>GANTI KATA SANDI</h3></header> <form data-account-password-form novalidate> <label><span>KATA SANDI SAAT INI</span><input name="currentPassword" type="password" autocomplete="current-password" required></label> <label><span>KATA SANDI BARU</span><input name="newPassword" type="password" minlength="8" autocomplete="new-password" required></label> <label><span>ULANGI KATA SANDI BARU</span><input name="confirmPassword" type="password" minlength="8" autocomplete="new-password" required></label> <div class="account-form-message" data-form-message></div> <button type="submit" class="account-save-button">PERBARUI KATA SANDI</button> </form> </section> <section class="account-settings-card account-settings-note" data-avatar-scope> <header><small>PROFIL</small><h3>FOTO PROFIL</h3></header> <p>Pilih JPG, PNG, atau WebP. Foto akan dipotong persegi dan dikompres otomatis agar tetap ringan.</p> <input class="account-avatar-input" data-avatar-input type="file" accept="image/jpeg,image/png,image/webp" hidden> <div class="account-avatar-settings-actions"> <button type="button" class="account-early-button" data-avatar-upload>PILIH FOTO</button> ${u.avatar ? '<button type="button" class="account-avatar-remove" data-avatar-remove>HAPUS FOTO</button>' : ''} </div> </section> </div>`;
     }
 
     async prepareAvatar(file) {
@@ -473,7 +379,7 @@
         canvas.width = 512;
         canvas.height = 512;
         const ctx = canvas.getContext('2d', { alpha: false });
-        if (!ctx) throw new Error('Browser tidak dapat memproses foto.');
+        if (!ctx) throw new Error('Browser tidak dapat memcara foto.');
         ctx.fillStyle = '#07111d';
         ctx.fillRect(0, 0, 512, 512);
         ctx.drawImage(image, sx, sy, side, side, 0, 0, 512, 512);
@@ -493,7 +399,7 @@
 
     async uploadAvatar(file) {
       this.setAvatarBusy(true);
-      this.showToast('Memproses foto profil...');
+      this.showToast('Memcara foto profil...');
       try {
         const prepared = await this.prepareAvatar(file);
         const fd = new FormData();
@@ -509,9 +415,7 @@
         let data = {};
         try { data = await response.json(); } catch { data = { success: false, message: 'Respons server tidak valid.' }; }
         if (!response.ok || !data.success || !data.user) throw new Error(data.message || 'Foto profil gagal disimpan.');
-        this.currentUser = data.user;
-        if (window.ANTARAAuth) window.ANTARAAuth.currentUser = data.user;
-        window.dispatchEvent(new CustomEvent('antara:auth-change', { detail: { user: data.user, source: 'avatar-update', confirmed: true } }));
+        this.publishUser(data.user, 'avatar-update');
         this.showToast('Foto profil berhasil diperbarui.');
       } catch (error) {
         this.showToast(error.message || 'Foto profil gagal diperbarui.', 'error');
@@ -524,9 +428,7 @@
       this.setAvatarBusy(true);
       try {
         const result = await this.requestUpdate({ action: 'avatar-remove' });
-        this.currentUser = result.user;
-        if (window.ANTARAAuth) window.ANTARAAuth.currentUser = result.user;
-        window.dispatchEvent(new CustomEvent('antara:auth-change', { detail: { user: result.user, source: 'avatar-remove', confirmed: true } }));
+        this.publishUser(result.user, 'avatar-remove');
         this.showToast('Foto profil dihapus.');
       } catch (error) {
         this.showToast(error.message || 'Foto profil gagal dihapus.', 'error');
@@ -582,9 +484,7 @@
           email: fd.get('email'),
           bio: fd.get('bio')
         });
-        this.currentUser = result.user;
-        if (window.ANTARAAuth) window.ANTARAAuth.currentUser = result.user;
-        window.dispatchEvent(new CustomEvent('antara:auth-change', { detail: { user: result.user } }));
+        this.publishUser(result.user, 'profile-update');
         this.setFormMessage(form, result.message || 'Identitas berhasil diperbarui.', 'success');
         this.showToast('Identitas akun diperbarui.');
       } catch (error) {

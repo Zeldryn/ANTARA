@@ -28,6 +28,9 @@
 .saturn-full-explore-button:disabled { opacity: .42; cursor: default; }
 
 .saturn-full-exploration {
+  /* Gas Full Exploration owns its HUD visibility. Do not inherit Mars' entry fade (0). */
+  --surface-opacity: 1;
+
   --fx-bg: rgba(18, 25, 32, .94);
   --fx-bg-strong: rgba(7, 11, 16, .98);
   --fx-border: rgba(166, 186, 200, .28);

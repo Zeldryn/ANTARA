@@ -11,15 +11,15 @@ window.ExplorationMedia = {
   sceneFallbackImages: {
     sun: {
       src: "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003988/SDOHMIintensity_Jewelbox.01000.jpg",
-      alt: "Fotosfer Matahari dalam cahaya tampak yang direkam Solar Dynamics Observatory",
+      alt: "Bagian terang Matahari yang kita lihat Matahari dalam cahaya tampak yang direkam Solar Dynamics Observatory",
       credit: "NASA/SDO/HMI",
       source: "https://svs.gsfc.nasa.gov/3988/",
-      caption: "Fotosfer Matahari · SDO/HMI",
+      caption: "Bagian terang Matahari yang kita lihat Matahari · SDO/HMI",
       fit: "contain"
     },
     asteroid: {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia21/pia21906/PIA21906.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
-      alt: "Citra Dawn resolusi tinggi Ceres",
+      alt: "Gambar Dawn sangat jelas Ceres",
       credit: "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA",
       source: "https://science.nasa.gov/dwarf-planets/ceres/",
       caption: "Ceres · contoh dunia besar di Sabuk Asteroid · Dawn",
@@ -27,7 +27,7 @@ window.ExplorationMedia = {
     },
     venus: {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia23/pia23791/PIA23791.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1096&w=2245",
-      alt: "Citra ultraviolet awan global Venus oleh Mariner 10",
+      alt: "Gambar cahaya khusus awan seluruh planet Venus oleh Mariner 10",
       credit: "NASA/JPL-Caltech",
       source: "https://science.nasa.gov/photojournal/mariner-10-image-of-venus/",
       caption: "Awan Venus · Mariner 10",
@@ -35,7 +35,7 @@ window.ExplorationMedia = {
     },
     earth: {
       src: "assets/textures/earth-blue-marble-4k.jpg",
-      alt: "Mosaik global Bumi Blue Marble dari data satelit NASA",
+      alt: "Mosaik seluruh planet Bumi Blue Marble dari data satelit NASA",
       credit: "NASA Blue Marble / Visible Earth",
       source: "https://visibleearth.nasa.gov/collection/1484/blue-marble",
       caption: "Bumi · Blue Marble",
@@ -43,23 +43,23 @@ window.ExplorationMedia = {
     },
     mars: {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00407/PIA00407.jpg?crop=faces%2Cfocalpoint&fit=clip&h=2000&w=2000",
-      alt: "Mosaik warna global Mars dari citra Viking Orbiter",
+      alt: "Mosaik warna seluruh planet Mars dari gambar Viking Orbiter",
       credit: "NASA/JPL/USGS",
       source: "https://science.nasa.gov/photojournal/global-color-views-of-mars/",
-      caption: "Mars global · Viking Orbiter",
+      caption: "Mars seluruh planet · Viking Orbiter",
       fit: "contain"
     },
     mercury: {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533",
-      alt: "Mosaik global permukaan Merkurius dari citra MESSENGER dan Mariner 10",
+      alt: "Mosaik seluruh planet permukaan Merkurius dari gambar MESSENGER dan Mariner 10",
       credit: "NASA/JHU APL/Carnegie/USGS",
       source: "https://science.nasa.gov/photojournal/full-global-mercury-mosaic/",
-      caption: "Mosaik global Merkurius · MESSENGER",
+      caption: "Mosaik seluruh planet Merkurius · MESSENGER",
       fit: "cover"
     },
     jupiter: {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04866/PIA04866.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
-      alt: "Potret warna asli Jupiter dari mosaik citra Cassini",
+      alt: "Potret warna asli Jupiter dari mosaik gambar Cassini",
       credit: "NASA/JPL/Space Science Institute",
       source: "https://science.nasa.gov/photojournal/cassini-jupiter-portrait/",
       caption: "Jupiter · mosaik warna Cassini",
@@ -67,7 +67,7 @@ window.ExplorationMedia = {
     },
     saturn: {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia05/pia05425/PIA05425.jpg?crop=faces%2Cfocalpoint&fit=clip&h=649&w=1166",
-      alt: "Citra Saturnus dan sistem cincinnya dari Cassini",
+      alt: "Gambar Saturnus dan sistem cincinnya dari Cassini",
       credit: "NASA/JPL/Space Science Institute",
       source: "https://science.nasa.gov/saturn/facts/",
       caption: "Saturnus dan sistem cincin · Cassini",
@@ -75,7 +75,7 @@ window.ExplorationMedia = {
     },
     uranus: {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/1/PIA18182-1.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1720&w=1720",
-      alt: "Citra Uranus dari Voyager 2",
+      alt: "Gambar Uranus dari Voyager 2",
       credit: "NASA/JPL",
       source: "https://science.nasa.gov/uranus/facts/",
       caption: "Uranus · Voyager 2",
@@ -83,7 +83,7 @@ window.ExplorationMedia = {
     },
     neptune: {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/1/PIA01492.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1720&w=1720",
-      alt: "Citra Neptunus dari Voyager 2",
+      alt: "Gambar Neptunus dari Voyager 2",
       credit: "NASA/JPL",
       source: "https://science.nasa.gov/neptune/neptune-facts/",
       caption: "Neptunus · Voyager 2",
@@ -112,7 +112,7 @@ window.ExplorationMedia = {
     const src = String(item?.src || "").toLowerCase();
     const credit = String(item?.credit || "").toLowerCase();
     const source = String(item?.source || "").toLowerCase();
-    if (src.endsWith(".svg") || credit.includes("diagram") || credit.includes("visualisasi antara")) return "DIAGRAM ILMIAH";
+    if (src.endsWith(".svg") || credit.includes("diagram") || credit.includes("visualisasi antara")) return "GAMBAR SAINS";
     if (credit.includes("hubble") || credit.includes("hst") || credit.includes("jwst") || source.includes("hubble") || source.includes("webb")) return "CITRA TELESKOP";
     if (/voyager|cassini|messenger|magellan|mariner|juno|junocam|dawn|new horizons|huygens|bepicolombo|perseverance|mro|mars express|sdo|soho/.test(credit + " " + source)) return "CITRA WAHANA";
     if (credit.includes("wikimedia") || source.includes("wikimedia") || source.includes("wikipedia")) return "FOTO DOKUMENTASI";
@@ -151,13 +151,13 @@ window.ExplorationMedia = {
       });
 
     normalized.sort((a, b) => {
-      const aIsDiagram = a.type === "DIAGRAM ILMIAH";
-      const bIsDiagram = b.type === "DIAGRAM ILMIAH";
+      const aIsDiagram = a.type === "GAMBAR SAINS";
+      const bIsDiagram = b.type === "GAMBAR SAINS";
       if (aIsDiagram !== bIsDiagram) return aIsDiagram ? 1 : -1;
       return 0;
     });
 
-    const hasObservational = normalized.some(item => item.type !== "DIAGRAM ILMIAH");
+    const hasObservational = normalized.some(item => item.type !== "GAMBAR SAINS");
     const fallback = this.sceneFallbackImages[prefix];
     if (!hasObservational && fallback?.src) {
       const key = this.canonicalSrc(fallback.src);

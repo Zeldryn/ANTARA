@@ -46,132 +46,132 @@ const VENUS_EXPLORATION_STOPS = Object.freeze([
   {
     images: [{
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia23/pia23791/PIA23791.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1096&w=2245",
-      alt: "Citra ultraviolet Venus dari Mariner 10 memperlihatkan selimut awan global",
+      alt: "Gambar gambar khusus Venus dari Mariner 10 memperlihatkan selimut awan di seluruh planet",
       credit: "NASA/JPL-Caltech",
       source: "https://science.nasa.gov/photojournal/mariner-10-image-of-venus/",
       license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-      caption: "Venus · citra ultraviolet Mariner 10", fit: "cover"
+      caption: "Venus · gambar khusus Mariner 10", fit: "cover"
     }],
-    title: "Venus", kicker: "PLANET KEDUA", subtitle: "Dunia berbatu yang ukurannya mirip Bumi, tetapi lingkungannya sangat berbeda",
-    summary: "Venus adalah planet kedua dari Matahari dan sebuah planet kebumian. Ukurannya mendekati Bumi, tetapi atmosfer supertebal dan evolusi iklimnya menghasilkan permukaan yang sangat panas dan bertekanan tinggi.",
-    facts: ["Venus adalah planet kedua dari Matahari.", "Diameter dan struktur internalnya secara umum mirip Bumi sehingga sering dibandingkan dengan planet kita.", "Kesamaan ukuran tidak berarti lingkungan keduanya serupa: permukaan Venus ekstrem panas dan tekanannya sangat tinggi."],
+    title: "Venus", kicker: "PLANET KEDUA", subtitle: "Dunia berbatu yang ukurannya mirip Bumi. Tapi lingkungannya sangat berbeda",
+    summary: "Venus adalah planet kedua dari Matahari. Ukurannya hampir sama dengan Bumi. Tapi udara Venus sangat tebal, jadi permukaannya sangat panas dan tekanannya sangat kuat.",
+    facts: ["Venus adalah planet kedua dari Matahari.", "Diameter dan bentuk internalnya secara umum mirip Bumi sehingga sering dibandingkan dengan planet kita.", "Kesamaan ukuran tidak berarti lingkungan keduanya serupa: permukaan Venus sangat panas dan tekanannya sangat tinggi."],
     source: "https://science.nasa.gov/venus/venus-facts/", location: null,
     orientation: { yaw: 0.58, pitch: 0.06, roll: 0.10 }, shift: { x: 0, y: 0 }
   },
   {
-    images: [{ src: "assets/venus-greenhouse-diagram.svg", alt: "Diagram konseptual perbandingan Venus dan proses penahanan panas oleh atmosfer tebal", credit: "ANTARA · berdasarkan NASA Science", source: "https://science.nasa.gov/venus/venus-facts/", caption: "Saudara Bumi yang berevolusi berbeda · diagram", fit: "contain" }],
-    title: "Saudara Bumi yang Berbeda", kicker: "DUNIA KEBUMIAN", subtitle: "Mirip ukuran dan jenis planet, bukan kembaran lingkungan",
-    summary: "Venus dan Bumi sama-sama planet berbatu dengan ukuran dan komposisi keseluruhan yang sebanding. Namun sejarah atmosfer, air, dan geologi keduanya membawa permukaan modern ke kondisi yang sangat berbeda.",
-    facts: ["Keduanya termasuk planet kebumian berbatu.", "Kemiripan ukuran membuat Venus penting untuk membandingkan evolusi planet kebumian.", "Istilah 'kembaran Bumi' hanya berguna untuk beberapa sifat fisik, bukan untuk kondisi permukaan modern."],
+    images: [{ src: "assets/venus-greenhouse-diagram.svg", alt: "Gambar sederhana perbandingan Venus dan cara penahanan panas oleh udara tebal", credit: "ANTARA · berdasarkan NASA Science", source: "https://science.nasa.gov/venus/venus-facts/", caption: "Saudara Bumi yang berevolusi berbeda · diagram", fit: "contain" }],
+    title: "Saudara Bumi yang Berbeda", kicker: "MIRIP BUMI", subtitle: "Mirip ukuran dan jenis planet, bukan kembaran lingkungan",
+    summary: "Venus dan Bumi sama-sama planet berbatu dengan ukuran dan isi keseluruhan yang sebanding. Tapi sejarah udara, air, dan tanah dan batu keduanya membawa permukaan sekarang ke kondisi yang sangat berbeda.",
+    facts: ["Keduanya termasuk planet berbatu seperti Bumi berbatu.", "Kemiripan ukuran membuat Venus penting untuk membandingkan perubahan dari dulu sampai sekarang planet berbatu seperti Bumi.", "Istilah 'kembaran Bumi' hanya berguna untuk beberapa sifat fisik, bukan untuk kondisi permukaan sekarang."],
     source: "https://science.nasa.gov/venus/venus-facts/", location: null,
     orientation: { yaw: 0.85, pitch: 0.05, roll: 0.10 }, shift: { x: 0, y: 0 }
   },
   {
-    images: [{ src: "assets/venus-atmosphere-diagram.svg", alt: "Diagram komposisi dan ketebalan atmosfer Venus", credit: "ANTARA · angka ringkas NASA Science", source: "https://science.nasa.gov/venus/venus-facts/", caption: "Atmosfer Venus · diagram ilmiah konseptual", fit: "contain" }],
-    title: "Atmosfer Super Tebal", kicker: "ATMOSFER", subtitle: "Karbon dioksida mendominasi udara Venus",
-    summary: "Atmosfer Venus didominasi karbon dioksida dengan nitrogen sebagai komponen sekunder. Massa atmosfer yang besar menghasilkan tekanan permukaan yang puluhan kali lebih tinggi daripada tekanan laut Bumi.",
-    facts: ["Atmosfer Venus sebagian besar terdiri dari karbon dioksida.", "Nitrogen merupakan komponen sekunder utama.", "Tekanan permukaan sekitar 93 kali tekanan di permukaan laut Bumi."],
+    images: [{ src: "assets/venus-atmosphere-diagram.svg", alt: "Diagram isi dan ketebalan udara Venus", credit: "ANTARA · angka ringkas NASA Science", source: "https://science.nasa.gov/venus/venus-facts/", caption: "Udara Venus · diagram sains konseptual", fit: "contain" }],
+    title: "Udara Venus Tebal Banget", kicker: "UDARA", subtitle: "Gas karbon dioksida mendominasi udara Venus",
+    summary: "Udara Venus sangat tebal dan paling banyak berisi gas karbon dioksida. Udara itu menekan permukaan sekitar 93 kali lebih kuat daripada udara di permukaan Bumi.",
+    facts: ["Udara Venus sebagian besar berisi gas karbon dioksida.", "Nitrogen adalah isi terbanyak kedua.", "Tekanan udara di permukaan sekitar 93 kali tekanan di permukaan laut Bumi."],
     source: "https://science.nasa.gov/venus/venus-facts/", location: null,
     orientation: { yaw: 1.08, pitch: 0.04, roll: 0.10 }, shift: { x: 0, y: 0 }
   },
   {
-    images: [{ src: "assets/venus-greenhouse-diagram.svg", alt: "Diagram efek rumah kaca ekstrem Venus", credit: "ANTARA · berdasarkan NASA/ESA", source: "https://www.esa.int/Science_Exploration/Space_Science/Venus_Express/Greenhouse_effect_clouds_and_winds", caption: "Efek rumah kaca ekstrem · diagram", fit: "contain" }],
-    title: "Efek Rumah Kaca Ekstrem", kicker: "IKLIM VENUS", subtitle: "Panas bertahan di bawah atmosfer yang sangat tebal",
-    summary: "Venus bukan planet terpanas karena paling dekat dengan Matahari. Atmosfer karbon dioksidanya menghasilkan efek rumah kaca yang sangat kuat, sehingga radiasi termal dari permukaan sulit lolos ke angkasa.",
-    facts: ["Merkurius berada lebih dekat ke Matahari, tetapi Venus memiliki permukaan rata-rata yang lebih panas.", "Atmosfer dan awan memengaruhi keseimbangan energi Venus pada skala global.", "Efek rumah kaca Venus adalah contoh ekstrem bagaimana komposisi atmosfer mengubah iklim planet."],
+    images: [{ src: "assets/venus-greenhouse-diagram.svg", alt: "Diagram panas yang terjebak di udara sangat kuat Venus", credit: "ANTARA · berdasarkan NASA/ESA", source: "https://www.esa.int/Science_Exploration/Space_Science/Venus_Express/Greenhouse_effect_clouds_and_winds", caption: "Panas yang terjebak di udara sangat kuat · diagram", fit: "contain" }],
+    title: "Kenapa Venus Panas Banget?", kicker: "IKLIM VENUS", subtitle: "Panas bertahan di bawah udara yang sangat tebal",
+    summary: "Venus sangat panas bukan karena paling dekat dengan Matahari. Udaranya yang tebal menjebak panas. Karena itu, panas sulit keluar kembali ke angkasa.",
+    facts: ["Merkurius berada lebih dekat ke Matahari. Tapi Venus punya permukaan rata-rata yang lebih panas.", "Udara dan awan mengubah jumlah panas yang masuk dan keluar Venus pada skala di seluruh planet.", "Panas yang terjebak di udara Venus adalah contoh sangat kuat bagaimana isi udara mengubah iklim planet."],
     source: "https://www.esa.int/Science_Exploration/Space_Science/Venus_Express/Greenhouse_effect_clouds_and_winds", location: null,
     orientation: { yaw: 1.30, pitch: 0.03, roll: 0.10 }, shift: { x: 0, y: 0 }
   },
   {
-    images: [{ src: "assets/venus-atmosphere-diagram.svg", alt: "Diagram kondisi permukaan Venus termasuk temperatur", credit: "ANTARA · NASA Science", source: "https://science.nasa.gov/venus/venus-facts/", caption: "Kondisi permukaan Venus · diagram", fit: "contain" }],
-    title: "Dunia Terpanas", kicker: "REKOR & EKSTREM", subtitle: "Rata-rata permukaan sekitar 467°C",
-    summary: "Venus memiliki permukaan rata-rata terpanas di antara planet-planet Tata Surya. Atmosfer tebal meratakan perbedaan suhu sehingga lingkungan permukaannya tetap ekstrem siang maupun malam.",
-    facts: ["NASA mencantumkan temperatur permukaan sekitar 467°C.", "Nilai ini cukup tinggi untuk melelehkan timbal.", "Venus tetap lebih panas daripada Merkurius walaupun orbitnya lebih jauh dari Matahari."],
+    images: [{ src: "assets/venus-atmosphere-diagram.svg", alt: "Diagram kondisi permukaan Venus termasuk suhu", credit: "ANTARA · NASA Science", source: "https://science.nasa.gov/venus/venus-facts/", caption: "Kondisi permukaan Venus · diagram", fit: "contain" }],
+    title: "Dunia Terpanas", kicker: "WAH, LUAR BIASA!", subtitle: "Rata-rata permukaan sekitar 467°C",
+    summary: "Venus punya permukaan rata-rata terpanas di antara planet-planet Tata Surya. Udara tebal meratakan perbedaan suhu jadi lingkungan permukaannya tetap sangat panas, siang maupun malam.",
+    facts: ["NASA mencantumkan suhu permukaan sekitar 467°C.", "Nilai ini cukup tinggi untuk melelehkan timbal.", "Venus tetap lebih panas daripada Merkurius meski jalurnya lebih jauh dari Matahari."],
     source: "https://science.nasa.gov/venus/venus-facts/", location: null,
     orientation: { yaw: 1.52, pitch: 0.03, roll: 0.10 }, shift: { x: 0, y: 0 }
   },
   {
-    images: [{ src: "assets/venus-pressure-diagram.svg", alt: "Diagram perbandingan tekanan permukaan Venus dan Bumi", credit: "ANTARA · NASA Science", source: "https://science.nasa.gov/venus/venus-facts/", caption: "Tekanan permukaan Venus · perbandingan konseptual", fit: "contain" }],
-    title: "Tekanan yang Menghancurkan", kicker: "REKOR & EKSTREM", subtitle: "Sekitar 93 kali tekanan permukaan laut Bumi",
-    summary: "Atmosfer Venus menekan permukaannya dengan gaya yang luar biasa. NASA membandingkan kondisi ini dengan tekanan yang dialami jauh di bawah permukaan laut Bumi.",
-    facts: ["Tekanan permukaan sekitar 93 bar relatif terhadap sekitar 1 bar di permukaan laut Bumi.", "NASA mengibaratkannya dengan tekanan di kedalaman lebih dari 900 meter di laut Bumi.", "Tekanan dan suhu tinggi menjadi tantangan utama bagi wahana pendarat."],
+    images: [{ src: "assets/venus-pressure-diagram.svg", alt: "Diagram perbandingan tekanan udara di permukaan Venus dan Bumi", credit: "ANTARA · NASA Science", source: "https://science.nasa.gov/venus/venus-facts/", caption: "Tekanan udara di permukaan Venus · perbandingan konseptual", fit: "contain" }],
+    title: "Udara Venus Menekan Sangat Kuat", kicker: "WAH, LUAR BIASA!", subtitle: "Sekitar 93 kali tekanan udara di permukaan laut Bumi",
+    summary: "Udara Venus menekan permukaannya dengan gaya yang luar biasa. NASA membandingkan kondisi ini dengan tekanan yang dialami jauh di bawah permukaan laut Bumi.",
+    facts: ["Tekanan udara di permukaan sekitar sekitar 93 kali lebih kuat dibanding di permukaan laut Bumi.", "NASA mengibaratkannya dengan tekanan di kedalaman lebih dari 900 meter di laut Bumi.", "Tekanan dan suhu tinggi menjadi tantangan utama bagi robot antariksa pendarat."],
     source: "https://science.nasa.gov/venus/venus-facts/", location: null,
     orientation: { yaw: 1.78, pitch: 0.04, roll: 0.10 }, shift: { x: 0, y: 0 }
   },
   {
     images: [
-      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia23/pia23791/PIA23791.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1096&w=2245", alt: "Citra ultraviolet Mariner 10 memperlihatkan awan Venus", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/mariner-10-image-of-venus/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Awan global Venus · ultraviolet", fit: "cover" },
+      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia23/pia23791/PIA23791.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1096&w=2245", alt: "Gambar cahaya khusus Mariner 10 memperlihatkan awan Venus", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/mariner-10-image-of-venus/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Awan di seluruh planet Venus · cahaya khusus", fit: "cover" },
       { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/0/PIA00072-3.jpg?crop=faces%2Cfocalpoint&fit=clip&h=800&w=800", alt: "Pola awan Venus dari Galileo", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/venus-cloud-patterns/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Pola awan Venus · Galileo", fit: "cover" }
     ],
-    title: "Awan Asam Sulfat", kicker: "SELIMUT AWAN", subtitle: "Permukaan tersembunyi dari pandangan cahaya tampak biasa",
-    summary: "Lapisan awan Venus mengandung tetesan asam sulfat. Awan global ini sangat reflektif dan menghalangi pandangan langsung ke permukaan pada panjang gelombang cahaya tampak.",
-    facts: ["Awan Venus mengandung aerosol dan tetesan asam sulfat.", "Struktur awan terlihat lebih informatif dalam ultraviolet dan inframerah daripada cahaya tampak biasa.", "Atmosfer bagian atas bergerak sangat cepat dan menunjukkan super-rotasi."],
+    title: "Awan Zat Asam Kuat", kicker: "SELIMUT AWAN", subtitle: "Permukaan tersembunyi dari pandangan cahaya tampak biasa",
+    summary: "Lapisan awan Venus mengandung tetesan zat asam kuat. Awan di seluruh planet ini sangat mudah memantulkan dan menghalangi pandangan langsung ke permukaan pada jenis cahaya cahaya tampak.",
+    facts: ["Awan Venus mengandung butiran kecil di udara dan tetesan zat asam kuat.", "Bentuk awan terlihat lebih informatif dalam cahaya khusus yang tidak terlihat mata daripada cahaya tampak biasa.", "Udara bagian atas bergerak sangat cepat dan menunjukkan putaran udara yang sangat cepat."],
     source: "https://science.nasa.gov/venus/venus-facts/", location: null,
     orientation: { yaw: 2.02, pitch: 0.02, roll: 0.10 }, shift: { x: 0, y: 0 }
   },
   {
-    images: [{ src: "assets/venus-rotation-diagram.svg", alt: "Diagram rotasi retrograd dan periode Venus", credit: "ANTARA · NASA Science", source: "https://science.nasa.gov/venus/venus-facts/", caption: "Rotasi retrograd Venus · diagram", fit: "contain" }],
-    title: "Rotasi yang Aneh", kicker: "DINAMIKA PLANET", subtitle: "Satu rotasi sideris lebih lama daripada satu tahun Venus",
-    summary: "Venus berputar sangat lambat dan secara retrograd, berlawanan arah dengan kebanyakan planet. Karena itu Matahari akan tampak terbit dari barat dan terbenam di timur bagi pengamat di permukaan.",
-    facts: ["Rotasi sideris Venus sekitar 243 hari Bumi.", "Satu orbit Venus mengelilingi Matahari sekitar 225 hari Bumi.", "Hari matahari dari satu matahari terbit ke berikutnya berlangsung sekitar 117 hari Bumi."],
+    images: [{ src: "assets/venus-rotation-diagram.svg", alt: "Diagram putaran berlawanan arah dan periode Venus", credit: "ANTARA · NASA Science", source: "https://science.nasa.gov/venus/venus-facts/", caption: "Putaran berlawanan arah Venus · diagram", fit: "contain" }],
+    title: "Venus Berputar Terbalik", kicker: "CARA PLANET BERPUTAR", subtitle: "Satu putaran satu putaran penuh lebih lama daripada satu tahun Venus",
+    summary: "Venus berputar sangat lambat dan dengan arah yang berlawanan dengan kebanyakan planet. Karena itu Matahari akan tampak terbit dari barat dan terbenam di timur bagi pengamat di permukaan.",
+    facts: ["Putaran satu putaran penuh Venus sekitar 243 hari Bumi.", "Satu jalur mengelilingi Venus mengelilingi Matahari sekitar 225 hari Bumi.", "Hari matahari dari satu matahari terbit ke berikutnya berlangsung sekitar 117 hari Bumi."],
     source: "https://science.nasa.gov/venus/venus-facts/", location: null,
     orientation: { yaw: 2.26, pitch: 0.03, roll: 0.10 }, shift: { x: 0, y: 0 }
   },
   {
     images: [
-      { src: "assets/venus-radar-diagram.svg", alt: "Diagram radar Magellan memetakan permukaan Venus melalui awan", credit: "ANTARA · NASA Magellan", source: "https://science.nasa.gov/mission/magellan/", caption: "Cara radar Magellan memetakan Venus · diagram", fit: "contain" },
-      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/cds/3d/resources/image/venus/preview.webp?w=2048", alt: "Peta permukaan Venus yang dibangun dari data radar Magellan dengan warna simulasi", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/3d-resources/venus-surface-texture/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Permukaan Venus · visualisasi berbasis radar, bukan foto biasa", fit: "cover" }
+      { src: "assets/venus-radar-diagram.svg", alt: "Diagram radar Magellan membuat peta permukaan Venus melalui awan", credit: "ANTARA · NASA Magellan", source: "https://science.nasa.gov/mission/magellan/", caption: "Cara radar Magellan membuat peta Venus · diagram", fit: "contain" },
+      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/cds/3d/resources/image/venus/preview.webp?w=2048", alt: "Peta permukaan Venus yang dibangun dari data radar Magellan dengan warna tampilan 3D", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/3d-resources/venus-surface-texture/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Permukaan Venus · gambar bantu belajar berbasis radar, bukan foto biasa", fit: "cover" }
     ],
-    title: "Permukaan yang Tersembunyi", kicker: "MAGELLAN RADAR", subtitle: "Radar memungkinkan ilmuwan melihat geologi di balik awan",
-    summary: "Magellan menggunakan radar bukaan sintetis untuk memetakan Venus karena awan tebal menghalangi pencitraan optik global permukaannya. Hasil radar harus dibaca sebagai data penginderaan jauh, bukan foto warna alami.",
-    facts: ["Magellan menyelesaikan cakupan radar sekitar 98% permukaan Venus selama misi pemetaannya.", "Kecerahan radar berkaitan dengan sifat permukaan dan geometri, bukan warna alami batu.", "Banyak visual warna Venus menggabungkan radar, altimetri, dan warna simulasi berbasis data Venera."],
+    title: "Permukaan yang Tersembunyi", kicker: "DILIHAT DENGAN RADAR", subtitle: "Radar memungkinkan ilmuwan melihat tanah dan batu di balik awan",
+    summary: "Magellan menggunakan radar untuk membuat peta Venus karena awan tebal menghalangi pencitraan optik di seluruh planet permukaannya. Hasil radar harus dibaca sebagai data melihat dan mempelajari dari jauh, bukan foto warna alami.",
+    facts: ["Magellan menyelesaikan cakupan radar sekitar 98% permukaan Venus selama misi pemetaannya.", "Kecerahan radar berhubungan dengan sifat permukaan dan geometri, bukan warna alami batu.", "Banyak visual warna Venus menggabungkan radar, data tinggi-rendah, dan warna tampilan 3D berbasis data Venera."],
     source: "https://science.nasa.gov/mission/magellan/", location: null,
     orientation: { yaw: 2.52, pitch: 0.04, roll: 0.10 }, shift: { x: 0, y: 0 }
   },
   {
     images: [
-      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00254/PIA00254.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1440&w=1800", alt: "Perspektif tiga dimensi Maat Mons dari radar dan altimetri Magellan", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/venus-3-d-perspective-view-of-maat-mons-2/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Maat Mons · radar + altimetri Magellan", fit: "cover" }
+      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00254/PIA00254.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1440&w=1800", alt: "Perspektif tiga dimensi Maat Mons dari radar dan data tinggi-rendah Magellan", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/venus-3-d-perspective-view-of-maat-mons-2/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Maat Mons · radar + data tinggi-rendah Magellan", fit: "cover" }
     ],
-    title: "Maat Mons", kicker: "GUNUNG API VENUS", subtitle: "Gunung api besar dengan bukti perubahan lubang vulkanik pada data Magellan",
-    summary: "Maat Mons adalah gunung api besar di Atla Regio. Analisis ulang dua citra radar Magellan dari 1991 menemukan perubahan bentuk lubang vulkanik yang ditafsirkan sebagai bukti langsung aktivitas vulkanik pada Venus.",
-    facts: ["Pusat Maat Mons: sekitar 0,5° LU dan 194,6° BT menurut IAU/USGS.", "Perspektif Magellan menggambarkan gunung sekitar 8 km di atas medan sekitarnya/rata-rata regional.", "Perubahan lubang vulkanik antara Februari dan Oktober 1991 mendukung interpretasi sebuah peristiwa erupsi."],
+    title: "Maat Mons", kicker: "GUNUNG API VENUS", subtitle: "Gunung api besar dengan bukti perubahan lubang dari gunung api pada data Magellan",
+    summary: "Maat Mons adalah gunung api besar di Atla Regio. Analisis ulang dua gambar radar Magellan dari 1991 menemukan perubahan bentuk lubang dari gunung api yang ditafsirkan sebagai bukti langsung aktivitas dari gunung api pada Venus.",
+    facts: ["Pusat Maat Mons: sekitar 0,5° LU dan 194,6° BT menurut IAU/USGS.", "Perspektif Magellan menggambarkan gunung sekitar 8 km di atas medan sekitarnya/rata-rata di daerah itu.", "Perubahan lubang dari gunung api antara Februari dan Oktober 1991 mendukung cara memahami sebuah peristiwa erupsi."],
     source: "https://www.jpl.nasa.gov/news/nasas-magellan-data-reveals-volcanic-activity-on-venus/",
     location: { label: "Maat Mons", latitude: 0.50, longitudeEast: 194.60, source: "https://planetarynames.wr.usgs.gov/Feature/3550" }, shift: { x: 0.005, y: 0.005 }
   },
   {
     images: [
-      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00241/PIA00241.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1280", alt: "Citra radar Magellan memperlihatkan Lakshmi Planum dan Maxwell Montes", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/venus-lakshmi-planum-and-maxwell-montes/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Maxwell Montes · radar Magellan", fit: "cover" },
-      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00149/PIA00149.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1440&w=1600", alt: "Citra radar Maxwell Montes dan Cleopatra", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Maxwell Montes dan Cleopatra · radar", fit: "cover" }
+      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00241/PIA00241.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1280", alt: "Gambar radar Magellan memperlihatkan Lakshmi Planum dan Maxwell Montes", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/venus-lakshmi-planum-and-maxwell-montes/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Maxwell Montes · radar Magellan", fit: "cover" },
+      { src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00149/PIA00149.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1440&w=1600", alt: "Gambar radar Maxwell Montes dan Cleopatra", credit: "NASA/JPL-Caltech", source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Maxwell Montes dan Cleopatra · radar", fit: "cover" }
     ],
-    title: "Maxwell Montes", kicker: "REKOR & EKSTREM", subtitle: "Pegunungan tertinggi yang dikenal di Venus",
-    summary: "Maxwell Montes berdiri di wilayah dataran tinggi utara dekat Ishtar Terra. Radar Magellan memperlihatkan relief dan struktur kompleks yang membantu ilmuwan menafsirkan deformasi kerak Venus.",
-    facts: ["Pusat Maxwell Montes: 65,2° LU dan 3,3° BT menurut IAU/USGS.", "NASA menggambarkan ketinggiannya hampir 11 km di atas radius rata-rata planet.", "Wilayah ini merupakan bagian dari sistem dataran tinggi dan pegunungan utara Venus."],
+    title: "Maxwell Montes", kicker: "WAH, LUAR BIASA!", subtitle: "Pegunungan tertinggi yang dikenal di Venus",
+    summary: "Maxwell Montes berdiri di wilayah dataran tinggi utara dekat Ishtar Terra. Radar Magellan memperlihatkan bentuk naik-turun tanah dan bentuk rumit yang membuat ilmuwan lebih mudah tahu perubahan bentuk kerak Venus.",
+    facts: ["Pusat Maxwell Montes: 65,2° LU dan 3,3° BT menurut IAU/USGS.", "NASA menggambarkan ketinggiannya hampir 11 km di atas radius rata-rata planet.", "Wilayah ini adalah bagian dari sistem dataran tinggi dan pegunungan utara Venus."],
     source: "https://science.nasa.gov/photojournal/venus-maxwell-montes-and-cleopatra-crater/",
     location: { label: "Maxwell Montes", latitude: 65.20, longitudeEast: 3.30, source: "https://planetarynames.wr.usgs.gov/Feature/3766" }, shift: { x: 0.006, y: -0.004 }
   },
   {
     images: [
-      { src: "assets/venus-alpha-regio-pia00481.jpg", alt: "Perspektif tiga dimensi Alpha Regio dari data radar dan altimetri Magellan, NASA/JPL PIA00481", credit: "NASA/JPL · Magellan · PIA00481", source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/", license: "NASA/JPL scientific imagery", licenseUrl: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/", caption: "Alpha Regio · perspektif tiga dimensi Magellan · PIA00481", fit: "cover" }
+      { src: "assets/venus-alpha-regio-pia00481.jpg", alt: "Perspektif tiga dimensi Alpha Regio dari data radar dan data tinggi-rendah Magellan, NASA/JPL PIA00481", credit: "NASA/JPL · Magellan · PIA00481", source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/", license: "NASA/JPL scientific gambar", licenseUrl: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/", caption: "Alpha Regio · perspektif tiga dimensi Magellan · PIA00481", fit: "cover" }
     ],
-    title: "Medan Tessera", kicker: "ALPHA REGIO", subtitle: "Punggungan, rekahan, dan lembah patahan saling berpotongan",
-    summary: "Tesserae adalah salah satu medan paling kompleks di Venus. Alpha Regio memperlihatkan jaringan punggungan, palung, dan struktur patahan yang saling memotong, mencatat sejarah deformasi permukaan yang panjang.",
-    facts: ["Pusat Alpha Regio: sekitar 25,5° LS dan 0,3° BT menurut IAU/USGS.", "Citra Magellan menunjukkan pola punggungan dan rekahan yang berpotongan.", "Citra yang digunakan adalah radar dengan warna simulasi, bukan foto cahaya tampak permukaan."],
+    title: "Tanah Venus yang Penuh Garis", kicker: "ALPHA REGIO", subtitle: "Punggungan, retakan, dan lembah patahan saling berpotongan",
+    summary: "Tanah penuh garis dan punggung adalah salah satu medan paling rumit di Venus. Alpha Regio memperlihatkan jaringan punggungan, palung, dan bentuk patahan yang saling memotong, mencatat sejarah perubahan bentuk permukaan yang panjang.",
+    facts: ["Pusat Alpha Regio: sekitar 25,5° LS dan 0,3° BT menurut IAU/USGS.", "Gambar Magellan menunjukkan pola punggungan dan retakan yang berpotongan.", "Gambar yang digunakan adalah radar dengan warna tampilan 3D, bukan foto cahaya tampak permukaan."],
     source: "https://science.nasa.gov/photojournal/venus-three-dimensional-perspective-view-of-alpha-region/",
     location: { label: "Alpha Regio", latitude: -25.50, longitudeEast: 0.30, source: "https://planetarynames.wr.usgs.gov/Feature/203" }, shift: { x: 0.006, y: 0.004 }
   },
   {
-    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00148/PIA00148.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1440&w=1440", alt: "Citra radar Magellan Kawah Mead di Venus", credit: "NASA/JPL", source: "https://science.nasa.gov/photojournal/venus-mead-crater/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Mead · kawah tumbukan pada radar Magellan", fit: "cover" }],
-    title: "Kawah dan Permukaan Venus", kicker: "KAWAH MEAD", subtitle: "Kawah membantu membaca umur relatif dan proses pembaruan permukaan",
-    summary: "Venus memiliki kawah tumbukan, tetapi permukaannya tidak dipenuhi kawah seperti Bulan. Mead adalah kawah besar yang terpetakan Magellan; distribusi kawah secara global menjadi salah satu petunjuk untuk menilai sejarah pembaruan permukaan Venus.",
-    facts: ["Mead berdiameter sekitar 275 km dalam deskripsi NASA Magellan.", "Pusatnya sekitar 12,5° LU dan 57,4° BT.", "Interpretasi pembaruan permukaan Venus tetap kompleks: proses vulkanik dan tektonik tidak harus terjadi sebagai satu peristiwa global tunggal."],
+    images: [{ src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00148/PIA00148.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1440&w=1440", alt: "Gambar radar Magellan Kawah Mead di Venus", credit: "NASA/JPL", source: "https://science.nasa.gov/photojournal/venus-mead-crater/", license: "Kebijakan gambar NASA", licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/", caption: "Mead · kawah tabrakan pada radar Magellan", fit: "cover" }],
+    title: "Kawah dan Permukaan Venus", kicker: "KAWAH MEAD", subtitle: "Kawah membantu melihat umur cukup dan cara pembaruan permukaan",
+    summary: "Venus punya kawah tabrakan. Tapi permukaannya tidak dipenuhi kawah seperti Bulan. Mead adalah kawah besar yang terpetakan Magellan. penyebaran kawah secara di seluruh planet menjadi salah satu petunjuk untuk menilai sejarah pembaruan permukaan Venus.",
+    facts: ["Mead berdiameter sekitar 275 km dalam deskripsi NASA Magellan.", "Pusatnya sekitar 12,5° LU dan 57,4° BT.", "Cara memahami pembaruan permukaan Venus tetap rumit: cara dari gunung api dan gerakan kulit planet tidak harus terjadi sebagai satu peristiwa di seluruh planet tunggal."],
     source: "https://science.nasa.gov/photojournal/venus-mead-crater/",
     location: { label: "Kawah Mead", latitude: 12.50, longitudeEast: 57.40, source: "https://science.nasa.gov/photojournal/venus-mead-crater/" }, shift: { x: 0.005, y: 0.002 }
   },
   {
     images: [{ src: "assets/venus-missions-diagram.svg", alt: "Diagram ringkas misi Venera, Magellan, Venus Express, dan Akatsuki", credit: "ANTARA · linimasa NASA Science", source: "https://science.nasa.gov/venus/exploration/", caption: "Misi ke Venus · ringkasan", fit: "contain" }],
-    title: "Misi ke Venus", kicker: "EKSPLORASI", subtitle: "Wahana pendarat, radar, dan pengorbit saling melengkapi",
-    summary: "Pemahaman modern tentang Venus dibangun oleh berbagai pendekatan. Program Venera mencapai permukaan, Magellan memetakan geologi dengan radar, Venus Express mempelajari atmosfer, dan Akatsuki terus mengamati dinamika awan dan cuaca Venus.",
-    facts: ["Wahana Soviet Venera mengirim data langsung dari permukaan Venus.", "Magellan menjadi fondasi pemetaan radar resolusi tinggi Venus.", "Venus Express milik ESA dan Akatsuki milik JAXA memperluas studi atmosfer dan dinamika awan."],
+    title: "Misi ke Venus", kicker: "EKSPLORASI", subtitle: "Robot antariksa pendarat, radar, dan pengorbit saling melengkapi",
+    summary: "Pemahaman sekarang tentang Venus dibangun oleh berbagai cara. Program Venera mencapai permukaan, Magellan membuat peta tanah dan batu dengan radar, Venus Express mempelajari udara, dan Akatsuki terus mengamati gerakan awan dan cuaca Venus.",
+    facts: ["Robot antariksa Soviet Venera mengirim data langsung dari permukaan Venus.", "Magellan menjadi fondasi pembuatan peta radar sangat jelas Venus.", "Venus Express milik ESA dan Akatsuki milik JAXA memperluas studi udara dan gerakan awan."],
     source: "https://science.nasa.gov/venus/exploration/", location: null,
     orientation: { yaw: 3.12, pitch: 0.05, roll: 0.10 }, shift: { x: 0, y: 0 }
   }
@@ -529,14 +529,8 @@ window.VenusScene = class VenusScene {
     // Thin warm limb scattering; it is deliberately much subtler than an Earth halo.
     this.atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1.013, 64, 40), new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-      vertexShader: `varying vec3 vWorld; varying vec3 vNormal;
-        void main(){ vec4 world=modelMatrix*vec4(position,1.); vWorld=world.xyz;
-        vNormal=normalize(mat3(modelMatrix)*normal); gl_Position=projectionMatrix*viewMatrix*world; }`,
-      fragmentShader: `varying vec3 vWorld; varying vec3 vNormal;
-        void main(){ vec3 n=normalize(vNormal); vec3 eye=normalize(cameraPosition-vWorld);
-        float rim=pow(1.-max(dot(n,eye),0.),4.);
-        float sun=max(dot(n,normalize(vec3(-3.5,2.5,4.))),0.);
-        gl_FragColor=vec4(.91,.58,.19,rim*(.055+.22*sun)); }`
+      vertexShader: `varying vec3 vWorld; varying vec3 vNormal; void main(){ vec4 world=modelMatrix*vec4(position,1.); vWorld=world.xyz; vNormal=normalize(mat3(modelMatrix)*normal); gl_Position=projectionMatrix*viewMatrix*world; }`,
+      fragmentShader: `varying vec3 vWorld; varying vec3 vNormal; void main(){ vec3 n=normalize(vNormal); vec3 eye=normalize(cameraPosition-vWorld); float rim=pow(1.-max(dot(n,eye),0.),4.); float sun=max(dot(n,normalize(vec3(-3.5,2.5,4.))),0.); gl_FragColor=vec4(.91,.58,.19,rim*(.055+.22*sun)); }`
     }));
     this.planetGroup.add(this.atmosphere);
     const positions = new Float32Array(this.stars.length * 3);

@@ -10465,12 +10465,11 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   transform: translateY(0) scale(.97) !important;
 }
 
-/* PC / laptop exploration: lower-left is intentionally below the objective
-   panels and away from the centered keyboard hint lane. */
+/* PC / laptop panorama: sound control sits in the lower-right corner. */
 @media (min-width:900px) {
   #mission > .audio-orb-dock[data-audio-placement="journey"] {
-    left: max(18px,env(safe-area-inset-left)) !important;
-    right: auto !important;
+    left: auto !important;
+    right: max(18px,env(safe-area-inset-right)) !important;
     top: auto !important;
     bottom: max(18px,env(safe-area-inset-bottom)) !important;
     width: 92px !important;
@@ -10503,14 +10502,12 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   }
 }
 
-/* Mobile/compact exploration: upper-right, in the gap between the full-
-   exploration MENU row and the Goal/Info row. This avoids the d-pad, bottom
-   sheets, panorama Prev/Next dock, and phone safe-area. */
+/* Mobile panorama: align the sound control with the header logo. */
 @media (max-width:899px) {
   #mission > .audio-orb-dock[data-audio-placement="journey"] {
     left: auto !important;
     right: max(10px,env(safe-area-inset-right)) !important;
-    top: max(64px,calc(env(safe-area-inset-top) + 10px)) !important;
+    top: max(env(safe-area-inset-top),var(--audio-mobile-top,22px)) !important;
     bottom: auto !important;
     width: 40px !important;
     height: 40px !important;
@@ -10704,4 +10701,97 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   outline: none !important;
   outline-offset: 0 !important;
   box-shadow: none !important;
+}
+
+/* Exploration owns the screen; the sound setting itself remains unchanged. */
+#mission[data-audio-hidden="true"] #audio-orb-dock {
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+/* User-specified PC size: exactly 110% of the previous cockpit UI. */
+@media (min-width:900px) and (pointer:fine) {
+  #mission:is([data-experience="home"],[data-experience="launch"]) #companion-a > .character-sprite-frame {
+    scale:1.1 !important;
+    transform-origin:50% 100%;
+  }
+  #mission:is([data-experience="home"],[data-experience="launch"]) :is(
+    #cockpit-profile-hud,
+    .cockpit-dashboard > .console-bank,
+    .cockpit-dashboard > .cockpit-brand,
+    .intro > .intro-title-stack,
+    .intro > .launch-button
+  ) {
+    scale:1.1 !important;
+  }
+}
+
+
+/* ========================================================================
+   2026-10-08 LAPTOP <=17-INCH / MOBILE BASELINE + LOWER DISPLAY SPACING
+   Laptop-class viewports stay at native 100%; mobile keeps its existing native scale.
+   The three lower cockpit displays retain a visible gap so they never touch.
+   ======================================================================== */
+@media (min-width:701px) and (max-width:1799px) and (pointer:fine) {
+  #mission:is([data-experience="home"],[data-experience="launch"]) > .launch-stage {
+    left:0 !important;
+    top:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+    width:100% !important;
+    height:100% !important;
+    transform:none !important;
+    transform-origin:50% 50% !important;
+  }
+
+  #mission:is([data-experience="home"],[data-experience="launch"]) #companion-a > .character-sprite-frame,
+  #mission:is([data-experience="home"],[data-experience="launch"]) #companion-b > .character-sprite-frame {
+    scale:1 !important;
+    transform-origin:50% 100% !important;
+  }
+
+  #mission:is([data-experience="home"],[data-experience="launch"]) .cockpit-dashboard > .console-bank {
+    scale:1 !important;
+    transform-origin:50% 50% !important;
+  }
+
+  #mission:is([data-experience="home"],[data-experience="launch"]) .console-left {
+    left:7% !important;
+    width:26% !important;
+  }
+  #mission:is([data-experience="home"],[data-experience="launch"]) .console-center {
+    left:37% !important;
+    width:26% !important;
+  }
+  #mission:is([data-experience="home"],[data-experience="launch"]) .console-right {
+    right:7% !important;
+    width:26% !important;
+  }
+}
+
+
+/* ========================================================================
+   2026-10-08 LARGE-PC COCKPIT 110% + SORA PARITY
+   Large desktop/20-inch-class PC viewports use a fixed 110% cockpit scale.
+   Sora receives the same additional visual scale as Nara so the two sprites
+   read at the same physical height without changing mobile/tablet layouts.
+   ======================================================================== */
+@media (min-width:1800px) and (min-height:800px) and (pointer:fine) {
+  #mission:is([data-experience="home"],[data-experience="launch"]) > .launch-stage {
+    left:50% !important;
+    top:50% !important;
+    right:auto !important;
+    bottom:auto !important;
+    width:90.9090909% !important;
+    height:90.9090909% !important;
+    transform:translate(-50%,-50%) scale(1.1) !important;
+    transform-origin:50% 50% !important;
+  }
+
+  #mission:is([data-experience="home"],[data-experience="launch"]) #companion-b > .character-sprite-frame {
+    scale:1.1 !important;
+    transform-origin:50% 100% !important;
+  }
 }

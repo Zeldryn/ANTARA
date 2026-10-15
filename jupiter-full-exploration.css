@@ -28,6 +28,9 @@
 .jupiter-full-explore-button:disabled { opacity: .42; cursor: default; }
 
 .jupiter-full-exploration {
+  /* Gas Full Exploration owns its HUD visibility. Do not inherit Mars' entry fade (0). */
+  --surface-opacity: 1;
+
   --fx-bg: rgba(27, 26, 24, .94);
   --fx-bg-strong: rgba(12, 12, 13, .98);
   --fx-border: rgba(204, 194, 174, .28);
@@ -567,7 +570,7 @@
     overflow:auto !important;
     transform:none !important;
   }
-  .jupiter-full-exploration #jupiter-location-card.is-visible {
+  .jupiter-full-exploration #jupiter-landmark-card.is-visible {
     left:10px !important;
     right:10px !important;
     top:auto !important;
@@ -595,7 +598,7 @@
     font-size:7.4px !important;
   }
   .jupiter-full-exploration #jupiter-objectives-panel:not([hidden]),
-  .jupiter-full-exploration #jupiter-location-card.is-visible {
+  .jupiter-full-exploration #jupiter-landmark-card.is-visible {
     bottom:148px !important;
   }
 }
@@ -611,7 +614,7 @@
     font-size:7px !important;
   }
   .jupiter-full-exploration #jupiter-objectives-panel:not([hidden]),
-  .jupiter-full-exploration #jupiter-location-card.is-visible {
+  .jupiter-full-exploration #jupiter-landmark-card.is-visible {
     bottom:134px !important;
     max-height:31dvh !important;
   }

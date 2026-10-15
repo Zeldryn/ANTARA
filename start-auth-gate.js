@@ -3,7 +3,7 @@
   const profileHud = document.getElementById('cockpit-profile-hud');
   if (!launchButton) return;
 
-  const GUEST_KEY = 'antara-guest-session-v1';
+  const GUEST_KEY = window.ANTARAGuestData?.key || 'antara-guest-session-v1';
   const copy = launchButton.querySelector('.launch-button-copy');
   const small = copy?.querySelector('small');
   const strong = copy?.querySelector('strong');
@@ -11,12 +11,15 @@
   const originalStrong = strong?.textContent || 'MULAI PERJALANAN';
 
   const readGuest = () => {
-    try { return localStorage.getItem(GUEST_KEY) === 'active'; }
-    catch { return false; }
+    try {
+      if (window.ANTARAGuestData?.isActive) return window.ANTARAGuestData.isActive();
+      return localStorage.getItem(GUEST_KEY) === 'active';
+    } catch { return false; }
   };
   const writeGuest = active => {
     try {
-      if (active) localStorage.setItem(GUEST_KEY, 'active');
+      if (window.ANTARAGuestData?.setActive) window.ANTARAGuestData.setActive(active);
+      else if (active) localStorage.setItem(GUEST_KEY, 'active');
       else localStorage.removeItem(GUEST_KEY);
     } catch { /* localStorage is optional. */ }
   };
@@ -49,26 +52,7 @@
   chooser.setAttribute('role', 'dialog');
   chooser.setAttribute('aria-modal', 'true');
   chooser.setAttribute('aria-labelledby', 'launch-auth-title');
-  chooser.innerHTML = `
-    <div class="launch-auth-panel">
-      <button class="launch-auth-close" type="button" aria-label="Tutup pilihan akses">×</button>
-      <div class="launch-auth-heading">
-        <span class="launch-auth-symbol" aria-hidden="true">◇</span>
-        <div><small>IDENTITAS PENJELAJAH</small><strong id="launch-auth-title">Pilih cara memulai perjalanan</strong></div>
-      </div>
-      <p class="launch-auth-lead">Pakai akun ANTARA untuk menyimpan identitas dan ikut peringkat, atau coba perjalanan sebagai tamu.</p>
-      <div class="launch-auth-account-actions">
-        <a class="launch-auth-action is-login" href="daftar.html?mode=login"><span>SUDAH PUNYA AKUN</span><strong>MASUK</strong></a>
-        <a class="launch-auth-action is-register" href="daftar.html?mode=register"><span>PENJELAJAH BARU</span><strong>DAFTAR</strong></a>
-      </div>
-      <div class="launch-auth-divider"><span>ATAU</span></div>
-      <button class="launch-auth-guest" type="button">
-        <span class="launch-auth-guest-icon" aria-hidden="true">◎</span>
-        <span><small>COBA TANPA AKUN</small><strong>MASUK SEBAGAI TAMU</strong><em>Sesi tamu diingat di perangkat ini.</em></span>
-      </button>
-      <p class="launch-auth-leaderboard-note"><span aria-hidden="true">★</span><span><strong>Mau masuk Leaderboard?</strong> Buat atau masuk ke akun ANTARA agar peringkat dan identitasmu bisa dicatat.</span></p>
-    </div>
-  `;
+  chooser.innerHTML = ` <div class="launch-auth-panel"> <button class="launch-auth-close" type="button" aria-label="Tutup pilihan akses">×</button> <div class="launch-auth-heading"> <span class="launch-auth-symbol" aria-hidden="true">◇</span> <div><small>IDENTITAS PENJELAJAH</small><strong id="launch-auth-title">Pilih cara memulai perjalanan</strong></div> </div> <p class="launch-auth-lead">Pakai akun ANTARA untuk menyimpan identitas dan ikut peringkat, atau coba perjalanan sebagai tamu.</p> <div class="launch-auth-account-actions"> <a class="launch-auth-action is-login" href="daftar.html?mode=login"><span>SUDAH PUNYA AKUN</span><strong>MASUK</strong></a> <a class="launch-auth-action is-register" href="daftar.html?mode=register"><span>PENJELAJAH BARU</span><strong>DAFTAR</strong></a> </div> <div class="launch-auth-divider"><span>ATAU</span></div> <button class="launch-auth-guest" type="button"> <span class="launch-auth-guest-icon" aria-hidden="true">◎</span> <span><small>COBA TANPA AKUN</small><strong>MASUK SEBAGAI TAMU</strong><em>Sesi tamu diingat di perangkat ini.</em></span> </button> <p class="launch-auth-leaderboard-note"><span aria-hidden="true">★</span><span><strong>Mau masuk Leaderboard?</strong> Buat atau masuk ke akun ANTARA agar peringkat dan identitasmu bisa dicatat.</span></p> </div> `;
   document.body.appendChild(chooser);
 
   const toast = document.createElement('div');

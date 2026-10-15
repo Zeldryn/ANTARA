@@ -47,23 +47,7 @@
     card.className = "planet-progress-card";
     if (planet?.planet) card.dataset.planet = String(planet.planet);
     card.style.setProperty("--planet-progress", `${Math.max(0, Math.min(100, Number(planet.progress) || 0))}%`);
-    card.innerHTML = `
-      <div class="planet-progress-head">
-        <div class="planet-head-main">
-          <span class="planet-orb ${escapeHtml(visual?.className || "")}" aria-hidden="true">${visual?.image ? `<img src="${escapeHtml(visual.image)}" alt="">` : ""}</span>
-          <div class="planet-title"><small>${escapeHtml(planet.short || planet.name)}</small><h3>${escapeHtml(planet.name)}</h3></div>
-        </div>
-        <strong class="planet-percent">${Number(planet.progress) || 0}%</strong>
-      </div>
-      <div class="planet-progress-track" aria-hidden="true"><i></i></div>
-      <div class="planet-progress-meta">
-        <div><small>JELAJAH BIASA</small><strong>${planet.normal.completed} / ${planet.normal.total} topik</strong></div>
-        <div class="full-meta ${full.available ? "" : "is-unavailable"}"><small>EKSPLORASI PENUH</small><strong>${full.available ? `${full.completed} / ${full.total} destinasi` : "Belum tersedia"}</strong></div>
-      </div>
-      <div class="planet-progress-foot">
-        <span class="planet-status ${status.className}"><i></i>${status.text}</span>
-        <span>${escapeHtml(updated)}</span>
-      </div>`;
+    card.innerHTML = ` <div class="planet-progress-head"> <div class="planet-head-main"> <span class="planet-orb ${escapeHtml(visual?.className || "")}" aria-hidden="true">${visual?.image ? `<img src="${escapeHtml(visual.image)}" alt="">` : ""}</span> <div class="planet-title"><small>${escapeHtml(planet.short || planet.name)}</small><h3>${escapeHtml(planet.name)}</h3></div> </div> <strong class="planet-percent">${Number(planet.progress) || 0}%</strong> </div> <div class="planet-progress-track" aria-hidden="true"><i></i></div> <div class="planet-progress-meta"> <div><small>JELAJAH BIASA</small><strong>${planet.normal.completed} / ${planet.normal.total} topik</strong></div> <div class="full-meta ${full.available ? "" : "is-unavailable"}"><small>EKSPLORASI PENUH</small><strong>${full.available ? `${full.completed} / ${full.total} destinasi` : "Belum tersedia"}</strong></div> </div> <div class="planet-progress-foot"> <span class="planet-status ${status.className}"><i></i>${status.text}</span> <span>${escapeHtml(updated)}</span> </div>`;
     return card;
   }
 

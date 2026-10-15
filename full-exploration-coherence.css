@@ -176,7 +176,7 @@
 
 /* Mobile/touch: one secondary sheet at a time. The sheet stays above touch controls,
    below HUD/actions, and never competes with the audio button in the top-right. */
-@media (max-width:900px), (pointer:coarse) {
+@media (max-width:820px), (pointer:coarse) and (max-width:1100px) {
   .earth-full-exploration .earth-full-hud,
   .venus-full-exploration .mars-full-hud {
     left:9px !important;
@@ -322,4 +322,143 @@
 /* The overlay itself should never create an accidental horizontal scroll area. */
 :is(.earth-full-exploration,.venus-full-exploration) {
   overflow:hidden !important;
+}
+
+/* Fix stretched switches after toggling DevTools touch emulation. */
+#earth-full-exploration :is(#earth-objectives-toggle,#earth-info-toggle),
+#mercury-full-exploration :is(#mercury-objectives-toggle,#mercury-info-toggle),
+#venus-full-exploration :is(#venus-objectives-toggle,#venus-info-toggle),
+#mars-full-exploration :is(#mars-objectives-toggle,#mars-info-toggle),
+#jupiter-full-exploration :is(#jupiter-objectives-toggle,#jupiter-info-toggle),
+#saturn-full-exploration :is(#saturn-objectives-toggle,#saturn-info-toggle),
+#uranus-full-exploration :is(#uranus-objectives-toggle,#uranus-info-toggle),
+#neptune-full-exploration :is(#neptune-objectives-toggle,#neptune-info-toggle) {
+  position:absolute !important;
+  top:auto !important;
+  bottom:calc(64px + env(safe-area-inset-bottom)) !important;
+  width:auto !important;
+  min-width:0 !important;
+  max-width:44vw !important;
+  height:40px !important;
+  min-height:40px !important;
+  max-height:40px !important;
+  box-sizing:border-box !important;
+  padding:0 13px !important;
+  margin:0 !important;
+  line-height:1.2 !important;
+  writing-mode:horizontal-tb !important;
+  white-space:nowrap !important;
+  transform:none !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+#earth-full-exploration #earth-objectives-toggle,
+#mercury-full-exploration #mercury-objectives-toggle,
+#venus-full-exploration #venus-objectives-toggle,
+#mars-full-exploration #mars-objectives-toggle,
+#jupiter-full-exploration #jupiter-objectives-toggle,
+#saturn-full-exploration #saturn-objectives-toggle,
+#uranus-full-exploration #uranus-objectives-toggle,
+#neptune-full-exploration #neptune-objectives-toggle { left:max(14px,env(safe-area-inset-left)) !important; right:auto !important; }
+#earth-full-exploration #earth-info-toggle,
+#mercury-full-exploration #mercury-info-toggle,
+#venus-full-exploration #venus-info-toggle,
+#mars-full-exploration #mars-info-toggle,
+#jupiter-full-exploration #jupiter-info-toggle,
+#saturn-full-exploration #saturn-info-toggle,
+#uranus-full-exploration #uranus-info-toggle,
+#neptune-full-exploration #neptune-info-toggle { right:max(14px,env(safe-area-inset-right)) !important; left:auto !important; }
+@media (max-width:820px), (pointer:coarse) and (max-width:1100px) {
+#earth-full-exploration :is(#earth-objectives-toggle,#earth-info-toggle),
+#mercury-full-exploration :is(#mercury-objectives-toggle,#mercury-info-toggle),
+#venus-full-exploration :is(#venus-objectives-toggle,#venus-info-toggle),
+#mars-full-exploration :is(#mars-objectives-toggle,#mars-info-toggle),
+#jupiter-full-exploration :is(#jupiter-objectives-toggle,#jupiter-info-toggle),
+#saturn-full-exploration :is(#saturn-objectives-toggle,#saturn-info-toggle),
+#uranus-full-exploration :is(#uranus-objectives-toggle,#uranus-info-toggle),
+#neptune-full-exploration :is(#neptune-objectives-toggle,#neptune-info-toggle) {
+    top:calc(136px + env(safe-area-inset-top)) !important;
+    bottom:auto !important;
+    width:min(170px,calc(50vw - 15px)) !important;
+    height:38px !important;
+    min-height:38px !important;
+    max-height:38px !important;
+  }
+}
+@media (max-width:820px) and (max-height:520px) {
+#earth-full-exploration :is(#earth-objectives-toggle,#earth-info-toggle),
+#mercury-full-exploration :is(#mercury-objectives-toggle,#mercury-info-toggle),
+#venus-full-exploration :is(#venus-objectives-toggle,#venus-info-toggle),
+#mars-full-exploration :is(#mars-objectives-toggle,#mars-info-toggle),
+#jupiter-full-exploration :is(#jupiter-objectives-toggle,#jupiter-info-toggle),
+#saturn-full-exploration :is(#saturn-objectives-toggle,#saturn-info-toggle),
+#uranus-full-exploration :is(#uranus-objectives-toggle,#uranus-info-toggle),
+#neptune-full-exploration :is(#neptune-objectives-toggle,#neptune-info-toggle) { top:calc(100px + env(safe-area-inset-top)) !important; }
+}
+
+/* Cards fit their content; max-height still permits scrolling for long lessons. */
+#earth-full-exploration :is(#earth-objectives-panel,#earth-landmark-card),
+#mercury-full-exploration :is(#mercury-objectives-panel,#mercury-landmark-card),
+#venus-full-exploration :is(#venus-objectives-panel,#venus-landmark-card),
+#mars-full-exploration :is(#mars-objectives-panel,#mars-landmark-card),
+#jupiter-full-exploration :is(#jupiter-objectives-panel,#jupiter-landmark-card),
+#saturn-full-exploration :is(#saturn-objectives-panel,#saturn-landmark-card),
+#uranus-full-exploration :is(#uranus-objectives-panel,#uranus-landmark-card),
+#neptune-full-exploration :is(#neptune-objectives-panel,#neptune-landmark-card) {
+  height:auto !important;
+  min-height:0 !important;
+}
+@media (min-width:821px) and (pointer:fine), (min-width:1101px) {
+#earth-full-exploration :is(#earth-objectives-panel,#earth-landmark-card),
+#mercury-full-exploration :is(#mercury-objectives-panel,#mercury-landmark-card),
+#venus-full-exploration :is(#venus-objectives-panel,#venus-landmark-card),
+#mars-full-exploration :is(#mars-objectives-panel,#mars-landmark-card),
+#jupiter-full-exploration :is(#jupiter-objectives-panel,#jupiter-landmark-card),
+#saturn-full-exploration :is(#saturn-objectives-panel,#saturn-landmark-card),
+#uranus-full-exploration :is(#uranus-objectives-panel,#uranus-landmark-card),
+#neptune-full-exploration :is(#neptune-objectives-panel,#neptune-landmark-card) {
+    bottom:auto !important;
+    overflow-y:auto !important;
+  }
+#earth-full-exploration #earth-objectives-panel,
+#mercury-full-exploration #mercury-objectives-panel,
+#venus-full-exploration #venus-objectives-panel,
+#mars-full-exploration #mars-objectives-panel,
+#jupiter-full-exploration #jupiter-objectives-panel,
+#saturn-full-exploration #saturn-objectives-panel,
+#uranus-full-exploration #uranus-objectives-panel,
+#neptune-full-exploration #neptune-objectives-panel { max-height:calc(100dvh - 320px) !important; }
+#earth-full-exploration #earth-landmark-card,
+#mercury-full-exploration #mercury-landmark-card,
+#venus-full-exploration #venus-landmark-card,
+#mars-full-exploration #mars-landmark-card,
+#jupiter-full-exploration #jupiter-landmark-card,
+#saturn-full-exploration #saturn-landmark-card,
+#uranus-full-exploration #uranus-landmark-card,
+#neptune-full-exploration #neptune-landmark-card { max-height:calc(100dvh - 180px) !important; }
+}
+@media (max-width:820px), (pointer:coarse) and (max-width:1100px) {
+#earth-full-exploration :is(#earth-objectives-panel,#earth-landmark-card),
+#mercury-full-exploration :is(#mercury-objectives-panel,#mercury-landmark-card),
+#venus-full-exploration :is(#venus-objectives-panel,#venus-landmark-card),
+#mars-full-exploration :is(#mars-objectives-panel,#mars-landmark-card),
+#jupiter-full-exploration :is(#jupiter-objectives-panel,#jupiter-landmark-card),
+#saturn-full-exploration :is(#saturn-objectives-panel,#saturn-landmark-card),
+#uranus-full-exploration :is(#uranus-objectives-panel,#uranus-landmark-card),
+#neptune-full-exploration :is(#neptune-objectives-panel,#neptune-landmark-card) {
+    top:auto !important;
+    bottom:calc(146px + env(safe-area-inset-bottom)) !important;
+    max-height:min(42dvh,calc(100dvh - 290px)) !important;
+    overflow-y:auto !important;
+  }
+}
+@media (max-width:1100px) and (max-height:520px) {
+#earth-full-exploration :is(#earth-objectives-panel,#earth-landmark-card),
+#mercury-full-exploration :is(#mercury-objectives-panel,#mercury-landmark-card),
+#venus-full-exploration :is(#venus-objectives-panel,#venus-landmark-card),
+#mars-full-exploration :is(#mars-objectives-panel,#mars-landmark-card),
+#jupiter-full-exploration :is(#jupiter-objectives-panel,#jupiter-landmark-card),
+#saturn-full-exploration :is(#saturn-objectives-panel,#saturn-landmark-card),
+#uranus-full-exploration :is(#uranus-objectives-panel,#uranus-landmark-card),
+#neptune-full-exploration :is(#neptune-objectives-panel,#neptune-landmark-card) { bottom:calc(86px + env(safe-area-inset-bottom)) !important; max-height:min(40dvh,calc(100dvh - 196px)) !important; }
 }

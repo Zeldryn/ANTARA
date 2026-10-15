@@ -15,7 +15,7 @@
   const title = document.querySelector('.console-head h2');
   const headCode = document.querySelector('.console-head p');
   const briefTitle = document.getElementById('registration-title');
-  const briefStatus = document.querySelector('.brief-data .ready');
+  const briefStatus = document.querySelector('.brief-data.ready');
 
   const fields = {
     fullName: document.getElementById('full-name'),
@@ -252,7 +252,7 @@
 
   auth?.getCurrentUser?.().then(user => {
     if (!user || !sessionPanel || !sessionName) return;
-    sessionName.textContent = user.username || user.name || 'PENJELAJAH';
+    sessionName.textContent = user.name || user.username || 'PENJELAJAH';
     if (sessionEmail) sessionEmail.textContent = user.email || user.name || '';
     sessionPanel.hidden = false;
 

@@ -30,15 +30,15 @@ function antara_achievement_catalog(): array
         'quiz-master' => ['name'=>'Komandan Kuis','description'=>'Mencapai skor terverifikasi 5.000 poin atau lebih dalam satu run Quiz ANTARA.','icon'=>'assets/achievements/25-master-quiz.svg','category'=>'special','tier'=>'legendary','sort'=>200],
 
         'sun-complete' => ['name'=>'Matahari Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Matahari.','icon'=>'assets/achievements/01-matahari.png','category'=>'planet','tier'=>'rare','sort'=>210,'planet'=>'sun'],
-        'mercury-complete' => ['name'=>'Merkurius Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Merkurius.','icon'=>'assets/achievements/02-merkurius.png','category'=>'planet','tier'=>'rare','sort'=>220,'planet'=>'mercury'],
-        'venus-complete' => ['name'=>'Venus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Venus.','icon'=>'assets/achievements/03-venus.png','category'=>'planet','tier'=>'rare','sort'=>230,'planet'=>'venus'],
-        'earth-complete' => ['name'=>'Bumi Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Bumi.','icon'=>'assets/achievements/04-bumi.png','category'=>'planet','tier'=>'rare','sort'=>240,'planet'=>'earth'],
-        'mars-complete' => ['name'=>'Mars Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Mars.','icon'=>'assets/achievements/05-mars.png','category'=>'planet','tier'=>'rare','sort'=>250,'planet'=>'mars'],
+        'mercury-complete' => ['name'=>'Merkurius Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Merkurius.','icon'=>'assets/achievements/02-merkurius.png','category'=>'planet','tier'=>'rare','sort'=>220,'planet'=>'mercury'],
+        'venus-complete' => ['name'=>'Venus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Venus.','icon'=>'assets/achievements/03-venus.png','category'=>'planet','tier'=>'rare','sort'=>230,'planet'=>'venus'],
+        'earth-complete' => ['name'=>'Bumi Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Bumi.','icon'=>'assets/achievements/04-bumi.png','category'=>'planet','tier'=>'rare','sort'=>240,'planet'=>'earth'],
+        'mars-complete' => ['name'=>'Mars Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Mars.','icon'=>'assets/achievements/05-mars.png','category'=>'planet','tier'=>'rare','sort'=>250,'planet'=>'mars'],
         'asteroid-complete' => ['name'=>'Sabuk Asteroid Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Sabuk Asteroid.','icon'=>'assets/achievements/06-asteroid.png','category'=>'planet','tier'=>'rare','sort'=>260,'planet'=>'asteroid-belt'],
-        'jupiter-complete' => ['name'=>'Jupiter Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Jupiter.','icon'=>'assets/achievements/07-jupiter.png','category'=>'planet','tier'=>'rare','sort'=>270,'planet'=>'jupiter'],
-        'saturn-complete' => ['name'=>'Saturnus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Saturnus.','icon'=>'assets/achievements/08-saturnus.png','category'=>'planet','tier'=>'rare','sort'=>280,'planet'=>'saturn'],
-        'uranus-complete' => ['name'=>'Uranus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Uranus.','icon'=>'assets/achievements/09-uranus.png','category'=>'planet','tier'=>'rare','sort'=>290,'planet'=>'uranus'],
-        'neptune-complete' => ['name'=>'Neptunus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Neptunus.','icon'=>'assets/achievements/10-neptunus.png','category'=>'planet','tier'=>'rare','sort'=>300,'planet'=>'neptune'],
+        'jupiter-complete' => ['name'=>'Jupiter Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Jupiter.','icon'=>'assets/achievements/07-jupiter.png','category'=>'planet','tier'=>'rare','sort'=>270,'planet'=>'jupiter'],
+        'saturn-complete' => ['name'=>'Saturnus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Saturnus.','icon'=>'assets/achievements/08-saturnus.png','category'=>'planet','tier'=>'rare','sort'=>280,'planet'=>'saturn'],
+        'uranus-complete' => ['name'=>'Uranus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Uranus.','icon'=>'assets/achievements/09-uranus.png','category'=>'planet','tier'=>'rare','sort'=>290,'planet'=>'uranus'],
+        'neptune-complete' => ['name'=>'Neptunus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Neptunus.','icon'=>'assets/achievements/10-neptunus.png','category'=>'planet','tier'=>'rare','sort'=>300,'planet'=>'neptune'],
     ];
 }
 
@@ -115,6 +115,51 @@ function antara_achievement_unlock(PDO $pdo, int $userId, string $code, ?string 
     $stmt->execute(['user_id'=>$userId,'unlocked_at'=>$unlockedAt,'code'=>$code]);
 }
 
+function antara_achievement_claim_notifications(PDO $pdo, int $userId, int $limit = 5): array
+{
+    $limit = max(1, min(20, $limit));
+    $catalog = antara_achievement_catalog();
+    $pdo->beginTransaction();
+    try {
+        $stmt = $pdo->prepare(
+            'SELECT ua.id, ua.unlocked_at, a.code, a.name, a.description, a.icon
+             FROM user_achievements ua
+             JOIN achievements a ON a.id = ua.achievement_id
+             WHERE ua.user_id = :user_id AND ua.notified_at IS NULL
+             ORDER BY ua.unlocked_at ASC, ua.id ASC
+             LIMIT ' . $limit . ' FOR UPDATE'
+        );
+        $stmt->execute(['user_id'=>$userId]);
+        $rows = $stmt->fetchAll();
+        if ($rows) {
+            $ids = array_map(static fn(array $row): int => (int)$row['id'], $rows);
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            $update = $pdo->prepare("UPDATE user_achievements SET notified_at = NOW() WHERE id IN ($placeholders) AND notified_at IS NULL");
+            $update->execute($ids);
+        }
+        $pdo->commit();
+
+        $items = [];
+        foreach ($rows as $row) {
+            $code = (string)$row['code'];
+            $def = $catalog[$code] ?? [];
+            $items[] = [
+                'code'=>$code,
+                'name'=>(string)$row['name'],
+                'description'=>(string)$row['description'],
+                'icon'=>(string)$row['icon'],
+                'tier'=>(string)($def['tier'] ?? 'common'),
+                'category'=>(string)($def['category'] ?? 'special'),
+                'unlockedAt'=>(string)$row['unlocked_at'],
+            ];
+        }
+        return $items;
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        throw $e;
+    }
+}
+
 function antara_achievement_first_event(PDO $pdo, int $userId, string $type): ?array
 {
     $stmt = $pdo->prepare(
@@ -129,14 +174,26 @@ function antara_achievement_first_event(PDO $pdo, int $userId, string $type): ?a
 
 function antara_achievement_full_count(PDO $pdo, int $userId, string $planet): array
 {
+    $definition = antara_progress_catalog()[$planet] ?? null;
+    $allowed = is_array($definition) ? array_fill_keys(array_keys($definition['full'] ?? []), true) : [];
+    if (!$allowed) return ['count'=>0,'lastAt'=>null];
+
     $stmt = $pdo->prepare(
-        'SELECT COUNT(*) AS total, MAX(created_at) AS last_at
+        "SELECT event_key, created_at
          FROM user_progress_events
-         WHERE user_id = :user_id AND planet_code = :planet AND event_type = \'full\''
+         WHERE user_id = :user_id AND planet_code = :planet AND event_type = 'full'
+         ORDER BY created_at ASC, id ASC"
     );
     $stmt->execute(['user_id'=>$userId,'planet'=>$planet]);
-    $row = $stmt->fetch() ?: [];
-    return ['count'=>(int)($row['total'] ?? 0),'lastAt'=>$row['last_at'] ?? null];
+    $visited=[]; $lastAt=null;
+    foreach ($stmt->fetchAll() as $row) {
+        $key=(string)($row['event_key'] ?? '');
+        if (!isset($allowed[$key])) continue;
+        $visited[$key]=true;
+        $created=(string)($row['created_at'] ?? '');
+        if ($created !== '' && ($lastAt === null || $created > $lastAt)) $lastAt=$created;
+    }
+    return ['count'=>count($visited),'lastAt'=>$lastAt];
 }
 
 function antara_achievement_best_rank(PDO $pdo, int $userId): ?int
@@ -229,7 +286,10 @@ function antara_achievements_sync(PDO $pdo, int $userId): array
     $planetsByCode = [];
     foreach ($summary['planets'] as $planet) {
         $planetsByCode[$planet['planet']] = $planet;
-        if (!empty($planet['completed'])) {
+        $normal = $planet['normal'] ?? [];
+        $normalTotal = (int)($normal['total'] ?? 0);
+        $normalCompleted = (int)($normal['completed'] ?? 0);
+        if ($normalTotal > 0 && $normalCompleted >= $normalTotal) {
             $code = $planet['planet'] === 'asteroid-belt' ? 'asteroid-complete' : $planet['planet'] . '-complete';
             antara_achievement_unlock($pdo, $userId, $code, $planet['updatedAt'] ?? null);
         }
@@ -310,8 +370,9 @@ function antara_achievements_payload(PDO $pdo, int $userId): array
         }
         elseif (isset($def['planet'])) {
             $planet=$sync['planets'][$def['planet']] ?? null;
-            $current=(int)($planet['completedMilestones'] ?? 0); $goal=(int)($planet['totalMilestones'] ?? 0);
-            $progressLabel=$current.' / '.$goal.' milestone';
+            $normal=is_array($planet) ? ($planet['normal'] ?? []) : [];
+            $current=(int)($normal['completed'] ?? 0); $goal=(int)($normal['total'] ?? 0);
+            $progressLabel=$current.' / '.$goal.' topik Jelajah';
         }
 
         $items[]=[

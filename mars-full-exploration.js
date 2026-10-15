@@ -58,26 +58,26 @@
     {
       id: "jezero",
       name: "Kawah Jezero",
-      type: "Delta sungai dan bekas danau purba",
+      type: "Delta sungai dan bekas danau sangat lama",
       summary: "Lokasi rover Perseverance. Di sini ilmuwan mencari jejak lingkungan yang dulu mungkin ramah bagi kehidupan mikroba.",
-      mission: "Pelajari bekas delta sungai dan cari petunjuk danau purba.",
+      mission: "Pelajari bekas delta sungai dan cari petunjuk danau sangat lama.",
       latitude: 18.41,
       longitudeEast: 77.69,
       heading: 0.18,
       scienceSource: "https://science.nasa.gov/mission/mars-2020-perseverance/",
       source: "https://planetarynames.wr.usgs.gov/Feature/14300",
       image: "assets/exploration/jezero.webp",
-      imageAlt: "Citra berwarna olahan memperlihatkan endapan delta di Kawah Jezero, Mars",
+      imageAlt: "Gambar berwarna olahan memperlihatkan endapan delta di Kawah Jezero, Mars",
       imageCaption: "Delta Jezero · warna olahan",
       imageSource: "https://science.nasa.gov/photojournal/jezero-crater-mars-2020s-landing-site/",
-      facts: ["Jezero berdiameter sekitar 45 km.", "Delta di Jezero menjadi salah satu target utama Perseverance untuk mempelajari lingkungan berair purba.", "Sedimen delta membantu ilmuwan membaca sejarah air di Mars." ]
+      facts: ["Jezero berdiameter sekitar 45 km.", "Delta di Jezero menjadi salah satu target utama Perseverance untuk mempelajari lingkungan berair sangat lama.", "Sedimen delta membantu ilmuwan melihat apa yang terjadi dulu air di Mars." ]
     },
     {
       id: "olympus",
       name: "Olympus Mons",
       type: "Gunung api perisai raksasa",
       summary: "Gunung api terbesar di Tata Surya. Lerengnya sangat luas sehingga terasa seperti dataran tinggi raksasa.",
-      mission: "Bandingkan relief gunung api raksasa dengan dataran Mars di sekitarnya.",
+      mission: "Bandingkan bentuk naik-turun tanah gunung api raksasa dengan dataran Mars di sekitarnya.",
       latitude: 18.65,
       longitudeEast: 226.20,
       heading: -0.65,
@@ -87,7 +87,7 @@
       imageAlt: "Mosaik Viking Orbiter 1 memperlihatkan gunung api Olympus Mons di Mars",
       imageCaption: "Olympus Mons · mosaik Viking",
       imageSource: "https://science.nasa.gov/photojournal/olympus-mons/",
-      facts: ["Olympus Mons adalah gunung api perisai raksasa.", "Lebar dasarnya mencapai ratusan kilometer.", "Kompleks kaldera besar berada di wilayah puncaknya." ]
+      facts: ["Olympus Mons adalah gunung api raksasa yang sangat lebar.", "Lebar dasarnya mencapai ratusan kilometer.", "Rumit lubang besar gunung api besar berada di wilayah puncaknya." ]
     },
     {
       id: "valles",
@@ -101,33 +101,33 @@
       scienceSource: "https://science.nasa.gov/mars/",
       source: "https://planetarynames.wr.usgs.gov/Feature/6288",
       image: "assets/exploration/valles-marineris.webp",
-      imageAlt: "Mosaik citra Viking memperlihatkan sistem ngarai Valles Marineris di Mars",
+      imageAlt: "Mosaik gambar Viking memperlihatkan sistem ngarai Valles Marineris di Mars",
       imageCaption: "Valles Marineris · mosaik Viking",
       imageSource: "https://science.nasa.gov/resource/valles-marineris-the-grand-canyon-of-mars/",
-      facts: ["Valles Marineris membentang ribuan kilometer dekat ekuator Mars.", "Sistem ini tersusun dari banyak lembah dan ngarai yang saling terhubung.", "Retakan kerak dan proses erosi ikut membentuk morfologinya." ]
+      facts: ["Valles Marineris membentang ribuan kilometer dekat ekuator Mars.", "Sistem ini tersusun dari banyak lembah dan ngarai yang saling terhubung.", "Retakan kerak dan cara erosi ikut membentuk bentuk permukaannya." ]
     },
     {
       id: "gale",
       name: "Gale Crater",
-      type: "Kawah tumbukan dan lokasi rover Curiosity",
-      summary: "Kawah ini menyimpan lapisan batuan yang membantu ilmuwan membaca sejarah iklim kuno Mars.",
-      mission: "Cari petunjuk lapisan batuan yang merekam sejarah lingkungan Mars.",
+      type: "Kawah tabrakan dan lokasi rover Curiosity",
+      summary: "Kawah ini menyimpan lapisan batuan yang membantu ilmuwan melihat apa yang terjadi dulu iklim kuno Mars.",
+      mission: "Cari petunjuk lapisan batuan yang menyimpan bekas sejarah lingkungan Mars.",
       latitude: -5.37,
       longitudeEast: 137.81,
       heading: 0.44,
       scienceSource: "https://science.nasa.gov/mission/msl-curiosity/",
       source: "https://planetarynames.wr.usgs.gov/Feature/2071",
       image: "assets/exploration/atmosphere.webp",
-      imageAlt: "Citra Curiosity memperlihatkan senja kebiruan di atmosfer berdebu Kawah Gale, Mars",
+      imageAlt: "Gambar Curiosity memperlihatkan senja kebiruan di udara berdebu Kawah Gale, Mars",
       imageCaption: "Senja di Gale · warna diproses",
       imageSource: "https://science.nasa.gov/photojournal/sunset-in-mars-gale-crater/",
-      facts: ["Curiosity mendarat di Gale Crater pada 2012.", "Lapisan batuan di dalam kawah merekam perubahan lingkungan Mars dari waktu ke waktu.", "Mount Sharp berada di bagian tengah kawah dan menjadi target eksplorasi utama Curiosity." ]
+      facts: ["Curiosity mendarat di Gale Crater pada 2012.", "Lapisan batuan di dalam kawah menyimpan bekas perubahan lingkungan Mars dari waktu ke waktu.", "Mount Sharp berada di bagian tengah kawah dan menjadi target eksplorasi utama Curiosity." ]
     },
     {
       id: "hellas",
       name: "Hellas Planitia",
-      type: "Cekungan tumbukan raksasa",
-      summary: "Salah satu cekungan tumbukan terbesar di Tata Surya, terkenal dengan dataran luas dan perubahan cuaca yang ekstrem.",
+      type: "Cekungan tabrakan raksasa",
+      summary: "Salah satu cekungan tabrakan terbesar di Tata Surya, terkenal dengan dataran luas dan perubahan cuaca yang sangat besar.",
       mission: "Jelajahi cekungan raksasa dan bandingkan permukaannya dengan lokasi Mars lain.",
       latitude: -42.4,
       longitudeEast: 70.5,
@@ -135,10 +135,10 @@
       scienceSource: "https://science.nasa.gov/mars/",
       source: "https://planetarynames.wr.usgs.gov/Feature/2481",
       image: "assets/exploration/dust-storm.webp",
-      imageAlt: "Perbandingan citra Mars sebelum dan selama badai debu tahun 2001 di wilayah Hellas dan Syrtis Major",
+      imageAlt: "Perbandingan gambar Mars sebelum dan selama badai debu tahun 2001 di wilayah Hellas dan Syrtis Major",
       imageCaption: "Mars · Juni dan Juli 2001",
       imageSource: "https://science.nasa.gov/resource/the-2001-great-dust-storms-hellassyrtis-major/",
-      facts: ["Hellas Planitia adalah cekungan tumbukan raksasa di belahan selatan Mars.", "Dasarnya berada jauh di bawah dataran tinggi di sekitarnya.", "Topografi cekungan besar ini memengaruhi kondisi atmosfer dan cuaca regional Mars." ]
+      facts: ["Hellas Planitia adalah cekungan tabrakan raksasa di belahan selatan Mars.", "Dasarnya berada jauh di bawah dataran tinggi di sekitarnya.", "Bentuk tinggi-rendah tanah cekungan besar ini mengubah kondisi udara dan cuaca di daerah itu Mars." ]
     }
   ]);
 
@@ -162,7 +162,7 @@
   const shortestLongitudeDelta = (from, to) => wrapLongitude(to - from);
   const formatCoordinate = (latitude, longitudeEast) => {
     const latHemisphere = latitude >= 0 ? "N" : "S";
-    return `${Math.abs(latitude).toFixed(3)}° ${latHemisphere}  ·  ${eastLongitude(longitudeEast).toFixed(3)}° E`;
+    return `${Math.abs(latitude).toFixed(3)}° ${latHemisphere} · ${eastLongitude(longitudeEast).toFixed(3)}° E`;
   };
   const formatAltitude = km => km < 1 ? `${Math.max(0, km * 1000).toFixed(0)} M` : `${Math.max(0, km).toFixed(km < 10 ? 2 : 1)} KM`;
   const formatSpeed = kmPerSecond => kmPerSecond < 1 ? `${Math.round(kmPerSecond * 1000)} M/S` : `${kmPerSecond.toFixed(2)} KM/S`;
@@ -174,7 +174,7 @@
       this.pending = new Map();
       this.generation = 0;
       this.maxCache = 72;
-      this.sourceLabel = baseUrl.includes("jaanga.github.io") ? "MOLA / PDS · tiled derivative" : "MOLA / PDS · local tiles";
+      this.sourceLabel = baseUrl.includes("jaanga.github.io") ? "PETA PERMUKAAN MARS DARI NASA · tiled derivative" : "PETA PERMUKAAN MARS DARI NASA · local tiles";
     }
 
     tileForLocation(latitude, signedLongitude) {
@@ -223,7 +223,7 @@
           if (settled) return;
           settled = true;
           image.src = "";
-          reject(new Error(`MOLA tile timeout: ${url}`));
+          reject(new Error(`PETA TINGGI-RENDAH MARS DARI NASA tile timeout: ${url}`));
         }, 12000);
 
         image.crossOrigin = "anonymous";
@@ -233,7 +233,7 @@
           settled = true;
           window.clearTimeout(timeout);
           if (generation !== this.generation) {
-            reject(new Error("MOLA tile request cancelled."));
+            reject(new Error("PETA TINGGI-RENDAH MARS DARI NASA tile request cancelled."));
             return;
           }
           try {
@@ -262,14 +262,14 @@
             this.trimCache();
             resolve(tile);
           } catch (error) {
-            reject(new Error(`MOLA tile decode failed: ${error.message}`));
+            reject(new Error(`PETA TINGGI-RENDAH MARS DARI NASA tile decode failed: ${error.message}`));
           }
         };
         image.onerror = () => {
           if (settled) return;
           settled = true;
           window.clearTimeout(timeout);
-          reject(new Error(`MOLA tile unavailable: ${url}`));
+          reject(new Error(`PETA TINGGI-RENDAH MARS DARI NASA tile unavailable: ${url}`));
         };
         image.src = url;
       });
@@ -326,7 +326,7 @@
       this.generation = 0;
       this.maxImageCache = quality.name === "HIGH" ? 220 : quality.name === "MEDIUM" ? 150 : 90;
       this.maxPatchCache = quality.name === "HIGH" ? 72 : quality.name === "MEDIUM" ? 56 : 36;
-      this.sourceLabel = "MOLA elevation · NASA Trek Viking 232 m · THEMIS 100 m";
+      this.sourceLabel = "PETA PERMUKAAN MARS DARI NASA elevation · NASA Trek Viking 232 m · GAMBAR MARS DARI NASA 100 m";
       this.layers = {
         viking: {
           id: "viking",
@@ -391,7 +391,7 @@
 
     async loadImage(layer, zoom, row, col) {
       const grid = this.gridForZoom(zoom);
-      if (row < 0 || row >= grid.rows) throw new Error("Imagery tile outside latitude range.");
+      if (row < 0 || row >= grid.rows) throw new Error("Gambar tile outside latitude range.");
       const wrappedCol = ((col % grid.columns) + grid.columns) % grid.columns;
       const key = `${layer.id}:${zoom}:${row}:${wrappedCol}`;
       if (this.imageCache.has(key)) {
@@ -410,7 +410,7 @@
           if (settled) return;
           settled = true;
           image.src = "";
-          reject(new Error(`Mars imagery timeout: ${url}`));
+          reject(new Error(`Mars gambar timeout: ${url}`));
         }, 7000);
         image.crossOrigin = "anonymous";
         image.decoding = "async";
@@ -418,7 +418,7 @@
           if (settled) return;
           settled = true;
           window.clearTimeout(timeout);
-          if (generation !== this.generation) return reject(new Error("Mars imagery request cancelled."));
+          if (generation !== this.generation) return reject(new Error("Mars gambar request cancelled."));
           this.imageCache.set(key, { image, lastUsed: performance.now() });
           this.trimImageCache();
           resolve(image);
@@ -427,7 +427,7 @@
           if (settled) return;
           settled = true;
           window.clearTimeout(timeout);
-          reject(new Error(`Mars imagery unavailable: ${url}`));
+          reject(new Error(`Mars gambar unavailable: ${url}`));
         };
         image.src = url;
       }).finally(() => this.pendingImages.delete(key));
@@ -721,78 +721,18 @@
         shader.uniforms.uMarsDetailTier = { value: material.userData.marsDetailTier };
 
         shader.vertexShader = shader.vertexShader
-          .replace("#include <common>", "#include <common>\nvarying vec3 vMarsWorldPosition;")
-          .replace("#include <begin_vertex>", "#include <begin_vertex>\nvMarsWorldPosition = (modelMatrix * vec4(transformed, 1.0)).xyz;");
+          .replace("#include <common>", "\n#include <common>\n\nvarying vec3 vMarsWorldPosition; ")
+          .replace("#include <begin_vertex>", "\n#include <begin_vertex>\n\nvMarsWorldPosition = (modelMatrix * vec4(transformed, 1.0)).xyz; ");
 
         shader.fragmentShader = shader.fragmentShader
-          .replace("#include <common>", `#include <common>
-            varying vec3 vMarsWorldPosition;
-            uniform sampler2D uMarsMicroDetail;
-            uniform float uMarsAlbedoDetail;
-            uniform float uMarsNormalDetail;
-            uniform float uMarsDetailTier;
-
-            float marsTriSample(sampler2D tex, vec3 p, vec3 n, float scale, vec3 phase) {
-              vec3 blend = pow(max(abs(n), vec3(0.0001)), vec3(5.0));
-              blend /= max(blend.x + blend.y + blend.z, 0.0001);
-              float sx = texture2D(tex, p.yz * scale + phase.yz).r;
-              float sy = texture2D(tex, p.xz * scale + phase.xz).r;
-              float sz = texture2D(tex, p.xy * scale + phase.xy).r;
-              return sx * blend.x + sy * blend.y + sz * blend.z;
-            }`)
-          .replace("#include <map_fragment>", `#include <map_fragment>
-            vec3 marsDx = dFdx(vMarsWorldPosition);
-            vec3 marsDy = dFdy(vMarsWorldPosition);
-            vec3 marsGeomNormal = normalize(cross(marsDx, marsDy));
-            if (!gl_FrontFacing) marsGeomNormal = -marsGeomNormal;
-
-            float marsViewDistance = length(cameraPosition - vMarsWorldPosition);
-            float marsNearWeight = 1.0 - smoothstep(1.25, 15.0, marsViewDistance);
-            float marsMidWeight = 1.0 - smoothstep(7.0, 46.0, marsViewDistance);
-
-            float marsBroad = 0.5;
-            float marsFine = 0.5;
-            float marsGrit = 0.5;
-            float marsRock = 0.0;
-
-            // Uniform branches let horizon / distant chunks skip expensive texture
-            // samples. Visible terrain near the camera still executes all three
-            // triplanar frequencies exactly as before.
-            if (uMarsDetailTier > 0.5) {
-              marsBroad = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 0.18, vec3(0.17, 0.41, 0.73));
-            }
-            if (uMarsDetailTier > 1.5) {
-              marsFine = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 0.92, vec3(0.61, 0.13, 0.37));
-            }
-            if (uMarsDetailTier > 2.5) {
-              marsGrit = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 2.35, vec3(0.29, 0.83, 0.07));
-              marsRock = smoothstep(0.68, 0.92, marsGrit);
-            }
-
-            float marsMicro = (marsBroad - 0.5) * 0.44 * marsMidWeight
-              + (marsFine - 0.5) * 0.40 * marsNearWeight
-              + (marsGrit - 0.5) * 0.16 * marsNearWeight
-              + marsRock * 0.08 * marsNearWeight;
-            float marsMicroHeight = ((marsBroad - 0.5) * 0.52 * marsMidWeight
-              + (marsFine - 0.5) * 0.34 * marsNearWeight
-              + (marsGrit - 0.5) * 0.14 * marsNearWeight);
-
-            diffuseColor.rgb *= clamp(1.0 + marsMicro * uMarsAlbedoDetail, 0.86, 1.14);`)
-          .replace("#include <normal_fragment_maps>", `#include <normal_fragment_maps>
-            #ifdef USE_BUMPMAP
-              if (uMarsDetailTier > 0.5) {
-                vec2 marsMicroSlope = vec2(dFdx(marsMicroHeight), dFdy(marsMicroHeight));
-                normal = perturbNormalArb(-vViewPosition, normal, marsMicroSlope * uMarsNormalDetail, faceDirection);
-              }
-            #endif`)
-          .replace("#include <roughnessmap_fragment>", `#include <roughnessmap_fragment>
-            if (uMarsDetailTier > 2.5) {
-              roughnessFactor = clamp(roughnessFactor + (0.5 - marsGrit) * 0.065 + marsRock * 0.035, 0.80, 0.985);
-            }`);
+          .replace("#include <common>", `\n#include <common>\nvarying vec3 vMarsWorldPosition; uniform sampler2D uMarsMicroDetail; uniform float uMarsAlbedoDetail; uniform float uMarsNormalDetail; uniform float uMarsDetailTier; float marsTriSample(sampler2D tex, vec3 p, vec3 n, float scale, vec3 phase) { vec3 blend = pow(max(abs(n), vec3(0.0001)), vec3(5.0)); blend /= max(blend.x + blend.y + blend.z, 0.0001); float sx = texture2D(tex, p.yz * scale + phase.yz).r; float sy = texture2D(tex, p.xz * scale + phase.xz).r; float sz = texture2D(tex, p.xy * scale + phase.xy).r; return sx * blend.x + sy * blend.y + sz * blend.z; }`)
+          .replace("#include <map_fragment>", `\n#include <map_fragment>\nvec3 marsDx = dFdx(vMarsWorldPosition); vec3 marsDy = dFdy(vMarsWorldPosition); vec3 marsGeomNormal = normalize(cross(marsDx, marsDy)); if (!gl_FrontFacing) marsGeomNormal = -marsGeomNormal; float marsViewDistance = length(cameraPosition - vMarsWorldPosition); float marsNearWeight = 1.0 - smoothstep(1.25, 15.0, marsViewDistance); float marsMidWeight = 1.0 - smoothstep(7.0, 46.0, marsViewDistance); float marsBroad = 0.5; float marsFine = 0.5; float marsGrit = 0.5; float marsRock = 0.0; /* Distant chunks skip subpixel texture detail; */ if (uMarsDetailTier > 0.5) { marsBroad = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 0.18, vec3(0.17, 0.41, 0.73)); } if (uMarsDetailTier > 1.5) { marsFine = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 0.92, vec3(0.61, 0.13, 0.37)); } if (uMarsDetailTier > 2.5) { marsGrit = marsTriSample(uMarsMicroDetail, vMarsWorldPosition, marsGeomNormal, 2.35, vec3(0.29, 0.83, 0.07)); marsRock = smoothstep(0.68, 0.92, marsGrit); } float marsMicro = (marsBroad - 0.5) * 0.44 * marsMidWeight + (marsFine - 0.5) * 0.40 * marsNearWeight + (marsGrit - 0.5) * 0.16 * marsNearWeight + marsRock * 0.08 * marsNearWeight; float marsMicroHeight = ((marsBroad - 0.5) * 0.52 * marsMidWeight + (marsFine - 0.5) * 0.34 * marsNearWeight + (marsGrit - 0.5) * 0.14 * marsNearWeight); diffuseColor.rgb *= clamp(1.0 + marsMicro * uMarsAlbedoDetail, 0.86, 1.14); `)
+          .replace("#include <normal_fragment_maps>", `\n#include <normal_fragment_maps>\n\n#ifdef USE_BUMPMAP\nif (uMarsDetailTier > 0.5) { vec2 marsMicroSlope = vec2(dFdx(marsMicroHeight), dFdy(marsMicroHeight)); normal = perturbNormalArb(-vViewPosition, normal, marsMicroSlope * uMarsNormalDetail, faceDirection); }\n#endif\n`)
+          .replace("#include <roughnessmap_fragment>", `\n#include <roughnessmap_fragment>\nif (uMarsDetailTier > 2.5) { roughnessFactor = clamp(roughnessFactor + (0.5 - marsGrit) * 0.065 + marsRock * 0.035, 0.80, 0.985); }`);
 
         material.userData.marsShader = shader;
       };
-      material.customProgramCacheKey = () => `antara-mars-terrain-triplanar-viewlod-v6-${this.quality.name}`;
+      material.customProgramCacheKey = () => `antara-mars-permukaan 3D-triplanar-viewlod-v6-${this.quality.name}`;
       material.needsUpdate = true;
       return material;
     }
@@ -903,7 +843,7 @@
       this.visibilityStats = stats;
       if (this.debugEnabled && now - this.lastDebugLog > 1000) {
         this.lastDebugLog = now;
-        console.debug("[ANTARA Mars terrain]", { ...stats, altitudeKm: Number(altitudeKm.toFixed(2)), chunks: this.meshes.size });
+        console.debug("[ANTARA Mars permukaan 3D]", { ...stats, altitudeKm: Number(altitudeKm.toFixed(2)), chunks: this.meshes.size });
       }
       return stats;
     }
@@ -2031,7 +1971,7 @@
         button.type = "button";
         button.className = "venus-region-card mars-region-card";
         button.dataset.marsRegion = landmark.id;
-        button.innerHTML = `<span class="venus-region-preview mars-region-preview mars-region-preview-${landmark.id}" aria-hidden="true"><i></i><b>${landmark.name}</b></span><span class="venus-region-index">${String(index + 1).padStart(2, "0")}</span><strong>${landmark.name}</strong><span class="venus-region-descriptor">${landmark.summary}</span><small>${formatCoordinate(landmark.latitude, landmark.longitudeEast)}</small><em>${landmark.type}</em><span class="venus-region-source">MOLA / NASA · IAU / USGS</span>`;
+        button.innerHTML = `<span class="venus-region-preview mars-region-preview mars-region-preview-${landmark.id}" aria-hidden="true"><i></i><b>${landmark.name}</b></span><span class="venus-region-index">${String(index + 1).padStart(2, "0")}</span><strong>${landmark.name}</strong><span class="venus-region-descriptor">${landmark.summary}</span><small>${formatCoordinate(landmark.latitude, landmark.longitudeEast)}</small><em>${landmark.type}</em><span class="venus-region-source">DATA LOKASI MARS DARI NASA</span>`;
         fragment.append(button);
       });
       this.selectorGrid.replaceChildren(fragment);
@@ -2189,7 +2129,7 @@
         this.infoOpen = false;
       }
       this.objectiveOpen = true;
-      if (this.objectivesIntro) this.objectivesIntro.textContent = "Kunjungi lima wilayah utama Mars. Renderer dunia tetap memakai MOLA, Viking, dan THEMIS; panel tujuan ini hanya membantu melacak perjalananmu.";
+      if (this.objectivesIntro) this.objectivesIntro.textContent = "Kunjungi lima wilayah utama Mars. Mesin gambar 3D dunia tetap memakai PETA PERMUKAAN MARS DARI NASA, Viking, dan GAMBAR MARS DARI NASA. panel tujuan ini hanya membantu melacak perjalananmu.";
       if (this.objectivesRegion) this.objectivesRegion.textContent = this.currentLandmark?.name || this.selectedLandmark?.name || "Mars";
       this.renderObjectives();
       this.syncSecondaryPanels();
@@ -2250,7 +2190,7 @@
       this.entryButton.disabled = true;
       this.selectLandmark(this.selectedLandmark?.id || this.currentLandmark?.id || LANDMARKS[0].id);
       this.showQualityPanel();
-      document.getElementById("announcement").textContent = "Pilih kualitas grafis untuk Eksplorasi Pengalaman Penuh Mars.";
+      document.getElementById("announcement").textContent = "Pilih kualitas grafis untuk Jelajah Penuh Mars.";
     }
 
     closeEntryFlow() {
@@ -2283,7 +2223,7 @@
       this.setQualityChoice(this.selectedQualityName || this.recommendedQualityName, { persist: true });
       if (this.prepared && this.preparedQualityName && this.preparedQualityName !== this.selectedQualityName) this.disposeSurface();
       this.showSelectorPanel();
-      document.getElementById("announcement").textContent = "Pilih destinasi Eksplorasi Pengalaman Penuh Mars.";
+      document.getElementById("announcement").textContent = "Pilih destinasi Jelajah Penuh Mars.";
     }
 
     showSelectorPanel() {
@@ -2341,11 +2281,11 @@
       this.objectiveOpen = false;
       this.syncSecondaryPanels();
       this.resetMissionProgress();
-      this.setLoading(0.04, "MENGHUBUNGKAN DATA TOPOGRAFI MOLA");
+      this.setLoading(0.04, "MENGHUBUNGKAN DATA BENTUK TINGGI-RENDAH TANAH PETA TINGGI-RENDAH MARS DARI NASA");
       this.entryButton.disabled = true;
       this.mars.caption.inert = true;
       document.getElementById("mission").classList.add("is-mars-full");
-      document.getElementById("announcement").textContent = `Menyiapkan Eksplorasi Pengalaman Penuh Mars di ${landmark.name}.`;
+      document.getElementById("announcement").textContent = `Menyiapkan Jelajah Penuh Mars di ${landmark.name}.`;
 
       try {
         await this.prepare();
@@ -2358,7 +2298,7 @@
         await this.terrain.ensureAround(landmark.latitude, wrapLongitude(landmark.longitudeEast > 180 ? landmark.longitudeEast - 360 : landmark.longitudeEast), {
           requiredRadius: 1,
           textureAltitude: 2.8,
-          onProgress: progress => this.setLoading(0.18 + progress * 0.72, "MEMUAT TOPOGRAFI + IMAGERY HD")
+          onProgress: progress => this.setLoading(0.18 + progress * 0.72, "MEMUAT PETA DAN GAMBAR MARS")
         });
         if (token !== this.transitionToken || this.state !== STATES.PREPARING) return;
         this.setCameraAtLandmark(landmark, { altitude: 58 });
@@ -2380,7 +2320,7 @@
         await this.mars.prepare();
         if (generation !== this.resourceGeneration) throw new Error("Mars exploration preparation cancelled.");
         const THREE = this.mars.THREE;
-        if (!THREE || !this.mars.surface) throw new Error("WebGL surface renderer tidak tersedia pada perangkat ini.");
+        if (!THREE || !this.mars.surface) throw new Error("WebGL surface mesin gambar 3D tidak tersedia pada perangkat ini.");
         this.THREE = THREE;
 
         const canvas = document.createElement("canvas");
@@ -2391,7 +2331,7 @@
           antialias: this.quality.name !== "LOW",
           powerPreference: "high-performance"
         });
-        if (!context) throw new Error("WebGL2 diperlukan untuk terrain Mars 3D.");
+        if (!context) throw new Error("WebGL2 diperlukan untuk permukaan 3D Mars 3D.");
 
         this.renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true, antialias: this.quality.name !== "LOW" });
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -2565,7 +2505,7 @@
       this.updateResponsiveUi();
       this.markMissionComplete(this.currentLandmark.id);
       window.AntaraProgress?.trackFull("mars", this.currentLandmark.id, this.currentLandmark.name);
-      document.getElementById("announcement").textContent = `Eksplorasi penuh Mars aktif di ${this.currentLandmark.name}. Gunakan WASD atau kontrol layar untuk bergerak.`;
+      document.getElementById("announcement").textContent = `Jelajah penuh Mars aktif di ${this.currentLandmark.name}. Gunakan WASD atau kontrol layar untuk bergerak.`;
     }
 
     setCameraAtLandmark(landmark, { altitude = 2.8 } = {}) {
@@ -2810,7 +2750,7 @@
       this.infoOpen = false;
       this.syncSecondaryPanels();
       const token = ++this.transitionToken;
-      this.travelLabel.textContent = `NAVIGASI · ${landmark.name.toUpperCase()}`;
+      this.travelLabel.textContent = `PETUNJUK ARAH · ${landmark.name.toUpperCase()}`;
       this.travelVeil.classList.add("is-visible");
       this.loading.hidden = false;
       this.setLoading(0.06, `MENGUNCI DESTINASI · ${landmark.name.toUpperCase()}`);
@@ -2818,11 +2758,11 @@
 
       try {
         const cruiseAltitude = Math.min(MAX_EXPLORATION_ALTITUDE_KM - 2, Math.max(this.cameraAltitude, 24));
-        this.setLoading(0.16, "MENAIKKAN KETINGGIAN NAVIGASI");
+        this.setLoading(0.16, "MENAIKKAN KETINGGIAN PETUNJUK ARAH");
         await this.animateCameraAltitude(cruiseAltitude, 1350, token);
         if (token !== this.transitionToken || this.state !== STATES.TRAVELLING) return;
         this.travelVeil.classList.add("is-covered");
-        this.setLoading(0.30, "MENGGANTI ORIGIN MOLA");
+        this.setLoading(0.30, "MENGGANTI ORIGIN PETA TINGGI-RENDAH MARS DARI NASA");
         await this.wait(this.mars.motion.matches ? 90 : 300);
         if (token !== this.transitionToken) return;
 
@@ -2836,7 +2776,7 @@
         await this.terrain.ensureAround(landmark.latitude, wrapLongitude(landmark.longitudeEast > 180 ? landmark.longitudeEast - 360 : landmark.longitudeEast), {
           requiredRadius: 1,
           textureAltitude: 3.2,
-          onProgress: progress => this.setLoading(0.44 + progress * 0.36, "MEMUAT TOPOGRAFI + IMAGERY")
+          onProgress: progress => this.setLoading(0.44 + progress * 0.36, "MEMUAT PETA DAN GAMBAR MARS")
         });
         if (token !== this.transitionToken) return;
         const ground = this.terrain.getHeightAtWorld(0, 0) ?? 0;
@@ -2901,10 +2841,10 @@
         this.infoImage.src = landmark.image || "";
         this.infoImage.alt = landmark.imageAlt || landmark.name;
       }
-      if (this.infoImageCaption) this.infoImageCaption.textContent = landmark.imageCaption || `Citra referensi ${landmark.name}`;
+      if (this.infoImageCaption) this.infoImageCaption.textContent = landmark.imageCaption || `Gambar referensi ${landmark.name}`;
       if (this.infoImageLink) {
         this.infoImageLink.href = landmark.imageSource || landmark.scienceSource || landmark.source;
-        this.infoImageLink.setAttribute("aria-label", `Buka sumber citra asli ${landmark.name}`);
+        this.infoImageLink.setAttribute("aria-label", `Buka sumber gambar asli ${landmark.name}`);
       }
       if (this.isMobileUi()) {
         this.setActionsMenu(false);
@@ -2947,10 +2887,26 @@
       this.locationMenu.classList.remove("is-open");
       this.locationButton.setAttribute("aria-expanded", "false");
       this.tutorial.classList.remove("is-visible");
+      this.infoOpen = false;
+      this.objectiveOpen = false;
+      this.setActionsMenu(false);
       this.infoCard.classList.remove("is-visible");
+      this.infoCard.setAttribute("aria-hidden", "true");
+      this.objectivesPanel.hidden = true;
+      this.objectivesPanel.setAttribute("aria-hidden", "true");
+      this.infoToggle.hidden = true;
+      this.objectivesToggle.hidden = true;
+      if (this.observationPrompt) {
+      this.observationPrompt.hidden = true;
+    }
+      if (this.observationCard) {
+        this.observationCard.hidden = true;
+        this.observationCard.setAttribute("aria-hidden", "true");
+      }
+      this.root.classList.remove("is-info-open", "is-objectives-open", "is-observation-open", "is-actions-open");
       this.travelVeil.classList.remove("is-visible", "is-covered");
       this.root.classList.add("is-exiting");
-      document.getElementById("announcement").textContent = "Meninggalkan permukaan Mars dan kembali ke panorama orbit.";
+      document.getElementById("announcement").textContent = "Meninggalkan permukaan Mars dan kembali ke panorama jalur mengelilingi.";
 
       if (this.prepared && this.camera) {
         try { await this.animateCameraAltitude(Math.max(this.cameraAltitude, 52), 1650, token); }

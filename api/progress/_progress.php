@@ -76,9 +76,9 @@ function antara_progress_catalog(): array
             'full' => [
                 'grs' => 'Great Red Spot',
                 'bands' => 'Sabuk & Zona Awan',
-                'polar-cyclones' => 'Siklon Kutub Utara',
-                'rings' => 'Cincin Utama & Halo',
-                'galilean-moons' => 'Empat Bulan Galilea',
+                'lightning' => 'Badai Petir Jovian',
+                'hotspot' => '5-Micron Hot Spot',
+                'polar' => 'Siklon Kutub Jupiter',
             ],
         ],
         'saturn' => [
@@ -86,11 +86,11 @@ function antara_progress_catalog(): array
             'short' => 'SATURNUS',
             'normal_total' => 11,
             'full' => [
-                'rings' => 'Cincin & Cassini Division',
                 'hexagon' => 'Hexagon Kutub Utara',
+                'storms' => 'Atmosfer & Badai Saturnus',
+                'rings' => 'Cincin & Cassini Division',
                 'titan' => 'Titan',
                 'enceladus' => 'Enceladus',
-                'grand-finale' => 'Cassini Grand Finale',
             ],
         ],
         'uranus' => [
@@ -98,11 +98,11 @@ function antara_progress_catalog(): array
             'short' => 'URANUS',
             'normal_total' => 11,
             'full' => [
-                'axis' => 'Kemiringan Sumbu Uranus',
-                'seasons' => 'Musim Ekstrem Uranus',
+                'methane-winds' => 'Atmosfer Metana & Angin Uranus',
+                'polar-seasons' => 'Kutub & Musim Ekstrem Uranus',
+                'magnetosphere' => 'Magnetosfer Uranus',
                 'rings' => 'Cincin Gelap Uranus',
                 'miranda' => 'Miranda',
-                'voyager' => 'Lintasan Voyager 2',
             ],
         ],
         'neptune' => [
@@ -110,10 +110,10 @@ function antara_progress_catalog(): array
             'short' => 'NEPTUNUS',
             'normal_total' => 11,
             'full' => [
-                'winds' => 'Angin Super Cepat',
+                'super-winds' => 'Angin Super Cepat',
                 'dark-spot' => 'Great Dark Spot',
-                'clouds' => 'Awan Tinggi Cerah',
-                'rings' => 'Cincin & Arc Neptunus',
+                'methane-clouds' => 'Awan Metana Tinggi',
+                'rings-arcs' => 'Cincin & Arc Neptunus',
                 'triton' => 'Triton',
             ],
         ],

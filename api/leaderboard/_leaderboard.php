@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/progress/_progress.php';
 
-const ANTARA_COMPLETION_MIN_SECONDS = 300;
+const ANTARA_COMPLETION_MIN_SECONDS = 0;
 const ANTARA_LEADERBOARD_LIMIT_MAX = 100;
 
 
@@ -165,11 +165,14 @@ function antara_completion_backfill(PDO $pdo): void
          FROM user_progress_events e
          LEFT JOIN exploration_completions c ON c.user_id = e.user_id
          WHERE c.user_id IS NULL
+            OR c.eligible = 0
+            OR c.total_milestones <> :required_existing
          GROUP BY e.user_id
-         HAVING COUNT(*) >= :required
+         HAVING COUNT(*) >= :required_count
          LIMIT 250'
     );
-    $stmt->bindValue(':required', $required, PDO::PARAM_INT);
+    $stmt->bindValue(':required_existing', $required, PDO::PARAM_INT);
+    $stmt->bindValue(':required_count', $required, PDO::PARAM_INT);
     $stmt->execute();
 
     foreach ($stmt->fetchAll() as $row) {
@@ -231,17 +234,20 @@ function antara_completion_user_rank(PDO $pdo, int $userId): ?array
     $rankStmt = $pdo->prepare(
         'SELECT COUNT(*) + 1 AS rank_no
          FROM exploration_completions
-         WHERE eligible = 1 AND total_milestones = :required AND (
-           completed_at < :completed_at
-           OR (completed_at = :completed_at AND COALESCE(completion_event_id, 18446744073709551615) < :completion_event_id)
-           OR (completed_at = :completed_at AND COALESCE(completion_event_id, 18446744073709551615) = :completion_event_id AND id < :id)
+         WHERE eligible = 1 AND total_milestones = :required_rank AND (
+           completed_at < :completed_at_before
+           OR (completed_at = :completed_at_equal_1 AND COALESCE(completion_event_id, 18446744073709551615) < :completion_event_before)
+           OR (completed_at = :completed_at_equal_2 AND COALESCE(completion_event_id, 18446744073709551615) = :completion_event_equal AND id < :id)
          )'
     );
     $rankStmt->execute([
-        'completed_at' => $row['completed_at'],
-        'completion_event_id' => $row['completion_event_id'] !== null ? (int)$row['completion_event_id'] : PHP_INT_MAX,
+        'required_rank' => $required,
+        'completed_at_before' => $row['completed_at'],
+        'completed_at_equal_1' => $row['completed_at'],
+        'completed_at_equal_2' => $row['completed_at'],
+        'completion_event_before' => $row['completion_event_id'] !== null ? (int)$row['completion_event_id'] : PHP_INT_MAX,
+        'completion_event_equal' => $row['completion_event_id'] !== null ? (int)$row['completion_event_id'] : PHP_INT_MAX,
         'id' => $row['id'],
-        'required' => $required,
     ]);
     return [
         'rank' => (int)$rankStmt->fetchColumn(),

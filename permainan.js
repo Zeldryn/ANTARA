@@ -202,6 +202,7 @@
       $("#feedback-correct").textContent = `Jawaban: ${data.correctKey}. ${data.correctText}`;
       $("#feedback-explanation").textContent = data.explanation || "";
       $("#feedback-reference").textContent = data.reference ? `ACUAN ANTARA · ${data.reference}` : "";
+      window.AntaraAchievementNotifications?.enqueue?.(data.notifications || []);
       pendingFinished = data.finished ? data.summary : null;
       pendingLevelAdvance = null;
       setStackWarning(data);

@@ -16,7 +16,8 @@ try {
     $stmt=$pdo->prepare('INSERT IGNORE INTO user_activity_events (user_id,event_key,event_label,created_at) VALUES (:user_id,:event_key,:event_label,NOW())');
     $stmt->execute(['user_id'=>$userId,'event_key'=>$key,'event_label'=>$allowed[$key]]);
     $payload=antara_achievements_payload($pdo,$userId);
-    antara_json(['success'=>true,'recorded'=>$stmt->rowCount()>0,'summary'=>$payload['summary']]);
+    $notifications=antara_achievement_claim_notifications($pdo,$userId,10);
+    antara_json(['success'=>true,'recorded'=>$stmt->rowCount()>0,'summary'=>$payload['summary'],'notifications'=>$notifications]);
 } catch (Throwable $e) {
     error_log('ANTARA achievement activity error: '.$e->getMessage());
     antara_json(['success'=>false,'message'=>'Aktivitas belum dapat dicatat.'],503);

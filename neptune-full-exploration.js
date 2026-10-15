@@ -2,7 +2,7 @@
 
 (() => {
   const STORAGE_KEY = "antara-neptune-full-quality-v3";
-  const DISCOVERY_PREFIX = "antara-neptune-pov-discovery-v1:";
+  const DISCOVERY_PREFIX = "antara-neptune-mode terbang-discovery-v1:";
   const QUALITY = Object.freeze({
     LOW: { name: "LOW", label: "RENDAH", dpr: 1.0, clouds: 220, streaks: 7, markerSegments: 28 },
     MEDIUM: { name: "MEDIUM", label: "SEDANG", dpr: 1.35, clouds: 360, streaks: 10, markerSegments: 40 },
@@ -32,88 +32,88 @@
   const DESTINATIONS = Object.freeze([
     {
       id: "super-winds",
-      name: "Super Winds Neptunus",
-      short: "SUPER WINDS",
-      category: "ATMOSFER ICE GIANT",
-      descriptor: "Terbang menembus jet stream tercepat di antara planet utama",
-      locationLabel: "Atmosfer global Neptunus",
+      name: "Angin super cepat Neptunus",
+      short: "ANGIN SUPER CEPAT",
+      category: "UDARA RAKSASA ES",
+      descriptor: "Terbang menembus arus angin cepat tercepat di antara planet utama",
+      locationLabel: "Udara di seluruh planet Neptunus",
       preview: "winds",
       image: "./assets/neptune-winds-diagram.svg",
-      imageAlt: "Diagram edukasi angin ekstrem Neptunus",
+      imageAlt: "Diagram edukasi angin sangat kuat Neptunus",
       imageCaption: "Angin Neptunus · ANTARA berbasis NASA",
       source: SOURCES.facts,
-      lead: "Neptunus adalah dunia paling berangin di Tata Surya. Di map ini kamu terbang di antara pita awan dan arus jet yang secara nyata dapat melampaui 2.000 km/jam.",
+      lead: "Neptunus adalah dunia paling berangin di Tata Surya. Di map ini kamu terbang di antara pita awan dan arus angin sangat cepat yang secara nyata dapat melampaui 2.000 km/jam.",
       facts: [
-        "Atmosfer Neptunus terutama tersusun dari hidrogen dan helium dengan sedikit metana.",
+        "Udara Neptunus terutama tersusun dari gas ringan bernama hidrogen dan gas ringan bernama helium dengan sedikit gas bernama metana.",
         "NASA mencatat angin Neptunus dapat melampaui 1.200 mph atau sekitar 2.000 km/jam.",
-        "Neptunus tidak memiliki permukaan padat; atmosfernya berangsur menyatu dengan lapisan fluida bertekanan tinggi."
+        "Neptunus tidak punya permukaan padat. udaranya berangsur menyatu dengan lapisan bahan yang bisa mengalir bertekanan tinggi."
       ],
       palette: { sky: 0x2d6f8d, fog: 0x68a4bd, fogDensity: 0.0104, cloud: "#d9f1f6", cloud2: "#70a9bd", accent: 0xc8f2ff, lightning: 0xeffcff },
       wind: { x: 2.10, z: 0.42 }, turbulence: 1.08,
       spawn: { x: -31, y: 9, z: 43, yaw: Math.PI * 0.88, pitch: -0.04 },
       observations: [
-        { id: "winds-jet", name: "Jet Stream Supersonik", category: "SUPER WINDS", position: [9, 11, -14], radius: 10, source: SOURCES.facts, lead: "Arus jet di atmosfer Neptunus melaju sangat cepat mengitari planet.", why: "Kecepatan ekstrem ini menunjukkan bahwa cuaca Neptunus tidak hanya digerakkan cahaya Matahari, tetapi juga energi internal planet.", facts: ["Angin dapat melebihi 2.000 km/jam.", "Kecepatan angin berbeda menurut lintang.", "Pola awan Voyager 2 membantu ilmuwan mengukur arah dan kecepatan arus."] },
-        { id: "winds-methane", name: "Kabut Metana", category: "ABSORPSI CAHAYA", position: [-23, -4, -13], radius: 10, source: SOURCES.facts, lead: "Metana di atmosfer menyerap cahaya merah dan ikut memberi warna biru pada Neptunus.", why: "Spektrum cahaya memungkinkan ilmuwan mengenali molekul atmosfer dari jarak miliaran kilometer.", facts: ["Metana hanya sebagian kecil atmosfer.", "Ia menyerap kuat cahaya merah.", "NASA kini menekankan warna asli Neptunus lebih lembut daripada banyak citra Voyager yang diproses untuk kontras."] },
-        { id: "winds-deep", name: "Lapisan Lebih Dalam", category: "TEKANAN", position: [29, -19, 18], radius: 10, source: SOURCES.facts, lead: "Semakin turun, tekanan meningkat dan atmosfer berangsur menjadi fluida kaya air, metana, dan amonia pada kondisi ekstrem.", why: "Neptunus adalah ice giant. Struktur dalamnya berbeda dari raksasa gas seperti Jupiter dan Saturnus.", facts: ["Sebagian besar massa planet berada dalam fluida panas dan rapat yang disebut bahan 'icy'.", "Tidak ada batas tanah yang dapat didarati.", "Tekanan ekstrem menjaga material tetap dalam fase yang tidak kita jumpai di permukaan Bumi."] }
+        { id: "winds-jet", name: "Arus angin cepat Supersonik", category: "ANGIN SUPER CEPAT", position: [9, 11, -14], radius: 10, source: SOURCES.facts, lead: "Arus angin sangat cepat di udara Neptunus melaju sangat cepat mengitari planet.", why: "Kecepatan sangat kuat ini menunjukkan bahwa cuaca Neptunus tidak hanya digerakkan cahaya Matahari. Tapi juga energi internal planet.", facts: ["Angin dapat melebihi 2.000 km/jam.", "Kecepatan angin berbeda menurut lintang.", "Pola awan Voyager 2 membantu ilmuwan mengukur arah dan kecepatan arus."] },
+        { id: "winds-methane", name: "Kabut Gas bernama metana", category: "MENYERAP CAHAYA", position: [-23, -4, -13], radius: 10, source: SOURCES.facts, lead: "Gas bernama metana di udara menyerap cahaya merah dan ikut memberi warna biru pada Neptunus.", why: "Warna cahaya memungkinkan ilmuwan mengenali zat kecil udara dari jarak miliaran kilometer.", facts: ["Gas bernama metana hanya sebagian kecil udara.", "Ia menyerap kuat cahaya merah.", "NASA kini menekankan warna asli Neptunus lebih lembut daripada banyak gambar Voyager yang dicara untuk perbedaan."] },
+        { id: "winds-deep", name: "Lapisan Lebih Dalam", category: "TEKANAN", position: [29, -19, 18], radius: 10, source: SOURCES.facts, lead: "Semakin turun, tekanan meningkat dan udara berangsur menjadi bahan yang bisa mengalir kaya air, gas bernama metana, dan gas bernama amonia pada keadaan yang sangat keras.", why: "Neptunus adalah raksasa es. Bentuk dalamnya berbeda dari raksasa gas seperti Jupiter dan Saturnus.", facts: ["Sebagian besar isi planet berada dalam bahan yang bisa mengalir panas dan rapat yang disebut bahan 'icy'.", "Tidak ada batas tanah yang dapat didarati.", "Tekanan sangat kuat menjaga bahan tetap dalam bentuk yang tidak kita jumpai di permukaan Bumi."] }
       ]
     },
     {
       id: "dark-spot",
       name: "Great Dark Spot",
-      short: "DARK VORTEX",
-      category: "BADAI VORTEX",
+      short: "BADAI GELAP",
+      category: "BADAI GELAP",
       descriptor: "Masuk ke sisi pusaran gelap dan awan pendampingnya",
-      locationLabel: "Atmosfer Neptunus · zona badai",
+      locationLabel: "Udara Neptunus · zona badai",
       preview: "storm",
       image: "./assets/neptune-storm-diagram.svg",
       imageAlt: "Diagram edukasi Great Dark Spot Neptunus",
       imageCaption: "Great Dark Spot · ANTARA berbasis Voyager 2 / NASA",
       source: SOURCES.darkspot,
-      lead: "Voyager 2 melihat Great Dark Spot pada 1989, sebuah vortex seukuran Bumi. Badai itu kemudian menghilang, sementara vortex gelap baru terus muncul di atmosfer Neptunus.",
+      lead: "Voyager 2 melihat Great Dark Spot pada 1989, sebuah pusaran badai seukuran Bumi. Badai itu kemudian menghilang, sementara pusaran badai gelap baru terus muncul di udara Neptunus.",
       facts: [
         "Great Dark Spot Voyager 2 berukuran kira-kira sebesar Bumi.",
-        "Dark spot bukan noda di permukaan, tetapi sistem badai atmosfer.",
-        "Vortex Neptunus dapat muncul, berubah lintang, dan akhirnya menghilang."
+        "Dark spot bukan noda di permukaan. Tapi sistem badai udara.",
+        "Pusaran badai Neptunus bisa muncul, berubah lintang, dan akhirnya menghilang."
       ],
       palette: { sky: 0x254f73, fog: 0x557f9e, fogDensity: 0.0124, cloud: "#dfeef5", cloud2: "#486b88", accent: 0xcbefff, lightning: 0xf3fbff },
       wind: { x: 1.62, z: -0.64 }, turbulence: 1.52,
       spawn: { x: -22, y: 11, z: 43, yaw: Math.PI * 0.91, pitch: -0.07 },
       observations: [
-        { id: "spot-wall", name: "Dinding Vortex", category: "VORTEX", position: [5, 5, -16], radius: 11, source: SOURCES.darkspot, lead: "Tepi vortex adalah wilayah dengan perbedaan arah angin dan struktur awan yang kuat.", why: "Batas badai membantu ilmuwan memahami bagaimana pusaran besar bertahan di atmosfer tanpa permukaan padat.", facts: ["Dark spot adalah vortex atmosfer.", "Great Dark Spot 1989 tidak lagi terlihat beberapa tahun kemudian.", "Hubble telah mengamati dark spot lain pada masa berbeda."] },
-        { id: "spot-companion", name: "Bright Companion Cloud", category: "AWAN TINGGI", position: [-25, 13, 4], radius: 10, source: SOURCES.darkspot, lead: "Awan putih terang dapat terbentuk di dekat vortex besar dan berada lebih tinggi daripada cloud deck utama.", why: "Awan pendamping memberi petunjuk tentang gerakan udara vertikal di sekitar badai.", facts: ["Voyager 2 melihat awan putih dekat Great Dark Spot.", "Pada panjang gelombang metana, awan tinggi terlihat sangat terang karena berada di atas banyak gas penyerap.", "Fitur ini dapat berubah dalam hitungan jam hingga hari."] },
-        { id: "spot-scooter", name: "Jejak Scooter", category: "AWAN CEPAT", position: [28, -4, 20], radius: 9, source: SOURCES.voyager, lead: "Voyager 2 menjuluki satu awan kecil yang bergerak cepat sebagai Scooter.", why: "Pergerakan awan kecil menjadi penanda alami untuk mengukur arus angin Neptunus.", facts: ["Scooter tampak bergerak ke timur dengan cepat.", "Voyager menggunakan fitur awan sebagai pelacak angin.", "Cuaca Neptunus tetap aktif walaupun menerima sangat sedikit energi Matahari."] }
+        { id: "spot-wall", name: "Dinding Pusaran badai", category: "PUSARAN BADAI", position: [5, 5, -16], radius: 11, source: SOURCES.darkspot, lead: "Tepi pusaran badai adalah wilayah dengan perbedaan arah angin dan bentuk awan yang kuat.", why: "Batas badai membuat ilmuwan lebih mudah tahu bagaimana pusaran besar bertahan di udara tanpa permukaan padat.", facts: ["Dark spot adalah pusaran badai udara.", "Great Dark Spot 1989 tidak lagi terlihat beberapa tahun kemudian.", "Hubble telah mengamati dark spot lain pada masa berbeda."] },
+        { id: "spot-companion", name: "Bright Companion Cloud", category: "AWAN TINGGI", position: [-25, 13, 4], radius: 10, source: SOURCES.darkspot, lead: "Awan putih terang dapat terbentuk di dekat pusaran badai besar dan berada lebih tinggi daripada awan utama utama.", why: "Awan pendamping menunjukkan tentang gerakan udara atas-bawah di sekitar badai.", facts: ["Voyager 2 melihat awan putih dekat Great Dark Spot.", "Pada jenis cahaya gas bernama metana, awan tinggi terlihat sangat terang karena berada di atas banyak gas penyerap.", "Bagian ini dapat berubah dalam hitungan jam hingga hari."] },
+        { id: "spot-scooter", name: "Jejak Scooter", category: "AWAN CEPAT", position: [28, -4, 20], radius: 9, source: SOURCES.voyager, lead: "Voyager 2 menjuluki satu awan kecil yang bergerak cepat sebagai Scooter.", why: "Pergerakan awan kecil menjadi penanda alami untuk mengukur arus angin Neptunus.", facts: ["Scooter tampak bergerak ke timur dengan cepat.", "Voyager menggunakan bagian awan sebagai pelacak angin.", "Cuaca Neptunus tetap aktif meski menerima sangat sedikit energi Matahari."] }
       ]
     },
     {
       id: "methane-clouds",
-      name: "Awan Metana Tinggi",
+      name: "Awan Gas bernama metana Tinggi",
       short: "HIGH CLOUDS",
-      category: "AWAN ES METANA",
+      category: "AWAN ES GAS metana",
       descriptor: "Terbang di antara awan putih tipis yang berubah sangat cepat",
-      locationLabel: "Lapisan atas atmosfer Neptunus",
+      locationLabel: "Lapisan atas udara Neptunus",
       preview: "clouds",
       image: "./assets/neptune-clouds-diagram.svg",
-      imageAlt: "Diagram edukasi awan metana Neptunus",
+      imageAlt: "Diagram edukasi awan gas bernama metana Neptunus",
       imageCaption: "Awan tinggi Neptunus · ANTARA berbasis Voyager 2",
       source: SOURCES.clouds,
-      lead: "Voyager 2 melihat awan putih seperti cirrus yang terbentuk dari metana beku. Awan ini dapat muncul dan menghilang hanya dalam beberapa hingga puluhan jam.",
+      lead: "Voyager 2 melihat awan putih seperti awan tipis yang terbentuk dari gas bernama metana beku. Awan ini dapat muncul dan menghilang hanya dalam beberapa hingga puluhan jam.",
       facts: [
-        "Awan putih tinggi Neptunus mengandung kristal metana beku, bukan es air seperti cirrus Bumi.",
+        "Awan putih tinggi Neptunus mengandung kristal es metana, bukan es air seperti awan tipis Bumi.",
         "NASA mendokumentasikan perubahan awan dalam skala beberapa hingga puluhan jam.",
-        "Awan tinggi sangat berguna untuk melacak aliran atmosfer di bawahnya."
+        "Awan tinggi sangat berguna untuk melacak aliran udara di bawahnya."
       ],
       palette: { sky: 0x3f7fa0, fog: 0x78adc0, fogDensity: 0.0096, cloud: "#f2fbff", cloud2: "#a1c9d8", accent: 0xe9fbff, lightning: 0xffffff },
       wind: { x: 1.86, z: 0.20 }, turbulence: 0.86,
       spawn: { x: -28, y: 16, z: 41, yaw: Math.PI * 0.86, pitch: -0.05 },
       observations: [
-        { id: "clouds-cirrus", name: "Cirrus Metana", category: "METHANE ICE", position: [8, 15, -13], radius: 10, source: SOURCES.clouds, lead: "Awan putih tipis ini berada tinggi di atas cloud deck utama.", why: "Karena terletak tinggi, awan tampak cerah dan mudah dilacak dari luar planet.", facts: ["Kristalnya terdiri dari metana beku.", "Temperatur atmosfer atas sangat rendah.", "Awan dapat berubah cepat dalam rentang beberapa jam."] },
-        { id: "clouds-wave", name: "Gelombang Awan", category: "ATMOSPHERIC WAVE", position: [-22, 2, -10], radius: 10, source: SOURCES.clouds, lead: "Pola awan dapat merekam gelombang dan gangguan pada aliran atmosfer.", why: "Bentuk awan berfungsi seperti tinta yang membuat gerak fluida tak terlihat menjadi terbaca.", facts: ["Awan diskret mengikuti arus jet.", "Gelombang dapat mengubah bentuk awan dengan cepat.", "Pengamatan berulang diperlukan karena fitur tidak selalu bertahan lama."] },
-        { id: "clouds-haze", name: "Haze Atas", category: "AEROSOL", position: [29, 20, 19], radius: 9, source: SOURCES.facts, lead: "Lapisan haze tinggi menyebarkan cahaya di atas atmosfer utama Neptunus.", why: "Haze membantu menjelaskan profil warna dan kecerahan limb planet.", facts: ["Atmosfer atas memiliki partikel haze.", "Metana menyerap kuat pada panjang gelombang merah dan inframerah tertentu.", "Awan tinggi dapat muncul di atas sebagian besar metana penyerap sehingga terlihat lebih terang."] }
+        { id: "clouds-awan tipis", name: "Awan tipis Gas bernama metana", category: "ES metana", position: [8, 15, -13], radius: 10, source: SOURCES.clouds, lead: "Awan putih tipis ini berada tinggi di atas awan utama utama.", why: "Karena terletak tinggi, awan tampak cerah dan mudah dilacak dari luar planet.", facts: ["Butiran esnya berisi gas bernama metana beku.", "Suhu udara atas sangat rendah.", "Awan dapat berubah cepat dalam rentang beberapa jam."] },
+        { id: "clouds-wave", name: "Gelombang Awan", category: "GELOMBANG DI UDARA", position: [-22, 2, -10], radius: 10, source: SOURCES.clouds, lead: "Pola awan dapat menyimpan bekas gelombang dan gangguan pada aliran udara.", why: "Awan membantu kita melihat arah gerak udara yang sebenarnya tidak terlihat.", facts: ["Awan terpisah mengikuti arus angin sangat cepat.", "Gelombang dapat mengubah bentuk awan dengan cepat.", "Ilmuwan perlu melihatnya berkali-kali karena bentuk awan bisa cepat berubah."] },
+        { id: "clouds-kabut tipis", name: "Kabut tipis Atas", category: "KABUT TIPIS", position: [29, 20, 19], radius: 9, source: SOURCES.facts, lead: "Lapisan kabut tipis tinggi menyebarkan cahaya di atas lapisan udara utama Neptunus.", why: "Kabut tipis membantu menjelaskan bentuk warna dan kecerahan tepi planet planet.", facts: ["Udara atas punya butiran kabut tipis.", "Gas bernama metana menyerap kuat pada jenis cahaya merah dan cahaya panas tertentu.", "Awan tinggi dapat muncul di atas sebagian besar gas bernama metana penyerap sehingga terlihat lebih terang."] }
       ]
     },
     {
       id: "rings-arcs",
-      name: "Cincin Gelap & Ring Arcs",
+      name: "Cincin Gelap & Bagian cincin yang terang",
       short: "RING ARCS",
       category: "SISTEM CINCIN BERDEBU",
       descriptor: "Terbang sejajar cincin tipis dan gumpalan arc pada Adams Ring",
@@ -123,46 +123,46 @@
       imageAlt: "Diagram edukasi cincin dan arc Neptunus",
       imageCaption: "Cincin Neptunus · ANTARA berbasis Voyager 2 / NASA",
       source: SOURCES.rings,
-      lead: "Neptunus memiliki sedikitnya lima cincin utama yang gelap dan berdebu. Pada Adams Ring, material tidak tersebar merata tetapi membentuk arc terang yang aneh.",
+      lead: "Neptunus punya sedikitnya lima cincin utama yang gelap dan berdebu. Pada Adams Ring, bahan tidak tersebar merata tetapi membentuk arc terang yang aneh.",
       facts: [
         "Lima cincin utama dikenal sebagai Galle, Leverrier, Lassell, Arago, dan Adams.",
-        "Adams Ring memiliki arc terkenal seperti Liberté, Egalité, Fraternité, dan Courage.",
-        "Galatea, bulan kecil dekat Adams Ring, diperkirakan membantu menjaga struktur arc tetap terkumpul."
+        "Adams Ring punya arc terkenal seperti Liberté, Egalité, Fraternité, dan Courage.",
+        "Galatea, bulan kecil dekat Adams Ring, kira-kira membantu menjaga bentuk arc tetap terkumpul."
       ],
       palette: { sky: 0x07101d, fog: 0x24394f, fogDensity: 0.0066, cloud: "#7699ae", cloud2: "#33495a", accent: 0xc9e9f8, lightning: 0xf3fbff },
       wind: { x: 0.08, z: -0.02 }, turbulence: 0.16,
       spawn: { x: -23, y: 3, z: 47, yaw: Math.PI * 0.91, pitch: -0.02 },
       observations: [
-        { id: "rings-adams", name: "Adams Ring", category: "OUTER RING", position: [8, 1, -16], radius: 10, source: SOURCES.rings, lead: "Adams adalah cincin utama terluar dan lokasi ring arcs paling terkenal.", why: "Cincin tipis ini memperlihatkan bagaimana gravitasi bulan kecil dapat mengatur partikel debu pada jarak sangat besar.", facts: ["Adams berada sekitar 62.930 km dari pusat Neptunus.", "Cincin Neptunus mengandung banyak partikel debu kecil.", "Geometri pencahayaan tertentu membuat cincin jauh lebih mudah terlihat."] },
-        { id: "rings-arcs", name: "Fraternité & Ring Arcs", category: "ARC", position: [-25, 5, 5], radius: 10, source: SOURCES.arcs, lead: "Arc adalah bagian ring yang jauh lebih padat daripada lingkungan sekitarnya.", why: "Secara sederhana material orbit seharusnya menyebar. Bertahannya arc berarti ada mekanisme gravitasi yang menahan struktur tersebut.", facts: ["Voyager 2 memotret arc di Adams Ring.", "Arc terdiri dari beberapa gumpalan terpisah.", "Interaksi dengan Galatea dianggap penting dalam menjaga struktur arc."] },
-        { id: "rings-galatea", name: "Jejak Galatea", category: "BULAN PENGGEMBALA", position: [29, 8, 20], radius: 9, source: SOURCES.facts, lead: "Galatea mengorbit sedikit di dalam Adams Ring dan berinteraksi gravitasi dengan material cincin.", why: "Bulan kecil dapat membentuk struktur cincin tanpa perlu menyentuh partikel secara langsung.", facts: ["Galatea adalah bulan kecil bagian dalam Neptunus.", "Resonansi gravitasinya dikaitkan dengan kestabilan ring arcs.", "Sistem cincin Neptunus relatif redup dibanding Saturnus."] }
+        { id: "rings-adams", name: "Adams Ring", category: "OUTER RING", position: [8, 1, -16], radius: 10, source: SOURCES.rings, lead: "Adams adalah cincin utama terluar dan lokasi ring arcs paling terkenal.", why: "Cincin tipis ini memperlihatkan bagaimana tarikan bulan kecil bisa mengatur butiran kecil debu pada jarak sangat besar.", facts: ["Adams berada sekitar 62.930 km dari pusat Neptunus.", "Cincin Neptunus mengandung banyak butiran kecil debu kecil.", "Geometri pencahayaan tertentu membuat cincin jauh lebih mudah terlihat."] },
+        { id: "rings-arcs", name: "Fraternité & Bagian cincin yang terang", category: "ARC", position: [-25, 5, 5], radius: 10, source: SOURCES.arcs, lead: "Arc adalah bagian ring yang jauh lebih padat daripada lingkungan sekitarnya.", why: "Secara sederhana bahan jalur mengelilingi seharusnya menyebar. Bertahannya arc berarti ada cara kerja tarikan yang menahan bentuk tersebut.", facts: ["Voyager 2 memotret arc di Adams Ring.", "Arc berisi beberapa gumpalan terpisah.", "Saling pengaruh dengan Galatea dianggap penting dalam menjaga bentuk arc."] },
+        { id: "rings-galatea", name: "Jejak Galatea", category: "BULAN PENGGEMBALA", position: [29, 8, 20], radius: 9, source: SOURCES.facts, lead: "Galatea mengelilingi sedikit di dalam Adams Ring dan saling bertemu tarikan dengan bahan cincin.", why: "Bulan kecil bisa membentuk bentuk cincin tanpa perlu menyentuh butiran kecil secara langsung.", facts: ["Galatea adalah bulan kecil bagian dalam Neptunus.", "Pola gerak khusus tarikannya dikaitkan dengan kestabilan ring arcs.", "Sistem cincin Neptunus cukup redup dibanding Saturnus."] }
       ]
     },
     {
       id: "triton",
       name: "Koridor Triton & Voyager 2",
       short: "TRITON",
-      category: "BULAN RETROGRADE AKTIF",
-      descriptor: "Flyby Triton, plume nitrogen, dan lintasan Voyager 2",
-      locationLabel: "Orbit Triton",
+      category: "BULAN YANG BERGERAK BERLAWANAN ARAH",
+      descriptor: "Terbang lewat dekat Triton, semburan nitrogen, dan lintasan Voyager 2",
+      locationLabel: "Jalur mengelilingi Triton",
       preview: "triton",
       image: "./assets/neptune-triton-diagram.svg",
       imageAlt: "Diagram edukasi Triton dan sistem Neptunus",
       imageCaption: "Triton · ANTARA berbasis Voyager 2 / NASA",
       source: SOURCES.moons,
-      lead: "Triton adalah bulan terbesar Neptunus dan bergerak retrograde, petunjuk kuat bahwa ia kemungkinan objek Sabuk Kuiper yang tertangkap. Voyager 2 melihat geyser material es menyembur dari permukaannya.",
+      lead: "Triton adalah bulan terbesar Neptunus dan bergerak berlawanan arah, petunjuk kuat bahwa ia kemungkinan benda Sabuk Kuiper yang tertangkap. Voyager 2 melihat geyser bahan es menyembur dari permukaannya.",
       facts: [
-        "Triton adalah satu-satunya bulan besar di Tata Surya dengan orbit retrograde.",
-        "Temperatur permukaannya sekitar -235 °C.",
-        "Voyager 2 mengamati geyser atau plume yang menyemburkan material lebih dari 8 km ke atas."
+        "Triton adalah satu-satunya bulan besar di Tata Surya dengan jalur yang berlawanan arah.",
+        "Suhu permukaannya sekitar -235 °C.",
+        "Voyager 2 mengamati geyser atau semburan yang menyemburkan bahan lebih dari 8 km ke atas."
       ],
       palette: { sky: 0x0a1421, fog: 0x314c63, fogDensity: 0.0069, cloud: "#dbe6e8", cloud2: "#887f78", accent: 0xe8f5fa, lightning: 0xffffff },
       wind: { x: 0.10, z: 0.16 }, turbulence: 0.18,
       spawn: { x: -24, y: 10, z: 45, yaw: Math.PI * 0.92, pitch: -0.05 },
       observations: [
-        { id: "triton-retrograde", name: "Orbit Retrograde", category: "ORBIT TERTANGKAP", position: [5, 6, -16], radius: 10, source: SOURCES.moons, lead: "Triton mengorbit berlawanan arah dengan rotasi Neptunus.", why: "Orbit retrograde yang ekstrem mendukung gagasan bahwa Triton terbentuk di tempat lain lalu tertangkap gravitasi Neptunus.", facts: ["Triton kemungkinan berasal dari Sabuk Kuiper.", "Penangkapannya mungkin mengacaukan sistem bulan awal Neptunus.", "Orbit Triton perlahan berubah akibat interaksi pasang surut."] },
-        { id: "triton-geyser", name: "Geyser Nitrogen", category: "PLUME", position: [-24, 14, 8], radius: 10, source: SOURCES.moons, lead: "Voyager 2 melihat plume gelap menyembur dari permukaan beku Triton.", why: "Aktivitas pada dunia sedingin Triton menunjukkan bahwa energi dan perubahan permukaan tetap mungkin terjadi jauh dari Matahari.", facts: ["Plume mencapai lebih dari 8 km di atas permukaan.", "Materialnya dikaitkan dengan nitrogen beku dan proses pemanasan musiman.", "Jejak plume dapat terbawa angin tipis Triton."] },
-        { id: "triton-voyager", name: "Jejak Voyager 2", category: "FLYBY 1989", position: [30, 4, 20], radius: 9, source: SOURCES.voyager, lead: "Voyager 2 adalah satu-satunya wahana yang pernah melihat Neptunus dan Triton dari dekat.", why: "Flyby Agustus 1989 masih menjadi fondasi utama pengetahuan resolusi-dekat tentang sistem Neptunus.", facts: ["Voyager 2 melakukan flyby Neptunus pada Agustus 1989.", "Wahana menemukan cincin, bulan, badai, dan struktur atmosfer baru.", "Triton menjadi target flyby penting setelah closest approach ke Neptunus."] }
+        { id: "triton-berlawanan arah", name: "Jalur mengelilingi Berlawanan arah", category: "JALUR MENGELILINGI TERTANGKAP", position: [5, 6, -16], radius: 10, source: SOURCES.moons, lead: "Triton mengelilingi berlawanan arah dengan putaran Neptunus.", why: "Jalur mengelilingi berlawanan arah yang sangat kuat mendukung gagasan bahwa Triton terbentuk di tempat lain lalu tertangkap tarikan Neptunus.", facts: ["Triton kemungkinan berasal dari Sabuk Kuiper.", "Penangkapannya mungkin mengacaukan sistem bulan awal Neptunus.", "Jalur mengelilingi Triton perlahan berubah akibat saling pengaruh pasang surut."] },
+        { id: "triton-geyser", name: "Geyser Nitrogen", category: "SEMBURAN", position: [-24, 14, 8], radius: 10, source: SOURCES.moons, lead: "Voyager 2 melihat semburan gelap menyembur dari permukaan beku Triton.", why: "Aktivitas pada dunia sedingin Triton menunjukkan bahwa energi dan perubahan permukaan tetap mungkin terjadi jauh dari Matahari.", facts: ["Semburan mencapai lebih dari 8 km di atas permukaan.", "Bahannya dikaitkan dengan nitrogen beku dan cara pemanasan musiman.", "Jejak semburan dapat terbawa angin tipis Triton."] },
+        { id: "triton-voyager", name: "Jejak Voyager 2", category: "TERBANG LEWAT DEKAT 1989", position: [30, 4, 20], radius: 9, source: SOURCES.voyager, lead: "Voyager 2 adalah satu-satunya robot antariksa yang pernah melihat Neptunus dan Triton dari dekat.", why: "Terbang lewat dekat Agustus 1989 masih menjadi fondasi utama pengetahuan detail-dekat tentang sistem Neptunus.", facts: ["Voyager 2 melakukan terbang lewat dekat Neptunus pada Agustus 1989.", "Robot antariksa menemukan cincin, bulan, badai, dan bentuk udara baru.", "Triton menjadi target terbang lewat dekat penting setelah closest approach ke Neptunus."] }
       ]
     }
   ]);
@@ -512,13 +512,13 @@
         return "KORIDOR CINCIN";
       }
       if (this.destination.id === "triton") {
-        if (pressure < 0.9) return "FLYBY TRITON";
-        if (pressure < 2.0) return "PLUME NITROGEN";
+        if (pressure < 0.9) return "TERBANG LEWAT DEKAT TRITON";
+        if (pressure < 2.0) return "SEMBURAN NITROGEN";
         return "KORIDOR VOYAGER";
       }
-      if (pressure < 0.95) return "AWAN METANA TINGGI";
-      if (pressure < 2.2) return "HAZE / CLOUD DECK";
-      return "ATMOSFER ICE GIANT DALAM";
+      if (pressure < 0.95) return "AWAN GAS metana TINGGI";
+      if (pressure < 2.2) return "KABUT TIPIS / LAPISAN AWAN UTAMA";
+      return "UDARA RAKSASA ES DALAM";
     }
 
     boundaryFactor(position) {
@@ -630,6 +630,8 @@
       this.hudLocation = document.getElementById("neptune-full-hud-location");
       this.hudDepth = document.getElementById("neptune-full-hud-depth");
       this.hudSpeed = document.getElementById("neptune-full-hud-speed");
+      this.hudAltitude = document.getElementById("neptune-full-hud-altitude");
+      this.hudTarget = document.getElementById("neptune-full-hud-target");
       this.hudPressure = document.getElementById("neptune-full-hud-pressure");
       this.hudType = document.getElementById("neptune-full-hud-region-type");
       this.hudQuality = document.getElementById("neptune-full-hud-quality");
@@ -755,7 +757,7 @@
       });
       if (this.qualityLabel) this.qualityLabel.textContent = this.quality.label;
       if (this.hudQuality) this.hudQuality.textContent = this.quality.label;
-      if (this.qualityNote) this.qualityNote.textContent = `Rekomendasi perangkat: ${QUALITY[this.recommendedQuality].label}. Kualitas mengatur jumlah awan, detail atmosfer, detail marker, dan ketajaman renderer.`;
+      if (this.qualityNote) this.qualityNote.textContent = `Rekomendasi perangkat: ${QUALITY[this.recommendedQuality].label}. Kualitas mengatur jumlah awan, detail udara, detail marker, dan ketajaman mesin gambar 3D.`;
       if (this.renderer) {
         this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, this.quality.dpr));
         this.resize();
@@ -933,8 +935,20 @@
       });
     }
 
+    syncSavedDestinationProgress() {
+      for (const destination of DESTINATIONS) {
+        try {
+          const saved = JSON.parse(localStorage.getItem(`${DISCOVERY_PREFIX}${destination.id}`) || "[]");
+          if (Array.isArray(saved) && saved.length > 0) {
+            window.AntaraProgress?.trackFull?.("neptune", destination.id, destination.name);
+          }
+        } catch {}
+      }
+    }
+
     openEntryFlow() {
       if (!this.neptune.active || this.neptune.travelMode || this.neptune.fullExplorationActive) return;
+      this.syncSavedDestinationProgress();
       if (this.neptune.exploring) this.neptune.exitExploration();
       this.state = "configuring";
       this.neptune.fullExplorationActive = true;
@@ -971,7 +985,7 @@
       if (this.renderer) return;
       await this.neptune.prepare();
       const T = this.neptune.THREE;
-      if (!T) throw new Error("WebGL2 tidak tersedia. Eksplorasi penuh Neptunus memerlukan renderer 3D.");
+      if (!T) throw new Error("WebGL2 tidak tersedia. Jelajah penuh Neptunus memerlukan mesin gambar 3D 3D.");
       this.THREE = T;
       const canvas = document.createElement("canvas");
       canvas.className = "neptune-full-canvas";
@@ -1026,7 +1040,7 @@
       const stages = reduced ? [[100, 50, "SIAP TERBANG"]] : [
         [22, 180, "MEMUAT DATA WILAYAH"],
         [48, 220, "MEMBENTUK LINGKUNGAN 3D"],
-        [71, 220, "MENYIAPKAN DINAMIKA LOKAL"],
+        [71, 220, "MENYIAPKAN GERAKAN LOKAL"],
         [91, 200, "MENGUNCI BATAS EKSPLORASI"],
         [100, 180, "SIAP MENJELAJAH"]
       ];
@@ -1069,6 +1083,8 @@
         this.root.classList.remove("is-preparing");
         this.root.classList.add("is-active");
         this.state = "exploring";
+        window.AntaraProgress?.trackFull?.("neptune", destination.id, destination.name);
+        if (this.actionsRoot) this.actionsRoot.hidden = false;
         const compactUi = this.isMobileUi();
         this.infoOpen = !compactUi;
         this.objectiveOpen = !compactUi;
@@ -1076,7 +1092,7 @@
         this.syncPanels();
         this.startLoop();
         this.showTutorial();
-        document.getElementById("announcement").textContent = `Tiba di ${destination.name}. Kamu sekarang menjelajahi simulasi 3D Neptunus.`;
+        document.getElementById("announcement").textContent = `Tiba di ${destination.name}. Kamu sekarang menjelajahi tampilan 3D 3D Neptunus.`;
       } catch (error) {
         console.error("Neptune Full Exploration failed", error);
         if (token !== this.transitionToken) return;
@@ -1200,9 +1216,9 @@
         this.boundaryHint.classList.toggle("is-visible", boundary > 0.3);
         if (boundary > 0.3) {
           const atmospheric = ["super-winds", "dark-spot", "methane-clouds"].includes(this.current?.id);
-          if (this.camera.position.y < this.world.minY + 5) this.boundaryHint.textContent = atmospheric ? "BATAS TEKANAN SIMULASI · KONDISI MAKIN EKSTREM" : "BATAS KORIDOR BAWAH · AUTOPILOT MEMBALIKKAN WAHANA";
-          else if (this.camera.position.y > this.world.maxY - 5) this.boundaryHint.textContent = atmospheric ? "BATAS LAPISAN ATAS · ARUS MEMBALIKKAN WAHANA" : "BATAS KORIDOR ATAS · AUTOPILOT MEMBALIKKAN WAHANA";
-          else this.boundaryHint.textContent = boundary > 0.82 ? (atmospheric ? "BATAS EKSPLORASI · ARUS MEMBALIKKAN WAHANA" : "BATAS EKSPLORASI · AUTOPILOT MENGOREKSI JALUR") : "MENDEKATI BATAS EKSPLORASI";
+          if (this.camera.position.y < this.world.minY + 5) this.boundaryHint.textContent = atmospheric ? "BATAS TEKANAN TAMPILAN 3D · KONDISI MAKIN SANGAT BERAT" : "BATAS KORIDOR BAWAH · AUTOPILOT MEMBALIKKAN ROBOT ANTARIKSA";
+          else if (this.camera.position.y > this.world.maxY - 5) this.boundaryHint.textContent = atmospheric ? "BATAS LAPISAN ATAS · ARUS MEMBALIKKAN ROBOT ANTARIKSA" : "BATAS KORIDOR ATAS · AUTOPILOT MEMBALIKKAN ROBOT ANTARIKSA";
+          else this.boundaryHint.textContent = boundary > 0.82 ? (atmospheric ? "BATAS EKSPLORASI · ARUS MEMBALIKKAN ROBOT ANTARIKSA" : "BATAS EKSPLORASI · AUTOPILOT MENGOREKSI JALUR") : "MENDEKATI BATAS EKSPLORASI";
         }
       }
     }
@@ -1232,7 +1248,7 @@
         else {
           const [x, y, z] = next.position;
           const distance = Math.hypot(this.camera.position.x - x, this.camera.position.y - y, this.camera.position.z - z);
-          this.nextTargetDistance.textContent = `${distance.toFixed(distance < 10 ? 1 : 0)} unit simulasi · dekati penanda`;
+          this.nextTargetDistance.textContent = `${distance.toFixed(distance < 10 ? 1 : 0)} unit tampilan 3D · dekati penanda`;
         }
       }
     }
@@ -1243,7 +1259,6 @@
       const fresh = !this.discovered.has(observation.id);
       this.discovered.add(observation.id);
       this.saveDiscoveryState();
-      if (fresh) window.AntaraProgress?.trackFull?.("neptune", `${this.current.id}:${observation.id}`, `${this.current.name} - ${observation.name}`);
       this.activeObservation = observation;
       this.observationPrompt.hidden = true;
       this.observationTitle.textContent = observation.name;
@@ -1296,7 +1311,7 @@
     buildObjectives() {
       if (!this.current || !this.objectivesList) return;
       if (this.objectivesRegion) this.objectivesRegion.textContent = this.current.name;
-      if (this.objectivesIntro) this.objectivesIntro.textContent = "Terbang mendekati penanda ilmiah. Saat cukup dekat, tekan E atau tombol AMATI untuk mencatat temuan.";
+      if (this.objectivesIntro) this.objectivesIntro.textContent = "Terbang mendekati penanda sains. Saat cukup dekat, tekan E atau tombol AMATI untuk mencatat temuan.";
       const fragment = document.createDocumentFragment();
       this.current.observations.forEach((observation, index) => {
         const done = this.discovered.has(observation.id);
@@ -1320,7 +1335,7 @@
       this.hudLocation.textContent = destination.name;
       this.hudType.textContent = destination.category;
       this.hudQuality.textContent = this.quality.label;
-      this.hudData.textContent = "NASA / JPL · VOYAGER 2 · MODEL NEPTUNUS EDUKASI TERKOMPRESI";
+      this.hudData.textContent = "NASA / JPL · VOYAGER 2 · MODEL SEDERHANA NEPTUNUS";
       this.infoName.textContent = destination.name;
       this.infoType.textContent = `${destination.category} · ${destination.descriptor}`;
       this.infoCoords.textContent = destination.locationLabel;
@@ -1341,10 +1356,24 @@
       if (!this.world || !this.camera) return;
       const pressure = this.world.pressureAt(this.camera.position.y);
       const depth = this.world.maxY - this.camera.position.y;
-      this.hudDepth.textContent = `${depth.toFixed(1)} KM RELATIF · ${this.world.layerAtPressure(pressure)}`;
+      this.hudDepth.textContent = `${depth.toFixed(1)} KM CUKUP · ${this.world.layerAtPressure(pressure)}`;
       this.hudSpeed.textContent = `${Math.round(this.speed)} M/S SIM`;
+      const altitude = Math.max(0, this.camera.position.y - this.world.minY);
+      if (this.hudAltitude) this.hudAltitude.textContent = `${altitude.toFixed(1)} KM CUKUP`;
+      const remaining = this.current?.observations?.filter(obs => !this.discovered.has(obs.id)) || [];
+      if (this.hudTarget) {
+        if (!remaining.length) this.hudTarget.textContent = "SELESAI";
+        else {
+          let nearestDistance = Infinity;
+          for (const obs of remaining) {
+            const [x, y, z] = obs.position;
+            nearestDistance = Math.min(nearestDistance, Math.hypot(this.camera.position.x - x, this.camera.position.y - y, this.camera.position.z - z));
+          }
+          this.hudTarget.textContent = `${nearestDistance.toFixed(nearestDistance < 10 ? 1 : 0)} UNIT`;
+        }
+      }
       if (["rings-arcs", "triton"].includes(this.current.id)) {
-        this.hudPressure.textContent = this.current.id === "rings-arcs" ? "VAKUM · RING SIM" : "VAKUM · FLYBY";
+        this.hudPressure.textContent = this.current.id === "rings-arcs" ? "VAKUM · RING SIM" : "VAKUM · TERBANG LEWAT DEKAT";
       } else {
         this.hudPressure.textContent = `${pressure.toFixed(pressure < 1 ? 2 : 1)} BAR SIM`;
       }
@@ -1458,18 +1487,14 @@
     }
 
     showTutorial() {
-      let seen = false;
-      try { seen = sessionStorage.getItem("antara-neptune-pov-tutorial") === "1"; } catch {}
-      if (seen) return;
       this.tutorial.classList.add("is-visible");
-      window.setTimeout(() => this.hideTutorial(false), 9000);
+      window.clearTimeout(this.tutorialTimeout);
+      this.tutorialTimeout = window.setTimeout(() => this.hideTutorial(false), 9000);
     }
 
-    hideTutorial(persist = false) {
+    hideTutorial() {
       this.tutorial.classList.remove("is-visible");
-      if (persist) {
-        try { sessionStorage.setItem("antara-neptune-pov-tutorial", "1"); } catch {}
-      }
+      window.clearTimeout(this.tutorialTimeout);
     }
 
     showError(error) {

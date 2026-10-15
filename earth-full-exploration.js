@@ -2,7 +2,7 @@
 
 (() => {
   const TERRARIUM_TEMPLATE = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png";
-  const MAPZEN_SOURCE = "Mapzen Terrain Tiles · Amazon Public Dataset";
+  const MAPZEN_SOURCE = "Mapzen Permukaan 3D Tiles · Amazon Public Dataset";
   const KM_PER_DEG_LAT = 111.32;
   const EARTH_RADIUS_KM = 6371.0088;
   const DEG = Math.PI / 180;
@@ -38,14 +38,14 @@
       feature: "Puncak Everest",
       infoLabel: "GUNUNG · HIMALAYA",
       definition: "Puncak Everest adalah puncak gunung tertinggi di Bumi jika diukur dari permukaan laut. Puncaknya berada di Pegunungan Himalaya, tepat di perbatasan Nepal dan Tibet, Tiongkok.",
-      sourceLabel: "Terrarium DEM · global SRTM / open elevation composite",
-      sourceDetail: "Mapzen Terrain Tiles menggabungkan SRTM 30 m secara global bersama sumber elevasi terbuka lain. Bentuk terrain yang dirender berasal dari nilai elevasi tile, bukan noise procedural.",
+      sourceLabel: "Terrarium DATA TINGGI-RENDAH · di seluruh planet SRTM / open elevation composite",
+      sourceDetail: "Mapzen Permukaan 3D Tiles menggabungkan SRTM 30 m secara di seluruh planet bersama sumber ketinggian terbuka lain. Bentuk permukaan 3D yang dirender berasal dari nilai ketinggian tile, bukan noise buatan komputer.",
       startAltitude: 3.2,
       maxClearance: 14,
       pitch: -0.22,
       yaw: 0.02,
-      descriptor: "Kenali Everest dan relief Himalaya lewat punggungan tinggi, lembah dalam, dan medan bersalju.",
-      educational: ["Everest berada di rangkaian Pegunungan Himalaya.", "Punggungan dan lembah membantu kita membaca bentuk pegunungan.", "Himalaya terbentuk karena tumbukan Lempeng India dan Eurasia."]
+      descriptor: "Kenali Everest dan bentuk naik-turun tanah Himalaya lewat punggungan tinggi, lembah dalam, dan medan bersalju.",
+      educational: ["Everest berada di rangkaian Pegunungan Himalaya.", "Punggungan dan lembah membantu kita melihat bentuk pegunungan.", "Himalaya terbentuk karena tabrakan Lempeng India dan Eurasia."]
     },
     {
       id: "mariana",
@@ -58,16 +58,16 @@
       terrainStyle: "abyss",
       feature: "Challenger Deep",
       infoLabel: "PALUNG LAUT · SAMUDRA PASIFIK",
-      definition: "Challenger Deep adalah bagian terdalam yang diketahui di Palung Mariana, sebuah palung laut sangat dalam di Samudra Pasifik bagian barat. Di sini, dasar laut berada jauh di bawah permukaan laut.",
-      sourceLabel: "Terrarium bathymetry · NOAA ETOPO1 composite",
-      sourceDetail: "Mapzen memakai NOAA ETOPO1 untuk mengisi bathymetry. Nilai negatif dipertahankan sebagai kedalaman di bawah muka laut.",
+      definition: "Challenger Deep adalah bagian terdalam yang diketahui di Palung Mariana, sebuah lembah sangat dalam di laut sangat dalam di Samudra Pasifik bagian barat. Di sini, dasar laut berada jauh di bawah permukaan laut.",
+      sourceLabel: "Terrarium kedalaman laut · NOAA ETOPO1 composite",
+      sourceDetail: "Mapzen memakai NOAA ETOPO1 untuk mengisi kedalaman laut. Nilai negatif dipertahankan sebagai kedalaman di bawah muka laut.",
       startAltitude: 9.0,
       startAbsoluteY: -1.1,
       maxClearance: 12,
       pitch: -0.16,
       yaw: 0.08,
       descriptor: "Turun ke Palung Mariana dan lihat bagaimana dasar samudra membentuk lembah panjang yang sangat dalam.",
-      educational: ["Challenger Deep berada di dalam sistem Palung Mariana.", "Bathymetry adalah pemetaan bentuk dan kedalaman dasar laut.", "Palung Mariana berkaitan dengan proses subduksi lempeng tektonik."]
+      educational: ["Challenger Deep berada di dalam sistem Palung Mariana.", "Kedalaman laut adalah pembuatan peta bentuk dan kedalaman dasar laut.", "Palung Mariana berhubungan dengan cara subduksi lempeng gerakan kulit planet."]
     },
     {
       id: "maunakea",
@@ -80,15 +80,15 @@
       terrainStyle: "volcanic",
       feature: "Mauna Kea",
       infoLabel: "GUNUNG API PERISAI · HAWAIʻI",
-      definition: "Mauna Kea adalah gunung api perisai besar di Pulau Hawaiʻi. Bagian yang terlihat di atas laut hanyalah sebagian dari tubuh gunungnya, karena lerengnya terus berlanjut sampai ke dasar samudra.",
-      sourceLabel: "Terrarium DEM + bathymetry · open elevation composite",
-      sourceDetail: "Terrain mempertahankan elevasi darat dan nilai negatif bathymetry sehingga konteks gunung di atas serta di bawah muka laut dapat dijelaskan dalam satu model.",
+      definition: "Mauna Kea adalah gunung api yang sangat lebar besar di Pulau Hawaiʻi. Bagian yang terlihat di atas laut hanyalah sebagian dari tubuh gunungnya, karena lerengnya terus berlanjut sampai ke dasar samudra.",
+      sourceLabel: "Terrarium DATA TINGGI-RENDAH + kedalaman laut · open elevation composite",
+      sourceDetail: "Permukaan 3D mempertahankan ketinggian darat dan nilai negatif kedalaman laut sehingga gambaran gunung di atas serta di bawah muka laut dapat dijelaskan dalam satu model.",
       startAltitude: 3.0,
       maxClearance: 13,
       pitch: -0.24,
       yaw: -0.05,
       descriptor: "Ikuti Mauna Kea dari puncak hingga lerengnya dan pahami kenapa gunung ini tidak berhenti di garis pantai.",
-      educational: ["Mauna Kea adalah gunung api perisai yang tumbuh dari dasar samudra.", "Muka laut membantu memisahkan bagian gunung yang terlihat dan yang berada di bawah air.", "Lerengnya yang luas merupakan ciri khas gunung api perisai."]
+      educational: ["Mauna Kea adalah gunung api yang sangat lebar yang tumbuh dari dasar samudra.", "Muka laut membantu memisahkan bagian gunung yang terlihat dan yang berada di bawah air.", "Lerengnya yang luas adalah ciri khas gunung api yang sangat lebar."]
     },
     {
       id: "grandcanyon",
@@ -101,15 +101,15 @@
       terrainStyle: "canyon",
       feature: "Grand Canyon",
       infoLabel: "NGARAI · ARIZONA, AMERIKA SERIKAT",
-      definition: "Grand Canyon adalah ngarai raksasa di Arizona yang dipahat terutama oleh Sungai Colorado bersama proses erosi lainnya selama waktu geologi yang sangat panjang. Dindingnya membuka lapisan batuan dari masa yang berbeda.",
-      sourceLabel: "Terrarium DEM · USGS/open elevation composite",
-      sourceDetail: "Di Amerika Serikat Mapzen memasukkan data elevasi USGS resolusi tinggi ke mosaik Terrain Tiles. Terrain tetap berasal dari DEM nyata.",
+      definition: "Grand Canyon adalah ngarai raksasa di Arizona yang dipahat terutama oleh Sungai Colorado bersama cara erosi lainnya selama waktu tanah dan batu yang sangat panjang. Dindingnya membuka lapisan batuan dari masa yang berbeda.",
+      sourceLabel: "Terrarium DATA TINGGI-RENDAH · USGS/open elevation composite",
+      sourceDetail: "Di Amerika Serikat Mapzen memasukkan data ketinggian USGS sangat jelas ke mosaik Permukaan 3D Tiles. Permukaan 3D tetap berasal dari DATA TINGGI-RENDAH nyata.",
       startAltitude: 1.8,
       maxClearance: 10,
       pitch: -0.24,
       yaw: 0.18,
-      descriptor: "Terbang di antara dinding Grand Canyon dan lihat bagaimana sungai, erosi, serta perbedaan elevasi membentuk ngarai.",
-      educational: ["Grand Canyon adalah ngarai besar yang dilalui Sungai Colorado.", "Rim adalah tepi dataran tinggi di bagian atas ngarai.", "Erosi perlahan mengikis dan memindahkan batuan hingga membentuk relief yang kita lihat sekarang."]
+      descriptor: "Terbang di antara dinding Grand Canyon dan lihat bagaimana sungai, erosi, serta perbedaan ketinggian membentuk ngarai.",
+      educational: ["Grand Canyon adalah ngarai besar yang dilalui Sungai Colorado.", "Rim adalah tepi dataran tinggi di bagian atas ngarai.", "Erosi perlahan mengikis dan memindahkan batuan hingga membentuk bentuk naik-turun tanah yang kita lihat sekarang."]
     },
     {
       id: "antarctica",
@@ -122,15 +122,15 @@
       terrainStyle: "ice",
       feature: "Dataran Tinggi Antarktika",
       infoLabel: "DATARAN ES · ANTARKTIKA TIMUR",
-      definition: "Dataran Tinggi Antarktika adalah wilayah pedalaman Antarktika yang tertutup lapisan es sangat tebal dan berada pada elevasi tinggi. Eksplorasi ini menampilkan bentuk permukaan esnya, bukan batuan dasar yang tersembunyi jauh di bawah es.",
-      sourceLabel: "Terrarium surface elevation · global open elevation composite",
-      sourceDetail: "Mode ini menampilkan elevasi permukaan yang tersedia pada mosaik global. Ini BUKAN visualisasi bedrock sub-ice dan tidak dipresentasikan sebagai topografi di bawah lapisan es.",
+      definition: "Dataran Tinggi Antarktika adalah wilayah pedalaman Antarktika yang tertutup lapisan es sangat tebal dan berada pada ketinggian tinggi. Eksplorasi ini menampilkan bentuk permukaan esnya, bukan batuan dasar yang tersembunyi jauh di bawah es.",
+      sourceLabel: "Terrarium surface elevation · di seluruh planet open elevation composite",
+      sourceDetail: "Mode ini menampilkan ketinggian permukaan yang tersedia pada mosaik di seluruh planet. Ini BUKAN gambar bantu belajar bedrock sub-ice dan tidak dipresentasikan sebagai bentuk tinggi-rendah tanah di bawah lapisan es.",
       startAltitude: 2.2,
       maxClearance: 12,
       pitch: -0.15,
       yaw: -0.12,
       descriptor: "Jelajahi pedalaman Antarktika Timur dan bedakan permukaan lapisan es dari batuan yang tersembunyi di bawahnya.",
-      educational: ["Yang terlihat di mode ini adalah permukaan lapisan es.", "Wilayah pedalaman Antarktika dapat berada jauh dari garis pantai dan pada elevasi tinggi.", "Bentuk permukaan es dan bentuk batuan dasar di bawahnya tidak selalu sama."]
+      educational: ["Yang terlihat di mode ini adalah permukaan lapisan es.", "Wilayah pedalaman Antarktika dapat berada jauh dari garis pantai dan pada ketinggian tinggi.", "Bentuk permukaan es dan bentuk batuan dasar di bawahnya tidak selalu sama."]
     }
   ]);
 
@@ -158,7 +158,7 @@
     }),
     antarctica: Object.freeze({
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/36000/36839/Antarctica_AMO_2009027_lrg.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1600",
-      alt: "Citra satelit Antarktika",
+      alt: "Gambar satelit Antarktika",
       caption: "Antarktika · mosaik MODIS · NASA Earth Observatory"
     })
   });
@@ -175,41 +175,41 @@
     everest: {
       intro: "Kenali dulu bagian penting Himalaya, lalu dekati setiap titik untuk melihat bagaimana gunung, punggungan, dan lereng saling terhubung.",
       observations: [
-        { id:"everest-summit", title:"Puncak Everest", type:"TAHUKAH KAMU?", x:0, z:0, radius:5.5, lead:"Puncak Everest adalah titik tertinggi di Bumi jika diukur dari permukaan laut. Puncaknya berada di Pegunungan Himalaya, di perbatasan Nepal dan Tibet, Tiongkok.", why:"Everest membantu kita melihat seberapa ekstrem perbedaan ketinggian di Himalaya. Puncak, punggungan, dan lembah di sekitarnya membentuk satu sistem pegunungan besar.", sections:[["COBA PERHATIKAN","Lihat bagaimana medan naik tajam menuju bagian tinggi lalu turun lagi ke lembah. Bentuk besar ini mengikuti data elevasi wilayah Everest."],["KOK BISA SETINGGI INI?","Himalaya terus terangkat karena Lempeng India bergerak menekan Lempeng Eurasia. Prosesnya sangat lambat, tetapi berlangsung selama jutaan tahun."]] },
-        { id:"everest-ridge", title:"Punggungan Himalaya", type:"LIHAT DEH!", x:6, z:-5, radius:4.5, lead:"Punggungan Himalaya adalah jalur medan tinggi yang menghubungkan satu bagian pegunungan dengan bagian lainnya. Jadi pegunungan bukan kumpulan puncak yang berdiri sendiri.", why:"Dengan mengikuti punggungan, kamu bisa melihat arah memanjang pegunungan dan bagaimana lereng turun ke lembah di kedua sisinya.", sections:[["IKUTI GARIS TINGGINYA","Gerakkan kamera sepanjang bagian yang tetap tinggi. Coba bandingkan bentuk lereng di sisi kiri dan kanan."],["BUKAN CUMA TEKSTUR","Salju dan batu membantu tampilannya terasa nyata, tetapi bentuk punggungan utamanya tetap mengikuti data elevasi."]] },
-        { id:"everest-relief", title:"Relief dan Lereng", type:"COBA PERHATIKAN!", x:-6, z:5, radius:4.5, lead:"Relief adalah perbedaan tinggi dan rendah pada suatu bentang alam. Di Himalaya, perubahannya bisa sangat besar dalam jarak yang relatif dekat.", why:"Relief yang curam memengaruhi aliran es dan air, jalur pendakian, hingga pola cuaca lokal di sekitar pegunungan.", sections:[["BANDINGKAN TINGGINYA","Bergeraklah dari bagian rendah menuju punggungan dan lihat nilai terrain pada HUD berubah."],["BAYANGKAN SKALANYA","Jarak di mode ini menggunakan kilometer. Artinya, lereng dan lembah yang kamu lintasi mewakili bentang alam yang benar-benar luas."]] }
+        { id:"everest-summit", title:"Puncak Everest", type:"TAHUKAH KAMU?", x:0, z:0, radius:5.5, lead:"Puncak Everest adalah titik tertinggi di Bumi jika diukur dari permukaan laut. Puncaknya berada di Pegunungan Himalaya, di perbatasan Nepal dan Tibet, Tiongkok.", why:"Everest membantu kita melihat seberapa sangat kuat perbedaan ketinggian di Himalaya. Puncak, punggungan, dan lembah di sekitarnya membentuk satu sistem pegunungan besar.", sections:[["COBA PERHATIKAN","Lihat bagaimana medan naik tajam menuju bagian tinggi lalu turun lagi ke lembah. Bentuk besar ini mengikuti data ketinggian wilayah Everest."],["KOK BISA SETINGGI INI?","Himalaya terus terangkat karena Lempeng India bergerak menekan Lempeng Eurasia. Prosesnya sangat lambat. Tapi berlangsung selama jutaan tahun."]] },
+        { id:"everest-ridge", title:"Punggungan Himalaya", type:"LIHAT DEH!", x:6, z:-5, radius:4.5, lead:"Punggungan Himalaya adalah jalur medan tinggi yang menghubungkan satu bagian pegunungan dengan bagian lainnya. Jadi pegunungan bukan kumpulan puncak yang berdiri sendiri.", why:"Dengan mengikuti punggungan, kamu bisa melihat arah memanjang pegunungan dan bagaimana lereng turun ke lembah di kedua sisinya.", sections:[["IKUTI GARIS TINGGINYA","Gerakkan kamera sepanjang bagian yang tetap tinggi. Coba bandingkan bentuk lereng di sisi kiri dan kanan."],["BUKAN CUMA TEKSTUR","Salju dan batu membantu tampilannya terasa nyata. Tapi bentuk punggungan utamanya tetap mengikuti data ketinggian."]] },
+        { id:"everest-bentuk naik-turun tanah", title:"Bentuk naik-turun tanah dan Lereng", type:"COBA PERHATIKAN!", x:-6, z:5, radius:4.5, lead:"Bentuk naik-turun tanah adalah perbedaan tinggi dan rendah pada suatu bentang alam. Di Himalaya, perubahannya bisa sangat besar dalam jarak yang cukup dekat.", why:"Bentuk naik-turun tanah yang curam mengubah aliran es dan air, jalur pendakian, hingga pola cuaca lokal di sekitar pegunungan.", sections:[["BANDINGKAN TINGGINYA","Bergeraklah dari bagian rendah menuju punggungan dan lihat nilai permukaan 3D pada HUD berubah."],["BAYANGKAN SKALANYA","Jarak di mode ini menggunakan kilometer. Artinya, lereng dan lembah yang kamu lintasi mewakili bentang alam yang benar-benar luas."]] }
       ]
     },
     mariana: {
       intro: "Kenali bentuk Palung Mariana dari dasar lautnya, lalu amati Challenger Deep, sumbu palung, dan perubahan lingkungan saat bergerak makin dalam.",
       observations: [
-        { id:"mariana-deep", title:"Challenger Deep", type:"TERNYATA...", x:0, z:0, radius:6, lead:"Challenger Deep adalah bagian terdalam yang diketahui di Palung Mariana. Lokasinya berada jauh di bawah permukaan Samudra Pasifik.", why:"Titik ini menunjukkan bahwa dasar samudra tidak rata. Ada pegunungan, dataran, dan palung yang perbedaan kedalamannya bisa sangat besar.", sections:[["LIHAT ANGKA KEDALAMAN","Nilai terrain negatif berarti titik tersebut berada di bawah muka laut. Semakin besar nilai kedalamannya, semakin jauh posisi dasar laut dari permukaan."],["BUKAN LUBANG ACAK","Challenger Deep berada di dalam sistem palung yang memanjang. Bentuk terrain di mode ini berasal dari data bathymetry, bukan lubang yang dibuat secara acak."]] },
-        { id:"mariana-axis", title:"Sumbu Palung", type:"COBA PERHATIKAN!", x:7, z:-4, radius:5, lead:"Sumbu palung adalah jalur bagian terdalam yang memanjang mengikuti bentuk utama sebuah palung laut. Jadi Palung Mariana bukan sekadar satu lubang bulat di dasar samudra.", why:"Bentuk memanjang ini berkaitan dengan batas lempeng tektonik. Di wilayah Mariana, salah satu lempeng bergerak masuk ke bawah lempeng lainnya melalui proses yang disebut subduksi.", sections:[["IKUTI ARAHNYA","Terbang mengikuti bagian dasar yang lebih rendah. Kamu akan melihat lembah lautnya terus memanjang."],["APA ITU SUBDUKSI?","Subduksi terjadi ketika satu lempeng tektonik menunjam ke bawah lempeng lain. Proses ini dapat membentuk palung laut yang sangat dalam."]] },
-        { id:"mariana-water", title:"Kolom Air Laut Dalam", type:"TAHUKAH KAMU?", x:-6, z:5, radius:5, lead:"Kolom air adalah seluruh lapisan air dari permukaan laut sampai ke dasar samudra. Di Palung Mariana, jarak vertikal ini luar biasa besar.", why:"Semakin dalam kita turun, cahaya Matahari semakin sulit menembus air. Lingkungan laut dalam pun menjadi gelap, dingin, dan memiliki tekanan sangat tinggi.", sections:[["COBA LIHAT SUASANANYA","Saat kamera turun, lingkungan dibuat semakin gelap dan kebiruan untuk membantu memberi rasa kedalaman."],["INGAT YA","Kabut dan partikel air hanyalah bantuan visual. Bentuk dasar lautnya tetap mengikuti data bathymetry."]] }
+        { id:"mariana-deep", title:"Challenger Deep", type:"TERNYATA...", x:0, z:0, radius:6, lead:"Challenger Deep adalah bagian terdalam yang diketahui di Palung Mariana. Lokasinya berada jauh di bawah permukaan Samudra Pasifik.", why:"Titik ini menunjukkan bahwa dasar samudra tidak rata. Ada pegunungan, dataran, dan palung yang perbedaan kedalamannya bisa sangat besar.", sections:[["LIHAT ANGKA KEDALAMAN","Nilai permukaan 3D negatif berarti titik tersebut berada di bawah muka laut. Semakin besar nilai kedalamannya, semakin jauh posisi dasar laut dari permukaan."],["BUKAN LUBANG ACAK","Challenger Deep berada di dalam sistem palung yang memanjang. Bentuk permukaan 3D di mode ini berasal dari data kedalaman laut, bukan lubang yang dibuat secara acak."]] },
+        { id:"mariana-axis", title:"Sumbu Palung", type:"COBA PERHATIKAN!", x:7, z:-4, radius:5, lead:"Sumbu palung adalah jalur bagian terdalam yang memanjang mengikuti bentuk utama sebuah lembah sangat dalam di laut. Jadi Palung Mariana bukan sekadar satu lubang bulat di dasar samudra.", why:"Bentuk memanjang ini berhubungan dengan batas lempeng gerakan kulit planet. Di wilayah Mariana, salah satu lempeng bergerak masuk ke bawah lempeng lainnya melalui cara yang disebut subduksi.", sections:[["IKUTI ARAHNYA","Terbang mengikuti bagian dasar yang lebih rendah. Kamu akan melihat lembah lautnya terus memanjang."],["APA ITU SUBDUKSI?","Subduksi terjadi ketika satu lempeng gerakan kulit planet menunjam ke bawah lempeng lain. Cara ini dapat membentuk lembah sangat dalam di laut yang sangat dalam."]] },
+        { id:"mariana-water", title:"Kolom Air Laut Dalam", type:"TAHUKAH KAMU?", x:-6, z:5, radius:5, lead:"Kolom air adalah seluruh lapisan air dari permukaan laut sampai ke dasar samudra. Di Palung Mariana, jarak atas-bawah ini luar biasa besar.", why:"Semakin dalam kita turun, cahaya Matahari semakin sulit menembus air. Lingkungan laut dalam pun menjadi gelap, dingin, dan punya tekanan sangat tinggi.", sections:[["COBA LIHAT SUASANANYA","Saat kamera turun, lingkungan dibuat semakin gelap dan kebiruan untuk membantu memberi rasa kedalaman."],["INGAT YA","Kabut dan butiran kecil air hanyalah bantuan visual. Bentuk dasar lautnya tetap mengikuti data kedalaman laut."]] }
       ]
     },
     maunakea: {
-      intro: "Kenali Mauna Kea sebagai satu gunung besar dari dasar samudra hingga puncaknya, lalu amati puncak, lereng vulkanik, dan hubungan gunung dengan muka laut.",
+      intro: "Kenali Mauna Kea sebagai satu gunung besar dari dasar samudra hingga puncaknya, lalu amati puncak, lereng dari gunung api, dan hubungan gunung dengan muka laut.",
       observations: [
-        { id:"mauna-summit", title:"Puncak Mauna Kea", type:"TAHUKAH KAMU?", x:0, z:0, radius:5.5, lead:"Mauna Kea adalah gunung api perisai besar di Pulau Hawaiʻi. Puncaknya berada lebih dari 4 kilometer di atas permukaan laut, tetapi tubuh gunungnya masih berlanjut jauh ke bawah laut.", why:"Kalau hanya melihat bagian yang muncul di atas air, ukuran Mauna Kea mudah terasa lebih kecil daripada sebenarnya. Gunung ini tumbuh dari dasar samudra.", sections:[["LIHAT LERENGNYA","Perhatikan bagaimana lereng menyebar jauh dari pusat puncak. Bentuk yang lebar ini khas gunung api perisai."],["SATU GUNUNG BESAR","Bagian pulau yang terlihat dan bagian gunung di bawah laut tetap merupakan bagian dari sistem vulkanik yang sama."]] },
-        { id:"mauna-slope", title:"Lereng Vulkanik", type:"LIHAT DEH!", x:7, z:4, radius:5, lead:"Lereng vulkanik adalah sisi gunung yang terbentuk dari tumpukan material hasil aktivitas gunung api. Pada gunung api perisai seperti Mauna Kea, lerengnya cenderung luas dan tidak setajam banyak gunung berbentuk kerucut.", why:"Lava yang relatif cair dapat mengalir lebih jauh sebelum membeku. Dari waktu ke waktu, aliran itu membantu membangun tubuh gunung yang lebar.", sections:[["BANDINGKAN BENTUKNYA","Coba bandingkan kemiringan Mauna Kea dengan relief tajam di Himalaya. Keduanya sama-sama tinggi, tetapi bentuk bentang alamnya berbeda."],["TEKSTUR VS BENTUK","Detail batu membantu permukaan terlihat lebih hidup, sedangkan bentuk lereng besarnya mengikuti data elevasi."]] },
-        { id:"mauna-sea", title:"Gunung dan Muka Laut", type:"COBA PERHATIKAN!", x:-7, z:-5, radius:5, lead:"Muka laut adalah acuan ketinggian nol yang memisahkan bagian daratan dari bagian yang berada di bawah air. Pada Mauna Kea, acuan ini memotong tubuh gunung yang sebenarnya jauh lebih besar.", why:"Dengan melihat daratan dan dasar laut dalam satu model, kita bisa memahami bahwa garis pantai bukanlah tempat gunung itu berakhir.", sections:[["CARI GARIS NOL","Permukaan air menjadi petunjuk sederhana untuk melihat bagian gunung yang berada di atas dan di bawah muka laut."],["COBA BAYANGKAN","Kalau air samudra dihilangkan, lereng Mauna Kea akan terlihat terus turun menuju dasar laut."]] }
+        { id:"mauna-summit", title:"Puncak Mauna Kea", type:"TAHUKAH KAMU?", x:0, z:0, radius:5.5, lead:"Mauna Kea adalah gunung api yang sangat lebar besar di Pulau Hawaiʻi. Puncaknya berada lebih dari 4 kilometer di atas permukaan laut. Tapi tubuh gunungnya masih berlanjut jauh ke bawah laut.", why:"Kalau hanya melihat bagian yang muncul di atas air, ukuran Mauna Kea mudah terasa lebih kecil daripada sebenarnya. Gunung ini tumbuh dari dasar samudra.", sections:[["LIHAT LERENGNYA","Perhatikan bagaimana lereng menyebar jauh dari pusat puncak. Bentuk yang lebar ini khas gunung api yang sangat lebar."],["SATU GUNUNG BESAR","Bagian pulau yang terlihat dan bagian gunung di bawah laut tetap adalah bagian dari sistem dari gunung api yang sama."]] },
+        { id:"mauna-slope", title:"Lereng Dari gunung api", type:"LIHAT DEH!", x:7, z:4, radius:5, lead:"Lereng dari gunung api adalah sisi gunung yang terbentuk dari tumpukan bahan hasil aktivitas gunung api. Pada gunung api yang sangat lebar seperti Mauna Kea, lerengnya cenderung luas dan tidak setajam banyak gunung berbentuk kerucut.", why:"Lava yang cukup cair bisa mengalir lebih jauh sebelum membeku. Dari waktu ke waktu, aliran itu membantu membangun tubuh gunung yang lebar.", sections:[["BANDINGKAN BENTUKNYA","Coba bandingkan kemiringan Mauna Kea dengan bentuk naik-turun tanah tajam di Himalaya. Keduanya sama-sama tinggi. Tapi bentuk bentang alamnya berbeda."],["TEKSTUR VS BENTUK","Detail batu membantu permukaan terlihat lebih hidup, sedangkan bentuk lereng besarnya mengikuti data ketinggian."]] },
+        { id:"mauna-sea", title:"Gunung dan Muka Laut", type:"COBA PERHATIKAN!", x:-7, z:-5, radius:5, lead:"Muka laut adalah acuan ketinggian nol yang memisahkan bagian daratan dari bagian yang berada di bawah air. Pada Mauna Kea, acuan ini memotong tubuh gunung yang sebenarnya jauh lebih besar.", why:"Dengan melihat daratan dan dasar laut dalam satu model, kita bisa memahami bahwa garis pantai bukanlah tempat gunung itu berakhir.", sections:[["CARI GARIS NOL","Permukaan air menunjukkan sederhana untuk melihat bagian gunung yang berada di atas dan di bawah muka laut."],["COBA BAYANGKAN","Kalau air samudra dihilangkan, lereng Mauna Kea akan terlihat terus turun menuju dasar laut."]] }
       ]
     },
     grandcanyon: {
-      intro: "Kenali Grand Canyon dari koridor ngarai, bagian rim, dan jejak erosi. Dekati tiap titik untuk melihat bagaimana perbedaan elevasi membentuk bentang alamnya.",
+      intro: "Kenali Grand Canyon dari koridor ngarai, bagian rim, dan jejak erosi. Dekati tiap titik untuk melihat bagaimana perbedaan ketinggian membentuk bentang alamnya.",
       observations: [
-        { id:"canyon-core", title:"Koridor Grand Canyon", type:"LIHAT DEH!", x:0, z:0, radius:5.5, lead:"Grand Canyon adalah ngarai besar di Arizona yang membelah dataran tinggi. Sungai Colorado mengalir melalui bagian dasarnya dan menjadi salah satu pelaku utama pengikisan ngarai.", why:"Koridor ngarai memperlihatkan perbedaan tinggi antara dataran di atas dan lembah di bawah. Dari sinilah skala Grand Canyon mulai terasa.", sections:[["IKUTI BAGIAN RENDAH","Terbang mengikuti jalur yang lebih rendah dan lihat dinding ngarai berdiri di kedua sisinya."],["LAPISAN BATU","Perbedaan warna membantu memperjelas lapisan batuan, tetapi bentuk utama ngarai tetap mengikuti data elevasi."]] },
-        { id:"canyon-rim", title:"Tepi Ngarai", type:"COBA PERHATIKAN!", x:6, z:-5, radius:4.5, lead:"Rim adalah tepi bagian atas Grand Canyon, tempat dataran tinggi tiba-tiba berubah menjadi lereng dan dinding yang turun ke dalam ngarai.", why:"Berdiri di dekat rim membuat perbedaan ketinggian jauh lebih mudah dibaca karena bagian atas dan dasar ngarai bisa dibandingkan secara langsung.", sections:[["BANDINGKAN ELEVASI","Bergeraklah dari rim menuju bagian yang lebih rendah lalu lihat nilai Terrain Lokal pada HUD."],["KENAPA TERLIHAT CURAM?","Perubahan ketinggian dalam jarak pendek membuat dinding ngarai tampak sangat terjal."]] },
-        { id:"canyon-erosion", title:"Jejak Erosi", type:"KENAPA BISA BEGINI?", x:-6, z:5, radius:4.5, lead:"Erosi adalah proses pengikisan dan pemindahan batuan oleh air, angin, es, atau gaya alam lainnya. Di Grand Canyon, proses ini bekerja bersama pengangkatan wilayah selama waktu yang sangat panjang.", why:"Grand Canyon tidak terbentuk dalam satu kejadian. Bentuknya merupakan hasil perubahan sedikit demi sedikit yang terus berlangsung dalam skala waktu geologi.", sections:[["AIR DAN WAKTU","Sungai dan aliran air mengikis batuan, sementara material yang terlepas dibawa menjauh dari tempat asalnya."],["BACA CABANG LEMBAH","Lembah kecil yang bergabung ke koridor utama memberi petunjuk tentang jalur air dan arah pengikisan medan."]] }
+        { id:"canyon-core", title:"Koridor Grand Canyon", type:"LIHAT DEH!", x:0, z:0, radius:5.5, lead:"Grand Canyon adalah ngarai besar di Arizona yang membelah dataran tinggi. Sungai Colorado mengalir melalui bagian dasarnya dan menjadi salah satu pelaku utama pengikisan ngarai.", why:"Koridor ngarai memperlihatkan perbedaan tinggi antara dataran di atas dan lembah di bawah. Dari sinilah skala Grand Canyon mulai terasa.", sections:[["IKUTI BAGIAN RENDAH","Terbang mengikuti jalur yang lebih rendah dan lihat dinding ngarai berdiri di kedua sisinya."],["LAPISAN BATU","Perbedaan warna membantu memperjelas lapisan batuan. Tapi bentuk utama ngarai tetap mengikuti data ketinggian."]] },
+        { id:"canyon-rim", title:"Tepi Ngarai", type:"COBA PERHATIKAN!", x:6, z:-5, radius:4.5, lead:"Rim adalah tepi bagian atas Grand Canyon, tempat dataran tinggi tiba-tiba berubah menjadi lereng dan dinding yang turun ke dalam ngarai.", why:"Berdiri di dekat rim membuat perbedaan ketinggian jauh lebih mudah dibaca karena bagian atas dan dasar ngarai bisa dibandingkan secara langsung.", sections:[["BANDINGKAN KETINGGIAN","Bergeraklah dari rim menuju bagian yang lebih rendah lalu lihat nilai Permukaan 3D Lokal pada HUD."],["KENAPA TERLIHAT CURAM?","Perubahan ketinggian dalam jarak pendek membuat dinding ngarai tampak sangat terjal."]] },
+        { id:"canyon-erosion", title:"Jejak Erosi", type:"KENAPA BISA BEGINI?", x:-6, z:5, radius:4.5, lead:"Erosi adalah cara pengikisan dan pemindahan batuan oleh air, angin, es, atau gaya alam lainnya. Di Grand Canyon, cara ini bekerja bersama pengangkatan wilayah selama waktu yang sangat panjang.", why:"Grand Canyon tidak terbentuk dalam satu kejadian. Bentuknya adalah hasil perubahan sedikit demi sedikit yang terus berlangsung dalam skala waktu tanah dan batu.", sections:[["AIR DAN WAKTU","Sungai dan aliran air mengikis batuan, sementara bahan yang terlepas dibawa menjauh dari tempat asalnya."],["BACA CABANG LEMBAH","Lembah kecil yang bergabung ke koridor utama menunjukkan tentang jalur air dan arah pengikisan medan."]] }
       ]
     },
     antarctica: {
-      intro: "Kenali pedalaman Antarktika Timur lewat dataran tinggi es, bentuk permukaan lapisan es, dan konteks wilayah Vostok. Ingat, yang terlihat adalah permukaan es, bukan batuan di bawahnya.",
+      intro: "Kenali pedalaman Antarktika Timur lewat dataran tinggi es, bentuk permukaan lapisan es, dan gambaran wilayah Vostok. Ingat, yang terlihat adalah permukaan es, bukan batuan di bawahnya.",
       observations: [
-        { id:"antarctica-plateau", title:"Dataran Tinggi Es", type:"TAHUKAH KAMU?", x:0, z:0, radius:6, lead:"Dataran Tinggi Antarktika adalah wilayah luas di pedalaman benua yang tertutup lapisan es dan berada pada elevasi tinggi. Permukaannya terlihat lebih halus dibanding pegunungan berbatu.", why:"Lapisan es Antarktika sangat tebal, sehingga bentuk permukaan yang kita lihat tidak sama dengan bentuk batuan dasar yang tersembunyi jauh di bawahnya.", sections:[["APA YANG KAMU LIHAT?","Mode ini menampilkan elevasi permukaan es. Jadi tonjolan dan cekungan yang tampak adalah bentuk bagian atas lapisan es."],["JANGAN TERTUKAR","Bedrock adalah batuan dasar di bawah es. Untuk melihatnya dengan benar dibutuhkan data khusus yang berbeda dari surface elevation."]] },
-        { id:"antarctica-ice", title:"Permukaan Lapisan Es", type:"COBA PERHATIKAN!", x:7, z:-5, radius:5, lead:"Permukaan lapisan es adalah bagian paling atas dari es Antarktika yang bersentuhan langsung dengan atmosfer. Walaupun dari jauh terlihat rata, permukaannya tetap memiliki perubahan ketinggian.", why:"Perubahan reliefnya sering lebih halus daripada pegunungan berbatu. Karena itu cahaya, bayangan, dan warna membantu mata membaca bentuk permukaan es.", sections:[["LIHAT BAYANGANNYA","Perhatikan perubahan shading saat melewati lereng yang sangat landai. Perubahan kecil itu membantu memperlihatkan kontur medan."],["BENTUKNYA TETAP DARI DATA","Material putih dan biru hanya membantu keterbacaan. Ia tidak menambahkan gunung atau cekungan baru ke terrain."]] },
-        { id:"antarctica-vostok", title:"Wilayah Vostok", type:"TERNYATA...", x:-7, z:5, radius:5, lead:"Vostok adalah kawasan pedalaman Antarktika Timur yang terkenal karena Stasiun Vostok, sebuah stasiun penelitian Rusia. Wilayahnya jauh dari pantai dan berada di atas lapisan es benua yang sangat luas.", why:"Antarktika bukan hanya tebing es di tepi laut. Sebagian besar interiornya adalah hamparan es luas dengan kondisi yang sangat dingin dan elevasi tinggi.", sections:[["LIHAT HORIZONNYA","Bandingkan horizon panjang di sini dengan relief tajam Himalaya atau Grand Canyon. Bentuk bentang alamnya jauh lebih lembut."],["SUASANA VS DATA","Efek dingin dan pencahayaan membantu suasana eksplorasi, tetapi tidak mengubah nilai elevasi yang digunakan terrain."]] }
+        { id:"antarctica-plateau", title:"Dataran Tinggi Es", type:"TAHUKAH KAMU?", x:0, z:0, radius:6, lead:"Dataran Tinggi Antarktika adalah wilayah luas di pedalaman benua yang tertutup lapisan es dan berada pada ketinggian tinggi. Permukaannya terlihat lebih halus dibanding pegunungan berbatu.", why:"Lapisan es Antarktika sangat tebal. Jadi bentuk permukaan yang kita lihat tidak sama dengan bentuk batuan dasar yang tersembunyi jauh di bawahnya.", sections:[["APA YANG KAMU LIHAT?","Mode ini menampilkan ketinggian permukaan es. Jadi tonjolan dan cekungan yang tampak adalah bentuk bagian atas lapisan es."],["JANGAN TERTUKAR","Bedrock adalah batuan dasar di bawah es. Untuk melihatnya dengan benar dibutuhkan data khusus yang berbeda dari surface elevation."]] },
+        { id:"antarctica-ice", title:"Permukaan Lapisan Es", type:"COBA PERHATIKAN!", x:7, z:-5, radius:5, lead:"Permukaan lapisan es adalah bagian paling atas dari es Antarktika yang bersentuhan langsung dengan udara. meski dari jauh terlihat rata, permukaannya tetap punya perubahan ketinggian.", why:"Perubahan bentuk tanahnya sering lebih halus daripada pegunungan berbatu. Karena itu cahaya, bayangan, dan warna membantu mata melihat bentuk permukaan es.", sections:[["LIHAT BAYANGANNYA","Perhatikan perubahan shading saat melewati lereng yang sangat landai. Perubahan kecil itu membantu memperlihatkan kontur medan."],["BENTUKNYA TETAP DARI DATA","Bahan putih dan biru hanya membantu keterbacaan. Ia tidak menambahkan gunung atau cekungan baru ke permukaan 3D."]] },
+        { id:"antarctica-vostok", title:"Wilayah Vostok", type:"TERNYATA...", x:-7, z:5, radius:5, lead:"Vostok adalah kawasan pedalaman Antarktika Timur yang terkenal karena Stasiun Vostok, sebuah stasiun penelitian Rusia. Wilayahnya jauh dari pantai dan berada di atas lapisan es benua yang sangat luas.", why:"Antarktika bukan hanya tebing es di tepi laut. Sebagian besar bagian dalamnya adalah hamparan es luas dengan kondisi yang sangat dingin dan ketinggian tinggi.", sections:[["LIHAT HORIZONNYA","Bandingkan horizon panjang di sini dengan bentuk naik-turun tanah tajam Himalaya atau Grand Canyon. Bentuk bentang alamnya jauh lebih lembut."],["SUASANA VS DATA","Efek dingin dan pencahayaan membantu suasana eksplorasi. Tapi tidak mengubah nilai ketinggian yang digunakan permukaan 3D."]] }
       ]
     }
   });
@@ -273,13 +273,13 @@
           if (settled) return;
           settled = true;
           image.src = "";
-          reject(new Error(`Timeout saat memuat DEM: ${src}`));
+          reject(new Error(`Timeout saat memuat DATA TINGGI-RENDAH: ${src}`));
         }, 16000);
         image.onload = () => {
           if (settled) return;
           settled = true;
           clearTimeout(timer);
-          if (generation !== this.generation) return reject(new Error("Permintaan DEM dibatalkan."));
+          if (generation !== this.generation) return reject(new Error("Permintaan DATA TINGGI-RENDAH dibatalkan."));
           try {
             const canvas = document.createElement("canvas");
             canvas.width = 256;
@@ -300,14 +300,14 @@
             this.trim();
             resolve(tile);
           } catch (error) {
-            reject(new Error(`DEM Terrarium tidak dapat dibaca: ${error.message}`));
+            reject(new Error(`DATA TINGGI-RENDAH Terrarium tidak dapat dibaca: ${error.message}`));
           }
         };
         image.onerror = () => {
           if (settled) return;
           settled = true;
           clearTimeout(timer);
-          reject(new Error(`Tile elevasi real tidak tersedia: ${src}`));
+          reject(new Error(`Tile ketinggian real tidak tersedia: ${src}`));
         };
         image.src = src;
       }).finally(() => this.pending.delete(key));
@@ -438,50 +438,16 @@
         shader.uniforms.uEarthFineScale = { value: fineScale };
         shader.uniforms.uEarthMicroStrength = { value: microStrength };
         shader.vertexShader = shader.vertexShader
-          .replace("#include <common>", "#include <common>\nvarying vec3 vEarthWorldPosition;")
-          .replace("#include <begin_vertex>", "#include <begin_vertex>\nvEarthWorldPosition = (modelMatrix * vec4(transformed, 1.0)).xyz;");
+          .replace("#include <common>", "\n#include <common>\n\nvarying vec3 vEarthWorldPosition; ")
+          .replace("#include <begin_vertex>", "\n#include <begin_vertex>\n\nvEarthWorldPosition = (modelMatrix * vec4(transformed, 1.0)).xyz; ");
         shader.fragmentShader = shader.fragmentShader
-          .replace("#include <common>", `#include <common>
-            varying vec3 vEarthWorldPosition;
-            uniform sampler2D uEarthDetail;
-            uniform sampler2D uEarthBump;
-            uniform sampler2D uEarthRough;
-            uniform float uEarthDetailScale;
-            uniform float uEarthFineScale;
-            uniform float uEarthMicroStrength;
-            float earthTriSample(sampler2D tex, vec3 p, vec3 n, float scale, vec3 phase) {
-              vec3 blend = pow(max(abs(n), vec3(0.0001)), vec3(5.0));
-              blend /= max(blend.x + blend.y + blend.z, 0.0001);
-              float sx = texture2D(tex, p.yz * scale + phase.yz).r;
-              float sy = texture2D(tex, p.xz * scale + phase.xz).r;
-              float sz = texture2D(tex, p.xy * scale + phase.xy).r;
-              return sx * blend.x + sy * blend.y + sz * blend.z;
-            }`)
-          .replace("#include <map_fragment>", `#include <map_fragment>
-            vec3 earthDx = dFdx(vEarthWorldPosition);
-            vec3 earthDy = dFdy(vEarthWorldPosition);
-            vec3 earthGeomNormal = normalize(cross(earthDx, earthDy));
-            if (!gl_FrontFacing) earthGeomNormal = -earthGeomNormal;
-            float earthViewDistance = length(cameraPosition - vEarthWorldPosition);
-            float earthNear = 1.0 - smoothstep(8.0, 48.0, earthViewDistance);
-            float earthBroad = earthTriSample(uEarthDetail, vEarthWorldPosition, earthGeomNormal, uEarthDetailScale, vec3(0.17,0.43,0.71));
-            float earthFine = earthTriSample(uEarthDetail, vEarthWorldPosition, earthGeomNormal, uEarthFineScale, vec3(0.63,0.11,0.29));
-            float earthMicro = (earthBroad - 0.5) * 0.68 + (earthFine - 0.5) * 0.32 * earthNear;
-            diffuseColor.rgb *= clamp(1.0 + earthMicro * uEarthMicroStrength, 0.84, 1.16);`)
-          .replace("#include <normal_fragment_maps>", `#include <normal_fragment_maps>
-            #ifdef USE_BUMPMAP
-              float earthBumpBroad = earthTriSample(uEarthBump, vEarthWorldPosition, earthGeomNormal, uEarthDetailScale * 1.25, vec3(0.31,0.59,0.07));
-              float earthBumpFine = earthTriSample(uEarthBump, vEarthWorldPosition, earthGeomNormal, uEarthFineScale * 1.35, vec3(0.79,0.23,0.47));
-              float earthMicroHeight = (earthBumpBroad - 0.5) * 0.55 + (earthBumpFine - 0.5) * 0.45 * earthNear;
-              vec2 earthMicroSlope = vec2(dFdx(earthMicroHeight), dFdy(earthMicroHeight));
-              normal = perturbNormalArb(-vViewPosition, normal, earthMicroSlope * (4.2 + 2.4 * earthNear), faceDirection);
-            #endif`)
-          .replace("#include <roughnessmap_fragment>", `#include <roughnessmap_fragment>
-            float earthRoughSample = earthTriSample(uEarthRough, vEarthWorldPosition, earthGeomNormal, uEarthDetailScale * 0.9, vec3(0.41,0.19,0.83));
-            roughnessFactor = clamp(roughnessFactor + (earthRoughSample - 0.5) * 0.18, 0.55, 0.99);`);
+          .replace("#include <common>", `\n#include <common>\nvarying vec3 vEarthWorldPosition; uniform sampler2D uEarthDetail; uniform sampler2D uEarthBump; uniform sampler2D uEarthRough; uniform float uEarthDetailScale; uniform float uEarthFineScale; uniform float uEarthMicroStrength; float earthTriSample(sampler2D tex, vec3 p, vec3 n, float scale, vec3 phase) { vec3 blend = pow(max(abs(n), vec3(0.0001)), vec3(5.0)); blend /= max(blend.x + blend.y + blend.z, 0.0001); float sx = texture2D(tex, p.yz * scale + phase.yz).r; float sy = texture2D(tex, p.xz * scale + phase.xz).r; float sz = texture2D(tex, p.xy * scale + phase.xy).r; return sx * blend.x + sy * blend.y + sz * blend.z; }`)
+          .replace("#include <map_fragment>", `\n#include <map_fragment>\nvec3 earthDx = dFdx(vEarthWorldPosition); vec3 earthDy = dFdy(vEarthWorldPosition); vec3 earthGeomNormal = normalize(cross(earthDx, earthDy)); if (!gl_FrontFacing) earthGeomNormal = -earthGeomNormal; float earthViewDistance = length(cameraPosition - vEarthWorldPosition); float earthNear = 1.0 - smoothstep(8.0, 48.0, earthViewDistance); float earthBroad = earthTriSample(uEarthDetail, vEarthWorldPosition, earthGeomNormal, uEarthDetailScale, vec3(0.17,0.43,0.71)); float earthFine = earthTriSample(uEarthDetail, vEarthWorldPosition, earthGeomNormal, uEarthFineScale, vec3(0.63,0.11,0.29)); float earthMicro = (earthBroad - 0.5) * 0.68 + (earthFine - 0.5) * 0.32 * earthNear; diffuseColor.rgb *= clamp(1.0 + earthMicro * uEarthMicroStrength, 0.84, 1.16); `)
+          .replace("#include <normal_fragment_maps>", `\n#include <normal_fragment_maps>\n\n#ifdef USE_BUMPMAP\nfloat earthBumpBroad = earthTriSample(uEarthBump, vEarthWorldPosition, earthGeomNormal, uEarthDetailScale * 1.25, vec3(0.31,0.59,0.07)); float earthBumpFine = earthTriSample(uEarthBump, vEarthWorldPosition, earthGeomNormal, uEarthFineScale * 1.35, vec3(0.79,0.23,0.47)); float earthMicroHeight = (earthBumpBroad - 0.5) * 0.55 + (earthBumpFine - 0.5) * 0.45 * earthNear; vec2 earthMicroSlope = vec2(dFdx(earthMicroHeight), dFdy(earthMicroHeight)); normal = perturbNormalArb(-vViewPosition, normal, earthMicroSlope * (4.2 + 2.4 * earthNear), faceDirection);\n#endif\n`)
+          .replace("#include <roughnessmap_fragment>", `\n#include <roughnessmap_fragment>\nfloat earthRoughSample = earthTriSample(uEarthRough, vEarthWorldPosition, earthGeomNormal, uEarthDetailScale * 0.9, vec3(0.41,0.19,0.83)); roughnessFactor = clamp(roughnessFactor + (earthRoughSample - 0.5) * 0.18, 0.55, 0.99); `);
         material.userData.earthShader = shader;
       };
-      material.customProgramCacheKey = () => `antara-earth-region-material-v3-${this.region.id}-${this.quality.name}`;
+      material.customProgramCacheKey = () => `antara-earth-region-bahan-v3-${this.region.id}-${this.quality.name}`;
       material.needsUpdate = true;
       return material;
     }
@@ -1450,7 +1416,7 @@
       document.getElementById("mission").classList.add("is-earth-full-selecting");
       this.updateQualityPanel();
       this.updateResponsiveUi();
-      document.getElementById("announcement").textContent = "Pilih kualitas grafis sebelum memulai Eksplorasi Pengalaman Penuh Bumi.";
+      document.getElementById("announcement").textContent = "Pilih kualitas grafis sebelum memulai Jelajah Penuh Bumi.";
       requestAnimationFrame(() => this.qualityOptions?.querySelector('[aria-checked="true"]')?.focus({ preventScroll:true }));
     }
 
@@ -1512,12 +1478,12 @@
       this.travelLabel.textContent = switching ? `PINDAH KE ${region.short.toUpperCase()}` : `TURUN KE ${region.short.toUpperCase()}`;
       this.travelVeil.classList.toggle("is-visible", switching);
       this.setLoading(0.04, `MENGUNCI KOORDINAT ${region.short.toUpperCase()}`);
-      document.getElementById("announcement").textContent = `Menyiapkan terrain real ${region.name}.`;
+      document.getElementById("announcement").textContent = `Menyiapkan permukaan 3D real ${region.name}.`;
 
       try {
         await this.prepareRenderer();
         if (token !== this.transitionToken) return;
-        this.setLoading(0.12, "MENGUNDUH TILE ELEVASI REAL");
+        this.setLoading(0.12, "MENGUNDUH TILE KETINGGIAN REAL");
         await this.loadRegionTerrain(region, token);
         if (token !== this.transitionToken) return;
         this.setLoading(1, "WILAYAH SIAP");
@@ -1536,14 +1502,14 @@
       if (this.preparingPromise) return this.preparingPromise;
       const promise = (async () => {
         await this.earth.prepare();
-        if (!this.earth.THREE) throw new Error("Renderer 3D Bumi tidak tersedia pada perangkat ini.");
+        if (!this.earth.THREE) throw new Error("Mesin gambar 3D 3D Bumi tidak tersedia pada perangkat ini.");
         const T = this.earth.THREE;
         this.THREE = T;
         const canvas = document.createElement("canvas");
         canvas.className = "earth-full-canvas";
         canvas.setAttribute("aria-hidden", "true");
         const context = canvas.getContext("webgl2", { alpha:true, antialias:this.quality.name !== "LOW", powerPreference:"high-performance" });
-        if (!context) throw new Error("WebGL2 diperlukan untuk Eksplorasi Pengalaman Penuh Bumi.");
+        if (!context) throw new Error("WebGL2 diperlukan untuk Jelajah Penuh Bumi.");
         this.renderer = new T.WebGLRenderer({ canvas, context, alpha:true, antialias:this.quality.name !== "LOW" });
         this.renderer.outputColorSpace = T.SRGBColorSpace;
         this.renderer.toneMapping = T.ACESFilmicToneMapping;
@@ -1581,7 +1547,7 @@
       this.disposeTerrain();
       this.provider = new TerrariumProvider();
       this.terrain = new EarthTerrainManager(this.THREE, this.scene, this.renderer, this.provider, region, this.quality);
-      await this.terrain.loadCore(progress => this.setLoading(0.12 + progress * 0.68, `MEMBANGUN TERRAIN REAL · ${Math.round(progress * 100)}%`));
+      await this.terrain.loadCore(progress => this.setLoading(0.12 + progress * 0.68, `MEMBANGUN PERMUKAAN 3D REAL · ${Math.round(progress * 100)}%`));
       if (token !== this.transitionToken) return;
       this.setCameraForRegion(region, true);
       this.updateRegionUI();
@@ -1677,7 +1643,7 @@
       this.updateHUD(true);
       this.updateEducation(true);
       window.AntaraProgress?.trackFull("earth", this.region.id, this.region.name);
-      document.getElementById("announcement").textContent = `Eksplorasi Bumi aktif di ${this.region.name}. Ikuti tujuan eksplorasi dan amati titik menarik di sekitar terrain.`;
+      document.getElementById("announcement").textContent = `Eksplorasi Bumi aktif di ${this.region.name}. Ikuti tujuan eksplorasi dan amati titik menarik di sekitar permukaan 3D.`;
     }
 
     addLookDelta(dx, dy, source = "mouse") {
@@ -1883,7 +1849,7 @@
         }
       }
       this.infoSource.href = "https://www.mapzen.com/blog/terrain-tile-service/";
-      this.infoSource.textContent = "Provenance terrain: Mapzen / Amazon Public Dataset ↗";
+      this.infoSource.textContent = "Provenance permukaan 3D: Mapzen / Amazon Public Dataset ↗";
       this.root.dataset.region = region.id;
       this.updateSelectorCurrentRegion();
     }
@@ -1929,7 +1895,7 @@
       this.closeObservationCard(false);
       this.objectivesRegion.textContent = this.region.short;
       const education = EARTH_EDUCATION[this.region.id];
-      this.objectivesIntro.textContent = education?.intro || "Jelajahi wilayah dan amati bentuk terrain di sekitarmu.";
+      this.objectivesIntro.textContent = education?.intro || "Jelajahi wilayah dan amati bentuk permukaan 3D di sekitarmu.";
       this.terrain?.createEducationalMarkers(education?.observations || []);
       this.renderObjectives();
       this.updateDiscoveryUI();
@@ -2028,8 +1994,8 @@
         return section;
       }));
       this.observationDeep.replaceChildren(...[
-        `SUMBER MEDAN: ${this.region.sourceLabel}. Data ini dipakai untuk membentuk tinggi dan rendah terrain yang kamu jelajahi.`,
-        "Tekstur, kabut, air, salju, dan pencahayaan membantu suasana serta keterbacaan. Bentuk topografi utamanya tetap mengikuti data elevasi atau bathymetry."
+        `SUMBER MEDAN: ${this.region.sourceLabel}. Data ini dipakai untuk membentuk tinggi dan rendah permukaan 3D yang kamu jelajahi.`,
+        "Tekstur, kabut, air, salju, dan pencahayaan membantu suasana serta keterbacaan. Bentuk bentuk permukaan utamanya tetap mengikuti data ketinggian atau kedalaman laut."
       ].map(item => {
         const p = document.createElement("p");
         p.textContent = item;
@@ -2198,53 +2164,45 @@
       this.setActionsMenu(false);
       this.selector.hidden = true;
       this.qualityPanel.hidden = true;
+      this.infoOpen = false;
+      this.objectivesOpen = false;
       this.closeObservationCard(false);
       this.hideRegionInfo(false);
       this.collapseObjectives(false);
+      this.infoCard.hidden = true;
+      this.infoCard.setAttribute("aria-hidden", "true");
+      this.objectivesPanel.hidden = true;
+      this.objectivesPanel.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = true;
       this.objectivesToggle.hidden = true;
       this.observationPrompt.hidden = true;
       this.tutorial.classList.add("is-dismissed");
       this.boundaryHint.classList.remove("is-visible");
+      this.root.classList.remove("is-info-open", "is-objectives-open", "is-observation-open", "is-actions-open");
       this.root.classList.add("is-exiting");
-      document.getElementById("announcement").textContent = "Meninggalkan permukaan Bumi dan kembali ke panorama orbit.";
-      this.startLoop();
+      document.getElementById("announcement").textContent = "Meninggalkan permukaan Bumi dan kembali ke panorama jalur mengelilingi.";
 
-      if (this.terrain && this.camera) {
-        const ground = this.terrain.heightAtWorld(this.camera.position.x, this.camera.position.z) ?? 0;
-        const startY = this.camera.position.y;
-        const targetY = Math.max(startY + 10, ground + 15);
-        const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const duration = reduced ? 160 : 1550;
-        const start = performance.now();
-        await new Promise(resolve => {
-          const frame = now => {
-            if (token !== this.transitionToken) return resolve();
-            const raw = clamp((now - start) / duration, 0, 1);
-            this.camera.position.y = lerp(startY, targetY, smoothstep(raw));
-            this.root.style.setProperty("--entry-progress", String(1 - smoothstep(raw)));
-            if (raw < 1) requestAnimationFrame(frame);
-            else resolve();
-          };
-          requestAnimationFrame(frame);
-        });
-      }
-      if (token !== this.transitionToken) return;
-
-      // Venus-style continuous handoff: reveal the real Earth sphere while the
-      // surface renderer is still alive, then recede smoothly to panorama framing.
+      // Reveal the real orbital Earth immediately. The old two-stage exit kept the
+      // terrain renderer fully visible for ~1.5 s before the panorama handoff.
       this.earth.returnFromFullExplorationToSelector?.();
       this.earth.setFullExplorationTransition?.(1, this.region);
+      this.startLoop();
+
       const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const duration = reduced ? 240 : 3000;
+      const duration = reduced ? 180 : 1750;
+      const ground = this.terrain && this.camera ? (this.terrain.heightAtWorld(this.camera.position.x, this.camera.position.z) ?? 0) : 0;
+      const startY = this.camera?.position.y ?? 0;
+      const targetY = Math.max(startY + 9, ground + 14);
       const start = performance.now();
       await new Promise(resolve => {
         const frame = now => {
           if (token !== this.transitionToken) return resolve();
           const raw = clamp((now - start) / duration, 0, 1);
           const eased = smoothstep(raw);
-          this.root.style.setProperty("--surface-opacity", String(1 - smoothstep(raw / 0.70)));
-          this.root.style.opacity = String(1 - smoothstep(clamp((raw - 0.18) / 0.82, 0, 1)));
+          if (this.camera) this.camera.position.y = lerp(startY, targetY, eased);
+          this.root.style.setProperty("--entry-progress", String(1 - eased));
+          this.root.style.setProperty("--surface-opacity", String(1 - smoothstep(raw / 0.50)));
+          this.root.style.opacity = String(1 - smoothstep(clamp((raw - 0.08) / 0.92, 0, 1)));
           this.earth.setFullExplorationTransition?.(1 - eased);
           if (raw < 1) requestAnimationFrame(frame);
           else resolve();

@@ -98,9 +98,14 @@ try {
         $summary = antara_quiz_finalize($pdo, (int)$run['id'], $userId);
     }
     $pdo->commit();
-    if ($finished) {
-        try { antara_achievements_sync($pdo, $userId); }
-        catch (Throwable $achievementError) { error_log('ANTARA quiz achievement sync error: '.$achievementError->getMessage()); }
+    $achievementNotifications = [];
+    try {
+        // Sync after every answer so live quiz achievements (streak/speed/perfect)
+        // are eligible immediately, not only after the final question.
+        antara_achievements_sync($pdo, $userId);
+        $achievementNotifications = antara_achievement_claim_notifications($pdo, $userId, 10);
+    } catch (Throwable $achievementError) {
+        error_log('ANTARA quiz achievement sync error: '.$achievementError->getMessage());
     }
 
     $nextLevel = null;
@@ -126,6 +131,7 @@ try {
         'nextLevel'=>$nextLevel,
         'finished'=>$finished,
         'summary'=>$summary,
+        'notifications'=>$achievementNotifications,
     ]);
 } catch (Throwable $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();

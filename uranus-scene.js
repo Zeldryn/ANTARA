@@ -10,7 +10,7 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
     "title": "Uranus",
     "kicker": "KENALAN DULU",
     "subtitle": "Raksasa es biru-hijau yang berputar dengan posisi sangat miring",
-    "summary": "Uranus adalah planet ketujuh dari Matahari. Dari jauh warnanya tampak tenang, tetapi planet ini punya salah satu posisi rotasi paling aneh di Tata Surya, cincin samar, banyak bulan, dan medan magnet yang tidak biasa.",
+    "summary": "Uranus adalah planet ketujuh dari Matahari. Dari jauh warnanya tampak tenang. Tapi planet ini punya salah satu posisi putaran paling aneh di Tata Surya, cincin samar, banyak bulan, dan gaya magnet yang tidak biasa.",
     "facts": [
       "Uranus adalah planet terbesar ketiga berdasarkan diameter.",
       "Satu hari di Uranus berlangsung sekitar 17 jam.",
@@ -20,12 +20,12 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/1/PIA18182-1.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1720&w=1720",
-        "alt": "Citra global Uranus dari Voyager 2",
+        "alt": "Gambar di seluruh planet Uranus dari Voyager 2",
         "credit": "NASA/JPL",
         "source": "https://science.nasa.gov/uranus/facts/",
         "caption": "Uranus · raksasa es yang hampir berputar menyamping",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ],
     "semantic": "identity"
@@ -33,21 +33,21 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Planet yang Berputar Menyamping",
     "kicker": "KOK BISA MIRING?",
-    "subtitle": "Sumbu rotasinya hampir rebah sejajar dengan bidang orbit",
-    "summary": "Bayangkan bola yang tidak berputar tegak, tetapi hampir menggelinding sambil mengitari Matahari. Itulah Uranus. Sumbu rotasinya miring sekitar 98°, jauh lebih ekstrem daripada Bumi.",
+    "subtitle": "Arah putarnya hampir rebah sejajar dengan bidang jalur mengelilingi",
+    "summary": "Bayangkan bola yang tidak berputar tegak. Tapi hampir menggelinding sambil mengitari Matahari. Itulah Uranus. Arah putarnya miring sekitar 98°, jauh lebih miring daripada Bumi.",
     "facts": [
       "Kemiringan sumbu Uranus sekitar 97,8°.",
-      "Ilmuwan menduga tumbukan besar atau interaksi pada masa awal mungkin ikut membentuk kemiringan ekstrem ini.",
-      "Kemiringan tersebut membuat orientasi kutub Uranus terhadap Matahari sangat tidak biasa."
+      "Ilmuwan menduga tabrakan besar atau saling pengaruh pada masa awal mungkin ikut membentuk kemiringan sangat kuat ini.",
+      "Kemiringan tersebut membuat arah kutub Uranus terhadap Matahari sangat tidak biasa."
     ],
     "source": "https://science.nasa.gov/uranus/facts/",
     "images": [
       {
         "src": "./assets/uranus-tilt-diagram.svg",
         "alt": "Diagram kemiringan sumbu Uranus 97,77 derajat",
-        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "credit": "Gambar bantu belajar ANTARA berdasarkan NASA Science",
         "source": "https://science.nasa.gov/uranus/facts/",
-        "caption": "Sumbu rotasi Uranus miring 97,77°",
+        "caption": "Arah putar Uranus miring 97,77°",
         "fit": "contain"
       }
     ],
@@ -56,19 +56,19 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Puluhan Tahun Terang dan Gelap",
     "kicker": "MUSIMNYA LAMA BANGET",
-    "subtitle": "Kemiringan ekstrem membuat musim Uranus berjalan dalam skala puluhan tahun",
-    "summary": "Karena satu tahun Uranus memakan 84 tahun Bumi dan planetnya hampir rebah, setiap musim dapat berlangsung sekitar dua dekade. Di dekat solstis, satu kutub bisa mendapat cahaya Matahari terus-menerus dalam waktu sangat lama.",
+    "subtitle": "Kemiringan sangat kuat membuat musim Uranus berjalan dalam skala puluhan tahun",
+    "summary": "Karena satu tahun Uranus memakan 84 tahun Bumi dan planetnya hampir rebah, setiap musim bisa berlangsung sekitar dua dekade. Di dekat saat musim tertentu, satu kutub bisa mendapat cahaya Matahari terus-menerus dalam waktu sangat lama.",
     "facts": [
       "Satu musim Uranus kira-kira berlangsung 21 tahun Bumi.",
       "Daerah kutub dapat mengalami periode siang atau malam yang sangat panjang.",
-      "Perubahan musim dapat memengaruhi pola awan dan atmosfer yang kita lihat."
+      "Perubahan musim dapat mengubah pola awan dan udara yang kita lihat."
     ],
     "source": "https://science.nasa.gov/uranus/facts/",
     "images": [
       {
         "src": "./assets/uranus-seasons-diagram.svg",
-        "alt": "Diagram musim ekstrem Uranus akibat kemiringan sumbu",
-        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "alt": "Diagram musim sangat kuat Uranus akibat kemiringan sumbu",
+        "credit": "Gambar bantu belajar ANTARA berdasarkan NASA Science",
         "source": "https://science.nasa.gov/uranus/facts/",
         "caption": "Kemiringan Uranus membentuk musim yang berlangsung puluhan tahun",
         "fit": "contain"
@@ -77,23 +77,23 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
     "semantic": "seasons"
   },
   {
-    "title": "Metana di Atmosfer Uranus",
+    "title": "Gas bernama metana di Udara Uranus",
     "kicker": "KENAPA WARNANYA BIRU-HIJAU?",
-    "subtitle": "Gas metana menyerap sebagian cahaya merah yang datang dari Matahari",
-    "summary": "Atmosfer Uranus mengandung sedikit metana. Gas ini menyerap banyak cahaya merah dan membiarkan lebih banyak warna biru-hijau dipantulkan kembali, sehingga Uranus terlihat cyan atau biru kehijauan.",
+    "subtitle": "gas bernama metana menyerap sebagian cahaya merah yang datang dari Matahari",
+    "summary": "Udara Uranus mengandung sedikit gas bernama metana. Gas ini menyerap banyak cahaya merah dan membiarkan lebih banyak warna biru-hijau dipantulkan kembali. Jadi Uranus terlihat cyan atau biru kehijauan.",
     "facts": [
-      "Atmosfer Uranus terutama berisi hidrogen dan helium dengan sedikit metana.",
-      "Metana berperan penting pada warna planet.",
-      "Awan dan kabut atmosfer juga memengaruhi warna yang akhirnya tertangkap kamera."
+      "Udara Uranus terutama berisi gas ringan bernama hidrogen dan gas ringan bernama helium dengan sedikit gas bernama metana.",
+      "Gas bernama metana berperan penting pada warna planet.",
+      "Awan dan kabut udara juga mengubah warna yang akhirnya tertangkap kamera."
     ],
     "source": "https://science.nasa.gov/uranus/facts/",
     "images": [
       {
         "src": "./assets/uranus-methane-diagram.svg",
-        "alt": "Diagram bagaimana metana memengaruhi warna Uranus",
-        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "alt": "Diagram bagaimana gas bernama metana mengubah warna Uranus",
+        "credit": "Gambar bantu belajar ANTARA berdasarkan NASA Science",
         "source": "https://science.nasa.gov/uranus/facts/",
-        "caption": "Metana menyerap merah dan meninggalkan kesan biru-hijau",
+        "caption": "Gas bernama metana menyerap merah dan meninggalkan kesan biru-hijau",
         "fit": "contain"
       }
     ],
@@ -103,67 +103,67 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
     "title": "Bukan Bola Es Padat",
     "kicker": "YUK INTIP KE DALAM",
     "subtitle": "Istilah “raksasa es” tidak berarti seluruh planet membeku seperti es batu",
-    "summary": "Di bawah atmosfer, ilmuwan memperkirakan ada lapisan fluida panas dan padat yang kaya air, metana, dan amonia. Jadi Uranus bukan bola es keras, melainkan dunia bertekanan tinggi dengan bahan yang berperilaku sangat berbeda dari di Bumi.",
+    "summary": "Di bawah udara, ilmuwan memperkirakan ada lapisan bahan yang bisa mengalir panas dan padat yang kaya air, gas bernama metana, dan gas bernama amonia. Jadi Uranus bukan bola es keras, melainkan dunia bertekanan tinggi dengan bahan yang berperilaku sangat berbeda dari di Bumi.",
     "facts": [
-      "Uranus tidak memiliki permukaan padat yang jelas untuk didarati.",
+      "Uranus tidak punya permukaan padat yang jelas untuk didarati.",
       "Tekanan dan suhu meningkat tajam menuju bagian dalam.",
-      "Sebutan raksasa es membedakan komposisinya dari Jupiter dan Saturnus yang lebih didominasi hidrogen-helium."
+      "Sebutan raksasa es membedakan komposisinya dari Jupiter dan Saturnus yang lebih paling banyak berisi gas ringan bernama hidrogen-gas ringan bernama helium."
     ],
     "source": "https://science.nasa.gov/uranus/facts/",
     "images": [
       {
         "src": "./assets/uranus-interior-diagram.svg",
-        "alt": "Diagram konseptual struktur interior Uranus",
-        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "alt": "Gambar sederhana bentuk bagian dalam Uranus",
+        "credit": "Gambar bantu belajar ANTARA berdasarkan NASA Science",
         "source": "https://science.nasa.gov/uranus/facts/",
-        "caption": "Lapisan konseptual interior Uranus",
+        "caption": "Lapisan konseptual bagian dalam Uranus",
         "fit": "contain"
       }
     ],
-    "semantic": "interior"
+    "semantic": "bagian dalam"
   },
   {
     "title": "Uranus Juga Punya Cincin",
     "kicker": "TAHUKAH KAMU?",
     "subtitle": "Cincinnya gelap dan jauh lebih sulit dilihat daripada cincin Saturnus",
-    "summary": "Uranus punya sistem cincin sendiri. Cincinnya tipis, gelap, dan tidak terlalu memantulkan cahaya, jadi perlu pengamatan yang tepat agar terlihat jelas.",
+    "summary": "Uranus punya sistem cincin sendiri. Cincinnya tipis, gelap, dan tidak terlalu memantulkan cahaya, jadi perlu melihat dan mempelajari yang tepat agar terlihat jelas.",
     "facts": [
-      "NASA mencatat Uranus memiliki 13 cincin yang diketahui.",
+      "NASA mencatat Uranus punya 13 cincin yang diketahui.",
       "Sebagian besar cincin sangat sempit dan gelap.",
-      "Cincin Uranus ditemukan pada 1977 melalui pengamatan bintang yang tertutup planet."
+      "Cincin Uranus ditemukan pada 1977 melalui melihat dan mempelajari bintang yang tertutup planet."
     ],
     "source": "https://science.nasa.gov/uranus/facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia01/pia01977/PIA01977.jpg?crop=faces%2Cfocalpoint&fit=clip&h=735&w=754",
-        "alt": "Citra cincin Uranus dari Voyager 2",
+        "alt": "Gambar cincin Uranus dari Voyager 2",
         "credit": "NASA/JPL",
         "source": "https://science.nasa.gov/uranus/facts/",
         "caption": "Cincin Uranus · sempit, gelap, dan redup",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ],
     "semantic": "rings"
   },
   {
-    "title": "Medan Magnet yang Miring",
+    "title": "Gaya magnet yang Miring",
     "kicker": "KOMPASNYA ANEH",
-    "subtitle": "Sumbu magnet Uranus tidak mengikuti sumbu rotasinya",
-    "summary": "Kalau sebuah kompas bisa bekerja di sekitar Uranus, arahnya akan sangat membingungkan. Medan magnet planet ini miring kuat dan pusatnya juga tidak tepat berada di tengah planet.",
+    "subtitle": "Arah magnet Uranus tidak mengikuti arah putarnya",
+    "summary": "Kalau sebuah kompas bisa bekerja di sekitar Uranus, arahnya akan sangat membingungkan. Gaya magnet planet ini miring kuat dan pusatnya juga tidak tepat berada di tengah planet.",
     "facts": [
-      "Sumbu medan magnet Uranus miring sekitar 60° dari sumbu rotasinya.",
-      "Medan magnetnya juga bergeser dari pusat planet.",
-      "Akibatnya, magnetosfer berubah bentuk secara dramatis saat Uranus berputar."
+      "Sumbu gaya magnet Uranus miring sekitar 60° dari arah putarnya.",
+      "Gaya magnetnya juga bergeser dari pusat planet.",
+      "Akibatnya, perisai magnet berubah bentuk secara dramatis saat Uranus berputar."
     ],
     "source": "https://science.nasa.gov/uranus/facts/",
     "images": [
       {
         "src": "./assets/uranus-magnetosphere-diagram.svg",
-        "alt": "Diagram magnetosfer Uranus yang miring dan tidak terpusat",
-        "credit": "Visualisasi ANTARA berdasarkan NASA Science",
+        "alt": "Diagram perisai magnet Uranus yang miring dan tidak terpusat",
+        "credit": "Gambar bantu belajar ANTARA berdasarkan NASA Science",
         "source": "https://science.nasa.gov/uranus/facts/",
-        "caption": "Medan magnet Uranus miring dan off-center",
+        "caption": "Gaya magnet Uranus miring dan off-center",
         "fit": "contain"
       }
     ],
@@ -173,22 +173,22 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
     "title": "Miranda",
     "kicker": "BULAN YANG ANEH",
     "subtitle": "Permukaannya terlihat seperti potongan-potongan lanskap yang disatukan kembali",
-    "summary": "Miranda adalah salah satu bulan Uranus yang paling unik. Tebing, lembah, dan wilayah permukaannya terlihat sangat berbeda satu sama lain, seolah-olah dunia kecil ini mengalami sejarah geologi yang rumit.",
+    "summary": "Miranda adalah salah satu bulan Uranus yang paling unik. Tebing, lembah, dan wilayah permukaannya terlihat sangat berbeda satu sama lain, seolah-olah dunia kecil ini mengalami sejarah tanah dan batu yang rumit.",
     "facts": [
       "Miranda berdiameter sekitar 470 km.",
       "Verona Rupes pada Miranda dikenal sebagai salah satu tebing sangat tinggi di Tata Surya.",
-      "Voyager 2 memberi citra jarak dekat terbaik yang kita miliki tentang Miranda."
+      "Voyager 2 memberi gambar jarak dekat terbaik yang kita miliki tentang Miranda."
     ],
     "source": "https://science.nasa.gov/uranus/facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00042/PIA00042.jpg?crop=faces%2Cfocalpoint&fit=clip&h=600&w=459",
-        "alt": "Citra Miranda dari Voyager 2",
+        "alt": "Gambar Miranda dari Voyager 2",
         "credit": "NASA/JPL",
         "source": "https://science.nasa.gov/uranus/moons/miranda/",
         "caption": "Miranda · dunia es kecil dengan lanskap yang sangat beragam",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ],
     "semantic": "miranda"
@@ -197,7 +197,7 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
     "title": "Titania dan Oberon",
     "kicker": "KELUARGA URANUS",
     "subtitle": "Dua bulan terbesar Uranus menyimpan kawah dan lembah panjang",
-    "summary": "Titania dan Oberon adalah dua bulan terbesar Uranus. Keduanya terlihat sebagai dunia es-batuan dengan permukaan tua yang penuh kawah, tetapi masing-masing juga menunjukkan retakan dan lembah yang memberi petunjuk tentang perubahan geologi masa lalu.",
+    "summary": "Titania dan Oberon adalah dua bulan terbesar Uranus. Keduanya terlihat sebagai dunia es-batuan dengan permukaan tua yang penuh kawah. Tapi masing-masing juga menunjukkan retakan dan lembah yang menunjukkan tentang perubahan tanah dan batu masa lalu.",
     "facts": [
       "Titania adalah bulan terbesar Uranus.",
       "Oberon adalah bulan terbesar kedua Uranus.",
@@ -212,7 +212,7 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
         "source": "https://science.nasa.gov/photojournal/titania/",
         "caption": "Titania · Voyager 2 · PIA01979",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       },
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00034/PIA00034.jpg?crop=faces%2Cfocalpoint&fit=clip&h=500&w=500",
@@ -221,7 +221,7 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
         "source": "https://science.nasa.gov/photojournal/oberon/",
         "caption": "Oberon · Voyager 2 · PIA00034",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ],
     "semantic": "moons"
@@ -229,21 +229,21 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Voyager 2",
     "kicker": "CUMA PERNAH DIDATANGI SEKALI",
-    "subtitle": "Satu flyby pada 1986 masih menjadi kunjungan dekat satu-satunya ke Uranus",
-    "summary": "Sejauh ini hanya Voyager 2 yang pernah terbang dekat Uranus. Dalam beberapa jam, wahana itu memotret planet, cincin, dan bulan-bulannya serta mengukur medan magnet. Banyak pengetahuan dasar kita berasal dari pertemuan singkat tersebut.",
+    "subtitle": "Satu terbang lewat dekat pada 1986 masih menjadi kunjungan dekat satu-satunya ke Uranus",
+    "summary": "Sejauh ini hanya Voyager 2 yang pernah terbang dekat Uranus. Dalam beberapa jam, robot antariksa itu memotret planet, cincin, dan bulan-bulannya serta mengukur gaya magnet. Banyak pengetahuan dasar kita berasal dari pertemuan singkat tersebut.",
     "facts": [
-      "Voyager 2 melakukan flyby Uranus pada 24 Januari 1986.",
-      "Wahana menemukan bulan dan cincin baru serta mengukur magnetosfer planet.",
-      "Tidak ada wahana lain yang pernah mengorbit Uranus hingga sekarang."
+      "Voyager 2 melakukan terbang lewat dekat Uranus pada 24 Januari 1986.",
+      "Robot antariksa menemukan bulan dan cincin baru serta mengukur perisai magnet planet.",
+      "Tidak ada robot antariksa lain yang pernah mengelilingi Uranus hingga sekarang."
     ],
     "source": "https://science.nasa.gov/uranus/facts/",
     "images": [
       {
         "src": "./assets/uranus-voyager-diagram.svg",
         "alt": "Diagram Voyager 2 terbang melintasi Uranus",
-        "credit": "Visualisasi ANTARA berdasarkan NASA/JPL",
+        "credit": "Gambar bantu belajar ANTARA berdasarkan NASA/JPL",
         "source": "https://science.nasa.gov/mission/voyager/voyager-2/",
-        "caption": "Voyager 2 · flyby Uranus, 24 Januari 1986",
+        "caption": "Voyager 2 · terbang lewat dekat Uranus, 24 Januari 1986",
         "fit": "contain"
       }
     ],
@@ -253,20 +253,20 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
     "title": "Apa yang Belum Kita Tahu?",
     "kicker": "MASIH BANYAK MISTERI",
     "subtitle": "Satu kunjungan singkat belum cukup untuk memahami seluruh raksasa es ini",
-    "summary": "Uranus masih menyimpan pertanyaan besar: seperti apa bagian dalamnya, bagaimana atmosfernya berubah sepanjang musim, dan bagaimana cincin serta bulan-bulannya terbentuk. Karena itulah Uranus menjadi target penting untuk eksplorasi masa depan.",
+    "summary": "Uranus masih menyimpan pertanyaan besar: seperti apa bagian dalamnya, bagaimana udaranya berubah sepanjang musim, dan bagaimana cincin serta bulan-bulannya terbentuk. Karena itulah Uranus menjadi target penting untuk eksplorasi masa depan.",
     "facts": [
       "Data Voyager 2 hanya memberi satu potret singkat dari satu musim Uranus.",
-      "Pengamatan teleskop modern membantu memantau awan dan cincin dari jauh.",
-      "Misi pengorbit di masa depan dapat mempelajari interior, atmosfer, magnet, cincin, dan bulan secara bersamaan."
+      "Melihat dan mempelajari teleskop sekarang membantu memantau awan dan cincin dari jauh.",
+      "Misi pengorbit di masa depan bisa mempelajari bagian dalam, udara, magnet, cincin, dan bulan secara bersamaan."
     ],
     "source": "https://science.nasa.gov/uranus/facts/",
     "images": [
       {
         "src": "./assets/uranus-future-diagram.svg",
         "alt": "Diagram tema masa depan eksplorasi Uranus",
-        "credit": "Visualisasi ANTARA",
+        "credit": "Gambar bantu belajar ANTARA",
         "source": "https://science.nasa.gov/uranus/",
-        "caption": "Pertanyaan ilmiah besar di sistem Uranus",
+        "caption": "Pertanyaan sains besar di sistem Uranus",
         "fit": "contain"
       }
     ],
@@ -291,7 +291,7 @@ window.UranusScene = class UranusScene {
   }
   clamp(v,a=0,b=1){return Math.min(b,Math.max(a,v));} smooth(a,b,v){const t=this.clamp((v-a)/(b-a));return t*t*(3-2*t);} travelSmooth(v){const t=this.clamp(v);return t*t*t*(t*(t*6-15)+10);} loadImage(src){return new Promise((res,rej)=>{const im=new Image();im.decoding="async";im.onload=async()=>{try{await im.decode?.();}catch(_){}res(im);};im.onerror=()=>rej(new Error(`Unable to load ${src}`));im.src=src;});}
   travelState(){const elapsed=this.time-this.travelStartedAt,progress=this.travelSmooth(elapsed/this.travelDuration),pullback=this.travelSmooth(progress/.31),pan=this.travelSmooth((progress-.23)/.39),approach=this.travelSmooth((progress-.58)/.42);return{elapsed,progress,pullback,pan,approach};}
-  prepare(){if(this.loading)return this.loading;this.loading=Promise.allSettled([import("./assets/vendor/three/three.module.min.js"),this.loadImage(URANUS_TEXTURE),this.loadImage(URANUS_BUMP),this.loadImage(URANUS_SATURN_TEXTURE)]).then(async([mod,surface,bump,saturn])=>{this.surface=surface.status==="fulfilled"?surface.value:this.makeFallbackSurface();this.bumpSurface=bump.status==="fulfilled"?bump.value:null;this.saturnSurface=saturn.status==="fulfilled"?saturn.value:null;if(mod.status==="fulfilled"){try{this.createThreeScene(mod.value);}catch(e){console.warn("Uranus WebGL unavailable; using Canvas fallback.",e);this.createCanvasFallback();}}else this.createCanvasFallback();this.resize();if(this.renderer?.compileAsync)await this.renderer.compileAsync(this.scene,this.camera);this.element.dataset.ready="true";if(this.active)this.render();}).catch(e=>{console.error("Uranus preparation failed",e);this.surface=this.surface||this.makeFallbackSurface();this.createCanvasFallback();this.resize();this.element.dataset.ready="fallback";});return this.loading;}
+  prepare(){if(this.loading)return this.loading;this.loading=Promise.allSettled([import("./assets/vendor/three/three.module.min.js"),this.loadImage(URANUS_TEXTURE),this.loadImage(URANUS_BUMP),this.loadImage(URANUS_SATURN_TEXTURE)]).then(async([mod,surface,bump,saturn])=>{this.surface=surface.status==="fulfilled"?surface.value:this.makeFallbackSurface();this.bumpSurface=bump.status==="fulfilled"?bump.value:null;this.saturnSurface=saturn.status==="fulfilled"?saturn.value:null;if(mod.status==="fulfilled"){try{this.createThreeScene(mod.value);}catch(e){console.warn("Uranus WebGL unavailable. using Canvas fallback.",e);this.createCanvasFallback();}}else this.createCanvasFallback();this.resize();if(this.renderer?.compileAsync)await this.renderer.compileAsync(this.scene,this.camera);this.element.dataset.ready="true";if(this.active)this.render();}).catch(e=>{console.error("Uranus preparation failed",e);this.surface=this.surface||this.makeFallbackSurface();this.createCanvasFallback();this.resize();this.element.dataset.ready="fallback";});return this.loading;}
   makeFallbackSurface(){const c=document.createElement("canvas");c.width=2048;c.height=1024;const x=c.getContext("2d"),g=x.createLinearGradient(0,0,0,c.height);[[0,"#72aeb7"],[.18,"#91d3d4"],[.36,"#83c9cd"],[.54,"#a7dcda"],[.72,"#7dbdc5"],[1,"#659eab"]].forEach(([p,col])=>g.addColorStop(p,col));x.fillStyle=g;x.fillRect(0,0,c.width,c.height);x.globalAlpha=.12;for(let i=0;i<54;i++){x.fillStyle=i%2?"#d5f2ef":"#3b7785";x.fillRect(0,(i*83)%c.height,c.width,1+(i%2));}x.globalAlpha=1;return c;}
   createThreeScene(THREE){
     this.THREE=THREE;const canvas=document.createElement("canvas"),context=canvas.getContext("webgl2",{alpha:true,antialias:true,powerPreference:"high-performance"});if(!context)throw new Error("WebGL2 unavailable");
@@ -302,7 +302,7 @@ window.UranusScene = class UranusScene {
     this.systemGroup=new THREE.Group();this.systemGroup.rotation.y=this.viewYaw;this.scene.add(this.systemGroup);this.axialGroup=new THREE.Group();this.axialGroup.rotation.z=THREE.MathUtils.degToRad(URANUS_TILT_DEG);this.systemGroup.add(this.axialGroup);
     this.planet=new THREE.Mesh(new THREE.SphereGeometry(1,160,112),this.uranusMaterial);this.planet.scale.y=.974;this.planet.rotation.y=this.renderedRotation;this.axialGroup.add(this.planet);
     const cloudMat=this.uranusMaterial.clone();cloudMat.transparent=true;cloudMat.opacity=.085;cloudMat.depthWrite=false;cloudMat.bumpMap=null;cloudMat.roughness=.98;this.cloudLayer=new THREE.Mesh(new THREE.SphereGeometry(1.008,128,90),cloudMat);this.cloudLayer.scale.y=.974;this.axialGroup.add(this.cloudLayer);
-    const atmMat=new THREE.ShaderMaterial({transparent:true,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:`varying vec3 vN;varying vec3 vW;void main(){vN=normalize(mat3(modelMatrix)*normal);vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}`,fragmentShader:`precision highp float;varying vec3 vN;varying vec3 vW;void main(){vec3 V=normalize(cameraPosition-vW);float rim=pow(1.-max(dot(normalize(vN),V),0.),3.25);gl_FragColor=vec4(vec3(.34,.88,.94)*rim*.34,rim*.24);}`});this.atmosphere=new THREE.Mesh(new THREE.SphereGeometry(1.035,112,80),atmMat);this.atmosphere.scale.y=.974;this.axialGroup.add(this.atmosphere);
+    const atmMat=new THREE.ShaderMaterial({transparent:true,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:`varying vec3 vN; varying vec3 vW; void main(){vN=normalize(mat3(modelMatrix)*normal); vec4 w=modelMatrix*vec4(position,1.); vW=w.xyz; gl_Position=projectionMatrix*viewMatrix*w; }`,fragmentShader:`precision highp float; varying vec3 vN; varying vec3 vW; void main(){vec3 V=normalize(cameraPosition-vW); float rim=pow(1.-max(dot(normalize(vN),V),0.),3.25); gl_FragColor=vec4(vec3(.34,.88,.94)*rim*.34,rim*.24); }`});this.atmosphere=new THREE.Mesh(new THREE.SphereGeometry(1.035,112,80),atmMat);this.atmosphere.scale.y=.974;this.axialGroup.add(this.atmosphere);
     this.ringGroup=this.createRingSystem(THREE);this.axialGroup.add(this.ringGroup);this.createSemanticObjects(THREE);this.createSaturnFallback(THREE);this.createStars(THREE);
     this.hemi=new THREE.HemisphereLight(0xc8f2f0,0x111922,.90);this.scene.add(this.hemi);this.key=new THREE.DirectionalLight(0xf0ffff,2.85);this.key.position.set(-4.6,3.3,5.6);this.scene.add(this.key);this.fill=new THREE.DirectionalLight(0x75b4d2,.40);this.fill.position.set(4,-1.2,2.4);this.scene.add(this.fill);
     canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();this.createCanvasFallback();this.resize();if(this.active)this.render();},{once:true});this.mode="webgl";this.element.dataset.renderer="webgl";

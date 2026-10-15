@@ -28,6 +28,9 @@
 .neptune-full-explore-button:disabled { opacity: .42; cursor: default; }
 
 .neptune-full-exploration {
+  /* Gas Full Exploration owns its HUD visibility. Do not inherit Mars' entry fade (0). */
+  --surface-opacity: 1;
+
   --fx-bg: rgba(8, 22, 36, .95);
   --fx-bg-strong: rgba(3, 9, 18, .985);
   --fx-border: rgba(116, 185, 216, .30);

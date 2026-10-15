@@ -64,9 +64,11 @@ try {
 
     $pdo->commit();
     $achievementSummary = null;
+    $achievementNotifications = [];
     try {
         $achievementPayload = antara_achievements_payload($pdo, $userId);
         $achievementSummary = $achievementPayload['summary'] ?? null;
+        $achievementNotifications = antara_achievement_claim_notifications($pdo, $userId, 10);
     } catch (Throwable $achievementError) {
         error_log('ANTARA achievement sync after progress: ' . $achievementError->getMessage());
     }
@@ -77,6 +79,7 @@ try {
         'overall' => $summary['overall'],
         'completion' => $completion,
         'achievements' => $achievementSummary,
+        'notifications' => $achievementNotifications,
     ]);
 } catch (Throwable $e) {
     if ($pdo->inTransaction()) {

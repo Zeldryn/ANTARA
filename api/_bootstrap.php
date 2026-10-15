@@ -1,12 +1,8 @@
 <?php
 declare(strict_types=1);
 
-$privateDatabaseConfig = __DIR__ . '/config/database.php';
-if (is_file($privateDatabaseConfig)) {
-    require_once $privateDatabaseConfig;
-} else {
-    require_once __DIR__ . '/config/database-public.php';
-}
+$databaseConfig = __DIR__ . '/config/database.php';
+require_once is_file($databaseConfig) ? $databaseConfig : __DIR__ . '/config/database.example.php';
 
 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
     || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');

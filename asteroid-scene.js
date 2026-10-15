@@ -8,10 +8,10 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Sabuk Asteroid Itu Apa?",
     "kicker": "KENALAN DULU",
-    "subtitle": "Wilayah luas berisi banyak benda kecil yang mengorbit Matahari",
-    "summary": "Sabuk Asteroid adalah daerah di Tata Surya yang dihuni banyak asteroid. Asteroid adalah sisa batuan dan logam dari masa awal pembentukan planet. Mereka mengorbit Matahari seperti planet, hanya ukurannya jauh lebih kecil.",
+    "subtitle": "Wilayah luas berisi banyak benda kecil yang mengelilingi Matahari",
+    "summary": "Sabuk Asteroid adalah daerah di Tata Surya yang dihuni banyak asteroid. Asteroid adalah sisa batuan dan logam dari masa awal pembentukan planet. Mereka mengelilingi Matahari seperti planet, hanya ukurannya jauh lebih kecil.",
     "facts": [
-      "Sebagian besar sabuk utama berada di antara orbit Mars dan Jupiter.",
+      "Sebagian besar sabuk utama berada di antara jalur mengelilingi Mars dan Jupiter.",
       "Anggotanya beragam, dari debu dan batu kecil sampai dunia berdiameter ratusan kilometer.",
       "Sabuk ini bukan “tembok batu” yang padat."
     ],
@@ -20,7 +20,7 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
       {
         "src": "./assets/asteroid-belt/overview.svg",
         "alt": "Ilustrasi sabuk asteroid yang renggang",
-        "credit": "Visualisasi ANTARA",
+        "credit": "Gambar bantu belajar ANTARA",
         "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
         "caption": "Sabuk asteroid adalah wilayah luas dengan banyak ruang kosong.",
         "fit": "contain"
@@ -31,10 +31,10 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
     "title": "Asteroid Tidak Berdesakan",
     "kicker": "JANGAN BAYANGKAN FILM",
     "subtitle": "Di antara asteroid ada ruang kosong yang sangat luas",
-    "summary": "Film sering menggambarkan pesawat harus meliuk di antara batu yang saling berdekatan. Kenyataannya, sabuk asteroid sangat luas dan sebagian besar anggotanya dipisahkan jarak yang besar.",
+    "summary": "Film sering menunjukkan pesawat harus meliuk di antara batu yang saling berdekatan. Kenyataannya, sabuk asteroid sangat luas dan sebagian besar anggotanya dipisahkan jarak yang besar.",
     "facts": [
-      "Wahana antariksa sudah berkali-kali melewati sabuk utama dengan aman.",
-      "Jumlah asteroid memang banyak, tetapi ruang yang ditempati sabuk jauh lebih besar lagi.",
+      "Robot antariksa antariksa sudah berkali-kali melewati sabuk utama dengan aman.",
+      "Jumlah asteroid memang banyak. Tapi ruang yang ditempati sabuk jauh lebih besar lagi.",
       "Tabrakan tetap terjadi, hanya tidak seperti lalu lintas batu yang rapat dalam film."
     ],
     "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
@@ -42,7 +42,7 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
       {
         "src": "./assets/asteroid-belt/overview.svg",
         "alt": "Ilustrasi sabuk asteroid yang renggang",
-        "credit": "Visualisasi ANTARA",
+        "credit": "Gambar bantu belajar ANTARA",
         "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
         "caption": "Sabuk asteroid adalah wilayah luas dengan banyak ruang kosong.",
         "fit": "contain"
@@ -56,17 +56,17 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
     "summary": "Kalau kita bergerak keluar dari Matahari, sabuk utama berada setelah Mars dan sebelum Jupiter. Wilayah ini menjadi semacam zona transisi antara planet-planet batuan di bagian dalam dan planet raksasa di bagian luar.",
     "facts": [
       "Sabuk utama membentang kira-kira dari lebih dari 2 AU hingga sedikit di atas 3 AU dari Matahari.",
-      "Ceres mengorbit pada jarak rata-rata sekitar 2,8 AU.",
-      "Jupiter yang sangat besar memberi pengaruh gravitasi kuat pada banyak orbit di wilayah ini."
+      "Ceres mengelilingi pada jarak rata-rata sekitar 2,8 AU.",
+      "Jupiter yang sangat besar memberi pengaruh tarikan kuat pada banyak jalur mengelilingi di wilayah ini."
     ],
     "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
     "images": [
       {
         "src": "./assets/asteroid-belt/location.svg",
         "alt": "Diagram lokasi sabuk asteroid di antara Mars dan Jupiter",
-        "credit": "Visualisasi ANTARA",
+        "credit": "Gambar bantu belajar ANTARA",
         "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
-        "caption": "Posisi sabuk utama relatif terhadap Mars dan Jupiter.",
+        "caption": "Posisi sabuk utama cukup terhadap Mars dan Jupiter.",
         "fit": "contain"
       }
     ]
@@ -74,21 +74,21 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Sisa Bahan Pembentuk Planet",
     "kicker": "KOK TIDAK JADI PLANET?",
-    "subtitle": "Bahan pembentuk dunia tersisa karena lingkungan gravitasinya terlalu ramai",
-    "summary": "Pada awal Tata Surya, debu dan batu saling bertabrakan dan bergabung menjadi benda yang lebih besar. Di wilayah sabuk asteroid, gangguan gravitasi terutama dari Jupiter membuat proses penggabungan menjadi satu planet besar sulit berlanjut.",
+    "subtitle": "Bahan pembentuk dunia tersisa karena lingkungan tarikannya terlalu ramai",
+    "summary": "Pada awal Tata Surya, debu dan batu saling bertabrakan dan bergabung menjadi benda yang lebih besar. Di wilayah sabuk asteroid, gangguan tarikan terutama dari Jupiter membuat cara penggabungan menjadi satu planet besar sulit berlanjut.",
     "facts": [
-      "Asteroid menyimpan material yang terbentuk sekitar 4,5 miliar tahun lalu.",
-      "Jupiter membantu mengaduk orbit banyak benda di sabuk.",
-      "Sabuk bukan pecahan satu planet yang meledak; ia lebih tepat disebut sisa proses pembentukan planet."
+      "Asteroid menyimpan bahan yang terbentuk sekitar 4,5 miliar tahun lalu.",
+      "Jupiter membantu mengaduk jalur mengelilingi banyak benda di sabuk.",
+      "Sabuk bukan pecahan satu planet yang meledak. ia lebih tepat disebut sisa cara pembentukan planet."
     ],
     "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
     "images": [
       {
         "src": "./assets/asteroid-belt/formation.svg",
         "alt": "Diagram pembentukan sabuk asteroid",
-        "credit": "Visualisasi ANTARA",
+        "credit": "Gambar bantu belajar ANTARA",
         "source": "https://science.nasa.gov/resource/fact-sheet-dawn-to-the-asteroid-belt/",
-        "caption": "Material awal Tata Surya yang tidak menjadi satu planet.",
+        "caption": "Bahan awal Tata Surya yang tidak menjadi satu planet.",
         "fit": "contain"
       }
     ]
@@ -96,10 +96,10 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Ceres",
     "kicker": "SI PALING BESAR",
-    "subtitle": "Objek terbesar di sabuk utama ternyata adalah planet katai",
-    "summary": "Ceres jauh lebih besar daripada kebanyakan tetangganya. Ia cukup besar untuk berbentuk hampir bulat dan kini diklasifikasikan sebagai planet katai. Wahana Dawn bahkan pernah mengorbit Ceres dari dekat.",
+    "subtitle": "Benda terbesar di sabuk utama ternyata adalah planet katai",
+    "summary": "Ceres jauh lebih besar daripada kebanyakan tetangganya. Ia cukup besar untuk berbentuk hampir bulat dan kini diklasifikasikan sebagai planet katai. Robot antariksa Dawn bahkan pernah mengelilingi Ceres dari dekat.",
     "facts": [
-      "Ceres memiliki radius sekitar 476 km.",
+      "Ceres punya radius sekitar 476 km.",
       "Ceres adalah satu-satunya planet katai di bagian dalam Tata Surya.",
       "Permukaannya menunjukkan endapan garam dan bukti bahwa air berperan dalam sejarahnya."
     ],
@@ -107,35 +107,35 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia21/pia21906/PIA21906.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
-        "alt": "Citra Dawn resolusi tinggi Ceres",
+        "alt": "Gambar Dawn sangat jelas Ceres",
         "credit": "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA",
         "source": "https://science.nasa.gov/photojournal/high-resolution-ceres/",
-        "caption": "Ceres dipotret wahana Dawn · PIA21906",
+        "caption": "Ceres dipotret robot antariksa Dawn · PIA21906",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ]
   },
   {
     "title": "Vesta",
     "kicker": "DUNIA BATU UNIK",
-    "subtitle": "Asteroid besar dengan kawah raksasa dan sejarah geologi sendiri",
-    "summary": "Vesta adalah salah satu benda terbesar di sabuk asteroid. Bentuk dan permukaannya menunjukkan bahwa benda kecil pun bisa punya kisah geologi yang rumit, termasuk tumbukan besar yang membentuk cekungan luas.",
+    "subtitle": "Asteroid besar dengan kawah raksasa dan sejarah tanah dan batu sendiri",
+    "summary": "Vesta adalah salah satu benda terbesar di sabuk asteroid. Bentuk dan permukaannya menunjukkan bahwa benda kecil pun bisa punya kisah tanah dan batu yang rumit, termasuk tabrakan besar yang membentuk cekungan luas.",
     "facts": [
-      "Vesta adalah salah satu objek terbesar di sabuk utama.",
-      "Wahana Dawn mengorbit Vesta sebelum melanjutkan perjalanan ke Ceres.",
+      "Vesta adalah salah satu benda terbesar di sabuk utama.",
+      "Robot antariksa Dawn mengelilingi Vesta sebelum melanjutkan perjalanan ke Ceres.",
       "Sebagian meteorit yang ditemukan di Bumi dapat ditelusuri asalnya ke Vesta."
     ],
     "source": "https://science.nasa.gov/dwarf-planets/ceres/facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia15/pia15678/PIA15678.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1200",
-        "alt": "Citra global Vesta oleh Dawn",
+        "alt": "Gambar di seluruh planet Vesta oleh Dawn",
         "credit": "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA",
         "source": "https://science.nasa.gov/photojournal/full-view-of-vesta/",
-        "caption": "Vesta dipotret wahana Dawn · PIA15678",
+        "caption": "Vesta dipotret robot antariksa Dawn · PIA15678",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ]
   },
@@ -143,20 +143,20 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
     "title": "Batu, Karbon, dan Logam",
     "kicker": "MACAM-MACAM ASTEROID",
     "subtitle": "Tidak semua asteroid terbuat dari bahan yang sama",
-    "summary": "Ada asteroid yang kaya batuan, ada yang kaya karbon, dan ada pula yang memiliki banyak logam. Perbedaan ini memberi petunjuk tentang suhu dan tempat material tersebut terbentuk ketika Tata Surya masih sangat muda.",
+    "summary": "Ada asteroid yang kaya batuan, ada yang kaya karbon, dan ada pula yang punya banyak logam. Perbedaan ini menunjukkan tentang suhu dan tempat bahan tersebut terbentuk ketika Tata Surya masih sangat muda.",
     "facts": [
       "Kelompok C-type umumnya kaya karbon dan berwarna lebih gelap.",
-      "S-type lebih banyak mengandung material berbatu atau silikat.",
-      "Sebagian asteroid M-type memiliki kandungan logam yang tinggi."
+      "S-type lebih banyak mengandung bahan berbatu atau batuan.",
+      "Sebagian asteroid M-type punya kandungan logam yang tinggi."
     ],
     "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
     "images": [
       {
         "src": "./assets/asteroid-belt/composition.svg",
-        "alt": "Diagram variasi komposisi asteroid",
-        "credit": "Visualisasi ANTARA",
+        "alt": "Diagram variasi isi asteroid",
+        "credit": "Gambar bantu belajar ANTARA",
         "source": "https://www.jpl.nasa.gov/press-kits/psyche/quick-facts/",
-        "caption": "Komposisi asteroid dapat berbeda secara drastis.",
+        "caption": "Isi asteroid dapat berbeda secara drastis.",
         "fit": "contain"
       }
     ]
@@ -164,11 +164,11 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Keluarga Asteroid",
     "kicker": "TABRAKAN BISA BIKIN KELUARGA",
-    "subtitle": "Pecahan dari satu tumbukan dapat mengikuti orbit yang mirip",
-    "summary": "Ketika dua asteroid bertabrakan, salah satunya bisa pecah menjadi banyak bagian. Jika pecahan-pecahan itu masih mengikuti pola orbit yang mirip, ilmuwan dapat mengenalinya sebagai sebuah “keluarga asteroid”.",
+    "subtitle": "Pecahan dari satu tabrakan dapat mengikuti jalur mengelilingi yang mirip",
+    "summary": "Ketika dua asteroid bertabrakan, salah satunya bisa pecah menjadi banyak bagian. Jika pecahan-pecahan itu masih mengikuti pola jalur mengelilingi yang mirip, ilmuwan bisa mengenalinya sebagai sebuah “keluarga asteroid”.",
     "facts": [
-      "Tabrakan dapat membuat kawah, memecahkan asteroid, atau mengubah putarannya.",
-      "Keluarga asteroid membantu ilmuwan menelusuri sejarah tumbukan di sabuk utama.",
+      "Tabrakan bisa membuat kawah, memecahkan asteroid, atau mengubah putarannya.",
+      "Keluarga asteroid membantu ilmuwan melihat apa yang terjadi dulu tabrakan di sabuk utama.",
       "Potongan kecil hasil tabrakan juga dapat menjadi meteoroid."
     ],
     "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
@@ -176,9 +176,9 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
       {
         "src": "./assets/asteroid-belt/formation.svg",
         "alt": "Diagram pembentukan sabuk asteroid",
-        "credit": "Visualisasi ANTARA",
+        "credit": "Gambar bantu belajar ANTARA",
         "source": "https://science.nasa.gov/resource/fact-sheet-dawn-to-the-asteroid-belt/",
-        "caption": "Material awal Tata Surya yang tidak menjadi satu planet.",
+        "caption": "Bahan awal Tata Surya yang tidak menjadi satu planet.",
         "fit": "contain"
       }
     ]
@@ -187,20 +187,20 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
     "title": "Kenapa Asteroid Penting?",
     "kicker": "KAPSUL WAKTU TATA SURYA",
     "subtitle": "Batuan kecil ini menyimpan bahan dari masa ketika planet baru mulai terbentuk",
-    "summary": "Planet besar telah banyak berubah karena panas, geologi, dan atmosfer. Banyak asteroid lebih sederhana. Karena itu, materialnya dapat menyimpan petunjuk lama tentang bahan awal yang membangun planet-planet.",
+    "summary": "Planet besar telah banyak berubah karena panas, tanah dan batu, dan udara. Banyak asteroid lebih sederhana. Karena itu, bahannya bisa menyimpan petunjuk lama tentang bahan awal yang membangun planet-planet.",
     "facts": [
       "Asteroid membantu ilmuwan mempelajari bahan awal Tata Surya.",
       "Komposisinya dapat dibandingkan dengan meteorit yang jatuh ke Bumi.",
-      "Mempelajari asteroid juga membantu memahami bagaimana air dan bahan organik tersebar di Tata Surya awal."
+      "Mempelajari asteroid juga membuat lebih mudah tahu bagaimana air dan bahan organik tersebar di Tata Surya awal."
     ],
     "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
     "images": [
       {
         "src": "./assets/asteroid-belt/composition.svg",
-        "alt": "Diagram variasi komposisi asteroid",
-        "credit": "Visualisasi ANTARA",
+        "alt": "Diagram variasi isi asteroid",
+        "credit": "Gambar bantu belajar ANTARA",
         "source": "https://www.jpl.nasa.gov/press-kits/psyche/quick-facts/",
-        "caption": "Komposisi asteroid dapat berbeda secara drastis.",
+        "caption": "Isi asteroid dapat berbeda secara drastis.",
         "fit": "contain"
       }
     ]
@@ -213,16 +213,16 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
     "facts": [
       "Ceres ditemukan Giuseppe Piazzi pada 1801.",
       "Vesta ditemukan beberapa tahun kemudian pada 1807.",
-      "Istilah dan klasifikasi asteroid berkembang saat jumlah objek yang diketahui terus bertambah."
+      "Istilah dan klasifikasi asteroid berkembang saat jumlah benda yang diketahui terus bertambah."
     ],
     "source": "https://science.nasa.gov/dwarf-planets/ceres/exploration/",
     "images": [
       {
         "src": "./assets/asteroid-belt/history.svg",
         "alt": "Garis waktu sejarah penemuan sabuk asteroid",
-        "credit": "Visualisasi ANTARA",
+        "credit": "Gambar bantu belajar ANTARA",
         "source": "https://science.nasa.gov/dwarf-planets/ceres/exploration/",
-        "caption": "Perubahan cara astronom mengklasifikasikan objek di antara Mars dan Jupiter.",
+        "caption": "Perubahan cara astronom mengklasifikasikan benda di antara Mars dan Jupiter.",
         "fit": "contain"
       }
     ]
@@ -230,10 +230,10 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
   {
     "title": "Dawn, Psyche, dan Misi Asteroid",
     "kicker": "KITA SUDAH DATANG KE SANA",
-    "subtitle": "Wahana antariksa bisa membaca sejarah Tata Surya langsung dari dunia kecil",
+    "subtitle": "Robot antariksa antariksa bisa melihat apa yang terjadi dulu Tata Surya langsung dari dunia kecil",
     "summary": "Dawn mengunjungi Vesta dan Ceres, sementara misi Psyche menuju asteroid kaya logam 16 Psyche. Misi seperti ini membantu ilmuwan membandingkan dunia kecil yang terbentuk dari bahan berbeda.",
     "facts": [
-      "Dawn adalah wahana pertama yang mengorbit dua objek di luar Bumi dalam satu misi: Vesta dan Ceres.",
+      "Dawn adalah robot antariksa pertama yang mengelilingi dua benda di luar Bumi dalam satu misi: Vesta dan Ceres.",
       "Psyche diluncurkan untuk mempelajari asteroid 16 Psyche yang kaya logam.",
       "Setiap target memberi potongan cerita berbeda tentang pembentukan planet."
     ],
@@ -241,8 +241,8 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
     "images": [
       {
         "src": "./assets/asteroid-belt/missions.svg",
-        "alt": "Diagram eksplorasi asteroid oleh wahana antariksa",
-        "credit": "Visualisasi ANTARA",
+        "alt": "Diagram eksplorasi asteroid oleh robot antariksa",
+        "credit": "Gambar bantu belajar ANTARA",
         "source": "https://science.nasa.gov/dwarf-planets/ceres/exploration/",
         "caption": "Dawn dan Psyche mewakili era eksplorasi langsung sabuk asteroid.",
         "fit": "contain"
@@ -446,7 +446,7 @@ window.AsteroidBeltScene = class AsteroidBeltScene {
       this.loadedImages = map;
       if (moduleResult.status === "fulfilled") {
         try { this.createThreeScene(moduleResult.value, map); }
-        catch (error) { console.warn("Asteroid WebGL unavailable; using Canvas fallback.", error); this.createCanvasFallback(); }
+        catch (error) { console.warn("Asteroid WebGL unavailable. using Canvas fallback.", error); this.createCanvasFallback(); }
       } else this.createCanvasFallback();
       this.resize();
       if (this.renderer?.compileAsync) await this.renderer.compileAsync(this.scene, this.camera);

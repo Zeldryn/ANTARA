@@ -8,45 +8,45 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
     "title": "Saturnus",
     "kicker": "KENALAN DULU",
     "subtitle": "Raksasa gas keenam dari Matahari dengan cincin paling mencolok",
-    "summary": "Saturnus adalah planet terbesar kedua setelah Jupiter. Ia terkenal karena cincin luas yang mengelilinginya, tetapi planet ini juga punya atmosfer aktif dan keluarga bulan yang sangat menarik.",
+    "summary": "Saturnus adalah planet terbesar kedua setelah Jupiter. Ia terkenal karena cincin luas yang mengelilinginya. Tapi planet ini juga punya udara aktif dan keluarga bulan yang sangat menarik.",
     "facts": [
       "Saturnus adalah planet keenam dari Matahari.",
-      "Sebagian besar Saturnus tersusun dari hidrogen dan helium.",
-      "Saturnus tidak memiliki permukaan padat untuk dipijak."
+      "Sebagian besar Saturnus tersusun dari gas ringan bernama hidrogen dan gas ringan bernama helium.",
+      "Saturnus tidak punya permukaan padat untuk dipijak."
     ],
     "source": "https://science.nasa.gov/saturn/facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia05/pia05425/PIA05425.jpg?crop=faces%2Cfocalpoint&fit=clip&h=649&w=1166",
-        "alt": "Citra Saturnus dan sistem cincinnya dari Cassini",
+        "alt": "Gambar Saturnus dan sistem cincinnya dari Cassini",
         "credit": "NASA/JPL/Space Science Institute",
         "source": "https://science.nasa.gov/saturn/facts/",
         "caption": "Saturnus · raksasa gas keenam dari Matahari",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ]
   },
   {
     "title": "Cincin dari Es dan Batu",
     "kicker": "KENAPA CINCINNYA TERLIHAT JELAS?",
-    "subtitle": "Miliaran partikel memantulkan cahaya Matahari di sekitar Saturnus",
-    "summary": "Cincin Saturnus bukan piringan padat. Cincin itu tersusun dari sangat banyak potongan es, batu, dan debu yang masing-masing mengorbit planet. Karena banyak materialnya terang dan kaya es, cincin terlihat sangat jelas.",
+    "subtitle": "Miliaran butiran kecil memantulkan cahaya Matahari di sekitar Saturnus",
+    "summary": "Cincin Saturnus bukan piringan padat. Cincin itu tersusun dari sangat banyak potongan es, batu, dan debu yang masing-masing mengelilingi planet. Karena banyak bahannya terang dan kaya es, cincin terlihat sangat jelas.",
     "facts": [
-      "Ukuran partikel cincin bervariasi dari butiran kecil sampai bongkahan besar.",
-      "Setiap bagian cincin mengorbit dengan kecepatan yang bergantung pada jaraknya dari Saturnus.",
-      "Gravitasi bulan-bulan kecil ikut membentuk celah dan struktur pada cincin."
+      "Ukuran butiran kecil cincin berbeda-beda dari butiran kecil sampai bongkahan besar.",
+      "Setiap bagian cincin mengelilingi dengan kecepatan yang bergantung pada jaraknya dari Saturnus.",
+      "Tarikan bulan-bulan kecil ikut membentuk celah dan bentuk pada cincin."
     ],
     "source": "https://science.nasa.gov/saturn/facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06175/PIA06175.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1000&w=5890",
-        "alt": "Citra panorama cincin Saturnus dari Cassini",
+        "alt": "Gambar panorama cincin Saturnus dari Cassini",
         "credit": "NASA/JPL/Space Science Institute",
         "source": "https://science.nasa.gov/saturn/facts/",
-        "caption": "Struktur cincin dan Cassini Division",
+        "caption": "Bentuk cincin dan Cassini Division",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ]
   },
@@ -64,58 +64,58 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06175/PIA06175.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1000&w=5890",
-        "alt": "Citra panorama cincin Saturnus dari Cassini",
+        "alt": "Gambar panorama cincin Saturnus dari Cassini",
         "credit": "NASA/JPL/Space Science Institute",
         "source": "https://science.nasa.gov/saturn/facts/",
-        "caption": "Struktur cincin dan Cassini Division",
+        "caption": "Bentuk cincin dan Cassini Division",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ]
   },
   {
     "title": "Saturnus Tidak Punya Tanah",
     "kicker": "TAHUKAH KAMU?",
-    "subtitle": "Kalau turun ke dalam, gas berubah menjadi fluida yang semakin rapat",
-    "summary": "Saturnus bukan bola yang bisa didarati seperti Mars. Semakin masuk ke bawah awan, tekanannya naik dan material menjadi makin rapat. Jadi tidak ada garis jelas yang bisa disebut “permukaan tanah Saturnus”.",
+    "subtitle": "Kalau turun ke dalam, gas berubah menjadi bahan yang bisa mengalir yang semakin rapat",
+    "summary": "Saturnus bukan bola yang bisa didarati seperti Mars. Semakin masuk ke bawah awan, tekanannya naik dan bahan menjadi makin rapat. Jadi tidak ada garis jelas yang bisa disebut “permukaan tanah Saturnus”.",
     "facts": [
       "Saturnus adalah raksasa gas.",
-      "Kerapatan rata-rata Saturnus lebih rendah daripada air, walaupun tidak berarti planet ini bisa benar-benar “mengapung” di lautan biasa.",
-      "Bagian dalamnya diperkirakan memiliki lapisan hidrogen dan helium di sekitar inti yang lebih padat."
+      "Kerapatan rata-rata Saturnus lebih rendah daripada air, meski tidak berarti planet ini bisa benar-benar “mengapung” di lautan biasa.",
+      "Bagian dalamnya kira-kira punya lapisan gas ringan bernama hidrogen dan gas ringan bernama helium di sekitar inti yang lebih padat."
     ],
     "source": "https://science.nasa.gov/saturn/facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia05/pia05425/PIA05425.jpg?crop=faces%2Cfocalpoint&fit=clip&h=649&w=1166",
-        "alt": "Citra Saturnus dan sistem cincinnya dari Cassini",
+        "alt": "Gambar Saturnus dan sistem cincinnya dari Cassini",
         "credit": "NASA/JPL/Space Science Institute",
         "source": "https://science.nasa.gov/saturn/facts/",
         "caption": "Saturnus · raksasa gas keenam dari Matahari",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ]
   },
   {
     "title": "Pita Awan Saturnus",
     "kicker": "LIHAT GARIS-GARISNYA",
-    "subtitle": "Atmosfer Saturnus juga punya pita dan jet, hanya warnanya lebih lembut",
-    "summary": "Saturnus punya pola pita seperti Jupiter, tetapi kontras warnanya sering lebih halus. Di bawah tampilan lembut itu, anginnya tetap sangat cepat dan atmosfernya penuh badai serta gelombang.",
+    "subtitle": "Udara Saturnus juga punya pita dan jet, hanya warnanya lebih lembut",
+    "summary": "Saturnus punya pola pita seperti Jupiter. Tapi perbedaan jelas warnanya sering lebih halus. Di bawah tampilan lembut itu, anginnya tetap sangat cepat dan udaranya penuh badai serta gelombang.",
     "facts": [
-      "Atmosfer Saturnus didominasi hidrogen dan helium.",
-      "Jet stream Saturnus dapat bergerak sangat cepat di sekitar ekuator.",
+      "Udara Saturnus paling banyak berisi gas ringan bernama hidrogen dan gas ringan bernama helium.",
+      "Arus angin cepat Saturnus dapat bergerak sangat cepat di sekitar ekuator.",
       "Perubahan musim dapat mengubah warna dan pola awan yang terlihat."
     ],
     "source": "https://science.nasa.gov/saturn/facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06114/PIA06114.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1016&w=1020",
-        "alt": "Citra atmosfer Saturnus dari Cassini",
+        "alt": "Gambar udara Saturnus dari Cassini",
         "credit": "NASA/JPL/Space Science Institute",
         "source": "https://science.nasa.gov/saturn/facts/",
-        "caption": "Pita awan dan sirkulasi atmosfer Saturnus",
+        "caption": "Pita awan dan sirkulasi udara Saturnus",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ]
   },
@@ -123,7 +123,7 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
     "title": "Hexagon Kutub Utara",
     "kicker": "BENTUK ENAM SISI?",
     "subtitle": "Pola awan raksasa di kutub utara membentuk bentuk yang hampir geometris",
-    "summary": "Di kutub utara Saturnus ada pola awan berbentuk enam sisi yang terkenal sebagai hexagon. Ini bukan benda padat. Ia adalah pola jet stream dan gelombang atmosfer yang sangat besar.",
+    "summary": "Di kutub utara Saturnus ada pola awan berbentuk enam sisi yang terkenal sebagai hexagon. Ini bukan benda padat. Ia adalah pola arus angin cepat dan gelombang udara yang sangat besar.",
     "facts": [
       "Hexagon membentang sekitar 30.000 km.",
       "Pola ini pertama kali terlihat pada data Voyager lalu diamati jauh lebih detail oleh Cassini.",
@@ -133,12 +133,12 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia14/pia14646/PIA14646.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1016&w=1016",
-        "alt": "Citra hexagon kutub utara Saturnus dari Cassini",
+        "alt": "Gambar hexagon kutub utara Saturnus dari Cassini",
         "credit": "NASA/JPL-Caltech/Space Science Institute",
         "source": "https://science.nasa.gov/mission/cassini/about-the-mission/",
         "caption": "Hexagon kutub utara Saturnus",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ]
   },
@@ -146,22 +146,22 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
     "title": "Hari Saturnus",
     "kicker": "HARI YANG CEPAT",
     "subtitle": "Planet raksasa ini berputar hanya dalam sekitar sebelas jam",
-    "summary": "Walaupun ukurannya sangat besar, Saturnus berputar cepat. Satu hari hanya sekitar 10,7 jam. Rotasi cepat ikut membuat planet sedikit pepat di kutub dan menggembung di ekuator.",
+    "summary": "meski ukurannya sangat besar, Saturnus berputar cepat. Satu hari hanya sekitar 10,7 jam. Putaran cepat ikut membuat planet sedikit pepat di kutub dan menggembung di bagian tengah planet.",
     "facts": [
       "Satu hari Saturnus sekitar 10,7 jam.",
-      "Rotasi cepat membantu membentuk aliran angin yang kuat.",
-      "Karena Saturnus tidak punya permukaan padat, menentukan laju rotasi bagian dalam membutuhkan pengukuran medan dan gelombang."
+      "Putaran cepat membantu membentuk aliran angin yang kuat.",
+      "Karena Saturnus tidak punya permukaan padat, menentukan laju putaran bagian dalam membutuhkan pengukuran medan dan gelombang."
     ],
     "source": "https://science.nasa.gov/saturn/facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06114/PIA06114.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1016&w=1020",
-        "alt": "Citra atmosfer Saturnus dari Cassini",
+        "alt": "Gambar udara Saturnus dari Cassini",
         "credit": "NASA/JPL/Space Science Institute",
         "source": "https://science.nasa.gov/saturn/facts/",
-        "caption": "Pita awan dan sirkulasi atmosfer Saturnus",
+        "caption": "Pita awan dan sirkulasi udara Saturnus",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ]
   },
@@ -172,31 +172,31 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
     "summary": "Saturnus tidak hanya menarik karena cincin. Di sekelilingnya ada banyak bulan, dari batu kecil tak beraturan sampai dunia besar seperti Titan. Beberapa bulan bahkan membantu membentuk tepi dan celah cincin.",
     "facts": [
       "Titan adalah bulan terbesar Saturnus.",
-      "Bulan kecil dapat bertindak seperti “penggembala” yang membantu membatasi bagian cincin.",
-      "Masing-masing bulan menyimpan sejarah tumbukan dan geologi yang berbeda."
+      "Bulan kecil bisa bertindak seperti “penggembala” yang membantu membatasi bagian cincin.",
+      "Masing-masing bulan menyimpan sejarah tabrakan dan tanah dan batu yang berbeda."
     ],
     "source": "https://science.nasa.gov/saturn/facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06475/PIA06475.jpg?crop=faces%2Cfocalpoint&fit=clip&h=870&w=1021",
-        "alt": "Saturnus bersama Dione, Enceladus, Tethys, Mimas, dan Rhea dalam citra Cassini",
+        "alt": "Saturnus bersama Dione, Enceladus, Tethys, Mimas, dan Rhea dalam gambar Cassini",
         "credit": "NASA/JPL/Space Science Institute",
         "source": "https://science.nasa.gov/photojournal/family-portrait/",
         "caption": "Family Portrait · Saturnus dan lima bulan · Cassini PIA06475",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ]
   },
   {
-    "title": "Titan dan Lautan Metana",
+    "title": "Titan dan Lautan yang Bukan Air",
     "kicker": "DUNIA BERKABUT",
-    "subtitle": "Bulan besar dengan atmosfer tebal dan cairan di permukaannya",
-    "summary": "Titan punya sesuatu yang sangat jarang untuk sebuah bulan: atmosfer tebal. Di permukaannya terdapat sungai, danau, dan laut, tetapi cairannya bukan air seperti di Bumi. Banyak di antaranya terdiri dari metana dan etana.",
+    "subtitle": "Bulan besar dengan udara tebal dan cairan di permukaannya",
+    "summary": "Titan punya sesuatu yang sangat jarang untuk sebuah bulan: udara tebal. Di permukaannya ada sungai, danau, dan laut. Tapi cairannya bukan air seperti di Bumi. Banyak di antaranya berisi gas bernama metana dan etana.",
     "facts": [
-      "Titan memiliki atmosfer yang didominasi nitrogen.",
+      "Titan punya udara yang paling banyak berisi nitrogen.",
       "Huygens mendarat di Titan pada 2005 dan mengirim foto dari permukaan.",
-      "Siklus metana Titan punya kemiripan menarik dengan siklus air di Bumi, walaupun suhunya jauh lebih dingin."
+      "Siklus gas bernama metana Titan punya kemiripan menarik dengan siklus air di Bumi, meski suhunya jauh lebih dingin."
     ],
     "source": "https://science.nasa.gov/saturn/facts/",
     "images": [
@@ -207,30 +207,30 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
         "source": "https://science.nasa.gov/photojournal/titans-surface/",
         "caption": "Permukaan Titan dari Huygens · PIA06440",
         "fit": "cover",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ]
   },
   {
     "title": "Enceladus",
     "kicker": "AIR MENYEMBUR DARI ES",
-    "subtitle": "Bulan kecil yang menyemburkan material dari samudra tersembunyi",
-    "summary": "Enceladus tampak seperti bola es kecil, tetapi di dekat kutub selatannya terdapat semburan material ke ruang angkasa. Data Cassini menunjukkan semburan itu berasal dari air dan material lain yang berhubungan dengan samudra di bawah kerak es.",
+    "subtitle": "Bulan kecil yang menyemburkan bahan dari samudra tersembunyi",
+    "summary": "Enceladus tampak seperti bola es kecil. Tapi di dekat kutub selatannya terdapat semburan bahan ke ruang angkasa. Data Cassini menunjukkan semburan itu berasal dari air dan bahan lain yang berhubungan dengan samudra di bawah kerak es.",
     "facts": [
-      "Enceladus memiliki samudra global di bawah kerak es.",
-      "Plume di kutub selatan mengandung uap air dan partikel es.",
-      "Sebagian material plume memasok partikel ke cincin E Saturnus."
+      "Enceladus punya samudra di seluruh planet di bawah kerak es.",
+      "Semburan di kutub selatan mengandung uap air dan butiran kecil es.",
+      "Sebagian bahan semburan memasok butiran kecil ke cincin E Saturnus."
     ],
     "source": "https://science.nasa.gov/saturn/facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12713/PIA12713.jpg?crop=faces%2Cfocalpoint&fit=clip&h=826&w=826",
-        "alt": "Plume Enceladus dipotret Cassini",
+        "alt": "Semburan Enceladus dipotret Cassini",
         "credit": "NASA/JPL/Space Science Institute",
         "source": "https://science.nasa.gov/photojournal/enceladus-plumes/",
-        "caption": "Plume Enceladus dari Cassini · PIA12713",
+        "caption": "Semburan Enceladus dari Cassini · PIA12713",
         "fit": "contain",
-        "type": "CITRA WAHANA"
+        "type": "CITRA ROBOT ANTARIKSA"
       }
     ]
   },
@@ -238,18 +238,18 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
     "title": "Cassini-Huygens",
     "kicker": "BAGAIMANA KITA TAHU?",
     "subtitle": "Misi panjang yang mengubah pemahaman kita tentang Saturnus dan bulan-bulannya",
-    "summary": "Pioneer dan Voyager memberi pandangan awal, tetapi Cassini mengorbit Saturnus selama lebih dari satu dekade. Bersama pendarat Huygens di Titan, misi ini mengungkap detail cincin, badai, bulan, dan lingkungan Saturnus.",
+    "summary": "Pioneer dan Voyager memberi pandangan awal. Tapi Cassini mengelilingi Saturnus selama lebih dari satu dekade. Bersama pendarat Huygens di Titan, misi ini mengungkap detail cincin, badai, bulan, dan lingkungan Saturnus.",
     "facts": [
       "Cassini tiba di Saturnus pada 2004.",
       "Huygens mendarat di Titan pada Januari 2005.",
-      "Misi Cassini berakhir pada 15 September 2017 dengan terjun terkontrol ke atmosfer Saturnus."
+      "Misi Cassini berakhir pada 15 September 2017 dengan terjun terkontrol ke udara Saturnus."
     ],
     "source": "https://science.nasa.gov/mission/cassini/about-the-mission/",
     "images": [
       {
         "src": "./assets/saturn-missions-diagram.svg",
         "alt": "Garis waktu eksplorasi Saturnus dari Pioneer hingga Cassini-Huygens",
-        "credit": "Visualisasi ANTARA",
+        "credit": "Gambar bantu belajar ANTARA",
         "source": "https://science.nasa.gov/mission/cassini/about-the-mission/",
         "caption": "Tonggak eksplorasi Saturnus",
         "fit": "contain"
@@ -316,7 +316,7 @@ window.SaturnScene = class SaturnScene {
       this.surface=imageResult.status==="fulfilled"?imageResult.value:this.makeFallbackSurface();
       this.jupiterSurface=jupiterResult.status==="fulfilled"?jupiterResult.value:null;
       if(moduleResult.status==="fulfilled"){
-        try{this.createThreeScene(moduleResult.value);}catch(error){console.warn("Saturn WebGL unavailable; using Canvas fallback.",error);this.createCanvasFallback();}
+        try{this.createThreeScene(moduleResult.value);}catch(error){console.warn("Saturn WebGL unavailable. using Canvas fallback.",error);this.createCanvasFallback();}
       }else this.createCanvasFallback();
       this.resize();
       if(this.renderer?.compileAsync)await this.renderer.compileAsync(this.scene,this.camera);
@@ -345,7 +345,7 @@ window.SaturnScene = class SaturnScene {
     this.planet=new THREE.Mesh(new THREE.SphereGeometry(1,160,112),this.planetMaterial);this.planet.scale.y=.905;this.planet.rotation.set(0,2.2,0);
     this.planetGroup=new THREE.Group();this.planetGroup.rotation.set(-.28,0,-.14);this.planetGroup.add(this.planet);this.scene.add(this.planetGroup);
 
-    const atmosphereMat=new THREE.ShaderMaterial({transparent:true,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:`varying vec3 vN;varying vec3 vW;void main(){vN=normalize(mat3(modelMatrix)*normal);vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}`,fragmentShader:`precision highp float;varying vec3 vN;varying vec3 vW;void main(){vec3 V=normalize(cameraPosition-vW);float rim=pow(1.-max(dot(normalize(vN),V),0.),3.5);gl_FragColor=vec4(vec3(1.0,.79,.47)*rim*.27,rim*.22);}`});
+    const atmosphereMat=new THREE.ShaderMaterial({transparent:true,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:`varying vec3 vN; varying vec3 vW; void main(){vN=normalize(mat3(modelMatrix)*normal); vec4 w=modelMatrix*vec4(position,1.); vW=w.xyz; gl_Position=projectionMatrix*viewMatrix*w; }`,fragmentShader:`precision highp float; varying vec3 vN; varying vec3 vW; void main(){vec3 V=normalize(cameraPosition-vW); float rim=pow(1.-max(dot(normalize(vN),V),0.),3.5); gl_FragColor=vec4(vec3(1.0,.79,.47)*rim*.27,rim*.22); }`});
     this.atmosphere=new THREE.Mesh(new THREE.SphereGeometry(1.028,112,80),atmosphereMat);this.atmosphere.scale.y=.905;this.planetGroup.add(this.atmosphere);
 
     this.ring=this.createRingSystem(THREE);this.planetGroup.add(this.ring);
@@ -362,12 +362,12 @@ window.SaturnScene = class SaturnScene {
 
   createRingSystem(THREE){
     const geometry=new THREE.RingGeometry(1.28,2.48,512,4);
-    const material=new THREE.ShaderMaterial({transparent:true,side:THREE.DoubleSide,depthTest:true,depthWrite:false,blending:THREE.NormalBlending,uniforms:{uTime:{value:0},uOpacity:{value:1},uLightDir:{value:new THREE.Vector3(-.56,.42,.71).normalize()}},vertexShader:`varying float vR;varying vec3 vLocal;void main(){vLocal=position;vR=(length(position.xy)-1.28)/(2.48-1.28);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,fragmentShader:`precision highp float;varying float vR;varying vec3 vLocal;uniform float uTime;uniform float uOpacity;uniform vec3 uLightDir;float h(float x){return fract(sin(x*917.13)*43758.5453);}void main(){float r=clamp(vR,0.,1.);float A=smoothstep(.06,.10,r)*(1.-smoothstep(.32,.36,r));float B=smoothstep(.39,.43,r)*(1.-smoothstep(.71,.76,r));float C=smoothstep(.79,.82,r)*(1.-smoothstep(.96,.985,r));float cassiniGap=smoothstep(.345,.365,r)*(1.-smoothstep(.385,.415,r));float cassini=1.-.94*cassiniGap;float fine=.72+.18*sin(r*680.0)+.08*sin(r*1470.0+1.2)+.05*sin(r*3040.0+.4);float density=(A*.47+B*.88+C*.26)*cassini*fine;float grain=.92+.08*h(floor(r*2400.0));density*=grain;vec3 col=mix(vec3(.55,.49,.39),vec3(.95,.90,.78),smoothstep(.28,.70,density));col=mix(col,vec3(.76,.70,.60),C*.5);vec2 p=vLocal.xy;vec2 L=normalize(uLightDir.xy);float along=dot(p,L);float side=abs(p.x*L.y-p.y*L.x);float planetShadow=(1.-smoothstep(-.55,.05,along))*(1.-smoothstep(.76,1.03,side));density*=mix(1.0,.28,planetShadow);float edge=smoothstep(0.,.018,r)*smoothstep(1.,.982,r);float alpha=clamp(density*.88,0.,.82)*edge*uOpacity;if(alpha<.012)discard;gl_FragColor=vec4(col,alpha);}`});
+    const material=new THREE.ShaderMaterial({transparent:true,side:THREE.DoubleSide,depthTest:true,depthWrite:false,blending:THREE.NormalBlending,uniforms:{uTime:{value:0},uOpacity:{value:1},uLightDir:{value:new THREE.Vector3(-.56,.42,.71).normalize()}},vertexShader:`varying float vR; varying vec3 vLocal; void main(){vLocal=position; vR=(length(position.xy)-1.28)/(2.48-1.28); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,fragmentShader:`precision highp float; varying float vR; varying vec3 vLocal; uniform float uTime; uniform float uOpacity; uniform vec3 uLightDir; float h(float x){return fract(sin(x*917.13)*43758.5453); }void main(){float r=clamp(vR,0.,1.); float A=smoothstep(.06,.10,r)*(1.-smoothstep(.32,.36,r)); float B=smoothstep(.39,.43,r)*(1.-smoothstep(.71,.76,r)); float C=smoothstep(.79,.82,r)*(1.-smoothstep(.96,.985,r)); float cassiniGap=smoothstep(.345,.365,r)*(1.-smoothstep(.385,.415,r)); float cassini=1.-.94*cassiniGap; float fine=.72+.18*sin(r*680.0)+.08*sin(r*1470.0+1.2)+.05*sin(r*3040.0+.4); float density=(A*.47+B*.88+C*.26)*cassini*fine; float grain=.92+.08*h(floor(r*2400.0)); density*=grain; vec3 col=mix(vec3(.55,.49,.39),vec3(.95,.90,.78),smoothstep(.28,.70,density)); col=mix(col,vec3(.76,.70,.60),C*.5); vec2 p=vLocal.xy; vec2 L=normalize(uLightDir.xy); float along=dot(p,L); float side=abs(p.x*L.y-p.y*L.x); float planetShadow=(1.-smoothstep(-.55,.05,along))*(1.-smoothstep(.76,1.03,side)); density*=mix(1.0,.28,planetShadow); float edge=smoothstep(0.,.018,r)*smoothstep(1.,.982,r); float alpha=clamp(density*.88,0.,.82)*edge*uOpacity; if(alpha<.012)discard; gl_FragColor=vec4(col,alpha); }`});
     const ring=new THREE.Mesh(geometry,material);ring.rotation.x=Math.PI/2;ring.rotation.z=0.;ring.renderOrder=1;return ring;
   }
 
   createRingShadowShell(THREE){
-    const material=new THREE.ShaderMaterial({transparent:true,depthWrite:false,depthTest:true,side:THREE.FrontSide,vertexShader:`varying vec3 vP;varying vec3 vN;void main(){vP=position;vN=normal;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,fragmentShader:`precision highp float;varying vec3 vP;varying vec3 vN;void main(){float band=1.-smoothstep(.018,.105,abs(vP.y+.035));float lit=smoothstep(-.55,.55,dot(normalize(vN),normalize(vec3(-.6,.42,.68))));float a=band*lit*.15;if(a<.004)discard;gl_FragColor=vec4(.10,.07,.035,a);}`});
+    const material=new THREE.ShaderMaterial({transparent:true,depthWrite:false,depthTest:true,side:THREE.FrontSide,vertexShader:`varying vec3 vP; varying vec3 vN; void main(){vP=position; vN=normal; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,fragmentShader:`precision highp float; varying vec3 vP; varying vec3 vN; void main(){float band=1.-smoothstep(.018,.105,abs(vP.y+.035)); float lit=smoothstep(-.55,.55,dot(normalize(vN),normalize(vec3(-.6,.42,.68)))); float a=band*lit*.15; if(a<.004)discard; gl_FragColor=vec4(.10,.07,.035,a); }`});
     return new THREE.Mesh(new THREE.SphereGeometry(1.008,128,80),material);
   }
 
@@ -497,7 +497,7 @@ window.SaturnScene = class SaturnScene {
     "cameraZ": 6.92,
     "marker": null,
     "kind": "atmosphere",
-    "label": "INTERIOR SATURNUS",
+    "label": "BAGIAN DALAM SATURNUS",
     "context": "TANPA PERMUKAAN PADAT"
   },
   {
@@ -506,7 +506,7 @@ window.SaturnScene = class SaturnScene {
     "cameraZ": 6.72,
     "marker": null,
     "kind": "atmosphere",
-    "label": "ATMOSFER SATURNUS",
+    "label": "UDARA SATURNUS",
     "context": "PITA AWAN & JET"
   },
   {
@@ -524,7 +524,7 @@ window.SaturnScene = class SaturnScene {
     "cameraZ": 6.8,
     "marker": null,
     "kind": "atmosphere",
-    "label": "ROTASI SATURNUS",
+    "label": "PUTARAN SATURNUS",
     "context": "HARI ~10,7 JAM"
   },
   {

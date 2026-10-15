@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once dirname(__DIR__) . '/_bootstrap.php';
+require_once dirname(__DIR__) . '/achievements/_achievements.php';
 
 antara_method('POST');
 $data = antara_input();
@@ -42,10 +43,19 @@ try {
     $_SESSION['user_id'] = (int)$user['id'];
     try { antara_issue_remember_token($pdo, (int)$user['id']); } catch (Throwable $rememberError) { error_log('ANTARA remember token issue error: ' . $rememberError->getMessage()); }
 
+    $notifications = [];
+    try {
+        antara_achievements_sync($pdo, (int)$user['id']);
+        $notifications = antara_achievement_claim_notifications($pdo, (int)$user['id'], 10);
+    } catch (Throwable $achievementError) {
+        error_log('ANTARA login achievement notification error: ' . $achievementError->getMessage());
+    }
+
     antara_json([
         'success' => true,
         'message' => 'Akses ANTARA berhasil dibuka.',
         'user' => antara_user_payload($user),
+        'notifications' => $notifications,
     ]);
 } catch (PDOException $e) {
     error_log('ANTARA login error: ' . $e->getMessage());

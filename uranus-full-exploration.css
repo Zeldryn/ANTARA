@@ -28,6 +28,9 @@
 .uranus-full-explore-button:disabled { opacity: .42; cursor: default; }
 
 .uranus-full-exploration {
+  /* Gas Full Exploration owns its HUD visibility. Do not inherit Mars' entry fade (0). */
+  --surface-opacity: 1;
+
   --fx-bg: rgba(13, 28, 34, .94);
   --fx-bg-strong: rgba(4, 12, 16, .98);
   --fx-border: rgba(139, 208, 216, .30);

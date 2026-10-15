@@ -15,7 +15,7 @@
   const title = document.querySelector('.console-head h2');
   const headCode = document.querySelector('.console-head p');
   const briefTitle = document.getElementById('registration-title');
-  const briefStatus = document.querySelector('.brief-data .ready');
+  const briefStatus = document.querySelector('.brief-data.ready');
 
   const fields = {
     fullName: document.getElementById('full-name'),
@@ -32,6 +32,92 @@
   };
 
   let activeMode = 'register';
+  const guestData = window.ANTARAGuestData || null;
+  let enteredFromGuest = (() => {
+    try { return Boolean(guestData?.isActive?.() || localStorage.getItem('antara-guest-session-v1') === 'active'); }
+    catch { return false; }
+  })();
+  let guestSwitchConfirmed = false;
+  let pendingGuestSubmit = null;
+  let guestSwitchDialog = null;
+  let guestSwitchBanner = null;
+
+  const guestIsActive = () => {
+    try {
+      if (guestData?.isActive) return guestData.isActive();
+      return localStorage.getItem('antara-guest-session-v1') === 'active';
+    } catch { return false; }
+  };
+
+  const ensureGuestSwitchUI = () => {
+    if (guestSwitchDialog) return guestSwitchDialog;
+
+    guestSwitchDialog = document.createElement('section');
+    guestSwitchDialog.className = 'guest-switch-dialog';
+    guestSwitchDialog.hidden = true;
+    guestSwitchDialog.setAttribute('role', 'dialog');
+    guestSwitchDialog.setAttribute('aria-modal', 'true');
+    guestSwitchDialog.setAttribute('aria-labelledby', 'guest-switch-title');
+    guestSwitchDialog.innerHTML = ` <div class="guest-switch-panel"> <span class="guest-switch-scan" aria-hidden="true"></span> <span class="guest-switch-corner guest-switch-corner-tl" aria-hidden="true"></span> <span class="guest-switch-corner guest-switch-corner-br" aria-hidden="true"></span> <header class="guest-switch-head"> <span class="guest-switch-icon" aria-hidden="true">!</span> <div> <small>PERGANTIAN IDENTITAS // PERINGATAN</small> <h2 id="guest-switch-title">GANTI SESI TAMU?</h2> </div> </header> <p class="guest-switch-lead">Kamu sedang menggunakan ANTARA sebagai <strong>TAMU</strong>.</p> <div class="guest-switch-warning"> <strong>DATA SESI TAMU AKAN DIHAPUS</strong> <p>Saat cara masuk atau daftar berhasil, seluruh progres eksplorasi yang tersimpan pada sesi tamu di perangkat ini akan dibersihkan. Data akun ANTARA yang kamu masuki tidak ikut dihapus.</p> </div> <p class="guest-switch-reassurance">Tidak masalah. Semua perjalanan, lokasi, kartu, dan misi bisa kamu ulang dari awal kapan saja dengan akunmu.</p> <div class="guest-switch-actions"> <button type="button" class="guest-switch-stay" data-guest-switch-stay>TETAP SEBAGAI TAMU</button> <button type="button" class="guest-switch-continue" data-guest-switch-continue>LANJUT GANTI AKUN</button> </div> <small class="guest-switch-foot">Pembersihan data tamu baru dilakukan setelah autentikasi berhasil.</small> </div>`;
+    document.body.appendChild(guestSwitchDialog);
+
+    guestSwitchBanner = document.createElement('div');
+    guestSwitchBanner.className = 'guest-switch-banner';
+    guestSwitchBanner.hidden = true;
+    guestSwitchBanner.innerHTML = '<span aria-hidden="true">◇</span><span><strong>PERGANTIAN SESI DISIAPKAN</strong><small>Setelah autentikasi berhasil, sesi tamu akan ditutup dan akun ini menjadi sesi aktif.</small></span>';
+    modeSwitch?.insertAdjacentElement('afterend', guestSwitchBanner);
+
+    guestSwitchDialog.querySelector('[data-guest-switch-stay]')?.addEventListener('click', () => {
+      pendingGuestSubmit = null;
+      window.location.assign('index.html');
+    });
+
+    guestSwitchDialog.querySelector('[data-guest-switch-continue]')?.addEventListener('click', () => {
+      guestSwitchConfirmed = true;
+      const pending = pendingGuestSubmit;
+      pendingGuestSubmit = null;
+      closeGuestSwitchDialog();
+      if (guestSwitchBanner) guestSwitchBanner.hidden = false;
+      window.setTimeout(() => pending?.requestSubmit?.(), 0);
+    });
+
+    guestSwitchDialog.addEventListener('click', event => {
+      if (event.target !== guestSwitchDialog) return;
+      pendingGuestSubmit = null;
+      window.location.assign('index.html');
+    });
+
+    document.addEventListener('keydown', event => {
+      if (guestSwitchDialog?.hidden || event.key !== 'Escape') return;
+      event.preventDefault();
+      pendingGuestSubmit = null;
+      window.location.assign('index.html');
+    });
+
+    return guestSwitchDialog;
+  };
+
+  const openGuestSwitchDialog = form => {
+    if (!guestIsActive() || guestSwitchConfirmed) return false;
+    const dialog = ensureGuestSwitchUI();
+    pendingGuestSubmit = form || null;
+    dialog.hidden = false;
+    document.documentElement.classList.add('guest-switch-open');
+    requestAnimationFrame(() => {
+      dialog.classList.add('is-visible');
+      dialog.querySelector('[data-guest-switch-continue]')?.focus?.({ preventScroll: true });
+    });
+    return true;
+  };
+
+  function closeGuestSwitchDialog() {
+    if (!guestSwitchDialog) return;
+    guestSwitchDialog.classList.remove('is-visible');
+    document.documentElement.classList.remove('guest-switch-open');
+    window.setTimeout(() => {
+      if (guestSwitchDialog && !guestSwitchDialog.classList.contains('is-visible')) guestSwitchDialog.hidden = true;
+    }, 180);
+  }
 
   const setNote = (element, message, type = '') => {
     if (!element) return;
@@ -184,6 +270,8 @@
       return;
     }
 
+    if (openGuestSwitchDialog(registerForm)) return;
+
     registerForm.classList.add('is-submitting');
     setNote(registerNote, 'Mengaktifkan identitas penjelajah...', '');
 
@@ -195,6 +283,7 @@
         password: fields.password.value,
         confirmPassword: fields.confirmPassword.value
       });
+      if (enteredFromGuest) guestData?.completeAccountSwitch?.();
       setNote(registerNote, payload.message || 'Identitas berhasil dibuat.', 'success');
       window.setTimeout(() => window.location.assign('index.html'), 450);
     } catch (error) {
@@ -218,11 +307,14 @@
       return;
     }
 
+    if (openGuestSwitchDialog(loginForm)) return;
+
     loginForm.classList.add('is-submitting');
     setNote(loginNote, 'Memverifikasi identitas...', '');
 
     try {
       const payload = await auth.login(loginFields.identifier.value.trim(), loginFields.password.value);
+      if (enteredFromGuest) guestData?.completeAccountSwitch?.();
       setNote(loginNote, payload.message || 'Login berhasil.', 'success');
       window.setTimeout(() => window.location.assign('index.html'), 350);
     } catch (error) {
@@ -251,8 +343,16 @@
   setMode(requestedMode === 'login' || requestedMode === 'account' ? 'login' : 'register');
 
   auth?.getCurrentUser?.().then(user => {
-    if (!user || !sessionPanel || !sessionName) return;
-    sessionName.textContent = user.username || user.name || 'PENJELAJAH';
+    if (!user) {
+      if (guestIsActive()) openGuestSwitchDialog(null);
+      return;
+    }
+
+    // If a valid account already exists, a stale guest marker must never override it.
+    enteredFromGuest = false;
+    guestData?.clearMarker?.();
+    if (!sessionPanel || !sessionName) return;
+    sessionName.textContent = user.name || user.username || 'PENJELAJAH';
     if (sessionEmail) sessionEmail.textContent = user.email || user.name || '';
     sessionPanel.hidden = false;
 
@@ -265,5 +365,8 @@
       if (briefTitle) briefTitle.textContent = 'Identitasmu terhubung ke ANTARA.';
       if (briefStatus) briefStatus.textContent = 'SESI AKTIF';
     }
-  }).catch(() => {});
+  }).catch(() => {
+    // Network failure must not silently destroy guest data. The submit guard will
+    // still show the warning before a guest attempts to become an account.
+  });
 })();

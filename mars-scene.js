@@ -58,10 +58,10 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     title: "MARS",
     kicker: "DASAR PLANET",
     subtitle: "Kenalan dengan Dunia Merah",
-    summary: "Mars adalah dunia berbatu keempat dari Matahari. Ia lebih kecil dan lebih dingin daripada Bumi, tetapi permukaannya menyimpan banyak jejak yang membuat ilmuwan bertanya: seperti apa Mars miliaran tahun lalu?",
+    summary: "Mars adalah dunia berbatu keempat dari Matahari. Ia lebih kecil dan lebih dingin daripada Bumi. Tapi permukaannya menyimpan banyak jejak yang membuat ilmuwan bertanya: seperti apa Mars miliaran tahun lalu?",
     facts: [
       "Radius Mars sekitar 3.390 km, kira-kira setengah radius Bumi.",
-      "Mars memiliki dua bulan kecil bernama Phobos dan Deimos.",
+      "Mars punya dua bulan kecil bernama Phobos dan Deimos.",
       "Mars termasuk dunia yang paling banyak dieksplorasi robot, dan rover telah menjelajahi langsung permukaannya."
     ],
     source: "https://science.nasa.gov/mars/facts/",
@@ -70,14 +70,14 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     shift: { x: 0, y: 0 }
   },
   {
-    title: "UKURAN & GRAVITASI",
+    title: "UKURAN & TARIKAN",
     kicker: "SKALA PLANET",
     subtitle: "Dunia Kecil dengan Tarikan Lebih Ringan",
-    summary: "Mars jauh lebih kecil daripada Bumi, jadi gravitasinya juga lebih lemah. Massamu tidak berubah, tetapi beratmu di permukaan Mars akan terasa jauh lebih ringan.",
+    summary: "Mars jauh lebih kecil daripada Bumi, jadi tarikannya juga lebih lemah. Massamu tidak berubah. Tapi beratmu di permukaan Mars akan terasa jauh lebih ringan.",
     facts: [
       "Diameter rata-rata Mars sekitar 6.780 km, sekitar 53% diameter Bumi.",
-      "Gravitasi permukaannya sekitar 3,7 m/s², atau kira-kira 38% gravitasi Bumi.",
-      "Benda yang berbobot 100 N di Bumi akan berbobot sekitar 38 N di Mars, walaupun massanya tetap sama."
+      "Tarikan permukaannya sekitar 3,7 m/s², atau kira-kira 38% tarikan Bumi.",
+      "Benda yang berbobot 100 N di Bumi akan berbobot sekitar 38 N di Mars, meski massanya tetap sama."
     ],
     source: "https://www.jpl.nasa.gov/news/press_kits/insight/landing/facts/mars-at-a-glance/",
     sourceName: "NASA/JPL",
@@ -86,13 +86,13 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
   },
   {
     title: "HARI & TAHUN MARS",
-    kicker: "ROTASI & ORBIT",
+    kicker: "PUTARAN & JALUR MENGELILINGI",
     subtitle: "Seharinya Mirip Bumi, Tahunnya Jauh Lebih Lama",
     summary: "Satu hari di Mars hampir terasa familiar, hanya sedikit lebih panjang dari hari di Bumi. Tapi kalau menunggu ulang tahun Mars, kamu harus sabar lebih lama karena satu tahunnya hampir dua kali tahun Bumi.",
     facts: [
       "Satu hari Mars disebut sol dan berlangsung sekitar 24,6 jam.",
       "Satu tahun Mars berlangsung 669,6 sol, setara sekitar 687 hari Bumi.",
-      "Sumbu Mars miring sekitar 25°, sehingga Mars memiliki musim; orbitnya yang lebih elips membuat panjang tiap musim tidak sama."
+      "Sumbu Mars miring sekitar 25°. Jadi Mars punya musim. jalurnya yang lebih elips membuat panjang tiap musim tidak sama."
     ],
     source: "https://science.nasa.gov/mars/facts/",
     sourceName: "NASA Science",
@@ -100,14 +100,14 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     shift: { x: 0, y: 0 }
   },
   {
-    title: "ATMOSFER & SUHU",
+    title: "UDARA & SUHU",
     kicker: "LINGKUNGAN MARS",
     subtitle: "Dingin, Berdebu, dan Berudara Tipis",
-    summary: "Udara Mars sangat tipis dan kebanyakan berisi karbon dioksida. Karena panas mudah lepas, dunia ini bisa berubah dari cukup hangat di lokasi tertentu menjadi sangat dingin pada malam hari atau di daerah kutub.",
+    summary: "Udara Mars sangat tipis dan kebanyakan berisi gas karbon dioksida. Karena panas mudah lepas, dunia ini bisa berubah dari cukup hangat di lokasi tertentu menjadi sangat dingin pada malam hari atau di daerah kutub.",
     facts: [
-      "Atmosfer Mars terutama terdiri dari karbon dioksida, dengan nitrogen dan argon sebagai komponen penting lainnya.",
-      "Tekanan atmosfer di permukaan Mars kurang dari 1% tekanan rata-rata di permukaan Bumi.",
-      "Suhu permukaan dapat mencapai sekitar 20°C pada kondisi hangat lokal dan turun hingga sekitar −153°C pada kondisi sangat dingin."
+      "Udara Mars terutama berisi gas karbon dioksida, dengan nitrogen dan argon sebagai bagian penting lainnya.",
+      "Tekanan udara di permukaan Mars kurang dari 1% tekanan rata-rata di permukaan Bumi.",
+      "Suhu permukaan bisa mencapai sekitar 20°C pada kondisi hangat lokal dan turun hingga sekitar −153°C pada kondisi sangat dingin."
     ],
     source: "https://science.nasa.gov/mars/facts/",
     sourceName: "NASA Science",
@@ -118,11 +118,11 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     title: "KENAPA MARS BERWARNA MERAH?",
     kicker: "WARNA PERMUKAAN",
     subtitle: "Ternyata “karat” yang membuatnya merah",
-    summary: "Rahasia warna merah Mars ada pada besi di batuan dan debunya. Saat besi itu teroksidasi, terbentuk oksida besi yang mirip karat dan memberi warna merah-jingga pada permukaan.",
+    summary: "Rahasia warna merah Mars ada pada besi di batuan dan debunya. Saat besi itu berubah menjadi karat, terbentuk karat besi yang mirip karat dan memberi warna merah-jingga pada permukaan.",
     facts: [
-      "Mineral yang mengandung besi tersebar luas pada material permukaan Mars.",
-      "Oksidasi menghasilkan oksida besi yang memberi warna merah, cokelat, dan jingga.",
-      "Debu halus berwarna kemerahan terangkat ke atmosfer dan membuat Mars tampak merah dari kejauhan."
+      "Mineral yang mengandung besi tersebar luas pada bahan permukaan Mars.",
+      "Proses menjadi karat membuat karat besi yang memberi warna merah, cokelat, dan jingga.",
+      "Debu halus berwarna kemerahan terangkat ke udara dan membuat Mars tampak merah dari kejauhan."
     ],
     source: "https://science.nasa.gov/mars/facts/",
     sourceName: "NASA Science",
@@ -133,23 +133,23 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     images: [
       {
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04689/PIA04689.jpg?crop=faces%2Cfocalpoint&fit=clip&h=2305&w=1537",
-        alt: "Citra Mars Global Surveyor memperlihatkan wilayah puncak dan dinding kaldera Olympus Mons",
+        alt: "Gambar Mars Di seluruh planet Surveyor memperlihatkan wilayah puncak dan dinding lubang besar gunung api Olympus Mons",
         credit: "NASA/JPL/Malin Space Science Systems",
         source: "https://science.nasa.gov/photojournal/top-of-olympus-mons/",
         license: "NASA image policy",
         licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Puncak dan kaldera Olympus Mons",
+        caption: "Puncak dan lubang besar gunung api Olympus Mons",
         fit: "cover"
       }
     ],
     title: "Olympus Mons",
-    kicker: "REKOR & EKSTREM",
+    kicker: "WAH, LUAR BIASA!",
     subtitle: "Gunung api raksasa yang menjulang di dunia Mars",
-    summary: "Olympus Mons bukan sekadar gunung besar. Ini adalah gunung api perisai raksasa yang tumbuh sangat lama dan menjadi salah satu pemandangan paling ekstrem di dunia Mars.",
+    summary: "Olympus Mons bukan sekadar gunung besar. Ini adalah gunung api raksasa yang sangat lebar yang tumbuh sangat lama dan menjadi salah satu pemandangan paling luar biasa di dunia Mars.",
     facts: [
       "Tingginya sekitar 27 km di atas dataran sekitarnya.",
       "Lebar dasarnya lebih dari 600 km.",
-      "Puncaknya memiliki kompleks kaldera hasil runtuhan setelah magma terkuras."
+      "Di puncaknya ada lubang besar. Lubang ini terbentuk saat bagian atas gunung runtuh setelah batuan cair panas di bawahnya berkurang."
     ],
     source: "https://science.nasa.gov/photojournal/olympus-mons/",
     location: { label: "Olympus Mons", latitude: 18.65, longitudeEast: 226.20, source: "https://planetarynames.wr.usgs.gov/Feature/4453" },
@@ -159,23 +159,23 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     images: [
       {
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia22/pia22238/PIA22238.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1800&w=2880",
-        alt: "Citra HiRISE berwarna olahan memperlihatkan batuan di kedalaman Valles Marineris",
+        alt: "Gambar HiRISE berwarna olahan memperlihatkan batuan di kedalaman Valles Marineris",
         credit: "NASA/JPL-Caltech/Univ. of Arizona",
         source: "https://science.nasa.gov/photojournal/geologic-history-revealed-in-valles-marineris/",
         license: "NASA image policy",
         licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Detail geologi Valles Marineris",
+        caption: "Detail tanah dan batu Valles Marineris",
         fit: "cover"
       }
     ],
     title: "Valles Marineris",
     kicker: "NGARAI PLANET",
     subtitle: "Ngarai raksasa yang membelah permukaan Mars",
-    summary: "Valles Marineris membentang sangat panjang di dekat ekuator Mars. Kemungkinan besar kisahnya dimulai dari retakan besar pada kerak, lalu proses geologi dan erosi membuatnya makin lebar dan dalam.",
+    summary: "Valles Marineris membentang sangat panjang di dekat bagian tengah planet Mars. Kemungkinan besar kisahnya dimulai dari retakan besar pada kerak, lalu cara tanah dan batu dan erosi membuatnya makin lebar dan dalam.",
     facts: [
       "Panjangnya sekitar 3.870 km.",
       "Lebarnya mencapai sekitar 600 km di bagian terlebar.",
-      "Kedalamannya dapat mencapai sekitar 9,3 km dari tepi ke dasar."
+      "Kedalamannya bisa mencapai sekitar 9,3 km dari tepi ke dasar."
     ],
     source: "https://science.nasa.gov/mars/facts/",
     location: { label: "Valles Marineris", latitude: -14.01, longitudeEast: 301.41, source: "https://planetarynames.wr.usgs.gov/Feature/6288" },
@@ -195,13 +195,13 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       }
     ],
     title: "Kawah Jezero",
-    kicker: "JEJAK AIR PURBA",
-    subtitle: "Bekas danau purba yang dijelajahi Perseverance",
-    summary: "Kawah Jezero pernah menjadi rumah bagi danau dan delta sungai purba. Itulah sebabnya Perseverance menjelajahinya: tempat seperti ini bisa menyimpan petunjuk tentang seperti apa Mars miliaran tahun lalu.",
+    kicker: "JEJAK AIR SANGAT LAMA",
+    subtitle: "Bekas danau sangat lama yang dijelajahi Perseverance",
+    summary: "Kawah Jezero pernah menjadi rumah bagi danau dan delta sungai sangat lama. Itulah sebabnya Perseverance menjelajahinya: tempat seperti ini bisa menyimpan petunjuk tentang seperti apa Mars miliaran tahun lalu.",
     facts: [
       "Diameter kawahnya sekitar 45 km.",
       "Lebih dari 3,5 miliar tahun lalu, air pernah mengalir masuk dan membentuk danau serta delta.",
-      "Perseverance mendarat di sini pada 18 Februari 2021 untuk mencari tanda kehidupan mikroba purba dan mengumpulkan sampel."
+      "Perseverance mendarat di sini pada 18 Februari 2021 untuk mencari tanda kehidupan mikroba sangat lama dan mengumpulkan sampel."
     ],
     source: "https://science.nasa.gov/mission/mars-2020-perseverance/",
     location: { label: "Kawah Jezero", latitude: 18.41, longitudeEast: 77.69, source: "https://planetarynames.wr.usgs.gov/Feature/14300" },
@@ -211,7 +211,7 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     images: [
       {
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia13/pia13163/PIA13163.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1200",
-        alt: "Citra orbital wilayah tudung es kutub utara Mars di Planum Boreum",
+        alt: "Gambar jalur wilayah tudung es kutub utara Mars di Planum Boreum",
         credit: "NASA/JPL-Caltech/MSSS",
         source: "https://science.nasa.gov/photojournal/northern-ice-cap-of-mars/",
         license: "NASA image policy",
@@ -223,11 +223,11 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     title: "Tudung Es Kutub",
     kicker: "ES YANG BERUBAH MUSIM",
     subtitle: "Es yang tumbuh dan menyusut mengikuti musim",
-    summary: "Kutub Mars tidak selalu terlihat sama. Saat musim dingin datang, es karbon dioksida ikut menumpuk; ketika sinar Matahari kembali kuat, sebagian lapisan itu menyusut lagi.",
+    summary: "Kutub Mars tidak selalu terlihat sama. Saat musim dingin datang, es gas karbon dioksida ikut menumpuk. ketika sinar Matahari kembali kuat, sebagian lapisan itu menyusut lagi.",
     facts: [
-      "Lapisan es musiman mengandung karbon dioksida beku atau dry ice.",
+      "Lapisan es musiman mengandung gas karbon dioksida beku atau dry ice.",
       "Pada musim panas utara, tudung yang tersisa terutama berupa es air.",
-      "Di kutub selatan, es air tetap tertutup lapisan tipis es karbon dioksida bahkan saat musim panas."
+      "Di kutub selatan, es air tetap tertutup lapisan tipis es gas karbon dioksida bahkan saat musim panas."
     ],
     source: "https://science.nasa.gov/earth/frozen-ice-on-earth-and-well-beyond/",
     // The plural topic is anchored to the named north-polar residual-cap region,
@@ -239,22 +239,22 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     images: [
       {
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04271/PIA04271.jpg?crop=faces%2Cfocalpoint&fit=clip&h=540&w=810",
-        alt: "Citra Mars Global Surveyor memperlihatkan lapisan tipis haze di limb Mars",
+        alt: "Gambar Mars Di seluruh planet Surveyor memperlihatkan lapisan tipis kabut tipis di tepi planet Mars",
         credit: "NASA/JPL/Malin Space Science Systems",
         source: "https://science.nasa.gov/photojournal/the-martian-limb/",
         license: "NASA image policy",
         licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-        caption: "Haze atmosfer pada limb Mars",
+        caption: "Kabut tipis udara pada tepi planet Mars",
         fit: "cover"
       }
     ],
-    title: "Atmosfer Mars",
+    title: "Udara Mars",
     kicker: "UDARA YANG SANGAT TIPIS",
     subtitle: "Udara supertipis di dunia merah",
-    summary: "Mars punya atmosfer, tetapi sangat tipis dibandingkan Bumi. Udara ini sulit menyimpan panas, sementara debu halus yang melayang membuat langit dunia merah tampak berkabut kemerahan.",
+    summary: "Mars punya udara. Tapi sangat tipis dibandingkan Bumi. Udara ini sulit menyimpan panas, sementara debu halus yang melayang membuat langit dunia merah tampak berkabut kemerahan.",
     facts: [
-      "Pengukuran Curiosity di Gale Crater menunjukkan sekitar 95,9% atmosfer berupa karbon dioksida.",
-      "Tekanan atmosfer permukaan Mars kurang dari 1% tekanan atmosfer Bumi.",
+      "Pengukuran Curiosity di Gale Crater menunjukkan sekitar 95,9% udara berupa gas karbon dioksida.",
+      "Tekanan udara permukaan Mars kurang dari 1% tekanan udara Bumi.",
       "Gas lain yang penting antara lain nitrogen dan argon."
     ],
     source: "https://science.nasa.gov/resource/the-five-most-abundant-gases-in-the-martian-atmosphere/",
@@ -279,11 +279,11 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
     title: "Badai Debu & Musim",
     kicker: "CUACA PLANET MERAH",
     subtitle: "Saat debu bisa menyelimuti hampir seluruh dunia Mars",
-    summary: "Mars juga punya empat musim, tetapi semuanya berjalan dalam tahun yang jauh lebih panjang. Perubahan musim menggerakkan atmosfer tipisnya dan kadang memicu badai debu yang tumbuh menjadi raksasa.",
+    summary: "Mars juga punya empat musim. Tapi semuanya berjalan dalam tahun yang jauh lebih panjang. Perubahan musim menggerakkan udara tipisnya dan kadang memicu badai debu yang tumbuh menjadi raksasa.",
     facts: [
-      "Satu tahun Mars berlangsung sekitar 687 hari Bumi, sehingga musimnya lebih panjang.",
+      "Satu tahun Mars berlangsung sekitar 687 hari Bumi. Jadi musimnya lebih panjang.",
       "Badai debu besar paling aktif pada musim semi dan musim panas di belahan selatan.",
-      "Sebagian badai dapat berkembang hingga mencakup hampir seluruh planet dan mengurangi cahaya untuk wahana bertenaga surya."
+      "Sebagian badai dapat berkembang hingga mencakup hampir seluruh planet dan mengurangi cahaya untuk robot antariksa bertenaga surya."
     ],
     source: "https://science.nasa.gov/helio-and-you-seasons-on-earth-mars-and-beyond/",
     // Badai debu dapat tumbuh dan berpindah lintas wilayah; jangan tampilkan satu titik sebagai “lokasi badai”.
@@ -613,14 +613,8 @@ window.MarsScene = class MarsScene {
     // Thin warm limb scattering; it is deliberately much subtler than an Earth halo.
     this.atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1.013, 64, 40), new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-      vertexShader: `varying vec3 vWorld; varying vec3 vNormal;
-        void main(){ vec4 world=modelMatrix*vec4(position,1.); vWorld=world.xyz;
-        vNormal=normalize(mat3(modelMatrix)*normal); gl_Position=projectionMatrix*viewMatrix*world; }`,
-      fragmentShader: `varying vec3 vWorld; varying vec3 vNormal;
-        void main(){ vec3 n=normalize(vNormal); vec3 eye=normalize(cameraPosition-vWorld);
-        float rim=pow(1.-max(dot(n,eye),0.),4.);
-        float sun=max(dot(n,normalize(vec3(-3.5,2.5,4.))),0.);
-        gl_FragColor=vec4(.64,.29,.14,rim*(.035+.19*sun)); }`
+      vertexShader: `varying vec3 vWorld; varying vec3 vNormal; void main(){ vec4 world=modelMatrix*vec4(position,1.); vWorld=world.xyz; vNormal=normalize(mat3(modelMatrix)*normal); gl_Position=projectionMatrix*viewMatrix*world; }`,
+      fragmentShader: `varying vec3 vWorld; varying vec3 vNormal; void main(){ vec3 n=normalize(vNormal); vec3 eye=normalize(cameraPosition-vWorld); float rim=pow(1.-max(dot(n,eye),0.),4.); float sun=max(dot(n,normalize(vec3(-3.5,2.5,4.))),0.); gl_FragColor=vec4(.64,.29,.14,rim*(.035+.19*sun)); }`
     }));
     this.planetGroup.add(this.atmosphere);
     const positions = new Float32Array(this.stars.length * 3);

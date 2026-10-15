@@ -13,8 +13,8 @@
       rotationHours: '25–35 hari',
       distanceLabel: '0 AU',
       orbitLabel: '—',
-      note: 'Matahari menyimpan ~99,8% massa Tata Surya dan menjadi sumber energi bagi seluruh planet.',
-      lead: 'Bintang pusat Tata Surya. Semua orbit planet di bawah ini mengitari Matahari dengan periode nyata yang dikompresi supaya tetap mudah diamati.'
+      note: 'Matahari menyimpan ~99,8% isi Tata Surya dan menjadi sumber energi bagi seluruh planet.',
+      lead: 'Bintang pusat Tata Surya. Semua jalur mengelilingi planet di bawah ini mengitari Matahari dengan periode nyata yang diperkecil supaya tetap mudah diamati.'
     },
     {
       key: 'mercury',
@@ -29,8 +29,8 @@
       rotationHours: '58,6 hari',
       distanceLabel: '0,39 AU',
       orbitLabel: '88 hari',
-      note: 'Orbitnya paling lonjong di antara planet utama dan berada paling dekat ke Matahari.',
-      lead: 'Merkurius bergerak paling cepat dalam simulasi karena periode revolusinya paling singkat.'
+      note: 'Jalurnya paling lonjong di antara planet utama dan berada paling dekat ke Matahari.',
+      lead: 'Merkurius bergerak paling cepat dalam tampilan 3D karena periode revolusinya paling singkat.'
     },
     {
       key: 'venus',
@@ -42,11 +42,11 @@
       semiMajorAu: 0.723,
       eccentricity: 0.007,
       orbitalPeriodDays: 224.7,
-      rotationHours: '243 hari (retrograde)',
+      rotationHours: '243 hari (berlawanan arah)',
       distanceLabel: '0,72 AU',
       orbitLabel: '224,7 hari',
-      note: 'Venus berputar retrograde dan atmosfernya sangat tebal, tetapi di mode ini ia tetap mengikuti orbit heliosentrisnya.',
-      lead: 'Orbit Venus hampir melingkar, sehingga jalurnya tampak lebih stabil dibanding Merkurius.'
+      note: 'Venus berputar berlawanan arah dan udaranya sangat tebal. Tapi di mode ini ia tetap mengikuti jalur mengelilingi heliosentrisnya.',
+      lead: 'Jalur mengelilingi Venus hampir melingkar. Jadi jalurnya tampak lebih cukup tetap dibanding Merkurius.'
     },
     {
       key: 'earth',
@@ -61,7 +61,7 @@
       rotationHours: '23,9 jam',
       distanceLabel: '1 AU',
       orbitLabel: '365,25 hari',
-      note: 'Bumi dijadikan acuan utama: 1 AU dan 1 tahun Bumi dipakai sebagai baseline skala orbit.',
+      note: 'Bumi dijadikan acuan utama: 1 AU dan 1 tahun Bumi dipakai sebagai baseline skala jalur mengelilingi.',
       lead: 'Klik Bumi kapan saja untuk langsung kembali ke panorama Bumi di ANTARA.'
     },
     {
@@ -78,7 +78,7 @@
       distanceLabel: '1,52 AU',
       orbitLabel: '687 hari',
       note: 'Jarak Mars yang lebih jauh membuat revolusinya lebih lambat daripada Bumi.',
-      lead: 'Mars tetap bergerak terus dalam orbitnya; perbandingan lajunya dengan Bumi langsung terlihat di sini.'
+      lead: 'Mars tetap bergerak terus dalam jalurnya. perbandingan lajunya dengan Bumi langsung terlihat di sini.'
     },
     {
       key: 'asteroid',
@@ -92,7 +92,7 @@
       rotationHours: 'Bervariasi',
       distanceLabel: '2,1–3,3 AU',
       orbitLabel: '≈ 4,6 tahun',
-      note: 'Sabuk asteroid utama berada di antara Mars dan Jupiter. Di sini divisualisasikan sebagai koridor orbit edukatif.',
+      note: 'Sabuk asteroid utama berada di antara Mars dan Jupiter. Di sini divisualisasikan sebagai koridor jalur mengelilingi edukatif.',
       lead: 'Klik label Sabuk Asteroid untuk kembali ke panorama sabuk asteroid ANTARA.'
     },
     {
@@ -108,8 +108,8 @@
       rotationHours: '9,9 jam',
       distanceLabel: '5,20 AU',
       orbitLabel: '11,86 tahun',
-      note: 'Jupiter membutuhkan hampir 12 tahun Bumi untuk menyelesaikan satu revolusi.',
-      lead: 'Di jarak ini, perbedaan kecepatan orbit planet luar mulai terasa jauh lebih lambat.'
+      note: 'Jupiter membutuhkan hampir 12 tahun Bumi untuk menyelesaikan satu perjalanan mengelilingi Matahari.',
+      lead: 'Di jarak ini, perbedaan kecepatan jalur mengelilingi planet luar mulai terasa jauh lebih lambat.'
     },
     {
       key: 'saturn',
@@ -124,29 +124,29 @@
       rotationHours: '10,7 jam',
       distanceLabel: '9,54 AU',
       orbitLabel: '29,46 tahun',
-      note: 'Cincin Saturnus di mode ini divisualisasikan penuh supaya tetap jelas walau skala sistem dikompresi.',
+      note: 'Cincin Saturnus di mode ini divisualisasikan penuh supaya tetap jelas walau skala sistem diperkecil.',
       lead: 'Saturnus memakai cincin 3D tipis agar tetap terasa khas meski seluruh Tata Surya diringkas ke satu panggung.'
     },
     {
       key: 'uranus',
       name: 'Uranus',
-      short: 'Ice giant miring',
+      short: 'Raksasa es miring',
       kind: 'planet',
       texture: 'assets/textures/mobile/uranus-1024.webp',
       radius: 1.12,
       semiMajorAu: 19.191,
       eccentricity: 0.046,
       orbitalPeriodDays: 30589,
-      rotationHours: '17,2 jam (retrograde)',
+      rotationHours: '17,2 jam (berlawanan arah)',
       distanceLabel: '19,19 AU',
       orbitLabel: '84,0 tahun',
       note: 'Uranus butuh sekitar 84 tahun Bumi untuk satu putaran mengitari Matahari.',
-      lead: 'Uranus jauh lebih lambat dan lebih jauh; pola orbit planet luar terlihat jelas dibanding planet dalam.'
+      lead: 'Uranus jauh lebih lambat dan lebih jauh. pola jalur mengelilingi planet luar terlihat jelas dibanding planet dalam.'
     },
     {
       key: 'neptune',
       name: 'Neptunus',
-      short: 'Ice giant terluar',
+      short: 'Raksasa es terluar',
       kind: 'planet',
       texture: 'assets/textures/mobile/neptune-1024.webp',
       radius: 1.08,
@@ -156,8 +156,8 @@
       rotationHours: '16,1 jam',
       distanceLabel: '30,07 AU',
       orbitLabel: '164,8 tahun',
-      note: 'Neptunus adalah planet utama terjauh; satu revolusinya setara ~164,8 tahun Bumi.',
-      lead: 'Dalam simulasi ini Neptunus tetap terus bergerak, tetapi paling lambat di antara semua planet utama.'
+      note: 'Neptunus adalah planet utama terjauh. satu revolusinya setara ~164,8 tahun Bumi.',
+      lead: 'Dalam tampilan 3D ini Neptunus tetap terus bergerak. Tapi paling lambat di antara semua planet utama.'
     }
   ]);
 
@@ -333,7 +333,7 @@
         this.speedPause.setAttribute('aria-pressed', String(paused));
       }
       if (this.speedNote) {
-        this.speedNote.textContent = speed === 0 ? 'Simulasi dijeda' : `1 detik ≈ ${Number.isInteger(speed) ? speed : speed.toFixed(1)} hari Bumi`;
+        this.speedNote.textContent = speed === 0 ? 'Tampilan 3D dijeda' : `1 detik ≈ ${Number.isInteger(speed) ? speed : speed.toFixed(1)} hari Bumi`;
       }
     }
 

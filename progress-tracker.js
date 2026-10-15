@@ -32,6 +32,7 @@
           sent.add(id);
           retryCounts.delete(id);
           window.dispatchEvent(new CustomEvent("antara:progress-updated", { detail: payload }));
+          window.setTimeout(() => window.AntaraAchievements?.checkPending?.(), 120);
           return payload;
         }
         if (response.status === 429) {

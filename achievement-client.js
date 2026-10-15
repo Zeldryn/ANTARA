@@ -5,7 +5,9 @@
   const queue = [];
   let activeToast = null;
   let activeTimer = 0;
+  let activeCountdownTimer = 0;
   let fetchInFlight = null;
+  let checkPendingAgain = false;
   const DISPLAY_MS = 6200;
 
   const escapeHtml = value => String(value ?? "").replace(/[&<>'"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[ch]));
@@ -40,6 +42,7 @@
   function dismissActive(immediate = false) {
     if (!activeToast) return;
     clearTimeout(activeTimer);
+    clearInterval(activeCountdownTimer);
     const toast = activeToast;
     activeToast = null;
     toast.classList.add("is-leaving");
@@ -58,21 +61,19 @@
     toast.className = "antara-achievement-toast";
     toast.dataset.tier = item.tier || "common";
     toast.setAttribute("role", "status");
-    toast.innerHTML = `
-      <div class="antara-achievement-toast__medal"><img src="${escapeHtml(item.icon)}" alt="" decoding="async"></div>
-      <div class="antara-achievement-toast__copy">
-        <div class="antara-achievement-toast__kicker">Pencapaian Terbuka</div>
-        <h3>${escapeHtml(item.name)}</h3>
-        <p>${escapeHtml(item.description || "Medali baru berhasil ditambahkan ke koleksi akunmu.")}</p>
-        <div class="antara-achievement-toast__meta"><span>${escapeHtml(tierLabel(item.tier))}</span><a href="pencapaian.html">LIHAT MEDALI</a></div>
-      </div>
-      <button class="antara-achievement-toast__close" type="button" aria-label="Tutup notifikasi pencapaian">×</button>
-      <div class="antara-achievement-toast__timer" aria-hidden="true"><i></i></div>`;
+    toast.innerHTML = ` <div class="antara-achievement-toast__medal"><img src="${escapeHtml(item.icon)}" alt="" decoding="async"></div> <div class="antara-achievement-toast__copy"> <div class="antara-achievement-toast__kicker">Pencapaian Terbuka</div> <h3>${escapeHtml(item.name)}</h3> <p>${escapeHtml(item.description || "Medali baru berhasil ditambahkan ke koleksi akunmu.")}</p> <div class="antara-achievement-toast__meta"><span>${escapeHtml(tierLabel(item.tier))}</span><span class="antara-achievement-toast__countdown">TUTUP OTOMATIS · <b>${Math.ceil(DISPLAY_MS / 1000)}</b> DETIK</span><a href="pencapaian.html">LIHAT MEDALI</a></div> </div> <button class="antara-achievement-toast__close" type="button" aria-label="Tutup notifikasi pencapaian"><span aria-hidden="true">×</span><em>TUTUP</em></button> <div class="antara-achievement-toast__timer" aria-hidden="true"><i></i></div>`;
     wrap.appendChild(toast);
     activeToast = toast;
     toast.querySelector(".antara-achievement-toast__close")?.addEventListener("click", () => dismissActive());
     requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add("is-visible")));
     playUnlockSound();
+    const deadline = performance.now() + DISPLAY_MS;
+    const countdown = toast.querySelector(".antara-achievement-toast__countdown b");
+    clearInterval(activeCountdownTimer);
+    activeCountdownTimer = window.setInterval(() => {
+      if (!activeToast || activeToast !== toast) return clearInterval(activeCountdownTimer);
+      if (countdown) countdown.textContent = String(Math.max(0, Math.ceil((deadline - performance.now()) / 1000)));
+    }, 200);
     activeTimer = window.setTimeout(() => dismissActive(), DISPLAY_MS);
   }
 
@@ -87,7 +88,12 @@
   }
 
   async function checkPending() {
-    if (fetchInFlight || document.hidden) return fetchInFlight;
+    if (document.hidden) return fetchInFlight;
+    if (fetchInFlight) {
+      checkPendingAgain = true;
+      return fetchInFlight;
+    }
+    checkPendingAgain = false;
     fetchInFlight = fetch("api/achievements/notifications.php", {
       credentials: "same-origin",
       headers: { Accept: "application/json" },
@@ -100,7 +106,13 @@
     }).catch(error => {
       console.warn("ANTARA achievement notifications unavailable", error);
       return null;
-    }).finally(() => { fetchInFlight = null; });
+    }).finally(() => {
+      fetchInFlight = null;
+      if (checkPendingAgain && !document.hidden) {
+        checkPendingAgain = false;
+        window.setTimeout(checkPending, 0);
+      }
+    });
     return fetchInFlight;
   }
 
@@ -117,6 +129,7 @@
       const payload = await response.json().catch(() => ({}));
       if (response.ok && payload.success) {
         sent.add(key);
+        enqueue(payload.notifications || []);
         window.dispatchEvent(new CustomEvent("antara:achievement-activity", { detail: payload }));
         queueMicrotask(() => checkPending());
         return payload;
@@ -128,8 +141,18 @@
     return null;
   }
 
-  window.addEventListener("antara:progress-updated", () => window.setTimeout(checkPending, 140));
-  window.addEventListener("antara:achievement-activity", () => window.setTimeout(checkPending, 140));
+  window.addEventListener("antara:progress-updated", event => {
+    enqueue(event.detail?.notifications || []);
+    window.setTimeout(checkPending, 140);
+  });
+  window.addEventListener("antara:achievement-activity", event => {
+    enqueue(event.detail?.notifications || []);
+    window.setTimeout(checkPending, 140);
+  });
+  window.addEventListener("antara:auth-change", event => {
+    enqueue(event.detail?.notifications || []);
+    window.setTimeout(checkPending, 220);
+  });
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) {
       showNext();
