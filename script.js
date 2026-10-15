@@ -1902,9 +1902,8 @@ if (typeof window.ANTARASolarSystemExplorer === "function") {
       mission.classList.remove("is-solar-system-mode");
       const fallbackPhase = CELESTIAL_NAV_ORDER.includes(solarSystemSourcePhase) ? solarSystemSourcePhase : phase;
       solarSystemSourcePhase = null;
-      if (flightStatus) flightStatus.textContent = "SIMULASI GAGAL DIMUAT";
-      announcement.textContent = "Mode observasi Tata Surya gagal dimuat pada perangkat ini.";
-      openPanoramaDirect(fallbackPhase, { preserveAnnouncement: true });
+      openPanoramaDirect(fallbackPhase);
+      announcement.textContent = `Kembali ke ${fallbackPhase === "asteroid" ? "Sabuk Asteroid" : CELESTIAL_DISPLAY_NAMES[fallbackPhase]}.`;
     }
   });
 }

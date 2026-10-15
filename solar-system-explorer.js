@@ -272,7 +272,7 @@
       this.camera = new this.THREE.PerspectiveCamera(45, 1, 0.1, 400);
       this.camera.position.set(0, 22, 54);
       const context = this.canvas.getContext('webgl2', { alpha: false, antialias: true }) || this.canvas.getContext('webgl', { alpha: false, antialias: true });
-      if (!context) throw new Error('WebGL tidak tersedia untuk mode Tata Surya.');
+      if (!context) throw new Error('Solar System WebGL initialization failed.');
       this.renderer = new this.THREE.WebGLRenderer({ canvas: this.canvas, context, antialias: true, alpha: false });
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       this.renderer.outputColorSpace = this.THREE.SRGBColorSpace;

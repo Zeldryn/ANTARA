@@ -752,13 +752,12 @@
     }
 
     hideLoading() { this.loadingCard.hidden = true; }
-    hideError() { this.errorCard.hidden = true; }
+    hideError() { if (this.errorCard) this.errorCard.hidden = true; }
     showError(message) {
-      this.state = STATES.ERROR;
-      this.root.classList.add("is-error");
-      this.errorCard.hidden = false;
-      this.errorMessage.textContent = message || "Eksplorasi Merkurius belum dapat dimuat.";
+      console.warn("Mercury Full Exploration:", message);
       this.hideLoading();
+      void this.exit(true);
+      document.getElementById("announcement").textContent = "Kembali ke panorama Merkurius.";
     }
 
     async ensureReady() {

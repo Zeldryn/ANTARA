@@ -43,7 +43,7 @@ const requiredIds = [
   'jupiter-full-viewport','jupiter-full-orbit-input','jupiter-quality-panel','jupiter-region-selector',
   'jupiter-full-hud-depth','jupiter-full-hud-speed','jupiter-full-hud-pressure','jupiter-full-hud-region-type',
   'jupiter-objectives-panel','jupiter-observation-prompt','jupiter-observation-card','jupiter-landmark-card',
-  'jupiter-full-error','jupiter-full-tutorial','jupiter-boundary-hint','jupiter-full-exit'
+  'jupiter-full-tutorial','jupiter-boundary-hint','jupiter-full-exit'
 ];
 for (const id of requiredIds) if (!html.includes(`id="${id}"`)) throw new Error(`Missing HTML id ${id}`);
 const jsChecks = [
@@ -74,7 +74,7 @@ const parity = {
   infoCard: code.includes('updateRegionUI()') && venus.includes('updateRegionUI()'),
   boundaryGimmick: code.includes('boundaryFactor(position)') && venus.includes('softBoundaryStart'),
   loading: code.includes('loadingSequence') && venus.includes('setLoading'),
-  errorFallback: code.includes('showError(error)') && venus.includes('showError(error)'),
+  silentRecovery: code.includes('showError(error)') && code.includes('this.forceReset()') && venus.includes('failBackToOrbit()'),
   responsivePanels: code.includes('isMobileUi()') && venus.includes('isMobileUi()'),
   exitTransition: code.includes('async exit()') && venus.includes('exit('),
   desktopPointerLock: code.includes('requestPointerLock()') && venus.includes('requestPointerLock()'),

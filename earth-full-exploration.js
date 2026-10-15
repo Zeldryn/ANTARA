@@ -1366,7 +1366,7 @@
       this.regionButton.addEventListener("click", () => this.openSelectorFromRegion());
       this.fullscreenButton.addEventListener("click", () => this.toggleFullscreen());
       this.actionsMenuToggle?.addEventListener("click", () => this.setActionsMenu(!this.actionsMenuOpen, true));
-      this.errorReturn.addEventListener("click", () => this.failBack());
+      this.errorReturn?.addEventListener("click", () => this.failBack());
       this.tutorialClose.addEventListener("click", event => {
         event.preventDefault();
         event.stopPropagation();
@@ -1445,7 +1445,7 @@
       this.qualityPanel.hidden = false;
       this.selector.hidden = true;
       this.loading.hidden = true;
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       this.earth.beginFullExplorationFocus?.(null);
       document.getElementById("mission").classList.add("is-earth-full-selecting");
       this.updateQualityPanel();
@@ -1478,7 +1478,7 @@
       this.qualityPanel.hidden = true;
       this.selector.hidden = false;
       this.loading.hidden = true;
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       document.getElementById("mission").classList.remove("is-earth-full", "is-earth-full-selecting");
       this.earth.endFullExplorationFocus?.();
       this.state = STATES.IDLE;
@@ -1502,7 +1502,7 @@
       this.state = STATES.PREPARING;
       this.selector.hidden = true;
       this.qualityPanel.hidden = true;
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       this.root.classList.remove("is-selecting", "is-error", "is-active", "is-observation-open", "is-info-open", "is-objectives-open");
       this.root.classList.add("is-preparing");
       this.setActionsMenu(false);
@@ -2279,7 +2279,7 @@
       this.selector.hidden = false;
       this.qualityPanel.hidden = true;
       this.loading.hidden = true;
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       this.selectorOpenedFromRegion = false;
       this.objectivesOpen = false;
       this.infoOpen = false;
@@ -2293,14 +2293,8 @@
 
     showError(error) {
       console.warn("Earth Full Exploration:", error);
-      this.stopLoop();
-      this.state = STATES.ERROR;
-      this.root.classList.add("is-error");
-      this.loading.hidden = true;
-      this.errorPanel.hidden = false;
-      this.errorMessage.textContent = `${error?.message || "Data terrain real tidak dapat dimuat."} ANTARA tidak mengganti data yang gagal dengan terrain procedural.`;
-      this.entryButton.disabled = false;
-      document.getElementById("announcement").textContent = "Eksplorasi penuh Bumi gagal dimuat. Panorama Bumi tetap aman.";
+      this.failBack();
+      document.getElementById("announcement").textContent = "Kembali ke panorama Bumi.";
     }
 
     failBack() {
@@ -2319,7 +2313,7 @@
       this.qualityPanel.hidden = true;
       this.selector.hidden = false;
       this.loading.hidden = true;
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       document.getElementById("mission").classList.remove("is-earth-full", "is-earth-full-selecting");
       this.earth.endFullExplorationFocus?.();
       this.state = STATES.IDLE;
@@ -2384,7 +2378,7 @@
       this.selector.hidden = false;
       this.qualityPanel.hidden = true;
       this.loading.hidden = true;
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       document.getElementById("mission").classList.remove("is-earth-full", "is-earth-full-selecting");
       this.earth.endFullExplorationFocus?.();
       this.state = STATES.IDLE;

@@ -2851,7 +2851,7 @@
         event.stopPropagation();
         this.setActionsMenu(!this.actionsMenuOpen, true);
       });
-      this.errorReturn.addEventListener("click", () => this.failBackToOrbit());
+      this.errorReturn?.addEventListener("click", () => this.failBackToOrbit());
       this.tutorialClose.addEventListener("click", () => this.dismissTutorial(true));
       this.infoMinimize.addEventListener("click", event => { event.stopPropagation(); this.hideRegionInfo(); });
       this.infoToggle.addEventListener("click", event => { event.stopPropagation(); this.showRegionInfo(true); });
@@ -3000,7 +3000,7 @@
       this.root.style.setProperty("--entry-progress", "0");
       this.resetEducationUI();
       this.loading.hidden = true;
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       this.infoCard.classList.remove("is-visible");
       this.infoCard.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = true;
@@ -3022,7 +3022,7 @@
       this.infoCard.setAttribute("aria-hidden", "true");
       this.infoToggle.hidden = true;
       this.resetEducationUI();
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       this.state = switching ? STATES.SWITCHING : STATES.PREPARING;
       this.root.classList.remove("is-selecting", "is-active", "is-error");
       this.root.classList.add("is-preparing");
@@ -3879,7 +3879,7 @@
       this.selector.hidden = false;
       if (this.qualityPanel) this.qualityPanel.hidden = true;
       this.loading.hidden = true;
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       this.entryButton.disabled = false;
       document.getElementById("mission").classList.remove("is-venus-full", "is-venus-full-selecting");
       document.getElementById("announcement").textContent = "Kembali ke panorama Venus.";
@@ -3893,15 +3893,8 @@
 
     showError(error) {
       console.warn("Venus Full Exploration:", error);
-      this.stopLoop();
-      this.input.unbind();
-      this.state = STATES.ERROR;
-      this.loading.hidden = true;
-      this.errorPanel.hidden = false;
-      this.errorMessage.textContent = error?.message || "Wilayah Venus tidak dapat dibangun.";
-      this.root.classList.add("is-error");
-      this.entryButton.disabled = false;
-      document.getElementById("announcement").textContent = "Eksplorasi penuh Venus gagal dimuat. Panorama Venus tetap aman.";
+      this.failBackToOrbit();
+      document.getElementById("announcement").textContent = "Kembali ke panorama Venus.";
     }
 
     failBackToOrbit() {

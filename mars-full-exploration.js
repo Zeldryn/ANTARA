@@ -1925,7 +1925,7 @@
     bindUI() {
       this.entryButton.addEventListener("click", () => this.openEntryFlow());
       this.exitButton.addEventListener("click", () => { this.setActionsMenu(false); this.exit(); });
-      this.errorReturn.addEventListener("click", () => this.failBackToOrbit());
+      this.errorReturn?.addEventListener("click", () => this.failBackToOrbit());
       this.tutorialClose.addEventListener("click", () => this.dismissTutorial(true));
       this.qualityClose?.addEventListener("click", () => this.closeEntryFlow());
       this.qualityStart?.addEventListener("click", () => this.confirmQualitySelection());
@@ -2241,7 +2241,7 @@
       this.root.inert = false;
       this.root.setAttribute("aria-hidden", "false");
       this.loading.hidden = true;
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       this.infoOpen = false;
       this.objectiveOpen = false;
       this.syncSecondaryPanels();
@@ -2336,7 +2336,7 @@
       this.selector.hidden = true;
       this.qualityPanel.hidden = true;
       this.loading.hidden = false;
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       this.infoOpen = false;
       this.objectiveOpen = false;
       this.syncSecondaryPanels();
@@ -2484,20 +2484,8 @@
 
     showError(error) {
       console.warn("Mars Full Exploration:", error);
-      this.stopLoop();
-      this.input.unbind();
-      this.setupOpen = false;
-      this.state = STATES.ERROR;
-      this.loading.hidden = true;
-      this.errorPanel.hidden = false;
-      this.errorMessage.textContent = /MOLA|tile|terrain/i.test(error.message)
-        ? "Data elevasi MOLA tidak dapat dimuat. Mode orbit Mars tetap aman. Periksa koneksi internet atau host tile MOLA secara lokal."
-        : error.message;
-      this.root.classList.add("is-error");
-      this.root.classList.remove("is-preparing", "is-active", "is-surface-visible", "is-selecting", "is-quality-open");
-      this.hideObjectives();
-      this.entryButton.disabled = false;
-      document.getElementById("announcement").textContent = "Eksplorasi permukaan Mars belum dapat dimuat. Panorama Mars tetap tersedia.";
+      this.failBackToOrbit();
+      document.getElementById("announcement").textContent = "Kembali ke panorama Mars.";
     }
 
     failBackToOrbit() {
@@ -2516,7 +2504,7 @@
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       const pendingPreparation = this.preparingPromise;
       this.disposeSurface();
       this.entryButton.disabled = Boolean(pendingPreparation);

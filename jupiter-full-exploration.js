@@ -902,7 +902,7 @@
       this.entryButton.disabled = true;
       this.qualityPanel.hidden = false;
       this.selector.hidden = true;
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       this.hideWorldUi();
       this.root.classList.remove("is-active", "is-preparing", "is-exiting");
       document.getElementById("announcement").textContent = "Pilih kualitas grafis sebelum masuk ke atmosfer Jupiter.";
@@ -1004,7 +1004,7 @@
       this.selectDestination(destination.id);
       this.selector.hidden = true;
       this.qualityPanel.hidden = true;
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       this.root.classList.add("is-preparing");
       this.showLoading(`MEMASUKI ${destination.name.toUpperCase()}`, "MENYIAPKAN ATMOSFER", 7);
       try {
@@ -1424,12 +1424,9 @@
     }
 
     showError(error) {
-      this.stopLoop();
-      this.state = "error";
-      this.loading.hidden = true;
-      this.errorPanel.hidden = false;
-      this.errorMessage.textContent = error?.message || "Eksplorasi atmosfer Jupiter tidak dapat dimuat.";
-      document.getElementById("announcement").textContent = "Eksplorasi atmosfer Jupiter gagal dimuat.";
+      console.warn("Jupiter Full Exploration:", error);
+      this.forceReset();
+      document.getElementById("announcement").textContent = "Kembali ke panorama Jupiter.";
     }
 
     async exit() {
@@ -1507,7 +1504,7 @@
       this.qualityPanel.hidden = true;
       this.selector.hidden = true;
       this.loading.hidden = true;
-      this.errorPanel.hidden = true;
+      if (this.errorPanel) this.errorPanel.hidden = true;
       this.observationPrompt.hidden = true;
       this.observationCard.hidden = true;
       this.info.hidden = true;
