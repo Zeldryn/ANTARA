@@ -164,3 +164,36 @@
   .mars-venus-template .mars-dpad-core { left:49px; top:49px; }
   .mars-venus-template .mars-mobile-altitude { bottom:calc(var(--venus-safe-bottom) + 10px); }
 }
+
+/* Mars Full Exploration: use the same real scientific imagery already used by normal Mars exploration. */
+.mars-venus-template .mars-landmark-real-media {
+  display: grid;
+  position: relative;
+  overflow: hidden;
+  min-height: 156px;
+  padding: 0;
+  text-decoration: none;
+  background: #08090a;
+}
+.mars-venus-template .mars-landmark-real-media img {
+  display: block;
+  width: 100%;
+  height: clamp(150px, 22vh, 220px);
+  object-fit: cover;
+  filter: saturate(.9) contrast(1.04);
+}
+.mars-venus-template .mars-landmark-real-media b {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 9px;
+  padding: 6px 8px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(7,8,10,.76);
+  color: #e6e1d8;
+  font-size: 6px;
+  line-height: 1.4;
+  letter-spacing: .7px;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}

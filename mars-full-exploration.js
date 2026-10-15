@@ -66,6 +66,10 @@
       heading: 0.18,
       scienceSource: "https://science.nasa.gov/mission/mars-2020-perseverance/",
       source: "https://planetarynames.wr.usgs.gov/Feature/14300",
+      image: "assets/exploration/jezero.webp",
+      imageAlt: "Citra berwarna olahan memperlihatkan endapan delta di Kawah Jezero, Mars",
+      imageCaption: "Delta Jezero · warna olahan",
+      imageSource: "https://science.nasa.gov/photojournal/jezero-crater-mars-2020s-landing-site/",
       facts: ["Jezero berdiameter sekitar 45 km.", "Delta di Jezero menjadi salah satu target utama Perseverance untuk mempelajari lingkungan berair purba.", "Sedimen delta membantu ilmuwan membaca sejarah air di Mars." ]
     },
     {
@@ -79,6 +83,10 @@
       heading: -0.65,
       scienceSource: "https://science.nasa.gov/photojournal/olympus-mons/",
       source: "https://planetarynames.wr.usgs.gov/Feature/4453",
+      image: "assets/exploration/olympus-mons.webp",
+      imageAlt: "Mosaik Viking Orbiter 1 memperlihatkan gunung api Olympus Mons di Mars",
+      imageCaption: "Olympus Mons · mosaik Viking",
+      imageSource: "https://science.nasa.gov/photojournal/olympus-mons/",
       facts: ["Olympus Mons adalah gunung api perisai raksasa.", "Lebar dasarnya mencapai ratusan kilometer.", "Kompleks kaldera besar berada di wilayah puncaknya." ]
     },
     {
@@ -92,6 +100,10 @@
       heading: -0.12,
       scienceSource: "https://science.nasa.gov/mars/",
       source: "https://planetarynames.wr.usgs.gov/Feature/6288",
+      image: "assets/exploration/valles-marineris.webp",
+      imageAlt: "Mosaik citra Viking memperlihatkan sistem ngarai Valles Marineris di Mars",
+      imageCaption: "Valles Marineris · mosaik Viking",
+      imageSource: "https://science.nasa.gov/resource/valles-marineris-the-grand-canyon-of-mars/",
       facts: ["Valles Marineris membentang ribuan kilometer dekat ekuator Mars.", "Sistem ini tersusun dari banyak lembah dan ngarai yang saling terhubung.", "Retakan kerak dan proses erosi ikut membentuk morfologinya." ]
     },
     {
@@ -105,6 +117,10 @@
       heading: 0.44,
       scienceSource: "https://science.nasa.gov/mission/msl-curiosity/",
       source: "https://planetarynames.wr.usgs.gov/Feature/2071",
+      image: "assets/exploration/atmosphere.webp",
+      imageAlt: "Citra Curiosity memperlihatkan senja kebiruan di atmosfer berdebu Kawah Gale, Mars",
+      imageCaption: "Senja di Gale · warna diproses",
+      imageSource: "https://science.nasa.gov/photojournal/sunset-in-mars-gale-crater/",
       facts: ["Curiosity mendarat di Gale Crater pada 2012.", "Lapisan batuan di dalam kawah merekam perubahan lingkungan Mars dari waktu ke waktu.", "Mount Sharp berada di bagian tengah kawah dan menjadi target eksplorasi utama Curiosity." ]
     },
     {
@@ -118,6 +134,10 @@
       heading: 0.26,
       scienceSource: "https://science.nasa.gov/mars/",
       source: "https://planetarynames.wr.usgs.gov/Feature/2481",
+      image: "assets/exploration/dust-storm.webp",
+      imageAlt: "Perbandingan citra Mars sebelum dan selama badai debu tahun 2001 di wilayah Hellas dan Syrtis Major",
+      imageCaption: "Mars · Juni dan Juli 2001",
+      imageSource: "https://science.nasa.gov/resource/the-2001-great-dust-storms-hellassyrtis-major/",
       facts: ["Hellas Planitia adalah cekungan tumbukan raksasa di belahan selatan Mars.", "Dasarnya berada jauh di bawah dataran tinggi di sekitarnya.", "Topografi cekungan besar ini memengaruhi kondisi atmosfer dan cuaca regional Mars." ]
     }
   ]);
@@ -1744,7 +1764,9 @@
       this.infoCoordinateSource = document.getElementById("mars-landmark-coordinate-source");
       this.infoDescription = document.getElementById("mars-landmark-description");
       this.infoFacts = document.getElementById("mars-landmark-facts");
-      this.infoPreview = document.getElementById("mars-landmark-preview");
+      this.infoImage = document.getElementById("mars-landmark-image");
+      this.infoImageCaption = document.getElementById("mars-landmark-image-caption");
+      this.infoImageLink = document.getElementById("mars-landmark-media");
       this.infoMinimize = document.getElementById("mars-landmark-minimize");
       this.infoToggle = document.getElementById("mars-info-toggle");
       this.hudCoordinates = document.getElementById("mars-hud-coordinates");
@@ -2820,7 +2842,15 @@
       this.infoFacts.replaceChildren(...(landmark.facts || []).map(fact => { const item = document.createElement("li"); item.textContent = fact; return item; }));
       this.infoSource.href = landmark.scienceSource || landmark.source;
       this.infoCoordinateSource.href = landmark.source;
-      if (this.infoPreview) this.infoPreview.className = `mars-location-preview mars-location-preview-${landmark.id}`;
+      if (this.infoImage) {
+        this.infoImage.src = landmark.image || "";
+        this.infoImage.alt = landmark.imageAlt || landmark.name;
+      }
+      if (this.infoImageCaption) this.infoImageCaption.textContent = landmark.imageCaption || `Citra referensi ${landmark.name}`;
+      if (this.infoImageLink) {
+        this.infoImageLink.href = landmark.imageSource || landmark.scienceSource || landmark.source;
+        this.infoImageLink.setAttribute("aria-label", `Buka sumber citra asli ${landmark.name}`);
+      }
       this.infoOpen = true;
       if (this.objectivesRegion) this.objectivesRegion.textContent = landmark.name;
       this.updateNextTarget(landmark.latitude, wrapLongitude(landmark.longitudeEast > 180 ? landmark.longitudeEast - 360 : landmark.longitudeEast));

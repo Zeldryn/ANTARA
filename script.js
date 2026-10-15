@@ -1088,7 +1088,9 @@ const venus = new VenusScene();
 const venusFull = venus.fullExploration;
 const asteroid = new AsteroidBeltScene();
 const jupiter = new JupiterScene();
+const jupiterFull = new JupiterFullExploration(jupiter);
 const saturn = new SaturnScene();
+const saturnFull = new SaturnFullExploration(saturn);
 const uranus = new UranusScene();
 const neptune = new NeptuneScene();
 
@@ -1205,6 +1207,8 @@ function hasActiveFullExploration() {
   if (phase === "venus") return Boolean(venus.fullExplorationActive);
   if (phase === "mars") return Boolean(mars.fullExplorationActive);
   if (phase === "mercury") return Boolean(mercury.fullExplorationActive);
+  if (phase === "jupiter") return Boolean(jupiter.fullExplorationActive);
+  if (phase === "saturn") return Boolean(saturn.fullExplorationActive);
   return false;
 }
 
@@ -1213,7 +1217,9 @@ function fullExplorationDomVisible() {
     document.getElementById("earth-full-exploration"),
     document.getElementById("venus-full-exploration"),
     document.getElementById("mars-full-exploration"),
-    document.getElementById("mercury-full-exploration")
+    document.getElementById("mercury-full-exploration"),
+    document.getElementById("jupiter-full-exploration"),
+    document.getElementById("saturn-full-exploration")
   ].some(root => root && !root.hidden && root.getAttribute("aria-hidden") !== "true");
 }
 
@@ -1232,7 +1238,9 @@ const returnCockpitFullRoots = [
   document.getElementById("earth-full-exploration"),
   document.getElementById("venus-full-exploration"),
   document.getElementById("mars-full-exploration"),
-  document.getElementById("mercury-full-exploration")
+  document.getElementById("mercury-full-exploration"),
+  document.getElementById("jupiter-full-exploration"),
+  document.getElementById("saturn-full-exploration")
 ].filter(Boolean);
 
 if (typeof MutationObserver !== "undefined") {
@@ -2312,7 +2320,7 @@ function travelAsteroidToJupiter() {
 }
 
 function travelJupiterToAsteroid() {
-  if (jupiter.exploring || !beginPlanetTransition("jupiter", "jupiter-asteroid-transition", jupiterPreviousButton, "asteroid")) return;
+  if (jupiter.exploring || jupiter.fullExplorationActive || !beginPlanetTransition("jupiter", "jupiter-asteroid-transition", jupiterPreviousButton, "asteroid")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "MENUJU SABUK ASTEROID";
   announcement.textContent = "Jupiter menjauh. Memasuki kembali wilayah Sabuk Asteroid.";
@@ -2337,7 +2345,7 @@ function travelJupiterToAsteroid() {
 }
 
 function travelJupiterToSaturn() {
-  if (jupiter.exploring || !beginPlanetTransition("jupiter", "jupiter-saturn-transition", jupiterNextButton, "saturn")) return;
+  if (jupiter.exploring || jupiter.fullExplorationActive || !beginPlanetTransition("jupiter", "jupiter-saturn-transition", jupiterNextButton, "saturn")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU SATURNUS";
   announcement.textContent = "Meninggalkan Jupiter. Saturnus dan sistem cincinnya mulai muncul jauh di depan.";
@@ -2361,7 +2369,7 @@ function travelJupiterToSaturn() {
 }
 
 function travelSaturnToJupiter() {
-  if (saturn.exploring || !beginPlanetTransition("saturn", "saturn-jupiter-transition", saturnPreviousButton, "jupiter")) return;
+  if (saturn.exploring || saturn.fullExplorationActive || !beginPlanetTransition("saturn", "saturn-jupiter-transition", saturnPreviousButton, "jupiter")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "KEMBALI MENUJU JUPITER";
   announcement.textContent = "Saturnus menjauh. Jupiter kembali muncul di bagian dalam Tata Surya.";
@@ -2385,7 +2393,7 @@ function travelSaturnToJupiter() {
 }
 
 function travelSaturnToUranus() {
-  if (saturn.exploring || !beginPlanetTransition("saturn", "saturn-uranus-transition", saturnNextButton, "uranus")) return;
+  if (saturn.exploring || saturn.fullExplorationActive || !beginPlanetTransition("saturn", "saturn-uranus-transition", saturnNextButton, "uranus")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU URANUS";
   announcement.textContent = "Saturnus menjauh. Uranus yang pucat dan miring mulai muncul di jalur berikutnya.";
@@ -2587,12 +2595,20 @@ document.addEventListener("keydown", event => {
     if (event.key === "Escape") { event.preventDefault(); asteroid.exitExploration(); }
     return;
   }
+  if (phase === "jupiter" && jupiter.fullExplorationActive) {
+    if (event.key === "Escape") { event.preventDefault(); jupiterFull?.exit?.(); }
+    return;
+  }
   if (phase === "jupiter" && jupiter.exploring) {
     if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
       event.preventDefault();
       jupiter.setExplorationStop(jupiter.topicIndex + (event.key === "ArrowRight" ? 1 : -1));
     }
     if (event.key === "Escape") { event.preventDefault(); jupiter.exitExploration(); }
+    return;
+  }
+  if (phase === "saturn" && saturn.fullExplorationActive) {
+    if (event.key === "Escape") { event.preventDefault(); saturnFull?.exit?.(); }
     return;
   }
   if (phase === "saturn" && saturn.exploring) {
@@ -2630,10 +2646,10 @@ document.addEventListener("keydown", event => {
   if (event.key === "ArrowRight" && phase === "mars" && !mars.exploring && !mars.fullExplorationActive) travelMarsToAsteroid();
   if (event.key === "ArrowLeft" && phase === "asteroid" && !asteroid.exploring) travelAsteroidToMars();
   if (event.key === "ArrowRight" && phase === "asteroid" && !asteroid.exploring) travelAsteroidToJupiter();
-  if (event.key === "ArrowLeft" && phase === "jupiter" && !jupiter.exploring) travelJupiterToAsteroid();
-  if (event.key === "ArrowRight" && phase === "jupiter" && !jupiter.exploring) travelJupiterToSaturn();
-  if (event.key === "ArrowLeft" && phase === "saturn" && !saturn.exploring) travelSaturnToJupiter();
-  if (event.key === "ArrowRight" && phase === "saturn" && !saturn.exploring) travelSaturnToUranus();
+  if (event.key === "ArrowLeft" && phase === "jupiter" && !jupiter.exploring && !jupiter.fullExplorationActive) travelJupiterToAsteroid();
+  if (event.key === "ArrowRight" && phase === "jupiter" && !jupiter.exploring && !jupiter.fullExplorationActive) travelJupiterToSaturn();
+  if (event.key === "ArrowLeft" && phase === "saturn" && !saturn.exploring && !saturn.fullExplorationActive) travelSaturnToJupiter();
+  if (event.key === "ArrowRight" && phase === "saturn" && !saturn.exploring && !saturn.fullExplorationActive) travelSaturnToUranus();
   if (event.key === "ArrowLeft" && phase === "uranus" && !uranus.exploring) travelUranusToSaturn();
   if (event.key === "ArrowRight" && phase === "uranus" && !uranus.exploring) travelUranusToNeptune();
   if (event.key === "ArrowLeft" && phase === "neptune" && !neptune.exploring) travelNeptuneToUranus();
@@ -2676,7 +2692,7 @@ document.addEventListener("click", event => {
   sound.uiClick();
 }, true);
 
-for (const button of [launchButton, profileHudButton, earth.nextButton, earthPreviousButton, earthFull.entryButton, venusPreviousButton, venusNextButton, venusFull.entryButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, mercuryFull?.entryButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, marsNextButton, mars.exploreButton, mars.fullExploration?.entryButton, asteroidPreviousButton, asteroidNextButton, asteroid.exploreButton, jupiterPreviousButton, jupiterNextButton, jupiter.exploreButton, saturnPreviousButton, saturnNextButton, saturn.exploreButton, uranusPreviousButton, uranusNextButton, uranus.exploreButton, neptunePreviousButton, neptune.exploreButton, audioToggle].filter(Boolean)) {
+for (const button of [launchButton, profileHudButton, earth.nextButton, earthPreviousButton, earthFull.entryButton, venusPreviousButton, venusNextButton, venusFull.entryButton, mercuryPreviousButton, mercuryNextButton, mercury.exploreButton, mercuryFull?.entryButton, sunNextButton, sun.exploreButton, venus.exploreButton, marsPreviousButton, marsNextButton, mars.exploreButton, mars.fullExploration?.entryButton, asteroidPreviousButton, asteroidNextButton, asteroid.exploreButton, jupiterPreviousButton, jupiterNextButton, jupiter.exploreButton, jupiterFull?.entryButton, saturnPreviousButton, saturnNextButton, saturn.exploreButton, saturnFull?.entryButton, uranusPreviousButton, uranusNextButton, uranus.exploreButton, neptunePreviousButton, neptune.exploreButton, audioToggle].filter(Boolean)) {
   button.addEventListener("pointerenter", event => { if (event.pointerType === "mouse") sound.hover(); });
   button.addEventListener("focus", () => sound.hover());
 }

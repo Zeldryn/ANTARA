@@ -541,7 +541,7 @@ window.JupiterScene = class JupiterScene {
 
   resize() {
     const parent=this.element.parentElement; this.width=Math.max(1,parent.clientWidth);this.height=Math.max(1,parent.clientHeight);this.mobile=this.width<=700;
-    if(this.mode==="webgl") {this.renderer.setPixelRatio(Math.min(devicePixelRatio||1,this.mobile?1.55:2));this.renderer.setSize(this.width,this.height);this.camera.aspect=this.width/this.height;this.camera.updateProjectionMatrix();}
+    if(this.mode==="webgl") {const baseDpr=Math.min(devicePixelRatio||1,this.mobile?1.55:2);const fullDpr=Number.isFinite(this.fullExplorationQualityDpr)?this.fullExplorationQualityDpr:baseDpr;this.renderer.setPixelRatio(Math.min(baseDpr,fullDpr));this.renderer.setSize(this.width,this.height);this.camera.aspect=this.width/this.height;this.camera.updateProjectionMatrix();}
     else if(this.mode==="canvas"&&this.canvas){const dpr=Math.min(devicePixelRatio||1,1.5);this.canvas.width=this.width*dpr;this.canvas.height=this.height*dpr;this.canvas.style.width=this.width+"px";this.canvas.style.height=this.height+"px";this.ctx.setTransform(dpr,0,0,dpr,0,0);}
   }
 

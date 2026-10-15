@@ -73,13 +73,25 @@ function antara_progress_catalog(): array
             'name' => 'Jupiter',
             'short' => 'JUPITER',
             'normal_total' => 11,
-            'full' => [],
+            'full' => [
+                'grs' => 'Great Red Spot',
+                'bands' => 'Sabuk & Zona Awan',
+                'polar-cyclones' => 'Siklon Kutub Utara',
+                'rings' => 'Cincin Utama & Halo',
+                'galilean-moons' => 'Empat Bulan Galilea',
+            ],
         ],
         'saturn' => [
             'name' => 'Saturnus',
             'short' => 'SATURNUS',
             'normal_total' => 11,
-            'full' => [],
+            'full' => [
+                'rings' => 'Cincin & Cassini Division',
+                'hexagon' => 'Hexagon Kutub Utara',
+                'titan' => 'Titan',
+                'enceladus' => 'Enceladus',
+                'grand-finale' => 'Cassini Grand Finale',
+            ],
         ],
         'uranus' => [
             'name' => 'Uranus',
