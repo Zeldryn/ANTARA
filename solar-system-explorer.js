@@ -5,8 +5,8 @@
       name: 'Matahari',
       short: 'Bintang pusat',
       kind: 'star',
-      texture: 'assets/progress-planets/sun.png',
-      radius: 2.85,
+      texture: null,
+      radius: 3.6,
       semiMajorAu: 0,
       eccentricity: 0,
       orbitalPeriodDays: Infinity,
@@ -21,8 +21,8 @@
       name: 'Merkurius',
       short: 'Planet batuan terdalam',
       kind: 'planet',
-      texture: 'assets/progress-planets/mercury.png',
-      radius: 0.34,
+      texture: null,
+      radius: 0.72,
       semiMajorAu: 0.387,
       eccentricity: 0.206,
       orbitalPeriodDays: 88,
@@ -37,8 +37,8 @@
       name: 'Venus',
       short: 'Planet rumah kaca',
       kind: 'planet',
-      texture: 'assets/progress-planets/venus.png',
-      radius: 0.46,
+      texture: null,
+      radius: 0.88,
       semiMajorAu: 0.723,
       eccentricity: 0.007,
       orbitalPeriodDays: 224.7,
@@ -53,8 +53,8 @@
       name: 'Bumi',
       short: 'Rumah kita',
       kind: 'planet',
-      texture: 'assets/textures/earth-blue-marble-4k.jpg',
-      radius: 0.49,
+      texture: 'assets/textures/mobile/earth-1024.webp',
+      radius: 0.92,
       semiMajorAu: 1,
       eccentricity: 0.017,
       orbitalPeriodDays: 365.25,
@@ -69,8 +69,8 @@
       name: 'Mars',
       short: 'Planet merah',
       kind: 'planet',
-      texture: 'assets/textures/mars-surface-2k.jpg',
-      radius: 0.38,
+      texture: 'assets/textures/mobile/mars-1024.webp',
+      radius: 0.78,
       semiMajorAu: 1.524,
       eccentricity: 0.093,
       orbitalPeriodDays: 687,
@@ -100,8 +100,8 @@
       name: 'Jupiter',
       short: 'Raksasa gas terbesar',
       kind: 'planet',
-      texture: 'assets/textures/jupiter-hubble-inspired-4k.jpg',
-      radius: 1.16,
+      texture: 'assets/textures/mobile/jupiter-1024.webp',
+      radius: 1.72,
       semiMajorAu: 5.203,
       eccentricity: 0.049,
       orbitalPeriodDays: 4331,
@@ -116,8 +116,8 @@
       name: 'Saturnus',
       short: 'Raksasa bercincin',
       kind: 'planet',
-      texture: 'assets/textures/saturn-atmosphere-4k.jpg',
-      radius: 0.98,
+      texture: 'assets/textures/mobile/saturn-1024.webp',
+      radius: 1.52,
       semiMajorAu: 9.537,
       eccentricity: 0.057,
       orbitalPeriodDays: 10747,
@@ -132,8 +132,8 @@
       name: 'Uranus',
       short: 'Ice giant miring',
       kind: 'planet',
-      texture: 'assets/textures/uranus-atmosphere-4k.jpg',
-      radius: 0.74,
+      texture: 'assets/textures/mobile/uranus-1024.webp',
+      radius: 1.12,
       semiMajorAu: 19.191,
       eccentricity: 0.046,
       orbitalPeriodDays: 30589,
@@ -148,8 +148,8 @@
       name: 'Neptunus',
       short: 'Ice giant terluar',
       kind: 'planet',
-      texture: 'assets/textures/neptune-atmosphere-4k.jpg',
-      radius: 0.72,
+      texture: 'assets/textures/mobile/neptune-1024.webp',
+      radius: 1.08,
       semiMajorAu: 30.07,
       eccentricity: 0.009,
       orbitalPeriodDays: 59800,
@@ -204,6 +204,8 @@
       this.labels = new Map();
       this.tmpVec = null;
       this.lastTimestamp = 0;
+      this.lastRenderTimestamp = 0;
+      this.targetFrameMs = window.innerWidth <= 900 ? 1000 / 30 : 1000 / 45;
       this.textureLoader = null;
       this.canvasRect = null;
 
@@ -273,8 +275,8 @@
       this.camera.position.set(0, 22, 54);
       const context = this.canvas.getContext('webgl2', { alpha: false, antialias: true }) || this.canvas.getContext('webgl', { alpha: false, antialias: true });
       if (!context) throw new Error('Solar System WebGL initialization failed.');
-      this.renderer = new this.THREE.WebGLRenderer({ canvas: this.canvas, context, antialias: true, alpha: false });
-      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      this.renderer = new this.THREE.WebGLRenderer({ canvas: this.canvas, context, antialias: false, alpha: false, powerPreference: 'low-power' });
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth <= 900 ? 1.25 : 1.5));
       this.renderer.outputColorSpace = this.THREE.SRGBColorSpace;
       this.renderer.toneMapping = this.THREE.ACESFilmicToneMapping;
       this.renderer.toneMappingExposure = 1.14;
@@ -325,10 +327,85 @@
       });
     }
 
+    makeProceduralTexture(key) {
+      const T = this.THREE;
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 256;
+      const ctx = canvas.getContext('2d', { alpha: false });
+      const rng = (() => {
+        let seed = key === 'sun' ? 11939 : key === 'mercury' ? 8849 : 4721;
+        return () => {
+          seed = (seed * 1664525 + 1013904223) >>> 0;
+          return seed / 4294967296;
+        };
+      })();
+
+      if (key === 'sun') {
+        const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        g.addColorStop(0, '#ffdf72');
+        g.addColorStop(.46, '#f6a323');
+        g.addColorStop(1, '#d9640f');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 1500; i += 1) {
+          const x = rng() * canvas.width;
+          const y = rng() * canvas.height;
+          const r = .5 + rng() * 2.7;
+          ctx.fillStyle = rng() > .5 ? `rgba(255,242,151,${.05 + rng() * .16})` : `rgba(135,45,8,${.04 + rng() * .12})`;
+          ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+        }
+      } else if (key === 'mercury') {
+        const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        g.addColorStop(0, '#8f8b84');
+        g.addColorStop(.5, '#68645e');
+        g.addColorStop(1, '#4b4844');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 480; i += 1) {
+          const x = rng() * canvas.width;
+          const y = rng() * canvas.height;
+          const r = 1 + rng() * 8;
+          ctx.fillStyle = `rgba(35,33,31,${.05 + rng() * .16})`;
+          ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = `rgba(205,198,185,${.03 + rng() * .09})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      } else {
+        const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        g.addColorStop(0, '#f0c979');
+        g.addColorStop(.48, '#d69d49');
+        g.addColorStop(1, '#9c622d');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let band = 0; band < 18; band += 1) {
+          const y = band / 18 * canvas.height;
+          ctx.fillStyle = band % 2 ? 'rgba(255,226,154,.075)' : 'rgba(104,54,26,.055)';
+          ctx.fillRect(0, y, canvas.width, 7 + rng() * 10);
+        }
+        for (let i = 0; i < 120; i += 1) {
+          const x = rng() * canvas.width;
+          const y = rng() * canvas.height;
+          const rx = 6 + rng() * 22;
+          const ry = 2 + rng() * 8;
+          ctx.fillStyle = `rgba(255,239,186,${.025 + rng() * .07})`;
+          ctx.beginPath(); ctx.ellipse(x, y, rx, ry, rng() * .4, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+      const texture = new T.CanvasTexture(canvas);
+      texture.colorSpace = T.SRGBColorSpace;
+      texture.generateMipmaps = true;
+      texture.minFilter = T.LinearMipmapLinearFilter;
+      texture.magFilter = T.LinearFilter;
+      texture.needsUpdate = true;
+      return texture;
+    }
+
     buildStars() {
       const T = this.THREE;
       const geometry = new T.BufferGeometry();
-      const count = 2000;
+      const count = window.innerWidth <= 900 ? 700 : 1100;
       const positions = new Float32Array(count * 3);
       for (let i = 0; i < count; i += 1) {
         const r = 100 + Math.random() * 140;
@@ -348,15 +425,14 @@
     async buildBodies() {
       const T = this.THREE;
       const tasks = this.bodyData.map(async body => {
-        if (body.kind === 'asteroid') {
-          return { key: body.key, texture: null };
-        }
+        if (body.kind === 'asteroid') return { key: body.key, texture: null };
+        if (!body.texture) return { key: body.key, texture: this.makeProceduralTexture(body.key) };
         try {
-          const texture = body.texture ? await this.loadTexture(body.texture) : null;
+          const texture = await this.loadTexture(body.texture);
           return { key: body.key, texture };
         } catch (error) {
-          console.warn('[ANTARA SolarSystem] texture fallback', body.key, error);
-          return { key: body.key, texture: null };
+          console.warn('[ANTARA SolarSystem] lightweight texture fallback', body.key, error);
+          return { key: body.key, texture: this.makeProceduralTexture(body.key) };
         }
       });
       const loaded = new Map((await Promise.all(tasks)).map(item => [item.key, item.texture]));
@@ -373,55 +449,61 @@
         }
 
         if (body.kind === 'asteroid') {
-          const beltGroup = new T.Group();
-          beltGroup.name = 'asteroid-belt';
-          const beltMaterial = new T.MeshStandardMaterial({ color: 0x8c7a66, roughness: 0.95, metalness: 0.03 });
-          for (let i = 0; i < 170; i += 1) {
-            const mesh = new T.Mesh(new T.IcosahedronGeometry(0.045 + Math.random() * 0.06, 0), beltMaterial);
-            mesh.position.copy(this.computeBodyPosition(body, i / 170 * Math.PI * 2));
-            mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-            const scale = 0.7 + Math.random() * 1.8;
-            mesh.scale.setScalar(scale);
-            beltGroup.add(mesh);
+          const asteroidCount = window.innerWidth <= 900 ? 70 : 110;
+          const geometry = new T.IcosahedronGeometry(0.07, 0);
+          const material = new T.MeshStandardMaterial({ color: 0x8c7a66, roughness: 0.97, metalness: 0.01 });
+          const belt = new T.InstancedMesh(geometry, material, asteroidCount);
+          const dummy = new T.Object3D();
+          for (let i = 0; i < asteroidCount; i += 1) {
+            const angle = i / asteroidCount * Math.PI * 2 + (Math.random() - .5) * .05;
+            const pos = this.computeBodyPosition(body, angle);
+            const spread = (Math.random() - .5) * 1.6;
+            dummy.position.set(pos.x + Math.cos(angle) * spread, (Math.random() - .5) * .32, pos.z + Math.sin(angle) * spread);
+            dummy.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+            dummy.scale.setScalar(.65 + Math.random() * 1.35);
+            dummy.updateMatrix();
+            belt.setMatrixAt(i, dummy.matrix);
           }
-          beltGroup.userData.bodyKey = body.key;
-          this.systemRoot.add(beltGroup);
-          this.bodyMap.set(body.key, { body, group: beltGroup, mesh: beltGroup, anchor: this.computeBodyPosition(body, body.baseAngle) });
-          this.clickTargets.push(beltGroup);
+          belt.instanceMatrix.needsUpdate = true;
+          belt.name = 'asteroid-belt';
+          belt.userData.bodyKey = body.key;
+          this.systemRoot.add(belt);
+          this.bodyMap.set(body.key, { body, group: belt, mesh: belt, anchor: this.computeBodyPosition(body, body.baseAngle) });
+          this.clickTargets.push(belt);
           continue;
         }
 
         const group = new T.Group();
         group.name = body.key;
-        const geo = new T.SphereGeometry(body.displayRadius, body.key === 'sun' ? 72 : 64, body.key === 'sun' ? 54 : 48);
+        const geo = new T.SphereGeometry(body.displayRadius, body.key === 'sun' ? 40 : 32, body.key === 'sun' ? 28 : 24);
         let material;
         if (body.key === 'sun') {
-          material = new T.MeshBasicMaterial({ map: loaded.get(body.key), color: 0xffd07e });
+          material = new T.MeshBasicMaterial({ map: loaded.get(body.key), color: 0xffffff });
         } else {
-          material = new T.MeshStandardMaterial({ map: loaded.get(body.key), color: 0xffffff, roughness: body.key === 'earth' ? 0.88 : 0.92, metalness: 0 });
+          material = new T.MeshStandardMaterial({ map: loaded.get(body.key), color: 0xffffff, roughness: body.key === 'earth' ? 0.84 : 0.91, metalness: 0, emissive: 0x080b10, emissiveIntensity: 0.28 });
         }
         const mesh = new T.Mesh(geo, material);
         mesh.userData.bodyKey = body.key;
         group.add(mesh);
 
         if (body.key === 'sun') {
-          const glow = new T.Mesh(new T.SphereGeometry(body.displayRadius * 1.22, 52, 38), new T.MeshBasicMaterial({ color: 0xffc26c, transparent: true, opacity: 0.12, side: T.BackSide }));
+          const glow = new T.Mesh(new T.SphereGeometry(body.displayRadius * 1.20, 32, 22), new T.MeshBasicMaterial({ color: 0xffc26c, transparent: true, opacity: 0.12, side: T.BackSide }));
           group.add(glow);
         }
         if (body.key === 'saturn') {
-          const ring = new T.Mesh(new T.RingGeometry(body.displayRadius * 1.35, body.displayRadius * 2.25, 160), new T.MeshBasicMaterial({ map: this.makeRingTexture(0xd0bb8d, 0.56, 0.12), color: 0xd2c0a1, transparent: true, opacity: 0.82, side: T.DoubleSide, depthWrite: false }));
+          const ring = new T.Mesh(new T.RingGeometry(body.displayRadius * 1.35, body.displayRadius * 2.25, 96), new T.MeshBasicMaterial({ map: this.makeRingTexture(0xd0bb8d, 0.56, 0.12), color: 0xd2c0a1, transparent: true, opacity: 0.82, side: T.DoubleSide, depthWrite: false }));
           ring.rotation.x = Math.PI / 2 - 0.28;
           ring.rotation.z = 0.12;
           ring.userData.bodyKey = body.key;
           group.add(ring);
         }
         if (body.key === 'uranus') {
-          const ring = new T.Mesh(new T.RingGeometry(body.displayRadius * 1.22, body.displayRadius * 1.58, 120), new T.MeshBasicMaterial({ color: 0xa8cddf, transparent: true, opacity: 0.22, side: T.DoubleSide, depthWrite: false }));
+          const ring = new T.Mesh(new T.RingGeometry(body.displayRadius * 1.22, body.displayRadius * 1.58, 72), new T.MeshBasicMaterial({ color: 0xa8cddf, transparent: true, opacity: 0.22, side: T.DoubleSide, depthWrite: false }));
           ring.rotation.x = Math.PI / 2 - 1.05;
           group.add(ring);
         }
         if (body.key === 'neptune') {
-          const ring = new T.Mesh(new T.RingGeometry(body.displayRadius * 1.18, body.displayRadius * 1.44, 120), new T.MeshBasicMaterial({ color: 0x6988b1, transparent: true, opacity: 0.18, side: T.DoubleSide, depthWrite: false }));
+          const ring = new T.Mesh(new T.RingGeometry(body.displayRadius * 1.18, body.displayRadius * 1.44, 72), new T.MeshBasicMaterial({ color: 0x6988b1, transparent: true, opacity: 0.18, side: T.DoubleSide, depthWrite: false }));
           ring.rotation.x = Math.PI / 2 - 0.5;
           group.add(ring);
         }
@@ -439,7 +521,7 @@
     makeRingTexture(color = 0xd8c19f, alpha = 0.6, falloff = 0.14) {
       const T = this.THREE;
       const canvas = document.createElement('canvas');
-      canvas.width = 1024;
+      canvas.width = 512;
       canvas.height = 32;
       const ctx = canvas.getContext('2d');
       const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
@@ -492,6 +574,7 @@
       if (this.animationFrame) cancelAnimationFrame(this.animationFrame);
       this.animationFrame = null;
       this.lastTimestamp = 0;
+      this.lastRenderTimestamp = 0;
       this.root.hidden = true;
       this.root.setAttribute('aria-hidden', 'true');
     }
@@ -591,12 +674,17 @@
 
     animate(timestamp) {
       if (!this.isOpen) return;
+      if (this.lastRenderTimestamp && timestamp - this.lastRenderTimestamp < this.targetFrameMs) {
+        this.animationFrame = requestAnimationFrame(this.animate);
+        return;
+      }
       if (!this.lastTimestamp) this.lastTimestamp = timestamp;
-      const deltaSeconds = Math.min(0.05, Math.max(0.001, (timestamp - this.lastTimestamp) / 1000));
+      const deltaSeconds = Math.min(0.08, Math.max(0.001, (timestamp - this.lastTimestamp) / 1000));
       this.lastTimestamp = timestamp;
+      this.lastRenderTimestamp = timestamp;
       this.simDays += deltaSeconds * this.simDaysPerSecond;
       this.orbit.azimuth += this.drag.active ? 0 : deltaSeconds * 0.035;
-      this.updateBodies();
+      this.updateBodies(deltaSeconds);
       this.updateCamera();
       this.updateLabels();
       this.renderer.render(this.scene, this.camera);
@@ -606,13 +694,13 @@
       this.animationFrame = requestAnimationFrame(this.animate);
     }
 
-    updateBodies() {
+    updateBodies(deltaSeconds = 1 / 60) {
       const T = this.THREE;
       for (const body of this.bodyData) {
         const record = this.bodyMap.get(body.key);
         if (!record) continue;
         if (body.key === 'sun') {
-          record.group.rotation.y += 0.0009;
+          record.group.rotation.y += 0.054 * deltaSeconds;
           continue;
         }
         if (body.kind === 'asteroid') {
@@ -624,7 +712,7 @@
         const angle = body.baseAngle + (this.simDays / body.orbitalPeriodDays) * Math.PI * 2;
         const position = this.computeBodyPosition(body, angle);
         record.group.position.copy(position);
-        record.mesh.rotation.y += deltaSpin(body.key);
+        record.mesh.rotation.y += deltaSpin(body.key) * deltaSeconds;
         if (body.key === 'saturn') record.group.rotation.z = 0.28;
       }
 
@@ -635,15 +723,15 @@
 
       function deltaSpin(key) {
         switch (key) {
-          case 'jupiter': return 0.018;
-          case 'saturn': return 0.016;
-          case 'uranus': return 0.012;
-          case 'neptune': return 0.012;
-          case 'earth': return 0.02;
-          case 'mars': return 0.018;
-          case 'venus': return -0.004;
-          case 'mercury': return 0.008;
-          default: return 0.01;
+          case 'jupiter': return 1.08;
+          case 'saturn': return 0.96;
+          case 'uranus': return 0.72;
+          case 'neptune': return 0.72;
+          case 'earth': return 1.2;
+          case 'mars': return 1.08;
+          case 'venus': return -0.24;
+          case 'mercury': return 0.48;
+          default: return 0.6;
         }
       }
     }
