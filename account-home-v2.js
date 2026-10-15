@@ -297,7 +297,7 @@
         const payload = await response.json().catch(() => ({}));
         if (!response.ok || !payload.success) return;
         const summary = payload.summary || {};
-        value.textContent = `${Number(summary.unlocked) || 0} / ${Number(summary.total) || 20}`;
+        value.textContent = `${Number(summary.unlocked) || 0} / ${Number(summary.total) || 30}`;
         detail.textContent = `${Number(summary.percent) || 0}% koleksi terbuka. Klik untuk melihat medali.`;
       } catch (error) {
         console.warn('ANTARA achievement summary', error);
@@ -332,7 +332,7 @@
               <span class="account-empty-code">PROGRESS</span><strong data-profile-progress>0%</strong><small data-profile-progress-detail>Memuat rekam jejak eksplorasi...</small>
             </button>
             <button type="button" class="account-empty-card" data-empty-action="achievement">
-              <span class="account-empty-code">PENCAPAIAN</span><strong data-profile-achievements>0 / 20</strong><small data-profile-achievements-detail>Memuat koleksi medali...</small>
+              <span class="account-empty-code">PENCAPAIAN</span><strong data-profile-achievements>0 / 30</strong><small data-profile-achievements-detail>Memuat koleksi medali...</small>
             </button>
           </section>
         </div>`;

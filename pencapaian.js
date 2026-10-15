@@ -53,7 +53,7 @@
 
     const summary = data.summary || {};
     const unlocked = Number(summary.unlocked) || 0;
-    const total = Number(summary.total) || items.length || 20;
+    const total = Number(summary.total) || items.length || 30;
     const percent = Number(summary.percent) || 0;
     $("#ach-ring").style.setProperty("--value", String(percent));
     $("#ach-percent").textContent = `${percent}%`;

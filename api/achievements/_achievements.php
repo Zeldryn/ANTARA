@@ -11,29 +11,34 @@ function antara_achievement_catalog(): array
         'first-step' => ['name'=>'Langkah Pertama','description'=>'Identitas penjelajah ANTARA berhasil dibuat dan perjalananmu resmi dimulai.','icon'=>'assets/achievements/11-langkah-pertama.png','category'=>'special','tier'=>'common','sort'=>10],
         'first-launch' => ['name'=>'Mulai Perjalanan','description'=>'Menekan MULAI PERJALANAN dan memulai peluncuran ANTARA untuk pertama kalinya.','icon'=>'assets/achievements/12-mulai-perjalanan.png','category'=>'special','tier'=>'common','sort'=>20],
         'first-explore' => ['name'=>'Jelajah Pertama','description'=>'Membuka topik Jelajah biasa pertamamu di salah satu objek Tata Surya.','icon'=>'assets/achievements/13-jelajah-pertama.png','category'=>'special','tier'=>'common','sort'=>30],
-        'first-full' => ['name'=>'Eksplorasi Penuh','description'=>'Memasuki destinasi Eksplorasi Penuh untuk pertama kalinya.','icon'=>'assets/achievements/14-eksplorasi-penuh.png','category'=>'special','tier'=>'rare','sort'=>40],
-        'venus-master' => ['name'=>'Ahli Venus','description'=>'Menuntaskan seluruh destinasi Eksplorasi Penuh Venus.','icon'=>'assets/achievements/15-ahli-venus.png','category'=>'special','tier'=>'epic','sort'=>50],
-        'earth-master' => ['name'=>'Ahli Bumi','description'=>'Menuntaskan seluruh destinasi Eksplorasi Penuh Bumi.','icon'=>'assets/achievements/16-ahli-bumi.png','category'=>'special','tier'=>'epic','sort'=>60],
-        'mars-master' => ['name'=>'Ahli Mars','description'=>'Menuntaskan seluruh destinasi Eksplorasi Penuh Mars yang tersedia.','icon'=>'assets/achievements/17-ahli-mars.png','category'=>'special','tier'=>'epic','sort'=>70],
-        'solar-master' => ['name'=>'Tata Surya 100%','description'=>'Menyelesaikan seluruh milestone eksplorasi ANTARA di semua objek.','icon'=>'assets/achievements/18-tata-surya-100.png','category'=>'special','tier'=>'legendary','sort'=>80],
-        'top-10' => ['name'=>'Top 10','description'=>'Berhasil masuk 10 besar salah satu leaderboard resmi ANTARA.','icon'=>'assets/achievements/19-top-10.png','category'=>'special','tier'=>'legendary','sort'=>90],
-        'rank-1' => ['name'=>'Juara #1','description'=>'Pernah mencapai posisi pertama di salah satu leaderboard resmi ANTARA.','icon'=>'assets/achievements/20-juara-1.png','category'=>'special','tier'=>'legendary','sort'=>100],
-        'quiz-first' => ['name'=>'Kuis Pertama','description'=>'Menyelesaikan lima level Quiz ANTARA sampai garis akhir.','icon'=>'assets/achievements/21-quiz-pertama.svg','category'=>'special','tier'=>'common','sort'=>110],
-        'quiz-streak-5' => ['name'=>'Orbit Streak x5','description'=>'Menjawab benar lima soal berturut-turut dalam satu run kuis.','icon'=>'assets/achievements/22-streak-5.svg','category'=>'special','tier'=>'rare','sort'=>120],
-        'quiz-speedster' => ['name'=>'Jawaban Kilat','description'=>'Menjawab benar sedikitnya lima soal dalam tiga detik atau kurang pada satu run.','icon'=>'assets/achievements/23-kilat-quiz.svg','category'=>'special','tier'=>'epic','sort'=>130],
-        'quiz-perfect' => ['name'=>'Lintasan Sempurna','description'=>'Menuntaskan satu stack 15 soal dengan seluruh jawaban benar pada percobaan pertama.','icon'=>'assets/achievements/24-sempurna-quiz.svg','category'=>'special','tier'=>'legendary','sort'=>140],
-        'quiz-master' => ['name'=>'Komandan Kuis','description'=>'Mencapai skor terverifikasi 5.000 poin atau lebih dalam satu run Quiz ANTARA.','icon'=>'assets/achievements/25-master-quiz.svg','category'=>'special','tier'=>'legendary','sort'=>150],
+        'first-full' => ['name'=>'Eksplorasi Penuh','description'=>'Mencatat target Eksplorasi Penuh pertamamu di salah satu planet.','icon'=>'assets/achievements/14-eksplorasi-penuh.png','category'=>'special','tier'=>'rare','sort'=>40],
+        'mercury-master' => ['name'=>'Ahli Merkurius','description'=>'Menuntaskan seluruh target Eksplorasi Penuh Merkurius.','icon'=>'assets/achievements/26-ahli-merkurius.svg','category'=>'special','tier'=>'epic','sort'=>50],
+        'venus-master' => ['name'=>'Ahli Venus','description'=>'Menuntaskan seluruh target Eksplorasi Penuh Venus.','icon'=>'assets/achievements/15-ahli-venus.png','category'=>'special','tier'=>'epic','sort'=>60],
+        'earth-master' => ['name'=>'Ahli Bumi','description'=>'Menuntaskan seluruh target Eksplorasi Penuh Bumi.','icon'=>'assets/achievements/16-ahli-bumi.png','category'=>'special','tier'=>'epic','sort'=>70],
+        'mars-master' => ['name'=>'Ahli Mars','description'=>'Menuntaskan seluruh target Eksplorasi Penuh Mars.','icon'=>'assets/achievements/17-ahli-mars.png','category'=>'special','tier'=>'epic','sort'=>80],
+        'jupiter-master' => ['name'=>'Ahli Jupiter','description'=>'Menuntaskan seluruh target Eksplorasi Penuh Jupiter.','icon'=>'assets/achievements/27-ahli-jupiter.svg','category'=>'special','tier'=>'epic','sort'=>90],
+        'saturn-master' => ['name'=>'Ahli Saturnus','description'=>'Menuntaskan seluruh target Eksplorasi Penuh Saturnus.','icon'=>'assets/achievements/28-ahli-saturnus.svg','category'=>'special','tier'=>'epic','sort'=>100],
+        'uranus-master' => ['name'=>'Ahli Uranus','description'=>'Menuntaskan seluruh target Eksplorasi Penuh Uranus.','icon'=>'assets/achievements/29-ahli-uranus.svg','category'=>'special','tier'=>'epic','sort'=>110],
+        'neptune-master' => ['name'=>'Ahli Neptunus','description'=>'Menuntaskan seluruh target Eksplorasi Penuh Neptunus.','icon'=>'assets/achievements/30-ahli-neptunus.svg','category'=>'special','tier'=>'epic','sort'=>120],
+        'solar-master' => ['name'=>'Tata Surya 100%','description'=>'Menyelesaikan seluruh topik Jelajah dan seluruh target Eksplorasi Penuh yang tersedia di ANTARA.','icon'=>'assets/achievements/18-tata-surya-100.png','category'=>'special','tier'=>'legendary','sort'=>130],
+        'top-10' => ['name'=>'Top 10','description'=>'Berhasil masuk 10 besar salah satu leaderboard resmi ANTARA.','icon'=>'assets/achievements/19-top-10.png','category'=>'special','tier'=>'legendary','sort'=>140],
+        'rank-1' => ['name'=>'Juara #1','description'=>'Pernah mencapai posisi pertama di salah satu leaderboard resmi ANTARA.','icon'=>'assets/achievements/20-juara-1.png','category'=>'special','tier'=>'legendary','sort'=>150],
+        'quiz-first' => ['name'=>'Kuis Pertama','description'=>'Menyelesaikan lima level Quiz ANTARA sampai garis akhir.','icon'=>'assets/achievements/21-quiz-pertama.svg','category'=>'special','tier'=>'common','sort'=>160],
+        'quiz-streak-5' => ['name'=>'Orbit Streak x5','description'=>'Menjawab benar lima soal berturut-turut dalam satu run kuis.','icon'=>'assets/achievements/22-streak-5.svg','category'=>'special','tier'=>'rare','sort'=>170],
+        'quiz-speedster' => ['name'=>'Jawaban Kilat','description'=>'Menjawab benar sedikitnya lima soal dalam tiga detik atau kurang pada satu run.','icon'=>'assets/achievements/23-kilat-quiz.svg','category'=>'special','tier'=>'epic','sort'=>180],
+        'quiz-perfect' => ['name'=>'Lintasan Sempurna','description'=>'Menuntaskan satu stack 15 soal dengan seluruh jawaban benar pada percobaan pertama.','icon'=>'assets/achievements/24-sempurna-quiz.svg','category'=>'special','tier'=>'legendary','sort'=>190],
+        'quiz-master' => ['name'=>'Komandan Kuis','description'=>'Mencapai skor terverifikasi 5.000 poin atau lebih dalam satu run Quiz ANTARA.','icon'=>'assets/achievements/25-master-quiz.svg','category'=>'special','tier'=>'legendary','sort'=>200],
 
         'sun-complete' => ['name'=>'Matahari Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Matahari.','icon'=>'assets/achievements/01-matahari.png','category'=>'planet','tier'=>'rare','sort'=>210,'planet'=>'sun'],
-        'mercury-complete' => ['name'=>'Merkurius Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Merkurius.','icon'=>'assets/achievements/02-merkurius.png','category'=>'planet','tier'=>'rare','sort'=>220,'planet'=>'mercury'],
-        'venus-complete' => ['name'=>'Venus Tuntas','description'=>'Menyelesaikan seluruh topik dan destinasi Venus.','icon'=>'assets/achievements/03-venus.png','category'=>'planet','tier'=>'rare','sort'=>230,'planet'=>'venus'],
-        'earth-complete' => ['name'=>'Bumi Tuntas','description'=>'Menyelesaikan seluruh topik dan destinasi Bumi.','icon'=>'assets/achievements/04-bumi.png','category'=>'planet','tier'=>'rare','sort'=>240,'planet'=>'earth'],
-        'mars-complete' => ['name'=>'Mars Tuntas','description'=>'Menyelesaikan seluruh topik dan destinasi Mars.','icon'=>'assets/achievements/05-mars.png','category'=>'planet','tier'=>'rare','sort'=>250,'planet'=>'mars'],
+        'mercury-complete' => ['name'=>'Merkurius Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Merkurius.','icon'=>'assets/achievements/02-merkurius.png','category'=>'planet','tier'=>'rare','sort'=>220,'planet'=>'mercury'],
+        'venus-complete' => ['name'=>'Venus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Venus.','icon'=>'assets/achievements/03-venus.png','category'=>'planet','tier'=>'rare','sort'=>230,'planet'=>'venus'],
+        'earth-complete' => ['name'=>'Bumi Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Bumi.','icon'=>'assets/achievements/04-bumi.png','category'=>'planet','tier'=>'rare','sort'=>240,'planet'=>'earth'],
+        'mars-complete' => ['name'=>'Mars Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Mars.','icon'=>'assets/achievements/05-mars.png','category'=>'planet','tier'=>'rare','sort'=>250,'planet'=>'mars'],
         'asteroid-complete' => ['name'=>'Sabuk Asteroid Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Sabuk Asteroid.','icon'=>'assets/achievements/06-asteroid.png','category'=>'planet','tier'=>'rare','sort'=>260,'planet'=>'asteroid-belt'],
-        'jupiter-complete' => ['name'=>'Jupiter Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Jupiter.','icon'=>'assets/achievements/07-jupiter.png','category'=>'planet','tier'=>'rare','sort'=>270,'planet'=>'jupiter'],
-        'saturn-complete' => ['name'=>'Saturnus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Saturnus.','icon'=>'assets/achievements/08-saturnus.png','category'=>'planet','tier'=>'rare','sort'=>280,'planet'=>'saturn'],
-        'uranus-complete' => ['name'=>'Uranus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Uranus.','icon'=>'assets/achievements/09-uranus.png','category'=>'planet','tier'=>'rare','sort'=>290,'planet'=>'uranus'],
-        'neptune-complete' => ['name'=>'Neptunus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah Neptunus.','icon'=>'assets/achievements/10-neptunus.png','category'=>'planet','tier'=>'rare','sort'=>300,'planet'=>'neptune'],
+        'jupiter-complete' => ['name'=>'Jupiter Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Jupiter.','icon'=>'assets/achievements/07-jupiter.png','category'=>'planet','tier'=>'rare','sort'=>270,'planet'=>'jupiter'],
+        'saturn-complete' => ['name'=>'Saturnus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Saturnus.','icon'=>'assets/achievements/08-saturnus.png','category'=>'planet','tier'=>'rare','sort'=>280,'planet'=>'saturn'],
+        'uranus-complete' => ['name'=>'Uranus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Uranus.','icon'=>'assets/achievements/09-uranus.png','category'=>'planet','tier'=>'rare','sort'=>290,'planet'=>'uranus'],
+        'neptune-complete' => ['name'=>'Neptunus Tuntas','description'=>'Menyelesaikan seluruh topik Jelajah dan target Eksplorasi Penuh Neptunus.','icon'=>'assets/achievements/10-neptunus.png','category'=>'planet','tier'=>'rare','sort'=>300,'planet'=>'neptune'],
     ];
 }
 
@@ -219,10 +224,14 @@ function antara_achievements_sync(PDO $pdo, int $userId): array
     $firstFull = antara_achievement_first_event($pdo, $userId, 'full');
     if ($firstFull) antara_achievement_unlock($pdo, $userId, 'first-full', (string)$firstFull['created_at']);
 
-    foreach (['venus'=>5,'earth'=>5,'mars'=>5] as $planet=>$required) {
+    foreach (antara_progress_catalog() as $planet => $definition) {
+        $required = count($definition['full'] ?? []);
+        if ($required < 1) continue;
+        $code = $planet . '-master';
+        if (!isset(antara_achievement_catalog()[$code])) continue;
         $data = antara_achievement_full_count($pdo, $userId, $planet);
         if ($data['count'] >= $required) {
-            antara_achievement_unlock($pdo, $userId, $planet . '-master', $data['lastAt'] ? (string)$data['lastAt'] : null);
+            antara_achievement_unlock($pdo, $userId, $code, $data['lastAt'] ? (string)$data['lastAt'] : null);
         }
     }
 
@@ -285,10 +294,13 @@ function antara_achievements_payload(PDO $pdo, int $userId): array
         elseif ($code==='first-launch') { $current=min(1,$launchCount); $progressLabel=$current?'Peluncuran tercatat':'Mulai perjalanan dari kokpit'; }
         elseif ($code==='first-explore') { $current=min(1,$normalCount); $progressLabel=$current?'Jelajah pertama tercatat':'Buka satu topik Jelajah'; }
         elseif ($code==='first-full') { $current=min(1,$fullCount); $progressLabel=$current?'Eksplorasi penuh tercatat':'Masuki satu destinasi penuh'; }
-        elseif (in_array($code,['venus-master','earth-master','mars-master'],true)) {
-            $planet=str_replace('-master','',$code); $goal=5;
-            $data=antara_achievement_full_count($pdo,$userId,$planet); $current=min($goal,$data['count']);
-            $progressLabel=$current.' / '.$goal.' destinasi';
+        elseif (str_ends_with($code, '-master') && !in_array($code, ['solar-master','quiz-master'], true)) {
+            $planet = substr($code, 0, -7);
+            $definition = antara_progress_catalog()[$planet] ?? null;
+            $goal = is_array($definition) ? count($definition['full'] ?? []) : 0;
+            $data = $goal > 0 ? antara_achievement_full_count($pdo,$userId,$planet) : ['count'=>0,'lastAt'=>null];
+            $current = min($goal, (int)$data['count']);
+            $progressLabel = $current.' / '.$goal.' target Eksplorasi Penuh';
         }
         elseif ($code==='quiz-first') { $goal=1; $current=min(1,(int)($sync['quiz']['runs'] ?? 0)); $progressLabel=$current?'Run pertama selesai':'Selesaikan satu run kuis'; }
         elseif ($code==='quiz-streak-5') { $goal=5; $current=min($goal,(int)($sync['quiz']['bestStreak'] ?? 0)); $progressLabel=$current.' / '.$goal.' streak'; }
@@ -296,7 +308,7 @@ function antara_achievements_payload(PDO $pdo, int $userId): array
         elseif ($code==='quiz-perfect') { $goal=ANTARA_QUIZ_QUESTION_COUNT; $current=min($goal,(int)($sync['quiz']['bestCorrect'] ?? 0)); $progressLabel=$current.' / '.$goal.' benar'; }
         elseif ($code==='quiz-master') { $goal=5000; $current=min($goal,(int)($sync['quiz']['bestScore'] ?? 0)); $progressLabel=number_format($current,0,',','.').' / '.number_format($goal,0,',','.').' poin'; }
         elseif ($code==='solar-master') {
-            $current=(int)($sync['summary']['overall']['completedMilestones'] ?? 0); $goal=(int)($sync['summary']['overall']['totalMilestones'] ?? 131);
+            $current=(int)($sync['summary']['overall']['completedMilestones'] ?? 0); $goal=(int)($sync['summary']['overall']['totalMilestones'] ?? array_sum(array_map(static fn($d)=>(int)$d['normal_total']+count($d['full'] ?? []), antara_progress_catalog())));
             $progressLabel=$current.' / '.$goal.' milestone';
         }
         elseif ($code==='top-10') {
