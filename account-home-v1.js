@@ -222,7 +222,6 @@
               <button type="button" class="account-avatar-edit" data-avatar-early>GANTI FOTO <span>EARLY ACCESS</span></button>
             </div>
             <div class="account-profile-copy">
-              <small>IDENTITAS AKTIF</small>
               <h3>${escapeHtml(u.name || 'Penjelajah ANTARA')}</h3>
               <p>${escapeHtml(u.username ? `@${u.username}` : 'Username belum tersedia')}</p>
               <dl>

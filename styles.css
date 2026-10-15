@@ -7810,3 +7810,173 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   .solar-system-speed-control label { height:32px; }
   .solar-system-speed-control label span { font-size:6px; }
 }
+
+/* ========================================================================
+   2026-10-05 NAV READABILITY + SCI-FI AUDIO NODE
+   Redundant identity micro-labels removed. Navigation microcopy is readable,
+   and audio becomes a standalone cockpit control instead of footer text.
+   ======================================================================== */
+.cockpit-profile-hud .profile-hud-kicker { display:none !important; }
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy {
+  align-content:center !important;
+  justify-content:start !important;
+  gap:3px !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong {
+  font-size:clamp(10.8px,.86vw,13px) !important;
+  line-height:1.05 !important;
+  letter-spacing:.075em !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy small {
+  display:block !important;
+  font-size:clamp(8px,.62vw,9.8px) !important;
+  line-height:1.05 !important;
+  letter-spacing:.065em !important;
+  color:rgba(158,211,236,.88) !important;
+}
+.hud-nav-copy { gap:2px !important; }
+.hud-nav-copy small {
+  display:block !important;
+  color:#91b6ca !important;
+  font-size:clamp(6px,.47vw,7.1px) !important;
+  line-height:1.02 !important;
+  font-weight:700 !important;
+  letter-spacing:.12em !important;
+  opacity:.96 !important;
+}
+.hud-nav-copy strong {
+  font-size:clamp(7.8px,.60vw,9.4px) !important;
+  line-height:1.05 !important;
+  letter-spacing:.09em !important;
+}
+
+.mission-footer.audio-orb-dock {
+  left:max(16px,env(safe-area-inset-left)) !important;
+  right:auto !important;
+  bottom:max(16px,env(safe-area-inset-bottom)) !important;
+  width:48px !important;
+  height:48px !important;
+  display:block !important;
+  z-index:24 !important;
+  pointer-events:none;
+}
+.audio-control.audio-sci-fi-node {
+  position:relative;
+  width:48px;
+  height:48px;
+  min-height:48px;
+  padding:0 !important;
+  display:grid;
+  place-items:center;
+  gap:0;
+  color:#8ed2ec;
+  border:1px solid rgba(116,193,224,.30);
+  border-radius:0;
+  clip-path:polygon(25% 0,75% 0,100% 25%,100% 75%,75% 100%,25% 100%,0 75%,0 25%);
+  background:radial-gradient(circle at 50% 48%,rgba(76,172,208,.14),transparent 48%),linear-gradient(145deg,rgba(12,31,43,.94),rgba(4,12,20,.98));
+  box-shadow:0 10px 28px rgba(0,0,0,.34),inset 0 0 0 1px rgba(230,190,111,.08),inset 0 0 18px rgba(74,179,218,.08);
+  pointer-events:auto !important;
+  cursor:pointer;
+  overflow:hidden;
+  transition:transform .18s ease,color .18s ease,filter .18s ease,box-shadow .18s ease;
+}
+.audio-control.audio-sci-fi-node::before {
+  content:"";
+  position:absolute;
+  inset:4px;
+  clip-path:inherit;
+  border:1px solid rgba(221,181,108,.17);
+  pointer-events:none;
+}
+.audio-control.audio-sci-fi-node::after {
+  content:"";
+  position:absolute;
+  width:3px;
+  height:3px;
+  top:7px;
+  right:9px;
+  border-radius:50%;
+  background:#7ec8e7;
+  box-shadow:0 0 8px rgba(126,200,231,.76);
+  animation:audio-node-pulse 2.8s ease-in-out infinite;
+}
+.audio-control.audio-sci-fi-node:hover,
+.audio-control.audio-sci-fi-node:focus-visible {
+  color:#c8edfa;
+  transform:translateY(-2px);
+  filter:brightness(1.14);
+  box-shadow:0 13px 32px rgba(0,0,0,.38),inset 0 0 20px rgba(75,182,222,.14);
+  outline:none;
+}
+.audio-control.audio-sci-fi-node:active { transform:translateY(0) scale(.96); }
+.audio-control.audio-sci-fi-node.is-muted {
+  color:#c6a16a;
+  border-color:rgba(214,172,99,.28);
+  background:radial-gradient(circle at 50% 48%,rgba(188,135,71,.10),transparent 48%),linear-gradient(145deg,rgba(27,23,24,.95),rgba(8,11,16,.98));
+}
+.audio-control.audio-sci-fi-node.is-muted::after {
+  background:#d0a363;
+  box-shadow:0 0 8px rgba(208,163,99,.58);
+}
+.sci-fi-audio-icon {
+  width:30px !important;
+  height:30px !important;
+  stroke:currentColor;
+  stroke-width:1.15;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  overflow:visible;
+}
+.sci-fi-audio-icon .audio-hex { opacity:.72; }
+.sci-fi-audio-icon .audio-core-ring { opacity:.92; }
+.sci-fi-audio-icon .audio-core-dot { fill:currentColor;stroke:none; }
+.sci-fi-audio-icon .audio-circuit { opacity:.46; }
+.audio-sci-fi-node .sound-slash,
+.audio-sci-fi-node.is-muted .sound-waves { display:none; }
+.audio-sci-fi-node.is-muted .sound-slash { display:block; }
+
+/* Keep the audio node out of every immersive full-exploration surface. */
+.mission:has(#earth-full-exploration:not([hidden])) .audio-orb-dock,
+.mission:has(#mercury-full-exploration:not([hidden])) .audio-orb-dock,
+.mission:has(#venus-full-exploration:not([hidden])) .audio-orb-dock,
+.mission:has(#mars-full-exploration:not([hidden])) .audio-orb-dock,
+.mission:has(#jupiter-full-exploration:not([hidden])) .audio-orb-dock,
+.mission:has(#saturn-full-exploration:not([hidden])) .audio-orb-dock,
+.mission:has(#uranus-full-exploration:not([hidden])) .audio-orb-dock,
+.mission:has(#neptune-full-exploration:not([hidden])) .audio-orb-dock {
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+@keyframes audio-node-pulse {
+  0%,72%,100% { opacity:.38;transform:scale(.75); }
+  82%,90% { opacity:1;transform:scale(1); }
+}
+@media (max-width:1366px) {
+  .hud-nav-copy small { font-size:6.1px !important;letter-spacing:.105em !important; }
+  .hud-nav-copy strong { font-size:8.1px !important; }
+}
+@media (max-width:900px) and (min-width:701px) {
+  .hud-nav-copy small { display:block !important;font-size:5.7px !important;letter-spacing:.08em !important; }
+  .hud-nav-copy strong { font-size:7.2px !important; }
+}
+@media (max-width:700px) {
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy { gap:2px !important; }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong { font-size:9.2px !important;letter-spacing:.045em !important; }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy small { font-size:7.3px !important;letter-spacing:.035em !important; }
+  .profile-nav-suite .hud-nav-copy small { display:block !important;font-size:6.3px !important;line-height:1.05 !important;letter-spacing:.08em !important; }
+  .profile-nav-suite .hud-nav-copy strong { font-size:9px !important;line-height:1.05 !important; }
+  .mission-footer.audio-orb-dock {
+    left:max(10px,env(safe-area-inset-left)) !important;
+    right:auto !important;
+    bottom:max(12px,env(safe-area-inset-bottom)) !important;
+    width:42px !important;
+    height:42px !important;
+  }
+  .audio-control.audio-sci-fi-node { width:42px;height:42px;min-height:42px; }
+  .sci-fi-audio-icon { width:26px !important;height:26px !important; }
+}
+@media (max-width:430px) {
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong { font-size:8.7px !important; }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy small { font-size:7px !important; }
+}

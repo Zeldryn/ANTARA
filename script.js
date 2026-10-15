@@ -947,7 +947,7 @@ class CockpitProfileHUD {
 
     if (!this.user) {
       this.root.dataset.profileState = "logged-out";
-      this.kicker.textContent = "IDENTITAS PENJELAJAH";
+      if (this.kicker) this.kicker.textContent = "";
       this.primary.textContent = "MASUK KE ANTARA";
       this.secondary.textContent = "";
       this.trigger.setAttribute("aria-label", "Masuk ke ANTARA");
@@ -962,7 +962,7 @@ class CockpitProfileHUD {
     }
 
     this.root.dataset.profileState = "logged-in";
-    this.kicker.textContent = "IDENTITAS AKTIF";
+    if (this.kicker) this.kicker.textContent = "";
     this.primary.textContent = this.user.name;
     const rawUsername = String(this.user.raw?.username ?? "").trim();
     const rawEmail = String(this.user.raw?.email ?? "").trim();
