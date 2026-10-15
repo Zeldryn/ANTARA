@@ -11,7 +11,7 @@ const test = (name, ok) => { console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}`); if
 test('final mobile audit stylesheet is loaded', html.includes('inner-planets-mobile-ui-audit.css?v=20261005-mobile-panel-audit-1'));
 for (const planet of planets) {
   const js = read(`${planet}-full-exploration.js`);
-  test(`${planet}: cache key updated`, new RegExp(`${planet}-full-exploration\\.js\\?v=20261005-[^"\\s<]+`).test(html));
+  test(`${planet}: cache key updated`, html.includes(`${planet}-full-exploration.js?v=20261005-mobile-panel-audit-1`));
   test(`${planet}: mobile viewport predicate exists`, js.includes('max-width: 820px') || js.includes('max-width:820px'));
   test(`${planet}: objective toggle exists`, html.includes(`id="${planet}-objectives-toggle"`));
   test(`${planet}: info toggle exists`, html.includes(`id="${planet}-info-toggle"`));

@@ -64,12 +64,12 @@
       latitude: 18.41,
       longitudeEast: 77.69,
       heading: 0.18,
-      scienceSource: "https://science.nasa.gov/mars/facts/",
-      source: "https://science.nasa.gov/mars/facts/",
+      scienceSource: "https://science.nasa.gov/mission/mars-2020-perseverance/",
+      source: "https://planetarynames.wr.usgs.gov/Feature/14300",
       image: "assets/exploration/jezero.webp",
       imageAlt: "Citra berwarna olahan memperlihatkan endapan delta di Kawah Jezero, Mars",
       imageCaption: "Delta Jezero · warna olahan",
-      imageSource: "https://science.nasa.gov/mars/facts/",
+      imageSource: "https://science.nasa.gov/photojournal/jezero-crater-mars-2020s-landing-site/",
       facts: ["Jezero berdiameter sekitar 45 km.", "Delta di Jezero menjadi salah satu target utama Perseverance untuk mempelajari lingkungan berair purba.", "Sedimen delta membantu ilmuwan membaca sejarah air di Mars." ]
     },
     {
@@ -81,12 +81,12 @@
       latitude: 18.65,
       longitudeEast: 226.20,
       heading: -0.65,
-      scienceSource: "https://science.nasa.gov/mars/facts/",
-      source: "https://science.nasa.gov/mars/facts/",
+      scienceSource: "https://science.nasa.gov/photojournal/olympus-mons/",
+      source: "https://planetarynames.wr.usgs.gov/Feature/4453",
       image: "assets/exploration/olympus-mons.webp",
       imageAlt: "Mosaik Viking Orbiter 1 memperlihatkan gunung api Olympus Mons di Mars",
       imageCaption: "Olympus Mons · mosaik Viking",
-      imageSource: "https://science.nasa.gov/mars/facts/",
+      imageSource: "https://science.nasa.gov/photojournal/olympus-mons/",
       facts: ["Olympus Mons adalah gunung api perisai raksasa.", "Lebar dasarnya mencapai ratusan kilometer.", "Kompleks kaldera besar berada di wilayah puncaknya." ]
     },
     {
@@ -98,12 +98,12 @@
       latitude: -14.01,
       longitudeEast: 301.41,
       heading: -0.12,
-      scienceSource: "https://science.nasa.gov/mars/facts/",
-      source: "https://science.nasa.gov/mars/facts/",
+      scienceSource: "https://science.nasa.gov/mars/",
+      source: "https://planetarynames.wr.usgs.gov/Feature/6288",
       image: "assets/exploration/valles-marineris.webp",
       imageAlt: "Mosaik citra Viking memperlihatkan sistem ngarai Valles Marineris di Mars",
       imageCaption: "Valles Marineris · mosaik Viking",
-      imageSource: "https://science.nasa.gov/mars/facts/",
+      imageSource: "https://science.nasa.gov/resource/valles-marineris-the-grand-canyon-of-mars/",
       facts: ["Valles Marineris membentang ribuan kilometer dekat ekuator Mars.", "Sistem ini tersusun dari banyak lembah dan ngarai yang saling terhubung.", "Retakan kerak dan proses erosi ikut membentuk morfologinya." ]
     },
     {
@@ -115,12 +115,12 @@
       latitude: -5.37,
       longitudeEast: 137.81,
       heading: 0.44,
-      scienceSource: "https://science.nasa.gov/mars/facts/",
-      source: "https://science.nasa.gov/mars/facts/",
+      scienceSource: "https://science.nasa.gov/mission/msl-curiosity/",
+      source: "https://planetarynames.wr.usgs.gov/Feature/2071",
       image: "assets/exploration/atmosphere.webp",
       imageAlt: "Citra Curiosity memperlihatkan senja kebiruan di atmosfer berdebu Kawah Gale, Mars",
       imageCaption: "Senja di Gale · warna diproses",
-      imageSource: "https://science.nasa.gov/mars/facts/",
+      imageSource: "https://science.nasa.gov/photojournal/sunset-in-mars-gale-crater/",
       facts: ["Curiosity mendarat di Gale Crater pada 2012.", "Lapisan batuan di dalam kawah merekam perubahan lingkungan Mars dari waktu ke waktu.", "Mount Sharp berada di bagian tengah kawah dan menjadi target eksplorasi utama Curiosity." ]
     },
     {
@@ -132,12 +132,12 @@
       latitude: -42.4,
       longitudeEast: 70.5,
       heading: 0.26,
-      scienceSource: "https://science.nasa.gov/mars/facts/",
-      source: "https://science.nasa.gov/mars/facts/",
+      scienceSource: "https://science.nasa.gov/mars/",
+      source: "https://planetarynames.wr.usgs.gov/Feature/2481",
       image: "assets/exploration/dust-storm.webp",
       imageAlt: "Perbandingan citra Mars sebelum dan selama badai debu tahun 2001 di wilayah Hellas dan Syrtis Major",
       imageCaption: "Mars · Juni dan Juli 2001",
-      imageSource: "https://science.nasa.gov/mars/facts/",
+      imageSource: "https://science.nasa.gov/resource/the-2001-great-dust-storms-hellassyrtis-major/",
       facts: ["Hellas Planitia adalah cekungan tumbukan raksasa di belahan selatan Mars.", "Dasarnya berada jauh di bawah dataran tinggi di sekitarnya.", "Topografi cekungan besar ini memengaruhi kondisi atmosfer dan cuaca regional Mars." ]
     }
   ]);

@@ -1198,11 +1198,15 @@ const CELESTIAL_DISPLAY_NAMES = Object.freeze({
   neptune: "Neptunus"
 });
 const returnCockpitButton = document.getElementById("return-cockpit-button");
+const solarSystemButton = document.getElementById("solar-system-button");
 const returnCockpitTransition = document.getElementById("return-cockpit-transition");
 const returnCockpitStatus = document.getElementById("return-cockpit-status");
 const returnCockpitKicker = document.getElementById("return-cockpit-kicker");
 let returningToCockpit = false;
 let returnCockpitFrame = null;
+let solarSystemModeActive = false;
+let solarSystemSourcePhase = null;
+let solarSystemExplorer = null;
 
 function hasActiveFullExploration() {
   if (phase === "earth") return Boolean(earth.fullExploring || (earthFull?.state && earthFull.state !== "idle"));
@@ -1230,14 +1234,21 @@ function fullExplorationDomVisible() {
 }
 
 function syncReturnCockpitButton() {
-  if (!returnCockpitButton) return;
   const visible = !returningToCockpit
+    && !solarSystemModeActive
     && CELESTIAL_NAV_ORDER.includes(phase)
     && !planetTransitionLocked
     && !hasActiveFullExploration()
     && !fullExplorationDomVisible();
-  returnCockpitButton.hidden = !visible;
-  returnCockpitButton.disabled = !visible;
+
+  if (returnCockpitButton) {
+    returnCockpitButton.hidden = !visible;
+    returnCockpitButton.disabled = !visible;
+  }
+  if (solarSystemButton) {
+    solarSystemButton.hidden = !visible;
+    solarSystemButton.disabled = !visible;
+  }
 }
 
 const returnCockpitFullRoots = [
@@ -1673,6 +1684,52 @@ function stopAllCelestialScenesForRestore() {
   try { mercuryFull?.forceReset?.(); } catch {}
 }
 
+function openPanoramaDirect(targetPhase, { preserveAnnouncement = false } = {}) {
+  if (!CELESTIAL_NAV_ORDER.includes(targetPhase)) return false;
+  stopAllCelestialScenesForRestore();
+  planetTransitionLocked = false;
+  activePlanetNavButton = null;
+  resetPanoramaInteractionLocks();
+  mission.classList.remove("is-earth", "is-mars", "is-venus", "is-mercury", "is-sun", "is-asteroid", "is-jupiter", "is-saturn", "is-uranus", "is-neptune", "is-preparing", "is-planet-transitioning");
+  mission.classList.add(`is-${targetPhase}`);
+  delete mission.dataset.transitionDirection;
+  phase = targetPhase;
+  CELESTIAL_SCENE_INSTANCES[targetPhase]?.start?.({ settled: true });
+  setExperienceState("planet");
+  if (flightStatus) flightStatus.textContent = `${targetPhase === "asteroid" ? "TIBA DI SABUK ASTEROID" : `TIBA DI ORBIT ${CELESTIAL_DISPLAY_NAMES[targetPhase].toUpperCase()}`}`;
+  if (!preserveAnnouncement) {
+    announcement.textContent = `${targetPhase === "asteroid" ? "Tiba di Sabuk Asteroid." : `Tiba di ${CELESTIAL_DISPLAY_NAMES[targetPhase]}.`}`;
+  }
+  syncReturnCockpitButton();
+  persistCurrentJourney();
+  markJourneyActivity({ forceWrite: true });
+  return true;
+}
+
+function closeSolarSystemMode(targetPhase = null) {
+  if (!solarSystemModeActive) return false;
+  solarSystemModeActive = false;
+  solarSystemExplorer?.close?.();
+  mission.classList.remove("is-solar-system-mode");
+  const destination = CELESTIAL_NAV_ORDER.includes(targetPhase) ? targetPhase : (CELESTIAL_NAV_ORDER.includes(solarSystemSourcePhase) ? solarSystemSourcePhase : phase);
+  solarSystemSourcePhase = null;
+  return openPanoramaDirect(destination);
+}
+
+function openSolarSystemMode() {
+  if (solarSystemModeActive || returningToCockpit || !CELESTIAL_NAV_ORDER.includes(phase) || planetTransitionLocked || hasActiveFullExploration() || fullExplorationDomVisible()) return false;
+  solarSystemSourcePhase = phase;
+  solarSystemModeActive = true;
+  mission.classList.add("is-solar-system-mode");
+  stopAllCelestialScenesForRestore();
+  if (flightStatus) flightStatus.textContent = "MODE OBSERVASI TATA SURYA";
+  announcement.textContent = "Mode observasi Tata Surya aktif. Klik planet untuk langsung pindah ke panorama planet itu.";
+  solarSystemExplorer?.open?.({ sourcePhase: solarSystemSourcePhase });
+  syncReturnCockpitButton();
+  markJourneyActivity({ forceWrite: true });
+  return true;
+}
+
 function restoreJourneyForUser(user) {
   const userId = normalizeJourneyUserId(user);
   if (!userId || journeyRestoreInProgress || journeyRestoreAttemptedFor === userId) return false;
@@ -1833,6 +1890,30 @@ function setExperienceState(state) {
     flight.renderIdle();
     companions.setJourneyPhase("idle");
   }
+}
+
+if (typeof window.ANTARASolarSystemExplorer === "function") {
+  solarSystemExplorer = new window.ANTARASolarSystemExplorer({
+    onExit: sourcePhase => closeSolarSystemMode(sourcePhase),
+    onSelectPlanet: targetPhase => closeSolarSystemMode(targetPhase),
+    onError: error => {
+      console.warn("[ANTARA SolarSystem] open failed", error);
+      solarSystemModeActive = false;
+      mission.classList.remove("is-solar-system-mode");
+      const fallbackPhase = CELESTIAL_NAV_ORDER.includes(solarSystemSourcePhase) ? solarSystemSourcePhase : phase;
+      solarSystemSourcePhase = null;
+      if (flightStatus) flightStatus.textContent = "SIMULASI GAGAL DIMUAT";
+      announcement.textContent = "Mode observasi Tata Surya gagal dimuat pada perangkat ini.";
+      openPanoramaDirect(fallbackPhase, { preserveAnnouncement: true });
+    }
+  });
+}
+
+if (solarSystemButton) {
+  solarSystemButton.addEventListener("click", () => {
+    if (typeof sound?.uiClick === "function") sound.uiClick();
+    openSolarSystemMode();
+  });
 }
 
 setExperienceState("home");
@@ -2494,6 +2575,12 @@ function travelNeptuneToUranus() {
 
 
 function resetMission() {
+  if (solarSystemModeActive) {
+    solarSystemExplorer?.close?.();
+    solarSystemModeActive = false;
+    solarSystemSourcePhase = null;
+    mission.classList.remove("is-solar-system-mode");
+  }
   clearJourneyForUserId(journeyUserId);
   earthFull.forceReset?.();
   venusFull.forceReset?.();

@@ -20,11 +20,11 @@
 
   const SOURCES = Object.freeze({
     facts: "https://science.nasa.gov/saturn/facts/",
-    hexagon: "https://science.nasa.gov/saturn/facts/",
-    storms: "https://science.nasa.gov/saturn/facts/",
-    rings: "https://science.nasa.gov/saturn/facts/",
-    titan: "https://science.nasa.gov/saturn/moons/titan/facts/",
-    enceladus: "https://science.nasa.gov/saturn/moons/enceladus/",
+    hexagon: "https://science.nasa.gov/photojournal/nasa-cassinis-last-look-at-saturns-hexagon/",
+    storms: "https://science.nasa.gov/photojournal/saturn-storm/",
+    rings: "https://science.nasa.gov/photojournal/true-colors-of-saturns-rings/",
+    titan: "https://science.nasa.gov/photojournal/titans-surface/",
+    enceladus: "https://science.nasa.gov/photojournal/high-phase-plumes/",
     cassini: "https://science.nasa.gov/mission/cassini/about-the-mission/"
   });
 
@@ -852,19 +852,13 @@
       });
       this.observeButton?.addEventListener("click", () => this.observeNearby());
       this.observationClose?.addEventListener("click", () => this.closeObservation());
-      this.actionsMenuToggle?.addEventListener("click", event => { event.stopPropagation(); this.setActionsMenu(!this.actionsOpen, true); });
+      this.actionsMenuToggle?.addEventListener("click", event => { event.stopPropagation(); this.setActionsMenu(!this.actionsOpen); });
       this.locationButton?.addEventListener("click", () => { this.setActionsMenu(false); this.openSelectorFromWorld(); });
       this.fullscreenButton?.addEventListener("click", () => { this.setActionsMenu(false); void this.toggleFullscreen(); });
       this.exitButton?.addEventListener("click", () => { this.setActionsMenu(false); void this.exit(); });
       this.errorReturn?.addEventListener("click", () => this.forceReset());
       this.tutorialClose?.addEventListener("click", () => this.hideTutorial(true));
       document.addEventListener("fullscreenchange", () => this.updateFullscreenLabel());
-      document.addEventListener("visibilitychange", () => {
-        if (!this.root || this.root.hidden) return;
-        if (document.hidden) this.stopLoop();
-        else if (this.state === "exploring") this.startLoop();
-      });
-      addEventListener("orientationchange", () => window.setTimeout(() => this.resize(), 120), { passive: true });
       document.addEventListener("pointerdown", event => {
         if (this.actionsOpen && !this.actionsRoot?.contains(event.target)) this.setActionsMenu(false);
       });
@@ -888,7 +882,7 @@
           return;
         }
         if (this.state !== "exploring") return;
-        if (event.code === "KeyE" && this.nearbyObservation && this.observationCard.hidden) {
+        if (event.code === "KeyE" && this.nearbyObservation && !this.observationPrompt.hidden && this.observationCard.hidden) {
           event.preventDefault();
           event.stopImmediatePropagation();
           this.observeNearby();
@@ -966,7 +960,6 @@
     }
 
     openEntryFlow() {
-      this.syncLocalDiscoveryProgress();
       if (!this.saturn.active || this.saturn.travelMode || this.saturn.fullExplorationActive) return;
       if (this.saturn.exploring) this.saturn.exitExploration();
       this.state = "configuring";
@@ -1099,12 +1092,8 @@
         await this.loadingSequence(token, destination.name);
         if (token !== this.transitionToken) return;
         this.loading.hidden = true;
-        this.root.classList.remove("is-preparing", "is-selecting");
+        this.root.classList.remove("is-preparing");
         this.root.classList.add("is-active");
-        // Venus parity: Mars base CSS starts Full Exploration surfaces at opacity 0.
-        // Outer planets must explicitly reveal HUD/actions/help/mobile controls once the world is live.
-        this.root.style.setProperty("--surface-opacity", "1");
-        this.root.style.setProperty("--entry-progress", "1");
         this.state = "exploring";
         const compactUi = this.isMobileUi();
         this.infoOpen = !compactUi;
@@ -1254,11 +1243,10 @@
       });
       const reachable = nearest && nearestDistance <= nearest.radius;
       this.nearbyObservation = reachable ? nearest : null;
-      // Observation must remain actionable while the educational Info/Tujuan panels are open.
-      // Only the actions menu and the observation card itself suppress the prompt.
-      if (reachable && this.observationCard.hidden && !this.actionsOpen) {
-        this.observationPromptTitle.textContent = nearest.name;
+      const overlayPanelOpen = this.infoOpen || this.objectiveOpen || this.actionsOpen;
+      if (reachable && this.observationCard.hidden && !overlayPanelOpen) {
         this.observationPrompt.hidden = false;
+        this.observationPromptTitle.textContent = nearest.name;
       } else {
         this.observationPrompt.hidden = true;
       }
@@ -1280,7 +1268,7 @@
       const fresh = !this.discovered.has(observation.id);
       this.discovered.add(observation.id);
       this.saveDiscoveryState();
-      if (fresh) window.AntaraProgress?.trackFull?.("saturn", this.current.id, this.current.name);
+      if (fresh) window.AntaraProgress?.trackFull?.("saturn", `${this.current.id}:${observation.id}`, `${this.current.name} - ${observation.name}`);
       this.activeObservation = observation;
       this.observationPrompt.hidden = true;
       this.observationTitle.textContent = observation.name;
@@ -1310,20 +1298,6 @@
       this.observationCard.setAttribute("aria-hidden", "true");
       this.activeObservation = null;
       this.syncPanels();
-    }
-
-    syncLocalDiscoveryProgress() {
-      if (!window.AntaraProgress?.trackFull) return;
-      DESTINATIONS.forEach(destination => {
-        try {
-          const stored = JSON.parse(localStorage.getItem(`${DISCOVERY_PREFIX}${destination.id}`) || "[]");
-          if (!Array.isArray(stored) || stored.length < 1) return;
-          const allowed = new Set(destination.observations.map(observation => observation.id));
-          if (stored.some(id => allowed.has(id))) {
-            window.AntaraProgress.trackFull("saturn", destination.id, destination.name);
-          }
-        } catch {}
-      });
     }
 
     discoveryStorageKey() {
@@ -1453,33 +1427,27 @@
 
     openSelectorFromWorld() {
       if (this.state !== "exploring") return;
-      this.setActionsMenu(false);
       this.releasePointerLock();
       this.keys.clear();
       this.mobileHeld.clear();
       this.state = "selecting-world";
-      this.root.classList.add("is-selecting");
       this.selector.hidden = false;
-      this.actionsRoot.hidden = true;
       this.info.hidden = true;
       this.objectives.hidden = true;
       this.infoToggle.hidden = true;
       this.objectivesToggle.hidden = true;
       this.observationPrompt.hidden = true;
       this.closeObservation();
-      requestAnimationFrame(() => this.selectorGrid?.querySelector(`[data-saturn-region="${this.current?.id || this.selected?.id || ""}"]`)?.focus({ preventScroll: true }));
     }
 
     closeSelectorToWorld() {
       if (this.state !== "selecting-world") return;
       this.state = "exploring";
       this.selector.hidden = true;
-      this.root.classList.remove("is-selecting");
       this.syncPanels();
-      requestAnimationFrame(() => this.locationButton?.focus({ preventScroll: true }));
     }
 
-    setActionsMenu(open, focus = false) {
+    setActionsMenu(open) {
       const mobile = this.isMobileUi();
       const observationOpen = Boolean(this.observationCard && !this.observationCard.hidden);
       this.actionsOpen = Boolean(open && mobile && this.state === "exploring" && !observationOpen);
@@ -1494,7 +1462,6 @@
       this.root.classList.toggle("is-actions-open", this.actionsOpen);
       this.actionsMenuToggle.setAttribute("aria-expanded", String(this.actionsOpen));
       this.syncPanels();
-      if (focus && this.actionsOpen) requestAnimationFrame(() => this.actionsRoot?.querySelector(".venus-actions-menu button")?.focus({ preventScroll: true }));
     }
 
     async toggleFullscreen() {
@@ -1603,9 +1570,7 @@
       this.infoOpen = false;
       this.objectiveOpen = true;
       this.actionsOpen = false;
-      this.root.classList.remove("is-active", "is-preparing", "is-selecting", "is-exiting", "is-info-open", "is-objectives-open", "is-observation-open", "is-actions-open");
-      this.root.style.removeProperty("--surface-opacity");
-      this.root.style.removeProperty("--entry-progress");
+      this.root.classList.remove("is-active", "is-preparing", "is-exiting", "is-info-open", "is-objectives-open", "is-observation-open", "is-actions-open");
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");

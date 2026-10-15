@@ -79,7 +79,7 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Gravitasi permukaannya sekitar 3,7 m/s², atau kira-kira 38% gravitasi Bumi.",
       "Benda yang berbobot 100 N di Bumi akan berbobot sekitar 38 N di Mars, walaupun massanya tetap sama."
     ],
-    source: "https://science.nasa.gov/mars/facts/",
+    source: "https://www.jpl.nasa.gov/news/press_kits/insight/landing/facts/mars-at-a-glance/",
     sourceName: "NASA/JPL",
     view: { yaw: 0.78, pitch: 0.06, roll: MARS_EXPLORATION_ROLL },
     shift: { x: 0, y: 0 }
@@ -135,7 +135,7 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04689/PIA04689.jpg?crop=faces%2Cfocalpoint&fit=clip&h=2305&w=1537",
         alt: "Citra Mars Global Surveyor memperlihatkan wilayah puncak dan dinding kaldera Olympus Mons",
         credit: "NASA/JPL/Malin Space Science Systems",
-        source: "https://science.nasa.gov/mars/facts/",
+        source: "https://science.nasa.gov/photojournal/top-of-olympus-mons/",
         license: "NASA image policy",
         licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         caption: "Puncak dan kaldera Olympus Mons",
@@ -151,8 +151,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Lebar dasarnya lebih dari 600 km.",
       "Puncaknya memiliki kompleks kaldera hasil runtuhan setelah magma terkuras."
     ],
-    source: "https://science.nasa.gov/mars/facts/",
-    location: { label: "Olympus Mons", latitude: 18.65, longitudeEast: 226.20, source: "https://science.nasa.gov/mars/facts/" },
+    source: "https://science.nasa.gov/photojournal/olympus-mons/",
+    location: { label: "Olympus Mons", latitude: 18.65, longitudeEast: 226.20, source: "https://planetarynames.wr.usgs.gov/Feature/4453" },
     shift: { x: 0.00, y: -0.01 }
   },
   {
@@ -161,7 +161,7 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia22/pia22238/PIA22238.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1800&w=2880",
         alt: "Citra HiRISE berwarna olahan memperlihatkan batuan di kedalaman Valles Marineris",
         credit: "NASA/JPL-Caltech/Univ. of Arizona",
-        source: "https://science.nasa.gov/mars/facts/",
+        source: "https://science.nasa.gov/photojournal/geologic-history-revealed-in-valles-marineris/",
         license: "NASA image policy",
         licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         caption: "Detail geologi Valles Marineris",
@@ -178,7 +178,7 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Kedalamannya dapat mencapai sekitar 9,3 km dari tepi ke dasar."
     ],
     source: "https://science.nasa.gov/mars/facts/",
-    location: { label: "Valles Marineris", latitude: -14.01, longitudeEast: 301.41, source: "https://science.nasa.gov/mars/facts/" },
+    location: { label: "Valles Marineris", latitude: -14.01, longitudeEast: 301.41, source: "https://planetarynames.wr.usgs.gov/Feature/6288" },
     shift: { x: 0.018, y: 0.018 }
   },
   {
@@ -187,7 +187,7 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/mars/downloadable_items/4/5/45791_PIA24485_K4_ZCAM_main_sol004_Delta_Remnant_unannotated.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1648",
         alt: "Pandangan Perseverance dari permukaan menuju sisa delta di Kawah Jezero",
         credit: "NASA/JPL-Caltech/ASU/MSSS",
-        source: "https://science.nasa.gov/mars/facts/",
+        source: "https://science.nasa.gov/resource/perseverance-view-of-the-delta-in-jezero-crater/",
         license: "NASA image policy",
         licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         caption: "Delta Jezero dari permukaan Mars",
@@ -203,8 +203,8 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Lebih dari 3,5 miliar tahun lalu, air pernah mengalir masuk dan membentuk danau serta delta.",
       "Perseverance mendarat di sini pada 18 Februari 2021 untuk mencari tanda kehidupan mikroba purba dan mengumpulkan sampel."
     ],
-    source: "https://science.nasa.gov/mars/facts/",
-    location: { label: "Kawah Jezero", latitude: 18.41, longitudeEast: 77.69, source: "https://science.nasa.gov/mars/facts/" },
+    source: "https://science.nasa.gov/mission/mars-2020-perseverance/",
+    location: { label: "Kawah Jezero", latitude: 18.41, longitudeEast: 77.69, source: "https://planetarynames.wr.usgs.gov/Feature/14300" },
     shift: { x: -0.012, y: 0.03 }
   },
   {
@@ -213,7 +213,7 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia13/pia13163/PIA13163.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1200",
         alt: "Citra orbital wilayah tudung es kutub utara Mars di Planum Boreum",
         credit: "NASA/JPL-Caltech/MSSS",
-        source: "https://science.nasa.gov/mars/facts/",
+        source: "https://science.nasa.gov/photojournal/northern-ice-cap-of-mars/",
         license: "NASA image policy",
         licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         caption: "Planum Boreum · tudung es kutub utara Mars",
@@ -229,10 +229,10 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Pada musim panas utara, tudung yang tersisa terutama berupa es air.",
       "Di kutub selatan, es air tetap tertutup lapisan tipis es karbon dioksida bahkan saat musim panas."
     ],
-    source: "https://science.nasa.gov/mars/facts/",
+    source: "https://science.nasa.gov/earth/frozen-ice-on-earth-and-well-beyond/",
     // The plural topic is anchored to the named north-polar residual-cap region,
     // Planum Boreum, instead of an invented screen coordinate.
-    location: { label: "Planum Boreum", latitude: 87.32, longitudeEast: 54.96, source: "https://science.nasa.gov/mars/facts/" },
+    location: { label: "Planum Boreum", latitude: 87.32, longitudeEast: 54.96, source: "https://planetarynames.wr.usgs.gov/Feature/4754" },
     shift: { x: 0.008, y: -0.045 }
   },
   {
@@ -241,7 +241,7 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04271/PIA04271.jpg?crop=faces%2Cfocalpoint&fit=clip&h=540&w=810",
         alt: "Citra Mars Global Surveyor memperlihatkan lapisan tipis haze di limb Mars",
         credit: "NASA/JPL/Malin Space Science Systems",
-        source: "https://science.nasa.gov/mars/facts/",
+        source: "https://science.nasa.gov/photojournal/the-martian-limb/",
         license: "NASA image policy",
         licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         caption: "Haze atmosfer pada limb Mars",
@@ -257,10 +257,10 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Tekanan atmosfer permukaan Mars kurang dari 1% tekanan atmosfer Bumi.",
       "Gas lain yang penting antara lain nitrogen dan argon."
     ],
-    source: "https://science.nasa.gov/mars/facts/",
+    source: "https://science.nasa.gov/resource/the-five-most-abundant-gases-in-the-martian-atmosphere/",
     // This global topic is spatially anchored to Gale because the panel's measurement
     // is specifically from Curiosity/SAM at Gale Crater.
-    location: { label: "Gale Crater · SAM", latitude: -5.37, longitudeEast: 137.81, source: "https://science.nasa.gov/mars/facts/" },
+    location: { label: "Gale Crater · SAM", latitude: -5.37, longitudeEast: 137.81, source: "https://planetarynames.wr.usgs.gov/Feature/2071" },
     shift: { x: 0.028, y: -0.005 }
   },
   {
@@ -269,7 +269,7 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
         src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia22/pia22519/PIA22519.jpg?crop=faces%2Cfocalpoint&fit=clip&h=709&w=1438",
         alt: "Peta Mars Reconnaissance Orbiter memperlihatkan perkembangan badai debu raksasa tahun 2018",
         credit: "NASA/JPL-Caltech/MSSS",
-        source: "https://science.nasa.gov/mars/facts/",
+        source: "https://science.nasa.gov/photojournal/2018-giant-dust-storm-on-mars/",
         license: "NASA image policy",
         licenseUrl: "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         caption: "Badai debu raksasa Mars 2018",
@@ -285,7 +285,7 @@ const MARS_EXPLORATION_STOPS = Object.freeze([
       "Badai debu besar paling aktif pada musim semi dan musim panas di belahan selatan.",
       "Sebagian badai dapat berkembang hingga mencakup hampir seluruh planet dan mengurangi cahaya untuk wahana bertenaga surya."
     ],
-    source: "https://science.nasa.gov/mars/facts/",
+    source: "https://science.nasa.gov/helio-and-you-seasons-on-earth-mars-and-beyond/",
     // Badai debu dapat tumbuh dan berpindah lintas wilayah; jangan tampilkan satu titik sebagai “lokasi badai”.
     location: null,
     view: { yaw: 2.02, pitch: -0.06, roll: MARS_EXPLORATION_ROLL },

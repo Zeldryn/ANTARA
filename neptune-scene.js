@@ -132,7 +132,7 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
       "Badai gelap yang diamati Voyager kemudian menghilang dari pengamatan.",
       "Teleskop Hubble telah melihat dark vortex baru muncul pada waktu dan lokasi berbeda."
     ],
-    "source": "https://science.nasa.gov/neptune/neptune-facts/",
+    "source": "https://science.nasa.gov/photojournal/neptune-through-a-clear-filter/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00052/PIA00052.jpg?crop=faces%2Cfocalpoint&fit=clip&h=852&w=700",
@@ -186,7 +186,7 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia02/pia02207/PIA02207.jpg?crop=faces%2Cfocalpoint&fit=clip&h=675&w=550",
         "alt": "Citra cincin Neptunus oleh Voyager 2",
         "credit": "NASA/JPL",
-        "source": "https://science.nasa.gov/neptune/neptune-facts/",
+        "source": "https://science.nasa.gov/resource/neptunes-rings/",
         "caption": "Cincin Neptunus · tipis, gelap, dan memiliki arc",
         "fit": "contain",
         "type": "CITRA WAHANA"
@@ -204,13 +204,13 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
       "Voyager 2 melihat geyser material es menyembur hingga sekitar 8 km.",
       "Permukaan Triton sangat dingin dan kaya es nitrogen."
     ],
-    "source": "https://science.nasa.gov/neptune/neptune-facts/",
+    "source": "https://science.nasa.gov/neptune/moons/triton/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia02/pia02246/PIA02246.jpg?crop=faces%2Cfocalpoint&fit=clip&h=450&w=450",
         "alt": "Citra Triton oleh Voyager 2",
         "credit": "NASA/JPL",
-        "source": "https://science.nasa.gov/neptune/neptune-facts/",
+        "source": "https://science.nasa.gov/neptune/moons/triton/",
         "caption": "Triton · bulan besar yang mengorbit secara retrograde",
         "fit": "contain",
         "type": "CITRA WAHANA"
@@ -251,14 +251,14 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
       "Belum ada wahana yang pernah mengorbit Neptunus.",
       "Di luar orbit Neptunus terdapat Sabuk Kuiper, rumah bagi Pluto dan banyak objek trans-Neptunus."
     ],
-    "source": "https://science.nasa.gov/neptune/neptune-facts/",
+    "source": "https://science.nasa.gov/neptune/exploration/",
     "semantic": "voyager",
     "images": [
       {
         "src": "./assets/neptune-voyager-diagram.svg",
         "alt": "Diagram Voyager 2 melintas dekat Neptunus",
         "credit": "Visualisasi ANTARA berdasarkan NASA/JPL",
-        "source": "https://science.nasa.gov/neptune/neptune-facts/",
+        "source": "https://science.nasa.gov/neptune/exploration/",
         "caption": "Voyager 2 · flyby Neptunus, Agustus 1989",
         "fit": "contain"
       },
@@ -266,7 +266,7 @@ const NEPTUNE_EXPLORATION_STOPS = Object.freeze([
         "src": "./assets/neptune-final-diagram.svg",
         "alt": "Diagram Neptunus sebagai planet terakhir dalam urutan delapan planet dengan wilayah trans-Neptunus di luar",
         "credit": "Visualisasi ANTARA berdasarkan NASA Science",
-        "source": "https://science.nasa.gov/neptune/neptune-facts/",
+        "source": "https://science.nasa.gov/neptune/",
         "caption": "Neptunus menutup urutan planet, bukan keseluruhan Tata Surya",
         "fit": "contain"
       }

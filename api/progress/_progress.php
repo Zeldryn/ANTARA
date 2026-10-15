@@ -76,9 +76,9 @@ function antara_progress_catalog(): array
             'full' => [
                 'grs' => 'Great Red Spot',
                 'bands' => 'Sabuk & Zona Awan',
-                'lightning' => 'Badai Petir Jovian',
-                'hotspot' => '5-Micron Hot Spot',
-                'polar' => 'Siklon Kutub',
+                'polar-cyclones' => 'Siklon Kutub Utara',
+                'rings' => 'Cincin Utama & Halo',
+                'galilean-moons' => 'Empat Bulan Galilea',
             ],
         ],
         'saturn' => [
@@ -86,11 +86,11 @@ function antara_progress_catalog(): array
             'short' => 'SATURNUS',
             'normal_total' => 11,
             'full' => [
-                'hexagon' => 'Hexagon Kutub Utara',
-                'storms' => 'Pita Awan & Badai Besar',
                 'rings' => 'Cincin & Cassini Division',
-                'titan' => 'Koridor Titan',
-                'enceladus' => 'Koridor Plume Enceladus',
+                'hexagon' => 'Hexagon Kutub Utara',
+                'titan' => 'Titan',
+                'enceladus' => 'Enceladus',
+                'grand-finale' => 'Cassini Grand Finale',
             ],
         ],
         'uranus' => [
@@ -98,11 +98,11 @@ function antara_progress_catalog(): array
             'short' => 'URANUS',
             'normal_total' => 11,
             'full' => [
-                'methane-winds' => 'Atmosfer Metana & Angin',
-                'polar-seasons' => 'Kutub & Musim Ekstrem',
-                'magnetosphere' => 'Magnetosfer Miring',
+                'axis' => 'Kemiringan Sumbu Uranus',
+                'seasons' => 'Musim Ekstrem Uranus',
                 'rings' => 'Cincin Gelap Uranus',
-                'miranda' => 'Koridor Miranda & Voyager 2',
+                'miranda' => 'Miranda',
+                'voyager' => 'Lintasan Voyager 2',
             ],
         ],
         'neptune' => [
@@ -110,50 +110,16 @@ function antara_progress_catalog(): array
             'short' => 'NEPTUNUS',
             'normal_total' => 11,
             'full' => [
-                'super-winds' => 'Super Winds Neptunus',
+                'winds' => 'Angin Super Cepat',
                 'dark-spot' => 'Great Dark Spot',
-                'methane-clouds' => 'Awan Metana Tinggi',
-                'rings-arcs' => 'Cincin Gelap & Ring Arcs',
-                'triton' => 'Koridor Triton & Voyager 2',
+                'clouds' => 'Awan Tinggi Cerah',
+                'rings' => 'Cincin & Arc Neptunus',
+                'triton' => 'Triton',
             ],
         ],
     ];
 
     return $catalog;
-}
-
-
-function antara_progress_normalize_full_key(string $planet, string $key): ?string
-{
-    $planet = strtolower(trim($planet));
-    $key = strtolower(trim($key));
-    if ($key === '') return null;
-
-    // Older outer-planet builds emitted observation keys as "region:observation".
-    // Full Exploration progress is region-based, matching Venus/Mars: one region = one milestone.
-    $regionKey = explode(':', $key, 2)[0];
-
-    // Safe aliases for renamed regions that represent the same scientific destination.
-    $aliases = [
-        'jupiter' => [
-            'polar-cyclones' => 'polar',
-        ],
-        'saturn' => [],
-        'uranus' => [
-            'axis' => 'polar-seasons',
-            'seasons' => 'polar-seasons',
-        ],
-        'neptune' => [
-            'winds' => 'super-winds',
-            'clouds' => 'methane-clouds',
-            'rings' => 'rings-arcs',
-        ],
-    ];
-    $regionKey = $aliases[$planet][$regionKey] ?? $regionKey;
-
-    $catalog = antara_progress_catalog();
-    if (!isset($catalog[$planet]['full'][$regionKey])) return null;
-    return $regionKey;
 }
 
 function antara_progress_ensure_schema(PDO $pdo): void
@@ -203,7 +169,7 @@ function antara_progress_event_is_allowed(string $planet, string $type, string $
     }
 
     if ($type === 'full') {
-        return antara_progress_normalize_full_key($planet, $key) !== null;
+        return isset($catalog[$planet]['full'][$key]);
     }
 
     return false;
@@ -229,9 +195,7 @@ function antara_progress_planet_summary(string $planet, array $definition, array
         if ($type === 'normal') {
             $normalVisited[$key] = true;
         } elseif ($type === 'full') {
-            $canonicalFullKey = antara_progress_normalize_full_key($planet, $key);
-            if ($canonicalFullKey === null) continue;
-            $fullVisited[$canonicalFullKey] = true;
+            $fullVisited[$key] = true;
         }
 
         $createdAt = (string)($event['created_at'] ?? '');

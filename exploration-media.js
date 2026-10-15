@@ -21,7 +21,7 @@ window.ExplorationMedia = {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia21/pia21906/PIA21906.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
       alt: "Citra Dawn resolusi tinggi Ceres",
       credit: "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA",
-      source: "https://science.nasa.gov/dwarf-planets/ceres/facts/",
+      source: "https://science.nasa.gov/dwarf-planets/ceres/",
       caption: "Ceres · contoh dunia besar di Sabuk Asteroid · Dawn",
       fit: "contain"
     },
@@ -29,7 +29,7 @@ window.ExplorationMedia = {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia23/pia23791/PIA23791.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1096&w=2245",
       alt: "Citra ultraviolet awan global Venus oleh Mariner 10",
       credit: "NASA/JPL-Caltech",
-      source: "https://science.nasa.gov/venus/venus-facts/",
+      source: "https://science.nasa.gov/photojournal/mariner-10-image-of-venus/",
       caption: "Awan Venus · Mariner 10",
       fit: "cover"
     },
@@ -45,7 +45,7 @@ window.ExplorationMedia = {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00407/PIA00407.jpg?crop=faces%2Cfocalpoint&fit=clip&h=2000&w=2000",
       alt: "Mosaik warna global Mars dari citra Viking Orbiter",
       credit: "NASA/JPL/USGS",
-      source: "https://science.nasa.gov/mars/facts/",
+      source: "https://science.nasa.gov/photojournal/global-color-views-of-mars/",
       caption: "Mars global · Viking Orbiter",
       fit: "contain"
     },
@@ -53,7 +53,7 @@ window.ExplorationMedia = {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533",
       alt: "Mosaik global permukaan Merkurius dari citra MESSENGER dan Mariner 10",
       credit: "NASA/JHU APL/Carnegie/USGS",
-      source: "https://science.nasa.gov/mercury/facts/",
+      source: "https://science.nasa.gov/photojournal/full-global-mercury-mosaic/",
       caption: "Mosaik global Merkurius · MESSENGER",
       fit: "cover"
     },
@@ -61,7 +61,7 @@ window.ExplorationMedia = {
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04866/PIA04866.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
       alt: "Potret warna asli Jupiter dari mosaik citra Cassini",
       credit: "NASA/JPL/Space Science Institute",
-      source: "https://science.nasa.gov/jupiter/jupiter-facts/",
+      source: "https://science.nasa.gov/photojournal/cassini-jupiter-portrait/",
       caption: "Jupiter · mosaik warna Cassini",
       fit: "contain"
     },

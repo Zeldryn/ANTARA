@@ -63,7 +63,7 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533",
         "alt": "Mosaik global permukaan Merkurius dari citra MESSENGER dan Mariner 10",
         "credit": "NASA/JHU APL/Carnegie/USGS",
-        "source": "https://science.nasa.gov/mercury/facts/",
+        "source": "https://science.nasa.gov/photojournal/full-global-mercury-mosaic/",
         "license": "NASA image policy",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         "caption": "Mosaik global Merkurius · MESSENGER",
@@ -97,7 +97,7 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533",
         "alt": "Mosaik global permukaan Merkurius dari citra MESSENGER dan Mariner 10",
         "credit": "NASA/JHU APL/Carnegie/USGS",
-        "source": "https://science.nasa.gov/mercury/facts/",
+        "source": "https://science.nasa.gov/photojournal/full-global-mercury-mosaic/",
         "license": "NASA image policy",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         "caption": "Mosaik global Merkurius · MESSENGER",
@@ -195,7 +195,7 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19247/PIA19247.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1550&w=2044",
         "alt": "Peta suhu maksimum wilayah kutub utara Merkurius dari data MESSENGER",
         "credit": "NASA/JHU APL/Carnegie",
-        "source": "https://science.nasa.gov/mercury/facts/",
+        "source": "https://science.nasa.gov/photojournal/hot-and-cold/",
         "license": "NASA image policy",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         "caption": "Hot and Cold · suhu permukaan kutub Merkurius",
@@ -238,7 +238,7 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia18/pia18748/PIA18748.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1400&w=1400",
         "alt": "Permukaan berbayang permanen di Kawah Prokofiev dekat kutub utara Merkurius",
         "credit": "NASA/JHU APL/Carnegie",
-        "source": "https://science.nasa.gov/mercury/facts/",
+        "source": "https://science.nasa.gov/photojournal/icy-view-of-prokofiev/",
         "license": "NASA image policy",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         "caption": "Prokofiev · kawah kutub dengan bukti es air",
@@ -258,7 +258,7 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
       "label": "Prokofiev · Es Kutub",
       "latitude": 85.77,
       "longitudeEast": 62.92,
-      "source": "https://science.nasa.gov/mercury/facts/"
+      "source": "https://www.nasa.gov/image-article/hot-cold/"
     },
     "orientation": {
       "yaw": 1.55,
@@ -286,7 +286,7 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19418/PIA19418.jpg?crop=faces%2Cfocalpoint&fit=clip&h=3094&w=4096",
         "alt": "Peta emisi sodium pada eksosfer dan ekor Merkurius dari MESSENGER",
         "credit": "NASA/JHU APL/Carnegie",
-        "source": "https://science.nasa.gov/mercury/facts/",
+        "source": "https://science.nasa.gov/photojournal/mercurys-sodium-tail-2/",
         "license": "NASA image policy",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         "caption": "Mercury's Sodium Tail · MESSENGER MASCS/UVVS",
@@ -296,7 +296,7 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
         "src": "./assets/mercury-exosphere-diagram.svg",
         "alt": "Diagram edukasi eksosfer tipis dan ekor sodium Merkurius",
         "credit": "ANTARA · data NASA MESSENGER",
-        "source": "https://science.nasa.gov/mercury/facts/",
+        "source": "https://science.nasa.gov/photojournal/mercurys-sodium-tail-2/",
         "caption": "Eksosfer tipis dan ekor sodium",
         "fit": "contain"
       }
@@ -328,7 +328,7 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg?crop=faces%2Cfocalpoint&fit=clip&h=767&w=1533",
         "alt": "Mosaik global permukaan Merkurius dari citra MESSENGER dan Mariner 10",
         "credit": "NASA/JHU APL/Carnegie/USGS",
-        "source": "https://science.nasa.gov/mercury/facts/",
+        "source": "https://science.nasa.gov/photojournal/full-global-mercury-mosaic/",
         "license": "NASA image policy",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         "caption": "Mosaik global Merkurius · MESSENGER",
@@ -356,13 +356,13 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
       "Cekungan ini terbentuk sangat awal dalam sejarah Merkurius.",
       "Bentang Caloris membantu ilmuwan membaca sejarah kerak dan aktivitas vulkanik planet ini."
     ],
-    "source": "https://science.nasa.gov/mercury/facts/",
+    "source": "https://science.nasa.gov/photojournal/the-mighty-caloris/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia19/pia19213/PIA19213.jpg?crop=faces%2Cfocalpoint&fit=clip&h=3130&w=3130",
         "alt": "Mosaik MESSENGER memperlihatkan cekungan tumbukan Caloris di Merkurius",
         "credit": "NASA/JHU APL/Carnegie/USGS",
-        "source": "https://science.nasa.gov/mercury/facts/",
+        "source": "https://science.nasa.gov/photojournal/the-mighty-caloris/",
         "license": "NASA image policy",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         "caption": "Caloris Basin · MESSENGER",
@@ -373,7 +373,7 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
       "label": "Caloris Basin",
       "latitude": 31.5,
       "longitudeEast": 162.7,
-      "source": "https://science.nasa.gov/mercury/facts/"
+      "source": "https://science.nasa.gov/photojournal/the-mighty-caloris/"
     },
     "orientation": {
       "yaw": 2.32,
@@ -401,7 +401,7 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia18/pia18151/PIA18151.jpg?crop=faces%2Cfocalpoint&fit=clip&h=703&w=1100",
         "alt": "Peta struktur tektonik Merkurius yang memperlihatkan ribuan punggungan dan tebing kontraksi",
         "credit": "NASA/JHU APL/Carnegie/USGS",
-        "source": "https://science.nasa.gov/mercury/facts/",
+        "source": "https://science.nasa.gov/photojournal/the-incredible-shrinking-mercury/",
         "license": "NASA image policy",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
         "caption": "Jejak kontraksi global Merkurius · MESSENGER",
@@ -429,13 +429,13 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
       "MESSENGER menjadi wahana pertama yang mengorbit Merkurius dan mengakhiri misinya pada 2015.",
       "BepiColombo memulai fase kedatangan pada September 2026 dan dijadwalkan masuk orbit Merkurius pada 21 November 2026."
     ],
-    "source": "https://science.nasa.gov/mercury/facts/",
+    "source": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo/Latest_updates_BepiColombo_s_arrival_at_Mercury",
     "images": [
       {
         "src": "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2024/09/bepicolombo_says_goodbye_to_mercury_for_the_fourth_time/26299692-11-eng-GB/BepiColombo_says_goodbye_to_Mercury_for_the_fourth_time.jpg",
         "alt": "Merkurius dipotret wahana ESA JAXA BepiColombo saat lintasan dekat 2024",
         "credit": "ESA/BepiColombo/MTM",
-        "source": "https://science.nasa.gov/mercury/facts/",
+        "source": "https://www.esa.int/ESA_Multimedia/Images/2024/09/BepiColombo_says_goodbye_to_Mercury_for_the_fourth_time",
         "license": "CC BY-SA 3.0 IGO / ESA Standard Licence",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/igo/",
         "caption": "BepiColombo dekat Merkurius · M-CAM 2",
@@ -446,7 +446,7 @@ const MERCURY_EXPLORATION_STOPS = Object.freeze([
         "src": "./assets/mercury-missions-timeline.svg",
         "alt": "Linimasa eksplorasi Merkurius dari Mariner 10, MESSENGER hingga BepiColombo",
         "credit": "ANTARA · data NASA dan ESA",
-        "source": "https://science.nasa.gov/mercury/facts/",
+        "source": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo",
         "caption": "Linimasa eksplorasi Merkurius",
         "fit": "contain"
       }

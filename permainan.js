@@ -26,33 +26,6 @@
   let pendingFinished = null;
   let pendingLevelAdvance = null;
   let audioContext = null;
-  let liveFastCorrect = 0;
-  let liveBestStreak = 0;
-  let liveFirstTryByLevel = new Map();
-  let liveBestFirstTry = 0;
-
-  function syncAchievementBadge(extra = {}) {
-    const level = Number(currentQuestion?.level || 0);
-    const firstTryCurrent = level > 0 ? Number(liveFirstTryByLevel.get(level) || 0) : 0;
-    window.AntaraAchievements?.updateQuizProgress?.({
-      active: !!runToken,
-      score,
-      streak,
-      bestStreak: liveBestStreak,
-      fastCorrect: liveFastCorrect,
-      firstTryCurrent,
-      bestFirstTry: liveBestFirstTry,
-      ...extra
-    });
-  }
-
-  function resetLiveAchievementStats() {
-    liveFastCorrect = 0;
-    liveBestStreak = 0;
-    liveFirstTryByLevel = new Map();
-    liveBestFirstTry = 0;
-    window.AntaraAchievements?.resetQuizProgress?.();
-  }
 
   const esc = value => String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
   const formatScore = value => new Intl.NumberFormat("id-ID").format(Number(value) || 0);
@@ -183,12 +156,9 @@
     startBtn.disabled = true; getAudio(); soundStart();
     try {
       const data = await json("api/quiz/start.php", { method:"POST", body:"{}" });
-      resetLiveAchievementStats();
       runToken = data.runToken; score = data.score || 0; streak = data.streak || 0; currentStack = data.stack || null;
-      liveBestStreak = streak;
       intro.hidden = true; resultStage.hidden = true; errorStage.hidden = true; stage.hidden = false;
       renderQuestion(data.question, data.stack);
-      syncAchievementBadge();
       window.scrollTo({ top:0, behavior:"smooth" });
     } catch (error) { showError(error.message); }
     finally { startBtn.disabled = !user; }
@@ -223,17 +193,6 @@
         body:JSON.stringify({ runToken, position:currentQuestion.position, answer:key || null })
       });
       score = data.scoreTotal || 0; streak = data.streak || 0; currentStack = data.stack || currentStack; updateHud();
-      liveBestStreak = Math.max(liveBestStreak, streak);
-      if (data.correct && Number(data.responseMs || 0) <= 3000) liveFastCorrect += 1;
-      if (data.correct && Number(data.attemptNumber || 0) === 1) {
-        const level = Number(currentQuestion?.level || 0);
-        if (level > 0) {
-          const count = Number(liveFirstTryByLevel.get(level) || 0) + 1;
-          liveFirstTryByLevel.set(level, count);
-          liveBestFirstTry = Math.max(liveBestFirstTry, count);
-        }
-      }
-      syncAchievementBadge({ finished: !!data.finished });
       optionsHost.querySelectorAll(".quiz-option").forEach(btn => {
         if (btn.dataset.key === data.correctKey) btn.classList.add("is-correct");
         if (key && btn.dataset.key === key && !data.correct) btn.classList.add("is-wrong");
@@ -276,9 +235,7 @@
         body:JSON.stringify({ runToken, level, advanceLevel })
       });
       score = data.score || score; streak = data.streak || 0; currentStack = data.stack || currentStack;
-      liveBestStreak = Math.max(liveBestStreak, streak);
       renderQuestion(data.question, data.stack);
-      syncAchievementBadge();
       window.scrollTo({ top:0, behavior:"smooth" });
     } catch (error) {
       nextBtn.textContent = oldText;
@@ -293,19 +250,12 @@
     $("#result-accuracy").textContent = `${summary.firstTryCorrect || 0} / ${summary.total || 75} · ${summary.accuracy}%`;
     $("#result-streak").textContent = `×${summary.bestStreak}`;
     $("#result-speed").textContent = `${((summary.avgResponseMs || 0)/1000).toFixed(1)}s`;
-    score = Number(summary.score || score);
-    liveBestStreak = Math.max(liveBestStreak, Number(summary.bestStreak || 0));
-    liveFastCorrect = Math.max(liveFastCorrect, Number(summary.fastCorrect || 0));
-    liveBestFirstTry = Math.max(liveBestFirstTry, Number(summary.firstTryCorrect || 0));
-    syncAchievementBadge({ active:false, finished:true });
     window.AntaraAchievementNotifications?.checkPending?.();
-    window.AntaraAchievements?.refreshContext?.();
     window.scrollTo({ top:0, behavior:"smooth" });
   }
 
   function resetToIntro() {
     stopTimer(); runToken=""; currentQuestion=null; currentStack=null; score=0; streak=0; pendingFinished=null; pendingLevelAdvance=null; submitting=false;
-    resetLiveAchievementStats();
     stage.hidden=true; resultStage.hidden=true; errorStage.hidden=true; intro.hidden=false;
     window.scrollTo({top:0,behavior:"smooth"});
   }
