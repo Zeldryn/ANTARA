@@ -1,133 +1,625 @@
 "use strict";
 
 (() => {
-  const STORAGE_KEY = "antara-uranus-full-quality-v1";
+  const STORAGE_KEY = "antara-uranus-full-quality-v3";
+  const DISCOVERY_PREFIX = "antara-uranus-pov-discovery-v1:";
   const QUALITY = Object.freeze({
-    LOW: { name: "LOW", label: "RENDAH", dpr: 1.0 },
-    MEDIUM: { name: "MEDIUM", label: "SEDANG", dpr: 1.5 },
-    HIGH: { name: "HIGH", label: "TINGGI", dpr: 2.0 }
+    LOW: { name: "LOW", label: "RENDAH", dpr: 1.0, clouds: 220, streaks: 7, markerSegments: 28 },
+    MEDIUM: { name: "MEDIUM", label: "SEDANG", dpr: 1.35, clouds: 360, streaks: 10, markerSegments: 40 },
+    HIGH: { name: "HIGH", label: "TINGGI", dpr: 1.7, clouds: 520, streaks: 13, markerSegments: 56 }
+  });
+
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const smoothstep = value => {
+    const t = clamp(value, 0, 1);
+    return t * t * (3 - 2 * t);
+  };
+  const delay = ms => new Promise(resolve => window.setTimeout(resolve, ms));
+  const deg = radians => radians * 180 / Math.PI;
+
+  const SOURCES = Object.freeze({
+    facts: "https://science.nasa.gov/uranus/facts/",
+    voyager: "https://science.nasa.gov/mission/voyager/voyager-2/",
+    moons: "https://science.nasa.gov/uranus/moons/facts/",
+    system: "https://science.nasa.gov/uranus/",
+    magnetosphere: "https://science.nasa.gov/uranus/facts/",
+    rings: "https://science.nasa.gov/uranus/facts/"
   });
 
   const DESTINATIONS = Object.freeze([
     {
-      id: "axis",
-      name: "Kemiringan Sumbu Uranus",
-      short: "SUMBU 97.77°",
-      topicIndex: 1,
-      category: "ORIENTASI PLANET",
-      descriptor: "Sumbu rotasi hampir rebah terhadap bidang orbit",
-      locationLabel: "Sumbu rotasi Uranus · 97,77°",
-      image: "./assets/uranus-tilt-diagram.svg",
-      imageAlt: "Diagram kemiringan sumbu Uranus 97,77 derajat",
-      imageCaption: "Diagram kemiringan sumbu Uranus · visual ANTARA berbasis NASA",
-      source: "https://science.nasa.gov/uranus/facts/",
+      id: "methane-winds",
+      name: "Atmosfer Metana & Angin",
+      short: "METHANE WINDS",
+      category: "ATMOSFER ICE GIANT",
+      descriptor: "Terbang di antara kabut biru-hijau dan jet angin Uranus",
+      locationLabel: "Atmosfer atas Uranus",
+      preview: "axis",
+      image: "./assets/uranus-methane-diagram.svg",
+      imageAlt: "Diagram edukasi metana pada atmosfer Uranus",
+      imageCaption: "Atmosfer metana Uranus · ANTARA berbasis NASA",
+      source: SOURCES.facts,
+      lead: "Warna biru-hijau Uranus berasal dari metana yang menyerap cahaya merah. Di balik tampilannya yang tenang, angin atmosfer Uranus dapat melaju sangat cepat.",
       facts: [
-        "Uranus berputar hampir menyamping sehingga kutubnya dapat menghadap Matahari dalam waktu yang sangat lama.",
-        "Kemiringan ekstrem ini adalah salah satu ciri paling khas Uranus dibanding planet lain.",
-        "Model 3D ANTARA menonjolkan orientasi sumbu ini sebagai identitas utama Uranus."
+        "Atmosfer Uranus didominasi hidrogen dan helium dengan metana serta jejak air dan amonia.",
+        "Metana menyerap cahaya merah dan membantu memberi warna biru-hijau khas Uranus.",
+        "NASA mencatat kecepatan angin Uranus dapat mencapai sekitar 900 km/jam."
       ],
-      lead: "Inilah hal pertama yang membuat Uranus berbeda. Ia tidak berputar hampir tegak seperti Bumi, tetapi hampir rebah, sehingga pola siang, malam, dan musimnya menjadi sangat unik.",
-      why: "Kemiringan ekstrem Uranus membantu ilmuwan memahami sejarah tumbukan awal Tata Surya dan bagaimana orientasi planet memengaruhi cuaca jangka panjang.",
-      preview: "axis"
+      palette: { sky: 0x2f6f76, fog: 0x6faeb2, fogDensity: 0.0108, cloud: "#bfe9e8", cloud2: "#6bb5b7", accent: 0xb7f3f0, lightning: 0xe8ffff },
+      wind: { x: 1.45, z: 0.28 }, turbulence: 0.64,
+      spawn: { x: -30, y: 9, z: 42, yaw: Math.PI * 0.88, pitch: -0.04 },
+      observations: [
+        { id: "methane-haze", name: "Kabut Metana", category: "ABSORPSI CAHAYA", position: [8, 12, -14], radius: 10, source: SOURCES.facts, lead: "Kabut dan gas metana membuat lapisan atas Uranus tampak lembut dan berwarna cyan.", why: "Spektrum cahaya membantu ilmuwan mengidentifikasi gas yang tidak bisa dilihat langsung.", facts: ["Metana hanya sebagian kecil atmosfer, tetapi sangat berpengaruh pada warna planet.", "Metana menyerap kuat pada panjang gelombang merah.", "Lapisan kabut dapat berubah secara musiman."] },
+        { id: "methane-jet", name: "Jet Angin Cepat", category: "JET STREAM", position: [-22, -5, -12], radius: 10, source: SOURCES.facts, lead: "Arus atmosfer Uranus bergerak cepat meskipun planet tampak relatif tenang dari jauh.", why: "Kecepatan dan arah jet membantu menjelaskan sirkulasi pada ice giant yang menerima sedikit energi Matahari.", facts: ["Angin dapat mencapai sekitar 900 km/jam.", "Di ekuator, sebagian angin bergerak berlawanan arah rotasi planet.", "Lebih dekat kutub, arah angin dapat berubah mengikuti rotasi."] },
+        { id: "methane-cold", name: "Lapisan Sangat Dingin", category: "TEMPERATUR", position: [28, -18, 18], radius: 10, source: SOURCES.facts, lead: "Uranus memiliki salah satu atmosfer planet terdingin di Tata Surya.", why: "Suhu ekstrem membantu membentuk awan, kabut, dan struktur atmosfer yang berbeda dari raksasa gas.", facts: ["NASA mencatat temperatur minimum atmosfer sekitar 49 K atau -224 °C.", "Uranus memancarkan sedikit panas internal dibanding planet raksasa lain.", "Tidak ada permukaan padat di bawah awan untuk didarati."] }
+      ]
     },
     {
-      id: "seasons",
-      name: "Musim Ekstrem Uranus",
-      short: "MUSIM PANJANG",
-      topicIndex: 2,
-      category: "IKLIM JANGKA PANJANG",
-      descriptor: "Setiap musim dapat berlangsung sekitar 21 tahun Bumi",
-      locationLabel: "Belahan kutub Uranus",
+      id: "polar-seasons",
+      name: "Kutub & Musim Ekstrem",
+      short: "POLAR SEASONS",
+      category: "SUMBU MIRING 97.8°",
+      descriptor: "Masuk ke wilayah kutub yang menerima musim puluhan tahun",
+      locationLabel: "Kutub utara Uranus",
+      preview: "seasons",
       image: "./assets/uranus-seasons-diagram.svg",
-      imageAlt: "Diagram musim ekstrem Uranus",
-      imageCaption: "Musim Uranus · visual ANTARA berbasis NASA",
-      source: "https://science.nasa.gov/uranus/facts/",
+      imageAlt: "Diagram musim dan kemiringan sumbu Uranus",
+      imageCaption: "Musim Uranus · ANTARA berbasis NASA",
+      source: SOURCES.facts,
+      lead: "Uranus seolah berguling mengitari Matahari karena sumbu rotasinya hampir rebah. Akibatnya, kutub dapat mengalami siang atau malam sangat panjang selama bagian besar orbitnya.",
       facts: [
-        "Satu tahun Uranus berlangsung sekitar 84 tahun Bumi.",
-        "Satu musimnya kira-kira berlangsung 21 tahun Bumi.",
-        "Karena sumbunya sangat miring, satu kutub bisa lama menghadap Matahari lalu lama membelakanginya."
+        "Kemiringan sumbu Uranus sekitar 97,8 derajat.",
+        "Satu musim Uranus berlangsung kira-kira dua dekade karena satu tahun Uranus sekitar 84 tahun Bumi.",
+        "Observasi modern menunjukkan atmosfer dapat menjadi lebih dinamis saat kondisi musim berubah."
       ],
-      lead: "Uranus mengalami musim yang jauh lebih aneh daripada Bumi. Bayangkan satu musim berlangsung puluhan tahun—itulah yang terjadi karena sumbu putarnya hampir rebah.",
-      why: "Musim ekstrem memengaruhi energi yang diterima atmosfer Uranus dan membantu menjelaskan perubahan awan yang diamati dari waktu ke waktu.",
-      preview: "seasons"
+      palette: { sky: 0x255c68, fog: 0x5e98a2, fogDensity: 0.0114, cloud: "#d1f2ef", cloud2: "#72b3b5", accent: 0xd7ffff, lightning: 0xf0ffff },
+      wind: { x: 0.42, z: 0.72 }, turbulence: 0.72,
+      spawn: { x: -22, y: 15, z: 40, yaw: Math.PI * 0.9, pitch: -0.08 },
+      observations: [
+        { id: "polar-cap", name: "Tudung Kutub", category: "POLAR CAP", position: [4, 7, -16], radius: 11, source: SOURCES.system, lead: "Wilayah kutub Uranus dapat tampak berbeda karena musim, kabut, dan distribusi awan.", why: "Perubahan kutub memberi laboratorium alami untuk melihat atmosfer bereaksi terhadap pencahayaan musiman ekstrem.", facts: ["Uranus mengalami musim sangat panjang.", "Kutub dapat menghadap Matahari selama bertahun-tahun.", "Webb dan teleskop modern melihat struktur polar lebih jelas daripada Voyager 2."] },
+        { id: "polar-cloud", name: "Awan Cerah", category: "CUACA DINAMIS", position: [-25, 2, 5], radius: 10, source: SOURCES.facts, lead: "Awan cerah sesekali muncul di atmosfer Uranus dan berubah cukup cepat.", why: "Awan diskret menunjukkan Uranus lebih dinamis daripada kesan polos dari citra Voyager 2.", facts: ["Voyager 2 melihat relatif sedikit awan diskret.", "Observasi kemudian menemukan fitur awan yang berubah cepat.", "Musim memengaruhi struktur atmosfer yang terlihat."] },
+        { id: "polar-tilt", name: "Garis Sumbu Rebahan", category: "ROTASI", position: [27, 18, 20], radius: 9, source: SOURCES.facts, lead: "Sumbu Uranus hampir berada di bidang orbit, berbeda drastis dari sebagian besar planet.", why: "Kemiringan ekstrem ini memengaruhi musim, orientasi cincin, dan geometri medan magnet Uranus.", facts: ["Kemiringan aksial sekitar 97,8°.", "Planet tampak berputar menyamping.", "Penyebab pastinya masih menjadi topik penelitian evolusi awal Tata Surya."] }
+      ]
+    },
+    {
+      id: "magnetosphere",
+      name: "Magnetosfer Miring",
+      short: "MAGNETOSPHERE",
+      category: "MEDAN MAGNET ASIMETRIS",
+      descriptor: "Terbang di koridor medan magnet yang miring dan offset",
+      locationLabel: "Magnetosfer Uranus",
+      preview: "voyager",
+      image: "./assets/uranus-magnetosphere-diagram.svg",
+      imageAlt: "Diagram magnetosfer Uranus",
+      imageCaption: "Magnetosfer Uranus · ANTARA berbasis NASA",
+      source: SOURCES.magnetosphere,
+      lead: "Medan magnet Uranus tidak rapi mengikuti sumbu rotasinya. Sumbu magnetnya miring sekitar 60° dan pusat medan juga bergeser dari pusat planet.",
+      facts: [
+        "Sumbu magnet Uranus miring hampir 60 derajat dari sumbu rotasi.",
+        "Medan magnetnya juga offset sekitar sepertiga radius planet dari pusat.",
+        "Rotasi menyamping membuat ekor magnetosfer membentuk geometri seperti pembuka botol di ruang angkasa."
+      ],
+      palette: { sky: 0x101c2b, fog: 0x304d67, fogDensity: 0.0078, cloud: "#8bdadf", cloud2: "#466e92", accent: 0xaefcff, lightning: 0xe5ffff },
+      wind: { x: 0.18, z: 0.38 }, turbulence: 0.32,
+      spawn: { x: -24, y: 8, z: 46, yaw: Math.PI * 0.9, pitch: -0.04 },
+      observations: [
+        { id: "mag-axis", name: "Sumbu Magnet 60°", category: "MAGNETIC AXIS", position: [7, 8, -15], radius: 10, source: SOURCES.magnetosphere, lead: "Arah medan magnet utama Uranus jauh dari sumbu rotasi planet.", why: "Kemiringan ini menciptakan lingkungan plasma dan aurora yang sangat tidak simetris.", facts: ["Sumbu magnet berbeda jauh dari sumbu rotasi.", "Medan juga tidak berpusat tepat di tengah planet.", "Voyager 2 mengukur struktur aneh ini saat flyby 1986."] },
+        { id: "mag-aurora", name: "Koridor Aurora", category: "AURORA", position: [-26, 12, 7], radius: 10, source: SOURCES.magnetosphere, lead: "Aurora Uranus tidak selalu muncul tepat di kutub geografis karena geometri medan magnetnya yang miring.", why: "Aurora membantu melacak interaksi angin Matahari dengan medan magnet planet.", facts: ["Aurora Uranus berbeda orientasi dari Bumi, Jupiter, dan Saturnus.", "Lokasinya dipengaruhi medan magnet yang miring dan offset.", "Pengamatan ultraviolet modern masih mempelajari variasinya."] },
+        { id: "mag-tail", name: "Ekor Corkscrew", category: "MAGNETOTAIL", position: [30, -2, 20], radius: 9, source: SOURCES.magnetosphere, lead: "Ekor magnetosfer Uranus memanjang jauh dari Matahari dan dipelintir oleh rotasi planet.", why: "Bentuk corkscrew adalah konsekuensi langsung dari kombinasi rotasi menyamping dan medan magnet miring.", facts: ["Magnetotail membentang jutaan kilometer.", "Garis medannya terpuntir saat Uranus berotasi.", "Struktur ini salah satu ciri magnetosfer paling unik di Tata Surya."] }
+      ]
     },
     {
       id: "rings",
       name: "Cincin Gelap Uranus",
-      short: "RING SYSTEM",
-      topicIndex: 5,
-      category: "SISTEM CINCIN",
-      descriptor: "Cincin tipis, sempit, dan jauh lebih redup daripada Saturnus",
-      locationLabel: "Bidang ekuator Uranus",
-      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia01/pia01977/PIA01977.jpg?crop=faces%2Cfocalpoint&fit=clip&h=735&w=754",
-      imageAlt: "Citra cincin Uranus dari Voyager 2",
-      imageCaption: "Cincin Uranus · Voyager 2 / NASA-JPL",
-      source: "https://science.nasa.gov/photojournal/uranus-rings/",
+      short: "DARK RINGS",
+      category: "SISTEM CINCIN SEMPIT",
+      descriptor: "Terbang di antara cincin tipis, gelap, dan nyaris vertikal",
+      locationLabel: "Bidang cincin Uranus",
+      preview: "rings",
+      image: "./assets/uranus-rings-diagram.svg",
+      imageAlt: "Diagram cincin Uranus",
+      imageCaption: "Cincin Uranus · ANTARA berbasis NASA/Voyager 2",
+      source: SOURCES.rings,
+      lead: "Cincin Uranus jauh lebih gelap dan sempit daripada cincin Saturnus. Karena planetnya rebah, orientasi cincin juga tampak dramatis terhadap bidang orbit.",
       facts: [
-        "Uranus memiliki 13 cincin yang diketahui.",
-        "Sebagian besar cincin sangat sempit dan gelap.",
-        "Cincin ini pertama kali terdeteksi pada 1977 melalui pengamatan bintang yang tertutup Uranus."
+        "Uranus memiliki sistem cincin yang sempit dan relatif gelap.",
+        "Voyager 2 mempelajari sembilan cincin yang sudah diketahui dan menemukan cincin tambahan.",
+        "Material cincin mungkin berasal dari bulan kecil yang hancur akibat tumbukan atau gaya gravitasi."
       ],
-      lead: "Walau tidak seterkenal Saturnus, Uranus juga punya sistem cincin. Cincinnya tipis, gelap, dan membutuhkan kondisi pengamatan yang tepat untuk terlihat jelas.",
-      why: "Cincin Uranus membantu ilmuwan mempelajari dinamika partikel kecil, resonansi orbit, dan hubungan cincin dengan bulan-bulan penggembala.",
-      preview: "rings"
+      palette: { sky: 0x091117, fog: 0x253944, fogDensity: 0.0068, cloud: "#a7cbcf", cloud2: "#485c65", accent: 0xc9eff0, lightning: 0xf0ffff },
+      wind: { x: 0.10, z: -0.03 }, turbulence: 0.18,
+      spawn: { x: -22, y: 3, z: 47, yaw: Math.PI * 0.91, pitch: -0.02 },
+      observations: [
+        { id: "rings-epsilon", name: "Cincin Epsilon", category: "CINCIN UTAMA", position: [8, 1, -16], radius: 10, source: SOURCES.rings, lead: "Epsilon adalah salah satu cincin utama Uranus yang paling menonjol.", why: "Cincin tipis memberi petunjuk tentang interaksi gravitasi dengan bulan penggembala kecil.", facts: ["Cincin Uranus lebih gelap daripada cincin Saturnus.", "Ketebalan dan opasitas tiap cincin dapat berbeda tajam.", "Sebagian struktur dipertahankan oleh interaksi orbital dengan bulan kecil."] },
+        { id: "rings-gap", name: "Koridor Gelap", category: "GAP", position: [-24, 4, 4], radius: 10, source: SOURCES.voyager, lead: "Di antara cincin-cincin sempit terdapat wilayah yang jauh lebih renggang.", why: "Distribusi material membantu menguji sejarah pembentukan dan penghancuran bulan kecil Uranus.", facts: ["Sistem cincin mungkin relatif muda.", "Partikel cincin bisa berasal dari pecahan bulan.", "Voyager 2 melihat variasi ketebalan dan opasitas yang besar."] },
+        { id: "rings-shepherd", name: "Jejak Bulan Penggembala", category: "RESONANSI", position: [29, 9, 19], radius: 9, source: SOURCES.voyager, lead: "Bulan kecil di sekitar cincin dapat membantu menjaga tepian cincin tetap sempit.", why: "Gravitasi bulan kecil mampu mengatur detail atmosfer tanpa menyentuhnya langsung.", facts: ["Voyager 2 menemukan banyak bulan kecil di sistem Uranus.", "Beberapa bulan berinteraksi kuat dengan cincin.", "Resonansi membantu membentuk tepi dan celah sistem cincin."] }
+      ]
     },
     {
       id: "miranda",
-      name: "Miranda",
+      name: "Koridor Miranda & Voyager 2",
       short: "MIRANDA",
-      topicIndex: 7,
-      category: "BULAN UNIK",
-      descriptor: "Bulan kecil dengan tebing tinggi dan lanskap yang tampak terpecah-pecah",
+      category: "BULAN ES / FLYBY",
+      descriptor: "Dekati Miranda dan lintasan historis Voyager 2",
       locationLabel: "Orbit Miranda",
-      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00041/PIA00041.jpg?crop=faces%2Cfocalpoint&fit=clip&h=597&w=754",
-      imageAlt: "Permukaan Miranda dipotret Voyager 2",
-      imageCaption: "Miranda · Voyager 2 / NASA-JPL",
-      source: "https://science.nasa.gov/photojournal/mirandas-icy-face/",
+      preview: "miranda",
+      image: "./assets/uranus-miranda-diagram.svg",
+      imageAlt: "Diagram edukasi bulan Miranda",
+      imageCaption: "Miranda · ANTARA berbasis Voyager 2",
+      source: SOURCES.moons,
+      lead: "Miranda adalah bulan kecil dengan permukaan luar biasa kacau: ngarai patahan sangat dalam, dataran bertingkat, dan campuran wilayah tua serta muda. Voyager 2 memberi pandangan dekat terbaik pada 1986.",
       facts: [
-        "Miranda berdiameter sekitar 470 km.",
-        "Verona Rupes di Miranda termasuk salah satu tebing paling tinggi yang diketahui di Tata Surya.",
-        "Citra terbaik Miranda hingga kini masih berasal dari lintasan Voyager 2."
+        "Miranda adalah yang terkecil dan terdalam orbitnya dari lima bulan besar Uranus.",
+        "Ngarai patahannya dapat mencapai sekitar 20 km atau kira-kira 12 kali kedalaman Grand Canyon.",
+        "Voyager 2 melintas Uranus pada 24 Januari 1986 dan sampai sekarang menjadi satu-satunya wahana yang pernah mengunjungi planet ini."
       ],
-      lead: "Miranda terlihat seperti dunia kecil yang pernah dihancurkan lalu disusun kembali. Permukaannya menyatukan tebing, lembah, dan medan yang sangat berbeda dalam satu objek kecil.",
-      why: "Miranda memberi petunjuk penting tentang aktivitas geologi masa lalu bulan-bulan es dan dampak pemanasan internal pada dunia kecil.",
-      preview: "miranda"
-    },
-    {
-      id: "voyager",
-      name: "Lintasan Voyager 2",
-      short: "VOYAGER 2",
-      topicIndex: 9,
-      category: "SEJARAH EKSPLORASI",
-      descriptor: "Satu-satunya wahana yang pernah terbang melewati Uranus",
-      locationLabel: "Flyby Uranus · Januari 1986",
-      image: "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia22/pia22915/PIA22915.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1080&w=1920",
-      imageAlt: "Ilustrasi wahana Voyager 2",
-      imageCaption: "Voyager 2 · ilustrasi instrumen wahana NASA/JPL-Caltech",
-      source: "https://science.nasa.gov/photojournal/voyager-2-spacecraft-instruments/",
-      facts: [
-        "Voyager 2 melintas Uranus pada 24 Januari 1986.",
-        "Wahana ini mengungkap cincin, bulan, serta struktur atmosfer Uranus dengan detail jauh lebih baik.",
-        "Sampai sekarang, belum ada misi orbit khusus ke Uranus."
-      ],
-      lead: "Sebagian besar pengetahuan visual detail kita tentang Uranus berasal dari satu kunjungan bersejarah: flyby Voyager 2 pada 1986.",
-      why: "Voyager 2 menjadi fondasi seluruh pemahaman modern tentang sistem Uranus dan menunjukkan betapa berharganya data langsung dari wahana antariksa.",
-      preview: "voyager"
+      palette: { sky: 0x0b1620, fog: 0x3d5868, fogDensity: 0.0074, cloud: "#e0eaec", cloud2: "#8fa7af", accent: 0xe9fbff, lightning: 0xf5ffff },
+      wind: { x: 0.12, z: 0.18 }, turbulence: 0.20,
+      spawn: { x: -24, y: 10, z: 44, yaw: Math.PI * 0.92, pitch: -0.05 },
+      observations: [
+        { id: "miranda-canyon", name: "Ngarai Patahan", category: "TEKTONIK ES", position: [5, 5, -16], radius: 10, source: SOURCES.moons, lead: "Permukaan Miranda terpotong ngarai raksasa yang menunjukkan sejarah geologi kompleks.", why: "Relief ekstrem pada bulan sekecil Miranda menantang model sederhana tentang evolusi dunia es kecil.", facts: ["Ngarai dapat mencapai sekitar 20 km dalam.", "Sebagian permukaan tampak sangat tua, sebagian lain lebih muda.", "Struktur ini kemungkinan berkaitan dengan deformasi internal dan tumbukan masa lalu."] },
+        { id: "miranda-corona", name: "Corona Terrain", category: "MEDAN CAMPURAN", position: [-24, 10, 8], radius: 10, source: SOURCES.moons, lead: "Miranda memiliki wilayah corona dengan pola punggungan dan blok medan yang tampak ditempel ulang.", why: "Corona memberi petunjuk bahwa interior Miranda pernah cukup aktif untuk merombak permukaannya.", facts: ["Miranda memiliki campuran terrain yang sangat berbeda.", "Ada punggungan, patahan, dan dataran bertingkat.", "Asal pasti beberapa struktur masih diperdebatkan."] },
+        { id: "miranda-voyager", name: "Jejak Voyager 2", category: "MISI 1986", position: [30, 4, 20], radius: 9, source: SOURCES.voyager, lead: "Voyager 2 melintas Uranus pada Januari 1986 dan hanya memiliki beberapa jam pengamatan dekat.", why: "Satu flyby singkat menghasilkan sebagian besar citra resolusi dekat yang masih menjadi fondasi eksplorasi Uranus hingga sekarang.", facts: ["Closest approach Uranus sekitar 81.500 km.", "Voyager 2 menemukan 10 bulan baru saat encounter Uranus.", "Wahana juga mengukur medan magnet Uranus yang sangat miring."] }
+      ]
     }
   ]);
 
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const delay = ms => new Promise(resolve => window.setTimeout(resolve, ms));
+  class UranusAtmosphereWorld {
+    constructor(THREE, scene, renderer, destination, quality) {
+      this.THREE = THREE;
+      this.scene = scene;
+      this.renderer = renderer;
+      this.destination = destination;
+      this.quality = quality;
+      this.group = new THREE.Group();
+      this.scene.add(this.group);
+      this.seed = this.seedFromString(destination.id);
+      this.cloudGroups = [];
+      this.streaks = [];
+      this.vortexGroups = [];
+      this.markerObjects = [];
+      this.lightningLines = [];
+      this.elapsed = 0;
+      this.lightningTimer = 1.2 + this.rand() * 2.4;
+      this.lightningFlash = 0;
+      this.playRadius = 88;
+      this.softBoundaryStart = 72;
+      this.minY = -40;
+      this.maxY = 38;
+      this.baseFogDensity = destination.palette.fogDensity;
+      this.tmp = new THREE.Vector3();
+      this.build();
+    }
+
+    seedFromString(value) {
+      let hash = 2166136261;
+      for (let i = 0; i < value.length; i++) {
+        hash ^= value.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      return hash >>> 0;
+    }
+
+    rand() {
+      this.seed = (1664525 * this.seed + 1013904223) >>> 0;
+      return this.seed / 4294967296;
+    }
+
+    makeCloudTexture(colorA, colorB) {
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = 256;
+      const ctx = canvas.getContext("2d");
+      const grad = ctx.createRadialGradient(128, 128, 8, 128, 128, 124);
+      grad.addColorStop(0, colorA);
+      grad.addColorStop(0.36, colorA);
+      grad.addColorStop(0.72, colorB);
+      grad.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < 90; i++) {
+        const x = 28 + this.rand() * 200;
+        const y = 28 + this.rand() * 200;
+        const r = 5 + this.rand() * 24;
+        const alpha = 0.018 + this.rand() * 0.05;
+        const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0, `rgba(255,255,255,${alpha})`);
+        g.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      const texture = new this.THREE.CanvasTexture(canvas);
+      texture.colorSpace = this.THREE.SRGBColorSpace;
+      texture.minFilter = this.THREE.LinearMipmapLinearFilter;
+      texture.magFilter = this.THREE.LinearFilter;
+      texture.generateMipmaps = true;
+      texture.needsUpdate = true;
+      return texture;
+    }
+
+    makeStreakTexture(colorA, colorB) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 1024;
+      canvas.height = 192;
+      const ctx = canvas.getContext("2d");
+      const g = ctx.createLinearGradient(0, 0, 0, 192);
+      g.addColorStop(0, "rgba(255,255,255,0)");
+      g.addColorStop(0.22, colorA);
+      g.addColorStop(0.5, colorB);
+      g.addColorStop(0.78, colorA);
+      g.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, 1024, 192);
+      ctx.globalCompositeOperation = "destination-out";
+      for (let i = 0; i < 70; i++) {
+        const y = this.rand() * 192;
+        ctx.globalAlpha = 0.06 + this.rand() * 0.12;
+        ctx.fillRect(0, y, 1024, 1 + this.rand() * 5);
+      }
+      ctx.globalCompositeOperation = "source-over";
+      ctx.globalAlpha = 1;
+      const texture = new this.THREE.CanvasTexture(canvas);
+      texture.colorSpace = this.THREE.SRGBColorSpace;
+      texture.wrapS = this.THREE.RepeatWrapping;
+      texture.wrapT = this.THREE.ClampToEdgeWrapping;
+      texture.minFilter = this.THREE.LinearMipmapLinearFilter;
+      texture.magFilter = this.THREE.LinearFilter;
+      texture.needsUpdate = true;
+      return texture;
+    }
+
+    build() {
+      const T = this.THREE;
+      const palette = this.destination.palette;
+      this.cloudTextureA = this.makeCloudTexture(palette.cloud, "rgba(255,255,255,0)");
+      this.cloudTextureB = this.makeCloudTexture(palette.cloud2, "rgba(0,0,0,0)");
+      this.streakTexture = this.makeStreakTexture("rgba(255,245,225,.34)", "rgba(91,64,48,.32)");
+
+      this.sky = new T.Mesh(
+        new T.SphereGeometry(150, 48, 28),
+        new T.MeshBasicMaterial({ color: palette.sky, side: T.BackSide, depthWrite: false, fog: false })
+      );
+      this.group.add(this.sky);
+
+      const atmospheric = ["methane-winds", "polar-seasons"].includes(this.destination.id);
+      if (atmospheric) {
+        this.buildCloudPoints(this.cloudTextureA, Math.round(this.quality.clouds * 0.62), 17, 0.38, 0);
+        this.buildCloudPoints(this.cloudTextureB, Math.round(this.quality.clouds * 0.38), 12, 0.22, 1);
+        this.buildStreakLayers();
+      } else {
+        this.buildSpaceStars();
+      }
+      this.buildDestinationFeature();
+      this.buildMarkers();
+    }
+
+    buildSpaceStars() {
+      const T = this.THREE;
+      const count = this.quality.name === "LOW" ? 240 : this.quality.name === "HIGH" ? 620 : 420;
+      const positions = new Float32Array(count * 3);
+      for (let i = 0; i < count; i++) {
+        const theta = this.rand() * Math.PI * 2;
+        const v = this.rand() * 2 - 1;
+        const phi = Math.acos(v);
+        const radius = 112 + this.rand() * 24;
+        positions[i * 3] = Math.sin(phi) * Math.cos(theta) * radius;
+        positions[i * 3 + 1] = Math.cos(phi) * radius;
+        positions[i * 3 + 2] = Math.sin(phi) * Math.sin(theta) * radius;
+      }
+      const geometry = new T.BufferGeometry();
+      geometry.setAttribute("position", new T.BufferAttribute(positions, 3));
+      const points = new T.Points(geometry, new T.PointsMaterial({
+        color: 0xd8f5f5,
+        size: this.quality.name === "HIGH" ? 0.68 : 0.82,
+        sizeAttenuation: true,
+        transparent: true,
+        opacity: 0.58,
+        depthWrite: false,
+        fog: false
+      }));
+      this.group.add(points);
+    }
+
+    buildCloudPoints(texture, count, size, opacity, layerIndex) {
+      const T = this.THREE;
+      const positions = new Float32Array(count * 3);
+      const phases = new Float32Array(count);
+      for (let i = 0; i < count; i++) {
+        const angle = this.rand() * Math.PI * 2;
+        const radius = 8 + Math.sqrt(this.rand()) * 104;
+        positions[i * 3] = Math.cos(angle) * radius + (this.rand() - 0.5) * 24;
+        positions[i * 3 + 1] = this.minY - 8 + this.rand() * (this.maxY - this.minY + 16);
+        positions[i * 3 + 2] = Math.sin(angle) * radius + (this.rand() - 0.5) * 24;
+        phases[i] = this.rand() * Math.PI * 2;
+      }
+      const geometry = new T.BufferGeometry();
+      geometry.setAttribute("position", new T.BufferAttribute(positions, 3));
+      geometry.userData.phases = phases;
+      const material = new T.PointsMaterial({
+        map: texture,
+        transparent: true,
+        opacity,
+        alphaTest: 0.02,
+        depthWrite: false,
+        size,
+        sizeAttenuation: true,
+        blending: T.NormalBlending,
+        fog: true,
+        color: 0xffffff
+      });
+      const points = new T.Points(geometry, material);
+      points.userData.layerIndex = layerIndex;
+      points.frustumCulled = true;
+      this.group.add(points);
+      this.cloudGroups.push(points);
+    }
+
+    buildStreakLayers() {
+      const T = this.THREE;
+      const count = this.quality.streaks;
+      for (let i = 0; i < count; i++) {
+        const geometry = new T.PlaneGeometry(220, 34, 1, 1);
+        const material = new T.MeshBasicMaterial({
+          map: this.streakTexture,
+          transparent: true,
+          opacity: 0.10 + this.rand() * 0.16,
+          depthWrite: false,
+          side: T.DoubleSide,
+          fog: true,
+          color: i % 2 ? 0xd8c7aa : 0x8b715c
+        });
+        const plane = new T.Mesh(geometry, material);
+        plane.rotation.x = -Math.PI / 2 + (this.rand() - 0.5) * 0.08;
+        plane.rotation.z = (this.rand() - 0.5) * 0.16;
+        plane.position.set((this.rand() - 0.5) * 40, this.minY + (i + 0.5) / count * (this.maxY - this.minY), (this.rand() - 0.5) * 30);
+        plane.userData.baseX = plane.position.x;
+        plane.userData.baseZ = plane.position.z;
+        plane.userData.speed = 0.7 + this.rand() * 1.8;
+        plane.userData.phase = this.rand() * Math.PI * 2;
+        this.group.add(plane);
+        this.streaks.push(plane);
+      }
+    }
+
+    buildDestinationFeature() {
+      const T = this.THREE;
+      const accent = this.destination.palette.accent;
+      const addVortex = (center, radius, turns, color, opacity) => {
+        const group = new T.Group();
+        group.position.set(...center);
+        for (let ring = 0; ring < 8; ring++) {
+          const pts=[];
+          const r0=radius*(0.28+ring*0.095);
+          for(let i=0;i<=72;i++){
+            const t=i/72*Math.PI*2;
+            const wobble=Math.sin(t*turns+ring*.8)*radius*.035;
+            pts.push(new T.Vector3(Math.cos(t)*(r0+wobble),Math.sin(t*2+ring)*.8,Math.sin(t)*(r0*.58+wobble)));
+          }
+          const line=new T.LineLoop(new T.BufferGeometry().setFromPoints(pts),new T.LineBasicMaterial({color,transparent:true,opacity,depthWrite:false,fog:true}));
+          group.add(line);
+        }
+        group.userData.rotationSpeed=.016+this.rand()*.018;
+        this.group.add(group); this.vortexGroups.push(group); return group;
+      };
+      const addMoon=(position,radius,colorA,colorB)=>{
+        const m=new T.Mesh(new T.SphereGeometry(radius,28,20),new T.MeshPhongMaterial({color:colorA,emissive:colorB,emissiveIntensity:.07,shininess:9,transparent:true,opacity:.97,fog:true}));
+        m.position.set(...position); this.group.add(m); return m;
+      };
+      const addRingPlane=()=>{
+        const ring=new T.Mesh(new T.RingGeometry(26,92,128,1),new T.MeshBasicMaterial({color:0x90adb0,transparent:true,opacity:.12,side:T.DoubleSide,depthWrite:false,fog:true}));
+        ring.rotation.set(-Math.PI/2,0,Math.PI*.46); ring.position.y=-1; this.group.add(ring);
+        const eps=new T.Mesh(new T.RingGeometry(66,69,128,1),new T.MeshBasicMaterial({color:0xc5e5e6,transparent:true,opacity:.24,side:T.DoubleSide,depthWrite:false,fog:true}));
+        eps.rotation.copy(ring.rotation); eps.position.copy(ring.position); this.group.add(eps);
+        const particles=new T.Group();
+        for(let i=0;i<150;i++){
+          const g=new T.PlaneGeometry(.2+this.rand()*.42,.08+this.rand()*.14);
+          const mat=new T.MeshBasicMaterial({color:i%3?0x8eaaad:0xbdd6d6,transparent:true,opacity:.25+this.rand()*.22,side:T.DoubleSide,depthWrite:false,fog:true});
+          const p=new T.Mesh(g,mat); const rr=30+this.rand()*58; const a=this.rand()*Math.PI*2;
+          p.position.set(Math.cos(a)*rr,(this.rand()-.5)*2.0,Math.sin(a)*rr*.46); p.rotation.x=-Math.PI/2; p.rotation.z=this.rand()*Math.PI; particles.add(p);
+        }
+        particles.rotation.z=Math.PI*.46; particles.userData.rotationSpeed=.008; this.group.add(particles); this.vortexGroups.push(particles);
+      };
+      const addFieldLines=()=>{
+        const group=new T.Group(); group.rotation.z=-Math.PI*.33;
+        for(let r=18;r<=48;r+=8){
+          const pts=[]; for(let i=0;i<=80;i++){ const t=-Math.PI*.72+i/80*Math.PI*1.44; pts.push(new T.Vector3(Math.cos(t)*r,Math.sin(t)*r*.9,Math.sin(t*2)*7)); }
+          group.add(new T.Line(new T.BufferGeometry().setFromPoints(pts),new T.LineBasicMaterial({color:0x94e9ef,transparent:true,opacity:.15,depthWrite:false,fog:true})));
+        }
+        group.userData.rotationSpeed=.006; this.group.add(group); this.vortexGroups.push(group);
+      };
+      if(this.destination.id==="methane-winds"){
+        for(let i=-2;i<=2;i++){
+          const line=new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(-90,i*12,-18+i*3),new T.Vector3(90,i*12,-18+i*3)]),new T.LineBasicMaterial({color:i%2?0xc7f1ef:0x5ca1a7,transparent:true,opacity:.2,depthWrite:false,fog:true}));
+          this.group.add(line);
+        }
+      }
+      if(this.destination.id==="polar-seasons"){
+        addVortex([0,5,-15],25,3.2,0xd8ffff,.20);
+        const axis=new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(-35,-28,22),new T.Vector3(35,34,-32)]),new T.LineBasicMaterial({color:0xd8ffff,transparent:true,opacity:.26,depthWrite:false,fog:true})); this.group.add(axis);
+      }
+      if(this.destination.id==="magnetosphere") addFieldLines();
+      if(this.destination.id==="rings") addRingPlane();
+      if(this.destination.id==="miranda"){
+        const moon=addMoon([34,8,-31],9.5,0xd7e1e3,0x344d56);
+        for(let i=0;i<7;i++){
+          const y=-4+i*1.2; const line=new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(-6,y,-9),new T.Vector3(6,y+(i%2?2:-1),9)]),new T.LineBasicMaterial({color:0x6f8790,transparent:true,opacity:.24,depthWrite:false})); moon.add(line);
+        }
+      }
+      const light=new T.PointLight(accent,this.destination.id==="magnetosphere"?.48:.36,120,2); light.position.set(0,9,-5); this.group.add(light);
+    }
+
+    buildMarkers() {
+      const T = this.THREE;
+      this.destination.observations.forEach((obs, index) => {
+        const group = new T.Group();
+        group.position.set(...obs.position);
+        const ring = new T.Mesh(
+          new T.TorusGeometry(2.2, 0.08, 8, this.quality.markerSegments),
+          new T.MeshBasicMaterial({ color: this.destination.palette.accent, transparent: true, opacity: 0.68, depthWrite: false, fog: true })
+        );
+        ring.rotation.x = Math.PI / 2;
+        const dot = new T.Mesh(
+          new T.SphereGeometry(0.18, 10, 8),
+          new T.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9, depthWrite: false, fog: true })
+        );
+        const stemGeometry = new T.BufferGeometry().setFromPoints([new T.Vector3(0, -2.8, 0), new T.Vector3(0, 2.8, 0)]);
+        const stem = new T.Line(stemGeometry, new T.LineBasicMaterial({ color: this.destination.palette.accent, transparent: true, opacity: 0.28, depthWrite: false, fog: true }));
+        group.add(ring, dot, stem);
+        group.userData.observation = obs;
+        group.userData.index = index;
+        group.userData.ring = ring;
+        group.userData.dot = dot;
+        this.group.add(group);
+        this.markerObjects.push(group);
+      });
+    }
+
+    buildLightning() {
+      const T = this.THREE;
+      for (let bolt = 0; bolt < 4; bolt++) {
+        const points = [];
+        let x = -20 + this.rand() * 40;
+        let y = 26 - bolt * 5;
+        let z = -14 + this.rand() * 28;
+        points.push(new T.Vector3(x, y, z));
+        for (let i = 0; i < 9; i++) {
+          x += (this.rand() - 0.5) * 4.5;
+          y -= 3 + this.rand() * 2.4;
+          z += (this.rand() - 0.5) * 4.0;
+          points.push(new T.Vector3(x, y, z));
+        }
+        const geometry = new T.BufferGeometry().setFromPoints(points);
+        const material = new T.LineBasicMaterial({ color: this.destination.palette.lightning, transparent: true, opacity: 0, depthWrite: false, fog: true });
+        const line = new T.Line(geometry, material);
+        this.group.add(line);
+        this.lightningLines.push(line);
+      }
+    }
+
+    pressureAt(y) {
+      return clamp(0.45 * Math.exp((this.maxY - y) / 33.5), 0.35, 5.8);
+    }
+
+    layerAtPressure(pressure) {
+      if (this.destination.id === "rings") {
+        if (pressure < 0.8) return "BIDANG CINCIN GELAP";
+        if (pressure < 1.6) return "EPSILON / GAP";
+        return "KORIDOR CINCIN";
+      }
+      if (this.destination.id === "magnetosphere") {
+        if (pressure < 0.9) return "MEDAN LUAR";
+        if (pressure < 2.0) return "KORIDOR AURORA";
+        return "MAGNETOSFER DALAM";
+      }
+      if (this.destination.id === "miranda") {
+        if (pressure < 0.9) return "FLYBY MIRANDA";
+        if (pressure < 2.0) return "KORIDOR VOYAGER";
+        return "SISTEM BULAN";
+      }
+      if (pressure < 0.95) return "KABUT METANA ATAS";
+      if (pressure < 2.2) return "AWAN H2S / AMONIA";
+      return "ATMOSFER LEBIH DALAM";
+    }
+
+    boundaryFactor(position) {
+      const radial = Math.hypot(position.x, position.z);
+      const radialFactor = smoothstep((radial - this.softBoundaryStart) / Math.max(1, this.playRadius - this.softBoundaryStart));
+      const topFactor = smoothstep((position.y - (this.maxY - 10)) / 10);
+      const bottomFactor = smoothstep(((this.minY + 10) - position.y) / 10);
+      return Math.max(radialFactor, topFactor, bottomFactor);
+    }
+
+    update(delta, camera, discovered) {
+      this.elapsed += delta;
+      const wind = this.destination.wind;
+      this.cloudGroups.forEach((points, index) => {
+        points.position.x += wind.x * delta * (index ? 0.34 : 0.22);
+        points.position.z += wind.z * delta * (index ? 0.34 : 0.22);
+        if (points.position.x > 16) points.position.x -= 32;
+        if (points.position.x < -16) points.position.x += 32;
+        if (points.position.z > 16) points.position.z -= 32;
+        if (points.position.z < -16) points.position.z += 32;
+        points.rotation.y += delta * (index ? -0.0025 : 0.0035);
+      });
+      this.streaks.forEach((plane, index) => {
+        plane.position.x = plane.userData.baseX + Math.sin(this.elapsed * 0.08 + plane.userData.phase) * 10 + wind.x * Math.sin(this.elapsed * 0.03 + index) * 3;
+        plane.position.z = plane.userData.baseZ + Math.cos(this.elapsed * 0.07 + plane.userData.phase) * 8 + wind.z * Math.cos(this.elapsed * 0.025 + index) * 3;
+        plane.material.opacity = 0.10 + 0.07 * (1 + Math.sin(this.elapsed * 0.16 + plane.userData.phase));
+      });
+      this.vortexGroups.forEach((group, index) => {
+        group.rotation.y += delta * group.userData.rotationSpeed * (index % 2 ? -1 : 1);
+      });
+      this.markerObjects.forEach(group => {
+        const obs = group.userData.observation;
+        const pulse = 1 + Math.sin(this.elapsed * 2.2 + group.userData.index) * 0.12;
+        group.userData.ring.scale.setScalar(pulse);
+        group.userData.dot.scale.setScalar(1 + Math.sin(this.elapsed * 3 + group.userData.index) * 0.25);
+        const done = discovered?.has(obs.id);
+        group.userData.ring.material.opacity = done ? 0.22 : 0.66;
+        group.userData.dot.material.opacity = done ? 0.35 : 0.9;
+        group.lookAt(camera.position.x, group.position.y, camera.position.z);
+      });
+
+      if (this.lightningLines.length) {
+        this.lightningTimer -= delta;
+        if (this.lightningTimer <= 0) {
+          this.lightningFlash = 0.16 + this.rand() * 0.16;
+          this.lightningTimer = 1.5 + this.rand() * 3.8;
+        }
+        this.lightningFlash = Math.max(0, this.lightningFlash - delta);
+        const visible = this.lightningFlash > 0;
+        this.lightningLines.forEach((line, index) => {
+          line.material.opacity = visible ? (index === 0 ? 0.95 : 0.45 + this.rand() * 0.35) : 0;
+        });
+      }
+
+      const edge = this.boundaryFactor(camera.position);
+      if (this.scene.fog) this.scene.fog.density = this.baseFogDensity * (1 + edge * 1.75);
+    }
+
+    disposeMaterial(material) {
+      if (!material) return;
+      const list = Array.isArray(material) ? material : [material];
+      list.forEach(mat => {
+        Object.values(mat).forEach(value => {
+          if (value && value.isTexture) value.dispose?.();
+        });
+        mat.dispose?.();
+      });
+    }
+
+    disposeObject(object) {
+      object.traverse?.(child => {
+        child.geometry?.dispose?.();
+        if (child.material) this.disposeMaterial(child.material);
+      });
+    }
+
+    dispose() {
+      this.disposeObject(this.group);
+      this.group.removeFromParent();
+      this.cloudTextureA?.dispose?.();
+      this.cloudTextureB?.dispose?.();
+      this.streakTexture?.dispose?.();
+      this.cloudGroups = [];
+      this.streaks = [];
+      this.vortexGroups = [];
+      this.markerObjects = [];
+      this.lightningLines = [];
+    }
+  }
 
   class UranusFullExploration {
-    constructor(scene) {
-      this.scene = scene;
+    constructor(uranusScene) {
+      this.uranus = uranusScene;
       this.root = document.getElementById("uranus-full-exploration");
       this.entryButton = document.getElementById("uranus-full-explore-button");
-      if (!scene || !this.root || !this.entryButton) return;
-      this.viewportPlaceholder = null;
-      this.viewportMounted = false;
+      if (!this.uranus || !this.root || !this.entryButton) return;
 
+      this.viewport = document.getElementById("uranus-full-viewport");
+      this.inputLayer = document.getElementById("uranus-full-orbit-input");
       this.qualityPanel = document.getElementById("uranus-quality-panel");
       this.qualityOptions = document.getElementById("uranus-quality-options");
       this.qualityClose = document.getElementById("uranus-quality-close");
@@ -137,12 +629,16 @@
       this.selector = document.getElementById("uranus-region-selector");
       this.selectorClose = document.getElementById("uranus-region-selector-close");
       this.selectorGrid = document.getElementById("uranus-region-grid");
-      this.hudTarget = document.getElementById("uranus-full-hud-location");
-      this.hudView = document.getElementById("uranus-full-hud-view");
-      this.hudZoom = document.getElementById("uranus-full-hud-zoom");
+      this.hudLocation = document.getElementById("uranus-full-hud-location");
+      this.hudDepth = document.getElementById("uranus-full-hud-depth");
+      this.hudSpeed = document.getElementById("uranus-full-hud-speed");
+      this.hudPressure = document.getElementById("uranus-full-hud-pressure");
       this.hudType = document.getElementById("uranus-full-hud-region-type");
       this.hudQuality = document.getElementById("uranus-full-hud-quality");
+      this.hudData = document.getElementById("uranus-full-hud-data");
       this.objectives = document.getElementById("uranus-objectives-panel");
+      this.objectivesRegion = document.getElementById("uranus-objectives-region");
+      this.objectivesIntro = document.getElementById("uranus-objectives-intro");
       this.objectivesList = document.getElementById("uranus-objectives-list");
       this.objectivesCount = document.getElementById("uranus-discovery-count");
       this.objectivesBar = document.getElementById("uranus-discovery-bar");
@@ -177,7 +673,6 @@
       this.observationStatus = document.getElementById("uranus-observation-status");
       this.actionsRoot = this.root.querySelector(".venus-full-actions");
       this.actionsMenuToggle = document.getElementById("uranus-actions-menu-toggle");
-      this.actionsMenu = document.getElementById("uranus-actions-menu");
       this.locationButton = document.getElementById("uranus-location-toggle");
       this.fullscreenButton = document.getElementById("uranus-fullscreen-toggle");
       this.exitButton = document.getElementById("uranus-full-exit");
@@ -185,64 +680,88 @@
       this.loadingTitle = document.getElementById("uranus-full-loading-title");
       this.loadingStatus = document.getElementById("uranus-full-loading-status");
       this.loadingProgress = document.getElementById("uranus-full-loading-progress");
+      this.errorPanel = document.getElementById("uranus-full-error");
+      this.errorMessage = document.getElementById("uranus-full-error-message");
+      this.errorReturn = document.getElementById("uranus-full-error-return");
       this.tutorial = document.getElementById("uranus-full-tutorial");
       this.tutorialClose = document.getElementById("uranus-tutorial-close");
-      this.inputLayer = document.getElementById("uranus-full-orbit-input");
-      this.mobileControls = this.root.querySelectorAll("[data-uranus-control]");
+      this.boundaryHint = document.getElementById("uranus-boundary-hint");
+      this.mobileControls = [...this.root.querySelectorAll("[data-uranus-control]")];
 
       this.state = "idle";
       this.current = null;
       this.selected = DESTINATIONS[0];
       this.discovered = new Set();
-      this.objectiveOpen = true;
+      this.activeObservation = null;
+      this.nearbyObservation = null;
       this.infoOpen = false;
+      this.objectiveOpen = true;
       this.actionsOpen = false;
-      this.panelSnapshot = null;
       this.transitionToken = 0;
-      this.promptTimer = null;
+      this.renderer = null;
+      this.scene = null;
+      this.camera = null;
+      this.world = null;
+      this.THREE = null;
+      this.frame = null;
+      this.previous = 0;
+      this.velocity = null;
+      this.moveForward = null;
+      this.moveRight = null;
+      this.moveIntent = null;
+      this.yaw = 0;
+      this.pitch = 0;
+      this.lookYawTarget = 0;
+      this.lookPitchTarget = 0;
       this.drag = null;
-      this.keyState = new Set();
-      this.controlFrame = null;
+      this.keys = new Set();
+      this.mobileHeld = new Set();
+      this.speed = 0;
       this.recommendedQuality = this.detectRecommendedQuality();
       this.quality = QUALITY[this.readQuality()] || QUALITY[this.recommendedQuality];
+      this.resizeHandler = () => this.resize();
 
       this.buildSelector();
-      this.buildObjectives();
-      this.bind();
       this.applyQuality(this.quality.name, false);
-      this.scene.fullExploration = this;
-      this.scene.fullExplorationActive = false;
+      this.bind();
+      this.uranus.fullExploration = this;
+      this.uranus.fullExplorationActive = false;
     }
 
     detectRecommendedQuality() {
       const memory = Number(navigator.deviceMemory || 4);
       const cores = Number(navigator.hardwareConcurrency || 4);
-      const pixels = window.innerWidth * window.innerHeight * (window.devicePixelRatio || 1);
-      if (memory <= 2 || cores <= 4 || pixels > 5500000) return "LOW";
+      const pixels = innerWidth * innerHeight * (devicePixelRatio || 1);
+      if (memory <= 2 || cores <= 4 || pixels > 6000000) return "LOW";
       if (memory >= 8 && cores >= 8 && pixels < 5000000) return "HIGH";
       return "MEDIUM";
     }
 
     readQuality() {
-      try { return localStorage.getItem(STORAGE_KEY) || this.recommendedQuality; } catch { return this.recommendedQuality; }
+      try { return localStorage.getItem(STORAGE_KEY) || this.recommendedQuality; }
+      catch { return this.recommendedQuality; }
     }
 
     applyQuality(name, persist = true) {
       const key = QUALITY[name] ? name : this.recommendedQuality;
       this.quality = QUALITY[key];
-      if (persist) { try { localStorage.setItem(STORAGE_KEY, key); } catch {} }
-      this.scene.fullExplorationQualityDpr = this.quality.dpr;
+      if (persist) {
+        try { localStorage.setItem(STORAGE_KEY, key); } catch {}
+      }
       this.qualityOptions?.querySelectorAll("[data-uranus-quality]").forEach(button => {
         const selected = button.dataset.uranusQuality === key;
         button.classList.toggle("is-selected", selected);
         button.setAttribute("aria-checked", String(selected));
-        const badge = button.querySelector("[data-quality-recommendation]");
-        if (badge) badge.textContent = button.dataset.uranusQuality === this.recommendedQuality ? "DIREKOMENDASIKAN" : "";
+        const recommendation = button.querySelector("[data-quality-recommendation]");
+        if (recommendation) recommendation.textContent = button.dataset.uranusQuality === this.recommendedQuality ? "DIREKOMENDASIKAN" : "";
       });
       if (this.qualityLabel) this.qualityLabel.textContent = this.quality.label;
       if (this.hudQuality) this.hudQuality.textContent = this.quality.label;
-      if (this.qualityNote) this.qualityNote.textContent = `Rekomendasi perangkat saat ini: ${QUALITY[this.recommendedQuality].label}. Mode ini mengatur ketajaman renderer orbital Uranus.`;
-      this.scene.resize?.();
+      if (this.qualityNote) this.qualityNote.textContent = `Rekomendasi perangkat: ${QUALITY[this.recommendedQuality].label}. Kualitas mengatur jumlah awan, detail atmosfer, detail marker, dan ketajaman renderer.`;
+      if (this.renderer) {
+        this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, this.quality.dpr));
+        this.resize();
+      }
     }
 
     buildSelector() {
@@ -252,33 +771,20 @@
         button.type = "button";
         button.className = "venus-region-card uranus-region-card";
         button.dataset.uranusRegion = destination.id;
-        button.innerHTML = `<span class="venus-region-preview uranus-region-preview uranus-region-preview-${destination.preview}" aria-hidden="true"><i></i><b>${destination.short}</b></span><span class="venus-region-index">${String(index + 1).padStart(2, "0")}</span><strong>${destination.name}</strong><span class="venus-region-descriptor">${destination.descriptor}</span><small>${destination.locationLabel}</small><em>${destination.category}</em><span class="venus-region-source">NASA / JPL-Caltech · Voyager 2 / NASA Science</span>`;
+        button.innerHTML = `<span class="venus-region-preview uranus-region-preview uranus-region-preview-${destination.preview}" aria-hidden="true"><i></i><b>${destination.short}</b></span><span class="venus-region-index">${String(index + 1).padStart(2, "0")}</span><strong>${destination.name}</strong><span class="venus-region-descriptor">${destination.descriptor}</span><small>${destination.locationLabel}</small><em>${destination.category}</em><span class="venus-region-source">NASA / JPL · Voyager 2 / NASA Science</span>`;
         fragment.append(button);
       });
       this.selectorGrid?.replaceChildren(fragment);
       this.selectDestination(this.selected.id);
     }
 
-    buildObjectives() {
-      if (!this.objectivesList) return;
-      const fragment = document.createDocumentFragment();
-      DESTINATIONS.forEach((destination, index) => {
-        const li = document.createElement("li");
-        const done = this.discovered.has(destination.id);
-        li.className = done ? "is-complete" : "";
-        li.dataset.uranusObjective = destination.id;
-        li.innerHTML = `<span class="venus-objective-marker">${done ? "✓" : String(index + 1).padStart(2, "0")}</span><div><strong>${destination.name}</strong><small>${done ? "SUDAH DIAMATI" : destination.descriptor}</small></div>`;
-        fragment.append(li);
+    selectDestination(id) {
+      this.selected = DESTINATIONS.find(destination => destination.id === id) || DESTINATIONS[0];
+      this.selectorGrid?.querySelectorAll("[data-uranus-region]").forEach(button => {
+        const selected = button.dataset.uranusRegion === this.selected.id;
+        button.classList.toggle("is-selected", selected);
+        button.setAttribute("aria-pressed", String(selected));
       });
-      this.objectivesList.replaceChildren(fragment);
-      const count = this.discovered.size;
-      if (this.objectivesCount) this.objectivesCount.textContent = `${count} / ${DESTINATIONS.length}`;
-      if (this.objectivesBar) this.objectivesBar.style.width = `${count / DESTINATIONS.length * 100}%`;
-      if (this.objectivesToggle) this.objectivesToggle.textContent = `Tujuan · ${count} / ${DESTINATIONS.length}`;
-      const next = DESTINATIONS.find(item => !this.discovered.has(item.id));
-      if (this.nextTarget) this.nextTarget.hidden = false;
-      if (this.nextTargetName) this.nextTargetName.textContent = next ? next.name : "Semua tujuan selesai!";
-      if (this.nextTargetDistance) this.nextTargetDistance.textContent = next ? "Pilih dari menu Wilayah untuk mengamati." : "Lima destinasi sistem Uranus telah diamati.";
     }
 
     bind() {
@@ -290,7 +796,8 @@
         if (button) this.applyQuality(button.dataset.uranusQuality);
       });
       this.selectorClose?.addEventListener("click", () => {
-        if (this.state === "selecting-world") this.closeSelectorToWorld(); else this.closeEntryFlow();
+        if (this.state === "selecting-world") this.closeSelectorToWorld();
+        else this.closeEntryFlow();
       });
       this.selectorGrid?.addEventListener("click", event => {
         const button = event.target.closest("[data-uranus-region]");
@@ -299,194 +806,158 @@
         if (!destination) return;
         this.selectDestination(destination.id);
         if (this.state === "selecting-world") {
-          if (this.current?.id === destination.id) {
-            this.closeSelectorToWorld();
-            this.showInfo(true);
-          } else void this.switchDestination(destination);
-        } else void this.enter(destination);
+          if (destination.id === this.current?.id) this.closeSelectorToWorld();
+          else void this.chooseDestination(destination, true);
+        } else void this.chooseDestination(destination, false);
       });
       this.infoMinimize?.addEventListener("click", () => { this.infoOpen = false; this.syncPanels(); });
-      this.infoToggle?.addEventListener("click", () => this.showInfo(true));
+      this.infoToggle?.addEventListener("click", () => {
+        this.setActionsMenu(false);
+        this.infoOpen = true;
+        this.objectiveOpen = false;
+        this.syncPanels();
+        this.infoMinimize?.focus({ preventScroll: true });
+      });
       this.objectivesCollapse?.addEventListener("click", () => { this.objectiveOpen = false; this.syncPanels(); });
-      this.objectivesToggle?.addEventListener("click", () => { this.objectiveOpen = true; this.syncPanels(); });
-      this.observeButton?.addEventListener("click", () => this.observeCurrent());
+      this.objectivesToggle?.addEventListener("click", () => {
+        this.setActionsMenu(false);
+        this.objectiveOpen = true;
+        this.infoOpen = false;
+        this.syncPanels();
+        this.objectivesCollapse?.focus({ preventScroll: true });
+      });
+      this.observeButton?.addEventListener("click", () => this.observeNearby());
       this.observationClose?.addEventListener("click", () => this.closeObservation());
       this.actionsMenuToggle?.addEventListener("click", event => { event.stopPropagation(); this.setActionsMenu(!this.actionsOpen); });
       this.locationButton?.addEventListener("click", () => { this.setActionsMenu(false); this.openSelectorFromWorld(); });
-      this.fullscreenButton?.addEventListener("click", () => { this.setActionsMenu(false); this.toggleFullscreen(); });
+      this.fullscreenButton?.addEventListener("click", () => { this.setActionsMenu(false); void this.toggleFullscreen(); });
       this.exitButton?.addEventListener("click", () => { this.setActionsMenu(false); void this.exit(); });
+      this.errorReturn?.addEventListener("click", () => this.forceReset());
       this.tutorialClose?.addEventListener("click", () => this.hideTutorial(true));
       document.addEventListener("fullscreenchange", () => this.updateFullscreenLabel());
       document.addEventListener("pointerdown", event => {
         if (this.actionsOpen && !this.actionsRoot?.contains(event.target)) this.setActionsMenu(false);
       });
-      this.bindOrbitInput();
+      this.bindInput();
+      addEventListener("resize", this.resizeHandler, { passive: true });
     }
 
-    bindOrbitInput() {
-      const activeKey = key => ["KeyW", "KeyA", "KeyS", "KeyD", "KeyQ", "KeyE", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(key);
+    bindInput() {
+      const movementCodes = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "KeyQ", "KeyE", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "ShiftLeft", "ShiftRight"]);
       document.addEventListener("keydown", event => {
-        if (!this.scene.fullExplorationActive || this.state !== "exploring") return;
+        if (!this.uranus.fullExplorationActive) return;
         if (event.key === "Escape") {
-          event.preventDefault(); event.stopImmediatePropagation();
-          if (!this.observationCard.hidden) return this.closeObservation();
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          if (!this.observationCard?.hidden) return this.closeObservation();
           if (this.actionsOpen) return this.setActionsMenu(false);
           if (this.infoOpen) { this.infoOpen = false; this.syncPanels(); return; }
           if (this.objectiveOpen) { this.objectiveOpen = false; this.syncPanels(); return; }
-          void this.exit();
+          if (this.state === "selecting-world") return this.closeSelectorToWorld();
+          if (this.state === "exploring") void this.exit();
           return;
         }
-        if (!activeKey(event.code)) return;
-        if (!this.observationCard.hidden) { event.preventDefault(); event.stopImmediatePropagation(); return; }
-        const mobileUi = matchMedia("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)").matches;
-        const promptInteractive = !this.observationPrompt.hidden && !(mobileUi && (this.infoOpen || this.objectiveOpen || this.actionsOpen));
-        if (event.code === "KeyE" && promptInteractive) {
-          event.preventDefault(); event.stopImmediatePropagation(); this.observeCurrent(); return;
+        if (this.state !== "exploring") return;
+        if (event.code === "KeyE" && this.nearbyObservation && !this.observationPrompt.hidden && this.observationCard.hidden) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          this.observeNearby();
+          return;
         }
-        event.preventDefault(); event.stopImmediatePropagation();
-        this.keyState.add(event.code);
-        this.startControlLoop();
+        if (!movementCodes.has(event.code)) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        this.keys.add(event.code);
       }, true);
-      document.addEventListener("keyup", event => this.keyState.delete(event.code), true);
-
-      this.mobileControls.forEach(button => {
-        const control = button.dataset.uranusControl;
-        const code = ({ forward:"KeyW", backward:"KeyS", left:"KeyA", right:"KeyD", up:"KeyE", down:"KeyQ" })[control];
-        if (!code) return;
-        const release = event => { this.keyState.delete(code); try { button.releasePointerCapture(event.pointerId); } catch {} };
-        button.addEventListener("pointerdown", event => {
-          event.preventDefault(); event.stopPropagation();
-          if (!this.observationCard.hidden || this.state !== "exploring") return;
-          try { button.setPointerCapture(event.pointerId); } catch {}
-          this.keyState.add(code); this.startControlLoop();
-        });
-        button.addEventListener("pointerup", release);
-        button.addEventListener("pointercancel", release);
-        button.addEventListener("lostpointercapture", () => this.keyState.delete(code));
-      });
+      document.addEventListener("keyup", event => this.keys.delete(event.code), true);
 
       this.inputLayer?.addEventListener("pointerdown", event => {
-        if (event.target !== this.inputLayer || this.state !== "exploring" || !this.observationCard.hidden) return;
-        this.drag = { id:event.pointerId, x:event.clientX, y:event.clientY };
+        if (this.state !== "exploring" || !this.observationCard.hidden) return;
+        if (event.button !== undefined && event.button !== 0) return;
+
+        // Match Venus: desktop uses one click to enter pointer-lock mouse look.
+        // Touch keeps drag-look because pointer lock is not appropriate on mobile.
+        if (event.pointerType === "mouse") {
+          this.hideTutorial(true);
+          if (this.inputLayer.requestPointerLock && document.pointerLockElement !== this.inputLayer) {
+            try { this.inputLayer.requestPointerLock(); } catch {}
+          }
+          return;
+        }
+
+        this.drag = { id: event.pointerId, x: event.clientX, y: event.clientY };
         try { this.inputLayer.setPointerCapture(event.pointerId); } catch {}
       });
       this.inputLayer?.addEventListener("pointermove", event => {
+        if (event.pointerType === "mouse") return;
         if (!this.drag || this.drag.id !== event.pointerId || this.state !== "exploring") return;
-        const dx = event.clientX - this.drag.x, dy = event.clientY - this.drag.y;
-        this.drag.x = event.clientX; this.drag.y = event.clientY;
-        this.nudgeView(-dx * .0042, -dy * .0032, 0);
+        const dx = event.clientX - this.drag.x;
+        const dy = event.clientY - this.drag.y;
+        this.drag.x = event.clientX;
+        this.drag.y = event.clientY;
+        this.lookYawTarget -= dx * 0.0037;
+        this.lookPitchTarget = clamp(this.lookPitchTarget - dy * 0.0030, -1.18, 1.18);
       });
-      const endDrag = event => { if (this.drag?.id === event.pointerId) this.drag = null; };
+      document.addEventListener("mousemove", event => {
+        if (this.state !== "exploring" || document.pointerLockElement !== this.inputLayer || !this.observationCard.hidden) return;
+        this.lookYawTarget -= (event.movementX || 0) * 0.00255;
+        this.lookPitchTarget = clamp(this.lookPitchTarget - (event.movementY || 0) * 0.00225, -1.18, 1.18);
+      });
+      document.addEventListener("pointerlockchange", () => {
+        const locked = document.pointerLockElement === this.inputLayer;
+        this.root.classList.toggle("is-pointer-locked", locked);
+        if (!locked) this.keys.clear();
+      });
+      const endDrag = event => {
+        if (this.drag?.id !== event.pointerId) return;
+        this.drag = null;
+        try { this.inputLayer.releasePointerCapture(event.pointerId); } catch {}
+      };
       this.inputLayer?.addEventListener("pointerup", endDrag);
       this.inputLayer?.addEventListener("pointercancel", endDrag);
-    }
 
-    startControlLoop() {
-      if (this.controlFrame) return;
-      let previous = performance.now();
-      const tick = now => {
-        this.controlFrame = null;
-        if (!this.scene.fullExplorationActive || this.state !== "exploring" || !this.observationCard.hidden) { this.keyState.clear(); return; }
-        const dt = Math.min(.05, (now - previous) / 1000); previous = now;
-        let yaw = 0, pitch = 0, zoom = 0;
-        if (this.keyState.has("KeyA") || this.keyState.has("ArrowLeft")) yaw += 1.15 * dt;
-        if (this.keyState.has("KeyD") || this.keyState.has("ArrowRight")) yaw -= 1.15 * dt;
-        if (this.keyState.has("KeyW") || this.keyState.has("ArrowUp")) pitch += .72 * dt;
-        if (this.keyState.has("KeyS") || this.keyState.has("ArrowDown")) pitch -= .72 * dt;
-        if (this.keyState.has("KeyQ")) zoom += 1.3 * dt;
-        if (this.keyState.has("KeyE")) zoom -= 1.3 * dt;
-        if (yaw || pitch || zoom) this.nudgeView(yaw, pitch, zoom);
-        this.updateHud();
-        if (this.keyState.size) this.controlFrame = requestAnimationFrame(tick);
-      };
-      this.controlFrame = requestAnimationFrame(tick);
-    }
-
-    nudgeView(yawDelta, pitchDelta, zoomDelta) {
-      const nextYaw = (this.scene.focusTo?.yaw ?? this.scene.viewYaw ?? -0.38) + yawDelta;
-      const nextZoom = clamp((this.scene.focusTo?.z ?? this.scene.viewCameraZ ?? 7) + zoomDelta, 5.95, 8.4);
-      this.scene.fullExplorationPitch = clamp((this.scene.fullExplorationPitch ?? 0) + pitchDelta, -.62, .62);
-      this.scene._beginFocus?.(nextYaw, nextZoom);
-      if (!this.scene.frame && this.scene.active) {
-        this.scene.previous = performance.now();
-        this.scene.tick(this.scene.previous);
-      }
-    }
-
-    clearHeldControls() {
-      this.keyState.clear();
-      this.drag = null;
-      if (this.controlFrame) cancelAnimationFrame(this.controlFrame);
-      this.controlFrame = null;
-    }
-
-    mountSceneViewport() {
-      const viewport = this.scene?.viewport;
-      if (!viewport || this.viewportMounted) return;
-      const parent = viewport.parentNode;
-      if (!parent) return;
-      this.viewportPlaceholder = document.createComment("antara-uranus-viewport-home");
-      parent.insertBefore(this.viewportPlaceholder, viewport);
-      this.root.insertBefore(viewport, this.root.firstChild);
-      viewport.classList.add("is-full-exploration-mounted");
-      this.viewportMounted = true;
-      this.scene.resize?.();
-      this.scene.render?.();
-    }
-
-    restoreSceneViewport() {
-      if (!this.viewportMounted) return;
-      const viewport = this.scene?.viewport;
-      const placeholder = this.viewportPlaceholder;
-      if (viewport && placeholder?.parentNode) placeholder.parentNode.insertBefore(viewport, placeholder);
-      placeholder?.remove?.();
-      viewport?.classList.remove("is-full-exploration-mounted");
-      this.viewportPlaceholder = null;
-      this.viewportMounted = false;
-      this.scene.resize?.();
-      this.scene.render?.();
-    }
-
-    selectDestination(id) {
-      this.selected = DESTINATIONS.find(item => item.id === id) || DESTINATIONS[0];
-      this.selectorGrid?.querySelectorAll("[data-uranus-region]").forEach(button => {
-        const selected = button.dataset.uranusRegion === this.selected.id;
-        button.classList.toggle("is-selected", selected);
-        button.setAttribute("aria-pressed", String(selected));
+      this.mobileControls.forEach(button => {
+        const control = button.dataset.uranusControl;
+        const release = event => {
+          this.mobileHeld.delete(control);
+          try { button.releasePointerCapture(event.pointerId); } catch {}
+        };
+        button.addEventListener("pointerdown", event => {
+          if (this.state !== "exploring" || !this.observationCard.hidden) return;
+          event.preventDefault();
+          event.stopPropagation();
+          try { button.setPointerCapture(event.pointerId); } catch {}
+          this.mobileHeld.add(control);
+        });
+        button.addEventListener("pointerup", release);
+        button.addEventListener("pointercancel", release);
+        button.addEventListener("lostpointercapture", () => this.mobileHeld.delete(control));
       });
     }
 
     openEntryFlow() {
-      if (!this.scene.active || this.scene.travelMode || this.scene.fullExplorationActive) return;
-      if (this.scene.exploring) this.scene.exitExploration();
+      if (!this.uranus.active || this.uranus.travelMode || this.uranus.fullExplorationActive) return;
+      if (this.uranus.exploring) this.uranus.exitExploration();
       this.state = "configuring";
-      this.scene.fullExplorationActive = true;
-      this.scene.element.classList.add("is-uranus-full-active");
+      this.uranus.fullExplorationActive = true;
+      this.uranus.element.classList.add("is-uranus-full-active");
+      document.getElementById("mission")?.classList.add("is-uranus-full");
       this.root.hidden = false;
       this.root.inert = false;
       this.root.setAttribute("aria-hidden", "false");
-      this.mountSceneViewport();
       this.entryButton.disabled = true;
       this.qualityPanel.hidden = false;
       this.selector.hidden = true;
+      this.errorPanel.hidden = true;
       this.hideWorldUi();
-      document.getElementById("announcement").textContent = "Pilih kualitas grafis untuk Eksplorasi Pengalaman Penuh Uranus.";
+      this.root.classList.remove("is-active", "is-preparing", "is-exiting");
+      document.getElementById("announcement").textContent = "Pilih kualitas grafis sebelum masuk ke Eksplorasi Penuh Uranus.";
     }
 
     closeEntryFlow() {
       if (!["configuring", "selecting"].includes(this.state)) return;
-      this.state = "idle";
-      this.scene.fullExplorationActive = false;
-      this.scene.element.classList.remove("is-uranus-full-active");
-      this.restoreSceneViewport();
-      this.root.hidden = true;
-      this.root.inert = true;
-      this.root.setAttribute("aria-hidden", "true");
-      this.qualityPanel.hidden = true;
-      this.selector.hidden = true;
-      this.entryButton.disabled = false;
-      this.scene.caption.inert = false;
-      requestAnimationFrame(() => this.entryButton.focus({ preventScroll:true }));
+      this.forceReset();
+      requestAnimationFrame(() => this.entryButton.focus({ preventScroll: true }));
     }
 
     showSelector() {
@@ -495,239 +966,489 @@
       this.state = "selecting";
       this.qualityPanel.hidden = true;
       this.selector.hidden = false;
-      document.getElementById("announcement").textContent = "Pilih destinasi sistem Uranus.";
+      document.getElementById("announcement").textContent = "Pilih wilayah Uranus yang ingin kamu jelajahi.";
     }
 
-    async enter(destination) {
-      if (!["selecting", "configuring"].includes(this.state)) return;
-      const token = ++this.transitionToken;
-      this.current = destination || this.selected;
-      this.scene.fullExplorationPitch = 0;
-      this.state = "switching";
-      this.selector.hidden = true;
-      this.qualityPanel.hidden = true;
-      this.showLoading(`MEMUAT ${this.current.name.toUpperCase()}`, "MENYIAPKAN PANDANGAN ORBITAL", 18);
-      await this.scene.prepare();
-      if (token !== this.transitionToken) return;
-      if (!this.scene.exploring) this.scene.enterExploration();
-      this.scene.setExplorationStop(this.current.topicIndex, { immediate:false, announce:false });
-      await this.loadingSequence(token, this.current.name);
-      if (token !== this.transitionToken) return;
-      this.state = "exploring";
-      this.loading.hidden = true;
-      this.root.classList.add("is-exploring");
-      this.objectiveOpen = true;
-      this.infoOpen = true;
-      this.updateInfo();
-      this.buildObjectives();
-      this.syncPanels();
-      this.showTutorial();
-      this.scheduleObservationPrompt();
-      document.getElementById("announcement").textContent = `Tiba di ${this.current.name}. Info lokasi dibuka.`;
+    async prepareRenderer() {
+      if (this.renderer) return;
+      await this.uranus.prepare();
+      const T = this.uranus.THREE;
+      if (!T) throw new Error("WebGL2 tidak tersedia. Eksplorasi penuh Uranus memerlukan renderer 3D.");
+      this.THREE = T;
+      const canvas = document.createElement("canvas");
+      canvas.className = "uranus-full-canvas";
+      canvas.setAttribute("aria-hidden", "true");
+      const context = canvas.getContext("webgl2", { alpha: false, antialias: this.quality.name !== "LOW", powerPreference: "high-performance" });
+      if (!context) throw new Error("WebGL2 tidak tersedia pada browser ini.");
+      this.renderer = new T.WebGLRenderer({ canvas, context, alpha: false, antialias: this.quality.name !== "LOW" });
+      this.renderer.outputColorSpace = T.SRGBColorSpace;
+      this.renderer.toneMapping = T.ACESFilmicToneMapping;
+      this.renderer.toneMappingExposure = 1.03;
+      this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, this.quality.dpr));
+      this.viewport.replaceChildren(canvas);
+      this.scene = new T.Scene();
+      this.camera = new T.PerspectiveCamera(this.mobileFov(), 1, 0.08, 420);
+      this.camera.rotation.order = "YXZ";
+      this.velocity = new T.Vector3();
+      this.moveForward = new T.Vector3();
+      this.moveRight = new T.Vector3();
+      this.moveIntent = new T.Vector3();
+      this.scene.add(new T.HemisphereLight(0xece2cf, 0x2a2521, 1.05));
+      const key = new T.DirectionalLight(0xffe7c2, 1.05);
+      key.position.set(-35, 50, 24);
+      this.scene.add(key);
+      this.resize();
+    }
+
+    mobileFov() {
+      return matchMedia("(max-width: 820px)").matches ? 68 : 62;
+    }
+
+    resize() {
+      if (!this.renderer || !this.camera || !this.viewport) return;
+      const rect = this.viewport.getBoundingClientRect();
+      const width = Math.max(1, rect.width || innerWidth);
+      const height = Math.max(1, rect.height || innerHeight);
+      this.renderer.setSize(width, height, false);
+      this.camera.aspect = width / height;
+      this.camera.fov = this.mobileFov();
+      this.camera.updateProjectionMatrix();
+    }
+
+    showLoading(title, status, progress = 5) {
+      this.hideWorldUi();
+      this.loading.hidden = false;
+      this.loadingTitle.textContent = title;
+      this.loadingStatus.textContent = status;
+      this.loadingProgress.style.width = `${progress}%`;
     }
 
     async loadingSequence(token, label) {
       const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const stages = reduced ? [[100, 80]] : [[34, 260], [62, 290], [84, 300], [100, 260]];
-      const text = ['MEMUAT DATA VOYAGER 2', 'MENGATUR KAMERA', 'MENGUNCI TARGET', 'SIAP MENGAMATI'];
-      for (let i = 0; i < stages.length; i++) {
+      const stages = reduced ? [[100, 50, "SIAP TERBANG"]] : [
+        [22, 180, "MEMUAT DATA WILAYAH"],
+        [48, 220, "MEMBENTUK LINGKUNGAN 3D"],
+        [71, 220, "MENYIAPKAN DINAMIKA LOKAL"],
+        [91, 200, "MENGUNCI BATAS EKSPLORASI"],
+        [100, 180, "SIAP MENJELAJAH"]
+      ];
+      for (const [progress, time, text] of stages) {
         if (token !== this.transitionToken) return;
-        this.loadingStatus.textContent = text[Math.min(i, text.length - 1)];
-        this.loadingProgress.style.width = `${stages[i][0]}%`;
-        await delay(stages[i][1]);
+        this.loadingStatus.textContent = text;
+        this.loadingProgress.style.width = `${progress}%`;
+        await delay(time);
       }
       if (this.loadingTitle) this.loadingTitle.textContent = label;
     }
 
-    showLoading(title, status, progress = 10) {
-      this.loading.hidden = false;
-      if (this.loadingTitle) this.loadingTitle.textContent = title;
-      this.loadingStatus.textContent = status;
-      this.loadingProgress.style.width = `${progress}%`;
-      this.hideWorldUi();
-    }
-
-    openSelectorFromWorld() {
-      if (this.state !== "exploring") return;
-      this.clearHeldControls();
-      this.panelSnapshot = { infoOpen: this.infoOpen, objectiveOpen: this.objectiveOpen };
-      this.state = "selecting-world";
-      this.selectDestination(this.current?.id || this.selected.id);
-      this.selector.hidden = false;
-      this.infoOpen = false;
-      this.objectiveOpen = false;
-      this.hideObservationPrompt();
-      this.closeObservation();
-      this.syncPanels();
-    }
-
-    closeSelectorToWorld() {
-      if (this.state !== "selecting-world") return;
-      this.state = "exploring";
-      this.selector.hidden = true;
-      this.infoOpen = this.panelSnapshot?.infoOpen ?? true;
-      this.objectiveOpen = this.panelSnapshot?.objectiveOpen ?? true;
-      this.panelSnapshot = null;
-      this.syncPanels();
-      this.scheduleObservationPrompt();
-    }
-
-    async switchDestination(destination) {
-      if (this.state !== "selecting-world") return;
+    async chooseDestination(destination, switching) {
+      if (!switching && !["selecting", "configuring"].includes(this.state)) return;
+      if (switching && this.state !== "selecting-world") return;
       const token = ++this.transitionToken;
-      this.clearHeldControls();
-      this.panelSnapshot = null;
-      this.state = "switching";
-      this.selector.hidden = true;
+      this.state = "preparing";
       this.current = destination;
-      this.scene.fullExplorationPitch = 0;
       this.selectDestination(destination.id);
-      this.showLoading(`BERPINDAH KE ${destination.name.toUpperCase()}`, "MENYIAPKAN TARGET", 14);
-      this.scene.setExplorationStop(destination.topicIndex, { immediate:false, announce:false });
-      await this.loadingSequence(token, destination.name);
-      if (token !== this.transitionToken) return;
-      this.state = "exploring";
-      this.loading.hidden = true;
-      this.infoOpen = true;
-      this.objectiveOpen = true;
-      this.updateInfo();
-      this.buildObjectives();
-      this.syncPanels();
-      this.scheduleObservationPrompt();
-      document.getElementById("announcement").textContent = `Berpindah ke ${destination.name}. Info lokasi dibuka.`;
+      this.selector.hidden = true;
+      this.qualityPanel.hidden = true;
+      this.errorPanel.hidden = true;
+      this.root.classList.add("is-preparing");
+      this.showLoading(`MEMASUKI ${destination.name.toUpperCase()}`, "MENYIAPKAN LINGKUNGAN", 7);
+      try {
+        await this.prepareRenderer();
+        if (token !== this.transitionToken) return;
+        this.disposeWorld();
+        this.scene.fog = new this.THREE.FogExp2(destination.palette.fog, destination.palette.fogDensity);
+        this.renderer.setClearColor(destination.palette.sky, 1);
+        this.renderer.toneMappingExposure = destination.id === "hotspot" ? 1.10 : 1.02;
+        this.world = new UranusAtmosphereWorld(this.THREE, this.scene, this.renderer, destination, this.quality);
+        this.loadDiscoveryState();
+        this.setCamera(destination.spawn, switching ? 1 : 0);
+        this.updateRegionUI();
+        this.buildObjectives();
+        await this.loadingSequence(token, destination.name);
+        if (token !== this.transitionToken) return;
+        this.loading.hidden = true;
+        this.root.classList.remove("is-preparing");
+        this.root.classList.add("is-active");
+        this.state = "exploring";
+        const compactUi = this.isMobileUi();
+        this.infoOpen = !compactUi;
+        this.objectiveOpen = !compactUi;
+        this.actionsOpen = false;
+        this.syncPanels();
+        this.startLoop();
+        this.showTutorial();
+        document.getElementById("announcement").textContent = `Tiba di ${destination.name}. Kamu sekarang menjelajahi simulasi 3D Uranus.`;
+      } catch (error) {
+        console.error("Uranus Full Exploration failed", error);
+        if (token !== this.transitionToken) return;
+        this.showError(error);
+      }
     }
 
-    updateInfo() {
-      if (!this.current) return;
-      const d = this.current;
-      this.infoName.textContent = d.name;
-      this.infoType.textContent = `${d.category} · ${d.descriptor}`;
-      this.infoCoords.textContent = d.locationLabel;
-      this.infoImage.src = d.image;
-      this.infoImage.alt = d.imageAlt;
-      this.infoCaption.textContent = d.imageCaption;
-      this.infoMedia.href = d.source;
-      this.infoDescription.textContent = d.lead;
-      this.infoFacts.replaceChildren(...d.facts.map(fact => { const li = document.createElement("li"); li.textContent = fact; return li; }));
-      this.infoSource.href = d.source;
-      this.hudTarget.textContent = d.name;
-      this.hudType.textContent = d.category;
-      this.updateHud();
+    setCamera(spawn, switching = 0) {
+      const T = this.THREE;
+      this.camera.position.set(spawn.x, spawn.y + (switching ? 3 : 14), spawn.z + (switching ? 4 : 18));
+      this.yaw = spawn.yaw;
+      this.pitch = spawn.pitch;
+      this.lookYawTarget = this.yaw;
+      this.lookPitchTarget = this.pitch;
+      this.camera.rotation.set(this.pitch, this.yaw, 0, "YXZ");
+      this.velocity.set(0, 0, 0);
+      this.speed = 0;
+      this.camera.up.set(0, 1, 0);
+      this.tmpDirection = new T.Vector3();
     }
 
-    updateHud() {
-      if (!this.current) return;
-      const yaw = this.scene.focusTo?.yaw ?? this.scene.viewYaw ?? -0.38;
-      const zoom = this.scene.focusTo?.z ?? this.scene.viewCameraZ ?? 7;
-      const elevation = (this.scene.fullExplorationPitch ?? 0) * 180 / Math.PI;
-      if (this.hudView) this.hudView.textContent = `${((yaw * 180 / Math.PI) % 360 + 360) % 360 | 0}° orbit · ${elevation.toFixed(0)}° elevasi`;
-      if (this.hudZoom) this.hudZoom.textContent = `${zoom.toFixed(2)}×`;
-    }
-
-    syncPanels() {
-      const exploring = this.state === "exploring";
-      const observationOpen = !this.observationCard.hidden;
-      const showInfo = exploring && this.infoOpen && !observationOpen;
-      const showObjectives = exploring && this.objectiveOpen && !observationOpen;
-      this.info.classList.toggle("is-visible", showInfo);
-      this.info.hidden = !showInfo;
-      this.info.setAttribute("aria-hidden", String(!showInfo));
-      this.infoToggle.hidden = !exploring || this.infoOpen || observationOpen;
-      this.objectives.hidden = !showObjectives;
-      this.objectives.setAttribute("aria-hidden", String(!showObjectives));
-      this.objectivesToggle.hidden = !exploring || this.objectiveOpen || observationOpen;
-      this.actionsRoot.hidden = !exploring;
-      this.root.classList.toggle("is-info-open", showInfo);
-      this.root.classList.toggle("is-objectives-open", showObjectives);
-      this.root.classList.toggle("is-observation-open", observationOpen);
-    }
-
-    showInfo(focus = false) {
-      if (!this.current || this.state !== "exploring") return;
-      this.infoOpen = true;
-      this.syncPanels();
-      if (focus) requestAnimationFrame(() => this.infoMinimize.focus({ preventScroll:true }));
-    }
-
-    scheduleObservationPrompt() {
-      window.clearTimeout(this.promptTimer);
-      this.hideObservationPrompt();
-      if (!this.current || this.discovered.has(this.current.id)) return;
-      const token = this.transitionToken;
-      const started = performance.now();
-      const check = () => {
-        if (token !== this.transitionToken || this.state !== "exploring" || !this.current || this.discovered.has(this.current.id)) return;
-        const elapsed = performance.now() - started;
-        const settled = this.scene.focusState !== "FOCUS_TRANSITION";
-        const minimumWaitDone = elapsed >= (matchMedia("(prefers-reduced-motion: reduce)").matches ? 60 : 420);
-        const markerRequired = Boolean(this.scene._activeMarker);
-        const markerVisible = !markerRequired || this.scene.mode !== "webgl" || Boolean(this.scene.focusReticle?.classList?.contains("is-marker-visible"));
-        const visualReady = markerVisible || elapsed >= 2400;
-        if (!settled || !minimumWaitDone || !visualReady) {
-          this.promptTimer = window.setTimeout(check, 90);
-          return;
+    startLoop() {
+      if (this.frame) return;
+      this.previous = performance.now();
+      const tick = now => {
+        this.frame = null;
+        if (!["exploring", "exiting"].includes(this.state) || !this.renderer || !this.camera || !this.scene) return;
+        const delta = Math.min(0.045, Math.max(0.001, (now - this.previous) / 1000));
+        this.previous = now;
+        if (this.state === "exploring") {
+          this.updateLook(delta);
+          this.updateMovement(delta);
+          this.updateEducation();
+          this.updateHUD();
         }
-        this.observationPromptTitle.textContent = this.current.name;
-        this.observationPrompt.hidden = false;
+        this.world?.update(delta, this.camera, this.discovered);
+        this.renderer.render(this.scene, this.camera);
+        this.frame = requestAnimationFrame(tick);
       };
-      this.promptTimer = window.setTimeout(check, matchMedia("(prefers-reduced-motion: reduce)").matches ? 40 : 120);
+      this.frame = requestAnimationFrame(tick);
     }
 
-    hideObservationPrompt() { this.observationPrompt.hidden = true; }
+    stopLoop() {
+      if (this.frame) cancelAnimationFrame(this.frame);
+      this.frame = null;
+    }
 
-    observeCurrent() {
-      if (!this.current || this.state !== "exploring") return;
-      const d = this.current;
-      const fresh = !this.discovered.has(d.id);
-      this.discovered.add(d.id);
-      if (fresh) window.AntaraProgress?.trackFull?.("uranus", d.id, d.name);
-      this.hideObservationPrompt();
-      this.buildObjectives();
-      this.observationTitle.textContent = d.name;
-      this.observationMeta.textContent = `${d.category} · ${d.locationLabel}`;
-      this.observationLead.textContent = d.lead;
-      this.observationWhy.textContent = d.why;
-      this.observationDeep.replaceChildren(...d.facts.map(fact => { const p = document.createElement("p"); p.textContent = fact; return p; }));
-      this.observationSource.href = d.source;
+    updateLook(delta) {
+      const response = 1 - Math.exp(-delta * 13);
+      this.yaw += (this.lookYawTarget - this.yaw) * response;
+      this.pitch += (this.lookPitchTarget - this.pitch) * response;
+      const turbulence = this.current?.turbulence || 0;
+      const roll = Math.sin(performance.now() * 0.0017) * 0.004 * turbulence + Math.sin(performance.now() * 0.0031) * 0.002 * turbulence;
+      this.camera.rotation.set(this.pitch, this.yaw, roll, "YXZ");
+    }
+
+    movementAxes() {
+      let forward = 0, strafe = 0, vertical = 0;
+      if (this.keys.has("KeyW") || this.keys.has("ArrowUp") || this.mobileHeld.has("forward")) forward += 1;
+      if (this.keys.has("KeyS") || this.keys.has("ArrowDown") || this.mobileHeld.has("backward")) forward -= 1;
+      if (this.keys.has("KeyA") || this.keys.has("ArrowLeft") || this.mobileHeld.has("left")) strafe -= 1;
+      if (this.keys.has("KeyD") || this.keys.has("ArrowRight") || this.mobileHeld.has("right")) strafe += 1;
+      if ((this.keys.has("KeyE") && !(this.nearbyObservation && !this.observationPrompt.hidden)) || this.mobileHeld.has("up")) vertical += 1;
+      if (this.keys.has("KeyQ") || this.mobileHeld.has("down")) vertical -= 1;
+      return { forward, strafe, vertical };
+    }
+
+    updateMovement(delta) {
+      if (!this.world || !this.camera) return;
+      const axes = this.movementAxes();
+      let forward = axes.forward;
+      let strafe = axes.strafe;
+      const mag = Math.hypot(forward, strafe);
+      if (mag > 1) { forward /= mag; strafe /= mag; }
+      const boost = this.keys.has("ShiftLeft") || this.keys.has("ShiftRight") ? 1.9 : 1;
+      const baseSpeed = 8.4 * boost;
+      this.camera.getWorldDirection(this.moveForward);
+      this.moveForward.y = 0;
+      if (this.moveForward.lengthSq() < 0.001) this.moveForward.set(0, 0, -1);
+      this.moveForward.normalize();
+      this.moveRight.crossVectors(this.moveForward, this.camera.up).normalize();
+      this.moveIntent.set(0, 0, 0).addScaledVector(this.moveForward, forward).addScaledVector(this.moveRight, strafe);
+      if (this.moveIntent.lengthSq() > 1) this.moveIntent.normalize();
+
+      const radial = Math.hypot(this.camera.position.x, this.camera.position.z);
+      const edge = smoothstep((radial - this.world.softBoundaryStart) / Math.max(1, this.world.playRadius - this.world.softBoundaryStart));
+      const radialX = radial > 0.001 ? this.camera.position.x / radial : 0;
+      const radialZ = radial > 0.001 ? this.camera.position.z / radial : 0;
+      const outward = Math.max(0, this.moveIntent.x * radialX + this.moveIntent.z * radialZ);
+      const boundaryScale = 1 - edge * outward * 0.94;
+      const wind = this.current.wind;
+      const turbulence = this.current.turbulence;
+      const targetX = this.moveIntent.x * baseSpeed * boundaryScale + wind.x * 0.42;
+      const targetZ = this.moveIntent.z * baseSpeed * boundaryScale + wind.z * 0.42;
+      const verticalScale = axes.vertical > 0 && this.camera.position.y > this.world.maxY - 8 ? smoothstep((this.world.maxY - this.camera.position.y) / 8) : 1;
+      const lowerScale = axes.vertical < 0 && this.camera.position.y < this.world.minY + 8 ? smoothstep((this.camera.position.y - this.world.minY) / 8) : 1;
+      const targetY = axes.vertical * 5.4 * Math.min(verticalScale, lowerScale) + Math.sin(performance.now() * 0.0027) * 0.08 * turbulence;
+      const response = 1 - Math.exp(-delta * (mag || axes.vertical ? 7.8 : 4.8));
+      this.velocity.x += (targetX - this.velocity.x) * response;
+      this.velocity.y += (targetY - this.velocity.y) * response;
+      this.velocity.z += (targetZ - this.velocity.z) * response;
+
+      let nextX = this.camera.position.x + this.velocity.x * delta;
+      let nextY = this.camera.position.y + this.velocity.y * delta;
+      let nextZ = this.camera.position.z + this.velocity.z * delta;
+      const nextRadius = Math.hypot(nextX, nextZ);
+      if (nextRadius > this.world.playRadius) {
+        const scale = this.world.playRadius / nextRadius;
+        nextX *= scale;
+        nextZ *= scale;
+        this.velocity.x *= 0.24;
+        this.velocity.z *= 0.24;
+      }
+      if (nextY > this.world.maxY) { nextY = this.world.maxY; if (this.velocity.y > 0) this.velocity.y *= 0.12; }
+      if (nextY < this.world.minY) { nextY = this.world.minY; if (this.velocity.y < 0) this.velocity.y *= 0.12; }
+      this.camera.position.set(nextX, nextY, nextZ);
+      this.speed = this.velocity.length() * 35;
+
+      const boundary = this.world.boundaryFactor(this.camera.position);
+      if (this.boundaryHint) {
+        this.boundaryHint.classList.toggle("is-visible", boundary > 0.3);
+        if (boundary > 0.3) {
+          const atmospheric = ["methane-winds", "polar-seasons"].includes(this.current?.id);
+          if (this.camera.position.y < this.world.minY + 5) this.boundaryHint.textContent = atmospheric ? "BATAS TEKANAN SIMULASI · KONDISI MAKIN EKSTREM" : "BATAS KORIDOR BAWAH · AUTOPILOT MEMBALIKKAN WAHANA";
+          else if (this.camera.position.y > this.world.maxY - 5) this.boundaryHint.textContent = atmospheric ? "BATAS LAPISAN ATAS · ARUS MEMBALIKKAN WAHANA" : "BATAS KORIDOR ATAS · AUTOPILOT MEMBALIKKAN WAHANA";
+          else this.boundaryHint.textContent = boundary > 0.82 ? (atmospheric ? "BATAS EKSPLORASI · ARUS MEMBALIKKAN WAHANA" : "BATAS EKSPLORASI · AUTOPILOT MENGOREKSI JALUR") : "MENDEKATI BATAS EKSPLORASI";
+        }
+      }
+    }
+
+    updateEducation() {
+      if (!this.current || !this.camera) return;
+      let nearest = null;
+      let nearestDistance = Infinity;
+      this.current.observations.forEach(observation => {
+        const [x, y, z] = observation.position;
+        const distance = Math.hypot(this.camera.position.x - x, this.camera.position.y - y, this.camera.position.z - z);
+        if (distance < nearestDistance) { nearestDistance = distance; nearest = observation; }
+      });
+      const reachable = nearest && nearestDistance <= nearest.radius;
+      this.nearbyObservation = reachable ? nearest : null;
+      const overlayPanelOpen = this.infoOpen || this.objectiveOpen || this.actionsOpen;
+      if (reachable && this.observationCard.hidden && !overlayPanelOpen) {
+        this.observationPrompt.hidden = false;
+        this.observationPromptTitle.textContent = nearest.name;
+      } else {
+        this.observationPrompt.hidden = true;
+      }
+      const next = this.current.observations.find(obs => !this.discovered.has(obs.id));
+      if (this.nextTargetName) this.nextTargetName.textContent = next ? next.name : "Semua temuan selesai!";
+      if (this.nextTargetDistance) {
+        if (!next) this.nextTargetDistance.textContent = "Semua titik edukasi wilayah ini sudah kamu amati.";
+        else {
+          const [x, y, z] = next.position;
+          const distance = Math.hypot(this.camera.position.x - x, this.camera.position.y - y, this.camera.position.z - z);
+          this.nextTargetDistance.textContent = `${distance.toFixed(distance < 10 ? 1 : 0)} unit simulasi · dekati penanda`;
+        }
+      }
+    }
+
+    observeNearby() {
+      const observation = this.nearbyObservation;
+      if (!observation || this.state !== "exploring") return;
+      const fresh = !this.discovered.has(observation.id);
+      this.discovered.add(observation.id);
+      this.saveDiscoveryState();
+      if (fresh) window.AntaraProgress?.trackFull?.("uranus", `${this.current.id}:${observation.id}`, `${this.current.name} - ${observation.name}`);
+      this.activeObservation = observation;
+      this.observationPrompt.hidden = true;
+      this.observationTitle.textContent = observation.name;
+      this.observationMeta.textContent = `${observation.category} · ${this.current.name}`;
+      this.observationLead.textContent = observation.lead;
+      this.observationWhy.textContent = observation.why;
+      this.observationDeep.replaceChildren(...observation.facts.map(fact => {
+        const p = document.createElement("p");
+        p.textContent = fact;
+        return p;
+      }));
+      this.observationSource.href = observation.source;
       this.observationStatus.textContent = fresh ? "BARU KAMU AMATI" : "SUDAH PERNAH DIAMATI";
-      this.clearHeldControls();
       this.observationCard.hidden = false;
       this.observationCard.setAttribute("aria-hidden", "false");
+      this.releasePointerLock();
+      this.keys.clear();
+      this.mobileHeld.clear();
+      this.buildObjectives();
       this.syncPanels();
-      document.getElementById("announcement").textContent = `${d.name} berhasil diamati. ${this.discovered.size} dari ${DESTINATIONS.length} tujuan selesai.`;
+      document.getElementById("announcement").textContent = `${observation.name} berhasil diamati.`;
     }
 
     closeObservation() {
       if (!this.observationCard || this.observationCard.hidden) return;
       this.observationCard.hidden = true;
       this.observationCard.setAttribute("aria-hidden", "true");
+      this.activeObservation = null;
       this.syncPanels();
     }
 
+    discoveryStorageKey() {
+      return `${DISCOVERY_PREFIX}${this.current?.id || "none"}`;
+    }
+
+    loadDiscoveryState() {
+      this.discovered = new Set();
+      if (!this.current) return;
+      try {
+        const parsed = JSON.parse(localStorage.getItem(this.discoveryStorageKey()) || "[]");
+        const allowed = new Set(this.current.observations.map(obs => obs.id));
+        parsed.filter(id => allowed.has(id)).forEach(id => this.discovered.add(id));
+      } catch {}
+    }
+
+    saveDiscoveryState() {
+      try { localStorage.setItem(this.discoveryStorageKey(), JSON.stringify([...this.discovered])); } catch {}
+    }
+
+    buildObjectives() {
+      if (!this.current || !this.objectivesList) return;
+      if (this.objectivesRegion) this.objectivesRegion.textContent = this.current.name;
+      if (this.objectivesIntro) this.objectivesIntro.textContent = "Terbang mendekati penanda ilmiah. Saat cukup dekat, tekan E atau tombol AMATI untuk mencatat temuan.";
+      const fragment = document.createDocumentFragment();
+      this.current.observations.forEach((observation, index) => {
+        const done = this.discovered.has(observation.id);
+        const li = document.createElement("li");
+        li.className = done ? "is-complete" : "";
+        li.innerHTML = `<span class="venus-objective-marker">${done ? "✓" : String(index + 1).padStart(2, "0")}</span><div><strong>${observation.name}</strong><small>${done ? "SUDAH DIAMATI" : observation.category}</small></div>`;
+        fragment.append(li);
+      });
+      this.objectivesList.replaceChildren(fragment);
+      const total = this.current.observations.length;
+      const count = this.discovered.size;
+      this.objectivesCount.textContent = `${count} / ${total}`;
+      this.objectivesBar.style.width = `${total ? count / total * 100 : 0}%`;
+      this.objectivesToggle.textContent = `TUJUAN · ${count} / ${total}`;
+      this.objectivesToggle.setAttribute("aria-label", `Buka tujuan eksplorasi Uranus, ${count} dari ${total} selesai`);
+    }
+
+    updateRegionUI() {
+      const destination = this.current;
+      if (!destination) return;
+      this.hudLocation.textContent = destination.name;
+      this.hudType.textContent = destination.category;
+      this.hudQuality.textContent = this.quality.label;
+      this.hudData.textContent = "NASA / JPL · VOYAGER 2 · MODEL URANUS EDUKASI TERKOMPRESI";
+      this.infoName.textContent = destination.name;
+      this.infoType.textContent = `${destination.category} · ${destination.descriptor}`;
+      this.infoCoords.textContent = destination.locationLabel;
+      this.infoImage.src = destination.image;
+      this.infoImage.alt = destination.imageAlt;
+      this.infoCaption.textContent = destination.imageCaption;
+      this.infoMedia.href = destination.source;
+      this.infoDescription.textContent = destination.lead;
+      this.infoFacts.replaceChildren(...destination.facts.map(fact => {
+        const li = document.createElement("li");
+        li.textContent = fact;
+        return li;
+      }));
+      this.infoSource.href = destination.source;
+    }
+
+    updateHUD() {
+      if (!this.world || !this.camera) return;
+      const pressure = this.world.pressureAt(this.camera.position.y);
+      const depth = this.world.maxY - this.camera.position.y;
+      this.hudDepth.textContent = `${depth.toFixed(1)} KM RELATIF · ${this.world.layerAtPressure(pressure)}`;
+      this.hudSpeed.textContent = `${Math.round(this.speed)} M/S SIM`;
+      if (["rings", "magnetosphere", "miranda"].includes(this.current.id)) {
+        this.hudPressure.textContent = this.current.id === "rings" ? "VAKUM · RING SIM" : this.current.id === "magnetosphere" ? "FIELD · SIM" : "VAKUM · FLYBY";
+      } else {
+        this.hudPressure.textContent = `${pressure.toFixed(pressure < 1 ? 2 : 1)} BAR SIM`;
+      }
+      this.hudLocation.textContent = this.current.name;
+      this.hudType.textContent = this.current.category;
+      this.hudQuality.textContent = this.quality.label;
+    }
+
+    isMobileUi() {
+      return matchMedia("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)").matches;
+    }
+
+    syncPanels() {
+      const exploring = this.state === "exploring";
+      const observationOpen = !this.observationCard.hidden;
+      const mobile = this.isMobileUi();
+      let showInfo = exploring && this.infoOpen && !observationOpen;
+      let showObjectives = exploring && this.objectiveOpen && !observationOpen;
+      if (mobile && showInfo && showObjectives) {
+        this.objectiveOpen = false;
+        showObjectives = false;
+      }
+      const mobileSecondaryOpen = mobile && (showInfo || showObjectives);
+      this.info.hidden = !showInfo;
+      this.info.classList.toggle("is-visible", showInfo);
+      this.info.setAttribute("aria-hidden", String(!showInfo));
+      this.infoToggle.hidden = !exploring || showInfo || observationOpen || this.actionsOpen || mobileSecondaryOpen;
+      this.objectives.hidden = !showObjectives;
+      this.objectives.setAttribute("aria-hidden", String(!showObjectives));
+      this.objectivesToggle.hidden = !exploring || showObjectives || observationOpen || this.actionsOpen || mobileSecondaryOpen;
+      this.actionsRoot.hidden = !exploring;
+      this.root.classList.toggle("is-info-open", showInfo);
+      this.root.classList.toggle("is-objectives-open", showObjectives);
+      this.root.classList.toggle("is-observation-open", observationOpen);
+    }
+
+    releasePointerLock() {
+      if (document.pointerLockElement === this.inputLayer) {
+        try { document.exitPointerLock?.(); } catch {}
+      }
+      this.root.classList.remove("is-pointer-locked");
+      this.drag = null;
+    }
+
     hideWorldUi() {
-      this.clearHeldControls();
-      this.infoOpen = false;
-      this.objectiveOpen = false;
+      this.releasePointerLock();
+      this.keys.clear();
+      this.mobileHeld.clear();
+      this.drag = null;
       this.actionsRoot.hidden = true;
       this.info.hidden = true;
       this.objectives.hidden = true;
       this.infoToggle.hidden = true;
       this.objectivesToggle.hidden = true;
-      this.hideObservationPrompt();
+      this.observationPrompt.hidden = true;
       this.observationCard.hidden = true;
+      this.boundaryHint?.classList.remove("is-visible");
+    }
+
+    openSelectorFromWorld() {
+      if (this.state !== "exploring") return;
+      this.releasePointerLock();
+      this.keys.clear();
+      this.mobileHeld.clear();
+      this.state = "selecting-world";
+      this.selector.hidden = false;
+      this.info.hidden = true;
+      this.objectives.hidden = true;
+      this.infoToggle.hidden = true;
+      this.objectivesToggle.hidden = true;
+      this.observationPrompt.hidden = true;
+      this.closeObservation();
+    }
+
+    closeSelectorToWorld() {
+      if (this.state !== "selecting-world") return;
+      this.state = "exploring";
+      this.selector.hidden = true;
+      this.syncPanels();
     }
 
     setActionsMenu(open) {
-      const mobile = matchMedia("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)").matches;
-      this.actionsOpen = Boolean(open && mobile && this.state === "exploring");
+      const mobile = this.isMobileUi();
+      const observationOpen = Boolean(this.observationCard && !this.observationCard.hidden);
+      this.actionsOpen = Boolean(open && mobile && this.state === "exploring" && !observationOpen);
+      if (this.actionsOpen) {
+        this.infoOpen = false;
+        this.objectiveOpen = false;
+        this.releasePointerLock();
+        this.keys.clear();
+        this.mobileHeld.clear();
+      }
       this.actionsRoot.classList.toggle("is-open", this.actionsOpen);
       this.root.classList.toggle("is-actions-open", this.actionsOpen);
       this.actionsMenuToggle.setAttribute("aria-expanded", String(this.actionsOpen));
+      this.syncPanels();
     }
 
     async toggleFullscreen() {
       try {
-        if (document.fullscreenElement) await document.exitFullscreen(); else await this.root.requestFullscreen();
+        if (document.fullscreenElement) await document.exitFullscreen();
+        else await this.root.requestFullscreen();
       } catch {}
       this.updateFullscreenLabel();
     }
@@ -740,81 +1461,118 @@
 
     showTutorial() {
       let seen = false;
-      try { seen = sessionStorage.getItem("antara-uranus-full-tutorial") === "1"; } catch {}
+      try { seen = sessionStorage.getItem("antara-uranus-pov-tutorial") === "1"; } catch {}
       if (seen) return;
       this.tutorial.classList.add("is-visible");
-      window.setTimeout(() => this.hideTutorial(false), 8500);
+      window.setTimeout(() => this.hideTutorial(false), 9000);
     }
 
     hideTutorial(persist = false) {
       this.tutorial.classList.remove("is-visible");
-      if (persist) { try { sessionStorage.setItem("antara-uranus-full-tutorial", "1"); } catch {} }
+      if (persist) {
+        try { sessionStorage.setItem("antara-uranus-pov-tutorial", "1"); } catch {}
+      }
+    }
+
+    showError(error) {
+      this.stopLoop();
+      this.state = "error";
+      this.loading.hidden = true;
+      this.errorPanel.hidden = false;
+      this.errorMessage.textContent = error?.message || "Eksplorasi penuh Uranus tidak dapat dimuat.";
+      document.getElementById("announcement").textContent = "Eksplorasi penuh Uranus gagal dimuat.";
+    }
+
+    async exit() {
+      if (!["exploring", "selecting-world"].includes(this.state)) return;
+      const token = ++this.transitionToken;
+      this.state = "exiting";
+      this.root.classList.add("is-exiting");
+      this.selector.hidden = true;
+      this.hideWorldUi();
+      this.keys.clear();
+      this.mobileHeld.clear();
+      const start = performance.now();
+      const duration = matchMedia("(prefers-reduced-motion: reduce)").matches ? 100 : 760;
+      const startPos = this.camera?.position.clone();
+      const startFov = this.camera?.fov || 62;
+      await new Promise(resolve => {
+        const frame = now => {
+          if (token !== this.transitionToken || !this.camera || !startPos) return resolve();
+          const t = clamp((now - start) / duration, 0, 1);
+          const eased = smoothstep(t);
+          this.camera.position.x = lerp(startPos.x, startPos.x * 0.25, eased);
+          this.camera.position.y = lerp(startPos.y, this.world ? this.world.maxY + 24 : startPos.y + 24, eased);
+          this.camera.position.z = lerp(startPos.z, startPos.z + 54, eased);
+          this.camera.fov = lerp(startFov, 42, eased);
+          this.camera.updateProjectionMatrix();
+          if (t < 1) requestAnimationFrame(frame); else resolve();
+        };
+        requestAnimationFrame(frame);
+      });
+      if (token !== this.transitionToken) return;
+      this.forceReset();
+      document.getElementById("announcement").textContent = "Kembali ke panorama Uranus.";
+      requestAnimationFrame(() => this.entryButton.focus({ preventScroll: true }));
+    }
+
+    disposeWorld() {
+      this.world?.dispose?.();
+      this.world = null;
+    }
+
+    disposeRenderer() {
+      this.stopLoop();
+      this.disposeWorld();
+      if (this.scene) {
+        [...this.scene.children].forEach(child => {
+          if (child.isLight) this.scene.remove(child);
+        });
+      }
+      this.renderer?.dispose?.();
+      this.renderer?.forceContextLoss?.();
+      this.renderer = null;
+      this.scene = null;
+      this.camera = null;
+      this.THREE = null;
+      this.viewport?.replaceChildren();
     }
 
     forceReset() {
       ++this.transitionToken;
-      window.clearTimeout(this.promptTimer);
-      this.clearHeldControls();
-      this.setActionsMenu(false);
+      this.stopLoop();
       this.hideTutorial(false);
-      this.panelSnapshot = null;
+      this.releasePointerLock();
+      this.disposeRenderer();
       this.state = "idle";
+      this.current = null;
+      this.nearbyObservation = null;
+      this.activeObservation = null;
       this.infoOpen = false;
-      this.objectiveOpen = false;
+      this.objectiveOpen = true;
       this.actionsOpen = false;
-      this.root.classList.remove("is-exploring", "is-exiting", "is-info-open", "is-objectives-open");
-      this.restoreSceneViewport();
+      this.root.classList.remove("is-active", "is-preparing", "is-exiting", "is-info-open", "is-objectives-open", "is-observation-open", "is-actions-open");
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");
       this.qualityPanel.hidden = true;
       this.selector.hidden = true;
       this.loading.hidden = true;
+      this.errorPanel.hidden = true;
       this.observationPrompt.hidden = true;
       this.observationCard.hidden = true;
-      this.observationCard.setAttribute("aria-hidden", "true");
       this.info.hidden = true;
       this.objectives.hidden = true;
       this.infoToggle.hidden = true;
       this.objectivesToggle.hidden = true;
       this.actionsRoot.hidden = true;
-      this.scene.fullExplorationActive = false;
-      this.scene.element.classList.remove("is-uranus-full-active");
-      if ("fullExplorationPitch" in this.scene) this.scene.fullExplorationPitch = 0;
+      this.boundaryHint?.classList.remove("is-visible");
+      this.uranus.fullExplorationActive = false;
+      this.uranus.element.classList.remove("is-uranus-full-active");
+      document.getElementById("mission")?.classList.remove("is-uranus-full");
       this.entryButton.disabled = false;
-      this.scene.caption.inert = false;
-      this.scene.resize?.();
-    }
-
-    async exit() {
-      if (!this.scene.fullExplorationActive || ["exiting", "idle"].includes(this.state)) return;
-      const token = ++this.transitionToken;
-      this.state = "exiting";
-      this.scene.fullExplorationPitch = 0;
-      this.root.classList.add("is-exiting");
-      this.hideWorldUi();
-      this.keyState.clear();
-      cancelAnimationFrame(this.controlFrame); this.controlFrame = null;
-      this.scene._beginFocus?.(-0.38, 7);
-      if (!this.scene.frame && this.scene.active) { this.scene.previous = performance.now(); this.scene.tick(this.scene.previous); }
-      await delay(matchMedia("(prefers-reduced-motion: reduce)").matches ? 100 : 720);
-      if (token !== this.transitionToken) return;
-      if (this.scene.exploring) this.scene.exitExploration();
-      await delay(matchMedia("(prefers-reduced-motion: reduce)").matches ? 80 : 420);
-      if (token !== this.transitionToken) return;
-      this.root.classList.remove("is-exploring", "is-exiting");
-      this.scene.fullExplorationActive = false;
-      this.scene.element.classList.remove("is-uranus-full-active");
-      this.restoreSceneViewport();
-      this.root.hidden = true;
-      this.root.inert = true;
-      this.root.setAttribute("aria-hidden", "true");
-      this.scene.resize?.();
-      this.state = "idle";
-      this.entryButton.disabled = false;
-      this.scene.caption.inert = false;
-      document.getElementById("announcement").textContent = "Kembali ke panorama Uranus.";
-      requestAnimationFrame(() => this.entryButton.focus({ preventScroll:true }));
+      this.uranus.caption.inert = false;
+      this.uranus.resize?.();
     }
   }
 

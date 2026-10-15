@@ -296,3 +296,88 @@
   height: 100% !important;
   opacity: 1 !important;
 }
+
+
+/* Saturn POV rebuild 2026-10-05 · Venus parity + Jupiter-style full free-flight */
+.saturn-full-viewport {
+  position:absolute;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  background:#10151d;
+  opacity:0;
+  transition:opacity .55s ease;
+}
+.saturn-full-exploration.is-active .saturn-full-viewport,
+.saturn-full-exploration.is-exiting .saturn-full-viewport { opacity:1; }
+.saturn-full-viewport canvas.saturn-full-canvas {
+  display:block;
+  width:100%;
+  height:100%;
+}
+.saturn-full-orbit-input { cursor: crosshair; }
+.saturn-full-exploration.is-pointer-locked .saturn-full-orbit-input { cursor:none; }
+.mission.is-saturn-full .masthead,
+.mission.is-saturn-full .mission-footer {
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:opacity .35s ease, visibility .35s ease;
+}
+.saturn-full-exploration .mars-full-error,
+.saturn-full-exploration .venus-boundary-hint {
+  z-index:54;
+  color:#edf0ef;
+  border-color:rgba(200,212,221,.28);
+  background:rgba(9,14,20,.82);
+  box-shadow:0 12px 38px rgba(0,0,0,.28);
+}
+.saturn-full-exploration .mars-full-error {
+  background:linear-gradient(180deg, rgba(28,35,42,.98), rgba(8,11,16,.99));
+  border-color:rgba(200,212,221,.22);
+}
+.saturn-full-exploration .mars-full-error button {
+  border-color:rgba(200,212,221,.28);
+  color:#edf0ef;
+  background:rgba(33,42,50,.92);
+}
+.saturn-full-exploration .mars-hud-coordinates {
+  max-width:240px;
+  white-space:normal;
+  line-height:1.4;
+}
+.saturn-full-exploration .mars-hud-metrics {
+  grid-template-columns: repeat(2, minmax(0,1fr));
+}
+.saturn-full-exploration .venus-location-visualization-note {
+  color:#c2cbd0;
+  border-color:rgba(200,212,221,.14);
+  background:rgba(255,255,255,.025);
+}
+.saturn-full-exploration .saturn-region-preview-storms {
+  background:
+    radial-gradient(circle at 68% 46%, rgba(255,246,219,.55) 0 6%, transparent 7%),
+    repeating-linear-gradient(0deg,#4b4337 0 12px,#d5c3a8 13px 24px,#b29b7a 25px 36px,#7d6a53 37px 48px);
+}
+.saturn-full-exploration .saturn-region-preview-storms::before {
+  width:72px; height:26px; left:52px; top:34px;
+  border:2px solid rgba(245,232,202,.52);
+  border-radius:50%;
+  transform:rotate(-12deg);
+}
+.saturn-full-exploration .saturn-region-preview-storms::after {
+  width:34px; height:34px; left:104px; top:38px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(255,247,229,.85), rgba(255,247,229,0));
+}
+.saturn-full-exploration .venus-observation-card,
+.saturn-full-exploration .venus-quality-panel,
+.saturn-full-exploration .venus-region-selector,
+.saturn-full-exploration .mars-full-loading,
+.saturn-full-exploration .mars-full-error,
+.saturn-full-exploration .mars-full-tutorial { z-index:52; }
+.saturn-full-exploration .venus-boundary-hint { bottom:126px; max-width:calc(100vw - 40px); text-align:center; }
+.saturn-full-exploration:is(.is-info-open,.is-objectives-open,.is-actions-open,.is-observation-open) .venus-boundary-hint {
+  opacity:0 !important;
+  transform:translateY(10px) !important;
+}

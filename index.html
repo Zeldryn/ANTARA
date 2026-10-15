@@ -30,8 +30,8 @@
   <link rel="stylesheet" href="jupiter-scene.css?v=20261003-education-expand-1">
   <link rel="stylesheet" href="jupiter-full-exploration.css?v=20261005-mobile-ui-3">
   <link rel="stylesheet" href="saturn-scene.css?v=20261003-education-expand-1">
-  <link rel="stylesheet" href="saturn-full-exploration.css?v=20261005-renderfix-3">
-  <link rel="stylesheet" href="uranus-full-exploration.css?v=20261005-renderfix-3">
+  <link rel="stylesheet" href="saturn-full-exploration.css?v=20261005-saturnpov-1">
+  <link rel="stylesheet" href="uranus-full-exploration.css?v=20261005-uranuspov-1">
   <link rel="stylesheet" href="neptune-full-exploration.css?v=20261005-renderfix-3">
   <link rel="stylesheet" href="uranus-scene.css?v=20261004-location-image-audit-2">
   <link rel="stylesheet" href="neptune-scene.css?v=20261004-location-image-audit-2">
@@ -55,8 +55,8 @@
   <script src="jupiter-scene.js?v=20261005-outer-bughunt-2" defer></script>
   <script src="jupiter-full-exploration.js?v=20261005-mobile-panel-audit-1" defer></script>
   <script src="saturn-scene.js?v=20261005-outer-bughunt-2" defer></script>
-  <script src="saturn-full-exploration.js?v=20261005-renderfix-3" defer></script>
-  <script src="uranus-full-exploration.js?v=20261005-renderfix-3" defer></script>
+  <script src="saturn-full-exploration.js?v=20261005-saturnpov-1" defer></script>
+  <script src="uranus-full-exploration.js?v=20261005-uranuspov-1" defer></script>
   <script src="neptune-full-exploration.js?v=20261005-renderfix-3" defer></script>
   <script src="uranus-scene.js?v=20261005-outer-bughunt-2" defer></script>
   <script src="neptune-scene.js?v=20261005-outer-bughunt-2" defer></script>
@@ -1606,15 +1606,16 @@
 
 
 
-      <section class="mars-full-exploration venus-full-exploration saturn-full-exploration" id="saturn-full-exploration" aria-label="Eksplorasi penuh sistem Saturnus" aria-hidden="true" hidden inert>
-        <div class="saturn-full-orbit-input" id="saturn-full-orbit-input" aria-label="Area kontrol orbit Saturnus"></div>
+      <section class="mars-full-exploration venus-full-exploration saturn-full-exploration" id="saturn-full-exploration" aria-label="Eksplorasi penuh Saturnus" aria-hidden="true" hidden inert>
+        <div class="saturn-full-viewport" id="saturn-full-viewport" aria-label="Simulasi tiga dimensi Saturnus"></div>
+        <div class="saturn-full-orbit-input" id="saturn-full-orbit-input" aria-label="Area kontrol eksplorasi Saturnus"></div>
 
         <section class="venus-quality-panel" id="saturn-quality-panel" aria-labelledby="saturn-quality-title" hidden>
           <div class="venus-quality-topline"><span>ANTARA · EKSPLORASI SATURNUS</span><button id="saturn-quality-close" type="button" aria-label="Tutup pengaturan kualitas grafis">×</button></div>
           <div class="venus-quality-copy">
             <small>PERSIAPAN EKSPLORASI</small>
             <h3 id="saturn-quality-title">Kualitas Grafis</h3>
-            <p>Pilih kualitas renderer sebelum memasuki observasi orbital Saturnus. Model Saturnus, cincin, Titan, Enceladus, marker, dan jalur Cassini memakai scene tiga dimensi ANTARA yang sudah ada.</p>
+            <p>Pilih kualitas renderer sebelum memasuki simulasi 3D Saturnus. Mode ini mengikuti template Venus: ada pilih kualitas, pilih wilayah, tujuan eksplorasi, info lokasi, observasi, dan kontrol penuh.</p>
           </div>
           <div class="venus-quality-options" id="saturn-quality-options" role="radiogroup" aria-label="Kualitas grafis Saturnus">
             <button type="button" class="venus-quality-option" data-saturn-quality="LOW" role="radio" aria-checked="false"><span><strong>RENDAH</strong><small>Performa terbaik</small></span><em data-quality-recommendation></em></button>
@@ -1622,45 +1623,45 @@
             <button type="button" class="venus-quality-option" data-saturn-quality="HIGH" role="radio" aria-checked="false"><span><strong>TINGGI</strong><small>Visual terbaik</small></span><em data-quality-recommendation></em></button>
           </div>
           <div class="venus-quality-summary"><span id="saturn-quality-device-note">Rekomendasi ditentukan dari kemampuan browser dan layar.</span><strong id="saturn-quality-selected-label">SEDANG</strong></div>
-          <button class="venus-quality-start" id="saturn-quality-start" type="button">LANJUT PILIH DESTINASI</button>
+          <button class="venus-quality-start" id="saturn-quality-start" type="button">LANJUT PILIH WILAYAH</button>
         </section>
 
         <section class="venus-region-selector" id="saturn-region-selector" aria-labelledby="saturn-region-selector-title" hidden>
-          <div class="venus-region-selector-topline"><span>ANTARA · SISTEM SATURNUS / CASSINI</span><button id="saturn-region-selector-close" type="button" aria-label="Tutup pemilih destinasi Saturnus">×</button></div>
-          <h3 id="saturn-region-selector-title">Pilih Destinasi Saturnus</h3>
-          <p>Saturnus tidak memiliki permukaan padat. Karena itu Eksplorasi Penuh memakai observasi orbital: cincin, atmosfer polar, bulan, dan jalur Cassini yang semuanya ditampilkan dengan scene Saturnus yang sudah ada.</p>
+          <div class="venus-region-selector-topline"><span>ANTARA · SATURNUS / CASSINI</span><button id="saturn-region-selector-close" type="button" aria-label="Tutup pemilih wilayah Saturnus">×</button></div>
+          <h3 id="saturn-region-selector-title">Pilih Wilayah Saturnus</h3>
+          <p>Saturnus tidak punya permukaan padat untuk didarati. Karena itu Eksplorasi Penuh memakai POV terbang bebas seperti Jupiter, tetapi dengan lingkungan Saturnus: atmosfer, cincin, Titan, dan Enceladus.</p>
           <div class="venus-region-grid" id="saturn-region-grid"></div>
-          <div class="venus-region-provenance"><strong>REFERENSI ILMIAH</strong><span>NASA / JPL-Caltech · Cassini-Huygens</span><small>Citra pada Info Lokasi berasal dari referensi NASA/Cassini. Model 3D adalah visualisasi ANTARA yang digunakan untuk menunjukkan posisi relatif fitur dan target observasi.</small></div>
+          <div class="venus-region-provenance"><strong>REFERENSI ILMIAH</strong><span>NASA / JPL-Caltech · Cassini-Huygens</span><small>Citra pada Info Lokasi berasal dari referensi NASA/Cassini. Simulasi 3D ANTARA mengompresi skala ruang supaya bisa dimainkan dan dipelajari.</small></div>
         </section>
 
-        <aside class="mars-full-hud" data-saturn-ui aria-label="Informasi eksplorasi orbital Saturnus">
-          <div class="mars-hud-kicker">SATURNUS</div><h3>Eksplorasi</h3><div class="mars-hud-mode">ORBITAL · CASSINI REFERENCE</div>
-          <div class="mars-hud-location" id="saturn-full-hud-location">Pilih destinasi</div>
-          <div class="mars-hud-coordinates" id="saturn-full-hud-view">--</div>
+        <aside class="mars-full-hud" data-saturn-ui aria-label="Informasi eksplorasi Saturnus">
+          <div class="mars-hud-kicker">SATURNUS</div><h3>Eksplorasi</h3><div class="mars-hud-mode">POV 3D · PENERBANGAN BEBAS</div>
+          <div class="mars-hud-location" id="saturn-full-hud-location">Pilih wilayah</div>
+          <div class="mars-hud-coordinates" id="saturn-full-hud-depth">--</div>
           <div class="mars-hud-metrics">
-            <div class="mars-hud-metric"><small>Sudut pandang</small><strong id="saturn-full-hud-zoom">--</strong></div>
-            <div class="mars-hud-metric"><small>Kecepatan</small><strong>ORBITAL</strong></div>
-            <div class="mars-hud-metric"><small>Target</small><strong id="saturn-full-hud-region-type">--</strong></div>
+            <div class="mars-hud-metric"><small>Kecepatan</small><strong id="saturn-full-hud-speed">0 M/S SIM</strong></div>
+            <div class="mars-hud-metric"><small>Tekanan</small><strong id="saturn-full-hud-pressure">--</strong></div>
+            <div class="mars-hud-metric"><small>Wilayah</small><strong id="saturn-full-hud-region-type">--</strong></div>
             <div class="mars-hud-metric"><small>Kualitas</small><strong id="saturn-full-hud-quality">SEDANG</strong></div>
           </div>
-          <div class="mars-hud-data">NASA / JPL-CALTECH · CASSINI-HUYGENS</div>
+          <div class="mars-hud-data" id="saturn-full-hud-data">NASA / JPL · MODEL SATURNUS EDUKASI TERKOMPRESI</div>
         </aside>
 
         <aside class="venus-objectives-panel" id="saturn-objectives-panel" data-saturn-ui aria-label="Tujuan eksplorasi Saturnus" aria-live="polite" hidden>
-          <div class="venus-objectives-head"><div><small>TUJUAN EKSPLORASI</small><strong>Sistem Saturnus</strong></div><button id="saturn-objectives-collapse" type="button">Minimalkan</button></div>
-          <p id="saturn-objectives-intro">Amati lima destinasi utama. Pindah wilayah, arahkan kamera ke target, lalu gunakan tombol AMATI untuk mencatat temuanmu.</p>
-          <div class="venus-discovery-progress"><div><span>PROGRES TEMUAN</span><strong id="saturn-discovery-count">0 / 5</strong></div><div class="venus-discovery-track" aria-hidden="true"><i id="saturn-discovery-bar"></i></div></div>
+          <div class="venus-objectives-head"><div><small>TUJUAN EKSPLORASI</small><strong id="saturn-objectives-region">Saturnus</strong></div><button id="saturn-objectives-collapse" type="button">Minimalkan</button></div>
+          <p id="saturn-objectives-intro">Dekati penanda ilmiah, lalu tekan E atau AMATI.</p>
+          <div class="venus-discovery-progress"><div><span>PROGRES TEMUAN</span><strong id="saturn-discovery-count">0 / 3</strong></div><div class="venus-discovery-track" aria-hidden="true"><i id="saturn-discovery-bar"></i></div></div>
           <ol id="saturn-objectives-list" class="venus-objectives-list"></ol>
-          <div class="venus-next-target" id="saturn-next-target"><small>TEMUAN BERIKUTNYA</small><strong id="saturn-next-target-name">Cincin & Cassini Division</strong><span id="saturn-next-target-distance">Pilih dari menu Wilayah.</span></div>
+          <div class="venus-next-target" id="saturn-next-target"><small>TEMUAN TERDEKAT</small><strong id="saturn-next-target-name">-</strong><span id="saturn-next-target-distance">Dekati penanda di koridor eksplorasi.</span></div>
         </aside>
-        <button class="venus-objectives-toggle" id="saturn-objectives-toggle" type="button" data-saturn-ui hidden>Tujuan · 0 / 5</button>
+        <button class="venus-objectives-toggle" id="saturn-objectives-toggle" type="button" data-saturn-ui hidden>Tujuan · 0 / 3</button>
 
         <div class="venus-observation-prompt" id="saturn-observation-prompt" data-saturn-ui hidden>
-          <span class="venus-observation-key">E</span><div><small>TARGET SUDAH TERKUNCI</small><strong id="saturn-observation-prompt-title">Ada yang menarik</strong></div><button id="saturn-observe-button" type="button">AMATI</button>
+          <span class="venus-observation-key">E</span><div><small>KAMU SUDAH CUKUP DEKAT</small><strong id="saturn-observation-prompt-title">Ada yang menarik</strong></div><button id="saturn-observe-button" type="button">AMATI</button>
         </div>
 
         <aside class="venus-observation-card" id="saturn-observation-card" data-saturn-ui aria-live="polite" aria-hidden="true" hidden>
-          <div class="venus-observation-card-head"><div><small>OBSERVASI CASSINI</small><span id="saturn-observation-status">BARU KAMU AMATI</span></div><button id="saturn-observation-close" type="button" aria-label="Tutup pengamatan">×</button></div>
+          <div class="venus-observation-card-head"><div><small>OBSERVASI SATURNUS</small><span id="saturn-observation-status">BARU KAMU AMATI</span></div><button id="saturn-observation-close" type="button" aria-label="Tutup pengamatan">×</button></div>
           <h4 id="saturn-observation-title">Saturnus</h4><p class="venus-observation-meta" id="saturn-observation-meta"></p><p class="venus-observation-lead" id="saturn-observation-lead"></p>
           <div class="venus-observation-why"><small>KENAPA INI MENARIK?</small><p id="saturn-observation-why"></p></div>
           <details class="venus-observation-more"><summary>Pelajari lebih lanjut</summary><div id="saturn-observation-deep"></div></details>
@@ -1672,22 +1673,26 @@
           <div class="venus-actions-menu" id="saturn-actions-menu"><button id="saturn-location-toggle" type="button">Wilayah</button><button id="saturn-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button><button class="mars-full-exit" id="saturn-full-exit" type="button">Keluar dari Eksplorasi</button></div>
         </div>
 
-        <div class="mars-control-hints" data-saturn-ui aria-hidden="true"><span><b>WASD</b> Orbit kamera</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Jauh / Dekat</span><span><b>E</b> Amati saat target aktif</span><span><b>ESC</b> Panel / Keluar</span></div>
-        <div class="mars-mobile-controls" data-saturn-ui aria-label="Kontrol orbit Saturnus">
-          <div class="mars-mobile-dpad"><button type="button" data-saturn-control="forward" aria-label="Lihat ke atas">▲</button><button type="button" data-saturn-control="left" aria-label="Orbit kiri">◀</button><span class="mars-dpad-core" aria-hidden="true"></span><button type="button" data-saturn-control="right" aria-label="Orbit kanan">▶</button><button type="button" data-saturn-control="backward" aria-label="Lihat ke bawah">▼</button></div>
-          <div class="mars-mobile-altitude"><button type="button" data-saturn-control="up" aria-label="Zoom dekat">＋</button><span class="mars-mobile-altitude-label">ZOOM</span><button type="button" data-saturn-control="down" aria-label="Zoom jauh">−</button></div>
+        <div class="mars-control-hints" data-saturn-ui aria-hidden="true"><span><b>WASD</b> Terbang</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Cepat</span><span><b>E</b> Amati saat dekat</span><span><b>ESC</b> Panel / Keluar</span></div>
+        <div class="mars-mobile-controls" data-saturn-ui aria-label="Kontrol penerbangan Saturnus">
+          <div class="mars-mobile-dpad"><button type="button" data-saturn-control="forward" aria-label="Maju">▲</button><button type="button" data-saturn-control="left" aria-label="Geser kiri">◀</button><span class="mars-dpad-core" aria-hidden="true"></span><button type="button" data-saturn-control="right" aria-label="Geser kanan">▶</button><button type="button" data-saturn-control="backward" aria-label="Mundur">▼</button></div>
+          <div class="mars-mobile-altitude"><button type="button" data-saturn-control="up" aria-label="Naik">＋</button><span class="mars-mobile-altitude-label">TINGGI</span><button type="button" data-saturn-control="down" aria-label="Turun">−</button></div>
         </div>
 
-        <div class="mars-full-loading" id="saturn-full-loading" data-saturn-ui hidden><div class="mars-full-loading-kicker">ANTARA · SISTEM SATURNUS</div><h3 id="saturn-full-loading-title">Menyiapkan Saturnus</h3><div class="mars-full-loading-status" id="saturn-full-loading-status">MENYIAPKAN DESTINASI</div><div class="mars-loading-track"><div class="mars-loading-progress" id="saturn-full-loading-progress"></div></div></div>
+        <div class="mars-full-loading" id="saturn-full-loading" data-saturn-ui hidden><div class="mars-full-loading-kicker">ANTARA · SISTEM SATURNUS</div><h3 id="saturn-full-loading-title">Menyiapkan Saturnus</h3><div class="mars-full-loading-status" id="saturn-full-loading-status">MENYIAPKAN WILAYAH</div><div class="mars-loading-track"><div class="mars-loading-progress" id="saturn-full-loading-progress"></div></div></div>
 
-        <div class="mars-full-tutorial" id="saturn-full-tutorial" data-saturn-ui><div class="mars-full-tutorial-header"><span>Kontrol Eksplorasi</span><button id="saturn-tutorial-close" type="button" aria-label="Tutup panduan">×</button></div><div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-desktop"><div class="mars-tutorial-item"><b>W A S D</b><span>Orbit kamera</span></div><div class="mars-tutorial-item"><b>1× KLIK</b><span>Aktifkan mouse-look</span></div><div class="mars-tutorial-item"><b>Q / E</b><span>Zoom</span></div><div class="mars-tutorial-item"><b>E</b><span>Amati target</span></div><div class="mars-tutorial-item"><b>ESC</b><span>Panel / keluar</span></div></div><div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-mobile"><div class="mars-tutorial-item"><b>PANAH</b><span>Orbit kamera</span></div><div class="mars-tutorial-item"><b>GESER</b><span>Lihat sekitar</span></div><div class="mars-tutorial-item"><b>＋ / −</b><span>Zoom</span></div><div class="mars-tutorial-item"><b>AMATI</b><span>Temuan</span></div></div></div>
+        <div class="mars-full-error" id="saturn-full-error" data-saturn-ui hidden><h3>Eksplorasi Belum Tersedia</h3><p id="saturn-full-error-message">Eksplorasi penuh Saturnus tidak dapat dimuat.</p><button id="saturn-full-error-return" type="button">Kembali ke Saturnus</button></div>
+
+        <div class="mars-full-tutorial" id="saturn-full-tutorial" data-saturn-ui><div class="mars-full-tutorial-header"><span>Kontrol Eksplorasi</span><button id="saturn-tutorial-close" type="button" aria-label="Tutup panduan">×</button></div><div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-desktop"><div class="mars-tutorial-item"><b>W A S D</b><span>Terbang</span></div><div class="mars-tutorial-item"><b>1× KLIK</b><span>Aktifkan mouse-look</span></div><div class="mars-tutorial-item"><b>Q / E</b><span>Turun / Naik</span></div><div class="mars-tutorial-item"><b>SHIFT</b><span>Percepat</span></div><div class="mars-tutorial-item"><b>E</b><span>Amati saat dekat</span></div><div class="mars-tutorial-item"><b>ESC</b><span>Panel / keluar</span></div></div><div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-mobile"><div class="mars-tutorial-item"><b>PANAH</b><span>Terbang</span></div><div class="mars-tutorial-item"><b>GESER</b><span>Lihat sekitar</span></div><div class="mars-tutorial-item"><b>＋ / −</b><span>Naik / Turun</span></div><div class="mars-tutorial-item"><b>AMATI</b><span>Temuan</span></div></div></div>
+
+        <div class="venus-boundary-hint" id="saturn-boundary-hint" aria-live="polite"></div>
 
         <aside class="mars-landmark-card venus-location-card" id="saturn-landmark-card" data-saturn-ui aria-live="polite" aria-hidden="true" hidden>
-          <div class="venus-location-card-head"><small>WILAYAH ILMIAH SATURNUS · DATA CASSINI</small><button class="venus-location-minimize" id="saturn-landmark-minimize" type="button">Sembunyikan</button></div>
+          <div class="venus-location-card-head"><small>WILAYAH ILMIAH SATURNUS · DATA NASA/CASSINI</small><button class="venus-location-minimize" id="saturn-landmark-minimize" type="button">Sembunyikan</button></div>
           <h4 id="saturn-landmark-name">Saturnus</h4><p class="mars-landmark-type" id="saturn-landmark-type"></p><p class="mars-landmark-coords" id="saturn-landmark-coords"></p>
-          <a class="venus-landmark-media saturn-landmark-real-media" id="saturn-landmark-media" href="https://science.nasa.gov/saturn/" target="_blank" rel="noopener noreferrer"><img id="saturn-landmark-image" src="" alt="" loading="lazy" referrerpolicy="no-referrer"><b id="saturn-landmark-image-caption">Citra referensi Cassini</b></a>
+          <a class="venus-landmark-media saturn-landmark-real-media" id="saturn-landmark-media" href="https://science.nasa.gov/saturn/" target="_blank" rel="noopener noreferrer"><img id="saturn-landmark-image" src="" alt="" loading="lazy" referrerpolicy="no-referrer"><b id="saturn-landmark-image-caption">Citra referensi NASA / Cassini</b></a>
           <p class="venus-location-description" id="saturn-landmark-description"></p><ul class="venus-location-facts" id="saturn-landmark-facts"></ul>
-          <div class="venus-location-visualization-note">Scene 3D adalah visualisasi orbital ANTARA. Citra pada kartu ini adalah referensi ilmiah NASA/Cassini untuk fitur yang sedang diamati.</div><div class="venus-location-data-badge">CASSINI ISS · NASA / JPL-CALTECH / SSI</div>
+          <div class="venus-location-visualization-note">Simulasi 3D memakai skala ruang yang dikompresi agar bisa dimainkan. Fenomena, urutan lapisan, dan fakta sains mengikuti referensi NASA/Cassini; penanda bercahaya adalah alat edukasi ANTARA, bukan objek nyata.</div><div class="venus-location-data-badge">NASA · JPL-CALTECH / SSI · CASSINI-HUYGENS</div>
           <div class="venus-location-sources"><a class="mars-landmark-source" id="saturn-landmark-source" href="https://science.nasa.gov/saturn/" target="_blank" rel="noopener noreferrer">Referensi ilmiah: NASA / Cassini ↗</a></div>
         </aside>
         <button class="venus-location-info-toggle" id="saturn-info-toggle" type="button" data-saturn-ui hidden>Info Lokasi</button>
@@ -1773,88 +1778,80 @@
         <button class="uranus-exploration-close return-panorama-button" id="uranus-exploration-close" type="button">Kembali ke panorama Uranus</button>
       </aside>
 
-      <section class="mars-full-exploration venus-full-exploration uranus-full-exploration" id="uranus-full-exploration" aria-label="Eksplorasi penuh sistem Uranus" aria-hidden="true" hidden inert>
-        <div class="uranus-full-orbit-input" id="uranus-full-orbit-input" aria-label="Area kontrol orbit Uranus"></div>
+      <section class="mars-full-exploration venus-full-exploration uranus-full-exploration" id="uranus-full-exploration" aria-label="Eksplorasi penuh Uranus" aria-hidden="true" hidden inert>
+        <div class="uranus-full-viewport" id="uranus-full-viewport" aria-label="Simulasi tiga dimensi Uranus"></div>
+        <div class="uranus-full-orbit-input" id="uranus-full-orbit-input" aria-label="Area kontrol eksplorasi Uranus"></div>
 
         <section class="venus-quality-panel" id="uranus-quality-panel" aria-labelledby="uranus-quality-title" hidden>
-          <div class="venus-quality-topline"><span>ANTARA · EKSPLORASI SISTEM URANUS</span><button id="uranus-quality-close" type="button" aria-label="Tutup pengaturan kualitas grafis">×</button></div>
-          <div class="venus-quality-copy">
-            <small>PERSIAPAN EKSPLORASI</small>
-            <h3 id="uranus-quality-title">Kualitas Grafis</h3>
-            <p>Pilih kualitas renderer sebelum memasuki observasi orbital Uranus. Model Uranus, kemiringan sumbu, musim panjang, cincin gelap, Miranda, dan penanda fitur memakai scene tiga dimensi ANTARA yang sudah ada.</p>
-          </div>
+          <div class="venus-quality-topline"><span>ANTARA · EKSPLORASI URANUS</span><button id="uranus-quality-close" type="button" aria-label="Tutup pengaturan kualitas grafis">×</button></div>
+          <div class="venus-quality-copy"><small>PERSIAPAN EKSPLORASI</small><h3 id="uranus-quality-title">Kualitas Grafis</h3><p>Pilih kualitas renderer sebelum memasuki simulasi 3D Uranus. Flow memakai template Venus: kualitas, wilayah, tujuan, Info Lokasi, observasi, kontrol penuh, dan exit yang konsisten.</p></div>
           <div class="venus-quality-options" id="uranus-quality-options" role="radiogroup" aria-label="Kualitas grafis Uranus">
             <button type="button" class="venus-quality-option" data-uranus-quality="LOW" role="radio" aria-checked="false"><span><strong>RENDAH</strong><small>Performa terbaik</small></span><em data-quality-recommendation></em></button>
             <button type="button" class="venus-quality-option" data-uranus-quality="MEDIUM" role="radio" aria-checked="false"><span><strong>SEDANG</strong><small>Seimbang</small></span><em data-quality-recommendation></em></button>
             <button type="button" class="venus-quality-option" data-uranus-quality="HIGH" role="radio" aria-checked="false"><span><strong>TINGGI</strong><small>Visual terbaik</small></span><em data-quality-recommendation></em></button>
           </div>
           <div class="venus-quality-summary"><span id="uranus-quality-device-note">Rekomendasi ditentukan dari kemampuan browser dan layar.</span><strong id="uranus-quality-selected-label">SEDANG</strong></div>
-          <button class="venus-quality-start" id="uranus-quality-start" type="button">LANJUT PILIH DESTINASI</button>
+          <button class="venus-quality-start" id="uranus-quality-start" type="button">LANJUT PILIH WILAYAH</button>
         </section>
 
         <section class="venus-region-selector" id="uranus-region-selector" aria-labelledby="uranus-region-selector-title" hidden>
-          <div class="venus-region-selector-topline"><span>ANTARA · SISTEM URANUS / NASA</span><button id="uranus-region-selector-close" type="button" aria-label="Tutup pemilih destinasi Uranus">×</button></div>
-          <h3 id="uranus-region-selector-title">Pilih Destinasi Uranus</h3>
-          <p>Uranus tidak memiliki permukaan padat. Karena itu Eksplorasi Penuh memakai observasi orbital: sumbu miring, musim panjang, cincin gelap, Miranda, dan jejak sejarah Voyager 2 yang semuanya ditampilkan dengan scene Uranus yang sudah ada.</p>
+          <div class="venus-region-selector-topline"><span>ANTARA · URANUS / VOYAGER 2</span><button id="uranus-region-selector-close" type="button" aria-label="Tutup pemilih wilayah Uranus">×</button></div>
+          <h3 id="uranus-region-selector-title">Pilih Wilayah Uranus</h3>
+          <p>Uranus tidak memiliki permukaan padat. Eksplorasi Penuh memakai POV free-flight melalui atmosfer metana, kutub dan musim ekstrem, magnetosfer miring, cincin gelap, serta koridor Miranda/Voyager 2.</p>
           <div class="venus-region-grid" id="uranus-region-grid"></div>
-          <div class="venus-region-provenance"><strong>REFERENSI ILMIAH</strong><span>NASA Science · Voyager 2</span><small>Citra pada Info Lokasi berasal dari referensi NASA Science dan Voyager 2. Model 3D adalah visualisasi ANTARA yang digunakan untuk menunjukkan posisi relatif fitur dan target observasi.</small></div>
+          <div class="venus-region-provenance"><strong>REFERENSI ILMIAH</strong><span>NASA Science · JPL-Caltech · Voyager 2</span><small>Skala ruang dikompresi agar dapat dimainkan. Data lingkungan mengikuti referensi NASA; penanda dan koridor adalah alat edukasi ANTARA.</small></div>
         </section>
 
-        <aside class="mars-full-hud" data-uranus-ui aria-label="Informasi eksplorasi orbital Uranus">
-          <div class="mars-hud-kicker">SISTEM URANUS</div><h3>Eksplorasi</h3><div class="mars-hud-mode">ORBITAL · NASA / VOYAGER 2</div>
-          <div class="mars-hud-location" id="uranus-full-hud-location">Pilih destinasi</div>
-          <div class="mars-hud-coordinates" id="uranus-full-hud-view">--</div>
+        <aside class="mars-full-hud" data-uranus-ui aria-label="Informasi eksplorasi Uranus">
+          <div class="mars-hud-kicker">URANUS</div><h3>Eksplorasi</h3><div class="mars-hud-mode">POV 3D · PENERBANGAN BEBAS</div>
+          <div class="mars-hud-location" id="uranus-full-hud-location">Pilih wilayah</div>
+          <div class="mars-hud-coordinates" id="uranus-full-hud-depth">--</div>
           <div class="mars-hud-metrics">
-            <div class="mars-hud-metric"><small>Sudut pandang</small><strong id="uranus-full-hud-zoom">--</strong></div>
-            <div class="mars-hud-metric"><small>Kecepatan</small><strong>ORBITAL</strong></div>
-            <div class="mars-hud-metric"><small>Target</small><strong id="uranus-full-hud-region-type">--</strong></div>
+            <div class="mars-hud-metric"><small>Kecepatan</small><strong id="uranus-full-hud-speed">0 M/S SIM</strong></div>
+            <div class="mars-hud-metric"><small>Kondisi</small><strong id="uranus-full-hud-pressure">--</strong></div>
+            <div class="mars-hud-metric"><small>Wilayah</small><strong id="uranus-full-hud-region-type">--</strong></div>
             <div class="mars-hud-metric"><small>Kualitas</small><strong id="uranus-full-hud-quality">SEDANG</strong></div>
           </div>
-          <div class="mars-hud-data">NASA SCIENCE · VOYAGER 2</div>
+          <div class="mars-hud-data" id="uranus-full-hud-data">NASA / JPL · VOYAGER 2 · MODEL URANUS EDUKASI TERKOMPRESI</div>
         </aside>
 
         <aside class="venus-objectives-panel" id="uranus-objectives-panel" data-uranus-ui aria-label="Tujuan eksplorasi Uranus" aria-live="polite" hidden>
-          <div class="venus-objectives-head"><div><small>TUJUAN EKSPLORASI</small><strong>Sistem Uranus</strong></div><button id="uranus-objectives-collapse" type="button">Minimalkan</button></div>
-          <p id="uranus-objectives-intro">Amati lima destinasi utama. Pindah wilayah, arahkan kamera ke target, lalu gunakan tombol AMATI untuk mencatat temuanmu.</p>
-          <div class="venus-discovery-progress"><div><span>PROGRES TEMUAN</span><strong id="uranus-discovery-count">0 / 5</strong></div><div class="venus-discovery-track" aria-hidden="true"><i id="uranus-discovery-bar"></i></div></div>
+          <div class="venus-objectives-head"><div><small>TUJUAN EKSPLORASI</small><strong id="uranus-objectives-region">Uranus</strong></div><button id="uranus-objectives-collapse" type="button">Minimalkan</button></div>
+          <p id="uranus-objectives-intro">Dekati penanda ilmiah, lalu tekan E atau AMATI.</p>
+          <div class="venus-discovery-progress"><div><span>PROGRES TEMUAN</span><strong id="uranus-discovery-count">0 / 3</strong></div><div class="venus-discovery-track" aria-hidden="true"><i id="uranus-discovery-bar"></i></div></div>
           <ol id="uranus-objectives-list" class="venus-objectives-list"></ol>
-          <div class="venus-next-target" id="uranus-next-target"><small>TEMUAN BERIKUTNYA</small><strong id="uranus-next-target-name">Kemiringan Sumbu Uranus</strong><span id="uranus-next-target-distance">Pilih dari menu Wilayah.</span></div>
+          <div class="venus-next-target" id="uranus-next-target"><small>TEMUAN TERDEKAT</small><strong id="uranus-next-target-name">-</strong><span id="uranus-next-target-distance">Dekati penanda di koridor eksplorasi.</span></div>
         </aside>
-        <button class="venus-objectives-toggle" id="uranus-objectives-toggle" type="button" data-uranus-ui hidden>Tujuan · 0 / 5</button>
+        <button class="venus-objectives-toggle" id="uranus-objectives-toggle" type="button" data-uranus-ui hidden>Tujuan · 0 / 3</button>
 
-        <div class="venus-observation-prompt" id="uranus-observation-prompt" data-uranus-ui hidden>
-          <span class="venus-observation-key">E</span><div><small>TARGET SUDAH TERKUNCI</small><strong id="uranus-observation-prompt-title">Ada yang menarik</strong></div><button id="uranus-observe-button" type="button">AMATI</button>
-        </div>
+        <div class="venus-observation-prompt" id="uranus-observation-prompt" data-uranus-ui hidden><span class="venus-observation-key">E</span><div><small>KAMU SUDAH CUKUP DEKAT</small><strong id="uranus-observation-prompt-title">Ada yang menarik</strong></div><button id="uranus-observe-button" type="button">AMATI</button></div>
 
         <aside class="venus-observation-card" id="uranus-observation-card" data-uranus-ui aria-live="polite" aria-hidden="true" hidden>
-          <div class="venus-observation-card-head"><div><small>OBSERVASI NASA</small><span id="uranus-observation-status">BARU KAMU AMATI</span></div><button id="uranus-observation-close" type="button" aria-label="Tutup pengamatan">×</button></div>
+          <div class="venus-observation-card-head"><div><small>OBSERVASI URANUS</small><span id="uranus-observation-status">BARU KAMU AMATI</span></div><button id="uranus-observation-close" type="button" aria-label="Tutup pengamatan">×</button></div>
           <h4 id="uranus-observation-title">Uranus</h4><p class="venus-observation-meta" id="uranus-observation-meta"></p><p class="venus-observation-lead" id="uranus-observation-lead"></p>
           <div class="venus-observation-why"><small>KENAPA INI MENARIK?</small><p id="uranus-observation-why"></p></div>
           <details class="venus-observation-more"><summary>Pelajari lebih lanjut</summary><div id="uranus-observation-deep"></div></details>
           <a class="venus-observation-source" id="uranus-observation-source" href="https://science.nasa.gov/uranus/" target="_blank" rel="noopener noreferrer">Sumber data: NASA Science / Voyager 2 ↗</a>
         </aside>
 
-        <div class="mars-full-actions venus-full-actions" data-uranus-ui hidden>
-          <button class="venus-actions-menu-toggle" id="uranus-actions-menu-toggle" type="button" aria-expanded="false" aria-controls="uranus-actions-menu">Menu</button>
-          <div class="venus-actions-menu" id="uranus-actions-menu"><button id="uranus-location-toggle" type="button">Wilayah</button><button id="uranus-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button><button class="mars-full-exit" id="uranus-full-exit" type="button">Keluar dari Eksplorasi</button></div>
-        </div>
+        <div class="mars-full-actions venus-full-actions" data-uranus-ui hidden><button class="venus-actions-menu-toggle" id="uranus-actions-menu-toggle" type="button" aria-expanded="false" aria-controls="uranus-actions-menu">Menu</button><div class="venus-actions-menu" id="uranus-actions-menu"><button id="uranus-location-toggle" type="button">Wilayah</button><button id="uranus-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button><button class="mars-full-exit" id="uranus-full-exit" type="button">Keluar dari Eksplorasi</button></div></div>
 
-        <div class="mars-control-hints" data-uranus-ui aria-hidden="true"><span><b>WASD</b> Orbit kamera</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Jauh / Dekat</span><span><b>E</b> Amati saat target aktif</span><span><b>ESC</b> Panel / Keluar</span></div>
-        <div class="mars-mobile-controls" data-uranus-ui aria-label="Kontrol orbit Uranus">
-          <div class="mars-mobile-dpad"><button type="button" data-uranus-control="forward" aria-label="Lihat ke atas">▲</button><button type="button" data-uranus-control="left" aria-label="Orbit kiri">◀</button><span class="mars-dpad-core" aria-hidden="true"></span><button type="button" data-uranus-control="right" aria-label="Orbit kanan">▶</button><button type="button" data-uranus-control="backward" aria-label="Lihat ke bawah">▼</button></div>
-          <div class="mars-mobile-altitude"><button type="button" data-uranus-control="up" aria-label="Zoom dekat">＋</button><span class="mars-mobile-altitude-label">ZOOM</span><button type="button" data-uranus-control="down" aria-label="Zoom jauh">−</button></div>
-        </div>
+        <div class="mars-control-hints" data-uranus-ui aria-hidden="true"><span><b>WASD</b> Terbang</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Cepat</span><span><b>E</b> Amati saat dekat</span><span><b>ESC</b> Panel / Keluar</span></div>
+        <div class="mars-mobile-controls" data-uranus-ui aria-label="Kontrol penerbangan Uranus"><div class="mars-mobile-dpad"><button type="button" data-uranus-control="forward" aria-label="Maju">▲</button><button type="button" data-uranus-control="left" aria-label="Geser kiri">◀</button><span class="mars-dpad-core" aria-hidden="true"></span><button type="button" data-uranus-control="right" aria-label="Geser kanan">▶</button><button type="button" data-uranus-control="backward" aria-label="Mundur">▼</button></div><div class="mars-mobile-altitude"><button type="button" data-uranus-control="up" aria-label="Naik">＋</button><span class="mars-mobile-altitude-label">TINGGI</span><button type="button" data-uranus-control="down" aria-label="Turun">−</button></div></div>
 
-        <div class="mars-full-loading" id="uranus-full-loading" data-uranus-ui hidden><div class="mars-full-loading-kicker">ANTARA · SISTEM URANUS</div><h3 id="uranus-full-loading-title">Menyiapkan Uranus</h3><div class="mars-full-loading-status" id="uranus-full-loading-status">MENYIAPKAN DESTINASI</div><div class="mars-loading-track"><div class="mars-loading-progress" id="uranus-full-loading-progress"></div></div></div>
+        <div class="mars-full-loading" id="uranus-full-loading" data-uranus-ui hidden><div class="mars-full-loading-kicker">ANTARA · SISTEM URANUS</div><h3 id="uranus-full-loading-title">Menyiapkan Uranus</h3><div class="mars-full-loading-status" id="uranus-full-loading-status">MENYIAPKAN WILAYAH</div><div class="mars-loading-track"><div class="mars-loading-progress" id="uranus-full-loading-progress"></div></div></div>
+        <div class="mars-full-error" id="uranus-full-error" data-uranus-ui hidden><h3>Eksplorasi Belum Tersedia</h3><p id="uranus-full-error-message">Eksplorasi penuh Uranus tidak dapat dimuat.</p><button id="uranus-full-error-return" type="button">Kembali ke Uranus</button></div>
 
-        <div class="mars-full-tutorial" id="uranus-full-tutorial" data-uranus-ui><div class="mars-full-tutorial-header"><span>Kontrol Eksplorasi</span><button id="uranus-tutorial-close" type="button" aria-label="Tutup panduan">×</button></div><div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-desktop"><div class="mars-tutorial-item"><b>W A S D</b><span>Orbit kamera</span></div><div class="mars-tutorial-item"><b>1× KLIK</b><span>Aktifkan mouse-look</span></div><div class="mars-tutorial-item"><b>Q / E</b><span>Zoom</span></div><div class="mars-tutorial-item"><b>E</b><span>Amati target</span></div><div class="mars-tutorial-item"><b>ESC</b><span>Panel / keluar</span></div></div><div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-mobile"><div class="mars-tutorial-item"><b>PANAH</b><span>Orbit kamera</span></div><div class="mars-tutorial-item"><b>GESER</b><span>Lihat sekitar</span></div><div class="mars-tutorial-item"><b>＋ / −</b><span>Zoom</span></div><div class="mars-tutorial-item"><b>AMATI</b><span>Temuan</span></div></div></div>
+        <div class="mars-full-tutorial" id="uranus-full-tutorial" data-uranus-ui><div class="mars-full-tutorial-header"><span>Kontrol Eksplorasi</span><button id="uranus-tutorial-close" type="button" aria-label="Tutup panduan">×</button></div><div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-desktop"><div class="mars-tutorial-item"><b>W A S D</b><span>Terbang</span></div><div class="mars-tutorial-item"><b>1× KLIK</b><span>Aktifkan mouse-look</span></div><div class="mars-tutorial-item"><b>Q / E</b><span>Turun / Naik</span></div><div class="mars-tutorial-item"><b>SHIFT</b><span>Percepat</span></div><div class="mars-tutorial-item"><b>E</b><span>Amati saat dekat</span></div><div class="mars-tutorial-item"><b>ESC</b><span>Panel / keluar</span></div></div><div class="mars-tutorial-grid mars-full-tutorial-grid mars-tutorial-mobile"><div class="mars-tutorial-item"><b>PANAH</b><span>Terbang</span></div><div class="mars-tutorial-item"><b>GESER</b><span>Lihat sekitar</span></div><div class="mars-tutorial-item"><b>＋ / −</b><span>Naik / Turun</span></div><div class="mars-tutorial-item"><b>AMATI</b><span>Temuan</span></div></div></div>
+
+        <div class="venus-boundary-hint" id="uranus-boundary-hint" aria-live="polite"></div>
 
         <aside class="mars-landmark-card venus-location-card" id="uranus-landmark-card" data-uranus-ui aria-live="polite" aria-hidden="true" hidden>
-          <div class="venus-location-card-head"><small>WILAYAH ILMIAH SISTEM URANUS · DATA NASA</small><button class="venus-location-minimize" id="uranus-landmark-minimize" type="button">Sembunyikan</button></div>
+          <div class="venus-location-card-head"><small>WILAYAH ILMIAH URANUS · DATA NASA/VOYAGER 2</small><button class="venus-location-minimize" id="uranus-landmark-minimize" type="button">Sembunyikan</button></div>
           <h4 id="uranus-landmark-name">Uranus</h4><p class="mars-landmark-type" id="uranus-landmark-type"></p><p class="mars-landmark-coords" id="uranus-landmark-coords"></p>
           <a class="venus-landmark-media uranus-landmark-real-media" id="uranus-landmark-media" href="https://science.nasa.gov/uranus/" target="_blank" rel="noopener noreferrer"><img id="uranus-landmark-image" src="" alt="" loading="lazy" referrerpolicy="no-referrer"><b id="uranus-landmark-image-caption">Citra referensi NASA</b></a>
           <p class="venus-location-description" id="uranus-landmark-description"></p><ul class="venus-location-facts" id="uranus-landmark-facts"></ul>
-          <div class="venus-location-visualization-note">Scene 3D adalah visualisasi orbital ANTARA. Citra pada kartu ini adalah referensi ilmiah NASA Science / Voyager 2 untuk fitur yang sedang diamati.</div><div class="venus-location-data-badge">NASA SCIENCE · VOYAGER 2</div>
+          <div class="venus-location-visualization-note">Simulasi 3D memakai skala ruang yang dikompresi. Uranus tidak memiliki permukaan padat; penanda, garis medan, koridor cincin, dan jalur flyby adalah visualisasi edukasi ANTARA.</div><div class="venus-location-data-badge">NASA SCIENCE · JPL-CALTECH · VOYAGER 2</div>
           <div class="venus-location-sources"><a class="mars-landmark-source" id="uranus-landmark-source" href="https://science.nasa.gov/uranus/" target="_blank" rel="noopener noreferrer">Referensi ilmiah: NASA Science / Voyager 2 ↗</a></div>
         </aside>
         <button class="venus-location-info-toggle" id="uranus-info-toggle" type="button" data-uranus-ui hidden>Info Lokasi</button>
