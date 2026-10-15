@@ -9778,3 +9778,368 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     bottom: 8.2% !important;
   }
 }
+
+/* ========================================================================
+   2026-10-07 FINAL COCKPIT POLISH PASS
+   - restore medium-large character presence on laptop
+   - zoom the mobile city a bit so the window feels fuller
+   - give MASUK / DAFTAR its own icon and stronger sci-fi treatment
+   ======================================================================== */
+
+/* Laptop characters were still reading too small.
+   Bring both guides back to a comfortable medium size without letting them
+   dominate the cockpit like the old oversized build. */
+@media (min-width: 1200px) and (max-width: 1799px) {
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a,
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(395px, 29vw, 465px) !important;
+    bottom: 8.8% !important;
+  }
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a {
+    left: 1.3% !important;
+  }
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    right: 1.3% !important;
+  }
+}
+
+/* Small laptops / wide tablets also need a touch more presence than the
+   current build, or the cockpit reads too empty around the CTA. */
+@media (min-width: 900px) and (max-width: 1199px) {
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a,
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(315px, 33vw, 385px) !important;
+    bottom: 10.5% !important;
+  }
+}
+
+/* Mobile city zoom-in: tighten the artwork box and lift it slightly so the
+   skyline fills more of the window instead of leaving too much empty sky. */
+@media (max-width: 700px) {
+  .anime-city-backdrop {
+    left: -8% !important;
+    right: -8% !important;
+    top: -26% !important;
+    bottom: 1% !important;
+  }
+  .anime-city-lights {
+    left: -4% !important;
+    right: -4% !important;
+    bottom: 15.2% !important;
+    height: 26% !important;
+  }
+  .anime-city-atmosphere {
+    top: -22% !important;
+    height: 78% !important;
+    opacity: .68 !important;
+  }
+}
+@media (max-width: 520px) {
+  .anime-city-backdrop {
+    left: -10% !important;
+    right: -10% !important;
+    top: -23% !important;
+    bottom: 2% !important;
+  }
+}
+
+/* MASUK / DAFTAR should feel like a first-class sci-fi module too. */
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame {
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(226,184,107,.13), transparent 32%, rgba(106,190,223,.08) 76%),
+    linear-gradient(180deg, rgba(19,39,53,.98), rgba(5,14,23,.99)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(152,196,214,.22),
+    inset 0 1px 0 rgba(255,255,255,.065),
+    inset 0 -1px 0 rgba(0,0,0,.42),
+    0 5px 15px rgba(0,0,0,.22) !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame::before,
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame::before {
+  left: 10px;
+  right: 10px;
+  top: 3px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(224,183,106,.78), rgba(112,188,222,.42), transparent 84%);
+  opacity: .9;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame::after {
+  left: 14px;
+  right: 44px;
+  bottom: 3px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(112,188,222,.66), rgba(224,183,106,.46));
+  opacity: .72;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  color: rgba(222,184,110,.96);
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-icon::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(222,184,110,.32);
+  transform: rotate(45deg);
+  box-shadow: 0 0 10px rgba(112,188,222,.08);
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-icon svg {
+  position: relative;
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy {
+  inset: 0 24px 0 42px !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong {
+  text-shadow: 0 0 10px rgba(0,0,0,.18);
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-action {
+  right: 7px !important;
+}
+.cockpit-profile-hud .profile-login-trigger:hover .profile-login-frame,
+.cockpit-profile-hud .profile-login-trigger:focus-visible .profile-login-frame {
+  background:
+    linear-gradient(90deg, rgba(228,190,113,.18), transparent 34%, rgba(111,195,226,.11) 78%),
+    linear-gradient(180deg, rgba(26,50,65,.99), rgba(6,17,27,.99)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(224,183,106,.34),
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -1px 0 rgba(0,0,0,.42),
+    0 6px 16px rgba(0,0,0,.25),
+    0 0 12px rgba(112,188,222,.07) !important;
+}
+
+@media (max-width: 700px) {
+  .cockpit-profile-hud .profile-login-trigger .profile-login-icon {
+    left: 8px;
+    width: 24px;
+    height: 24px;
+  }
+  .cockpit-profile-hud .profile-login-trigger .profile-login-icon svg {
+    width: 15px;
+    height: 15px;
+  }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy {
+    inset: 0 14px 0 34px !important;
+  }
+}
+
+/* ========================================================================
+   2026-10-07 LOGIN MODULE REDESIGN
+   Goal: make MASUK / DAFTAR visually belong to the 4 sci-fi nav modules.
+   - remove the boxed/badged icon treatment
+   - reuse the dark control-plate language of the nav modules
+   - keep clear login CTA, but calmer and less awkward
+   ======================================================================== */
+
+/* The frame becomes a compact grid like the other HUD modules. */
+.cockpit-profile-hud .profile-login-trigger {
+  text-decoration: none !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame {
+  display: grid !important;
+  grid-template-columns: 22px minmax(0,1fr) 26px !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 0 10px 0 9px !important;
+  background:
+    linear-gradient(90deg, rgba(218,181,111,.075), transparent 30%, rgba(111,190,222,.055)),
+    linear-gradient(180deg, rgba(20,39,52,.965), rgba(5,15,24,.985)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(130,177,197,.16),
+    inset 0 1px 0 rgba(255,255,255,.055),
+    inset 0 -1px 0 rgba(0,0,0,.36),
+    0 4px 11px rgba(0,0,0,.20) !important;
+  clip-path: polygon(8px 0,75% 0,79% 3px,100% 3px,100% calc(100% - 7px),calc(100% - 7px) 100%,31% 100%,27% calc(100% - 2px),0 calc(100% - 2px),0 8px) !important;
+  overflow: hidden !important;
+  isolation: isolate;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame::before,
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame::after {
+  content:"";
+  position:absolute;
+  pointer-events:none;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame::before {
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(224,183,106,.84), rgba(224,183,106,.24) 54%, transparent 76%) top left/76% 1px no-repeat,
+    linear-gradient(90deg, transparent 8%, rgba(112,188,222,.34), rgba(112,188,222,.78)) bottom right/72% 1px no-repeat,
+    linear-gradient(180deg, rgba(224,183,106,.84), transparent 74%) left top/1px 66% no-repeat,
+    linear-gradient(180deg, transparent, rgba(112,188,222,.84)) right bottom/1px 70% no-repeat;
+  opacity: .94;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame::after {
+  right: 8px;
+  top: 6px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(112,188,222,.95);
+  box-shadow: 0 0 7px rgba(112,188,222,.45);
+  animation: antara-module-node 3.3s ease-in-out infinite;
+}
+
+/* remove the old decorative corner brackets; the new perimeter already matches the nav modules */
+.cockpit-profile-hud .profile-login-trigger .profile-login-bracket {
+  display: none !important;
+}
+
+/* clean icon: no diamond/square background, just a gold line icon like a nav glyph */
+.cockpit-profile-hud .profile-login-trigger .profile-login-icon {
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  width: 20px !important;
+  height: 20px !important;
+  z-index: 2;
+  display: grid !important;
+  place-items: center !important;
+  color: #d9b46f !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-icon::before {
+  display: none !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+  stroke-width: 1.35 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+/* copy block now behaves like the other nav modules. */
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy {
+  position: relative !important;
+  inset: auto !important;
+  display: grid !important;
+  align-content: center !important;
+  justify-items: start !important;
+  text-align: left !important;
+  gap: 1px !important;
+  min-width: 0 !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-kicker {
+  display: none !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong,
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy small {
+  width: auto !important;
+  text-align: left !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong {
+  color: #edf1f3 !important;
+  font: 650 clamp(8px,.63vw,10px)/1 system-ui,sans-serif !important;
+  letter-spacing: .095em !important;
+  white-space: nowrap !important;
+  text-shadow: none !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy small {
+  display: none !important;
+}
+
+/* arrow area becomes subtle like a module edge accent, not a huge separate widget */
+.cockpit-profile-hud .profile-login-trigger .profile-hud-action {
+  position: relative !important;
+  right: auto !important;
+  top: auto !important;
+  transform: none !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: grid !important;
+  place-items: center !important;
+  justify-self: end !important;
+  color: #d9b46f !important;
+  padding-left: 7px !important;
+  border-left: 1px solid rgba(223,183,111,.34) !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-action span {
+  display: none !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-action svg {
+  width: 15px !important;
+  height: 15px !important;
+  stroke: currentColor !important;
+  stroke-width: 1.5 !important;
+}
+
+/* hover/focus should match the other modules too. */
+.cockpit-profile-hud .profile-login-trigger:hover .profile-login-frame,
+.cockpit-profile-hud .profile-login-trigger:focus-visible .profile-login-frame {
+  background:
+    linear-gradient(90deg, rgba(228,190,113,.14), transparent 34%, rgba(113,195,226,.10)),
+    linear-gradient(180deg, rgba(28,51,65,.985), rgba(7,20,30,.995)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(144,201,224,.28),
+    inset 0 1px 0 rgba(255,255,255,.075),
+    inset 3px 0 0 rgba(222,183,110,.22),
+    0 5px 15px rgba(0,0,0,.26),
+    0 0 12px rgba(113,195,226,.065) !important;
+}
+.cockpit-profile-hud .profile-login-trigger:hover,
+.cockpit-profile-hud .profile-login-trigger:focus-visible {
+  filter: brightness(1.08);
+}
+.cockpit-profile-hud .profile-login-trigger:active .profile-login-frame {
+  background:
+    linear-gradient(90deg, rgba(218,181,111,.09), transparent 34%),
+    linear-gradient(180deg, rgba(6,17,27,.995), rgba(13,30,41,.985)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(144,201,224,.20),
+    inset 0 2px 6px rgba(0,0,0,.28) !important;
+}
+
+@media (max-width: 700px) {
+  .cockpit-profile-hud .profile-login-trigger .profile-login-frame {
+    grid-template-columns: 20px minmax(0,1fr) 22px !important;
+    gap: 6px !important;
+    padding: 0 8px 0 8px !important;
+  }
+  .cockpit-profile-hud .profile-login-trigger .profile-login-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  .cockpit-profile-hud .profile-login-trigger .profile-login-icon svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong {
+    font-size: 8px !important;
+    letter-spacing: .075em !important;
+  }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-action {
+    width: 20px !important;
+    height: 20px !important;
+    padding-left: 5px !important;
+  }
+}
