@@ -10,7 +10,7 @@
   <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, Sabuk Asteroid, Jupiter, Saturnus, Uranus, Neptunus, dan keajaiban Tata Surya.">
   <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/antara-logo.png" type="image/png">
-  <link rel="stylesheet" href="styles.css?v=20261005-responsive-polish-1">
+  <link rel="stylesheet" href="styles.css?v=20261005-audio-topnav-1">
   <link rel="stylesheet" href="achievement-notify.css?v=20261003-achievement-toast-1">
   <link rel="stylesheet" href="account-home-v2.css?v=20261005-bio-readable-1">
   <link rel="stylesheet" href="start-auth-gate.css?v=20261003-startlock-1">
@@ -64,7 +64,7 @@
   <script src="account-home-v2.js?v=20261005-bio-profile-1" defer></script>
   <script src="start-auth-gate.js?v=20261003-startlock-1" defer></script>
   <script src="solar-system-explorer.js?v=20261005-mobile-solar-sheet-1" defer></script>
-  <script src="script.js?v=20261005-nav-audio-readability-1" defer></script>
+  <script src="script.js?v=20261005-audio-topnav-1" defer></script>
   <script src="mobile-planet-scene-audit-fix.js?v=20261004-mobile-reference-lock-2" defer></script>
   <script src="exploration-scroll-content.js?v=20261004-scroll-title-1" defer></script>
 </head>
@@ -162,21 +162,6 @@
       <div class="solar-system-instructions" id="solar-system-instructions"><span class="solar-instruction-desktop">Drag untuk memutar kamera • scroll untuk zoom • arahkan cursor ke planet untuk info • klik planet untuk pindah panorama</span><span class="solar-instruction-mobile">Ketuk planet untuk lihat info • geser untuk memutar kamera</span></div>
     </section>
 
-
-    <footer class="mission-footer audio-orb-dock" aria-label="Kontrol audio ANTARA">
-      <button class="audio-control audio-sci-fi-node" id="audio-toggle" type="button" aria-label="Bisukan audio" aria-pressed="false" title="Kontrol audio ANTARA">
-        <svg class="speaker-icon sci-fi-audio-icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <path class="audio-hex" d="M16 3.5 26.5 9.6v12.8L16 28.5 5.5 22.4V9.6L16 3.5Z"/>
-          <circle class="audio-core-ring" cx="16" cy="16" r="4.1"/>
-          <circle class="audio-core-dot" cx="16" cy="16" r="1.35"/>
-          <path class="audio-circuit" d="M16 7.2v4.4M16 20.4v4.4M7.8 16h4.1M20.1 16h4.1"/>
-          <path class="sound-waves" d="M21.2 11.7c1.1 1.1 1.7 2.6 1.7 4.3s-.6 3.2-1.7 4.3M24.3 8.9c1.9 1.9 3 4.3 3 7.1s-1.1 5.2-3 7.1"/>
-          <path class="sound-slash" d="M8.2 8.2 23.8 23.8"/>
-        </svg>
-        <span class="audio-node-hint" aria-hidden="true">AUDIO</span>
-        <span class="sr-only" id="audio-label">AUDIO SIAP</span>
-      </button>
-    </footer>
 
     <div class="launch-stage" id="launch-stage" data-phase="idle" aria-label="Kokpit pesawat ANTARA dengan dua teman perjalanan">
       <div class="launch-brand-lockup" aria-label="ANTARA, Antariksa Nusantara">
@@ -389,6 +374,21 @@
           <button class="profile-more-trigger" id="profile-more-trigger" type="button" aria-expanded="false" aria-controls="profile-nav-suite">
             <span>MORE</span><i></i><i></i><i></i>
           </button>
+          </div>
+
+          <div class="audio-orb-dock" id="audio-orb-dock" aria-label="Kontrol audio ANTARA">
+            <button class="audio-control audio-sci-fi-node" id="audio-toggle" type="button" aria-label="Bisukan audio" aria-pressed="false" title="Kontrol audio ANTARA">
+              <svg class="speaker-icon sci-fi-audio-icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                <path class="audio-hex" d="M16 3.5 26.5 9.6v12.8L16 28.5 5.5 22.4V9.6L16 3.5Z"/>
+                <circle class="audio-core-ring" cx="16" cy="16" r="4.1"/>
+                <circle class="audio-core-dot" cx="16" cy="16" r="1.35"/>
+                <path class="audio-circuit" d="M16 7.2v4.4M16 20.4v4.4M7.8 16h4.1M20.1 16h4.1"/>
+                <path class="sound-waves" d="M21.2 11.7c1.1 1.1 1.7 2.6 1.7 4.3s-.6 3.2-1.7 4.3M24.3 8.9c1.9 1.9 3 4.3 3 7.1s-1.1 5.2-3 7.1"/>
+                <path class="sound-slash" d="M8.2 8.2 23.8 23.8"/>
+              </svg>
+              <span class="audio-node-hint" aria-hidden="true">AUDIO</span>
+              <span class="sr-only" id="audio-label">AUDIO SIAP</span>
+            </button>
           </div>
 
           <span class="profile-hud-scan" aria-hidden="true"></span>
