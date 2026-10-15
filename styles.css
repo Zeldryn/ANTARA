@@ -8161,3 +8161,287 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     letter-spacing: .13em !important;
   }
 }
+
+/* ========================================================================
+   2026-10-05 MOBILE SOLAR SYSTEM UX REBUILD
+   Mobile is observation-first: compact header, large orbit canvas, tap-to-info
+   bottom sheet, explicit panorama CTA. Audio moves away from bottom separator.
+   ======================================================================== */
+.solar-system-mobile-detail-actions,
+.solar-instruction-mobile { display:none; }
+.solar-instruction-desktop { display:inline; }
+
+@media (max-width:700px), (pointer:coarse) and (max-width:900px) {
+  .solar-system-observer {
+    overflow:hidden !important;
+    min-height:100dvh;
+  }
+  .solar-system-observer canvas {
+    touch-action:none;
+  }
+
+  /* Compact header: preserve the solar system as the visual priority. */
+  .solar-system-shell {
+    top:max(8px, env(safe-area-inset-top)) !important;
+    left:8px !important;
+    right:8px !important;
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) 136px !important;
+    grid-template-rows:auto auto !important;
+    gap:7px !important;
+    align-items:start !important;
+    pointer-events:none;
+  }
+  .solar-system-title-block,
+  .solar-system-clock,
+  .solar-system-back { pointer-events:auto; }
+  .solar-system-title-block {
+    grid-column:1 !important;
+    grid-row:1 !important;
+    width:auto !important;
+    max-width:none !important;
+    min-height:104px !important;
+    padding:11px 12px !important;
+    border-radius:17px 12px 17px 12px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:center !important;
+  }
+  .solar-system-title-block small {
+    font-size:6.7px !important;
+    letter-spacing:.18em !important;
+    line-height:1.15 !important;
+  }
+  .solar-system-title-block h2 {
+    margin:7px 0 0 !important;
+    font-size:clamp(19px,5.2vw,23px) !important;
+    line-height:1.06 !important;
+  }
+  .solar-system-title-block p { display:none !important; }
+
+  .solar-system-toolbar {
+    display:contents !important;
+  }
+  .solar-system-clock {
+    grid-column:2 !important;
+    grid-row:1 !important;
+    min-width:0 !important;
+    width:136px !important;
+    min-height:104px !important;
+    padding:9px 9px 8px !important;
+    border-radius:15px 11px 15px 11px !important;
+  }
+  .solar-system-clock > small {
+    font-size:6.4px !important;
+    letter-spacing:.15em !important;
+  }
+  .solar-system-clock > strong {
+    margin-top:5px !important;
+    font-size:15px !important;
+    line-height:1 !important;
+    white-space:nowrap;
+  }
+  .solar-system-clock > span {
+    margin-top:4px !important;
+    font-size:8.2px !important;
+    line-height:1.15 !important;
+    white-space:nowrap;
+  }
+  .solar-system-speed-control {
+    grid-template-columns:25px 38px 25px minmax(30px,1fr) !important;
+    gap:3px !important;
+    margin-top:7px !important;
+    padding-top:7px !important;
+  }
+  .solar-system-speed-control > button,
+  .solar-system-speed-control label {
+    height:27px !important;
+    min-height:27px !important;
+    border-radius:7px !important;
+  }
+  .solar-system-speed-control > button {
+    min-width:25px !important;
+    padding:0 !important;
+    font-size:10px !important;
+  }
+  #solar-system-speed-pause {
+    min-width:38px !important;
+    padding:0 3px !important;
+    font-size:6.6px !important;
+    letter-spacing:.07em !important;
+  }
+  .solar-system-speed-control label {
+    padding:0 5px !important;
+    display:block !important;
+  }
+  .solar-system-speed-control label span { display:none !important; }
+  .solar-system-speed-control input {
+    height:100% !important;
+    font-size:9px !important;
+    text-align:center !important;
+  }
+  .solar-system-back {
+    grid-column:1 / -1 !important;
+    grid-row:2 !important;
+    width:100% !important;
+    min-height:36px !important;
+    height:36px !important;
+    padding:0 12px !important;
+    border-radius:12px !important;
+    font-size:9px !important;
+    letter-spacing:.11em !important;
+  }
+
+  /* Detail becomes an off-canvas bottom sheet. Nothing covers the planets until tapped. */
+  .solar-system-detail-card {
+    position:absolute !important;
+    left:8px !important;
+    right:8px !important;
+    bottom:max(8px, env(safe-area-inset-bottom)) !important;
+    width:auto !important;
+    max-height:min(44dvh,390px) !important;
+    overflow:auto !important;
+    overscroll-behavior:contain;
+    z-index:8 !important;
+    padding:15px 15px 13px !important;
+    border-radius:20px 15px 20px 15px !important;
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+    transform:translateY(calc(100% + 28px)) !important;
+    transition:transform .28s cubic-bezier(.2,.8,.2,1), opacity .2s ease, visibility .2s ease !important;
+  }
+  .solar-system-observer.has-mobile-selection .solar-system-detail-card {
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+    transform:translateY(0) !important;
+  }
+  .solar-system-detail-card > small {
+    font-size:7px !important;
+    letter-spacing:.18em !important;
+  }
+  .solar-system-detail-card h3 {
+    margin:7px 0 6px !important;
+    font-size:25px !important;
+    line-height:1.02 !important;
+  }
+  .solar-system-detail-card p {
+    margin:0 0 8px !important;
+    font-size:11.5px !important;
+    line-height:1.42 !important;
+  }
+  .solar-system-stats {
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:6px !important;
+  }
+  .solar-system-stats div {
+    min-width:0;
+    padding:8px 7px 0 !important;
+    gap:4px !important;
+  }
+  .solar-system-stats div:nth-child(4) { display:none !important; }
+  .solar-system-stats dt {
+    font-size:6.4px !important;
+    line-height:1.2 !important;
+    letter-spacing:.1em !important;
+  }
+  .solar-system-stats dd {
+    font-size:10.5px !important;
+    line-height:1.25 !important;
+    overflow-wrap:anywhere;
+  }
+  .solar-system-mobile-detail-actions {
+    display:grid !important;
+    grid-template-columns:minmax(92px,.72fr) minmax(0,1.35fr) !important;
+    gap:7px !important;
+    margin-top:12px !important;
+    padding-top:10px !important;
+    border-top:1px solid rgba(126,170,212,.14);
+  }
+  .solar-system-mobile-detail-actions button {
+    min-height:42px;
+    padding:0 10px;
+    border-radius:11px;
+    border:1px solid rgba(136,181,222,.22);
+    font:750 9px/1.2 system-ui,sans-serif;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  .solar-system-mobile-detail-close {
+    color:#a9c1d6;
+    background:rgba(7,14,24,.82);
+  }
+  .solar-system-mobile-enter {
+    color:#eef9ff;
+    border-color:rgba(107,190,232,.42) !important;
+    background:linear-gradient(180deg,rgba(27,79,109,.9),rgba(10,36,54,.96));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 8px 22px rgba(0,0,0,.2);
+  }
+
+  /* Simple first-step instruction, then get out of the way when info opens. */
+  .solar-system-instructions {
+    left:50% !important;
+    right:auto !important;
+    bottom:max(12px, env(safe-area-inset-bottom)) !important;
+    width:max-content !important;
+    max-width:calc(100vw - 28px) !important;
+    transform:translateX(-50%) !important;
+    padding:9px 12px !important;
+    font-size:10px !important;
+    line-height:1.25 !important;
+    border-radius:14px !important;
+    transition:opacity .18s ease, transform .18s ease !important;
+  }
+  .solar-instruction-desktop { display:none !important; }
+  .solar-instruction-mobile { display:inline !important; }
+  .solar-system-observer.has-mobile-selection .solar-system-instructions {
+    opacity:0 !important;
+    pointer-events:none !important;
+    transform:translate(-50%,8px) !important;
+  }
+  .solar-system-hover-card { display:none !important; }
+
+  /* Mobile audio belongs near the upper controls, never across the lower separator. */
+  .mission-footer.audio-orb-dock {
+    position:absolute !important;
+    left:auto !important;
+    right:10px !important;
+    top:max(70px, calc(env(safe-area-inset-top) + 64px)) !important;
+    bottom:auto !important;
+    width:74px !important;
+    height:38px !important;
+    z-index:25 !important;
+  }
+  .audio-control.audio-sci-fi-node {
+    width:74px !important;
+    height:38px !important;
+    min-height:38px !important;
+    padding:0 9px 0 6px !important;
+    gap:5px !important;
+  }
+  .audio-control.audio-sci-fi-node .sci-fi-audio-icon {
+    width:22px !important;
+    height:22px !important;
+    flex-basis:22px !important;
+  }
+  .audio-node-hint {
+    font-size:7px !important;
+    letter-spacing:.11em !important;
+  }
+  .mission.is-solar-system-mode .audio-orb-dock {
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+  }
+}
+
+@media (max-width:380px) {
+  .solar-system-shell { grid-template-columns:minmax(0,1fr) 124px !important; }
+  .solar-system-clock { width:124px !important; }
+  .solar-system-title-block h2 { font-size:18px !important; }
+  .solar-system-clock > strong { font-size:13px !important; }
+  .solar-system-speed-control { grid-template-columns:23px 34px 23px minmax(28px,1fr) !important; }
+  #solar-system-speed-pause { min-width:34px !important;font-size:6px !important; }
+  .solar-system-detail-card { max-height:46dvh !important; }
+}

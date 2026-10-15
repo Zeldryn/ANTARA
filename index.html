@@ -10,7 +10,7 @@
   <meta name="description" content="ANTARA, Antariksa Nusantara: petualangan interaktif untuk menjelajahi Matahari, Merkurius, Venus, Bumi, Mars, Sabuk Asteroid, Jupiter, Saturnus, Uranus, Neptunus, dan keajaiban Tata Surya.">
   <title>ANTARA | Antariksa Nusantara</title>
   <link rel="icon" href="assets/antara-logo.png" type="image/png">
-  <link rel="stylesheet" href="styles.css?v=20261005-quick-actions-audio-hint-2">
+  <link rel="stylesheet" href="styles.css?v=20261005-mobile-solar-sheet-1">
   <link rel="stylesheet" href="achievement-notify.css?v=20261003-achievement-toast-1">
   <link rel="stylesheet" href="account-home-v2.css?v=20261005-bio-readable-1">
   <link rel="stylesheet" href="start-auth-gate.css?v=20261003-startlock-1">
@@ -63,7 +63,7 @@
   <script src="auth-client.js?v=20261004-session-persist-1" defer></script>
   <script src="account-home-v2.js?v=20261005-bio-profile-1" defer></script>
   <script src="start-auth-gate.js?v=20261003-startlock-1" defer></script>
-  <script src="solar-system-explorer.js?v=20261005-speed-control-1" defer></script>
+  <script src="solar-system-explorer.js?v=20261005-mobile-solar-sheet-1" defer></script>
   <script src="script.js?v=20261005-nav-audio-readability-1" defer></script>
   <script src="mobile-planet-scene-audit-fix.js?v=20261004-mobile-reference-lock-2" defer></script>
   <script src="exploration-scroll-content.js?v=20261004-scroll-title-1" defer></script>
@@ -152,8 +152,12 @@
           <div><dt>Satu hari</dt><dd id="solar-system-detail-day">—</dd></div>
           <div><dt>Catatan</dt><dd id="solar-system-detail-note">Skala jarak dan ukuran diperkecil supaya seluruh sistem tetap terbaca.</dd></div>
         </dl>
+        <div class="solar-system-mobile-detail-actions" aria-label="Aksi planet terpilih">
+          <button class="solar-system-mobile-detail-close" id="solar-system-mobile-detail-close" type="button">Lanjut Amati</button>
+          <button class="solar-system-mobile-enter" id="solar-system-mobile-enter" type="button">Masuk Panorama</button>
+        </div>
       </aside>
-      <div class="solar-system-instructions" id="solar-system-instructions">Drag untuk memutar kamera • scroll / cubit untuk zoom • arahkan cursor ke planet untuk info • klik planet untuk pindah panorama</div>
+      <div class="solar-system-instructions" id="solar-system-instructions"><span class="solar-instruction-desktop">Drag untuk memutar kamera • scroll untuk zoom • arahkan cursor ke planet untuk info • klik planet untuk pindah panorama</span><span class="solar-instruction-mobile">Ketuk planet untuk lihat info • geser untuk memutar kamera</span></div>
     </section>
 
 

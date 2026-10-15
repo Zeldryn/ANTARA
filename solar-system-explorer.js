@@ -186,6 +186,9 @@
       this.detailDay = document.getElementById(options.detailDayId || 'solar-system-detail-day');
       this.detailNote = document.getElementById(options.detailNoteId || 'solar-system-detail-note');
       this.instructions = document.getElementById(options.instructionsId || 'solar-system-instructions');
+      this.mobileDetailClose = document.getElementById('solar-system-mobile-detail-close');
+      this.mobileEnter = document.getElementById('solar-system-mobile-enter');
+      this.mobileSelectedKey = null;
 
       this.isReady = false;
       this.isOpen = false;
@@ -238,6 +241,10 @@
       this.handleSpeedInput = this.handleSpeedInput.bind(this);
 
       this.backButton.addEventListener('click', this.handleBack);
+      this.mobileDetailClose?.addEventListener('click', () => this.clearMobileSelection());
+      this.mobileEnter?.addEventListener('click', () => {
+        if (this.mobileSelectedKey) this.selectPlanet(this.mobileSelectedKey);
+      });
       this.speedInput?.addEventListener('change', this.handleSpeedInput);
       this.speedInput?.addEventListener('blur', this.handleSpeedInput);
       this.speedDown?.addEventListener('click', () => this.adjustSpeed(-1));
@@ -250,6 +257,27 @@
         this.labelLayer.hidden = true;
         this.labelLayer.setAttribute('aria-hidden', 'true');
       }
+    }
+
+    isMobileUi() {
+      return window.matchMedia('(max-width: 700px), (pointer: coarse) and (max-width: 900px)').matches;
+    }
+
+    setMobileSelection(key) {
+      if (!this.isMobileUi() || !PLANET_KEYS.has(key)) return;
+      const body = this.bodyData.find(item => item.key === key);
+      if (!body) return;
+      this.mobileSelectedKey = key;
+      this.setDetail(key);
+      if (this.mobileEnter) this.mobileEnter.textContent = `Masuk Panorama ${body.name}`;
+      this.root.classList.add('has-mobile-selection');
+      this.detailName?.focus?.({ preventScroll: true });
+    }
+
+    clearMobileSelection() {
+      this.mobileSelectedKey = null;
+      this.root?.classList.remove('has-mobile-selection');
+      if (this.mobileEnter) this.mobileEnter.textContent = 'Masuk Panorama';
     }
 
     readSavedSpeed() {
@@ -687,6 +715,7 @@
         this.handleResize();
         this.start();
         this.setDetail(this.sourcePhase);
+        if (this.isMobileUi()) this.clearMobileSelection();
       }).catch(error => {
         console.error('[ANTARA SolarSystem] failed to open', error);
         this.options.onError?.(error);
@@ -700,6 +729,7 @@
       this.lastTimestamp = 0;
       this.lastRenderTimestamp = 0;
       this.clearHoverCard();
+      this.clearMobileSelection();
       this.root.hidden = true;
       this.root.setAttribute('aria-hidden', 'true');
     }
@@ -750,6 +780,7 @@
       }
       this.updatePointer(event.clientX, event.clientY);
       if (!this.drag.active) {
+        if (this.isMobileUi()) return;
         const key = this.pickBodyAtPointer();
         if (key) this.showHoverCard(key, event.clientX, event.clientY);
         else this.clearHoverCard();
@@ -771,6 +802,10 @@
       this.canvas.classList.remove('is-dragging');
       this.canvas.releasePointerCapture?.(event.pointerId);
       this.updatePointer(event.clientX, event.clientY);
+      if (this.isMobileUi()) {
+        this.clearHoverCard();
+        return;
+      }
       const key = this.pickBodyAtPointer();
       if (key) this.showHoverCard(key, event.clientX, event.clientY);
       else this.clearHoverCard();
@@ -790,6 +825,7 @@
       this.camera.aspect = width / Math.max(1, height);
       this.camera.updateProjectionMatrix();
       this.canvasRect = this.canvas.getBoundingClientRect();
+      if (!this.isMobileUi()) this.clearMobileSelection();
     }
 
     updatePointer(clientX, clientY) {
@@ -803,7 +839,12 @@
       if (!this.isOpen || this.drag.moved || !this.raycaster || !this.camera) return;
       this.updatePointer(event.clientX, event.clientY);
       const key = this.pickBodyAtPointer();
-      if (key) this.selectPlanet(key);
+      if (!key) return;
+      if (this.isMobileUi()) {
+        this.setMobileSelection(key);
+        return;
+      }
+      this.selectPlanet(key);
     }
 
     animate(timestamp) {
