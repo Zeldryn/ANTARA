@@ -9317,3 +9317,70 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     bottom: 10% !important;
   }
 }
+
+/* ========================================================================
+   2026-10-06 AVATAR RESET TO ORIGINAL STABLE BEHAVIOR
+   Photo/frame never move, scale, fade, or animate on hover/focus.
+   Only the original sci-fi ring/orbit decorations keep their idle animation.
+   ======================================================================== */
+.profile-primary-cluster .profile-avatar-module,
+.profile-primary-cluster .profile-avatar-module:hover,
+.profile-primary-cluster .profile-avatar-module:focus-visible,
+.cockpit-profile-hud .profile-avatar-module,
+.cockpit-profile-hud .profile-avatar-module:hover,
+.cockpit-profile-hud .profile-avatar-module:focus-visible {
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+}
+
+.cockpit-profile-hud .profile-avatar-module .profile-avatar-frame,
+.cockpit-profile-hud .profile-avatar-module:hover .profile-avatar-frame,
+.cockpit-profile-hud .profile-avatar-module:focus-visible .profile-avatar-frame {
+  transform: none !important;
+  animation: none !important;
+  filter: drop-shadow(0 4px 7px rgba(0,0,0,.22)) !important;
+  box-shadow: none !important;
+  transition: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.cockpit-profile-hud .profile-avatar-core,
+.cockpit-profile-hud .profile-avatar-core img,
+.cockpit-profile-hud .profile-avatar-core .profile-avatar-initials,
+.cockpit-profile-hud .profile-avatar-module:hover .profile-avatar-core,
+.cockpit-profile-hud .profile-avatar-module:hover .profile-avatar-core img,
+.cockpit-profile-hud .profile-avatar-module:hover .profile-avatar-core .profile-avatar-initials,
+.cockpit-profile-hud .profile-avatar-module:focus-visible .profile-avatar-core,
+.cockpit-profile-hud .profile-avatar-module:focus-visible .profile-avatar-core img,
+.cockpit-profile-hud .profile-avatar-module:focus-visible .profile-avatar-core .profile-avatar-initials {
+  transform: none !important;
+  filter: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+.cockpit-profile-hud .profile-avatar-core img:not([hidden]) {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
+/* Preserve only the original low-cost ring motion. */
+.cockpit-profile-hud .profile-avatar-tech {
+  animation: profile-ring-idle 8s ease-in-out infinite alternate !important;
+  filter: none !important;
+}
+.cockpit-profile-hud .profile-ring-dash-a {
+  animation: profile-ring-dash-flow-a 7.5s linear infinite !important;
+}
+.cockpit-profile-hud .profile-ring-dash-b {
+  animation: profile-ring-dash-flow-b 9.5s linear infinite !important;
+}
+.cockpit-profile-hud .profile-avatar-orbit-a {
+  animation: profile-orbit-idle-a 5.8s ease-in-out infinite alternate !important;
+}
+.cockpit-profile-hud .profile-avatar-orbit-b {
+  animation: profile-orbit-idle-b 7.2s ease-in-out infinite alternate !important;
+}
