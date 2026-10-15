@@ -28,6 +28,15 @@
 .saturn-full-explore-button:disabled { opacity: .42; cursor: default; }
 
 .saturn-full-exploration {
+  --fx-bg: rgba(18, 25, 32, .94);
+  --fx-bg-strong: rgba(7, 11, 16, .98);
+  --fx-border: rgba(166, 186, 200, .28);
+  --fx-border-strong: rgba(207, 216, 221, .56);
+  --fx-text: #edf0ef;
+  --fx-muted: #99a8b2;
+  --fx-accent: #b9ccd7;
+  --fx-shadow: rgba(0, 4, 9, .56);
+
   --saturn-full-bg: rgba(6, 10, 15, .965);
   --saturn-full-panel: rgba(13, 19, 26, .955);
   --saturn-full-card: rgba(19, 27, 35, .95);
@@ -256,4 +265,15 @@
 @media (max-width: 520px) {
   .saturn-full-exploration .venus-region-card { min-height: 182px; }
   .saturn-full-exploration .saturn-region-preview { height: 80px; }
+}
+
+
+/* Bug-hunt 2026-10-05: physical mobile control geometry */
+@media (max-width: 820px), (pointer: coarse) and (max-width: 1100px) {
+  .saturn-full-exploration .mars-mobile-dpad [data-saturn-control="forward"] { left:50% !important; right:auto !important; top:0 !important; bottom:auto !important; translate:-50% 0; }
+  .saturn-full-exploration .mars-mobile-dpad [data-saturn-control="left"] { left:0 !important; right:auto !important; top:50% !important; bottom:auto !important; translate:0 -50%; }
+  .saturn-full-exploration .mars-mobile-dpad [data-saturn-control="right"] { left:auto !important; right:0 !important; top:50% !important; bottom:auto !important; translate:0 -50%; }
+  .saturn-full-exploration .mars-mobile-dpad [data-saturn-control="backward"] { left:50% !important; right:auto !important; top:auto !important; bottom:0 !important; translate:-50% 0; }
+  .saturn-full-exploration .mars-mobile-altitude [data-saturn-control="up"] { top:0 !important; bottom:auto !important; }
+  .saturn-full-exploration .mars-mobile-altitude [data-saturn-control="down"] { top:auto !important; bottom:0 !important; }
 }

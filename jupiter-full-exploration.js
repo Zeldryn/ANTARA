@@ -195,6 +195,7 @@
       this.objectiveOpen = true;
       this.infoOpen = false;
       this.actionsOpen = false;
+      this.panelSnapshot = null;
       this.transitionToken = 0;
       this.promptTimer = null;
       this.drag = null;
@@ -334,7 +335,10 @@
           return;
         }
         if (!activeKey(event.code)) return;
-        if (event.code === "KeyE" && !this.observationPrompt.hidden) {
+        if (!this.observationCard.hidden) { event.preventDefault(); event.stopImmediatePropagation(); return; }
+        const mobileUi = matchMedia("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)").matches;
+        const promptInteractive = !this.observationPrompt.hidden && !(mobileUi && (this.infoOpen || this.objectiveOpen || this.actionsOpen));
+        if (event.code === "KeyE" && promptInteractive) {
           event.preventDefault(); event.stopImmediatePropagation(); this.observeCurrent(); return;
         }
         event.preventDefault(); event.stopImmediatePropagation();
@@ -350,6 +354,7 @@
         const release = event => { this.keyState.delete(code); try { button.releasePointerCapture(event.pointerId); } catch {} };
         button.addEventListener("pointerdown", event => {
           event.preventDefault(); event.stopPropagation();
+          if (!this.observationCard.hidden || this.state !== "exploring") return;
           try { button.setPointerCapture(event.pointerId); } catch {}
           this.keyState.add(code); this.startControlLoop();
         });
@@ -359,7 +364,7 @@
       });
 
       this.inputLayer?.addEventListener("pointerdown", event => {
-        if (event.target !== this.inputLayer || this.state !== "exploring") return;
+        if (event.target !== this.inputLayer || this.state !== "exploring" || !this.observationCard.hidden) return;
         this.drag = { id:event.pointerId, x:event.clientX, y:event.clientY };
         try { this.inputLayer.setPointerCapture(event.pointerId); } catch {}
       });
@@ -379,7 +384,7 @@
       let previous = performance.now();
       const tick = now => {
         this.controlFrame = null;
-        if (!this.scene.fullExplorationActive || this.state !== "exploring") { this.keyState.clear(); return; }
+        if (!this.scene.fullExplorationActive || this.state !== "exploring" || !this.observationCard.hidden) { this.keyState.clear(); return; }
         const dt = Math.min(.05, (now - previous) / 1000); previous = now;
         let yaw = 0, pitch = 0, zoom = 0;
         if (this.keyState.has("KeyA") || this.keyState.has("ArrowLeft")) yaw += 1.15 * dt;
@@ -405,6 +410,13 @@
         this.scene.previous = performance.now();
         this.scene.tick(this.scene.previous);
       }
+    }
+
+    clearHeldControls() {
+      this.keyState.clear();
+      this.drag = null;
+      if (this.controlFrame) cancelAnimationFrame(this.controlFrame);
+      this.controlFrame = null;
     }
 
     selectDestination(id) {
@@ -437,6 +449,7 @@
       this.state = "idle";
       this.scene.fullExplorationActive = false;
       this.scene.element.classList.remove("is-jupiter-full-active");
+      this.scene.resize?.();
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");
@@ -480,7 +493,6 @@
       this.syncPanels();
       this.showTutorial();
       this.scheduleObservationPrompt();
-      window.AntaraProgress?.trackFull?.("jupiter", this.current.id, this.current.name);
       document.getElementById("announcement").textContent = `Tiba di ${this.current.name}. Info lokasi dibuka.`;
     }
 
@@ -507,6 +519,8 @@
 
     openSelectorFromWorld() {
       if (this.state !== "exploring") return;
+      this.clearHeldControls();
+      this.panelSnapshot = { infoOpen: this.infoOpen, objectiveOpen: this.objectiveOpen };
       this.state = "selecting-world";
       this.selectDestination(this.current?.id || this.selected.id);
       this.selector.hidden = false;
@@ -521,8 +535,9 @@
       if (this.state !== "selecting-world") return;
       this.state = "exploring";
       this.selector.hidden = true;
-      this.infoOpen = true;
-      this.objectiveOpen = true;
+      this.infoOpen = this.panelSnapshot?.infoOpen ?? true;
+      this.objectiveOpen = this.panelSnapshot?.objectiveOpen ?? true;
+      this.panelSnapshot = null;
       this.syncPanels();
       this.scheduleObservationPrompt();
     }
@@ -530,6 +545,8 @@
     async switchDestination(destination) {
       if (this.state !== "selecting-world") return;
       const token = ++this.transitionToken;
+      this.clearHeldControls();
+      this.panelSnapshot = null;
       this.state = "switching";
       this.selector.hidden = true;
       this.current = destination;
@@ -546,7 +563,6 @@
       this.buildObjectives();
       this.syncPanels();
       this.scheduleObservationPrompt();
-      window.AntaraProgress?.trackFull?.("jupiter", destination.id, destination.name);
       document.getElementById("announcement").textContent = `Berpindah ke ${destination.name}. Info lokasi dibuka.`;
     }
 
@@ -592,6 +608,7 @@
       this.actionsRoot.hidden = !exploring;
       this.root.classList.toggle("is-info-open", showInfo);
       this.root.classList.toggle("is-objectives-open", showObjectives);
+      this.root.classList.toggle("is-observation-open", observationOpen);
     }
 
     showInfo(focus = false) {
@@ -605,11 +622,24 @@
       window.clearTimeout(this.promptTimer);
       this.hideObservationPrompt();
       if (!this.current || this.discovered.has(this.current.id)) return;
-      this.promptTimer = window.setTimeout(() => {
-        if (this.state !== "exploring" || !this.current || this.discovered.has(this.current.id)) return;
+      const token = this.transitionToken;
+      const started = performance.now();
+      const check = () => {
+        if (token !== this.transitionToken || this.state !== "exploring" || !this.current || this.discovered.has(this.current.id)) return;
+        const elapsed = performance.now() - started;
+        const settled = this.scene.focusState !== "FOCUS_TRANSITION";
+        const minimumWaitDone = elapsed >= (matchMedia("(prefers-reduced-motion: reduce)").matches ? 60 : 420);
+        const markerRequired = Boolean(this.scene._activeMarker);
+        const markerVisible = !markerRequired || this.scene.mode !== "webgl" || Boolean(this.scene.focusReticle?.classList?.contains("is-marker-visible"));
+        const visualReady = markerVisible || elapsed >= 2400;
+        if (!settled || !minimumWaitDone || !visualReady) {
+          this.promptTimer = window.setTimeout(check, 90);
+          return;
+        }
         this.observationPromptTitle.textContent = this.current.name;
         this.observationPrompt.hidden = false;
-      }, matchMedia("(prefers-reduced-motion: reduce)").matches ? 80 : 650);
+      };
+      this.promptTimer = window.setTimeout(check, matchMedia("(prefers-reduced-motion: reduce)").matches ? 40 : 120);
     }
 
     hideObservationPrompt() { this.observationPrompt.hidden = true; }
@@ -619,6 +649,7 @@
       const d = this.current;
       const fresh = !this.discovered.has(d.id);
       this.discovered.add(d.id);
+      if (fresh) window.AntaraProgress?.trackFull?.("jupiter", d.id, d.name);
       this.hideObservationPrompt();
       this.buildObjectives();
       this.observationTitle.textContent = d.name;
@@ -628,6 +659,7 @@
       this.observationDeep.replaceChildren(...d.facts.map(fact => { const p = document.createElement("p"); p.textContent = fact; return p; }));
       this.observationSource.href = d.source;
       this.observationStatus.textContent = fresh ? "BARU KAMU AMATI" : "SUDAH PERNAH DIAMATI";
+      this.clearHeldControls();
       this.observationCard.hidden = false;
       this.observationCard.setAttribute("aria-hidden", "false");
       this.syncPanels();
@@ -642,6 +674,7 @@
     }
 
     hideWorldUi() {
+      this.clearHeldControls();
       this.infoOpen = false;
       this.objectiveOpen = false;
       this.actionsRoot.hidden = true;
@@ -657,6 +690,7 @@
       const mobile = matchMedia("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)").matches;
       this.actionsOpen = Boolean(open && mobile && this.state === "exploring");
       this.actionsRoot.classList.toggle("is-open", this.actionsOpen);
+      this.root.classList.toggle("is-actions-open", this.actionsOpen);
       this.actionsMenuToggle.setAttribute("aria-expanded", String(this.actionsOpen));
     }
 
@@ -686,6 +720,40 @@
       if (persist) { try { sessionStorage.setItem("antara-jupiter-full-tutorial", "1"); } catch {} }
     }
 
+    forceReset() {
+      ++this.transitionToken;
+      window.clearTimeout(this.promptTimer);
+      this.clearHeldControls();
+      this.setActionsMenu(false);
+      this.hideTutorial(false);
+      this.panelSnapshot = null;
+      this.state = "idle";
+      this.infoOpen = false;
+      this.objectiveOpen = false;
+      this.actionsOpen = false;
+      this.root.classList.remove("is-exploring", "is-exiting", "is-info-open", "is-objectives-open");
+      this.root.hidden = true;
+      this.root.inert = true;
+      this.root.setAttribute("aria-hidden", "true");
+      this.qualityPanel.hidden = true;
+      this.selector.hidden = true;
+      this.loading.hidden = true;
+      this.observationPrompt.hidden = true;
+      this.observationCard.hidden = true;
+      this.observationCard.setAttribute("aria-hidden", "true");
+      this.info.hidden = true;
+      this.objectives.hidden = true;
+      this.infoToggle.hidden = true;
+      this.objectivesToggle.hidden = true;
+      this.actionsRoot.hidden = true;
+      this.scene.fullExplorationActive = false;
+      this.scene.element.classList.remove("is-jupiter-full-active");
+      if ("fullExplorationPitch" in this.scene) this.scene.fullExplorationPitch = 0;
+      this.entryButton.disabled = false;
+      this.scene.caption.inert = false;
+      this.scene.resize?.();
+    }
+
     async exit() {
       if (!this.scene.fullExplorationActive || ["exiting", "idle"].includes(this.state)) return;
       const token = ++this.transitionToken;
@@ -711,6 +779,7 @@
       this.root.setAttribute("aria-hidden", "true");
       this.scene.fullExplorationActive = false;
       this.scene.element.classList.remove("is-jupiter-full-active");
+      this.scene.resize?.();
       this.state = "idle";
       this.entryButton.disabled = false;
       this.scene.caption.inert = false;

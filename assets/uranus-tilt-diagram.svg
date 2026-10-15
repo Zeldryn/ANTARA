@@ -1,7 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="t d">
-<defs><radialGradient id="bg"><stop stop-color="#0b1b2a"/><stop offset="1" stop-color="#07111d"/></radialGradient><radialGradient id="u"><stop stop-color="#d9f1ef"/><stop offset=".58" stop-color="#91d9dc"/><stop offset="1" stop-color="#4f9da7"/></radialGradient><filter id="g"><feGaussianBlur stdDeviation="8"/></filter></defs>
-<rect width="1200" height="720" fill="url(#bg)"/><g opacity=".24" stroke="#183445" stroke-width="1"><path d="M80 590H1120M80 520H1120M80 450H1120"/><circle cx="600" cy="350" r="250" fill="none"/><circle cx="600" cy="350" r="320" fill="none"/></g>
-<text id="t" x="72" y="82" fill="#d9f1ef" font-family="Georgia,serif" font-size="38">Kemiringan 97.77°</text><text id="d" x="74" y="116" fill="#849dac" font-family="Arial,sans-serif" font-size="15" letter-spacing="2">SUMBU ROTASI HAMPIR SEJAJAR DENGAN BIDANG ORBIT</text>
-<g transform="translate(600 360) rotate(-8)"><ellipse rx="265" ry="72" fill="none" stroke="#536c70" stroke-width="5" opacity=".8"/><ellipse rx="230" ry="61" fill="none" stroke="#768e91" stroke-width="3" opacity=".55"/><circle r="155" fill="url(#u)"/><path d="M-150 -28Q0 -52 150 -25M-154 20Q0 42 154 18" fill="none" stroke="#c9eff0" stroke-opacity=".22" stroke-width="12"/></g><path d="M390 360H810" stroke="#849dac" stroke-width="2"/><path d="M600 130v460" stroke="#b9ecea" stroke-width="5" transform="rotate(97.77 600 360)"/><path d="M600 130l-11 25h22z" fill="#b9ecea" transform="rotate(97.77 600 360)"/><path d="M600 590l-11-25h22z" fill="#b9ecea" transform="rotate(97.77 600 360)"/><text x="840" y="340" fill="#b9ecea" font-size="44">97.77°</text>
-<text x="72" y="672" fill="#849dac" font-family="Arial,sans-serif" font-size="14">Kemiringan ekstrem membuat Uranus tampak menggelinding mengitari Matahari.</text><text x="1128" y="672" text-anchor="end" fill="#5db8c0" font-family="Arial,sans-serif" font-size="12" letter-spacing="2">ANTARA · VISUALISASI EDUKASI</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" role="img" aria-labelledby="t d">
+  <title id="t">Diagram kemiringan sumbu Uranus</title>
+  <desc id="d">Ilustrasi sederhana yang memperlihatkan Uranus dengan sumbu rotasi 97,77 derajat.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#07121a"/><stop offset="1" stop-color="#112733"/></linearGradient>
+    <radialGradient id="planet" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#c2ffff"/><stop offset="0.55" stop-color="#96dde0"/><stop offset="1" stop-color="#4e9da6"/></radialGradient>
+  </defs>
+  <rect width="900" height="600" fill="url(#bg)"/>
+  <g opacity="0.5" stroke="#d9edf0" stroke-dasharray="10 10"><line x1="150" y1="300" x2="750" y2="300"/></g>
+  <g>
+    <circle cx="450" cy="300" r="140" fill="url(#planet)"/>
+    <ellipse cx="450" cy="300" rx="200" ry="48" fill="none" stroke="#c7edf0" stroke-width="6" opacity="0.35"/>
+    <line x1="390" y1="118" x2="510" y2="482" stroke="#f7f5d6" stroke-width="8"/>
+    <polygon points="390,118 378,148 406,142" fill="#f7f5d6"/>
+    <polygon points="510,482 498,452 526,458" fill="#f7f5d6"/>
+    <path d="M552 236 A120 120 0 0 1 578 356" fill="none" stroke="#ffd27a" stroke-width="7"/>
+    <polygon points="585,352 569,344 572,363" fill="#ffd27a"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#edf8f8">
+    <text x="72" y="88" font-size="34" font-weight="700">Kemiringan Sumbu Uranus</text>
+    <text x="72" y="128" font-size="22" fill="#b8d7db">Uranus berputar hampir menyamping terhadap bidang orbitnya.</text>
+    <text x="605" y="294" font-size="44" font-weight="700" fill="#ffe299">97,77°</text>
+    <text x="604" y="326" font-size="18" fill="#cfe8ea">kemiringan sumbu rotasi</text>
+    <text x="150" y="284" font-size="18" fill="#cfe8ea">bidang orbit (acuan sederhana)</text>
+    <text x="324" y="95" font-size="18" fill="#f5f4da">sumbu rotasi</text>
+  </g>
 </svg>

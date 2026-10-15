@@ -541,7 +541,7 @@ window.JupiterScene = class JupiterScene {
 
   resize() {
     const parent=this.element.parentElement; this.width=Math.max(1,parent.clientWidth);this.height=Math.max(1,parent.clientHeight);this.mobile=this.width<=700;
-    if(this.mode==="webgl") {const baseDpr=Math.min(devicePixelRatio||1,this.mobile?1.55:2);const fullDpr=Number.isFinite(this.fullExplorationQualityDpr)?this.fullExplorationQualityDpr:baseDpr;this.renderer.setPixelRatio(Math.min(baseDpr,fullDpr));this.renderer.setSize(this.width,this.height);this.camera.aspect=this.width/this.height;this.camera.updateProjectionMatrix();}
+    if(this.mode==="webgl") {const baseDpr=Math.min(devicePixelRatio||1,this.mobile?1.55:2);const fullDpr=this.fullExplorationActive&&Number.isFinite(this.fullExplorationQualityDpr)?this.fullExplorationQualityDpr:baseDpr;this.renderer.setPixelRatio(Math.min(baseDpr,fullDpr));this.renderer.setSize(this.width,this.height);this.camera.aspect=this.width/this.height;this.camera.updateProjectionMatrix();}
     else if(this.mode==="canvas"&&this.canvas){const dpr=Math.min(devicePixelRatio||1,1.5);this.canvas.width=this.width*dpr;this.canvas.height=this.height*dpr;this.canvas.style.width=this.width+"px";this.canvas.style.height=this.height+"px";this.ctx.setTransform(dpr,0,0,dpr,0,0);}
   }
 
@@ -694,7 +694,7 @@ window.JupiterScene = class JupiterScene {
     "cameraZ": 6.6,
     "label": "CYCLONE KUTUB",
     "context": "POLA BADAI POLAR",
-    "marker": null,
+    "marker": "polar",
     "semantic": ""
   },
   {
@@ -712,7 +712,7 @@ window.JupiterScene = class JupiterScene {
     "cameraZ": 6.74,
     "label": "CINCIN JUPITER",
     "context": "HALO · MAIN RING · GOSSAMER",
-    "marker": null,
+    "marker": "ring",
     "semantic": ""
   },
   {
@@ -721,7 +721,7 @@ window.JupiterScene = class JupiterScene {
     "cameraZ": 6.68,
     "label": "BULAN GALILEA",
     "context": "IO · EUROPA · GANYMEDE · CALLISTO",
-    "marker": null,
+    "marker": "moons",
     "semantic": "moons"
   },
   {
@@ -769,6 +769,12 @@ window.JupiterScene = class JupiterScene {
     this.grsAnchor = new THREE.Object3D();
     this.grsAnchor.position.set(c * Math.cos(lon), Math.sin(lat), -c * Math.sin(lon));
     this.planet.add(this.grsAnchor);
+    this.polarAnchor = new THREE.Object3D();
+    this.polarAnchor.position.set(0, 1.02, 0);
+    this.planet.add(this.polarAnchor);
+    this.ringAnchor = new THREE.Object3D();
+    this.ringAnchor.position.set(1.56, 0, 0);
+    this.planetGroup.add(this.ringAnchor);
     this._markerWorld = new THREE.Vector3(); this._planetWorld = new THREE.Vector3(); this._projected = new THREE.Vector3();
     this._surfaceNormal = new THREE.Vector3(); this._toCamera = new THREE.Vector3();
 
@@ -777,6 +783,9 @@ window.JupiterScene = class JupiterScene {
       [-1.75,.18,.16,.085,0xd7b878],[-1.35,-.24,.08,.072,0xc7d5df],[1.48,.15,-.02,.095,0xb7a889],[1.88,-.19,.12,.082,0x8f8072]
     ];
     moonDefs.forEach(([x,y,z,r,col]) => { const m = new THREE.Mesh(new THREE.SphereGeometry(r,24,16), new THREE.MeshStandardMaterial({color:col,roughness:.92,metalness:0})); m.position.set(x,y,z); this.moonGroup.add(m); });
+    this.galileanAnchor = new THREE.Object3D();
+    this.galileanAnchor.position.set(1.48,.15,-.02);
+    this.moonGroup.add(this.galileanAnchor);
     this.moonGroup.visible = false; this.planetGroup.add(this.moonGroup);
   };
 
@@ -841,13 +850,22 @@ window.JupiterScene = class JupiterScene {
   };
 
   P._updateFocusMarker = function() {
-    if(!this.focusReticle || !this.exploring || this._activeMarker!=="grs" || !this.grsAnchor || this.mode!=="webgl") { this.focusReticle?.classList.remove("is-marker-visible"); return; }
-    this.grsAnchor.getWorldPosition(this._markerWorld); this.planet.getWorldPosition(this._planetWorld);
-    this._surfaceNormal.copy(this._markerWorld).sub(this._planetWorld).normalize(); this._toCamera.copy(this.camera.position).sub(this._markerWorld).normalize();
-    const facing=this._surfaceNormal.dot(this._toCamera); this._projected.copy(this._markerWorld).project(this.camera);
-    const visible=facing>.02&&this._projected.z<1&&Math.abs(this._projected.x)<1.05&&Math.abs(this._projected.y)<1.05;
-    if(!visible){this.focusReticle.classList.remove("is-marker-visible");return;}
-    const x=(this._projected.x*.5+.5)*this.width,y=(-this._projected.y*.5+.5)*this.height; this.focusReticle.style.left=`${x}px`;this.focusReticle.style.top=`${y}px`;this.focusReticle.style.setProperty("--marker-opacity",".94"); this.focusReticle.classList.add("is-marker-visible"); this.focusReticle.classList.toggle("is-left",x+240>this.width);
+    if(!this.focusReticle || !this.exploring || !this._activeMarker || this.mode!=="webgl") { this.focusReticle?.classList.remove("is-marker-visible"); return; }
+    const anchor = this._activeMarker === "grs" ? this.grsAnchor : this._activeMarker === "polar" ? this.polarAnchor : this._activeMarker === "ring" ? this.ringAnchor : this._activeMarker === "moons" ? this.galileanAnchor : null;
+    if(!anchor){ this.focusReticle.classList.remove("is-marker-visible"); return; }
+    anchor.getWorldPosition(this._markerWorld); this.planet.getWorldPosition(this._planetWorld);
+    let visible = true;
+    if(this._activeMarker === "grs" || this._activeMarker === "polar") {
+      this._surfaceNormal.copy(this._markerWorld).sub(this._planetWorld).normalize();
+      this._toCamera.copy(this.camera.position).sub(this._markerWorld).normalize();
+      visible = this._surfaceNormal.dot(this._toCamera) > .015;
+    }
+    this._projected.copy(this._markerWorld).project(this.camera);
+    visible = visible && this._projected.z < 1 && Math.abs(this._projected.x) < 1.05 && Math.abs(this._projected.y) < 1.05;
+    if(!visible){ this.focusReticle.classList.remove("is-marker-visible"); return; }
+    const x=(this._projected.x*.5+.5)*this.width, y=(-this._projected.y*.5+.5)*this.height;
+    this.focusReticle.style.left=`${x}px`; this.focusReticle.style.top=`${y}px`; this.focusReticle.style.setProperty("--marker-opacity",".94");
+    this.focusReticle.classList.add("is-marker-visible"); this.focusReticle.classList.toggle("is-left",x+240>this.width);
   };
 
   P.renderJupiter = function() {

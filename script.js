@@ -1092,7 +1092,9 @@ const jupiterFull = new JupiterFullExploration(jupiter);
 const saturn = new SaturnScene();
 const saturnFull = new SaturnFullExploration(saturn);
 const uranus = new UranusScene();
+const uranusFull = new UranusFullExploration(uranus);
 const neptune = new NeptuneScene();
+const neptuneFull = new NeptuneFullExploration(neptune);
 
 function bindSharedJupiterVisualsIfReady() {
   asteroid.bindJupiterVisualSource?.(jupiter);
@@ -1209,6 +1211,8 @@ function hasActiveFullExploration() {
   if (phase === "mercury") return Boolean(mercury.fullExplorationActive);
   if (phase === "jupiter") return Boolean(jupiter.fullExplorationActive);
   if (phase === "saturn") return Boolean(saturn.fullExplorationActive);
+  if (phase === "uranus") return Boolean(uranus.fullExplorationActive);
+  if (phase === "neptune") return Boolean(neptune.fullExplorationActive);
   return false;
 }
 
@@ -1219,7 +1223,9 @@ function fullExplorationDomVisible() {
     document.getElementById("mars-full-exploration"),
     document.getElementById("mercury-full-exploration"),
     document.getElementById("jupiter-full-exploration"),
-    document.getElementById("saturn-full-exploration")
+    document.getElementById("saturn-full-exploration"),
+    document.getElementById("uranus-full-exploration"),
+    document.getElementById("neptune-full-exploration")
   ].some(root => root && !root.hidden && root.getAttribute("aria-hidden") !== "true");
 }
 
@@ -1240,7 +1246,9 @@ const returnCockpitFullRoots = [
   document.getElementById("mars-full-exploration"),
   document.getElementById("mercury-full-exploration"),
   document.getElementById("jupiter-full-exploration"),
-  document.getElementById("saturn-full-exploration")
+  document.getElementById("saturn-full-exploration"),
+  document.getElementById("uranus-full-exploration"),
+  document.getElementById("neptune-full-exploration")
 ].filter(Boolean);
 
 if (typeof MutationObserver !== "undefined") {
@@ -2417,7 +2425,7 @@ function travelSaturnToUranus() {
 }
 
 function travelUranusToSaturn() {
-  if (uranus.exploring || !beginPlanetTransition("uranus", "uranus-saturn-transition", uranusPreviousButton, "saturn")) return;
+  if (uranus.exploring || uranus.fullExplorationActive || !beginPlanetTransition("uranus", "uranus-saturn-transition", uranusPreviousButton, "saturn")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "KEMBALI MENUJU SATURNUS";
   announcement.textContent = "Uranus menjauh. Saturnus kembali muncul di jalur bagian dalam.";
@@ -2440,7 +2448,7 @@ function travelUranusToSaturn() {
 
 
 function travelUranusToNeptune() {
-  if (uranus.exploring || !beginPlanetTransition("uranus", "uranus-neptune-transition", uranusNextButton, "neptune")) return;
+  if (uranus.exploring || uranus.fullExplorationActive || !beginPlanetTransition("uranus", "uranus-neptune-transition", uranusNextButton, "neptune")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "PERJALANAN MENUJU NEPTUNUS";
   announcement.textContent = "Uranus menjauh. Dunia biru yang lebih gelap mulai muncul di jalur terluar.";
@@ -2463,7 +2471,7 @@ function travelUranusToNeptune() {
 }
 
 function travelNeptuneToUranus() {
-  if (neptune.exploring || !beginPlanetTransition("neptune", "neptune-uranus-transition", neptunePreviousButton, "uranus")) return;
+  if (neptune.exploring || neptune.fullExplorationActive || !beginPlanetTransition("neptune", "neptune-uranus-transition", neptunePreviousButton, "uranus")) return;
   setExperienceState("planet");
   if (flightStatus) flightStatus.textContent = "KEMBALI MENUJU URANUS";
   announcement.textContent = "Neptunus menjauh. Uranus kembali muncul dari jalur bagian dalam.";
@@ -2489,6 +2497,10 @@ function resetMission() {
   clearJourneyForUserId(journeyUserId);
   earthFull.forceReset?.();
   venusFull.forceReset?.();
+  jupiterFull.forceReset?.();
+  saturnFull.forceReset?.();
+  uranusFull.forceReset?.();
+  neptuneFull.forceReset?.();
   cancelAnimationFrame(animationFrame);
   sound.stop(1.1);
   phase = "idle";
@@ -2619,12 +2631,20 @@ document.addEventListener("keydown", event => {
     if (event.key === "Escape") { event.preventDefault(); saturn.exitExploration(); }
     return;
   }
+  if (phase === "uranus" && uranus.fullExplorationActive) {
+    if (event.key === "Escape") { event.preventDefault(); uranusFull?.exit?.(); }
+    return;
+  }
   if (phase === "uranus" && uranus.exploring) {
     if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
       event.preventDefault();
       uranus.setExplorationStop(uranus.topicIndex + (event.key === "ArrowRight" ? 1 : -1));
     }
     if (event.key === "Escape") { event.preventDefault(); uranus.exitExploration(); }
+    return;
+  }
+  if (phase === "neptune" && neptune.fullExplorationActive) {
+    if (event.key === "Escape") { event.preventDefault(); neptuneFull?.exit?.(); }
     return;
   }
   if (phase === "neptune" && neptune.exploring) {
@@ -2650,9 +2670,9 @@ document.addEventListener("keydown", event => {
   if (event.key === "ArrowRight" && phase === "jupiter" && !jupiter.exploring && !jupiter.fullExplorationActive) travelJupiterToSaturn();
   if (event.key === "ArrowLeft" && phase === "saturn" && !saturn.exploring && !saturn.fullExplorationActive) travelSaturnToJupiter();
   if (event.key === "ArrowRight" && phase === "saturn" && !saturn.exploring && !saturn.fullExplorationActive) travelSaturnToUranus();
-  if (event.key === "ArrowLeft" && phase === "uranus" && !uranus.exploring) travelUranusToSaturn();
-  if (event.key === "ArrowRight" && phase === "uranus" && !uranus.exploring) travelUranusToNeptune();
-  if (event.key === "ArrowLeft" && phase === "neptune" && !neptune.exploring) travelNeptuneToUranus();
+  if (event.key === "ArrowLeft" && phase === "uranus" && !uranus.exploring && !uranus.fullExplorationActive) travelUranusToSaturn();
+  if (event.key === "ArrowRight" && phase === "uranus" && !uranus.exploring && !uranus.fullExplorationActive) travelUranusToNeptune();
+  if (event.key === "ArrowLeft" && phase === "neptune" && !neptune.exploring && !neptune.fullExplorationActive) travelNeptuneToUranus();
   if (event.key === "Escape" && phase !== "idle") resetMission();
 });
 window.addEventListener("resize", () => flight.resize());

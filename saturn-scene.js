@@ -387,7 +387,7 @@ window.SaturnScene = class SaturnScene {
   resize(){
     const rect=this.viewport.getBoundingClientRect();this.width=Math.max(1,Math.floor(rect.width));this.height=Math.max(1,Math.floor(rect.height));this.mobile=this.width<=700||this.height>this.width*1.18;
     const baseDprCap=this.mobile?1.5:2;
-    const fullDprCap=Number.isFinite(this.fullExplorationQualityDpr)?this.fullExplorationQualityDpr:baseDprCap;
+    const fullDprCap=this.fullExplorationActive&&Number.isFinite(this.fullExplorationQualityDpr)?this.fullExplorationQualityDpr:baseDprCap;
     const dpr=Math.min(devicePixelRatio||1,baseDprCap,fullDprCap);
     if(this.mode==="webgl"&&this.renderer){this.renderer.setPixelRatio(dpr);this.renderer.setSize(this.width,this.height,false);this.camera.aspect=this.width/this.height;this.camera.updateProjectionMatrix();}
     else if(this.canvas){this.canvas.width=Math.max(1,Math.floor(this.width*dpr));this.canvas.height=Math.max(1,Math.floor(this.height*dpr));this.canvas.style.width=this.width+"px";this.canvas.style.height=this.height+"px";this.ctx.setTransform(dpr,0,0,dpr,0,0);}

@@ -97,13 +97,25 @@ function antara_progress_catalog(): array
             'name' => 'Uranus',
             'short' => 'URANUS',
             'normal_total' => 11,
-            'full' => [],
+            'full' => [
+                'axis' => 'Kemiringan Sumbu Uranus',
+                'seasons' => 'Musim Ekstrem Uranus',
+                'rings' => 'Cincin Gelap Uranus',
+                'miranda' => 'Miranda',
+                'voyager' => 'Lintasan Voyager 2',
+            ],
         ],
         'neptune' => [
             'name' => 'Neptunus',
             'short' => 'NEPTUNUS',
             'normal_total' => 11,
-            'full' => [],
+            'full' => [
+                'winds' => 'Angin Super Cepat',
+                'dark-spot' => 'Great Dark Spot',
+                'clouds' => 'Awan Tinggi Cerah',
+                'rings' => 'Cincin & Arc Neptunus',
+                'triton' => 'Triton',
+            ],
         ],
     ];
 
