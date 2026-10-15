@@ -7,9 +7,9 @@
   <title>Quiz ANTARA | Permainan</title>
   <link rel="icon" type="image/png" href="assets/antara-logo.png">
   <link rel="stylesheet" href="achievement-notify.css?v=20261003-achievement-toast-1">
-  <link rel="stylesheet" href="permainan.css?v=20261004-adaptive-timer-2">
+  <link rel="stylesheet" href="permainan.css?v=20261004-mastery-stack-3">
   <script src="achievement-client.js?v=20261003-achievement-toast-1" defer></script>
-  <script src="permainan.js?v=20261004-adaptive-timer-2" defer></script>
+  <script src="permainan.js?v=20261004-mastery-stack-3" defer></script>
 </head>
 <body>
   <div class="game-space" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -27,7 +27,7 @@
       <div class="game-intro-copy">
         <p class="eyebrow">ANTARA · QUIZ NAVIGASI TATA SURYA</p>
         <h1>Seberapa cepat<br><span>kamu mengenal langit?</span></h1>
-        <p class="lead">Lima tingkat kesulitan. Lima belas soal. Waktu menyesuaikan panjang dan beban baca tiap soal, sementara jawaban yang lebih cepat tetap menghasilkan bonus poin lebih besar.</p>
+        <p class="lead">Lima level, masing-masing satu stack berisi 15 soal. Level berikutnya baru terbuka setelah seluruh 15 soal pada stack aktif sudah kamu jawab dengan benar. Soal yang salah akan muncul lagi sampai benar.</p>
         <div class="level-track" aria-label="Tingkat kesulitan">
           <span><b>01</b><small>PEMULA</small><em>17–22 dtk</em></span>
           <span><b>02</b><small>DASAR</small><em>10–15 dtk</em></span>
@@ -44,15 +44,16 @@
       </div>
       <aside class="game-brief">
         <div><small>BANK SOAL</small><strong>300</strong><span>soal dari materi ANTARA</span></div>
-        <div><small>SOAL / RUN</small><strong>15</strong><span>3 soal per tingkat</span></div>
-        <div><small>SKOR</small><strong>SERVER</strong><span>level + kecepatan + streak</span></div>
+        <div><small>SOAL / LEVEL</small><strong>15</strong><span>wajib dikuasai 15 / 15</span></div>
+        <div><small>TARGET RUN</small><strong>75</strong><span>5 level × 15 soal</span></div>
         <div><small>MODE</small><strong>4 PILIHAN</strong><span>A · B · C · D</span></div>
       </aside>
     </section>
 
     <section class="quiz-stage" id="quiz-stage" hidden aria-live="polite">
       <div class="quiz-hud">
-        <div class="quiz-hud-item"><small>SOAL</small><strong id="quiz-progress">01 / 15</strong></div>
+        <div class="quiz-hud-item"><small>SOAL STACK</small><strong id="quiz-progress">01 / 15</strong></div>
+        <div class="quiz-hud-item quiz-mastery"><small>DIKUASAI</small><strong id="quiz-mastered">0 / 15</strong></div>
         <div class="quiz-hud-item"><small>SKOR</small><strong id="quiz-score">0</strong></div>
         <div class="quiz-hud-item"><small>STREAK</small><strong id="quiz-streak">×0</strong></div>
         <div class="quiz-hud-item quiz-level"><small>TINGKAT</small><strong id="quiz-level">PEMULA</strong></div>
@@ -79,6 +80,7 @@
           <p class="correct-line" id="feedback-correct"></p>
           <p id="feedback-explanation"></p>
           <small id="feedback-reference"></small>
+          <div class="quiz-stack-warning" id="quiz-stack-warning" hidden></div>
           <button type="button" id="quiz-next">LANJUT <span>→</span></button>
         </section>
       </article>
@@ -89,8 +91,8 @@
       <h1>Data perjalanan<br><span>berhasil dikirim.</span></h1>
       <div class="result-score"><small>SKOR AKHIR</small><strong id="result-score">0</strong><span>POIN</span></div>
       <div class="result-grid">
-        <div><small>BENAR</small><strong id="result-correct">0 / 15</strong></div>
-        <div><small>AKURASI</small><strong id="result-accuracy">0%</strong></div>
+        <div><small>DIKUASAI</small><strong id="result-correct">0 / 75</strong></div>
+        <div><small>BENAR PERCOBAAN PERTAMA</small><strong id="result-accuracy">0%</strong></div>
         <div><small>STREAK TERBAIK</small><strong id="result-streak">×0</strong></div>
         <div><small>RATA-RATA</small><strong id="result-speed">0.0s</strong></div>
       </div>

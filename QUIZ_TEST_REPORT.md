@@ -1,21 +1,24 @@
-# ANTARA Quiz MVP - Verification Report
+# Quiz ANTARA Mastery Stack - Test Report
 
-Date: 2026-10-04
+## Static / syntax
+- `node --check permainan.js`: PASS
+- `php -l` untuk `_quiz.php`, `start.php`, `answer.php`, `next.php`, `_achievements.php`: PASS
+- Required DOM IDs: PASS
+- Duplicate DOM IDs pada `permainan.html`: 0
 
-## Verified in this build
-- Parsed bank: 300 / 300 questions.
-- Every parsed question has 4 choices, an answer key, explanation, and ANTARA material reference.
-- Run selection: 15 questions, exactly 3 from each difficulty level.
-- Adaptive timer verified against all 300 questions. The server calculates each question from prompt word count + option word count + level thinking allowance, then clamps it to a sensible range.
-- Observed timer ranges in the current bank: Pemula 17-22s, Dasar 10-15s, Menengah 10-14s, Sulit 18-25s, Ahli 20-28s.
-- Spot checks: Q130=10s, Q001=19s, Q192=25s, Q241=27s, Q269=28s, Q300=26s.
-- The selected per-question timer is stored server-side in `quiz_run_questions.time_limit_ms`; the browser cannot choose its own limit.
-- Server scoring helper: faster correct answers produce more points relative to the specific question's adaptive limit.
-- 5,000-point achievement remains reachable; an average perfect run at ~2s/answer scores about 8,458 points with the adaptive timer model.
-- PHP syntax check passed for quiz backend files.
-- JavaScript syntax check passed for the quiz client.
-- Adaptive timing verifier (`tools/verify_quiz_adaptive_timing.php`) passed all 300 questions.
-- ZIP integrity checked after packaging.
+## Bank selection
+- Total bank: 300 soal
+- Distribusi bank: 60 soal × 5 level
+- Sampel run baru: 75 soal unik
+- Distribusi sampel: 15 soal pada masing-masing level
 
-## Environment limitation
-The build environment does not provide a running MySQL/MariaDB service, so actual MySQL transactions were not executed end-to-end here. The quiz schema is created automatically by the PHP endpoints and an explicit `database/quiz-game-migration.sql` is included for deployment/testing in XAMPP.
+## Mastery simulation
+Simulasi sengaja memberi jawaban salah pada beberapa slot dan satu slot salah dua kali.
+- Semua 5 level akhirnya mencapai 15/15: PASS
+- Soal belum pernah dicoba diprioritaskan sebelum retry: PASS
+- Soal salah kembali ke antrean: PASS
+- Soal yang sudah benar tidak muncul lagi: PASS
+- Level berikutnya baru dibuka setelah 15/15: PASS
+
+## Limitation
+Environment pengujian ini memiliki PDO tetapi tidak memiliki driver/server MySQL aktif, sehingga transaksi SQL MySQL nyata tidak dapat diuji end-to-end di sini. Schema, query contract, state simulation, syntax, bank distribution, dan client/server field contract telah diaudit statis.

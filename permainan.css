@@ -7,3 +7,19 @@
 @media(max-width:850px){.game-topbar{grid-template-columns:1fr auto;height:72px}.game-brand{justify-self:start}.game-back{display:none}.game-account{font-size:7px}.game-intro{grid-template-columns:1fr;min-height:auto}.game-brief{grid-template-columns:1fr 1fr}.level-track{grid-template-columns:repeat(5,minmax(70px,1fr));overflow-x:auto;padding-bottom:3px}.quiz-options{grid-template-columns:1fr}.quiz-card{padding:22px}.result-grid{grid-template-columns:1fr 1fr}.result-grid div:nth-child(2){border-right:0}.result-grid div:nth-child(-n+2){border-bottom:1px solid rgba(126,187,216,.1)}}
 @media(max-width:560px){.game-shell{width:min(100% - 22px,1220px);padding-top:24px}.game-topbar{padding:0 14px}.game-brand img{width:32px;height:32px}.game-account span{max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.game-intro h1{font-size:48px}.lead{font-size:12px}.game-brief div{min-height:112px;padding:17px}.game-brief strong{font-size:23px}.quiz-hud{grid-template-columns:1fr 1fr}.quiz-hud-item:nth-child(2){border-right:0}.quiz-hud-item:nth-child(-n+2){border-bottom:1px solid rgba(126,187,216,.09)}.quiz-card-top{align-items:flex-start}.timer{width:72px;height:72px;flex:0 0 auto}.timer strong{font-size:17px}.quiz-card h2{font-size:25px;margin-top:28px}.quiz-option{min-height:68px;padding:14px 14px 14px 52px}.quiz-option span{font-size:11px}.result-score{width:190px;height:190px}.result-score strong{font-size:34px}.result-actions{display:grid}.result-actions>*{width:100%}.game-actions{display:grid}.game-actions>*{width:100%}.game-brief{margin-bottom:24px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.quiz-option,.timer{transition:none}}
+
+/* Mastery-stack progression: 15/15 unlocks the next difficulty level. */
+.quiz-hud{grid-template-columns:repeat(5,1fr)}
+.quiz-hud-item.quiz-mastery strong{color:#a9d9c0}
+.quiz-hud-item.quiz-mastery.is-complete{background:rgba(31,92,66,.16)}
+.quiz-hud-item.quiz-mastery.is-complete strong{color:#9fe0b9}
+.quiz-stack-warning{margin-top:14px;padding:13px 15px;border:1px solid rgba(217,177,106,.24);background:rgba(31,24,13,.4);display:grid;gap:5px}
+.quiz-stack-warning strong{font-size:8px;letter-spacing:.16em;color:#e1c58d}
+.quiz-stack-warning span{font-size:10px;line-height:1.55;color:#b9b0a0}
+.quiz-stack-warning.is-locked{border-color:rgba(223,135,119,.3);background:rgba(74,31,28,.23)}
+.quiz-stack-warning.is-locked strong{color:#efaa9d}
+.quiz-stack-warning.is-complete{border-color:rgba(145,205,169,.38);background:rgba(23,66,49,.27)}
+.quiz-stack-warning.is-complete strong{color:#a9deb9}
+.quiz-feedback.is-stack-complete{border-color:rgba(145,205,169,.28)}
+@media(max-width:850px){.quiz-hud{grid-template-columns:repeat(3,1fr)}.quiz-hud-item:nth-child(3){border-right:0}.quiz-hud-item:nth-child(-n+3){border-bottom:1px solid rgba(126,187,216,.09)}.quiz-hud-item:nth-child(4),.quiz-hud-item:nth-child(5){border-bottom:0}}
+@media(max-width:560px){.quiz-hud{grid-template-columns:1fr 1fr}.quiz-hud-item:nth-child(odd){border-right:1px solid rgba(126,187,216,.09)}.quiz-hud-item:nth-child(even){border-right:0}.quiz-hud-item:nth-child(-n+4){border-bottom:1px solid rgba(126,187,216,.09)}.quiz-hud-item:nth-child(5){grid-column:1/-1;border-right:0}.quiz-stack-warning{padding:12px}}

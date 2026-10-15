@@ -4,8 +4,12 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/leaderboard/_leaderboard.php';
 
 const ANTARA_QUIZ_GAME_CODE = 'quiz';
-const ANTARA_QUIZ_QUESTION_COUNT = 15;
-const ANTARA_QUIZ_RUN_MINUTES = 20;
+const ANTARA_QUIZ_STACK_SIZE = 15;
+const ANTARA_QUIZ_LEVEL_COUNT = 5;
+const ANTARA_QUIZ_TOTAL_QUESTIONS = ANTARA_QUIZ_STACK_SIZE * ANTARA_QUIZ_LEVEL_COUNT;
+// Compatibility alias: achievements/UI that mean a single mastery stack still use 15.
+const ANTARA_QUIZ_QUESTION_COUNT = ANTARA_QUIZ_STACK_SIZE;
+const ANTARA_QUIZ_RUN_MINUTES = 90;
 const ANTARA_QUIZ_NETWORK_GRACE_MS = 700;
 
 function antara_quiz_bank(): array
@@ -61,6 +65,12 @@ function antara_quiz_question_time_ms(array $question): int
     return max((int)$config['minTimeMs'], min((int)$config['maxTimeMs'], $rawMs));
 }
 
+function antara_quiz_column_exists(PDO $pdo, string $column): bool
+{
+    $stmt = $pdo->query("SHOW COLUMNS FROM quiz_run_questions LIKE " . $pdo->quote($column));
+    return (bool)$stmt->fetch();
+}
+
 function antara_quiz_ensure_schema(PDO $pdo): void
 {
     antara_leaderboard_ensure_schema($pdo);
@@ -81,31 +91,114 @@ function antara_quiz_ensure_schema(PDO $pdo): void
             response_ms INT UNSIGNED NULL,
             points INT UNSIGNED NOT NULL DEFAULT 0,
             streak_after TINYINT UNSIGNED NOT NULL DEFAULT 0,
+            attempt_count SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+            first_try_correct TINYINT(1) NOT NULL DEFAULT 0,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             UNIQUE KEY uq_quiz_run_position (run_id, position),
             KEY idx_quiz_run_question (run_id, question_id),
+            KEY idx_quiz_run_level_mastery (run_id, level, is_correct, attempt_count),
             CONSTRAINT fk_quiz_question_run FOREIGN KEY (run_id) REFERENCES game_runs(id) ON DELETE CASCADE
         ) ENGINE=InnoDB'
     );
+
+    // Existing installations are upgraded in place, so users do not have to re-import SQL.
+    if (!antara_quiz_column_exists($pdo, 'attempt_count')) {
+        $pdo->exec('ALTER TABLE quiz_run_questions ADD COLUMN attempt_count SMALLINT UNSIGNED NOT NULL DEFAULT 0 AFTER streak_after');
+    }
+    if (!antara_quiz_column_exists($pdo, 'first_try_correct')) {
+        $pdo->exec('ALTER TABLE quiz_run_questions ADD COLUMN first_try_correct TINYINT(1) NOT NULL DEFAULT 0 AFTER attempt_count');
+    }
 }
 
 function antara_quiz_select_question_ids(): array
 {
     $bank = antara_quiz_bank();
     $selected = [];
-    for ($level = 1; $level <= 5; $level++) {
+    for ($level = 1; $level <= ANTARA_QUIZ_LEVEL_COUNT; $level++) {
         $ids = [];
         foreach ($bank as $id => $question) {
             if ((int)$question['level'] === $level) $ids[] = (int)$id;
         }
         shuffle($ids);
-        foreach (array_slice($ids, 0, 3) as $id) $selected[] = $id;
+        $stack = array_slice($ids, 0, ANTARA_QUIZ_STACK_SIZE);
+        if (count($stack) !== ANTARA_QUIZ_STACK_SIZE) {
+            throw new RuntimeException('Bank soal level ' . $level . ' tidak cukup untuk satu stack.');
+        }
+        foreach ($stack as $id) $selected[] = $id;
     }
-    if (count($selected) !== ANTARA_QUIZ_QUESTION_COUNT) {
-        throw new RuntimeException('Pemilihan soal kuis gagal.');
+    if (count($selected) !== ANTARA_QUIZ_TOTAL_QUESTIONS) {
+        throw new RuntimeException('Pemilihan stack kuis gagal.');
     }
     return $selected;
+}
+
+function antara_quiz_stack_position(array $row): int
+{
+    $position = (int)$row['position'];
+    return (($position - 1) % ANTARA_QUIZ_STACK_SIZE) + 1;
+}
+
+function antara_quiz_stack_progress(PDO $pdo, int $runId, int $level): array
+{
+    $stmt = $pdo->prepare(
+        'SELECT COUNT(*) AS total,
+                SUM(CASE WHEN attempt_count > 0 THEN 1 ELSE 0 END) AS attempted,
+                SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) AS mastered,
+                SUM(attempt_count) AS attempts,
+                SUM(first_try_correct) AS first_try_correct
+         FROM quiz_run_questions
+         WHERE run_id = :run_id AND level = :level'
+    );
+    $stmt->execute(['run_id'=>$runId,'level'=>$level]);
+    $row = $stmt->fetch() ?: [];
+    $total = (int)($row['total'] ?? 0);
+    $mastered = (int)($row['mastered'] ?? 0);
+    return [
+        'level'=>$level,
+        'label'=>antara_quiz_level_config($level)['label'],
+        'total'=>$total,
+        'attempted'=>(int)($row['attempted'] ?? 0),
+        'mastered'=>$mastered,
+        'remaining'=>max(0, $total - $mastered),
+        'attempts'=>(int)($row['attempts'] ?? 0),
+        'firstTryCorrect'=>(int)($row['first_try_correct'] ?? 0),
+        'complete'=>$total === ANTARA_QUIZ_STACK_SIZE && $mastered === ANTARA_QUIZ_STACK_SIZE,
+    ];
+}
+
+function antara_quiz_previous_levels_complete(PDO $pdo, int $runId, int $level): bool
+{
+    if ($level <= 1) return true;
+    $stmt = $pdo->prepare(
+        'SELECT level, SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) AS mastered
+         FROM quiz_run_questions
+         WHERE run_id = :run_id AND level < :level
+         GROUP BY level'
+    );
+    $stmt->execute(['run_id'=>$runId,'level'=>$level]);
+    $rows = $stmt->fetchAll();
+    if (count($rows) !== $level - 1) return false;
+    foreach ($rows as $row) {
+        if ((int)$row['mastered'] !== ANTARA_QUIZ_STACK_SIZE) return false;
+    }
+    return true;
+}
+
+function antara_quiz_find_next_stack_question(PDO $pdo, int $runId, int $level, bool $forUpdate = true): ?array
+{
+    $sql =
+        'SELECT * FROM quiz_run_questions
+         WHERE run_id = :run_id AND level = :level AND (is_correct IS NULL OR is_correct = 0)
+         ORDER BY CASE WHEN attempt_count = 0 THEN 0 ELSE 1 END ASC,
+                  attempt_count ASC,
+                  position ASC
+         LIMIT 1';
+    if ($forUpdate) $sql .= ' FOR UPDATE';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['run_id'=>$runId,'level'=>$level]);
+    $row = $stmt->fetch();
+    return $row ?: null;
 }
 
 function antara_quiz_public_question(array $row): array
@@ -114,18 +207,24 @@ function antara_quiz_public_question(array $row): array
     $id = (int)$row['question_id'];
     $q = $bank[$id] ?? null;
     if (!$q) throw new RuntimeException('Soal kuis tidak ditemukan.');
-    $config = antara_quiz_level_config((int)$row['level']);
+    $level = (int)$row['level'];
+    $config = antara_quiz_level_config($level);
     return [
+        // `position` stays the secure database slot used by answer.php.
         'position' => (int)$row['position'],
-        'total' => ANTARA_QUIZ_QUESTION_COUNT,
+        'stackPosition' => antara_quiz_stack_position($row),
+        'stackTotal' => ANTARA_QUIZ_STACK_SIZE,
+        'overallTotal' => ANTARA_QUIZ_TOTAL_QUESTIONS,
         'questionId' => $id,
-        'level' => (int)$row['level'],
+        'level' => $level,
         'levelLabel' => $config['label'],
         'planet' => (string)$q['planet'],
         'topic' => (string)$q['title'],
         'question' => (string)$q['question'],
         'options' => $q['options'],
         'timeLimitMs' => (int)$row['time_limit_ms'],
+        'attemptNumber' => ((int)($row['attempt_count'] ?? 0)) + 1,
+        'isRetry' => (int)($row['attempt_count'] ?? 0) > 0,
     ];
 }
 
@@ -159,9 +258,11 @@ function antara_quiz_run_summary(PDO $pdo, int $runId): array
         'SELECT COUNT(*) AS total,
                 SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) AS correct_count,
                 COALESCE(MAX(streak_after),0) AS best_streak,
-                COALESCE(AVG(CASE WHEN answered_at IS NOT NULL THEN response_ms END),0) AS avg_response_ms,
+                COALESCE(AVG(CASE WHEN is_correct = 1 THEN response_ms END),0) AS avg_response_ms,
                 SUM(CASE WHEN level = 5 AND is_correct = 1 THEN 1 ELSE 0 END) AS expert_correct,
-                SUM(CASE WHEN is_correct = 1 AND response_ms <= 3000 THEN 1 ELSE 0 END) AS fast_correct
+                SUM(CASE WHEN is_correct = 1 AND response_ms <= 3000 THEN 1 ELSE 0 END) AS fast_correct,
+                COALESCE(SUM(attempt_count),0) AS total_attempts,
+                COALESCE(SUM(first_try_correct),0) AS first_try_correct
          FROM quiz_run_questions WHERE run_id = :run_id'
     );
     $stmt->execute(['run_id' => $runId]);
@@ -171,11 +272,15 @@ function antara_quiz_run_summary(PDO $pdo, int $runId): array
     $score = (int)($scoreStmt->fetchColumn() ?: 0);
     $total = (int)($row['total'] ?? 0);
     $correct = (int)($row['correct_count'] ?? 0);
+    $firstTry = (int)($row['first_try_correct'] ?? 0);
+    $attempts = (int)($row['total_attempts'] ?? 0);
     return [
         'score' => $score,
         'total' => $total,
         'correct' => $correct,
-        'accuracy' => $total > 0 ? (int)round(($correct / $total) * 100) : 0,
+        'accuracy' => $total > 0 ? (int)round(($firstTry / $total) * 100) : 0,
+        'firstTryCorrect' => $firstTry,
+        'totalAttempts' => $attempts,
         'bestStreak' => (int)($row['best_streak'] ?? 0),
         'avgResponseMs' => (int)round((float)($row['avg_response_ms'] ?? 0)),
         'expertCorrect' => (int)($row['expert_correct'] ?? 0),

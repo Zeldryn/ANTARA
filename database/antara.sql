@@ -165,6 +165,8 @@ CREATE TABLE IF NOT EXISTS quiz_run_questions (
   response_ms INT UNSIGNED NULL,
   points INT UNSIGNED NOT NULL DEFAULT 0,
   streak_after TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  attempt_count SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  first_try_correct TINYINT(1) NOT NULL DEFAULT 0,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uq_quiz_run_position (run_id, position),
