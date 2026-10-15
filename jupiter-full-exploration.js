@@ -1314,14 +1314,18 @@
       const mobile = this.isMobileUi();
       let showInfo = exploring && this.infoOpen && !observationOpen;
       let showObjectives = exploring && this.objectiveOpen && !observationOpen;
-      if (mobile && showInfo && showObjectives) showObjectives = false;
+      if (mobile && showInfo && showObjectives) {
+        this.objectiveOpen = false;
+        showObjectives = false;
+      }
+      const mobileSecondaryOpen = mobile && (showInfo || showObjectives);
       this.info.hidden = !showInfo;
       this.info.classList.toggle("is-visible", showInfo);
       this.info.setAttribute("aria-hidden", String(!showInfo));
-      this.infoToggle.hidden = !exploring || showInfo || observationOpen;
+      this.infoToggle.hidden = !exploring || showInfo || observationOpen || this.actionsOpen || mobileSecondaryOpen;
       this.objectives.hidden = !showObjectives;
       this.objectives.setAttribute("aria-hidden", String(!showObjectives));
-      this.objectivesToggle.hidden = !exploring || showObjectives || observationOpen;
+      this.objectivesToggle.hidden = !exploring || showObjectives || observationOpen || this.actionsOpen || mobileSecondaryOpen;
       this.actionsRoot.hidden = !exploring;
       this.root.classList.toggle("is-info-open", showInfo);
       this.root.classList.toggle("is-objectives-open", showObjectives);

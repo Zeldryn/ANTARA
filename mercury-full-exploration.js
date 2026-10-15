@@ -703,6 +703,10 @@
     setActionsMenu(open, focus = false) {
       const mobile = window.matchMedia?.("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)")?.matches || false;
       const next = Boolean(open && mobile && this.state === STATES.EXPLORING);
+      if (next) {
+        this.objectivesCollapsed = true;
+        this.infoMinimized = true;
+      }
       this.actionsMenuOpen = next;
       this.actionsRoot?.classList.toggle("is-open", next);
       this.root.classList.toggle("is-actions-open", next);
@@ -1292,23 +1296,31 @@
     syncSecondaryPanels() {
       const exploring = this.state === STATES.EXPLORING;
       const observationOpen = this.isObservationCardOpen();
+      const mobile = window.matchMedia?.("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)")?.matches || false;
+      if (mobile && !this.objectivesCollapsed && !this.infoMinimized) this.infoMinimized = true;
       const showObjectives = exploring && !this.objectivesCollapsed && !observationOpen;
       const showInfo = exploring && !this.infoMinimized && !observationOpen;
+      const mobileSecondaryOpen = mobile && (showObjectives || showInfo);
 
       this.root.classList.toggle("is-objectives-open", showObjectives);
       this.root.classList.toggle("is-info-open", showInfo);
 
       this.objectivesPanel.hidden = !showObjectives;
       this.objectivesPanel.setAttribute("aria-hidden", String(!showObjectives));
-      this.objectivesToggle.hidden = !exploring || !this.objectivesCollapsed || this.actionsMenuOpen || observationOpen;
+      this.objectivesToggle.hidden = !exploring || !this.objectivesCollapsed || this.actionsMenuOpen || observationOpen || mobileSecondaryOpen;
 
       this.landmarkCard.hidden = !showInfo;
       this.landmarkCard.classList.toggle("is-visible", showInfo);
       this.landmarkCard.setAttribute("aria-hidden", String(!showInfo));
-      this.infoToggle.hidden = !exploring || !this.infoMinimized || this.actionsMenuOpen || observationOpen;
+      this.infoToggle.hidden = !exploring || !this.infoMinimized || this.actionsMenuOpen || observationOpen || mobileSecondaryOpen;
     }
 
     setObjectivesCollapsed(collapsed, force = false, focusToggle = false) {
+      const mobile = window.matchMedia?.("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)")?.matches || false;
+      if (!collapsed && mobile) {
+        this.setActionsMenu(false);
+        this.infoMinimized = true;
+      }
       this.objectivesCollapsed = Boolean(collapsed);
       this.syncSecondaryPanels();
       if (!force) document.getElementById("announcement").textContent = collapsed ? "Panel tujuan diminimalkan." : "Panel tujuan dibuka kembali.";
@@ -1316,6 +1328,11 @@
     }
 
     setInfoMinimized(minimized, force = false, focusPanel = false) {
+      const mobile = window.matchMedia?.("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)")?.matches || false;
+      if (!minimized && mobile) {
+        this.setActionsMenu(false);
+        this.objectivesCollapsed = true;
+      }
       this.infoMinimized = Boolean(minimized);
       this.syncSecondaryPanels();
       if (!force) document.getElementById("announcement").textContent = minimized ? "Info lokasi disembunyikan." : `Info lokasi ${this.currentRegion?.name || "Merkurius"} ditampilkan.`;

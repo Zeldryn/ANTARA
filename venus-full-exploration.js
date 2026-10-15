@@ -2925,11 +2925,20 @@
       const exploring = this.state === STATES.EXPLORING;
       const mobile = this.isMobileUi();
       const observationOpen = this.isObservationCardOpen();
-      // Goals and Info are independent controls on every viewport. Mobile CSS decides
-      // how two open cards share the available screen; JS never hides one because
-      // the other was touched more recently.
+      // Mobile uses one large secondary sheet at a time. Desktop may still keep both.
+      if (mobile && this.infoOpen && this.objectiveOpen) {
+        const topPanel = this.getTopSecondaryPanel();
+        if (topPanel === "objectives") {
+          this.infoOpen = false;
+          this.removeSecondaryPanel("info");
+        } else {
+          this.objectiveOpen = false;
+          this.removeSecondaryPanel("objectives");
+        }
+      }
       const showInfo = exploring && this.infoOpen && !observationOpen;
       const showObjectives = exploring && this.objectiveOpen && !observationOpen;
+      const mobileSecondaryOpen = mobile && (showInfo || showObjectives);
 
       this.root.classList.toggle("is-info-open", Boolean(this.infoOpen));
       this.root.classList.toggle("is-objectives-open", Boolean(this.objectiveOpen));
@@ -2939,21 +2948,30 @@
 
       this.infoCard?.classList.toggle("is-visible", showInfo);
       this.infoCard?.setAttribute("aria-hidden", String(!showInfo));
-      if (this.infoToggle) this.infoToggle.hidden = !exploring || this.infoOpen;
+      if (this.infoToggle) this.infoToggle.hidden = !exploring || this.infoOpen || this.actionsMenuOpen || mobileSecondaryOpen;
 
       if (this.objectivesPanel) {
         this.objectivesPanel.hidden = !showObjectives;
         this.objectivesPanel.setAttribute("aria-hidden", String(!showObjectives));
       }
-      if (this.objectivesToggle) this.objectivesToggle.hidden = !exploring || this.objectiveOpen;
+      if (this.objectivesToggle) this.objectivesToggle.hidden = !exploring || this.objectiveOpen || this.actionsMenuOpen || mobileSecondaryOpen;
     }
 
     setActionsMenu(open, focus = false) {
       const allowMenu = this.isMobileUi();
       const next = Boolean(open && allowMenu && this.state === STATES.EXPLORING);
+      if (next) {
+        this.infoOpen = false;
+        this.objectiveOpen = false;
+        this.secondaryPanelOrder = [];
+        this.input?.clear?.();
+        if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+      }
       this.actionsMenuOpen = next;
       this.actionsRoot?.classList.toggle("is-open", next);
+      this.root?.classList.toggle("is-actions-open", next);
       this.actionsMenuToggle?.setAttribute("aria-expanded", String(next));
+      this.syncSecondaryPanels();
       if (focus && next) requestAnimationFrame(() => this.actionsMenu?.querySelector("button")?.focus({ preventScroll: true }));
     }
 
@@ -3395,6 +3413,10 @@
       if (!this.objectivesPanel || !this.region?.education) return;
       this.setActionsMenu(false);
       if (this.isObservationCardOpen()) this.closeObservationCard(false);
+      if (this.isMobileUi()) {
+        this.infoOpen = false;
+        this.removeSecondaryPanel("info");
+      }
       this.objectiveOpen = true;
       this.touchSecondaryPanel("objectives");
       this.syncSecondaryPanels();
@@ -3430,7 +3452,7 @@
       this.nearbyObservation = nearest && nearestDistance <= interactionRadius ? nearest : null;
       this.selectedTarget = nearestUndiscovered || nearest;
 
-      if (this.nearbyObservation && !this.isObservationCardOpen()) {
+      if (this.nearbyObservation && !this.isObservationCardOpen() && !this.infoOpen && !this.objectiveOpen && !this.actionsMenuOpen) {
         this.observationPromptTitle.textContent = this.nearbyObservation.title;
         this.observationPrompt.hidden = false;
       } else {
@@ -3676,6 +3698,10 @@
     showRegionInfo(focus = false) {
       this.setActionsMenu(false);
       if (this.isObservationCardOpen()) this.closeObservationCard(false);
+      if (this.isMobileUi()) {
+        this.objectiveOpen = false;
+        this.removeSecondaryPanel("objectives");
+      }
       this.infoOpen = true;
       this.touchSecondaryPanel("info");
       this.syncSecondaryPanels();

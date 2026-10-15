@@ -2139,6 +2139,10 @@
 
     setActionsMenu(open, focus = false) {
       const next = Boolean(open && this.isMobileUi() && this.state === STATES.EXPLORING && this.selector.hidden);
+      if (next) {
+        this.infoOpen = false;
+        this.objectiveOpen = false;
+      }
       this.actionsMenuOpen = next;
       this.actionsRoot?.classList.toggle("is-open", next);
       this.root.classList.toggle("is-actions-open", next);
@@ -2153,8 +2157,11 @@
 
     syncSecondaryPanels() {
       const exploring = this.state === STATES.EXPLORING && this.selector.hidden;
+      const mobile = this.isMobileUi();
+      if (mobile && this.infoOpen && this.objectiveOpen) this.objectiveOpen = false;
       const showInfo = exploring && this.infoOpen;
       const showObjectives = exploring && this.objectiveOpen;
+      const mobileSecondaryOpen = mobile && (showInfo || showObjectives);
       this.root.classList.toggle("is-info-open", Boolean(this.infoOpen));
       this.root.classList.toggle("is-objectives-open", Boolean(this.objectiveOpen));
       this.root.dataset.mobilePanel = this.isMobileUi()
@@ -2162,12 +2169,12 @@
         : "";
       this.infoCard?.classList.toggle("is-visible", showInfo);
       this.infoCard?.setAttribute("aria-hidden", String(!showInfo));
-      if (this.infoToggle) this.infoToggle.hidden = !exploring || this.infoOpen || this.actionsMenuOpen;
+      if (this.infoToggle) this.infoToggle.hidden = !exploring || this.infoOpen || this.actionsMenuOpen || mobileSecondaryOpen;
       if (this.objectivesPanel) {
         this.objectivesPanel.hidden = !showObjectives;
         this.objectivesPanel.setAttribute("aria-hidden", String(!showObjectives));
       }
-      if (this.objectivesToggle) this.objectivesToggle.hidden = !exploring || this.objectiveOpen || this.actionsMenuOpen;
+      if (this.objectivesToggle) this.objectivesToggle.hidden = !exploring || this.objectiveOpen || this.actionsMenuOpen || mobileSecondaryOpen;
     }
 
     updateResponsiveUi() {
@@ -2177,6 +2184,10 @@
     }
 
     showObjectivesPanel() {
+      if (this.isMobileUi()) {
+        this.setActionsMenu(false);
+        this.infoOpen = false;
+      }
       this.objectiveOpen = true;
       if (this.objectivesIntro) this.objectivesIntro.textContent = "Kunjungi lima wilayah utama Mars. Renderer dunia tetap memakai MOLA, Viking, dan THEMIS; panel tujuan ini hanya membantu melacak perjalananmu.";
       if (this.objectivesRegion) this.objectivesRegion.textContent = this.currentLandmark?.name || this.selectedLandmark?.name || "Mars";
@@ -2190,6 +2201,10 @@
     }
 
     expandObjectives(focus = false) {
+      if (this.isMobileUi()) {
+        this.setActionsMenu(false);
+        this.infoOpen = false;
+      }
       this.objectiveOpen = true;
       this.syncSecondaryPanels();
       if (focus) requestAnimationFrame(() => this.objectivesCollapse?.focus({ preventScroll: true }));
@@ -2203,6 +2218,10 @@
 
     showRegionInfo(focus = false) {
       if (!this.currentLandmark || this.state !== STATES.EXPLORING) return;
+      if (this.isMobileUi()) {
+        this.setActionsMenu(false);
+        this.objectiveOpen = false;
+      }
       this.infoOpen = true;
       this.syncSecondaryPanels();
       if (focus) requestAnimationFrame(() => this.infoMinimize?.focus({ preventScroll: true }));
@@ -2898,6 +2917,10 @@
       if (this.infoImageLink) {
         this.infoImageLink.href = landmark.imageSource || landmark.scienceSource || landmark.source;
         this.infoImageLink.setAttribute("aria-label", `Buka sumber citra asli ${landmark.name}`);
+      }
+      if (this.isMobileUi()) {
+        this.setActionsMenu(false);
+        this.objectiveOpen = false;
       }
       this.infoOpen = true;
       if (this.objectivesRegion) this.objectivesRegion.textContent = landmark.name;

@@ -17,7 +17,7 @@ function check(name, condition, detail='') {
 }
 function has(source, fragment) { return source.includes(fragment); }
 
-check('cache busting updated', has(html, '20260930-venus-panel-copy-3'));
+check('cache busting updated', has(html, '20261005-mobile-panel-audit-1'));
 check('mobile action menu exists', has(html, 'venus-actions-menu-toggle') && has(html, 'venus-actions-menu'));
 check('HUD metrics have responsive hooks', ['venus-hud-metric-altitude','venus-hud-metric-speed','venus-hud-metric-distance','venus-hud-metric-region','venus-hud-metric-quality'].every(x=>has(html,x)));
 check('safe-area variables present', ['safe-area-inset-top','safe-area-inset-right','safe-area-inset-bottom','safe-area-inset-left'].every(x=>has(css,x)));

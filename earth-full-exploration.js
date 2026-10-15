@@ -1407,6 +1407,10 @@
 
     setActionsMenu(open, focus = false) {
       this.actionsMenuOpen = Boolean(open);
+      if (this.actionsMenuOpen && this.isMobileUi()) {
+        this.infoOpen = false;
+        this.objectivesOpen = false;
+      }
       this.root.classList.toggle("is-actions-open", this.actionsMenuOpen);
       this.actionsMenuToggle?.setAttribute("aria-expanded", String(this.actionsMenuOpen));
       if (this.actionsMenuOpen) {
@@ -2052,7 +2056,9 @@
     syncEducationPanels(focusTarget = null) {
       const active = this.state === STATES.ACTIVE;
       const observationOpen = this.isObservationCardOpen();
-      const mobileMenuOpen = this.isMobileUi() && this.actionsMenuOpen;
+      const mobile = this.isMobileUi();
+      const mobileMenuOpen = mobile && this.actionsMenuOpen;
+      if (mobile && this.infoOpen && this.objectivesOpen) this.objectivesOpen = false;
       if (!active) {
         this.infoOpen = false;
         this.objectivesOpen = false;
@@ -2068,8 +2074,9 @@
 
       // The two compact buttons are independent switches. Opening one panel never
       // re-labels or reuses the other button, so their click targets cannot drift.
-      this.infoToggle.hidden = !active || this.infoOpen || mobileMenuOpen || observationOpen;
-      this.objectivesToggle.hidden = !active || this.objectivesOpen || mobileMenuOpen || observationOpen;
+      const mobileSecondaryOpen = mobile && (this.infoOpen || this.objectivesOpen);
+      this.infoToggle.hidden = !active || this.infoOpen || mobileMenuOpen || observationOpen || mobileSecondaryOpen;
+      this.objectivesToggle.hidden = !active || this.objectivesOpen || mobileMenuOpen || observationOpen || mobileSecondaryOpen;
 
       if (focusTarget === "info-close" && this.infoOpen) this.infoMinimize?.focus({ preventScroll:true });
       else if (focusTarget === "info-toggle" && !this.infoToggle.hidden) this.infoToggle?.focus({ preventScroll:true });
@@ -2078,6 +2085,10 @@
     }
 
     expandObjectives(focus = false) {
+      if (this.isMobileUi()) {
+        this.setActionsMenu(false);
+        this.infoOpen = false;
+      }
       this.objectivesOpen = true;
       this.syncEducationPanels(focus ? "objectives-close" : null);
     }
@@ -2089,6 +2100,10 @@
 
     showRegionInfo(focus = false) {
       if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+      if (this.isMobileUi()) {
+        this.setActionsMenu(false);
+        this.objectivesOpen = false;
+      }
       this.infoOpen = true;
       this.syncEducationPanels(focus ? "info-close" : null);
     }
