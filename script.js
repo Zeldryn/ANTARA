@@ -681,21 +681,20 @@ const CHARACTER_SPRITES = Object.freeze({
   B: {
     name: "Sora",
     base: "assets/characters/sora/",
-    // The supplied square-set filenames do not match the visible poses, so
-    // state mapping below intentionally follows the actual artwork.
-    fallback: "07_surprised_exclamation.webp",
+    // Final user-supplied seven-pose set with the extended skirt.
+    fallback: "05_warm_smile.webp",
     states: Object.freeze({
-      idle: "07_surprised_exclamation.webp",
-      smile: "07_surprised_exclamation.webp",
-      happy: "06_wink_peace_reaching.webp",
-      talking: "01_confident_arms_crossed.webp",
-      excited: "04_cheerful_fists_up.webp",
-      curious: "03_inviting_hand.webp",
-      explaining: "01_confident_arms_crossed.webp",
-      thinking: "03_inviting_hand.webp",
-      surprised: "05_thinking_pose.webp",
-      confident: "02_open_arms_welcome.webp",
-      supportive: "07_surprised_exclamation.webp"
+      idle: "05_warm_smile.webp",
+      smile: "05_warm_smile.webp",
+      happy: "06_winking_pose.webp",
+      talking: "01_gentle_reaching_out.webp",
+      excited: "04_cheerful_excited.webp",
+      curious: "02_thinking_pose.webp",
+      explaining: "03_confident_arms_crossed.webp",
+      thinking: "02_thinking_pose.webp",
+      surprised: "07_surprised_exclamation.webp",
+      confident: "03_confident_arms_crossed.webp",
+      supportive: "05_warm_smile.webp"
     })
   }
 });
