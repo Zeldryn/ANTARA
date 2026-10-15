@@ -942,6 +942,7 @@
     }
 
     openEntryFlow() {
+      this.syncLocalDiscoveryProgress();
       if (!this.uranus.active || this.uranus.travelMode || this.uranus.fullExplorationActive) return;
       if (this.uranus.exploring) this.uranus.exitExploration();
       this.state = "configuring";
@@ -1256,7 +1257,7 @@
       const fresh = !this.discovered.has(observation.id);
       this.discovered.add(observation.id);
       this.saveDiscoveryState();
-      if (fresh) window.AntaraProgress?.trackFull?.("uranus", `${this.current.id}:${observation.id}`, `${this.current.name} - ${observation.name}`);
+      if (fresh) window.AntaraProgress?.trackFull?.("uranus", this.current.id, this.current.name);
       this.activeObservation = observation;
       this.observationPrompt.hidden = true;
       this.observationTitle.textContent = observation.name;
@@ -1286,6 +1287,20 @@
       this.observationCard.setAttribute("aria-hidden", "true");
       this.activeObservation = null;
       this.syncPanels();
+    }
+
+    syncLocalDiscoveryProgress() {
+      if (!window.AntaraProgress?.trackFull) return;
+      DESTINATIONS.forEach(destination => {
+        try {
+          const stored = JSON.parse(localStorage.getItem(`${DISCOVERY_PREFIX}${destination.id}`) || "[]");
+          if (!Array.isArray(stored) || stored.length < 1) return;
+          const allowed = new Set(destination.observations.map(observation => observation.id));
+          if (stored.some(id => allowed.has(id))) {
+            window.AntaraProgress.trackFull("uranus", destination.id, destination.name);
+          }
+        } catch {}
+      });
     }
 
     discoveryStorageKey() {

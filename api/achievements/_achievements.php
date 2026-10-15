@@ -130,13 +130,22 @@ function antara_achievement_first_event(PDO $pdo, int $userId, string $type): ?a
 function antara_achievement_full_count(PDO $pdo, int $userId, string $planet): array
 {
     $stmt = $pdo->prepare(
-        'SELECT COUNT(*) AS total, MAX(created_at) AS last_at
+        'SELECT event_key, created_at
          FROM user_progress_events
-         WHERE user_id = :user_id AND planet_code = :planet AND event_type = \'full\''
+         WHERE user_id = :user_id AND planet_code = :planet AND event_type = \'full\'
+         ORDER BY created_at ASC, id ASC'
     );
     $stmt->execute(['user_id'=>$userId,'planet'=>$planet]);
-    $row = $stmt->fetch() ?: [];
-    return ['count'=>(int)($row['total'] ?? 0),'lastAt'=>$row['last_at'] ?? null];
+    $visited = [];
+    $lastAt = null;
+    foreach ($stmt->fetchAll() as $row) {
+        $canonical = antara_progress_normalize_full_key($planet, (string)($row['event_key'] ?? ''));
+        if ($canonical === null) continue;
+        $visited[$canonical] = true;
+        $createdAt = (string)($row['created_at'] ?? '');
+        if ($createdAt !== '' && ($lastAt === null || $createdAt > $lastAt)) $lastAt = $createdAt;
+    }
+    return ['count'=>count($visited),'lastAt'=>$lastAt];
 }
 
 function antara_achievement_best_rank(PDO $pdo, int $userId): ?int

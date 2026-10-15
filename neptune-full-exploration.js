@@ -940,6 +940,7 @@
     }
 
     openEntryFlow() {
+      this.syncLocalDiscoveryProgress();
       if (!this.neptune.active || this.neptune.travelMode || this.neptune.fullExplorationActive) return;
       if (this.neptune.exploring) this.neptune.exitExploration();
       this.state = "configuring";
@@ -1254,7 +1255,7 @@
       const fresh = !this.discovered.has(observation.id);
       this.discovered.add(observation.id);
       this.saveDiscoveryState();
-      if (fresh) window.AntaraProgress?.trackFull?.("neptune", `${this.current.id}:${observation.id}`, `${this.current.name} - ${observation.name}`);
+      if (fresh) window.AntaraProgress?.trackFull?.("neptune", this.current.id, this.current.name);
       this.activeObservation = observation;
       this.observationPrompt.hidden = true;
       this.observationTitle.textContent = observation.name;
@@ -1284,6 +1285,20 @@
       this.observationCard.setAttribute("aria-hidden", "true");
       this.activeObservation = null;
       this.syncPanels();
+    }
+
+    syncLocalDiscoveryProgress() {
+      if (!window.AntaraProgress?.trackFull) return;
+      DESTINATIONS.forEach(destination => {
+        try {
+          const stored = JSON.parse(localStorage.getItem(`${DISCOVERY_PREFIX}${destination.id}`) || "[]");
+          if (!Array.isArray(stored) || stored.length < 1) return;
+          const allowed = new Set(destination.observations.map(observation => observation.id));
+          if (stored.some(id => allowed.has(id))) {
+            window.AntaraProgress.trackFull("neptune", destination.id, destination.name);
+          }
+        } catch {}
+      });
     }
 
     discoveryStorageKey() {
