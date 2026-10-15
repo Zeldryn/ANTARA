@@ -422,11 +422,11 @@
       this.observationClose?.addEventListener("click", () => this.closeObservationCard(true));
       this.landmarkMinimize?.addEventListener("click", event => { event.stopPropagation(); this.setInfoMinimized(true, false, true); });
       this.infoToggle?.addEventListener("click", event => { event.stopPropagation(); this.setActionsMenu(false); this.setInfoMinimized(false, false, true); });
-      this.tutorialClose?.addEventListener("click", () => this.tutorial.hidden = true);
+      this.tutorialClose?.addEventListener("click", () => this.dismissTutorial(true));
       this.mobileControls.forEach(button => {
         const control = button.dataset.mercuryControl;
         button.addEventListener("pointerdown", event => {
-          if (!this.active || this.state !== STATES.EXPLORING || this.isObservationCardOpen()) return;
+          if (!this.active || this.state !== STATES.EXPLORING || this.isObservationCardOpen() || this.actionsMenuOpen) return;
           event.preventDefault();
           event.stopPropagation();
           button.setPointerCapture?.(event.pointerId);
@@ -705,7 +705,12 @@
       const next = Boolean(open && mobile && this.state === STATES.EXPLORING);
       this.actionsMenuOpen = next;
       this.actionsRoot?.classList.toggle("is-open", next);
+      this.root.classList.toggle("is-actions-open", next);
       this.actionsMenuToggle?.setAttribute("aria-expanded", String(next));
+      if (next) {
+        this.clearMovementInput();
+        if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+      }
       this.syncSecondaryPanels();
       if (focus && next) requestAnimationFrame(() => this.actionsMenu?.querySelector("button")?.focus({ preventScroll: true }));
     }
@@ -1366,7 +1371,7 @@
         this.setActionsMenu(false);
         this.syncSecondaryPanels();
         this.hideLoading();
-        this.tutorial.hidden = switching;
+        if (switching) this.dismissTutorial(false); else this.showTutorial();
         this.resize();
         this.startLoop();
         document.getElementById("announcement").textContent = switching
@@ -1464,12 +1469,12 @@
     }
 
     onMouseMove(event) {
-      if (!this.active || !this.pointerLocked || this.state !== STATES.EXPLORING || this.isObservationCardOpen()) return;
+      if (!this.active || !this.pointerLocked || this.state !== STATES.EXPLORING || this.isObservationCardOpen() || this.actionsMenuOpen) return;
       this.applyLookDelta(event.movementX || 0, event.movementY || 0, "locked");
     }
 
     onLookPointerDown(event) {
-      if (!this.active || this.state !== STATES.EXPLORING || this.isObservationCardOpen()) return;
+      if (!this.active || this.state !== STATES.EXPLORING || this.isObservationCardOpen() || this.actionsMenuOpen) return;
       if (event.target.closest("button, a, [data-mercury-ui], .venus-region-selector, .venus-quality-panel, .venus-location-card, .venus-objectives-panel")) return;
       if (event.pointerType === "mouse") return;
       this.lookPointerId = event.pointerId;
@@ -1480,7 +1485,7 @@
     }
 
     onLookPointerMove(event) {
-      if (!this.active || this.state !== STATES.EXPLORING || this.isObservationCardOpen() || this.lookPointerId !== event.pointerId) return;
+      if (!this.active || this.state !== STATES.EXPLORING || this.isObservationCardOpen() || this.actionsMenuOpen || this.lookPointerId !== event.pointerId) return;
       const dx = event.clientX - this.lookPointer.x;
       const dy = event.clientY - this.lookPointer.y;
       this.lookPointer.x = event.clientX;
@@ -1513,7 +1518,7 @@
         else this.exit();
         return;
       }
-      if (this.state !== STATES.EXPLORING || this.isObservationCardOpen()) return;
+      if (this.state !== STATES.EXPLORING || this.isObservationCardOpen() || this.actionsMenuOpen) return;
       if (key === "e" && !event.repeat && this.tryObserveNearby()) {
         this.keys.delete("e");
         return;
@@ -1566,6 +1571,54 @@
         };
         requestAnimationFrame(frame);
       });
+    }
+
+    showTutorial() {
+      let seen = false;
+      try { seen = sessionStorage.getItem("antara-mercury-full-tutorial-v2") === "1"; } catch (_) {}
+      if (seen) { this.tutorial.hidden = true; return; }
+      this.tutorial.hidden = false;
+      window.clearTimeout(this.tutorialTimeout);
+      this.tutorialTimeout = window.setTimeout(() => this.dismissTutorial(false), 9000);
+    }
+
+    dismissTutorial(persist = false) {
+      window.clearTimeout(this.tutorialTimeout);
+      if (persist) { try { sessionStorage.setItem("antara-mercury-full-tutorial-v2", "1"); } catch (_) {} }
+      this.tutorial.hidden = true;
+    }
+
+    forceReset() {
+      this.transitionToken += 1;
+      this.active = false;
+      this.state = STATES.HIDDEN;
+      this.selectorOpenedFromWorld = false;
+      this.selectorRestoreState = null;
+      this.regionSwitchInFlight = false;
+      this.setActionsMenu(false);
+      this.stopLoop();
+      this.clearMovementInput();
+      window.clearTimeout(this.tutorialTimeout);
+      this.lookPointerId = null;
+      if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+      this.hideSelector();
+      this.hideQuality();
+      this.hideLoading();
+      this.hideError();
+      this.setUiVisible(false);
+      this.root.className = "mars-full-exploration venus-full-exploration mercury-full-exploration";
+      this.root.style.removeProperty("--surface-opacity");
+      this.root.style.removeProperty("--entry-progress");
+      this.root.hidden = true;
+      this.root.inert = true;
+      this.root.setAttribute("aria-hidden", "true");
+      this.entryButton.disabled = false;
+      const region = this.currentRegion;
+      this.mercury.setFullExplorationTransition?.(0, region);
+      this.mercury.endFullExploration?.();
+      this.currentRegion = null;
+      this.infoMinimized = true;
+      this.objectivesCollapsed = true;
     }
 
     async toggleFullscreen() {

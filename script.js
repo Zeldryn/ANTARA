@@ -1276,7 +1276,7 @@ function stopCelestialScenesForCockpitReturn() {
   }
   try { earthFull?.forceReset?.(); } catch {}
   try { venusFull?.forceReset?.(); } catch {}
-  try { mercuryFull?.exit?.(true); } catch {}
+  try { mercuryFull?.forceReset?.(); } catch {}
 }
 
 function returnTravelEase(value) {
@@ -1670,7 +1670,7 @@ function stopAllCelestialScenesForRestore() {
   }
   try { earthFull?.forceReset?.(); } catch {}
   try { venusFull?.forceReset?.(); } catch {}
-  try { mercuryFull?.exit?.(true); } catch {}
+  try { mercuryFull?.forceReset?.(); } catch {}
 }
 
 function restoreJourneyForUser(user) {
@@ -2572,7 +2572,8 @@ document.addEventListener("keydown", event => {
     return;
   }
   if (phase === "mercury" && mercury.fullExplorationActive) {
-    if (event.key === "Escape") { event.preventDefault(); mercuryFull?.exit?.(); }
+    // Mercury Full Exploration owns Escape on window so it can close
+    // observation/menu/selector/info/objectives in order before exiting.
     return;
   }
   if (phase === "mercury" && mercury.exploring) {

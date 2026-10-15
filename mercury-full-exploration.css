@@ -1,3 +1,16 @@
+
+/* Canonical Venus layout, Mercury palette. This must override the shared --fx
+   variables because full-exploration-ui-standard.css uses them with !important. */
+.mercury-full-exploration {
+  --fx-bg: rgba(11, 12, 14, .94);
+  --fx-bg-strong: rgba(6, 7, 9, .98);
+  --fx-border: rgba(149, 155, 163, .28);
+  --fx-border-strong: rgba(205, 210, 216, .50);
+  --fx-text: #edf0f3;
+  --fx-muted: #979ea7;
+  --fx-accent: #c8cdd3;
+  --fx-shadow: rgba(0, 0, 0, .58);
+}
 /*
  * ANTARA · Mercury Full Exploration
  * Venus owns the geometry and responsive UI template. This file only adds

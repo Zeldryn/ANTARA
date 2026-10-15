@@ -1,3 +1,16 @@
+
+/* Canonical Full Exploration palette override. The shared Venus geometry is kept,
+   but Mars must not inherit Venus's orange/brown --fx variables from the standard layer. */
+.mars-full-exploration.mars-venus-template {
+  --fx-bg: rgba(42, 17, 13, .93);
+  --fx-bg-strong: rgba(31, 12, 10, .975);
+  --fx-border: rgba(213, 126, 91, .30);
+  --fx-border-strong: rgba(235, 145, 103, .60);
+  --fx-text: #f1d8c8;
+  --fx-muted: #bc8f7a;
+  --fx-accent: #efa16f;
+  --fx-shadow: rgba(24, 6, 3, .52);
+}
 /* ANTARA Mars Full Exploration parity layer.
  * Geometry and interaction hierarchy follow the mature Venus Full Exploration UI.
  * Mars renderer, terrain streaming, and world simulation remain owned by mars-full-exploration.js.

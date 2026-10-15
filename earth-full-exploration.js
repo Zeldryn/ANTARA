@@ -990,7 +990,10 @@
     }
 
     interactive() {
-      return this.controller.state === STATES.ACTIVE && !this.controller.isObservationCardOpen();
+      const mobileMenuOpen = this.controller.isMobileUi() && this.controller.actionsMenuOpen;
+      return this.controller.state === STATES.ACTIVE
+        && !this.controller.isObservationCardOpen()
+        && !mobileMenuOpen;
     }
 
     bind() {
@@ -1228,6 +1231,7 @@
       this.objectivesOpen = false;
       this.infoOpen = false;
       this.selectorOpenedFromRegion = false;
+      this.selectorRestoreState = null;
       this.nearbyObservation = null;
       this.activeObservation = null;
       this.discovered = new Set();
@@ -1398,13 +1402,18 @@
     }
 
     isMobileUi() {
-      return matchMedia("(pointer: coarse)").matches || innerWidth <= 760;
+      return matchMedia("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)").matches;
     }
 
     setActionsMenu(open, focus = false) {
       this.actionsMenuOpen = Boolean(open);
       this.root.classList.toggle("is-actions-open", this.actionsMenuOpen);
       this.actionsMenuToggle?.setAttribute("aria-expanded", String(this.actionsMenuOpen));
+      if (this.actionsMenuOpen) {
+        this.input.reset();
+        if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+      }
+      this.syncEducationPanels();
       if (focus && this.actionsMenuOpen) requestAnimationFrame(() => this.actionsMenu?.querySelector("button")?.focus({ preventScroll:true }));
     }
 
@@ -1483,6 +1492,7 @@
       if (![STATES.SELECTING, STATES.ACTIVE].includes(this.state)) return;
       const switching = Boolean(this.terrain);
       const token = ++this.transitionToken;
+      if (switching) this.selectorRestoreState = null;
       this.input.reset();
       this.region = region;
       this.state = STATES.PREPARING;
@@ -2041,23 +2051,25 @@
 
     syncEducationPanels(focusTarget = null) {
       const active = this.state === STATES.ACTIVE;
+      const observationOpen = this.isObservationCardOpen();
+      const mobileMenuOpen = this.isMobileUi() && this.actionsMenuOpen;
       if (!active) {
         this.infoOpen = false;
         this.objectivesOpen = false;
       }
 
-      this.infoCard.hidden = !this.infoOpen;
-      this.infoCard.classList.toggle("is-visible", this.infoOpen);
-      this.infoCard.setAttribute("aria-hidden", String(!this.infoOpen));
+      this.infoCard.hidden = !this.infoOpen || observationOpen;
+      this.infoCard.classList.toggle("is-visible", this.infoOpen && !observationOpen);
+      this.infoCard.setAttribute("aria-hidden", String(!this.infoOpen || observationOpen));
       this.root.classList.toggle("is-info-open", this.infoOpen);
 
-      this.objectivesPanel.hidden = !this.objectivesOpen;
+      this.objectivesPanel.hidden = !this.objectivesOpen || observationOpen;
       this.root.classList.toggle("is-objectives-open", this.objectivesOpen);
 
       // The two compact buttons are independent switches. Opening one panel never
       // re-labels or reuses the other button, so their click targets cannot drift.
-      this.infoToggle.hidden = !active || this.infoOpen;
-      this.objectivesToggle.hidden = !active || this.objectivesOpen;
+      this.infoToggle.hidden = !active || this.infoOpen || mobileMenuOpen || observationOpen;
+      this.objectivesToggle.hidden = !active || this.objectivesOpen || mobileMenuOpen || observationOpen;
 
       if (focusTarget === "info-close" && this.infoOpen) this.infoMinimize?.focus({ preventScroll:true });
       else if (focusTarget === "info-toggle" && !this.infoToggle.hidden) this.infoToggle?.focus({ preventScroll:true });
@@ -2087,6 +2099,9 @@
     }
 
     showTutorial() {
+      let seen = false;
+      try { seen = sessionStorage.getItem("antara-earth-full-tutorial-v2") === "1"; } catch {}
+      if (seen) { this.tutorial.hidden = true; return; }
       this.tutorial.hidden = false;
       this.tutorial.classList.remove("is-dismissed");
       clearTimeout(this.tutorialTimeout);
@@ -2095,6 +2110,7 @@
 
     dismissTutorial(persist = false) {
       clearTimeout(this.tutorialTimeout);
+      if (persist) { try { sessionStorage.setItem("antara-earth-full-tutorial-v2", "1"); } catch {} }
       this.tutorial.classList.add("is-dismissed");
       window.setTimeout(() => {
         if (this.tutorial.classList.contains("is-dismissed")) this.tutorial.hidden = true;
@@ -2110,8 +2126,14 @@
 
     openSelectorFromRegion() {
       if (this.state !== STATES.ACTIVE || !this.terrain) return;
+      this.selectorRestoreState = {
+        infoOpen: this.infoOpen,
+        objectivesOpen: this.objectivesOpen
+      };
       this.selectorOpenedFromRegion = true;
       this.input.reset();
+      this.setActionsMenu(false);
+      if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
       this.state = STATES.SELECTING;
       this.selector.hidden = false;
       this.updateSelectorCurrentRegion();
@@ -2132,8 +2154,12 @@
       this.selectorOpenedFromRegion = false;
       this.state = STATES.ACTIVE;
       this.root.classList.remove("is-selecting");
-      this.infoOpen = false;
-      this.objectivesOpen = !this.isMobileUi();
+      const restore = this.selectorRestoreState;
+      this.selectorRestoreState = null;
+      if (restore) {
+        this.infoOpen = Boolean(restore.infoOpen);
+        this.objectivesOpen = Boolean(restore.objectivesOpen);
+      }
       this.syncEducationPanels();
       this.startLoop();
       this.updateResponsiveUi();
@@ -2230,6 +2256,11 @@
       this.root.style.removeProperty("--surface-opacity");
       this.root.style.removeProperty("--entry-progress");
       this.root.style.removeProperty("opacity");
+      this.actionsMenuOpen = false;
+      this.selectorOpenedFromRegion = false;
+      this.selectorRestoreState = null;
+      this.infoOpen = false;
+      this.objectivesOpen = false;
       this.selector.hidden = false;
       this.qualityPanel.hidden = true;
       this.loading.hidden = true;
@@ -2330,6 +2361,11 @@
       this.root.style.removeProperty("--surface-opacity");
       this.root.style.removeProperty("--entry-progress");
       this.root.style.removeProperty("opacity");
+      this.actionsMenuOpen = false;
+      this.selectorOpenedFromRegion = false;
+      this.selectorRestoreState = null;
+      this.infoOpen = false;
+      this.objectivesOpen = false;
       this.selector.hidden = false;
       this.qualityPanel.hidden = true;
       this.loading.hidden = true;

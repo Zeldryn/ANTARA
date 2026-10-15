@@ -1595,7 +1595,9 @@
     }
 
     isInteractive() {
-      return this.controller.state === STATES.EXPLORING;
+      return this.controller.state === STATES.EXPLORING
+        && this.controller.selector?.hidden !== false
+        && !this.controller.actionsMenuOpen;
     }
 
     onKeyDown(event) {
@@ -1607,6 +1609,26 @@
       event.stopImmediatePropagation();
       if (key === "escape") {
         if (event.repeat) return;
+        if (this.controller.actionsMenuOpen) {
+          this.controller.setActionsMenu(false);
+          this.clear();
+          return;
+        }
+        if (this.controller.selectorOpenedFromRegion && this.controller.selector?.hidden === false) {
+          this.controller.closeSelectorToRegion();
+          this.clear();
+          return;
+        }
+        if (this.controller.infoOpen) {
+          this.controller.hideRegionInfo();
+          this.clear();
+          return;
+        }
+        if (this.controller.objectiveOpen) {
+          this.controller.collapseObjectives();
+          this.clear();
+          return;
+        }
         if (document.pointerLockElement === this.controller.viewport) {
           document.exitPointerLock?.();
           this.clear();
@@ -2027,9 +2049,27 @@
       if (this.objectivesRegion) this.objectivesRegion.textContent = `Misi Mars · ${landmark.name}`;
     }
 
-    resetMissionProgress() {
-      this.completedMissionIds = new Set();
+    missionStorageKey() {
+      return "antara-mars-full-missions-v2";
+    }
+
+    loadMissionProgress() {
+      const valid = new Set(LANDMARKS.map(item => item.id));
+      try {
+        const saved = JSON.parse(localStorage.getItem(this.missionStorageKey()) || "[]");
+        this.completedMissionIds = new Set(Array.isArray(saved) ? saved.filter(id => valid.has(id)) : []);
+      } catch {
+        this.completedMissionIds = new Set();
+      }
       this.renderObjectives();
+    }
+
+    saveMissionProgress() {
+      try { localStorage.setItem(this.missionStorageKey(), JSON.stringify([...this.completedMissionIds])); } catch {}
+    }
+
+    resetMissionProgress() {
+      this.loadMissionProgress();
     }
 
     renderObjectives() {
@@ -2054,6 +2094,7 @@
     markMissionComplete(id) {
       if (!id || this.completedMissionIds.has(id)) return;
       this.completedMissionIds.add(id);
+      this.saveMissionProgress();
       this.renderObjectives();
     }
 
@@ -2100,7 +2141,13 @@
       const next = Boolean(open && this.isMobileUi() && this.state === STATES.EXPLORING && this.selector.hidden);
       this.actionsMenuOpen = next;
       this.actionsRoot?.classList.toggle("is-open", next);
+      this.root.classList.toggle("is-actions-open", next);
       this.actionsMenuToggle?.setAttribute("aria-expanded", String(next));
+      if (next) {
+        this.input.clear();
+        if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
+      }
+      this.syncSecondaryPanels();
       if (focus && next) requestAnimationFrame(() => this.actionsMenu?.querySelector("button")?.focus({ preventScroll: true }));
     }
 
@@ -2115,12 +2162,12 @@
         : "";
       this.infoCard?.classList.toggle("is-visible", showInfo);
       this.infoCard?.setAttribute("aria-hidden", String(!showInfo));
-      if (this.infoToggle) this.infoToggle.hidden = !exploring || this.infoOpen;
+      if (this.infoToggle) this.infoToggle.hidden = !exploring || this.infoOpen || this.actionsMenuOpen;
       if (this.objectivesPanel) {
         this.objectivesPanel.hidden = !showObjectives;
         this.objectivesPanel.setAttribute("aria-hidden", String(!showObjectives));
       }
-      if (this.objectivesToggle) this.objectivesToggle.hidden = !exploring || this.objectiveOpen;
+      if (this.objectivesToggle) this.objectivesToggle.hidden = !exploring || this.objectiveOpen || this.actionsMenuOpen;
     }
 
     updateResponsiveUi() {
@@ -2232,6 +2279,7 @@
       this.selectorOpenedFromRegion = true;
       this.setActionsMenu(false);
       this.input.clear();
+      if (document.pointerLockElement === this.viewport) document.exitPointerLock?.();
       this.infoCard?.classList.remove("is-visible");
       this.objectivesPanel.hidden = true;
       this.infoToggle.hidden = true;
