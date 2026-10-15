@@ -1077,11 +1077,14 @@ if (profileMoreTrigger && profileNavSuite) {
   document.addEventListener("click", event => {
     if (!profileNavSuite.contains(event.target) && !profileMoreTrigger.contains(event.target)) closeProfileMore();
   });
+  const shouldUseExpandedHud = () => (
+    window.matchMedia("(min-width: 1280px), (min-width: 1024px) and (min-height: 700px) and (orientation: landscape)").matches
+  );
   window.addEventListener("resize", () => {
-    // MORE is used by both mobile and the 701-1199px transition layout.
-    // Only force-close it once the full desktop navigation becomes visible.
-    if (window.innerWidth >= 1200) closeProfileMore();
+    // Close MORE as soon as the full laptop/desktop HUD fits comfortably again.
+    if (shouldUseExpandedHud()) closeProfileMore();
   }, { passive: true });
+  if (shouldUseExpandedHud()) closeProfileMore();
 }
 companions.setJourneyPhase("idle");
 companions.setDialogue(getLaunchDialogueCue(0), true);
@@ -2110,7 +2113,8 @@ function advancePreparation(timestamp) {
 }
 
 launchButton.addEventListener("click", () => {
-  if (!window.ANTARAAuth?.currentUser) {
+  const guestJourney = Boolean(window.ANTARAGuestSession?.isActive?.());
+  if (!window.ANTARAAuth?.currentUser && !guestJourney) {
     window.dispatchEvent(new CustomEvent("antara:launch-auth-required"));
     return;
   }

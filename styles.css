@@ -9384,3 +9384,145 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 .cockpit-profile-hud .profile-avatar-orbit-b {
   animation: profile-orbit-idle-b 7.2s ease-in-out infinite alternate !important;
 }
+
+/* ========================================================================
+   2026-10-06 laptop cockpit scale + full nav visibility pass
+   - Characters were still too dominant on many laptop widths.
+   - MORE should not appear on regular laptops / larger landscape screens.
+   ======================================================================== */
+
+/* Regular laptop / short desktop: calm the two guides down so the hero title,
+   speech bubble, and CTA have breathing room. */
+@media (min-width: 1024px) and (max-width: 1700px) {
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a,
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(280px, 22.2vw, 350px) !important;
+    bottom: 7.4% !important;
+  }
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a {
+    left: 1.1% !important;
+  }
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    right: 1.1% !important;
+  }
+  .speech-bubble {
+    width: min(250px, 22vw) !important;
+  }
+}
+
+/* 13-inch-ish and wider landscape screens should show the full nav suite.
+   ONLY smaller transition widths keep MORE. */
+@media (min-width: 1280px), (min-width: 1024px) and (min-height: 700px) and (orientation: landscape) {
+  .profile-primary-cluster {
+    width: auto !important;
+    max-width: 94% !important;
+    gap: 0 !important;
+  }
+  .profile-primary-cluster .profile-avatar-module,
+  .profile-primary-cluster .profile-login-trigger,
+  .profile-primary-cluster .profile-nav-bridge,
+  .profile-primary-cluster .profile-nav-suite {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+  }
+  .profile-primary-cluster .profile-avatar-module {
+    flex: 0 0 var(--nav-avatar) !important;
+    width: var(--nav-avatar) !important;
+    height: var(--nav-avatar) !important;
+    margin-right: var(--nav-avatar-login-gap) !important;
+  }
+  .profile-primary-cluster .profile-login-trigger {
+    flex: 0 0 var(--nav-login-width) !important;
+    width: var(--nav-login-width) !important;
+    height: var(--nav-height) !important;
+  }
+  .profile-primary-cluster .profile-nav-bridge {
+    display: block !important;
+    flex: 0 0 var(--nav-bridge-width) !important;
+    width: var(--nav-bridge-width) !important;
+    margin-right: var(--nav-module-gap) !important;
+  }
+  .profile-primary-cluster .profile-more-trigger {
+    display: none !important;
+  }
+  .profile-primary-cluster .profile-nav-suite {
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--nav-module-gap) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    width: auto !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+  }
+  .profile-primary-cluster .profile-nav-suite::before,
+  .profile-primary-cluster .profile-nav-suite::after {
+    display: none !important;
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-module {
+    width: auto !important;
+    height: var(--nav-height) !important;
+  }
+}
+
+/* Narrow-but-tall portrait desktop windows still need a compact full suite,
+   but not the giant opened drawer over the title. */
+@media (min-width: 900px) and (max-width: 1279px) and (min-height: 900px) {
+  .profile-primary-cluster .profile-more-trigger {
+    display: none !important;
+  }
+  .profile-primary-cluster .profile-nav-bridge {
+    display: block !important;
+  }
+  .profile-primary-cluster .profile-nav-suite {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    width: auto !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    clip-path: none !important;
+  }
+  .profile-primary-cluster .profile-nav-suite::before,
+  .profile-primary-cluster .profile-nav-suite::after {
+    display: none !important;
+  }
+}
+
+/* ========================================================================
+   2026-10-06 MORE DRAWER COLLISION LOCK
+   Whenever MORE is actually open, the hero title yields the visual lane.
+   This removes the intermittent title-over-drawer collision at transition
+   widths, browser zoom levels, and short laptop viewports.
+   ======================================================================== */
+.mission.profile-more-open .intro-title-stack {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translate(-50%, 8px) !important;
+}
+.profile-primary-cluster .profile-nav-suite.is-open {
+  z-index: 80 !important;
+}
