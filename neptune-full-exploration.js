@@ -125,6 +125,8 @@
       this.root = document.getElementById("neptune-full-exploration");
       this.entryButton = document.getElementById("neptune-full-explore-button");
       if (!scene || !this.root || !this.entryButton) return;
+      this.viewportPlaceholder = null;
+      this.viewportMounted = false;
 
       this.qualityPanel = document.getElementById("neptune-quality-panel");
       this.qualityOptions = document.getElementById("neptune-quality-options");
@@ -418,6 +420,33 @@
       this.controlFrame = null;
     }
 
+    mountSceneViewport() {
+      const viewport = this.scene?.viewport;
+      if (!viewport || this.viewportMounted) return;
+      const parent = viewport.parentNode;
+      if (!parent) return;
+      this.viewportPlaceholder = document.createComment("antara-neptune-viewport-home");
+      parent.insertBefore(this.viewportPlaceholder, viewport);
+      this.root.insertBefore(viewport, this.root.firstChild);
+      viewport.classList.add("is-full-exploration-mounted");
+      this.viewportMounted = true;
+      this.scene.resize?.();
+      this.scene.render?.();
+    }
+
+    restoreSceneViewport() {
+      if (!this.viewportMounted) return;
+      const viewport = this.scene?.viewport;
+      const placeholder = this.viewportPlaceholder;
+      if (viewport && placeholder?.parentNode) placeholder.parentNode.insertBefore(viewport, placeholder);
+      placeholder?.remove?.();
+      viewport?.classList.remove("is-full-exploration-mounted");
+      this.viewportPlaceholder = null;
+      this.viewportMounted = false;
+      this.scene.resize?.();
+      this.scene.render?.();
+    }
+
     selectDestination(id) {
       this.selected = DESTINATIONS.find(item => item.id === id) || DESTINATIONS[0];
       this.selectorGrid?.querySelectorAll("[data-neptune-region]").forEach(button => {
@@ -436,6 +465,7 @@
       this.root.hidden = false;
       this.root.inert = false;
       this.root.setAttribute("aria-hidden", "false");
+      this.mountSceneViewport();
       this.entryButton.disabled = true;
       this.qualityPanel.hidden = false;
       this.selector.hidden = true;
@@ -448,7 +478,7 @@
       this.state = "idle";
       this.scene.fullExplorationActive = false;
       this.scene.element.classList.remove("is-neptune-full-active");
-      this.scene.resize?.();
+      this.restoreSceneViewport();
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");
@@ -733,6 +763,7 @@
       this.objectiveOpen = false;
       this.actionsOpen = false;
       this.root.classList.remove("is-exploring", "is-exiting", "is-info-open", "is-objectives-open");
+      this.restoreSceneViewport();
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");
@@ -772,11 +803,12 @@
       await delay(matchMedia("(prefers-reduced-motion: reduce)").matches ? 80 : 420);
       if (token !== this.transitionToken) return;
       this.root.classList.remove("is-exploring", "is-exiting");
+      this.scene.fullExplorationActive = false;
+      this.scene.element.classList.remove("is-neptune-full-active");
+      this.restoreSceneViewport();
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");
-      this.scene.fullExplorationActive = false;
-      this.scene.element.classList.remove("is-neptune-full-active");
       this.scene.resize?.();
       this.state = "idle";
       this.entryButton.disabled = false;

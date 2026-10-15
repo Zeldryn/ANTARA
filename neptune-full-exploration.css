@@ -272,3 +272,22 @@
   .neptune-full-exploration .mars-mobile-altitude [data-neptune-control="up"] { top:0 !important; bottom:auto !important; }
   .neptune-full-exploration .mars-mobile-altitude [data-neptune-control="down"] { top:auto !important; bottom:0 !important; }
 }
+
+/* Keep the existing planet renderer inside the Full Exploration stacking context. */
+.neptune-full-exploration > .neptune-viewport.is-full-exploration-mounted {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+}
+.neptune-full-exploration > .neptune-viewport.is-full-exploration-mounted canvas {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 1 !important;
+}
