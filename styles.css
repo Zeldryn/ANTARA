@@ -6787,7 +6787,8 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 @media (max-width:700px) and (orientation:portrait) {
   .mission[data-experience="home"] .cockpit-brand,
   .mission[data-experience="launch"] .cockpit-brand {
-    top:12.6% !important;
+    /* Seat the ANTARA mark inside the upper dashboard trapezoid, clear of telemetry cards. */
+    top:8.5% !important;
   }
 }
 
