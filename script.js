@@ -1047,6 +1047,7 @@ const uranusPreviousButton = document.getElementById("uranus-prev-planet");
 const uranusNextButton = document.getElementById("uranus-next-planet");
 const neptunePreviousButton = document.getElementById("neptune-prev-planet");
 const neptuneNextButton = document.getElementById("neptune-next-planet");
+const audioDock = document.getElementById("audio-orb-dock");
 const audioToggle = document.getElementById("audio-toggle");
 const audioLabel = document.getElementById("audio-label");
 const announcement = document.getElementById("announcement");
@@ -1885,8 +1886,21 @@ function abortPlanetTransition(fallbackPhase) {
 }
 const introPanel = document.querySelector(".intro");
 
+function syncAudioDockPlacement(state = mission?.dataset?.experience || "home") {
+  if (!audioDock) return;
+  const journeyMode = state === "planet";
+  if (journeyMode) {
+    if (audioDock.parentElement !== mission) mission.appendChild(audioDock);
+    audioDock.dataset.audioPlacement = "journey";
+    return;
+  }
+  if (profileNavSuite && audioDock.parentElement !== profileNavSuite) profileNavSuite.appendChild(audioDock);
+  audioDock.dataset.audioPlacement = "hud";
+}
+
 function setExperienceState(state) {
   mission.dataset.experience = state;
+  syncAudioDockPlacement(state);
   const home = state === "home";
   const launch = state === "launch";
   const openingVisible = home || launch;

@@ -10183,3 +10183,379 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     padding-right: 8px !important;
   }
 }
+
+
+/* ========================================================================
+   2026-10-07 AUDIO RESPONSIVE PLACEMENT FINAL
+   One audio control, three intentional contexts:
+   - laptop/desktop home: directly beside QUIZ inside the centered HUD cluster
+   - compact/mobile home: fifth action inside MORE, full-width and easy to tap
+   - journey/planet/full exploration: detached global control; bottom-left on
+     laptop/desktop, compact upper-right on touch/compact screens
+   ======================================================================== */
+.audio-orb-dock[data-audio-placement] {
+  box-sizing: border-box !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* HOME / LAUNCH: the dock is physically the last item in profile-nav-suite,
+   so centering includes audio instead of visually hanging it off the HUD. */
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] {
+  position: relative !important;
+  inset: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  filter: none !important;
+  z-index: 2 !important;
+}
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"]::before,
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"]::after {
+  content: none !important;
+  display: none !important;
+}
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-control.audio-sci-fi-node {
+  position: relative !important;
+  inset: auto !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: 21px minmax(0,1fr) !important;
+  align-items: center !important;
+  justify-content: stretch !important;
+  gap: 4px !important;
+  padding: 0 7px 0 6px !important;
+  color: #e9f3f7 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  clip-path: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  isolation: isolate !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transform: none !important;
+}
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-control.audio-sci-fi-node::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  border: 0 !important;
+  clip-path: polygon(7px 0,76% 0,81% 3px,100% 3px,100% calc(100% - 7px),calc(100% - 7px) 100%,29% 100%,24% calc(100% - 2px),0 calc(100% - 2px),0 7px) !important;
+  background:
+    linear-gradient(90deg,rgba(112,188,222,.78),rgba(112,188,222,.20) 52%,transparent 78%) top left/80% 1px no-repeat,
+    linear-gradient(90deg,transparent 10%,rgba(225,185,109,.34),rgba(225,185,109,.80)) bottom right/74% 1px no-repeat,
+    linear-gradient(180deg,rgba(112,188,222,.76),transparent 72%) left top/1px 64% no-repeat,
+    linear-gradient(180deg,transparent 12%,rgba(225,185,109,.70)) right bottom/1px 70% no-repeat !important;
+  opacity: .9 !important;
+  pointer-events: none !important;
+}
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-control.audio-sci-fi-node::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  width: 3px !important;
+  height: 3px !important;
+  left: auto !important;
+  right: 6px !important;
+  top: 6px !important;
+  bottom: auto !important;
+  border-radius: 50% !important;
+  background: #78c4e4 !important;
+  box-shadow: 0 0 7px rgba(120,196,228,.58) !important;
+  animation: antara-module-node 3.3s ease-in-out infinite !important;
+}
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .sci-fi-audio-icon {
+  position: relative !important;
+  z-index: 2 !important;
+  width: 18px !important;
+  height: 18px !important;
+  flex: 0 0 18px !important;
+  color: #7fc9e8 !important;
+  justify-self: center !important;
+}
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-node-hint {
+  position: relative !important;
+  z-index: 2 !important;
+  display: grid !important;
+  align-content: center !important;
+  justify-items: start !important;
+  gap: 2px !important;
+  color: #edf3f5 !important;
+  font: 680 6.8px/1 system-ui,sans-serif !important;
+  letter-spacing: .09em !important;
+  text-indent: 0 !important;
+  text-align: left !important;
+}
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-node-hint::before {
+  content: "SUARA";
+  display: block;
+  color: #8cb4c7;
+  font: 700 4.6px/1 system-ui,sans-serif;
+  letter-spacing: .11em;
+}
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-control.is-muted .sci-fi-audio-icon,
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-control.is-muted .audio-node-hint {
+  color: #d7b271 !important;
+}
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-control:hover,
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-control:focus-visible {
+  filter: brightness(1.14) !important;
+  transform: translateY(-1px) !important;
+  outline: 1px solid rgba(223,183,111,.48) !important;
+  outline-offset: 2px !important;
+}
+.profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-control:active {
+  transform: translateY(0) scale(.985) !important;
+}
+
+/* Full laptop/desktop HUD. Audio sits immediately after QUIZ and becomes part
+   of the same centered flex group. */
+@media (min-width:900px) {
+  .profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] {
+    display: block !important;
+    flex: 0 0 84px !important;
+    width: 84px !important;
+    height: var(--nav-height,32px) !important;
+  }
+  .profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-control.audio-sci-fi-node {
+    width: 84px !important;
+    min-width: 84px !important;
+    height: var(--nav-height,32px) !important;
+    min-height: var(--nav-height,32px) !important;
+  }
+}
+@media (min-width:1200px) {
+  .profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] {
+    flex-basis: 96px !important;
+    width: 96px !important;
+  }
+  .profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-control.audio-sci-fi-node {
+    width: 96px !important;
+    min-width: 96px !important;
+  }
+  .profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-node-hint {
+    font-size: 7.2px !important;
+  }
+}
+
+/* Compact/tablet/mobile HOME: audio belongs inside MORE. It spans both columns
+   as an intentional utility row instead of leaving an orphan fifth tile. */
+@media (max-width:899px) {
+  .profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] {
+    display: block !important;
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    height: 36px !important;
+    min-height: 36px !important;
+  }
+  .profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-control.audio-sci-fi-node {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    grid-template-columns: 28px minmax(0,1fr) !important;
+    gap: 7px !important;
+    padding: 0 10px !important;
+  }
+  .profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .sci-fi-audio-icon {
+    width: 21px !important;
+    height: 21px !important;
+  }
+  .profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-node-hint {
+    font-size: 8.2px !important;
+    letter-spacing: .10em !important;
+  }
+  .profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-node-hint::before {
+    font-size: 4.6px !important;
+  }
+}
+
+/* JOURNEY / PLANET / FULL EXPLORATION: detached from the hidden account HUD.
+   This rule intentionally overrides older full-exploration/solar-system hides. */
+#mission > .audio-orb-dock[data-audio-placement="journey"] {
+  position: fixed !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  background: transparent !important;
+  border: 0 !important;
+  transform: none !important;
+  filter: none !important;
+  z-index: 96 !important;
+}
+#mission > .audio-orb-dock[data-audio-placement="journey"]::before,
+#mission > .audio-orb-dock[data-audio-placement="journey"]::after {
+  content: none !important;
+  display: none !important;
+}
+#mission > .audio-orb-dock[data-audio-placement="journey"] .audio-control.audio-sci-fi-node {
+  position: relative !important;
+  inset: auto !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #9fdcf3 !important;
+  border: 1px solid rgba(116,195,228,.40) !important;
+  border-radius: 0 !important;
+  background:
+    radial-gradient(circle at 40% 45%,rgba(72,170,211,.12),transparent 52%),
+    linear-gradient(145deg,rgba(9,28,41,.94),rgba(4,13,21,.98)) !important;
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.30),
+    inset 0 1px 0 rgba(255,255,255,.04),
+    inset 0 0 16px rgba(75,177,218,.07) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  transition: transform .16s ease,filter .16s ease,border-color .16s ease !important;
+  overflow: hidden !important;
+}
+#mission > .audio-orb-dock[data-audio-placement="journey"] .audio-control.audio-sci-fi-node::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  inset: 4px !important;
+  border: 1px solid rgba(224,184,109,.16) !important;
+  background: none !important;
+  pointer-events: none !important;
+}
+#mission > .audio-orb-dock[data-audio-placement="journey"] .audio-control.audio-sci-fi-node::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  width: 3px !important;
+  height: 3px !important;
+  left: auto !important;
+  right: 8px !important;
+  top: 7px !important;
+  bottom: auto !important;
+  border-radius: 50% !important;
+  background: #7ac9e8 !important;
+  box-shadow: 0 0 7px rgba(122,201,232,.62) !important;
+  animation: audio-node-pulse 2.8s ease-in-out infinite !important;
+}
+#mission > .audio-orb-dock[data-audio-placement="journey"] .audio-control.is-muted {
+  color: #d4ad6b !important;
+  border-color: rgba(217,177,105,.38) !important;
+  background: linear-gradient(145deg,rgba(28,23,16,.94),rgba(10,11,13,.98)) !important;
+}
+#mission > .audio-orb-dock[data-audio-placement="journey"] .audio-control:hover,
+#mission > .audio-orb-dock[data-audio-placement="journey"] .audio-control:focus-visible {
+  filter: brightness(1.13) !important;
+  transform: translateY(-1px) !important;
+  outline: none !important;
+  border-color: rgba(155,218,242,.62) !important;
+}
+#mission > .audio-orb-dock[data-audio-placement="journey"] .audio-control:active {
+  transform: translateY(0) scale(.97) !important;
+}
+
+/* PC / laptop exploration: lower-left is intentionally below the objective
+   panels and away from the centered keyboard hint lane. */
+@media (min-width:900px) {
+  #mission > .audio-orb-dock[data-audio-placement="journey"] {
+    left: max(18px,env(safe-area-inset-left)) !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: max(18px,env(safe-area-inset-bottom)) !important;
+    width: 92px !important;
+    height: 42px !important;
+  }
+  #mission > .audio-orb-dock[data-audio-placement="journey"] .audio-control.audio-sci-fi-node {
+    width: 92px !important;
+    min-width: 92px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    gap: 7px !important;
+    padding: 0 11px 0 8px !important;
+    clip-path: polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px) !important;
+  }
+  #mission > .audio-orb-dock[data-audio-placement="journey"] .sci-fi-audio-icon {
+    width: 24px !important;
+    height: 24px !important;
+    flex: 0 0 24px !important;
+  }
+  #mission > .audio-orb-dock[data-audio-placement="journey"] .audio-node-hint {
+    display: inline-block !important;
+    color: currentColor !important;
+    font: 760 7.2px/1 system-ui,sans-serif !important;
+    letter-spacing: .13em !important;
+    text-indent: .13em !important;
+  }
+  #mission > .audio-orb-dock[data-audio-placement="journey"] .audio-node-hint::before {
+    content: none !important;
+    display: none !important;
+  }
+}
+
+/* Mobile/compact exploration: upper-right, in the gap between the full-
+   exploration MENU row and the Goal/Info row. This avoids the d-pad, bottom
+   sheets, panorama Prev/Next dock, and phone safe-area. */
+@media (max-width:899px) {
+  #mission > .audio-orb-dock[data-audio-placement="journey"] {
+    left: auto !important;
+    right: max(10px,env(safe-area-inset-right)) !important;
+    top: max(64px,calc(env(safe-area-inset-top) + 10px)) !important;
+    bottom: auto !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+  #mission > .audio-orb-dock[data-audio-placement="journey"] .audio-control.audio-sci-fi-node {
+    width: 40px !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    clip-path: polygon(25% 0,75% 0,100% 25%,100% 75%,75% 100%,25% 100%,0 75%,0 25%) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  #mission > .audio-orb-dock[data-audio-placement="journey"] .sci-fi-audio-icon {
+    width: 25px !important;
+    height: 25px !important;
+    flex: 0 0 25px !important;
+  }
+  #mission > .audio-orb-dock[data-audio-placement="journey"] .audio-node-hint {
+    display: none !important;
+  }
+}
+
+/* The old rules intentionally hid audio in these modes. The new global dock
+   must remain reachable, including full exploration and solar-system view. */
+.mission.is-solar-system-mode > .audio-orb-dock[data-audio-placement="journey"],
+.mission:has(#earth-full-exploration:not([hidden])) > .audio-orb-dock[data-audio-placement="journey"],
+.mission:has(#mercury-full-exploration:not([hidden])) > .audio-orb-dock[data-audio-placement="journey"],
+.mission:has(#venus-full-exploration:not([hidden])) > .audio-orb-dock[data-audio-placement="journey"],
+.mission:has(#mars-full-exploration:not([hidden])) > .audio-orb-dock[data-audio-placement="journey"],
+.mission:has(#jupiter-full-exploration:not([hidden])) > .audio-orb-dock[data-audio-placement="journey"],
+.mission:has(#saturn-full-exploration:not([hidden])) > .audio-orb-dock[data-audio-placement="journey"],
+.mission:has(#uranus-full-exploration:not([hidden])) > .audio-orb-dock[data-audio-placement="journey"],
+.mission:has(#neptune-full-exploration:not([hidden])) > .audio-orb-dock[data-audio-placement="journey"] {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .profile-nav-suite > .audio-orb-dock[data-audio-placement="hud"] .audio-control.audio-sci-fi-node::after,
+  #mission > .audio-orb-dock[data-audio-placement="journey"] .audio-control.audio-sci-fi-node::after {
+    animation: none !important;
+  }
+}
