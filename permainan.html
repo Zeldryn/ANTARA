@@ -7,9 +7,9 @@
   <title>Quiz ANTARA</title>
   <link rel="icon" type="image/png" href="assets/antara-logo.png">
   <link rel="stylesheet" href="achievement-notify.css?v=20261003-achievement-toast-1">
-  <link rel="stylesheet" href="permainan.css?v=20261005-kids-visual-polish-1">
+  <link rel="stylesheet" href="permainan.css?v=20261007-best-record-1">
   <script src="achievement-client.js?v=20261003-achievement-toast-1" defer></script>
-  <script src="permainan.js?v=20261005-kids-visual-polish-1" defer></script>
+  <script src="permainan.js?v=20261007-best-record-1" defer></script>
 </head>
 <body>
   <div class="game-space" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -27,16 +27,16 @@
       <div class="game-intro-copy">
         <p class="eyebrow">ANTARA · QUIZ NAVIGASI TATA SURYA</p>
         <h1>Seberapa cepat<br><span>kamu mengenal langit?</span></h1>
-        <p class="lead">Mulai dari soal ringan, lalu naik level sedikit demi sedikit. Kalau salah, soal itu bisa kembali lagi sampai kamu benar-benar menguasainya.</p>
+        <p class="lead">Satu tantangan berisi tepat 15 soal campuran dari lima tingkat kesulitan. Apa pun hasilnya, skor ronde langsung dikunci setelah soal ke-15 dan dibandingkan dengan best record kamu.</p>
         <div class="quiz-planet-parade" aria-label="Planet Quiz ANTARA">
           <img src="assets/progress-planets/mercury.png" alt="Merkurius"><img src="assets/progress-planets/venus.png" alt="Venus"><img src="assets/progress-planets/earth.png" alt="Bumi"><img src="assets/progress-planets/mars.png" alt="Mars"><img src="assets/progress-planets/jupiter.png" alt="Jupiter"><img src="assets/progress-planets/saturn.png" alt="Saturnus">
         </div>
-        <div class="level-track" aria-label="Tingkat kesulitan">
-          <span><img src="assets/progress-planets/earth.png" alt=""><b>01</b><small>PEMULA</small><em>Santai dulu</em></span>
-          <span><img src="assets/progress-planets/mars.png" alt=""><b>02</b><small>DASAR</small><em>Mulai cepat</em></span>
-          <span><img src="assets/progress-planets/jupiter.png" alt=""><b>03</b><small>MENENGAH</small><em>Fokus!</em></span>
-          <span><img src="assets/progress-planets/saturn.png" alt=""><b>04</b><small>SULIT</small><em>Berani?</em></span>
-          <span><img src="assets/progress-planets/neptune.png" alt=""><b>05</b><small>AHLI</small><em>Boss level</em></span>
+        <div class="level-track" aria-label="Komposisi tingkat kesulitan">
+          <span><img src="assets/progress-planets/earth.png" alt=""><b>3 SOAL</b><small>PEMULA</small><em>Pemanasan</em></span>
+          <span><img src="assets/progress-planets/mars.png" alt=""><b>3 SOAL</b><small>DASAR</small><em>Mulai cepat</em></span>
+          <span><img src="assets/progress-planets/jupiter.png" alt=""><b>3 SOAL</b><small>MENENGAH</small><em>Fokus!</em></span>
+          <span><img src="assets/progress-planets/saturn.png" alt=""><b>3 SOAL</b><small>SULIT</small><em>Berani?</em></span>
+          <span><img src="assets/progress-planets/neptune.png" alt=""><b>3 SOAL</b><small>AHLI</small><em>Puncak</em></span>
         </div>
         <div class="game-actions">
           <button class="primary" id="game-start" type="button">MULAI QUIZ <span>→</span></button>
@@ -47,8 +47,8 @@
       </div>
       <aside class="game-brief">
         <div><img src="assets/progress-planets/earth.png" alt=""><small>BANK SOAL</small><strong>300</strong><span>soal dari materi ANTARA</span></div>
-        <div><img src="assets/achievements/05-mars.png" alt=""><small>PER LEVEL</small><strong>15</strong><span>kuasai semua untuk lanjut</span></div>
-        <div><img src="assets/progress-planets/jupiter.png" alt=""><small>LEVEL</small><strong>5</strong><span>dari pemula sampai ahli</span></div>
+        <div><img src="assets/achievements/05-mars.png" alt=""><small>PER TANTANGAN</small><strong>15</strong><span>skor dikunci setelah soal ke-15</span></div>
+        <div><img src="assets/progress-planets/jupiter.png" alt=""><small>KESULITAN</small><strong>5</strong><span>masing-masing 3 soal</span></div>
         <div><img src="assets/progress-planets/saturn.png" alt=""><small>PILIHAN</small><strong>4</strong><span>A · B · C · D</span></div>
       </aside>
     </section>
@@ -56,7 +56,7 @@
     <section class="quiz-stage" id="quiz-stage" hidden aria-live="polite">
       <div class="quiz-hud">
         <div class="quiz-hud-item"><small>SOAL STACK</small><strong id="quiz-progress">01 / 15</strong></div>
-        <div class="quiz-hud-item quiz-mastery"><small>DIKUASAI</small><strong id="quiz-mastered">0 / 15</strong></div>
+        <div class="quiz-hud-item quiz-mastery"><small>BENAR</small><strong id="quiz-mastered">0 / 15</strong></div>
         <div class="quiz-hud-item"><small>SKOR</small><strong id="quiz-score">0</strong></div>
         <div class="quiz-hud-item"><small>STREAK</small><strong id="quiz-streak">×0</strong></div>
         <div class="quiz-hud-item quiz-level"><small>TINGKAT</small><strong id="quiz-level">PEMULA</strong></div>
@@ -94,14 +94,15 @@
       <h1>Lihat hasil<br><span>petualanganmu.</span></h1>
       <div class="result-score"><small>SKOR AKHIR</small><strong id="result-score">0</strong><span>POIN</span></div>
       <div class="result-grid">
-        <div><small>DIKUASAI</small><strong id="result-correct">0 / 75</strong></div>
+        <div><small>BENAR</small><strong id="result-correct">0 / 15</strong></div>
         <div><small>BENAR PERCOBAAN PERTAMA</small><strong id="result-accuracy">0%</strong></div>
         <div><small>STREAK TERBAIK</small><strong id="result-streak">×0</strong></div>
         <div><small>RATA-RATA</small><strong id="result-speed">0.0s</strong></div>
       </div>
+      <p class="result-record" id="result-record" aria-live="polite"></p>
       <div class="result-actions">
-        <button type="button" id="result-retry">MAIN LAGI</button>
-        <a class="primary-link" href="leaderboard.html">LIHAT LEADERBOARD</a>
+        <button type="button" id="result-retry">TANTANG LAGI</button>
+        <a class="primary-link" href="leaderboard.html">PUAS DENGAN SKOR INI</a>
         <a href="pencapaian.html">PENCAPAIAN</a>
       </div>
     </section>

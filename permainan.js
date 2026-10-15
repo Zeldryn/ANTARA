@@ -84,7 +84,7 @@
       if (data.authenticated && data.user) {
         user = data.user;
         account.innerHTML = `<i></i><span>${esc(user.name || user.username || "PENJELAJAH")}</span>`;
-        loginNote.textContent = "Kuasai 15/15 untuk membuka level berikutnya. Setiap jawaban yang salah bisa muncul lagi.";
+        loginNote.textContent = "Jawab 15 soal untuk menutup satu tantangan. Skor terverifikasi langsung masuk leaderboard dan hanya best record akunmu yang dipakai.";
         startBtn.disabled = false;
       } else {
         user = null; startBtn.disabled = true;
@@ -175,23 +175,10 @@
     finally { startBtn.disabled = !user; }
   }
 
-  function setStackWarning(data) {
+  function setStackWarning() {
     stackWarning.hidden = true;
     stackWarning.className = "quiz-stack-warning";
     stackWarning.textContent = "";
-    if (data.finished) return;
-    if (data.stackComplete && data.nextLevel) {
-      stackWarning.hidden = false;
-      stackWarning.classList.add("is-complete");
-      stackWarning.innerHTML = `<strong>LEVEL ${esc(data.stack.label)} TUNTAS · 15 / 15</strong><span>Semua soal sudah benar. Level ${esc(data.nextLevel.label)} sekarang terbuka.</span>`;
-      return;
-    }
-    if (data.needsRetry) {
-      stackWarning.hidden = false;
-      stackWarning.classList.add("is-locked");
-      const remaining = Number(data.stack?.remaining || 0);
-      stackWarning.innerHTML = `<strong>BELUM BISA NAIK LEVEL</strong><span>Kuasai 15 / 15 dulu. ${remaining} soal yang belum benar akan diulang sampai kamu menguasainya.</span>`;
-    }
   }
 
   async function submitAnswer(key) {
@@ -210,21 +197,16 @@
       });
       if (data.correct) soundCorrect(); else soundWrong();
       feedback.hidden = false; feedback.classList.toggle("is-wrong", !data.correct); feedback.classList.toggle("is-stack-complete", !!data.stackComplete);
-      $("#feedback-status").textContent = data.finished ? "SEMUA LEVEL TUNTAS" : data.stackComplete ? "LEVEL TUNTAS" : data.timedOut ? "WAKTU HABIS" : (data.correct ? "TEPAT" : "BELUM TEPAT");
+      $("#feedback-status").textContent = data.finished ? "15 / 15 SOAL SELESAI" : data.stackComplete ? "TANTANGAN TUNTAS" : data.timedOut ? "WAKTU HABIS" : (data.correct ? "TEPAT" : "BELUM TEPAT");
       $("#feedback-points").textContent = data.points > 0 ? `+${formatScore(data.points)}` : "+0";
       $("#feedback-correct").textContent = `Jawaban: ${data.correctKey}. ${data.correctText}`;
       $("#feedback-explanation").textContent = data.explanation || "";
       $("#feedback-reference").textContent = data.reference ? `ACUAN ANTARA · ${data.reference}` : "";
       pendingFinished = data.finished ? data.summary : null;
-      pendingLevelAdvance = data.stackComplete && data.nextLevel ? data.nextLevel : null;
+      pendingLevelAdvance = null;
       setStackWarning(data);
       if (data.finished) {
         nextBtn.textContent = "LIHAT HASIL →";
-      } else if (pendingLevelAdvance) {
-        nextBtn.textContent = `NAIK KE ${pendingLevelAdvance.label} →`;
-        soundLevel();
-      } else if (data.needsRetry) {
-        nextBtn.textContent = `ULANGI YANG BELUM BENAR (${data.stack.remaining}) →`;
       } else {
         nextBtn.textContent = "LANJUT →";
       }
@@ -235,15 +217,13 @@
   async function goNext() {
     if (pendingFinished) { showResult(pendingFinished); return; }
     if (!currentQuestion || !runToken) return;
-    const level = Number(currentQuestion.level || 0);
-    const advanceLevel = !!pendingLevelAdvance;
     nextBtn.disabled = true;
     const oldText = nextBtn.textContent;
-    nextBtn.textContent = advanceLevel ? `MEMBUKA ${pendingLevelAdvance.label}...` : "MENYIAPKAN SOAL...";
+    nextBtn.textContent = "MENYIAPKAN SOAL...";
     try {
       const data = await json("api/quiz/next.php", {
         method:"POST",
-        body:JSON.stringify({ runToken, level, advanceLevel })
+        body:JSON.stringify({ runToken })
       });
       score = data.score || score; streak = data.streak || 0; currentStack = data.stack || currentStack;
       renderQuestion(data.question, data.stack);
@@ -258,9 +238,17 @@
     stage.hidden = true; intro.hidden = true; errorStage.hidden = true; resultStage.hidden = false;
     $("#result-score").textContent = formatScore(summary.score);
     $("#result-correct").textContent = `${summary.correct} / ${summary.total}`;
-    $("#result-accuracy").textContent = `${summary.firstTryCorrect || 0} / ${summary.total || 75} · ${summary.accuracy}%`;
+    $("#result-accuracy").textContent = `${summary.firstTryCorrect || 0} / ${summary.total || 15} · ${summary.accuracy}%`;
     $("#result-streak").textContent = `×${summary.bestStreak}`;
     $("#result-speed").textContent = `${((summary.avgResponseMs || 0)/1000).toFixed(1)}s`;
+    const record = $("#result-record");
+    if (record) {
+      const best = Number(summary.bestScore ?? summary.score ?? 0);
+      record.classList.toggle("is-new", !!summary.isNewBest);
+      record.innerHTML = summary.isNewBest
+        ? `<strong>REKOR BARU</strong><span>Best record kamu sekarang ${formatScore(best)} poin dan sudah tersimpan di leaderboard.</span>`
+        : `<strong>BEST RECORD ${formatScore(best)}</strong><span>Skor ronde ini sudah tersimpan. Leaderboard tetap memakai nilai terbaikmu.</span>`;
+    }
     window.AntaraAchievementNotifications?.checkPending?.();
     window.scrollTo({ top:0, behavior:"smooth" });
   }

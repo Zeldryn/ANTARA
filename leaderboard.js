@@ -47,11 +47,11 @@
 
   function boardCopy(board) {
     if (board === "game") return {
-      kicker:"BINTANG QUIZ",
+      kicker:"BEST RECORD QUIZ",
       title:"Peringkat Quiz ANTARA",
       emptyKicker:"BELUM ADA BINTANG QUIZ",
       emptyTitle:"Arena quiz masih kosong.",
-      emptyCopy:"Mainkan Quiz ANTARA, kumpulkan poin, dan jadilah nama pertama di papan ini."
+      emptyCopy:"Selesaikan satu tantangan 15 / 15. Setiap akun dinilai dari skor terbaiknya."
     };
     return {
       kicker:"URUTAN PENYELESAIAN",
@@ -72,7 +72,7 @@
   }
 
   function entryDetail(entry, board) {
-    if (board === "game") return { main:`${formatScore(entry.score)} poin`, sub:formatDate(entry.achievedAt) };
+    if (board === "game") return { main:`BEST ${formatScore(entry.score)} poin`, sub:formatDate(entry.achievedAt) };
     return { main:"100% selesai", sub:formatDate(entry.completedAt) };
   }
 
@@ -166,7 +166,7 @@
       tab.setAttribute("aria-selected", active ? "true" : "false");
     });
     try {
-      const url = board === "game" ? "api/leaderboard/get.php?type=game&game=quiz&limit=50" : "api/leaderboard/get.php?type=completion&limit=50";
+      const url = board === "game" ? "api/leaderboard/get.php?type=game&game=quiz15&limit=50" : "api/leaderboard/get.php?type=completion&limit=50";
       const { response, data } = await fetchJson(url);
       if (!response.ok || !data.success) throw new Error(data.message || "Leaderboard gagal dimuat.");
       renderBoard(data, board);

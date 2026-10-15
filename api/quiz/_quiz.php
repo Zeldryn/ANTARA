@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/leaderboard/_leaderboard.php';
 
-const ANTARA_QUIZ_GAME_CODE = 'quiz';
+const ANTARA_QUIZ_GAME_CODE = 'quiz15';
 const ANTARA_QUIZ_STACK_SIZE = 15;
 const ANTARA_QUIZ_LEVEL_COUNT = 5;
-const ANTARA_QUIZ_TOTAL_QUESTIONS = ANTARA_QUIZ_STACK_SIZE * ANTARA_QUIZ_LEVEL_COUNT;
-// Compatibility alias: achievements/UI that mean a single mastery stack still use 15.
+// One verified challenge is exactly 15 questions. Difficulty levels are mixed
+// inside the same run so every leaderboard attempt has the same shape.
+const ANTARA_QUIZ_TOTAL_QUESTIONS = ANTARA_QUIZ_STACK_SIZE;
 const ANTARA_QUIZ_QUESTION_COUNT = ANTARA_QUIZ_STACK_SIZE;
 const ANTARA_QUIZ_RUN_MINUTES = 90;
 const ANTARA_QUIZ_NETWORK_GRACE_MS = 700;
@@ -115,20 +116,26 @@ function antara_quiz_select_question_ids(): array
 {
     $bank = antara_quiz_bank();
     $selected = [];
+    $basePerLevel = intdiv(ANTARA_QUIZ_STACK_SIZE, ANTARA_QUIZ_LEVEL_COUNT);
+    $remainder = ANTARA_QUIZ_STACK_SIZE % ANTARA_QUIZ_LEVEL_COUNT;
+
     for ($level = 1; $level <= ANTARA_QUIZ_LEVEL_COUNT; $level++) {
         $ids = [];
         foreach ($bank as $id => $question) {
             if ((int)$question['level'] === $level) $ids[] = (int)$id;
         }
         shuffle($ids);
-        $stack = array_slice($ids, 0, ANTARA_QUIZ_STACK_SIZE);
-        if (count($stack) !== ANTARA_QUIZ_STACK_SIZE) {
-            throw new RuntimeException('Bank soal level ' . $level . ' tidak cukup untuk satu stack.');
+        $take = $basePerLevel + ($level <= $remainder ? 1 : 0);
+        $slice = array_slice($ids, 0, $take);
+        if (count($slice) !== $take) {
+            throw new RuntimeException('Bank soal level ' . $level . ' tidak cukup untuk tantangan 15 soal.');
         }
-        foreach ($stack as $id) $selected[] = $id;
+        foreach ($slice as $id) $selected[] = $id;
     }
+
+    shuffle($selected);
     if (count($selected) !== ANTARA_QUIZ_TOTAL_QUESTIONS) {
-        throw new RuntimeException('Pemilihan stack kuis gagal.');
+        throw new RuntimeException('Pemilihan tantangan kuis gagal.');
     }
     return $selected;
 }
@@ -139,7 +146,7 @@ function antara_quiz_stack_position(array $row): int
     return (($position - 1) % ANTARA_QUIZ_STACK_SIZE) + 1;
 }
 
-function antara_quiz_stack_progress(PDO $pdo, int $runId, int $level): array
+function antara_quiz_stack_progress(PDO $pdo, int $runId, int $level = 0): array
 {
     $stmt = $pdo->prepare(
         'SELECT COUNT(*) AS total,
@@ -148,55 +155,41 @@ function antara_quiz_stack_progress(PDO $pdo, int $runId, int $level): array
                 SUM(attempt_count) AS attempts,
                 SUM(first_try_correct) AS first_try_correct
          FROM quiz_run_questions
-         WHERE run_id = :run_id AND level = :level'
+         WHERE run_id = :run_id'
     );
-    $stmt->execute(['run_id'=>$runId,'level'=>$level]);
+    $stmt->execute(['run_id'=>$runId]);
     $row = $stmt->fetch() ?: [];
     $total = (int)($row['total'] ?? 0);
     $mastered = (int)($row['mastered'] ?? 0);
     return [
-        'level'=>$level,
-        'label'=>antara_quiz_level_config($level)['label'],
+        'level'=>0,
+        'label'=>'CAMPURAN',
         'total'=>$total,
         'attempted'=>(int)($row['attempted'] ?? 0),
         'mastered'=>$mastered,
-        'remaining'=>max(0, $total - $mastered),
+        'remaining'=>max(0, $total - (int)($row['attempted'] ?? 0)),
         'attempts'=>(int)($row['attempts'] ?? 0),
         'firstTryCorrect'=>(int)($row['first_try_correct'] ?? 0),
-        'complete'=>$total === ANTARA_QUIZ_STACK_SIZE && $mastered === ANTARA_QUIZ_STACK_SIZE,
+        'complete'=>$total === ANTARA_QUIZ_STACK_SIZE && (int)($row['attempted'] ?? 0) === ANTARA_QUIZ_STACK_SIZE,
     ];
 }
 
 function antara_quiz_previous_levels_complete(PDO $pdo, int $runId, int $level): bool
 {
-    if ($level <= 1) return true;
-    $stmt = $pdo->prepare(
-        'SELECT level, SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) AS mastered
-         FROM quiz_run_questions
-         WHERE run_id = :run_id AND level < :level
-         GROUP BY level'
-    );
-    $stmt->execute(['run_id'=>$runId,'level'=>$level]);
-    $rows = $stmt->fetchAll();
-    if (count($rows) !== $level - 1) return false;
-    foreach ($rows as $row) {
-        if ((int)$row['mastered'] !== ANTARA_QUIZ_STACK_SIZE) return false;
-    }
+    // Levels are difficulty tags inside one 15-question challenge, not gates.
     return true;
 }
 
-function antara_quiz_find_next_stack_question(PDO $pdo, int $runId, int $level, bool $forUpdate = true): ?array
+function antara_quiz_find_next_stack_question(PDO $pdo, int $runId, int $level = 0, bool $forUpdate = true): ?array
 {
     $sql =
         'SELECT * FROM quiz_run_questions
-         WHERE run_id = :run_id AND level = :level AND (is_correct IS NULL OR is_correct = 0)
-         ORDER BY CASE WHEN attempt_count = 0 THEN 0 ELSE 1 END ASC,
-                  attempt_count ASC,
-                  position ASC
+         WHERE run_id = :run_id AND attempt_count = 0
+         ORDER BY position ASC
          LIMIT 1';
     if ($forUpdate) $sql .= ' FOR UPDATE';
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['run_id'=>$runId,'level'=>$level]);
+    $stmt->execute(['run_id'=>$runId]);
     $row = $stmt->fetch();
     return $row ?: null;
 }
@@ -303,6 +296,14 @@ function antara_quiz_find_run(PDO $pdo, int $userId, string $token, bool $forUpd
 function antara_quiz_finalize(PDO $pdo, int $runId, int $userId): array
 {
     $summary = antara_quiz_run_summary($pdo, $runId);
+
+    $bestStmt = $pdo->prepare(
+        'SELECT MAX(score) FROM verified_game_scores WHERE user_id = :user_id AND game_code = :game_code'
+    );
+    $bestStmt->execute(['user_id'=>$userId,'game_code'=>ANTARA_QUIZ_GAME_CODE]);
+    $previousBestRaw = $bestStmt->fetchColumn();
+    $previousBest = $previousBestRaw === false || $previousBestRaw === null ? null : (int)$previousBestRaw;
+
     $pdo->prepare("UPDATE game_runs SET status = 'finished', finished_at = NOW() WHERE id = :run_id AND status = 'active'")
         ->execute(['run_id' => $runId]);
     $stmt = $pdo->prepare(
@@ -316,5 +317,9 @@ function antara_quiz_finalize(PDO $pdo, int $runId, int $userId): array
         'game_code' => ANTARA_QUIZ_GAME_CODE,
         'score' => $summary['score'],
     ]);
+
+    $summary['previousBestScore'] = $previousBest;
+    $summary['bestScore'] = max((int)$summary['score'], $previousBest ?? 0);
+    $summary['isNewBest'] = $previousBest === null || (int)$summary['score'] > $previousBest;
     return $summary;
 }

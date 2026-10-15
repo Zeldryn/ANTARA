@@ -9,9 +9,6 @@ antara_session_rate_limit('quiz_next', 160, 60);
 $userId = antara_require_user();
 $data = antara_input();
 $token = strtolower(trim((string)($data['runToken'] ?? '')));
-$level = (int)($data['level'] ?? 0);
-$advanceLevel = !empty($data['advanceLevel']);
-if ($level < 1 || $level > ANTARA_QUIZ_LEVEL_COUNT) antara_json(['success'=>false,'message'=>'Level kuis tidak valid.'],422);
 
 $pdo = antara_db_or_fail();
 try {
@@ -26,25 +23,14 @@ try {
         antara_json(['success'=>false,'message'=>'Waktu run kuis sudah kedaluwarsa.'],410);
     }
 
-    $currentStack = antara_quiz_stack_progress($pdo, (int)$run['id'], $level);
-    $targetLevel = $level;
-    if ($advanceLevel) {
-        if (!$currentStack['complete']) antara_json(['success'=>false,'message'=>'Kuasai 15/15 soal level ini sebelum naik level.'],409);
-        if ($level >= ANTARA_QUIZ_LEVEL_COUNT) antara_json(['success'=>false,'message'=>'Semua level sudah selesai.'],409);
-        $targetLevel = $level + 1;
-    } elseif ($currentStack['complete']) {
-        antara_json(['success'=>false,'message'=>'Level ini sudah 15/15. Gunakan tombol naik level.'],409);
+    $progress = antara_quiz_stack_progress($pdo, (int)$run['id']);
+    if ($progress['complete']) {
+        antara_json(['success'=>false,'message'=>'Tantangan 15/15 ini sudah selesai.'],409);
     }
 
-    if (!antara_quiz_previous_levels_complete($pdo, (int)$run['id'], $targetLevel)) {
-        antara_json(['success'=>false,'message'=>'Selesaikan 15/15 level sebelumnya terlebih dahulu.'],409);
-    }
+    $row = antara_quiz_find_next_stack_question($pdo, (int)$run['id'], 0, true);
+    if (!$row) antara_json(['success'=>false,'message'=>'Tidak ada soal tersisa pada tantangan ini.'],409);
 
-    $row = antara_quiz_find_next_stack_question($pdo, (int)$run['id'], $targetLevel, true);
-    if (!$row) antara_json(['success'=>false,'message'=>'Tidak ada soal tersisa di level ini.'],409);
-
-    // A legitimate question can only be activated once per attempt. Retry activation
-    // happens after its previous answered_at timestamp.
     $alreadyActive = $row['served_at'] !== null && ($row['answered_at'] === null || strcmp((string)$row['served_at'], (string)$row['answered_at']) > 0);
     if ($alreadyActive) antara_json(['success'=>false,'message'=>'Soal berikutnya sudah aktif.'],409);
 
@@ -61,7 +47,7 @@ try {
     );
     $prevStreakStmt->execute(['run_id'=>(int)$run['id']]);
     $streak = (int)($prevStreakStmt->fetchColumn() ?: 0);
-    $stack = antara_quiz_stack_progress($pdo, (int)$run['id'], $targetLevel);
+    $progress = antara_quiz_stack_progress($pdo, (int)$run['id']);
     $pdo->commit();
 
     antara_json([
@@ -69,8 +55,8 @@ try {
         'question'=>antara_quiz_public_question($row),
         'score'=>$score,
         'streak'=>$streak,
-        'stack'=>$stack,
-        'levelChanged'=>$targetLevel !== $level,
+        'stack'=>$progress,
+        'levelChanged'=>false,
     ]);
 } catch (Throwable $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();

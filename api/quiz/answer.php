@@ -37,9 +37,6 @@ try {
     $row = $stmt->fetch();
     if (!$row) antara_json(['success'=>false,'message'=>'Soal run tidak ditemukan.'],404);
     $level = (int)$row['level'];
-    if (!antara_quiz_previous_levels_complete($pdo, (int)$run['id'], $level)) {
-        antara_json(['success'=>false,'message'=>'Selesaikan level sebelumnya terlebih dahulu.'],409);
-    }
     if ((int)($row['is_correct'] ?? 0) === 1) antara_json(['success'=>false,'message'=>'Soal ini sudah dikuasai.'],409);
     if ($row['served_at'] === null) antara_json(['success'=>false,'message'=>'Soal ini belum dimulai.'],409);
     if ($row['answered_at'] !== null && strcmp((string)$row['served_at'], (string)$row['answered_at']) <= 0) {
@@ -95,7 +92,7 @@ try {
     $scoreTotal = (int)$scoreStmt->fetchColumn();
     $stack = antara_quiz_stack_progress($pdo, (int)$run['id'], $level);
 
-    $finished = $level === ANTARA_QUIZ_LEVEL_COUNT && $stack['complete'];
+    $finished = (bool)$stack['complete'];
     $summary = null;
     if ($finished) {
         $summary = antara_quiz_finalize($pdo, (int)$run['id'], $userId);
@@ -107,10 +104,6 @@ try {
     }
 
     $nextLevel = null;
-    if ($stack['complete'] && !$finished && $level < ANTARA_QUIZ_LEVEL_COUNT) {
-        $cfg = antara_quiz_level_config($level + 1);
-        $nextLevel = ['level'=>$level + 1,'label'=>$cfg['label']];
-    }
 
     antara_json([
         'success'=>true,
@@ -129,7 +122,7 @@ try {
         'attemptNumber'=>$attemptBefore + 1,
         'stack'=>$stack,
         'stackComplete'=>(bool)$stack['complete'],
-        'needsRetry'=>!$stack['complete'] && (int)$stack['attempted'] >= ANTARA_QUIZ_STACK_SIZE,
+        'needsRetry'=>false,
         'nextLevel'=>$nextLevel,
         'finished'=>$finished,
         'summary'=>$summary,

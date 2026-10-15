@@ -23,7 +23,7 @@ function antara_achievement_catalog(): array
         'solar-master' => ['name'=>'Tata Surya 100%','description'=>'Menyelesaikan seluruh topik Jelajah dan seluruh target Eksplorasi Penuh yang tersedia di ANTARA.','icon'=>'assets/achievements/18-tata-surya-100.png','category'=>'special','tier'=>'legendary','sort'=>130],
         'top-10' => ['name'=>'Top 10','description'=>'Berhasil masuk 10 besar salah satu leaderboard resmi ANTARA.','icon'=>'assets/achievements/19-top-10.png','category'=>'special','tier'=>'legendary','sort'=>140],
         'rank-1' => ['name'=>'Juara #1','description'=>'Pernah mencapai posisi pertama di salah satu leaderboard resmi ANTARA.','icon'=>'assets/achievements/20-juara-1.png','category'=>'special','tier'=>'legendary','sort'=>150],
-        'quiz-first' => ['name'=>'Kuis Pertama','description'=>'Menyelesaikan lima level Quiz ANTARA sampai garis akhir.','icon'=>'assets/achievements/21-quiz-pertama.svg','category'=>'special','tier'=>'common','sort'=>160],
+        'quiz-first' => ['name'=>'Kuis Pertama','description'=>'Menyelesaikan satu tantangan 15 soal Quiz ANTARA sampai garis akhir.','icon'=>'assets/achievements/21-quiz-pertama.svg','category'=>'special','tier'=>'common','sort'=>160],
         'quiz-streak-5' => ['name'=>'Orbit Streak x5','description'=>'Menjawab benar lima soal berturut-turut dalam satu run kuis.','icon'=>'assets/achievements/22-streak-5.svg','category'=>'special','tier'=>'rare','sort'=>170],
         'quiz-speedster' => ['name'=>'Jawaban Kilat','description'=>'Menjawab benar sedikitnya lima soal dalam tiga detik atau kurang pada satu run.','icon'=>'assets/achievements/23-kilat-quiz.svg','category'=>'special','tier'=>'epic','sort'=>180],
         'quiz-perfect' => ['name'=>'Lintasan Sempurna','description'=>'Menuntaskan satu stack 15 soal dengan seluruh jawaban benar pada percobaan pertama.','icon'=>'assets/achievements/24-sempurna-quiz.svg','category'=>'special','tier'=>'legendary','sort'=>190],
@@ -179,23 +179,14 @@ function antara_quiz_achievement_stats(PDO $pdo, int $userId): array
         if ($stats['firstFinishedAt'] === null && !empty($row['finished_at'])) $stats['firstFinishedAt']=(string)$row['finished_at'];
         $stats['bestScore']=max($stats['bestScore'],(int)$row['server_score']);
         $stats['bestStreak']=max($stats['bestStreak'],(int)$row['best_streak']);
-        $stackStmt = $pdo->prepare(
-            'SELECT COALESCE(MAX(first_try_count),0) FROM (
-                SELECT level, SUM(first_try_correct) AS first_try_count
-                FROM quiz_run_questions
-                WHERE run_id = :run_id
-                GROUP BY level
-             ) mastery_stack'
+        $firstTryStmt = $pdo->prepare(
+            'SELECT COALESCE(SUM(first_try_correct),0) FROM quiz_run_questions WHERE run_id = :run_id'
         );
-        $stackStmt->execute(['run_id'=>(int)$row['id']]);
-        $bestFirstTryStack=(int)($stackStmt->fetchColumn() ?: 0);
-        $expertStmt=$pdo->prepare('SELECT COALESCE(SUM(first_try_correct),0) FROM quiz_run_questions WHERE run_id=:run_id AND level=5');
-        $expertStmt->execute(['run_id'=>(int)$row['id']]);
-        $expertFirstTry=(int)($expertStmt->fetchColumn() ?: 0);
-        $stats['bestCorrect']=max($stats['bestCorrect'],$bestFirstTryStack);
+        $firstTryStmt->execute(['run_id'=>(int)$row['id']]);
+        $firstTryCorrect=(int)($firstTryStmt->fetchColumn() ?: 0);
+        $stats['bestCorrect']=max($stats['bestCorrect'],$firstTryCorrect);
         $stats['bestFastCorrect']=max($stats['bestFastCorrect'],(int)$row['fast_correct']);
-        if ($bestFirstTryStack >= ANTARA_QUIZ_STACK_SIZE) $stats['perfect']=true;
-        if ($expertFirstTry >= ANTARA_QUIZ_STACK_SIZE) $stats['expertPerfect']=true;
+        if ($firstTryCorrect >= ANTARA_QUIZ_STACK_SIZE) $stats['perfect']=true;
     }
     return $stats;
 }
