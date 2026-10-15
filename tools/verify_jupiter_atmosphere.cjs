@@ -56,7 +56,11 @@ const jsChecks = [
   ['continuous exit','async exit()'],
   ['mobile controls','data-jupiter-control'],
   ['discovery persistence','DISCOVERY_PREFIX'],
-  ['fullscreen','toggleFullscreen()']
+  ['fullscreen','toggleFullscreen()'],
+  ['single-click pointer lock','requestPointerLock()'],
+  ['pointer-lock mouse movement','document.pointerLockElement !== this.inputLayer'],
+  ['pointer-lock cleanup','releasePointerLock()'],
+  ['global masthead lifecycle','is-jupiter-full']
 ];
 for (const [label, needle] of jsChecks) if (!code.includes(needle)) throw new Error(`Missing ${label}: ${needle}`);
 const venus = fs.readFileSync('venus-full-exploration.js','utf8');
@@ -72,7 +76,9 @@ const parity = {
   loading: code.includes('loadingSequence') && venus.includes('setLoading'),
   errorFallback: code.includes('showError(error)') && venus.includes('showError(error)'),
   responsivePanels: code.includes('isMobileUi()') && venus.includes('isMobileUi()'),
-  exitTransition: code.includes('async exit()') && venus.includes('exit(')
+  exitTransition: code.includes('async exit()') && venus.includes('exit('),
+  desktopPointerLock: code.includes('requestPointerLock()') && venus.includes('requestPointerLock()'),
+  globalChromeHidden: code.includes('is-jupiter-full') && venus.includes('is-venus-full')
 };
 const failed = Object.entries(parity).filter(([,ok]) => !ok);
 if (failed.length) throw new Error(`Venus parity checks failed: ${failed.map(([k])=>k).join(', ')}`);

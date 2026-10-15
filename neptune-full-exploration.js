@@ -1074,6 +1074,10 @@
         this.loading.hidden = true;
         this.root.classList.remove("is-preparing", "is-selecting");
         this.root.classList.add("is-active");
+        // Venus parity: Mars base CSS starts Full Exploration surfaces at opacity 0.
+        // Outer planets must explicitly reveal HUD/actions/help/mobile controls once the world is live.
+        this.root.style.setProperty("--surface-opacity", "1");
+        this.root.style.setProperty("--entry-progress", "1");
         this.state = "exploring";
         const compactUi = this.isMobileUi();
         this.infoOpen = !compactUi;
@@ -1564,6 +1568,8 @@
       this.objectiveOpen = true;
       this.actionsOpen = false;
       this.root.classList.remove("is-active", "is-preparing", "is-selecting", "is-exiting", "is-info-open", "is-objectives-open", "is-observation-open", "is-actions-open");
+      this.root.style.removeProperty("--surface-opacity");
+      this.root.style.removeProperty("--entry-progress");
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");

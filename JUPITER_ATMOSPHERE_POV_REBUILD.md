@@ -111,3 +111,13 @@ pass: true
 ```
 
 Runtime browser otomatis sempat dicoba melalui Chromium. Environment pengujian memblokir akses localhost, private IP, dan file URL melalui policy organisasi, jadi hasil browser runtime tidak diklaim sebagai lulus. Static checks dan regression verifier di atas lulus.
+
+## Venus parity patch · 2026-10-05
+
+- Desktop mouse-look sekarang mengikuti Venus: satu klik pada area eksplorasi mengaktifkan Pointer Lock, lalu mouse dapat digerakkan tanpa menahan tombol.
+- Touch/mobile tetap memakai drag-look agar kontrol layar sentuh tidak rusak.
+- Pointer Lock dilepas saat membuka observasi, membuka pemilih wilayah, keluar, atau reset untuk mencegah kursor terkunci.
+- Global masthead/footer ANTARA disembunyikan selama seluruh lifecycle Full Exploration Jupiter melalui state `mission.is-jupiter-full`, setara dengan state Full Exploration Venus.
+- Hint dan tutorial desktop diperbarui dari `KLIK + DRAG` menjadi `1× KLIK` / `Mouse Lihat`.
+- Cache-busting Jupiter Full Exploration dinaikkan ke `20261005-venus-parity-2`.
+- Verifikasi: syntax JavaScript PASS, CSS parse error 0, duplicate HTML ID 0, 5 destinasi / 15 observasi PASS, Venus parity 14/14 PASS.

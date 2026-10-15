@@ -200,3 +200,42 @@
     pointer-events: none !important;
   }
 }
+
+
+/* 2026-10-05 VENUS FULL-SURFACE VISIBILITY PARITY
+   Mars is the geometry base and defaults --surface-opacity to 0. Venus raises it to 1
+   after entry. The outer-planet controllers now do the same; this CSS is a defensive
+   parity guard so HUD, actions, desktop hints and mobile flight controls can never
+   remain fully transparent while the 3D world is active. */
+:is(#jupiter-full-exploration,#saturn-full-exploration,#uranus-full-exploration,#neptune-full-exploration).is-active {
+  --surface-opacity: 1;
+  --entry-progress: 1;
+}
+
+:is(#jupiter-full-exploration,#saturn-full-exploration,#uranus-full-exploration,#neptune-full-exploration).is-active .mars-full-hud,
+:is(#jupiter-full-exploration,#saturn-full-exploration,#uranus-full-exploration,#neptune-full-exploration).is-active .venus-full-actions,
+:is(#jupiter-full-exploration,#saturn-full-exploration,#uranus-full-exploration,#neptune-full-exploration).is-active .mars-control-hints,
+:is(#jupiter-full-exploration,#saturn-full-exploration,#uranus-full-exploration,#neptune-full-exploration).is-active .mars-mobile-controls {
+  visibility: visible !important;
+}
+
+/* Keep the same Venus interaction hierarchy: desktop receives the compact help rail,
+   coarse/mobile layouts receive directional flight controls instead. */
+@media (min-width: 761px) and (pointer: fine) {
+  :is(#jupiter-full-exploration,#saturn-full-exploration,#uranus-full-exploration,#neptune-full-exploration).is-active .mars-control-hints {
+    display: flex !important;
+  }
+}
+
+@media (pointer: coarse), (max-width: 760px) {
+  :is(#jupiter-full-exploration,#saturn-full-exploration,#uranus-full-exploration,#neptune-full-exploration).is-active .mars-mobile-controls {
+    display: block !important;
+    opacity: 1 !important;
+    pointer-events: none;
+    z-index: 55 !important;
+  }
+  :is(#jupiter-full-exploration,#saturn-full-exploration,#uranus-full-exploration,#neptune-full-exploration).is-active .mars-mobile-dpad button,
+  :is(#jupiter-full-exploration,#saturn-full-exploration,#uranus-full-exploration,#neptune-full-exploration).is-active .mars-mobile-altitude button {
+    pointer-events: auto !important;
+  }
+}
