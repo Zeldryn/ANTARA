@@ -888,7 +888,7 @@
           return;
         }
         if (this.state !== "exploring") return;
-        if (event.code === "KeyE" && this.nearbyObservation && !this.observationPrompt.hidden && this.observationCard.hidden) {
+        if (event.code === "KeyE" && this.nearbyObservation && this.observationCard.hidden) {
           event.preventDefault();
           event.stopImmediatePropagation();
           this.observeNearby();
@@ -1249,10 +1249,11 @@
       });
       const reachable = nearest && nearestDistance <= nearest.radius;
       this.nearbyObservation = reachable ? nearest : null;
-      const overlayPanelOpen = this.infoOpen || this.objectiveOpen || this.actionsOpen;
-      if (reachable && this.observationCard.hidden && !overlayPanelOpen) {
-        this.observationPrompt.hidden = false;
+      // Observation must remain actionable while the educational Info/Tujuan panels are open.
+      // Only the actions menu and the observation card itself suppress the prompt.
+      if (reachable && this.observationCard.hidden && !this.actionsOpen) {
         this.observationPromptTitle.textContent = nearest.name;
+        this.observationPrompt.hidden = false;
       } else {
         this.observationPrompt.hidden = true;
       }

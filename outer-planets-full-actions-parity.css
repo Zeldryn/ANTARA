@@ -140,3 +140,63 @@
     touch-action:manipulation !important;
   }
 }
+
+
+/* 2026-10-05 OBSERVE-WHILE-READING PARITY
+   Keep nearby discoveries actionable while Info Lokasi / Tujuan is open.
+   Desktop keeps the normal prompt. Mobile collapses it into a compact AMATI action
+   so the reading sheet remains usable and the old overlap bug does not return. */
+:is(.jupiter-full-exploration,.saturn-full-exploration,.uranus-full-exploration,.neptune-full-exploration):is(.is-info-open,.is-objectives-open)
+  .venus-observation-prompt:not([hidden]) {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+@media (max-width:820px), (pointer:coarse) and (max-width:1100px) {
+  :is(.jupiter-full-exploration,.saturn-full-exploration,.uranus-full-exploration,.neptune-full-exploration):is(.is-info-open,.is-objectives-open)
+    .venus-observation-prompt:not([hidden]) {
+    top: max(58px, calc(env(safe-area-inset-top, 0px) + 56px)) !important;
+    bottom: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: min(180px, calc(100vw - 120px)) !important;
+    min-height: 42px !important;
+    padding: 4px !important;
+    gap: 0 !important;
+    transform: translateX(-50%) !important;
+    z-index: 96 !important;
+    border-radius: 3px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,.42) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+  }
+  :is(.jupiter-full-exploration,.saturn-full-exploration,.uranus-full-exploration,.neptune-full-exploration):is(.is-info-open,.is-objectives-open)
+    .venus-observation-prompt:not([hidden]) .venus-observation-key,
+  :is(.jupiter-full-exploration,.saturn-full-exploration,.uranus-full-exploration,.neptune-full-exploration):is(.is-info-open,.is-objectives-open)
+    .venus-observation-prompt:not([hidden]) > div {
+    display: none !important;
+  }
+  :is(.jupiter-full-exploration,.saturn-full-exploration,.uranus-full-exploration,.neptune-full-exploration):is(.is-info-open,.is-objectives-open)
+    .venus-observation-prompt:not([hidden]) > button {
+    display: grid !important;
+    place-items: center !important;
+    width: 100% !important;
+    min-width: 104px !important;
+    min-height: 40px !important;
+    padding: 0 15px !important;
+    margin: 0 !important;
+    font-size: 8px !important;
+    letter-spacing: 1.05px !important;
+    white-space: nowrap !important;
+    touch-action: manipulation !important;
+  }
+  /* The menu is a higher-priority interaction surface. Do not let AMATI sit over it. */
+  :is(.jupiter-full-exploration,.saturn-full-exploration,.uranus-full-exploration,.neptune-full-exploration).is-actions-open
+    .venus-observation-prompt {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
