@@ -765,9 +765,21 @@
         } else void this.chooseDestination(destination, false);
       });
       this.infoMinimize?.addEventListener("click", () => { this.infoOpen = false; this.syncPanels(); });
-      this.infoToggle?.addEventListener("click", () => { this.infoOpen = true; if (this.isMobileUi()) this.objectiveOpen = false; this.syncPanels(); this.infoMinimize?.focus({ preventScroll: true }); });
+      this.infoToggle?.addEventListener("click", () => {
+        this.setActionsMenu(false);
+        this.infoOpen = true;
+        this.objectiveOpen = false;
+        this.syncPanels();
+        this.infoMinimize?.focus({ preventScroll: true });
+      });
       this.objectivesCollapse?.addEventListener("click", () => { this.objectiveOpen = false; this.syncPanels(); });
-      this.objectivesToggle?.addEventListener("click", () => { this.objectiveOpen = true; if (this.isMobileUi()) this.infoOpen = false; this.syncPanels(); });
+      this.objectivesToggle?.addEventListener("click", () => {
+        this.setActionsMenu(false);
+        this.objectiveOpen = true;
+        this.infoOpen = false;
+        this.syncPanels();
+        this.objectivesCollapse?.focus({ preventScroll: true });
+      });
       this.observeButton?.addEventListener("click", () => this.observeNearby());
       this.observationClose?.addEventListener("click", () => this.closeObservation());
       this.actionsMenuToggle?.addEventListener("click", event => { event.stopPropagation(); this.setActionsMenu(!this.actionsOpen); });
@@ -816,10 +828,22 @@
       this.inputLayer?.addEventListener("pointerdown", event => {
         if (this.state !== "exploring" || !this.observationCard.hidden) return;
         if (event.button !== undefined && event.button !== 0) return;
+
+        // Match Venus: desktop uses one click to enter pointer-lock mouse look.
+        // Touch keeps drag-look because pointer lock is not appropriate on mobile.
+        if (event.pointerType === "mouse") {
+          this.hideTutorial(true);
+          if (this.inputLayer.requestPointerLock && document.pointerLockElement !== this.inputLayer) {
+            try { this.inputLayer.requestPointerLock(); } catch {}
+          }
+          return;
+        }
+
         this.drag = { id: event.pointerId, x: event.clientX, y: event.clientY };
         try { this.inputLayer.setPointerCapture(event.pointerId); } catch {}
       });
       this.inputLayer?.addEventListener("pointermove", event => {
+        if (event.pointerType === "mouse") return;
         if (!this.drag || this.drag.id !== event.pointerId || this.state !== "exploring") return;
         const dx = event.clientX - this.drag.x;
         const dy = event.clientY - this.drag.y;
@@ -827,6 +851,16 @@
         this.drag.y = event.clientY;
         this.lookYawTarget -= dx * 0.0037;
         this.lookPitchTarget = clamp(this.lookPitchTarget - dy * 0.0030, -1.18, 1.18);
+      });
+      document.addEventListener("mousemove", event => {
+        if (this.state !== "exploring" || document.pointerLockElement !== this.inputLayer || !this.observationCard.hidden) return;
+        this.lookYawTarget -= (event.movementX || 0) * 0.00255;
+        this.lookPitchTarget = clamp(this.lookPitchTarget - (event.movementY || 0) * 0.00225, -1.18, 1.18);
+      });
+      document.addEventListener("pointerlockchange", () => {
+        const locked = document.pointerLockElement === this.inputLayer;
+        this.root.classList.toggle("is-pointer-locked", locked);
+        if (!locked) this.keys.clear();
       });
       const endDrag = event => {
         if (this.drag?.id !== event.pointerId) return;
@@ -861,6 +895,7 @@
       this.state = "configuring";
       this.jupiter.fullExplorationActive = true;
       this.jupiter.element.classList.add("is-jupiter-full-active");
+      document.getElementById("mission")?.classList.add("is-jupiter-full");
       this.root.hidden = false;
       this.root.inert = false;
       this.root.setAttribute("aria-hidden", "false");
@@ -990,8 +1025,10 @@
         this.root.classList.remove("is-preparing");
         this.root.classList.add("is-active");
         this.state = "exploring";
-        this.infoOpen = true;
-        this.objectiveOpen = true;
+        const compactUi = this.isMobileUi();
+        this.infoOpen = !compactUi;
+        this.objectiveOpen = !compactUi;
+        this.actionsOpen = false;
         this.syncPanels();
         this.startLoop();
         this.showTutorial();
@@ -1136,7 +1173,8 @@
       });
       const reachable = nearest && nearestDistance <= nearest.radius;
       this.nearbyObservation = reachable ? nearest : null;
-      if (reachable && this.observationCard.hidden) {
+      const overlayPanelOpen = this.infoOpen || this.objectiveOpen || this.actionsOpen;
+      if (reachable && this.observationCard.hidden && !overlayPanelOpen) {
         this.observationPrompt.hidden = false;
         this.observationPromptTitle.textContent = nearest.name;
       } else {
@@ -1176,6 +1214,7 @@
       this.observationStatus.textContent = fresh ? "BARU KAMU AMATI" : "SUDAH PERNAH DIAMATI";
       this.observationCard.hidden = false;
       this.observationCard.setAttribute("aria-hidden", "false");
+      this.releasePointerLock();
       this.keys.clear();
       this.mobileHeld.clear();
       this.buildObjectives();
@@ -1226,7 +1265,8 @@
       const count = this.discovered.size;
       this.objectivesCount.textContent = `${count} / ${total}`;
       this.objectivesBar.style.width = `${total ? count / total * 100 : 0}%`;
-      this.objectivesToggle.textContent = `Tujuan · ${count} / ${total}`;
+      this.objectivesToggle.textContent = `TUJUAN · ${count} / ${total}`;
+      this.objectivesToggle.setAttribute("aria-label", `Buka tujuan eksplorasi Jupiter, ${count} dari ${total} selesai`);
     }
 
     updateRegionUI() {
@@ -1288,7 +1328,16 @@
       this.root.classList.toggle("is-observation-open", observationOpen);
     }
 
+    releasePointerLock() {
+      if (document.pointerLockElement === this.inputLayer) {
+        try { document.exitPointerLock?.(); } catch {}
+      }
+      this.root.classList.remove("is-pointer-locked");
+      this.drag = null;
+    }
+
     hideWorldUi() {
+      this.releasePointerLock();
       this.keys.clear();
       this.mobileHeld.clear();
       this.drag = null;
@@ -1304,6 +1353,7 @@
 
     openSelectorFromWorld() {
       if (this.state !== "exploring") return;
+      this.releasePointerLock();
       this.keys.clear();
       this.mobileHeld.clear();
       this.state = "selecting-world";
@@ -1324,11 +1374,20 @@
     }
 
     setActionsMenu(open) {
-      const mobile = matchMedia("(max-width: 820px), (pointer: coarse) and (max-width: 1100px)").matches;
-      this.actionsOpen = Boolean(open && mobile && this.state === "exploring");
+      const mobile = this.isMobileUi();
+      const observationOpen = Boolean(this.observationCard && !this.observationCard.hidden);
+      this.actionsOpen = Boolean(open && mobile && this.state === "exploring" && !observationOpen);
+      if (this.actionsOpen) {
+        this.infoOpen = false;
+        this.objectiveOpen = false;
+        this.releasePointerLock();
+        this.keys.clear();
+        this.mobileHeld.clear();
+      }
       this.actionsRoot.classList.toggle("is-open", this.actionsOpen);
       this.root.classList.toggle("is-actions-open", this.actionsOpen);
       this.actionsMenuToggle.setAttribute("aria-expanded", String(this.actionsOpen));
+      this.syncPanels();
     }
 
     async toggleFullscreen() {
@@ -1428,6 +1487,7 @@
       ++this.transitionToken;
       this.stopLoop();
       this.hideTutorial(false);
+      this.releasePointerLock();
       this.disposeRenderer();
       this.state = "idle";
       this.current = null;
@@ -1454,6 +1514,7 @@
       this.boundaryHint?.classList.remove("is-visible");
       this.jupiter.fullExplorationActive = false;
       this.jupiter.element.classList.remove("is-jupiter-full-active");
+      document.getElementById("mission")?.classList.remove("is-jupiter-full");
       this.entryButton.disabled = false;
       this.jupiter.caption.inert = false;
       this.jupiter.resize?.();

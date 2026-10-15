@@ -6787,7 +6787,7 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
 @media (max-width:700px) and (orientation:portrait) {
   .mission[data-experience="home"] .cockpit-brand,
   .mission[data-experience="launch"] .cockpit-brand {
-    top:14.5% !important;
+    top:12.6% !important;
   }
 }
 
