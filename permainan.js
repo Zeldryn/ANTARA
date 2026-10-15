@@ -28,6 +28,15 @@
   let audioContext = null;
 
   const esc = value => String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+  const planetIconMap = Object.freeze({
+    matahari:"sun", sun:"sun", merkurius:"mercury", mercury:"mercury", venus:"venus", bumi:"earth", earth:"earth", mars:"mars",
+    jupiter:"jupiter", saturnus:"saturn", saturn:"saturn", uranus:"uranus", neptunus:"neptune", neptune:"neptune",
+    asteroid:"asteroid-belt", "sabuk asteroid":"asteroid-belt"
+  });
+  const planetIconFor = value => {
+    const key = String(value || "").trim().toLowerCase();
+    return `assets/progress-planets/${planetIconMap[key] || "earth"}.png`;
+  };
   const formatScore = value => new Intl.NumberFormat("id-ID").format(Number(value) || 0);
 
   async function json(url, options = {}) {
@@ -75,7 +84,7 @@
       if (data.authenticated && data.user) {
         user = data.user;
         account.innerHTML = `<i></i><span>${esc(user.name || user.username || "PENJELAJAH")}</span>`;
-        loginNote.textContent = "Setiap jawaban diverifikasi server. Kuasai 15/15 untuk membuka level berikutnya.";
+        loginNote.textContent = "Kuasai 15/15 untuk membuka level berikutnya. Setiap jawaban yang salah bisa muncul lagi.";
         startBtn.disabled = false;
       } else {
         user = null; startBtn.disabled = true;
@@ -92,7 +101,7 @@
   function showError(message) {
     cancelAnimationFrame(timerFrame); timerFrame = 0;
     intro.hidden = true; stage.hidden = true; resultStage.hidden = true; errorStage.hidden = false;
-    $("#game-error-copy").textContent = message || "Periksa Apache, MySQL, dan koneksi database ANTARA.";
+    $("#game-error-copy").textContent = message || "Coba lagi sebentar.";
   }
 
   function updateHud() {
@@ -139,6 +148,8 @@
     feedback.hidden = true; feedback.classList.remove("is-wrong", "is-stack-complete");
     stackWarning.hidden = true; stackWarning.className = "quiz-stack-warning"; stackWarning.textContent = "";
     $("#quiz-planet").textContent = question.planet.toUpperCase();
+    const planetIcon = $("#quiz-planet-icon");
+    if (planetIcon) planetIcon.src = planetIconFor(question.planet);
     $("#quiz-topic").textContent = question.isRetry
       ? `ULANGAN · ${question.topic} · PERCOBAAN ${question.attemptNumber}`
       : question.topic;

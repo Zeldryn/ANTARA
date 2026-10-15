@@ -7,8 +7,8 @@
   <title>Pencapaian Penjelajah | ANTARA</title>
   <link rel="icon" type="image/png" href="assets/antara-logo.png">
   <link rel="stylesheet" href="achievement-notify.css?v=20261003-achievement-toast-1">
-  <link rel="stylesheet" href="pencapaian.css?v=20261003-achievement-art-3">
-  <script src="pencapaian.js?v=20261005-full-planet-achievements-1" defer></script>
+  <link rel="stylesheet" href="pencapaian.css?v=20261005-kids-visual-polish-1">
+  <script src="pencapaian.js?v=20261005-kids-visual-polish-1" defer></script>
   <script src="achievement-client.js?v=20261003-achievement-toast-1" defer></script>
 </head>
 <body>
@@ -27,8 +27,10 @@
       <div class="ach-hero-copy">
         <p class="ach-eyebrow">ANTARA · ARSIP MEDALI PENJELAJAH</p>
         <h1 id="ach-title">Jejakmu berubah<br><span>menjadi lencana.</span></h1>
-        <p>Setiap medali terbuka dari aktivitas akunmu sendiri. Progress planet, Eksplorasi Penuh, dan posisi leaderboard diperiksa dari data server, lalu pencapaian yang sudah terbuka akan tetap tersimpan di akun.</p>
-        <div class="ach-sync"><span></span>Sinkronisasi pencapaian per akun</div>
+        <p>Setiap perjalanan bisa membuka lencana baru. Jelajahi planet, selesaikan misi, dan lihat koleksimu perlahan memenuhi galeri ANTARA.</p>
+        <div class="ach-planet-trail" aria-label="Jejak planet ANTARA">
+          <img src="assets/progress-planets/mercury.png" alt="Merkurius"><img src="assets/progress-planets/earth.png" alt="Bumi"><img src="assets/progress-planets/mars.png" alt="Mars"><img src="assets/progress-planets/jupiter.png" alt="Jupiter"><img src="assets/progress-planets/saturn.png" alt="Saturnus">
+        </div>
       </div>
       <aside class="ach-overall">
         <div class="ach-ring" id="ach-ring" style="--value:0"><div><strong id="ach-percent">0%</strong><span>KOLEKSI</span></div></div>
@@ -37,9 +39,9 @@
     </section>
 
     <section class="ach-stats" aria-label="Ringkasan pencapaian">
-      <article><small>TERBUKA</small><strong id="stat-unlocked">0</strong><span>Medali yang sudah menjadi milik akun ini.</span></article>
-      <article><small>TERKUNCI</small><strong id="stat-locked">30</strong><span>Pencapaian yang masih menunggu perjalanan berikutnya.</span></article>
-      <article><small>POSISI TERBAIK</small><strong id="stat-rank">-</strong><span>Ranking terbaik dari leaderboard resmi ANTARA.</span></article>
+      <article><img src="assets/achievements/03-venus.png" alt=""><div><small>TERBUKA</small><strong id="stat-unlocked">0</strong><span>Lencana yang sudah kamu miliki.</span></div></article>
+      <article><img src="assets/achievements/09-uranus.png" alt=""><div><small>MASIH MISTERI</small><strong id="stat-locked">30</strong><span>Lencana yang menunggu ditemukan.</span></div></article>
+      <article><img src="assets/progress-planets/saturn.png" alt=""><div><small>POSISI TERBAIK</small><strong id="stat-rank">-</strong><span>Peringkat terbaikmu di ANTARA.</span></div></article>
     </section>
 
     <section class="ach-controls" aria-label="Filter pencapaian">
@@ -55,12 +57,12 @@
     </section>
 
     <section class="ach-category" data-category-section="special" aria-labelledby="special-title">
-      <div class="ach-category-title"><span>01</span><div><small>MISI & PRESTASI</small><h2 id="special-title">Pencapaian Khusus</h2></div></div>
+      <div class="ach-category-title"><span>★</span><div><small>MISI & PRESTASI</small><h2 id="special-title">Pencapaian Khusus</h2></div></div>
       <div class="ach-grid" id="ach-special"></div>
     </section>
 
     <section class="ach-category" data-category-section="planet" aria-labelledby="planet-title">
-      <div class="ach-category-title"><span>02</span><div><small>ARSIP TATA SURYA</small><h2 id="planet-title">Penyelesaian Objek</h2></div></div>
+      <div class="ach-category-title"><span>◎</span><div><small>ARSIP TATA SURYA</small><h2 id="planet-title">Penyelesaian Objek</h2></div></div>
       <div class="ach-grid" id="ach-planets"></div>
     </section>
 
@@ -73,7 +75,7 @@
     </section>
 
     <section class="ach-error" id="ach-error" hidden>
-      <small>ARSIP BELUM MENJAWAB</small><h2>Pencapaian belum bisa dimuat.</h2><p id="ach-error-message">Periksa Apache, MySQL, dan koneksi database ANTARA.</p><button type="button" id="ach-retry">COBA LAGI</button>
+      <small>SINYAL TERPUTUS</small><h2>Galeri medali belum terbuka.</h2><p id="ach-error-message">Coba buka lagi sebentar.</p><button type="button" id="ach-retry">COBA LAGI</button>
     </section>
   </main>
 </body>

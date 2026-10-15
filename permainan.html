@@ -7,9 +7,9 @@
   <title>Quiz ANTARA</title>
   <link rel="icon" type="image/png" href="assets/antara-logo.png">
   <link rel="stylesheet" href="achievement-notify.css?v=20261003-achievement-toast-1">
-  <link rel="stylesheet" href="permainan.css?v=20261004-mastery-stack-3">
+  <link rel="stylesheet" href="permainan.css?v=20261005-kids-visual-polish-1">
   <script src="achievement-client.js?v=20261003-achievement-toast-1" defer></script>
-  <script src="permainan.js?v=20261004-mastery-stack-3" defer></script>
+  <script src="permainan.js?v=20261005-kids-visual-polish-1" defer></script>
 </head>
 <body>
   <div class="game-space" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -27,26 +27,29 @@
       <div class="game-intro-copy">
         <p class="eyebrow">ANTARA · QUIZ NAVIGASI TATA SURYA</p>
         <h1>Seberapa cepat<br><span>kamu mengenal langit?</span></h1>
-        <p class="lead">Lima level, masing-masing satu stack berisi 15 soal. Level berikutnya baru terbuka setelah seluruh 15 soal pada stack aktif sudah kamu jawab dengan benar. Soal yang salah akan muncul lagi sampai benar.</p>
+        <p class="lead">Mulai dari soal ringan, lalu naik level sedikit demi sedikit. Kalau salah, soal itu bisa kembali lagi sampai kamu benar-benar menguasainya.</p>
+        <div class="quiz-planet-parade" aria-label="Planet Quiz ANTARA">
+          <img src="assets/progress-planets/mercury.png" alt="Merkurius"><img src="assets/progress-planets/venus.png" alt="Venus"><img src="assets/progress-planets/earth.png" alt="Bumi"><img src="assets/progress-planets/mars.png" alt="Mars"><img src="assets/progress-planets/jupiter.png" alt="Jupiter"><img src="assets/progress-planets/saturn.png" alt="Saturnus">
+        </div>
         <div class="level-track" aria-label="Tingkat kesulitan">
-          <span><b>01</b><small>PEMULA</small><em>17–22 dtk</em></span>
-          <span><b>02</b><small>DASAR</small><em>10–15 dtk</em></span>
-          <span><b>03</b><small>MENENGAH</small><em>10–14 dtk</em></span>
-          <span><b>04</b><small>SULIT</small><em>18–25 dtk</em></span>
-          <span><b>05</b><small>AHLI</small><em>20–28 dtk</em></span>
+          <span><img src="assets/progress-planets/earth.png" alt=""><b>01</b><small>PEMULA</small><em>Santai dulu</em></span>
+          <span><img src="assets/progress-planets/mars.png" alt=""><b>02</b><small>DASAR</small><em>Mulai cepat</em></span>
+          <span><img src="assets/progress-planets/jupiter.png" alt=""><b>03</b><small>MENENGAH</small><em>Fokus!</em></span>
+          <span><img src="assets/progress-planets/saturn.png" alt=""><b>04</b><small>SULIT</small><em>Berani?</em></span>
+          <span><img src="assets/progress-planets/neptune.png" alt=""><b>05</b><small>AHLI</small><em>Boss level</em></span>
         </div>
         <div class="game-actions">
           <button class="primary" id="game-start" type="button">MULAI QUIZ <span>→</span></button>
           <a href="leaderboard.html">LEADERBOARD</a>
           <a href="pencapaian.html">PENCAPAIAN</a>
         </div>
-        <p class="game-login-note" id="game-login-note">Skor hanya masuk leaderboard jika kamu sudah masuk ke akun ANTARA.</p>
+        <p class="game-login-note" id="game-login-note">Masuk ke akun ANTARA supaya skor dan medali kamu ikut tersimpan.</p>
       </div>
       <aside class="game-brief">
-        <div><small>BANK SOAL</small><strong>300</strong><span>soal dari materi ANTARA</span></div>
-        <div><small>SOAL / LEVEL</small><strong>15</strong><span>wajib dikuasai 15 / 15</span></div>
-        <div><small>TARGET RUN</small><strong>75</strong><span>5 level × 15 soal</span></div>
-        <div><small>MODE</small><strong>4 PILIHAN</strong><span>A · B · C · D</span></div>
+        <div><img src="assets/progress-planets/earth.png" alt=""><small>BANK SOAL</small><strong>300</strong><span>soal dari materi ANTARA</span></div>
+        <div><img src="assets/achievements/05-mars.png" alt=""><small>PER LEVEL</small><strong>15</strong><span>kuasai semua untuk lanjut</span></div>
+        <div><img src="assets/progress-planets/jupiter.png" alt=""><small>LEVEL</small><strong>5</strong><span>dari pemula sampai ahli</span></div>
+        <div><img src="assets/progress-planets/saturn.png" alt=""><small>PILIHAN</small><strong>4</strong><span>A · B · C · D</span></div>
       </aside>
     </section>
 
@@ -61,9 +64,9 @@
 
       <article class="quiz-card">
         <div class="quiz-card-top">
-          <div>
-            <p id="quiz-planet">MATAHARI</p>
-            <span id="quiz-topic">TOPIK</span>
+          <div class="quiz-topic-visual">
+            <img id="quiz-planet-icon" src="assets/progress-planets/sun.png" alt="" aria-hidden="true">
+            <div><p id="quiz-planet">MATAHARI</p><span id="quiz-topic">TOPIK</span></div>
           </div>
           <div class="timer" id="quiz-timer" style="--timer:1" aria-label="Sisa waktu">
             <div><strong id="quiz-time">--</strong><small>DETIK</small></div>
@@ -87,8 +90,8 @@
     </section>
 
     <section class="result-stage" id="result-stage" hidden>
-      <p class="eyebrow">RUN SELESAI · SKOR TERVERIFIKASI</p>
-      <h1>Data perjalanan<br><span>berhasil dikirim.</span></h1>
+      <p class="eyebrow">MISI QUIZ SELESAI</p>
+      <h1>Lihat hasil<br><span>petualanganmu.</span></h1>
       <div class="result-score"><small>SKOR AKHIR</small><strong id="result-score">0</strong><span>POIN</span></div>
       <div class="result-grid">
         <div><small>DIKUASAI</small><strong id="result-correct">0 / 75</strong></div>
@@ -104,9 +107,9 @@
     </section>
 
     <section class="game-error" id="game-error" hidden>
-      <small>SISTEM BELUM MENJAWAB</small>
-      <h2>Quiz belum bisa dijalankan.</h2>
-      <p id="game-error-copy">Periksa Apache, MySQL, dan koneksi database ANTARA.</p>
+      <small>SINYAL QUIZ TERPUTUS</small>
+      <h2>Quiz belum bisa dimulai.</h2>
+      <p id="game-error-copy">Coba lagi sebentar.</p>
       <div><button type="button" id="game-error-retry">COBA LAGI</button><a href="index.html">KEMBALI</a></div>
     </section>
   </main>

@@ -15,9 +15,9 @@
   const escapeHtml = value => String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 
   const formatDate = value => {
-    if (!value) return "Waktu server";
+    if (!value) return "Belum tercatat";
     const date = new Date(String(value).replace(" ", "T"));
-    if (Number.isNaN(date.getTime())) return "Waktu server";
+    if (Number.isNaN(date.getTime())) return "Belum tercatat";
     return new Intl.DateTimeFormat("id-ID", { dateStyle:"medium", timeStyle:"short" }).format(date);
   };
 
@@ -47,18 +47,18 @@
 
   function boardCopy(board) {
     if (board === "game") return {
-      kicker:"SKOR TERVERIFIKASI",
-      title:"Leaderboard Quiz ANTARA",
-      emptyKicker:"BELUM ADA SKOR TERVERIFIKASI",
-      emptyTitle:"Arena kompetitif masih kosong.",
-      emptyCopy:"Skor Quiz ANTARA muncul dari run yang dihitung dan diverifikasi server. Kecepatan, tingkat soal, dan streak ikut membentuk poin."
+      kicker:"BINTANG QUIZ",
+      title:"Peringkat Quiz ANTARA",
+      emptyKicker:"BELUM ADA BINTANG QUIZ",
+      emptyTitle:"Arena quiz masih kosong.",
+      emptyCopy:"Mainkan Quiz ANTARA, kumpulkan poin, dan jadilah nama pertama di papan ini."
     };
     return {
       kicker:"URUTAN PENYELESAIAN",
       title:"Penjelajah 100%",
       emptyKicker:"BELUM ADA PENJELAJAH 100%",
       emptyTitle:"Peringkat pertama masih kosong.",
-      emptyCopy:"Akun pertama yang menyelesaikan seluruh progress ANTARA secara valid akan muncul di sini."
+      emptyCopy:"Penjelajah pertama yang menuntaskan seluruh perjalanan akan membuka posisi ini."
     };
   }
 
@@ -76,10 +76,17 @@
     return { main:"100% selesai", sub:formatDate(entry.completedAt) };
   }
 
+  const rankPlanets = ["earth","mars","jupiter","saturn","uranus","neptune","venus","mercury"];
+  function rankPlanet(entry) {
+    const index = Math.max(0, (Number(entry.rank) || 1) - 1) % rankPlanets.length;
+    return `assets/progress-planets/${rankPlanets[index]}.png`;
+  }
+
   function podiumCard(entry, board) {
     const detail = entryDetail(entry, board);
-    return `<article class="lb-podium-card">
+    return `<article class="lb-podium-card" tabindex="0">
       <span class="lb-podium-rank">${entry.rank}</span>
+      <img class="lb-rank-planet" src="${rankPlanet(entry)}" alt="" loading="lazy">
       <div><strong class="lb-podium-name">${escapeHtml(entry.name || entry.username)}</strong><span class="lb-podium-user">@${escapeHtml(entry.username)}</span></div>
       <span class="lb-podium-detail">${escapeHtml(detail.main)}<br>${escapeHtml(detail.sub)}</span>
     </article>`;
@@ -87,8 +94,9 @@
 
   function rowCard(entry, board) {
     const detail = entryDetail(entry, board);
-    return `<article class="lb-row">
+    return `<article class="lb-row" tabindex="0">
       <span class="lb-row-rank">#${entry.rank}</span>
+      <img class="lb-row-planet" src="${rankPlanet(entry)}" alt="" loading="lazy">
       <div class="lb-row-person"><strong>${escapeHtml(entry.name || entry.username)}</strong><span>@${escapeHtml(entry.username)}</span></div>
       <div class="lb-row-detail"><strong>${escapeHtml(detail.main)}</strong><span>${escapeHtml(detail.sub)}</span></div>
     </article>`;
@@ -104,12 +112,12 @@
     }
     if (!data.me) {
       rankEl.textContent = "BELUM MASUK RANKING";
-      copyEl.textContent = board === "game" ? "Belum ada skor quiz terverifikasi untuk akun ini." : "Selesaikan seluruh milestone ANTARA untuk mendapatkan nomor urutan penyelesaian.";
+      copyEl.textContent = board === "game" ? "Belum ada skor quiz untuk akun ini. Coba main satu sesi!" : "Selesaikan seluruh perjalanan ANTARA untuk mendapatkan nomor peringkat.";
       return;
     }
     if (board === "completion" && data.me.eligible === false) {
-      rankEl.textContent = "MENUNGGU VERIFIKASI";
-      copyEl.textContent = "Progress 100% terdeteksi, tetapi pola penyelesaiannya belum lolos pemeriksaan integritas otomatis.";
+      rankEl.textContent = "BELUM MASUK PAPAN";
+      copyEl.textContent = "Progress kamu sudah penuh. Buka kembali halaman ini setelah perjalanan terakhir tersimpan.";
       return;
     }
     rankEl.textContent = `#${data.me.rank}`;
@@ -125,7 +133,7 @@
     podium.hidden = top.length === 0;
     list.innerHTML = rest.map(entry => rowCard(entry, board)).join("");
     empty.hidden = entries.length !== 0;
-    $("#lb-board-state").textContent = board === "game" ? "VERIFIED RUN" : "SERVER TIMESTAMP";
+    $("#lb-board-state").textContent = board === "game" ? "QUIZ ANTARA" : "PROGRESS ANTARA";
     renderMe(data, board);
   }
 
@@ -134,7 +142,7 @@
     list.innerHTML = "";
     empty.hidden = true;
     error.hidden = false;
-    $("#lb-error-copy").textContent = message || "Periksa Apache, MySQL, dan koneksi database ANTARA.";
+    $("#lb-error-copy").textContent = message || "Coba buka lagi sebentar.";
   }
 
   async function loadBoard(board = currentBoard) {

@@ -7,8 +7,8 @@
   <title>Leaderboard | ANTARA</title>
   <link rel="icon" type="image/png" href="assets/antara-logo.png">
   <link rel="stylesheet" href="achievement-notify.css?v=20261003-achievement-toast-1">
-  <link rel="stylesheet" href="leaderboard.css?v=20261003-secure-leaderboard-1">
-  <script src="leaderboard.js?v=20261004-quiz-board-1" defer></script>
+  <link rel="stylesheet" href="leaderboard.css?v=20261005-kids-visual-polish-1">
+  <script src="leaderboard.js?v=20261005-kids-visual-polish-1" defer></script>
   <script src="achievement-client.js?v=20261003-achievement-toast-1" defer></script>
 </head>
 <body>
@@ -26,34 +26,45 @@
   <main class="lb-shell">
     <section class="lb-hero">
       <div class="lb-hero-copy">
-        <p class="lb-eyebrow">ANTARA · DATA PENJELAJAH</p>
-        <h1>Peringkat para<br><span>penjelajah ANTARA.</span></h1>
-        <p>Leaderboard dibaca langsung dari database akun. Peringkat penyelesaian memakai waktu server ketika seluruh progress benar-benar mencapai 100%, sedangkan skor quiz hanya menampilkan run yang sudah diverifikasi server.</p>
+        <p class="lb-eyebrow">ANTARA · PAPAN PENJELAJAH</p>
+        <h1>Siapa paling jauh<br><span>menjelajah hari ini?</span></h1>
+        <p>Selesaikan perjalanan planet, kumpulkan medali, dan uji pengetahuanmu di Quiz ANTARA. Namamu bisa naik sedikit demi sedikit di papan penjelajah.</p>
       </div>
-      <aside class="lb-security-card">
-        <div class="lb-shield" aria-hidden="true">✦</div>
-        <div><small>INTEGRITAS PERINGKAT</small><strong>Server verified</strong><p>Browser tidak menentukan urutan 100% dan tidak boleh mengirim skor quiz final secara mentah.</p></div>
+      <aside class="lb-hero-visual" aria-label="Jalur penjelajah ANTARA">
+        <div class="lb-orbit-line" aria-hidden="true"></div>
+        <img src="assets/progress-planets/earth.png" alt="Bumi">
+        <img src="assets/progress-planets/mars.png" alt="Mars">
+        <img src="assets/progress-planets/jupiter.png" alt="Jupiter">
+        <img src="assets/progress-planets/saturn.png" alt="Saturnus">
+        <img src="assets/progress-planets/neptune.png" alt="Neptunus">
+        <div class="lb-hero-visual-copy"><small>MISI HARI INI</small><strong>Jelajah • Quiz • Naik Peringkat</strong></div>
       </aside>
+    </section>
+
+    <section class="lb-mission-strip" aria-label="Cara naik peringkat">
+      <article><img src="assets/progress-planets/earth.png" alt=""><div><small>01</small><strong>Jelajahi planet</strong><span>Buka materi dan selesaikan progress.</span></div></article>
+      <article><img src="assets/achievements/05-mars.png" alt=""><div><small>02</small><strong>Kumpulkan medali</strong><span>Temukan pencapaian dari setiap misi.</span></div></article>
+      <article><img src="assets/progress-planets/jupiter.png" alt=""><div><small>03</small><strong>Mainkan quiz</strong><span>Kejar skor dan streak terbaikmu.</span></div></article>
     </section>
 
     <nav class="lb-tabs" aria-label="Jenis leaderboard">
       <button class="lb-tab is-active" type="button" data-board="completion" aria-selected="true">
-        <span>01</span><div><small>PENJELAJAHAN</small><strong>100% Selesai</strong></div>
+        <span class="lb-tab-icon"><img src="assets/progress-planets/saturn.png" alt=""></span><div><small>JELAJAH</small><strong>Penjelajah 100%</strong></div>
       </button>
       <button class="lb-tab" type="button" data-board="game" aria-selected="false">
-        <span>02</span><div><small>KOMPETITIF</small><strong>Quiz ANTARA</strong></div>
+        <span class="lb-tab-icon"><img src="assets/progress-planets/jupiter.png" alt=""></span><div><small>QUIZ</small><strong>Bintang Quiz</strong></div>
       </button>
     </nav>
 
     <section class="lb-me" id="lb-me" aria-live="polite">
       <div><small>POSISI AKUNMU</small><strong id="lb-me-rank">...</strong></div>
-      <p id="lb-me-copy">Menghubungkan identitas penjelajah dengan database.</p>
+      <p id="lb-me-copy">Mencari posisi terbaikmu di papan ANTARA...</p>
     </section>
 
     <section class="lb-board" aria-labelledby="lb-board-title">
       <div class="lb-board-head">
         <div><p id="lb-board-kicker">URUTAN PENYELESAIAN</p><h2 id="lb-board-title">Penjelajah 100%</h2></div>
-        <div class="lb-live"><i></i><span id="lb-board-state">DATA SERVER</span></div>
+        <div class="lb-live"><i></i><span id="lb-board-state">PAPAN ANTARA</span></div>
       </div>
 
       <div class="lb-podium" id="lb-podium" hidden></div>
@@ -61,20 +72,20 @@
 
       <div class="lb-empty" id="lb-empty" hidden>
         <span>✦</span>
-        <div><small id="lb-empty-kicker">BELUM ADA PENJELAJAH 100%</small><h3 id="lb-empty-title">Peringkat pertama masih kosong.</h3><p id="lb-empty-copy">Akun pertama yang menyelesaikan seluruh progress ANTARA secara valid akan muncul di sini.</p></div>
+        <div><small id="lb-empty-kicker">BELUM ADA PENJELAJAH 100%</small><h3 id="lb-empty-title">Peringkat pertama masih kosong.</h3><p id="lb-empty-copy">Penjelajah pertama yang menuntaskan perjalanan akan membuka posisi ini.</p></div>
       </div>
 
       <div class="lb-error" id="lb-error" hidden>
-        <small>DATABASE BELUM MENJAWAB</small>
-        <h3>Leaderboard belum bisa dimuat.</h3>
-        <p id="lb-error-copy">Periksa Apache, MySQL, dan koneksi database ANTARA.</p>
+        <small>SINYAL TERPUTUS</small>
+        <h3>Papan peringkat belum terbuka.</h3>
+        <p id="lb-error-copy">Coba buka lagi sebentar.</p>
         <button type="button" id="lb-retry">COBA LAGI</button>
       </div>
     </section>
 
-    <section class="lb-note">
-      <strong>Catatan sistem</strong>
-      <p>Urutan 100% ditentukan oleh timestamp completion di server, bukan waktu perangkat pengguna. Untuk skor quiz, endpoint skor mentah dinonaktifkan. Hanya skor dari run yang tervalidasi yang boleh masuk tabel publik.</p>
+    <section class="lb-note lb-tip-card">
+      <img src="assets/antara-logo.png" alt="">
+      <div><strong>Tip Penjelajah</strong><p>Coba selesaikan satu planet, buka satu medali, lalu main satu sesi quiz. Tiga langkah kecil bisa mengubah posisi kamu.</p></div>
     </section>
   </main>
 </body>

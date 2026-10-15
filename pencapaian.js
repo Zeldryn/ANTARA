@@ -27,13 +27,25 @@
       <div class="ach-medal">
         <span class="ach-lock">${item.unlocked ? "TERBUKA" : "TERKUNCI"}</span>
         <img src="${esc(item.icon)}" alt="" loading="lazy" decoding="async">
+        <span class="ach-tap-hint">${item.unlocked ? "KETUK UNTUK LIHAT" : "KETUK UNTUK CEK"}</span>
       </div>
       <div class="ach-body">
         <div class="ach-topline"><span class="ach-tier">${tierLabel(item.tier)}</span><span class="ach-date">${formatDate(item.unlockedAt)}</span></div>
         <h3>${esc(item.name)}</h3>
         <p>${esc(item.description)}</p>
-        <div class="ach-progress" style="--progress:${pct}%"><div><i></i></div><span>${esc(item.unlocked ? "PENCAPAIAN SELESAI" : (item.progress?.label || "Belum dimulai"))}</span></div>
+        <div class="ach-progress" style="--progress:${pct}%"><div><i></i></div><span>${esc(item.unlocked ? "SELESAI ✦" : (item.progress?.label || "Belum dimulai"))}</span></div>
       </div>`;
+    el.tabIndex = 0;
+    el.setAttribute("role", "button");
+    el.setAttribute("aria-label", `${item.name}. ${item.unlocked ? "Pencapaian terbuka" : `Progress ${pct}%`}.`);
+    const togglePeek = () => {
+      document.querySelectorAll(".ach-card.is-peek").forEach(card => { if (card !== el) card.classList.remove("is-peek"); });
+      el.classList.toggle("is-peek");
+    };
+    el.addEventListener("click", togglePeek);
+    el.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); togglePeek(); }
+    });
     return el;
   }
 
@@ -74,7 +86,7 @@
   function showError(message) {
     document.body.classList.add("has-error"); document.body.classList.remove("is-locked");
     errorPanel.hidden = false; lockedPage.hidden = true;
-    $("#ach-error-message").textContent = message || "Periksa Apache, MySQL, dan koneksi database ANTARA.";
+    $("#ach-error-message").textContent = message || "Coba buka lagi sebentar.";
   }
   async function json(url) {
     const response = await fetch(url, { credentials:"same-origin", headers:{ Accept:"application/json" }, cache:"no-store" });
