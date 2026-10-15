@@ -10143,3 +10143,43 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     padding-left: 5px !important;
   }
 }
+
+
+/* ========================================================================
+   2026-10-07 LOGIN MODULE CENTERED CONTENT FOLLOW-UP
+   Requested refinement: remove the right arrow/divider and center the
+   remaining icon + MASUK / DAFTAR copy as one balanced group.
+   ======================================================================== */
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame {
+  grid-template-columns: 20px max-content !important;
+  justify-content: center !important;
+  column-gap: 7px !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-icon,
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy {
+  justify-self: center !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy {
+  justify-items: center !important;
+  text-align: center !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong,
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy small {
+  text-align: center !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-action {
+  display: none !important;
+  border-left: 0 !important;
+}
+
+@media (max-width: 700px) {
+  .cockpit-profile-hud .profile-login-trigger .profile-login-frame {
+    grid-template-columns: 18px max-content !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+}
