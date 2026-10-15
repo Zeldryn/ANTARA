@@ -9764,3 +9764,17 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     font-size: 7.75px !important;
   }
 }
+
+/* ========================================================================
+   2026-10-07 CHARACTER MEDIUM SCALE FINAL
+   Only adjusts laptop/desktop guide size. Mobile/tablet rules stay unchanged.
+   ======================================================================== */
+@media (min-width: 900px) {
+  .mission[data-experience="home"] .companion-a,
+  .mission[data-experience="launch"] .companion-a,
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(245px, 20.5vw, 385px) !important;
+    bottom: 8.2% !important;
+  }
+}
