@@ -9291,3 +9291,99 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   0%,100% { transform: scale(1.035); }
   50% { transform: scale(1.055); }
 }
+
+/* ========================================================================
+   2026-10-06 FINAL AVATAR ALIGNMENT + SORA SCALE/PERSON-SAFE FRAMING
+   ======================================================================== */
+
+/* The final header uses a centered flex cluster. The avatar must NOT retain
+   the old absolute-layout translateY(-50%), otherwise it rides upward by half
+   its own height. Keep the module anchored; animate only the inner frame. */
+.profile-primary-cluster .profile-avatar-module,
+.profile-primary-cluster .profile-avatar-module:hover,
+.profile-primary-cluster .profile-avatar-module:focus-visible {
+  transform: none !important;
+  align-self: center !important;
+}
+.profile-primary-cluster .profile-avatar-module .profile-avatar-frame {
+  position: relative !important;
+  inset: auto !important;
+  margin: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  place-self: center !important;
+}
+
+/* Sora must use the same visual scale family as Nara. Her source artwork has
+   substantially more lower-body content, so the lower 22% is masked before
+   dashboard occlusion. This leaves the skirt while guaranteeing no thigh. */
+.mission[data-experience="home"] .companion-b,
+.mission[data-experience="launch"] .companion-b {
+  width: clamp(400px, 39vw, 560px) !important;
+  bottom: 9% !important;
+  clip-path: inset(0 0 16% 0) !important;
+  overflow: hidden !important;
+}
+.mission[data-experience="home"] .companion-b .character-sprite-frame,
+.mission[data-experience="launch"] .companion-b .character-sprite-frame {
+  overflow: hidden !important;
+}
+.mission[data-experience="home"] .companion-b .character-sprite,
+.mission[data-experience="launch"] .companion-b .character-sprite {
+  transform: none !important;
+}
+
+/* Keep Sora exactly on Nara's scale curve at every existing responsive band. */
+@media (min-width: 1200px) and (max-width: 1799px) {
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(350px, 26vw, 410px) !important;
+    bottom: 9% !important;
+    right: 2.2% !important;
+    clip-path: inset(0 0 16% 0) !important;
+  }
+}
+@media (max-width: 1100px) {
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(340px, 39vw, 460px) !important;
+    bottom: 9% !important;
+    clip-path: inset(0 0 16% 0) !important;
+  }
+}
+@media (max-width: 900px) {
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(260px, 44vw, 360px) !important;
+    bottom: 13% !important;
+    clip-path: inset(0 0 16.5% 0) !important;
+  }
+}
+@media (max-width: 700px) {
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(215px, 58vw, 285px) !important;
+    bottom: 18% !important;
+    right: -7% !important;
+    clip-path: inset(0 0 17% 0) !important;
+  }
+}
+@media (max-height: 700px) and (min-width: 701px) {
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(330px, 40vw, 520px) !important;
+    bottom: 5.5% !important;
+    clip-path: inset(0 0 16% 0) !important;
+  }
+}
+
+/* Laptop lock must also win on short 1200–1799px viewports, matching Nara. */
+@media (min-width: 1200px) and (max-width: 1799px) and (max-height: 700px) {
+  .mission[data-experience="home"] .companion-b,
+  .mission[data-experience="launch"] .companion-b {
+    width: clamp(350px, 26vw, 410px) !important;
+    bottom: 9% !important;
+    right: 2.2% !important;
+    clip-path: inset(0 0 16% 0) !important;
+  }
+}
