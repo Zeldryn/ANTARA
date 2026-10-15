@@ -28,17 +28,18 @@
   <link rel="stylesheet" href="mercury-full-exploration.css?v=20261005-inner-bughunt-1">
   <link rel="stylesheet" href="asteroid-scene.css?v=20261003-education-expand-1">
   <link rel="stylesheet" href="jupiter-scene.css?v=20261003-education-expand-1">
-  <link rel="stylesheet" href="jupiter-full-exploration.css?v=20261005-mobile-ui-3">
+  <link rel="stylesheet" href="jupiter-full-exploration.css?v=20261005-venus-actions-parity-1">
   <link rel="stylesheet" href="saturn-scene.css?v=20261003-education-expand-1">
-  <link rel="stylesheet" href="saturn-full-exploration.css?v=20261005-saturnpov-1">
-  <link rel="stylesheet" href="uranus-full-exploration.css?v=20261005-uranuspov-1">
-  <link rel="stylesheet" href="neptune-full-exploration.css?v=20261005-neptunepov-1">
+  <link rel="stylesheet" href="saturn-full-exploration.css?v=20261005-venus-actions-parity-1">
+  <link rel="stylesheet" href="uranus-full-exploration.css?v=20261005-venus-actions-parity-1">
+  <link rel="stylesheet" href="neptune-full-exploration.css?v=20261005-venus-actions-parity-1">
   <link rel="stylesheet" href="uranus-scene.css?v=20261004-location-image-audit-2">
   <link rel="stylesheet" href="neptune-scene.css?v=20261004-location-image-audit-2">
   <link rel="stylesheet" href="mobile-planet-actions-fix.css?v=20261001-all-planets-mobile-actions-2">
   <link rel="stylesheet" href="mobile-planet-exploration-ux.css?v=20261004-mobile-planet-ux-1">
   <link rel="stylesheet" href="mobile-planet-scene-audit-fix.css?v=20261004-mobile-cta-down-balance-5">
   <link rel="stylesheet" href="inner-planets-mobile-ui-audit.css?v=20261005-mobile-panel-audit-1">
+  <link rel="stylesheet" href="outer-planets-full-actions-parity.css?v=20261005-venus-parity-1">
   <script src="exploration-media.js?v=20261004-location-image-audit-2" defer></script>
   <script src="progress-tracker.js?v=20261004-topic-guard-1" defer></script>
   <script src="achievement-client.js?v=20261003-achievement-toast-1" defer></script>
@@ -53,11 +54,11 @@
   <script src="venus-full-exploration.js?v=20261005-mobile-panel-audit-1" defer></script>
   <script src="asteroid-scene.js?v=20261003-education-expand-1" defer></script>
   <script src="jupiter-scene.js?v=20261005-outer-bughunt-2" defer></script>
-  <script src="jupiter-full-exploration.js?v=20261005-mobile-panel-audit-1" defer></script>
+  <script src="jupiter-full-exploration.js?v=20261005-venus-actions-parity-1" defer></script>
   <script src="saturn-scene.js?v=20261005-outer-bughunt-2" defer></script>
-  <script src="saturn-full-exploration.js?v=20261005-saturnpov-1" defer></script>
-  <script src="uranus-full-exploration.js?v=20261005-uranuspov-1" defer></script>
-  <script src="neptune-full-exploration.js?v=20261005-neptunepov-1" defer></script>
+  <script src="saturn-full-exploration.js?v=20261005-venus-actions-parity-1" defer></script>
+  <script src="uranus-full-exploration.js?v=20261005-venus-actions-parity-1" defer></script>
+  <script src="neptune-full-exploration.js?v=20261005-venus-actions-parity-1" defer></script>
   <script src="uranus-scene.js?v=20261005-outer-bughunt-2" defer></script>
   <script src="neptune-scene.js?v=20261005-outer-bughunt-2" defer></script>
   <script src="auth-client.js?v=20261004-session-persist-1" defer></script>
@@ -1500,9 +1501,9 @@
           <a class="venus-observation-source" id="jupiter-observation-source" href="https://science.nasa.gov/jupiter/" target="_blank" rel="noopener noreferrer">Sumber data: NASA Science ↗</a>
         </aside>
 
-        <div class="mars-full-actions venus-full-actions" data-jupiter-ui hidden>
+        <div class="mars-full-actions venus-full-actions" data-jupiter-ui>
           <button class="venus-actions-menu-toggle" id="jupiter-actions-menu-toggle" type="button" aria-expanded="false" aria-controls="jupiter-actions-menu">Menu</button>
-          <div class="venus-actions-menu" id="jupiter-actions-menu"><button id="jupiter-location-toggle" type="button">Wilayah</button><button id="jupiter-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button><button class="mars-full-exit" id="jupiter-full-exit" type="button">Keluar dari Eksplorasi</button></div>
+          <div class="venus-actions-menu" id="jupiter-actions-menu"><button id="jupiter-location-toggle" type="button" aria-label="Pindah wilayah eksplorasi">Pindah Wilayah</button><button id="jupiter-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button><button class="mars-full-exit" id="jupiter-full-exit" type="button">Keluar dari Eksplorasi</button></div>
         </div>
 
         <div class="mars-control-hints" data-jupiter-ui aria-hidden="true"><span><b>WASD</b> Terbang</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Cepat</span><span><b>E</b> Amati saat dekat</span><span><b>ESC</b> Panel / Keluar</span></div>
@@ -1668,9 +1669,9 @@
           <a class="venus-observation-source" id="saturn-observation-source" href="https://science.nasa.gov/saturn/" target="_blank" rel="noopener noreferrer">Sumber data: NASA / Cassini ↗</a>
         </aside>
 
-        <div class="mars-full-actions venus-full-actions" data-saturn-ui hidden>
+        <div class="mars-full-actions venus-full-actions" data-saturn-ui>
           <button class="venus-actions-menu-toggle" id="saturn-actions-menu-toggle" type="button" aria-expanded="false" aria-controls="saturn-actions-menu">Menu</button>
-          <div class="venus-actions-menu" id="saturn-actions-menu"><button id="saturn-location-toggle" type="button">Wilayah</button><button id="saturn-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button><button class="mars-full-exit" id="saturn-full-exit" type="button">Keluar dari Eksplorasi</button></div>
+          <div class="venus-actions-menu" id="saturn-actions-menu"><button id="saturn-location-toggle" type="button" aria-label="Pindah wilayah eksplorasi">Pindah Wilayah</button><button id="saturn-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button><button class="mars-full-exit" id="saturn-full-exit" type="button">Keluar dari Eksplorasi</button></div>
         </div>
 
         <div class="mars-control-hints" data-saturn-ui aria-hidden="true"><span><b>WASD</b> Terbang</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Cepat</span><span><b>E</b> Amati saat dekat</span><span><b>ESC</b> Panel / Keluar</span></div>
@@ -1834,7 +1835,7 @@
           <a class="venus-observation-source" id="uranus-observation-source" href="https://science.nasa.gov/uranus/" target="_blank" rel="noopener noreferrer">Sumber data: NASA Science / Voyager 2 ↗</a>
         </aside>
 
-        <div class="mars-full-actions venus-full-actions" data-uranus-ui hidden><button class="venus-actions-menu-toggle" id="uranus-actions-menu-toggle" type="button" aria-expanded="false" aria-controls="uranus-actions-menu">Menu</button><div class="venus-actions-menu" id="uranus-actions-menu"><button id="uranus-location-toggle" type="button">Wilayah</button><button id="uranus-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button><button class="mars-full-exit" id="uranus-full-exit" type="button">Keluar dari Eksplorasi</button></div></div>
+        <div class="mars-full-actions venus-full-actions" data-uranus-ui><button class="venus-actions-menu-toggle" id="uranus-actions-menu-toggle" type="button" aria-expanded="false" aria-controls="uranus-actions-menu">Menu</button><div class="venus-actions-menu" id="uranus-actions-menu"><button id="uranus-location-toggle" type="button" aria-label="Pindah wilayah eksplorasi">Pindah Wilayah</button><button id="uranus-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button><button class="mars-full-exit" id="uranus-full-exit" type="button">Keluar dari Eksplorasi</button></div></div>
 
         <div class="mars-control-hints" data-uranus-ui aria-hidden="true"><span><b>WASD</b> Terbang</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Cepat</span><span><b>E</b> Amati saat dekat</span><span><b>ESC</b> Panel / Keluar</span></div>
         <div class="mars-mobile-controls" data-uranus-ui aria-label="Kontrol penerbangan Uranus"><div class="mars-mobile-dpad"><button type="button" data-uranus-control="forward" aria-label="Maju">▲</button><button type="button" data-uranus-control="left" aria-label="Geser kiri">◀</button><span class="mars-dpad-core" aria-hidden="true"></span><button type="button" data-uranus-control="right" aria-label="Geser kanan">▶</button><button type="button" data-uranus-control="backward" aria-label="Mundur">▼</button></div><div class="mars-mobile-altitude"><button type="button" data-uranus-control="up" aria-label="Naik">＋</button><span class="mars-mobile-altitude-label">TINGGI</span><button type="button" data-uranus-control="down" aria-label="Turun">−</button></div></div>
@@ -1990,7 +1991,7 @@
           <a class="venus-observation-source" id="neptune-observation-source" href="https://science.nasa.gov/neptune/" target="_blank" rel="noopener noreferrer">Sumber data: NASA Science / Voyager 2 ↗</a>
         </aside>
 
-        <div class="mars-full-actions venus-full-actions" data-neptune-ui hidden><button class="venus-actions-menu-toggle" id="neptune-actions-menu-toggle" type="button" aria-expanded="false" aria-controls="neptune-actions-menu">Menu</button><div class="venus-actions-menu" id="neptune-actions-menu"><button id="neptune-location-toggle" type="button">Wilayah</button><button id="neptune-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button><button class="mars-full-exit" id="neptune-full-exit" type="button">Keluar dari Eksplorasi</button></div></div>
+        <div class="mars-full-actions venus-full-actions" data-neptune-ui><button class="venus-actions-menu-toggle" id="neptune-actions-menu-toggle" type="button" aria-expanded="false" aria-controls="neptune-actions-menu">Menu</button><div class="venus-actions-menu" id="neptune-actions-menu"><button id="neptune-location-toggle" type="button" aria-label="Pindah wilayah eksplorasi">Pindah Wilayah</button><button id="neptune-fullscreen-toggle" type="button" aria-pressed="false"><span>Layar penuh</span></button><button class="mars-full-exit" id="neptune-full-exit" type="button">Keluar dari Eksplorasi</button></div></div>
 
         <div class="mars-control-hints" data-neptune-ui aria-hidden="true"><span><b>WASD</b> Terbang</span><span><b>Mouse</b> Lihat</span><span><b>Q / E</b> Turun / Naik</span><span><b>Shift</b> Cepat</span><span><b>E</b> Amati saat dekat</span><span><b>ESC</b> Panel / Keluar</span></div>
         <div class="mars-mobile-controls" data-neptune-ui aria-label="Kontrol penerbangan Neptunus"><div class="mars-mobile-dpad"><button type="button" data-neptune-control="forward" aria-label="Maju">▲</button><button type="button" data-neptune-control="left" aria-label="Geser kiri">◀</button><span class="mars-dpad-core" aria-hidden="true"></span><button type="button" data-neptune-control="right" aria-label="Geser kanan">▶</button><button type="button" data-neptune-control="backward" aria-label="Mundur">▼</button></div><div class="mars-mobile-altitude"><button type="button" data-neptune-control="up" aria-label="Naik">＋</button><span class="mars-mobile-altitude-label">TINGGI</span><button type="button" data-neptune-control="down" aria-label="Turun">−</button></div></div>

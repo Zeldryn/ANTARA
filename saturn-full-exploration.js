@@ -852,13 +852,19 @@
       });
       this.observeButton?.addEventListener("click", () => this.observeNearby());
       this.observationClose?.addEventListener("click", () => this.closeObservation());
-      this.actionsMenuToggle?.addEventListener("click", event => { event.stopPropagation(); this.setActionsMenu(!this.actionsOpen); });
+      this.actionsMenuToggle?.addEventListener("click", event => { event.stopPropagation(); this.setActionsMenu(!this.actionsOpen, true); });
       this.locationButton?.addEventListener("click", () => { this.setActionsMenu(false); this.openSelectorFromWorld(); });
       this.fullscreenButton?.addEventListener("click", () => { this.setActionsMenu(false); void this.toggleFullscreen(); });
       this.exitButton?.addEventListener("click", () => { this.setActionsMenu(false); void this.exit(); });
       this.errorReturn?.addEventListener("click", () => this.forceReset());
       this.tutorialClose?.addEventListener("click", () => this.hideTutorial(true));
       document.addEventListener("fullscreenchange", () => this.updateFullscreenLabel());
+      document.addEventListener("visibilitychange", () => {
+        if (!this.root || this.root.hidden) return;
+        if (document.hidden) this.stopLoop();
+        else if (this.state === "exploring") this.startLoop();
+      });
+      addEventListener("orientationchange", () => window.setTimeout(() => this.resize(), 120), { passive: true });
       document.addEventListener("pointerdown", event => {
         if (this.actionsOpen && !this.actionsRoot?.contains(event.target)) this.setActionsMenu(false);
       });
@@ -1092,7 +1098,7 @@
         await this.loadingSequence(token, destination.name);
         if (token !== this.transitionToken) return;
         this.loading.hidden = true;
-        this.root.classList.remove("is-preparing");
+        this.root.classList.remove("is-preparing", "is-selecting");
         this.root.classList.add("is-active");
         this.state = "exploring";
         const compactUi = this.isMobileUi();
@@ -1427,27 +1433,33 @@
 
     openSelectorFromWorld() {
       if (this.state !== "exploring") return;
+      this.setActionsMenu(false);
       this.releasePointerLock();
       this.keys.clear();
       this.mobileHeld.clear();
       this.state = "selecting-world";
+      this.root.classList.add("is-selecting");
       this.selector.hidden = false;
+      this.actionsRoot.hidden = true;
       this.info.hidden = true;
       this.objectives.hidden = true;
       this.infoToggle.hidden = true;
       this.objectivesToggle.hidden = true;
       this.observationPrompt.hidden = true;
       this.closeObservation();
+      requestAnimationFrame(() => this.selectorGrid?.querySelector(`[data-saturn-region="${this.current?.id || this.selected?.id || ""}"]`)?.focus({ preventScroll: true }));
     }
 
     closeSelectorToWorld() {
       if (this.state !== "selecting-world") return;
       this.state = "exploring";
       this.selector.hidden = true;
+      this.root.classList.remove("is-selecting");
       this.syncPanels();
+      requestAnimationFrame(() => this.locationButton?.focus({ preventScroll: true }));
     }
 
-    setActionsMenu(open) {
+    setActionsMenu(open, focus = false) {
       const mobile = this.isMobileUi();
       const observationOpen = Boolean(this.observationCard && !this.observationCard.hidden);
       this.actionsOpen = Boolean(open && mobile && this.state === "exploring" && !observationOpen);
@@ -1462,6 +1474,7 @@
       this.root.classList.toggle("is-actions-open", this.actionsOpen);
       this.actionsMenuToggle.setAttribute("aria-expanded", String(this.actionsOpen));
       this.syncPanels();
+      if (focus && this.actionsOpen) requestAnimationFrame(() => this.actionsRoot?.querySelector(".venus-actions-menu button")?.focus({ preventScroll: true }));
     }
 
     async toggleFullscreen() {
@@ -1570,7 +1583,7 @@
       this.infoOpen = false;
       this.objectiveOpen = true;
       this.actionsOpen = false;
-      this.root.classList.remove("is-active", "is-preparing", "is-exiting", "is-info-open", "is-objectives-open", "is-observation-open", "is-actions-open");
+      this.root.classList.remove("is-active", "is-preparing", "is-selecting", "is-exiting", "is-info-open", "is-objectives-open", "is-observation-open", "is-actions-open");
       this.root.hidden = true;
       this.root.inert = true;
       this.root.setAttribute("aria-hidden", "true");

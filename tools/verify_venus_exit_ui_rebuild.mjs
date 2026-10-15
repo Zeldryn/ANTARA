@@ -62,7 +62,7 @@ test('Short-height desktop observation card avoids toolbar', has(css, '@media (m
 test('Mobile HUD uses border-box sizing', /\.venus-full-exploration \.mars-full-hud\s*\{[\s\S]*?box-sizing:\s*border-box;/.test(css));
 test('Info card scrolls internally', /\.venus-location-card[\s\S]*?overflow-y:\s*auto/.test(css) || has(css,'overflow-y: auto'));
 test('Mobile bottom sheets remain present', /border-radius:\s*14px 14px 0 0/.test(css));
-test('Cache busting points to rebuilt assets', has(html,'20260930-venus-panel-copy-3'));
+test('Cache busting points to rebuilt assets', /venus-full-exploration\.css\?v=2026[^\"<]+/.test(html) && /venus-full-exploration\.js\?v=2026[^\"<]+/.test(html));
 
 console.log(`\n${failed ? 'FAILED' : 'ALL PASS'}: ${failed} failed checks.`);
 if (failed) process.exit(1);
