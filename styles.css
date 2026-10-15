@@ -7141,3 +7141,79 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
       inset 0 0 0 1px rgba(222,183,110,.035) !important;
   }
 }
+
+
+/* ========================================================================
+   2026-10-05 COCKPIT NAV SHAPE PASS
+   Convert the contrast pass from rectangular plates into chamfered instrument
+   controls. The silhouette follows each module's existing perimeter artwork,
+   so the fill and sci-fi border now read as one physical control.
+   ======================================================================== */
+.cockpit-profile-hud .hud-nav-module {
+  overflow: hidden;
+  border-radius: 0 !important;
+  filter: drop-shadow(0 5px 10px rgba(0,0,0,.18));
+}
+.cockpit-profile-hud .hud-nav-leaderboard {
+  clip-path: polygon(8px 0,74% 0,79% 3px,100% 3px,100% calc(100% - 7px),calc(100% - 7px) 100%,32% 100%,27% calc(100% - 2px),0 calc(100% - 2px),0 8px);
+}
+.cockpit-profile-hud .hud-nav-progress {
+  clip-path: polygon(0 4px,18% 4px,22% 0,100% 0,100% 68%,94% 68%,90% 100%,12% 100%,8% 96%,0 96%);
+}
+.cockpit-profile-hud .hud-nav-achievement {
+  clip-path: polygon(10px 0,43% 0,48% 4px,72% 4px,77% 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,58% 100%,54% calc(100% - 3px),0 calc(100% - 3px),0 10px);
+}
+.cockpit-profile-hud .hud-nav-game {
+  clip-path: polygon(0 8px,8px 0,40% 0,44% 3px,70% 3px,74% 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,60% 100%,56% calc(100% - 3px),20% calc(100% - 3px),16% 100%,0 100%);
+}
+.cockpit-profile-hud .hud-nav-module:hover,
+.cockpit-profile-hud .hud-nav-module:focus-visible {
+  filter: brightness(1.12) drop-shadow(0 7px 13px rgba(0,0,0,.24)) drop-shadow(0 0 8px rgba(111,190,222,.055));
+}
+.cockpit-profile-hud .hud-nav-module:active {
+  filter: brightness(.98) drop-shadow(0 3px 7px rgba(0,0,0,.18));
+}
+
+/* Login and MORE are part of the same console language, but use a simpler
+   asymmetric cut so the whole strip does not become visually noisy. */
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame {
+  clip-path: polygon(9px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 9px);
+  overflow:hidden;
+}
+@media (max-width:1199px) {
+  .profile-primary-cluster .profile-more-trigger {
+    clip-path: polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px);
+    border-radius:0 !important;
+    overflow:hidden;
+  }
+  .profile-primary-cluster .profile-nav-suite {
+    clip-path: polygon(10px 0,calc(100% - 18px) 0,100% 14px,100% calc(100% - 10px),calc(100% - 10px) 100%,14px 100%,0 calc(100% - 14px),0 10px);
+    border-radius:0 !important;
+  }
+}
+
+/* Add tiny corner nodes to the existing bottom telemetry line without adding
+   another pseudo-element. The two gradients create a mechanical "terminal"
+   at both ends of the animated line. */
+.cockpit-profile-hud .hud-nav-module::after {
+  background:
+    radial-gradient(circle at left center,var(--module-gold) 0 1.4px,transparent 1.6px),
+    radial-gradient(circle at right center,var(--module-cyan) 0 1.4px,transparent 1.6px),
+    linear-gradient(90deg,transparent 3px,var(--module-cyan) 24%,var(--module-gold) 76%,transparent calc(100% - 3px));
+}
+
+@media (max-width:700px) {
+  /* Smaller cuts preserve usable touch area in the 2x2 mobile drawer. */
+  .profile-primary-cluster .profile-nav-suite .hud-nav-leaderboard {
+    clip-path:polygon(6px 0,74% 0,79% 2px,100% 2px,100% calc(100% - 6px),calc(100% - 6px) 100%,30% 100%,26% calc(100% - 2px),0 calc(100% - 2px),0 6px);
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-progress {
+    clip-path:polygon(0 3px,18% 3px,22% 0,100% 0,100% 70%,94% 70%,90% 100%,11% 100%,7% 96%,0 96%);
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-achievement {
+    clip-path:polygon(7px 0,43% 0,48% 3px,72% 3px,77% 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,57% 100%,53% calc(100% - 2px),0 calc(100% - 2px),0 7px);
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-game {
+    clip-path:polygon(0 6px,6px 0,40% 0,44% 2px,70% 2px,74% 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,60% 100%,56% calc(100% - 2px),20% calc(100% - 2px),16% 100%,0 100%);
+  }
+}
