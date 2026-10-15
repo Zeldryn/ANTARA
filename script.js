@@ -309,7 +309,10 @@ class OpeningAudio {
     audio.preload = "auto";
     audio.volume = 0;
     audio.muted = this.muted;
+    audio.playsInline = true;
     audio.setAttribute("playsinline", "");
+    audio.setAttribute("webkit-playsinline", "");
+    try { audio.load(); } catch { /* Warm the file quietly when supported. */ }
     return { audio, volume };
   }
 
@@ -413,11 +416,11 @@ class LaunchVisual {
     this.commReadout = document.getElementById("comm-readout");
     this.guidanceReadout = document.getElementById("guidance-readout");
     try { this.ctx = this.canvas.getContext("2d", { alpha: true }); } catch { this.ctx = null; }
-    this.mobilePerformanceMode = window.matchMedia("(max-width: 700px), (pointer: coarse)").matches;
+    this.mobilePerformanceMode = window.matchMedia("(max-width: 820px), (pointer: coarse)").matches;
     this.lastTelemetryPaint = -Infinity;
     this.lastParticlePaint = -Infinity;
     const random = n => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
-    this.stars = Array.from({ length: this.mobilePerformanceMode ? 72 : 115 }, (_, i) => ({
+    this.stars = Array.from({ length: this.mobilePerformanceMode ? 32 : 115 }, (_, i) => ({
       x: random(i), y: random(i + 100), size: 0.35 + random(i + 200) * 1.25, drift: .3 + random(i + 300) * .9
     }));
     this.lastPhase = "idle";
@@ -429,7 +432,7 @@ class LaunchVisual {
   resize() {
     this.width = this.stage.clientWidth || innerWidth;
     this.height = this.stage.clientHeight || innerHeight;
-    const dpr = Math.min(window.devicePixelRatio || 1, this.mobilePerformanceMode ? 1 : 1.5);
+    const dpr = Math.min(window.devicePixelRatio || 1, this.mobilePerformanceMode ? 0.85 : 1.5);
     this.canvas.width = Math.round(this.width * dpr);
     this.canvas.height = Math.round(this.height * dpr);
     this.ctx?.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -563,11 +566,11 @@ class LaunchVisual {
     this.arrivalEarth.style.backgroundPosition = `${50 + Math.sin(t * .16) * 2.4}% center`;
 
     const phaseChanged = phase !== this.lastPhase;
-    if (!this.mobilePerformanceMode || phaseChanged || t - this.lastTelemetryPaint >= 1 / 30) {
+    if (!this.mobilePerformanceMode || phaseChanged || t - this.lastTelemetryPaint >= 1 / 20) {
       this.updateTelemetry(t, phase, ascent);
       this.lastTelemetryPaint = t;
     }
-    if (this.ctx && (!this.mobilePerformanceMode || phaseChanged || t - this.lastParticlePaint >= 1 / 30)) {
+    if (this.ctx && (!this.mobilePerformanceMode || phaseChanged || t - this.lastParticlePaint >= 1 / 18)) {
       this.drawParticles(t, ascent, starOpacity, phase);
       this.lastParticlePaint = t;
     }
@@ -715,11 +718,16 @@ class CockpitCompanions {
   }
 
   preload() {
+    const mobile = window.matchMedia?.("(max-width: 820px), (pointer: coarse)")?.matches ?? false;
     for (const config of Object.values(CHARACTER_SPRITES)) {
-      const files = new Set(Object.values(config.states));
+      const files = mobile
+        ? new Set([config.fallback, config.states.idle, config.states.happy, config.states.talking])
+        : new Set(Object.values(config.states));
       for (const file of files) {
+        if (!file) continue;
         const image = new Image();
         image.decoding = "async";
+        image.loading = "eager";
         image.src = config.base + file;
       }
     }

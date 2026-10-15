@@ -82,11 +82,21 @@
     return `assets/progress-planets/${rankPlanets[index]}.png`;
   }
 
+  function avatarMarkup(entry, size = "podium") {
+    const label = escapeHtml(entry.name || entry.username || "Penjelajah");
+    const initial = escapeHtml((entry.name || entry.username || "P").trim().charAt(0).toUpperCase());
+    const avatar = String(entry.avatar || "").trim();
+    const classes = size === "row" ? "lb-avatar lb-avatar-row" : "lb-avatar lb-avatar-podium";
+    return avatar
+      ? `<span class="${classes}"><img src="${escapeHtml(avatar)}" alt="Foto profil ${label}" loading="lazy"></span>`
+      : `<span class="${classes} is-fallback" aria-hidden="true">${initial}</span>`;
+  }
+
   function podiumCard(entry, board) {
     const detail = entryDetail(entry, board);
     return `<article class="lb-podium-card" tabindex="0">
       <span class="lb-podium-rank">${entry.rank}</span>
-      <img class="lb-rank-planet" src="${rankPlanet(entry)}" alt="" loading="lazy">
+      <div class="lb-podium-visual">${avatarMarkup(entry, "podium")}<img class="lb-rank-planet" src="${rankPlanet(entry)}" alt="" loading="lazy"></div>
       <div><strong class="lb-podium-name">${escapeHtml(entry.name || entry.username)}</strong><span class="lb-podium-user">@${escapeHtml(entry.username)}</span></div>
       <span class="lb-podium-detail">${escapeHtml(detail.main)}<br>${escapeHtml(detail.sub)}</span>
     </article>`;
@@ -96,6 +106,7 @@
     const detail = entryDetail(entry, board);
     return `<article class="lb-row" tabindex="0">
       <span class="lb-row-rank">#${entry.rank}</span>
+      ${avatarMarkup(entry, "row")}
       <img class="lb-row-planet" src="${rankPlanet(entry)}" alt="" loading="lazy">
       <div class="lb-row-person"><strong>${escapeHtml(entry.name || entry.username)}</strong><span>@${escapeHtml(entry.username)}</span></div>
       <div class="lb-row-detail"><strong>${escapeHtml(detail.main)}</strong><span>${escapeHtml(detail.sub)}</span></div>

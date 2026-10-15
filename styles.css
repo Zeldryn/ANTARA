@@ -8962,3 +8962,202 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     bottom:calc(max(6px, env(safe-area-inset-bottom)) + 60px) !important;
   }
 }
+
+/* ========================================================================
+   2026-10-05 cockpit polish + vertical desktop + mobile performance follow-up
+   ======================================================================== */
+
+/* Start CTA copy cleanup: only one clear line. */
+.launch-button-copy {
+  gap: 0 !important;
+  align-items: flex-start;
+}
+.launch-button-copy small {
+  display: none !important;
+}
+.launch-button-copy strong {
+  font-size: clamp(11px, 0.95vw, 14px) !important;
+  letter-spacing: .13em !important;
+  text-indent: .13em !important;
+}
+
+/* Profile avatar + name plate feel more premium and more interactive. */
+.cockpit-profile-hud .profile-avatar-module {
+  transition: transform .18s ease, filter .22s ease;
+}
+.cockpit-profile-hud .profile-avatar-module:hover,
+.cockpit-profile-hud .profile-avatar-module:focus-visible {
+  transform: translateY(-50%) scale(1.045) !important;
+}
+.cockpit-profile-hud .profile-avatar-module .profile-avatar-frame {
+  transition: transform .2s ease, filter .22s ease, box-shadow .22s ease;
+}
+.cockpit-profile-hud .profile-avatar-module:hover .profile-avatar-frame,
+.cockpit-profile-hud .profile-avatar-module:focus-visible .profile-avatar-frame {
+  box-shadow: 0 0 0 1px rgba(237,201,132,.35), 0 0 16px rgba(111,190,222,.28);
+  filter: brightness(1.12) drop-shadow(0 0 12px rgba(111,190,222,.2));
+}
+.cockpit-profile-hud .profile-avatar-core img,
+.cockpit-profile-hud .profile-avatar-core .profile-avatar-initials {
+  transition: transform .22s ease, filter .22s ease;
+}
+.cockpit-profile-hud .profile-avatar-module:hover .profile-avatar-core img,
+.cockpit-profile-hud .profile-avatar-module:hover .profile-avatar-core .profile-avatar-initials,
+.cockpit-profile-hud .profile-avatar-module:focus-visible .profile-avatar-core img,
+.cockpit-profile-hud .profile-avatar-module:focus-visible .profile-avatar-core .profile-avatar-initials {
+  transform: scale(1.05);
+  filter: saturate(1.06);
+}
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame {
+  background:
+    linear-gradient(180deg, rgba(12,27,41,.88), rgba(5,14,24,.86)) padding-box,
+    linear-gradient(90deg, rgba(231,193,121,.76), rgba(112,188,222,.82), rgba(231,193,121,.58)) border-box !important;
+  border: 1px solid transparent !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 0 0 1px rgba(111,190,222,.08),
+    0 10px 24px rgba(0,0,0,.18);
+}
+.cockpit-profile-hud .profile-login-trigger:hover .profile-login-frame,
+.cockpit-profile-hud .profile-login-trigger:focus-visible .profile-login-frame {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 0 0 1px rgba(231,193,121,.18),
+    0 12px 28px rgba(0,0,0,.24),
+    0 0 20px rgba(111,190,222,.10);
+  filter: brightness(1.04);
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong {
+  letter-spacing: .08em !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy small {
+  color: rgba(202,219,228,.88) !important;
+  font-size: clamp(7px,.52vw,8.6px) !important;
+}
+
+/* Narrow/tall desktop windows (portrait monitor or narrow desktop browser). */
+@media (min-width: 701px) and (max-width: 1100px) and (min-height: 900px) {
+  .cockpit-profile-hud,
+  .mission[data-experience="home"] .cockpit-profile-hud,
+  .mission[data-experience="launch"] .cockpit-profile-hud {
+    --nav-left-inset: 3.8%;
+    --nav-avatar: 34px;
+    --nav-avatar-login-gap: 12px;
+    --nav-login-width: 168px;
+    --nav-module-gap: 4px;
+    --nav-bridge-width: 12px;
+    top: 26px !important;
+    left: 24px !important;
+    right: 24px !important;
+    width: auto !important;
+    height: 44px !important;
+  }
+  .hud-nav-module { width: 92px !important; grid-template-columns: 20px minmax(0,1fr) !important; gap: 3px !important; padding: 0 5px !important; }
+  .hud-nav-leaderboard { width: 108px !important; }
+  .hud-nav-progress { width: 92px !important; }
+  .hud-nav-achievement { width: 112px !important; }
+  .hud-nav-copy small { font-size: 4.1px !important; }
+  .hud-nav-copy strong { font-size: 6.4px !important; letter-spacing: .09em !important; }
+  .cockpit-profile-hud > .audio-orb-dock {
+    top: -34px !important;
+    transform: translateX(-50%) scale(.94) !important;
+  }
+  .intro-title-stack {
+    top: 120px !important;
+    width: min(840px, 86vw) !important;
+  }
+  .intro .intro-title-stack h1 {
+    font-size: clamp(24px, 4vw, 42px) !important;
+    line-height: 1.08 !important;
+  }
+  .intro .intro-title-stack .intro-kicker {
+    font-size: clamp(7px, .9vw, 9px) !important;
+  }
+  .launch-button {
+    bottom: 24.5% !important;
+  }
+  .speech-bubble {
+    width: min(230px, 30vw) !important;
+  }
+}
+
+/* Mobile cockpit: trim the heaviest glass/blur treatment to stop hitching. */
+@media (max-width: 700px) {
+  .speech-bubble,
+  .launch-button,
+  .cockpit-console-card,
+  .mission-footer.audio-orb-dock,
+  .cockpit-profile-hud .profile-login-trigger .profile-login-frame {
+    backdrop-filter: none !important;
+  }
+  .speech-bubble {
+    box-shadow: 0 8px 18px rgba(0,0,0,.18) !important;
+  }
+  .launch-button {
+    box-shadow: 0 8px 20px rgba(0,0,0,.22), 0 0 0 1px rgba(255,240,205,.24) inset !important;
+  }
+  .cloud-far { filter: blur(12px) !important; }
+  .cloud-mid { filter: blur(8px) !important; }
+  .cloud-near { filter: blur(5px) !important; }
+  .urban-haze,
+  .horizon-cloud-bank { filter: none !important; }
+  .launch-space-layer,
+  .city-light-field { opacity: .84 !important; }
+}
+
+/* Leaderboard avatars for top rank / all entries. */
+.lb-podium-visual {
+  position: relative;
+  width: max-content;
+  margin: 10px auto 0;
+}
+.lb-avatar {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(9,26,39,.96), rgba(6,15,25,.92));
+  color: #f0d7a9;
+  font-family: Georgia, serif;
+  font-weight: 700;
+  box-shadow: 0 0 0 2px rgba(5,16,26,.9), 0 8px 18px rgba(0,0,0,.28);
+}
+.lb-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lb-avatar.is-fallback {
+  border: 1px solid rgba(215,173,101,.32);
+}
+.lb-avatar-podium {
+  width: 46px;
+  height: 46px;
+  left: 50%;
+  top: -6px;
+  transform: translateX(-50%);
+  font-size: 18px;
+}
+.lb-podium-card:nth-child(1) .lb-avatar-podium {
+  width: 56px;
+  height: 56px;
+  top: -8px;
+  font-size: 22px;
+}
+.lb-avatar-row {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  font-size: 13px;
+}
+.lb-rank-planet {
+  margin-top: 0 !important;
+}
+.lb-row { grid-template-columns: 54px 34px 42px minmax(0,1fr) minmax(130px,auto) !important; }
+@media(max-width:620px){
+  .lb-row { grid-template-columns:36px 30px 32px minmax(0,1fr) !important; }
+  .lb-avatar-row { width: 30px; height: 30px; }
+  .lb-podium-card,.lb-podium-card:nth-child(1),.lb-podium-card:nth-child(2),.lb-podium-card:nth-child(3){grid-template-columns:auto 52px minmax(0,1fr) auto !important;}
+  .lb-podium-visual { margin: 0; }
+  .lb-avatar-podium { width: 38px; height: 38px; top: -3px; font-size: 15px; }
+  .lb-podium-card:nth-child(1) .lb-avatar-podium { width: 42px; height: 42px; top: -4px; font-size: 16px; }
+  .lb-rank-planet,.lb-podium-card:nth-child(1) .lb-rank-planet { width: 44px !important; height: 44px !important; }
+}

@@ -185,7 +185,7 @@ function antara_completion_entries(PDO $pdo, int $limit = 50): array
     antara_completion_backfill($pdo);
 
     $required = antara_completion_required_milestones();
-    $sql = 'SELECT c.id, c.user_id, c.completed_at, c.completion_event_id, c.elapsed_seconds, u.username, u.full_name
+    $sql = 'SELECT c.id, c.user_id, c.completed_at, c.completion_event_id, c.elapsed_seconds, u.username, u.full_name, u.avatar_url
             FROM exploration_completions c
             JOIN users u ON u.id = c.user_id
             WHERE c.eligible = 1 AND c.total_milestones = :required
@@ -203,6 +203,7 @@ function antara_completion_entries(PDO $pdo, int $limit = 50): array
             'userId' => (int)$row['user_id'],
             'username' => (string)$row['username'],
             'name' => (string)$row['full_name'],
+            'avatar' => $row['avatar_url'] !== null ? (string)$row['avatar_url'] : null,
             'completedAt' => (string)$row['completed_at'],
             'elapsedSeconds' => isset($row['elapsed_seconds']) ? (int)$row['elapsed_seconds'] : null,
         ];
@@ -253,7 +254,7 @@ function antara_completion_user_rank(PDO $pdo, int $userId): ?array
 function antara_verified_game_entries(PDO $pdo, string $game, int $limit = 50): array
 {
     $limit = max(1, min(ANTARA_LEADERBOARD_LIMIT_MAX, $limit));
-    $sql = 'SELECT v.user_id, u.username, u.full_name, MAX(v.score) AS score,
+    $sql = 'SELECT v.user_id, u.username, u.full_name, u.avatar_url, MAX(v.score) AS score,
                    MIN(CASE WHEN v.score = best.best_score THEN v.verified_at END) AS achieved_at
             FROM verified_game_scores v
             JOIN users u ON u.id = v.user_id
@@ -264,7 +265,7 @@ function antara_verified_game_entries(PDO $pdo, string $game, int $limit = 50): 
                 GROUP BY user_id
             ) best ON best.user_id = v.user_id
             WHERE v.game_code = :game_main
-            GROUP BY v.user_id, u.username, u.full_name
+            GROUP BY v.user_id, u.username, u.full_name, u.avatar_url
             ORDER BY score DESC, achieved_at ASC, v.user_id ASC
             LIMIT ' . $limit;
     $stmt = $pdo->prepare($sql);
@@ -276,6 +277,7 @@ function antara_verified_game_entries(PDO $pdo, string $game, int $limit = 50): 
         'userId' => (int)$row['user_id'],
         'username' => (string)$row['username'],
         'name' => (string)$row['full_name'],
+        'avatar' => $row['avatar_url'] !== null ? (string)$row['avatar_url'] : null,
         'score' => (int)$row['score'],
         'achievedAt' => $row['achieved_at'] !== null ? (string)$row['achieved_at'] : null,
     ], $rows, array_keys($rows));
