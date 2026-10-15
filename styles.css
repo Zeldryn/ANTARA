@@ -6986,3 +6986,157 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
   opacity:0;
   will-change:transform,opacity,filter;
 }
+
+/* ========================================================================
+   2026-10-05 COCKPIT NAV CLICKABILITY PASS
+   Give the cockpit navigation clear button affordance without turning the
+   single ANTARA HUD bar into a row of unrelated cards.
+   ======================================================================== */
+
+/* Identity/login is also a navigation action, so give the existing sci-fi
+   frame a restrained control-surface fill instead of transparent glass. */
+.cockpit-profile-hud .profile-login-trigger .profile-login-frame {
+  background:
+    linear-gradient(90deg, rgba(222,181,105,.10), transparent 38%),
+    linear-gradient(180deg, rgba(18,35,47,.96), rgba(5,14,23,.98)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(155,190,201,.18),
+    inset 0 1px 0 rgba(255,255,255,.055),
+    inset 0 -1px 0 rgba(0,0,0,.34),
+    0 4px 12px rgba(0,0,0,.18) !important;
+  transition:background .18s ease, box-shadow .18s ease, filter .18s ease !important;
+}
+.cockpit-profile-hud .profile-login-trigger:hover .profile-login-frame,
+.cockpit-profile-hud .profile-login-trigger:focus-visible .profile-login-frame {
+  background:
+    linear-gradient(90deg, rgba(230,190,113,.18), transparent 42%),
+    linear-gradient(180deg, rgba(24,46,60,.98), rgba(7,19,29,.99)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(222,183,110,.36),
+    inset 0 1px 0 rgba(255,255,255,.075),
+    inset 0 -1px 0 rgba(0,0,0,.38),
+    0 5px 15px rgba(0,0,0,.24),
+    0 0 12px rgba(112,188,222,.075) !important;
+}
+.cockpit-profile-hud .profile-login-trigger:active .profile-login-frame {
+  background:
+    linear-gradient(90deg, rgba(222,181,105,.12), transparent 40%),
+    linear-gradient(180deg, rgba(6,17,26,.99), rgba(13,28,39,.98)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(222,183,110,.30),
+    inset 0 3px 8px rgba(0,0,0,.34) !important;
+}
+
+/* All four navigation destinations get a real dark control plate beneath the
+   original perimeter artwork. The old bespoke linework remains untouched. */
+.cockpit-profile-hud .hud-nav-module {
+  background:
+    linear-gradient(90deg, rgba(218,181,111,.075), transparent 30%, rgba(111,190,222,.055)),
+    linear-gradient(180deg, rgba(20,39,52,.965), rgba(5,15,24,.985)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(130,177,197,.16),
+    inset 0 1px 0 rgba(255,255,255,.055),
+    inset 0 -1px 0 rgba(0,0,0,.36),
+    0 4px 11px rgba(0,0,0,.20) !important;
+  transition:transform .18s ease, filter .2s ease, background .18s ease, box-shadow .18s ease !important;
+}
+.cockpit-profile-hud .hud-nav-module:hover,
+.cockpit-profile-hud .hud-nav-module:focus-visible {
+  background:
+    linear-gradient(90deg, rgba(228,190,113,.14), transparent 34%, rgba(113,195,226,.10)),
+    linear-gradient(180deg, rgba(28,51,65,.985), rgba(7,20,30,.995)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(144,201,224,.28),
+    inset 0 1px 0 rgba(255,255,255,.075),
+    inset 3px 0 0 rgba(222,183,110,.22),
+    0 5px 15px rgba(0,0,0,.26),
+    0 0 12px rgba(113,195,226,.065) !important;
+}
+.cockpit-profile-hud .hud-nav-module:active {
+  background:
+    linear-gradient(90deg, rgba(218,181,111,.09), transparent 34%),
+    linear-gradient(180deg, rgba(6,17,27,.995), rgba(13,30,41,.985)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(222,183,110,.25),
+    inset 0 3px 8px rgba(0,0,0,.38) !important;
+}
+
+/* Each destination keeps a slightly different accent so the row remains
+   scannable while sharing one button system. */
+.cockpit-profile-hud .hud-nav-leaderboard {
+  background:
+    linear-gradient(90deg, rgba(226,184,107,.13), transparent 42%),
+    linear-gradient(180deg, rgba(24,39,49,.97), rgba(7,16,23,.99)) !important;
+}
+.cockpit-profile-hud .hud-nav-progress {
+  background:
+    linear-gradient(90deg, rgba(103,194,227,.13), transparent 44%),
+    linear-gradient(180deg, rgba(18,42,56,.97), rgba(5,16,25,.99)) !important;
+}
+.cockpit-profile-hud .hud-nav-achievement {
+  background:
+    linear-gradient(90deg, rgba(235,190,105,.14), transparent 43%),
+    linear-gradient(180deg, rgba(27,40,48,.97), rgba(8,17,23,.99)) !important;
+}
+.cockpit-profile-hud .hud-nav-game {
+  background:
+    linear-gradient(90deg, rgba(113,195,226,.12), transparent 36%, rgba(224,184,108,.065)),
+    linear-gradient(180deg, rgba(18,41,54,.97), rgba(5,15,24,.99)) !important;
+}
+
+/* MORE should visually read as the control that opens the four-button drawer. */
+@media (max-width:1199px) {
+  .profile-primary-cluster .profile-more-trigger {
+    background:
+      linear-gradient(90deg, rgba(223,183,110,.10), transparent 45%, rgba(112,188,222,.08)),
+      linear-gradient(180deg, rgba(20,39,52,.97), rgba(5,15,24,.99)) !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(151,190,204,.22),
+      inset 0 1px 0 rgba(255,255,255,.06),
+      0 4px 11px rgba(0,0,0,.20) !important;
+  }
+  .profile-primary-cluster .profile-more-trigger:hover,
+  .profile-primary-cluster .profile-more-trigger:focus-visible,
+  .profile-primary-cluster .profile-more-trigger[aria-expanded="true"] {
+    background:
+      linear-gradient(90deg, rgba(226,186,110,.17), transparent 45%, rgba(112,188,222,.13)),
+      linear-gradient(180deg, rgba(28,51,65,.99), rgba(7,20,30,.995)) !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(222,183,110,.38),
+      inset 0 1px 0 rgba(255,255,255,.08),
+      0 5px 14px rgba(0,0,0,.25),
+      0 0 11px rgba(112,188,222,.07) !important;
+  }
+}
+
+/* Drawer modules need a little more separation from the drawer background on
+   phones/tablets, otherwise the new affordance gets visually swallowed. */
+@media (max-width:1199px) {
+  .profile-primary-cluster .profile-nav-suite .hud-nav-module {
+    box-shadow:
+      inset 0 0 0 1px rgba(143,188,205,.22),
+      inset 0 1px 0 rgba(255,255,255,.055),
+      0 3px 9px rgba(0,0,0,.20) !important;
+  }
+}
+
+@media (max-width:700px) {
+  .cockpit-profile-hud .profile-login-trigger .profile-login-frame {
+    background:
+      linear-gradient(90deg, rgba(222,181,105,.11), transparent 40%),
+      linear-gradient(180deg, rgba(20,40,53,.97), rgba(5,15,24,.99)) !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(154,192,205,.22),
+      inset 0 1px 0 rgba(255,255,255,.06),
+      0 3px 9px rgba(0,0,0,.19) !important;
+  }
+  .profile-primary-cluster .profile-nav-suite {
+    background:
+      linear-gradient(180deg, rgba(10,27,41,.995), rgba(3,10,17,.998)) !important;
+    border-color: rgba(124,190,218,.27) !important;
+    box-shadow:
+      0 16px 34px rgba(0,0,0,.48),
+      inset 0 1px 0 rgba(255,255,255,.035),
+      inset 0 0 0 1px rgba(222,183,110,.035) !important;
+  }
+}
