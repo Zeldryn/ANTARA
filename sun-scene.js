@@ -25,7 +25,7 @@ const SUN_INFO_STOPS = Object.freeze([
         "src": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003988/SDOHMIintensity_Jewelbox.01000.jpg",
         "alt": "Fotosfer Matahari dalam cahaya tampak yang direkam Solar Dynamics Observatory",
         "credit": "NASA/SDO/HMI",
-        "source": "https://svs.gsfc.nasa.gov/3988/",
+        "source": "https://science.nasa.gov/sun/facts/",
         "caption": "Fotosfer Matahari · SDO/HMI",
         "fit": "contain"
       }
@@ -135,7 +135,7 @@ const SUN_INFO_STOPS = Object.freeze([
         "src": "./assets/sun-surface-diagram.svg",
         "alt": "Diagram granulasi, sunspot, dan daerah aktif Matahari",
         "credit": "ANTARA · data NASA",
-        "source": "https://science.nasa.gov/sun/sunspots/",
+        "source": "https://science.nasa.gov/sun/facts/",
         "caption": "Granulasi dan sunspot",
         "fit": "contain"
       }
@@ -151,13 +151,13 @@ const SUN_INFO_STOPS = Object.freeze([
       "Bintik dapat bertahan dari beberapa hari sampai berbulan-bulan.",
       "Daerah aktif di sekitar sunspot sering menjadi tempat munculnya flare."
     ],
-    "source": "https://science.nasa.gov/sun/sunspots/",
+    "source": "https://science.nasa.gov/sun/facts/",
     "images": [
       {
         "src": "./assets/sun-surface-diagram.svg",
         "alt": "Diagram granulasi, sunspot, dan daerah aktif Matahari",
         "credit": "ANTARA · data NASA",
-        "source": "https://science.nasa.gov/sun/sunspots/",
+        "source": "https://science.nasa.gov/sun/facts/",
         "caption": "Granulasi dan sunspot",
         "fit": "contain"
       },
@@ -165,7 +165,7 @@ const SUN_INFO_STOPS = Object.freeze([
         "src": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003933/HMI_IcChangingSpots.00300.jpg",
         "alt": "Sunspot pada fotosfer Matahari yang diamati Solar Dynamics Observatory",
         "credit": "NASA/SDO/HMI",
-        "source": "https://svs.gsfc.nasa.gov/3933/",
+        "source": "https://science.nasa.gov/sun/facts/",
         "caption": "Sunspot dalam cahaya tampak · SDO/HMI",
         "fit": "contain"
       }
@@ -181,13 +181,13 @@ const SUN_INFO_STOPS = Object.freeze([
       "CME membawa plasma dan medan magnet keluar dari Matahari.",
       "Flare dan CME adalah dua hal berbeda, walaupun keduanya dapat terjadi berdekatan."
     ],
-    "source": "https://science.nasa.gov/sun/solar-storms-and-flares/",
+    "source": "https://science.nasa.gov/sun/facts/",
     "images": [
       {
         "src": "./assets/sun-magnetic-activity-diagram.svg",
         "alt": "Diagram prominence, flare, dan coronal mass ejection",
         "credit": "ANTARA · data NASA",
-        "source": "https://science.nasa.gov/sun/solar-storms-and-flares/",
+        "source": "https://science.nasa.gov/sun/facts/",
         "caption": "Aktivitas magnetik Matahari",
         "fit": "contain"
       },
@@ -195,7 +195,7 @@ const SUN_INFO_STOPS = Object.freeze([
         "src": "https://svs.gsfc.nasa.gov/vis/a010000/a014700/a014701/SDO_10-03-24_1219UTC_131-171_RedScreen_4k.jpg",
         "alt": "Flare kuat yang direkam Solar Dynamics Observatory",
         "credit": "NASA/SDO",
-        "source": "https://svs.gsfc.nasa.gov/14701/",
+        "source": "https://science.nasa.gov/sun/facts/",
         "caption": "Solar flare · SDO",
         "fit": "contain"
       }
@@ -211,13 +211,13 @@ const SUN_INFO_STOPS = Object.freeze([
       "Aurora muncul ketika partikel bermuatan memicu cahaya di atmosfer atas Bumi.",
       "Cuaca antariksa yang kuat juga dapat memengaruhi satelit, komunikasi, dan navigasi."
     ],
-    "source": "https://science.nasa.gov/sun/what-is-the-solar-wind/",
+    "source": "https://science.nasa.gov/sun/facts/",
     "images": [
       {
         "src": "./assets/sun-solar-wind-diagram.svg",
         "alt": "Diagram angin surya dari corona menuju magnetosfer Bumi",
         "credit": "ANTARA · data NASA",
-        "source": "https://science.nasa.gov/sun/what-is-the-solar-wind/",
+        "source": "https://science.nasa.gov/sun/facts/",
         "caption": "Angin surya dan magnetosfer Bumi",
         "fit": "contain"
       }
@@ -233,13 +233,13 @@ const SUN_INFO_STOPS = Object.freeze([
       "Saat maksimum Matahari, sunspot dan letupan biasanya lebih sering terjadi.",
       "Siklus ini berkaitan dengan perubahan besar medan magnet Matahari."
     ],
-    "source": "https://science.nasa.gov/sun/sunspots/",
+    "source": "https://science.nasa.gov/sun/facts/",
     "images": [
       {
         "src": "./assets/sun-magnetic-activity-diagram.svg",
         "alt": "Diagram prominence, flare, dan coronal mass ejection",
         "credit": "ANTARA · data NASA",
-        "source": "https://science.nasa.gov/sun/solar-storms-and-flares/",
+        "source": "https://science.nasa.gov/sun/facts/",
         "caption": "Aktivitas magnetik Matahari",
         "fit": "contain"
       }
@@ -255,13 +255,13 @@ const SUN_INFO_STOPS = Object.freeze([
       "SOHO adalah misi bersama ESA dan NASA yang aktif sejak 1995.",
       "Parker Solar Probe menjadi wahana pertama yang terbang melalui corona Matahari."
     ],
-    "source": "https://science.nasa.gov/mission/parker-solar-probe/",
+    "source": "https://science.nasa.gov/sun/facts/",
     "images": [
       {
         "src": "./assets/sun-missions-diagram.svg",
         "alt": "Diagram misi utama pengamatan Matahari",
         "credit": "ANTARA · data NASA dan ESA",
-        "source": "https://science.nasa.gov/mission/parker-solar-probe/",
+        "source": "https://science.nasa.gov/sun/facts/",
         "caption": "Armada pengamat Matahari",
         "fit": "contain"
       }

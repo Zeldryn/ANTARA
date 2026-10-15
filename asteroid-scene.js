@@ -87,7 +87,7 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
         "src": "./assets/asteroid-belt/formation.svg",
         "alt": "Diagram pembentukan sabuk asteroid",
         "credit": "Visualisasi ANTARA",
-        "source": "https://science.nasa.gov/resource/fact-sheet-dawn-to-the-asteroid-belt/",
+        "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
         "caption": "Material awal Tata Surya yang tidak menjadi satu planet.",
         "fit": "contain"
       }
@@ -103,13 +103,13 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
       "Ceres adalah satu-satunya planet katai di bagian dalam Tata Surya.",
       "Permukaannya menunjukkan endapan garam dan bukti bahwa air berperan dalam sejarahnya."
     ],
-    "source": "https://science.nasa.gov/dwarf-planets/ceres/facts/",
+    "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia21/pia21906/PIA21906.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
         "alt": "Citra Dawn resolusi tinggi Ceres",
         "credit": "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA",
-        "source": "https://science.nasa.gov/photojournal/high-resolution-ceres/",
+        "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
         "caption": "Ceres dipotret wahana Dawn · PIA21906",
         "fit": "contain",
         "type": "CITRA WAHANA"
@@ -126,13 +126,13 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
       "Wahana Dawn mengorbit Vesta sebelum melanjutkan perjalanan ke Ceres.",
       "Sebagian meteorit yang ditemukan di Bumi dapat ditelusuri asalnya ke Vesta."
     ],
-    "source": "https://science.nasa.gov/dwarf-planets/ceres/facts/",
+    "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia15/pia15678/PIA15678.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1200",
         "alt": "Citra global Vesta oleh Dawn",
         "credit": "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA",
-        "source": "https://science.nasa.gov/photojournal/full-view-of-vesta/",
+        "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
         "caption": "Vesta dipotret wahana Dawn · PIA15678",
         "fit": "contain",
         "type": "CITRA WAHANA"
@@ -155,7 +155,7 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
         "src": "./assets/asteroid-belt/composition.svg",
         "alt": "Diagram variasi komposisi asteroid",
         "credit": "Visualisasi ANTARA",
-        "source": "https://www.jpl.nasa.gov/press-kits/psyche/quick-facts/",
+        "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
         "caption": "Komposisi asteroid dapat berbeda secara drastis.",
         "fit": "contain"
       }
@@ -177,7 +177,7 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
         "src": "./assets/asteroid-belt/formation.svg",
         "alt": "Diagram pembentukan sabuk asteroid",
         "credit": "Visualisasi ANTARA",
-        "source": "https://science.nasa.gov/resource/fact-sheet-dawn-to-the-asteroid-belt/",
+        "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
         "caption": "Material awal Tata Surya yang tidak menjadi satu planet.",
         "fit": "contain"
       }
@@ -199,7 +199,7 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
         "src": "./assets/asteroid-belt/composition.svg",
         "alt": "Diagram variasi komposisi asteroid",
         "credit": "Visualisasi ANTARA",
-        "source": "https://www.jpl.nasa.gov/press-kits/psyche/quick-facts/",
+        "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
         "caption": "Komposisi asteroid dapat berbeda secara drastis.",
         "fit": "contain"
       }
@@ -215,13 +215,13 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
       "Vesta ditemukan beberapa tahun kemudian pada 1807.",
       "Istilah dan klasifikasi asteroid berkembang saat jumlah objek yang diketahui terus bertambah."
     ],
-    "source": "https://science.nasa.gov/dwarf-planets/ceres/exploration/",
+    "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
     "images": [
       {
         "src": "./assets/asteroid-belt/history.svg",
         "alt": "Garis waktu sejarah penemuan sabuk asteroid",
         "credit": "Visualisasi ANTARA",
-        "source": "https://science.nasa.gov/dwarf-planets/ceres/exploration/",
+        "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
         "caption": "Perubahan cara astronom mengklasifikasikan objek di antara Mars dan Jupiter.",
         "fit": "contain"
       }
@@ -237,13 +237,13 @@ const ASTEROID_EXPLORATION_STOPS = Object.freeze([
       "Psyche diluncurkan untuk mempelajari asteroid 16 Psyche yang kaya logam.",
       "Setiap target memberi potongan cerita berbeda tentang pembentukan planet."
     ],
-    "source": "https://science.nasa.gov/dwarf-planets/ceres/exploration/",
+    "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
     "images": [
       {
         "src": "./assets/asteroid-belt/missions.svg",
         "alt": "Diagram eksplorasi asteroid oleh wahana antariksa",
         "credit": "Visualisasi ANTARA",
-        "source": "https://science.nasa.gov/dwarf-planets/ceres/exploration/",
+        "source": "https://science.nasa.gov/solar-system/asteroids/facts/",
         "caption": "Dawn dan Psyche mewakili era eksplorasi langsung sabuk asteroid.",
         "fit": "contain"
       }

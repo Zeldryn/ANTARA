@@ -118,3 +118,24 @@
   .antara-context-achievement-wrap.is-quiz-context-wrap,
   .antara-context-achievement-wrap.is-planet-context-wrap{top:10px;bottom:auto}
 }
+
+
+/* 2026-10-05 contextual badge auto-dismiss: show on context/progress, then clear HUD. */
+.antara-context-achievement.is-auto-hiding{
+  opacity:0!important;
+  transform:translateY(-7px) scale(.985)!important;
+  pointer-events:none!important;
+}
+@media (max-width:820px), (pointer:coarse) and (max-width:1100px){
+  .antara-context-achievement-wrap{
+    width:min(312px,calc(100vw - 28px));
+  }
+  .antara-context-achievement{
+    min-height:60px;
+    grid-template-columns:44px minmax(0,1fr);
+    gap:8px;
+    padding:6px 9px 6px 6px;
+  }
+  .antara-context-achievement__medal{width:44px;height:44px}
+  .antara-context-achievement__medal img{width:35px;height:35px}
+}

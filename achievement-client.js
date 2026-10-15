@@ -72,6 +72,10 @@
   let contextObserver = null;
   let contextCard = null;
   let activeContextKey = "";
+  let contextAutoHiddenKey = "";
+  let contextAutoHideTimer = 0;
+  const CONTEXT_DISPLAY_MS = 7000;
+  const lastRenderedUnlock = new Map();
   let quizLive = {
     active:false,
     finished:false,
@@ -210,10 +214,34 @@
     return "PROGRES PENCAPAIAN";
   }
 
-  function hideContextCard() {
+  function clearContextAutoHide() {
+    if (contextAutoHideTimer) window.clearTimeout(contextAutoHideTimer);
+    contextAutoHideTimer = 0;
+  }
+
+  function scheduleContextAutoHide(key) {
+    clearContextAutoHide();
+    contextAutoHideTimer = window.setTimeout(() => {
+      if (!contextCard || activeContextKey !== key) return;
+      contextCard.classList.add("is-auto-hiding");
+      window.setTimeout(() => {
+        if (!contextCard || activeContextKey !== key) return;
+        contextCard.hidden = true;
+        contextCard.classList.remove("is-auto-hiding");
+        contextAutoHiddenKey = key;
+      }, 220);
+    }, CONTEXT_DISPLAY_MS);
+  }
+
+  function hideContextCard({ reset = true } = {}) {
+    clearContextAutoHide();
     if (!contextCard) return;
     contextCard.hidden = true;
-    activeContextKey = "";
+    contextCard.classList.remove("is-auto-hiding");
+    if (reset) {
+      activeContextKey = "";
+      contextAutoHiddenKey = "";
+    }
   }
 
   function renderContextCard() {
@@ -235,8 +263,21 @@
     const previous = lastRenderedProgress.get(key);
     const delta = previous === undefined ? 0 : current - previous;
     lastRenderedProgress.set(key, current);
+    const unlockedNow = !!item.unlocked;
+    const previousUnlocked = lastRenderedUnlock.get(key);
+    const unlockChanged = previousUnlocked !== undefined && previousUnlocked !== unlockedNow;
+    lastRenderedUnlock.set(key, unlockedNow);
+    const contextChanged = key !== activeContextKey;
+    const shouldReveal = contextChanged || delta > 0 || unlockChanged || (previous === undefined && contextAutoHiddenKey !== key);
 
-    card.hidden = false;
+    if (shouldReveal) {
+      card.hidden = false;
+      card.classList.remove("is-auto-hiding");
+      contextAutoHiddenKey = "";
+      scheduleContextAutoHide(key);
+    } else if (contextAutoHiddenKey === key) {
+      card.hidden = true;
+    }
     card.dataset.tier = item.tier || "common";
     card.classList.toggle("is-unlocked", !!item.unlocked);
     card.classList.toggle("is-full-context", !!context.full);
@@ -251,7 +292,7 @@
     const count = card.querySelector(".antara-context-achievement__count");
     count.textContent = goal > 0 ? `${context.kind === "quiz" && item.code === "quiz-master" ? scoreText(current) : current} / ${context.kind === "quiz" && item.code === "quiz-master" ? scoreText(goal) : goal}` : `${percent}%`;
 
-    if (key !== activeContextKey) {
+    if (contextChanged) {
       activeContextKey = key;
       card.classList.remove("is-switching");
       void card.offsetWidth;

@@ -21,7 +21,7 @@
   const SOURCES = Object.freeze({
     facts: "https://science.nasa.gov/uranus/facts/",
     voyager: "https://science.nasa.gov/mission/voyager/voyager-2/",
-    moons: "https://science.nasa.gov/uranus/moons/facts/",
+    moons: "https://science.nasa.gov/uranus/moons/miranda/",
     system: "https://science.nasa.gov/uranus/",
     magnetosphere: "https://science.nasa.gov/uranus/facts/",
     rings: "https://science.nasa.gov/uranus/facts/"

@@ -185,7 +185,7 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00042/PIA00042.jpg?crop=faces%2Cfocalpoint&fit=clip&h=600&w=459",
         "alt": "Citra Miranda dari Voyager 2",
         "credit": "NASA/JPL",
-        "source": "https://science.nasa.gov/uranus/moons/miranda/",
+        "source": "https://science.nasa.gov/uranus/facts/",
         "caption": "Miranda · dunia es kecil dengan lanskap yang sangat beragam",
         "fit": "contain",
         "type": "CITRA WAHANA"
@@ -209,7 +209,7 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia01/pia01979/PIA01979.jpg?crop=faces%2Cfocalpoint&fit=clip&h=560&w=784",
         "alt": "Titania dipotret Voyager 2",
         "credit": "NASA/JPL",
-        "source": "https://science.nasa.gov/photojournal/titania/",
+        "source": "https://science.nasa.gov/uranus/facts/",
         "caption": "Titania · Voyager 2 · PIA01979",
         "fit": "contain",
         "type": "CITRA WAHANA"
@@ -218,7 +218,7 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia00/pia00034/PIA00034.jpg?crop=faces%2Cfocalpoint&fit=clip&h=500&w=500",
         "alt": "Oberon dipotret Voyager 2",
         "credit": "NASA/JPL",
-        "source": "https://science.nasa.gov/photojournal/oberon/",
+        "source": "https://science.nasa.gov/uranus/facts/",
         "caption": "Oberon · Voyager 2 · PIA00034",
         "fit": "contain",
         "type": "CITRA WAHANA"
@@ -242,7 +242,7 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
         "src": "./assets/uranus-voyager-diagram.svg",
         "alt": "Diagram Voyager 2 terbang melintasi Uranus",
         "credit": "Visualisasi ANTARA berdasarkan NASA/JPL",
-        "source": "https://science.nasa.gov/mission/voyager/voyager-2/",
+        "source": "https://science.nasa.gov/uranus/facts/",
         "caption": "Voyager 2 · flyby Uranus, 24 Januari 1986",
         "fit": "contain"
       }
@@ -265,7 +265,7 @@ const URANUS_EXPLORATION_STOPS = Object.freeze([
         "src": "./assets/uranus-future-diagram.svg",
         "alt": "Diagram tema masa depan eksplorasi Uranus",
         "credit": "Visualisasi ANTARA",
-        "source": "https://science.nasa.gov/uranus/",
+        "source": "https://science.nasa.gov/uranus/facts/",
         "caption": "Pertanyaan ilmiah besar di sistem Uranus",
         "fit": "contain"
       }

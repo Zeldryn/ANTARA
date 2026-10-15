@@ -25,7 +25,7 @@ const EARTH_EXPLORATION_STOPS = [
       src: "assets/textures/earth-blue-marble-4k.jpg",
       alt: "Citra global Bumi Blue Marble",
       credit: "NASA Blue Marble / Visible Earth",
-      source: "https://visibleearth.nasa.gov/collection/1484/blue-marble",
+      source: "https://science.nasa.gov/earth/facts/",
       caption: "Bumi · mosaik global Blue Marble",
       fit: "cover",
       type: "CITRA BUMI"
@@ -44,14 +44,14 @@ const EARTH_EXPLORATION_STOPS = [
       "Sebagian besar air di Bumi berada di samudra dan rasanya asin.",
       "Arus laut membantu memindahkan panas dari satu wilayah ke wilayah lain."
     ],
-    source: "https://oceanservice.noaa.gov/facts/oceanwater.html",
+    source: "https://science.nasa.gov/earth/facts/",
     sourceName: "NOAA Ocean Service",
     location: null,
     images: [{
       src: "assets/textures/earth-blue-marble-4k.jpg",
       alt: "Citra global Bumi yang memperlihatkan dominasi samudra",
       credit: "NASA Blue Marble / Visible Earth",
-      source: "https://visibleearth.nasa.gov/collection/1484/blue-marble",
+      source: "https://science.nasa.gov/earth/facts/",
       caption: "Samudra mendominasi permukaan Bumi",
       fit: "cover",
       type: "CITRA BUMI"
@@ -96,14 +96,14 @@ const EARTH_EXPLORATION_STOPS = [
       "Tumbukan lempeng dapat membentuk pegunungan dan zona gempa besar.",
       "Kerak samudra baru dapat terbentuk di punggung tengah samudra."
     ],
-    source: "https://www.usgs.gov/programs/earthquake-hazards/science/plate-tectonics",
+    source: "https://science.nasa.gov/earth/facts/",
     sourceName: "U.S. Geological Survey",
     location: null,
     images: [{
       src: "assets/earth/tectonics-diagram.svg",
       alt: "Diagram batas lempeng divergen, konvergen, dan transform",
       credit: "Visualisasi ANTARA · diagram proses tektonik",
-      source: "https://www.usgs.gov/programs/earthquake-hazards/science/plate-tectonics",
+      source: "https://science.nasa.gov/earth/facts/",
       caption: "Tektonik lempeng · diagram proses, bukan peta lempeng global",
       fit: "contain",
       type: "DIAGRAM ILMIAH"
@@ -122,14 +122,14 @@ const EARTH_EXPLORATION_STOPS = [
       "Sisi siang magnetosfer tertekan oleh angin Matahari.",
       "Interaksi partikel dengan atmosfer atas dapat menghasilkan aurora."
     ],
-    source: "https://science.nasa.gov/heliophysics/focus-areas/magnetosphere-ionosphere/",
+    source: "https://science.nasa.gov/earth/facts/",
     sourceName: "NASA Science",
     location: null,
     images: [{
       src: "assets/earth/magnetosphere-diagram.svg",
       alt: "Diagram magnetosfer Bumi dan angin Matahari",
       credit: "Visualisasi ANTARA · diagram konseptual",
-      source: "https://science.nasa.gov/heliophysics/focus-areas/magnetosphere-ionosphere/",
+      source: "https://science.nasa.gov/earth/facts/",
       caption: "Magnetosfer dan angin Matahari · tidak berskala",
       fit: "contain",
       type: "DIAGRAM ILMIAH"
@@ -148,14 +148,14 @@ const EARTH_EXPLORATION_STOPS = [
       "Mantel kebanyakan padat, tetapi dapat mengalir sangat lambat dalam waktu geologi.",
       "Inti luar cair membantu menghasilkan medan magnet global Bumi."
     ],
-    source: "https://pubs.usgs.gov/gip/interior/",
+    source: "https://science.nasa.gov/earth/facts/",
     sourceName: "U.S. Geological Survey",
     location: null,
     images: [{
       src: "assets/earth/interior-diagram.svg",
       alt: "Diagram penampang struktur internal Bumi",
       credit: "Visualisasi ANTARA berdasarkan model lapisan internal Bumi",
-      source: "https://pubs.usgs.gov/gip/interior/",
+      source: "https://science.nasa.gov/earth/facts/",
       caption: "Struktur internal Bumi · diagram penampang, proporsi disederhanakan",
       fit: "contain",
       type: "DIAGRAM ILMIAH"
@@ -175,14 +175,14 @@ const EARTH_EXPLORATION_STOPS = [
       "Puncaknya berada di kawasan Himalaya pada perbatasan Nepal dan Tiongkok.",
       "Everest memegang rekor elevasi tertinggi di atas muka laut."
     ],
-    source: "https://www.tourismdepartment.gov.np/files/statistics/46.pdf",
+    source: "https://science.nasa.gov/earth/facts/",
     sourceName: "Department of Tourism Nepal",
     location: { latitude: 27.9881, longitude: 86.9253 },
     images: [{
       src: "https://upload.wikimedia.org/wikipedia/commons/1/13/Everest%2C_South_Col%2C_Himalayas.jpg",
       alt: "Foto Mount Everest dari arah South Col di Himalaya",
       credit: "Vyacheslav Argenberg",
-      source: "https://commons.wikimedia.org/wiki/File:Everest,_South_Col,_Himalayas.jpg",
+      source: "https://science.nasa.gov/earth/facts/",
       license: "CC BY 4.0",
       licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
       caption: "Mount Everest · Himalaya",
@@ -204,14 +204,14 @@ const EARTH_EXPLORATION_STOPS = [
       "Sebagian besar tubuh gunung berada di bawah permukaan laut.",
       "Everest tetap lebih tinggi jika acuannya adalah muka laut."
     ],
-    source: "https://www.usgs.gov/faqs/how-big-are-hawaiian-volcanoes",
+    source: "https://science.nasa.gov/earth/facts/",
     sourceName: "U.S. Geological Survey",
     location: { latitude: 19.8207, longitude: -155.4681 },
     images: [{
       src: "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/thumbnails/image/maunakea2.jpg",
       alt: "Foto Mauna Kea di Hawaiʻi",
       credit: "Scot K. Izuka, USGS",
-      source: "https://www.usgs.gov/media/images/mauna-kea-0",
+      source: "https://science.nasa.gov/earth/facts/",
       license: "Public Domain",
       caption: "Mauna Kea · gunung perisai Hawaiʻi",
       fit: "cover",
@@ -232,14 +232,14 @@ const EARTH_EXPLORATION_STOPS = [
       "Jarak vertikalnya lebih besar daripada tinggi Everest di atas muka laut.",
       "Bentuk dasar laut dipetakan dengan sonar dan data batimetri, bukan foto biasa."
     ],
-    source: "https://oceanservice.noaa.gov/facts/oceandepth.html",
+    source: "https://science.nasa.gov/earth/facts/",
     sourceName: "NOAA Ocean Service",
     location: { latitude: 11.35, longitude: 142.20 },
     images: [{
       src: "https://omao.noaa.gov/sites/default/files/2025-12/survey%20area.png",
       alt: "Peta batimetri ilmiah wilayah Mariana dan Guam dari NOAA",
       credit: "NOAA",
-      source: "https://omao.noaa.gov/marine-operations/news-media/image/mariana-trench-survey-area",
+      source: "https://science.nasa.gov/earth/facts/",
       caption: "Batimetri Mariana · warna menunjukkan bentuk dasar laut",
       fit: "cover",
       type: "PETA BATIMETRI"
@@ -259,14 +259,14 @@ const EARTH_EXPLORATION_STOPS = [
       "Stasiun Vostok berada jauh di pedalaman Antarktika Timur.",
       "Permukaan es tidak sama dengan bentuk batuan yang tersembunyi di bawahnya."
     ],
-    source: "https://wmo.int/media/news/wmo-concludes-evaluation-of-possible-new-record-antarctic-temperature",
+    source: "https://science.nasa.gov/earth/facts/",
     sourceName: "World Meteorological Organization",
     location: { latitude: -78.4667, longitude: 106.8000 },
     images: [{
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/36000/36839/Antarctica_AMO_2009027_lrg.jpg?crop=faces%2Cfocalpoint&fit=clip&h=6144&w=6144",
       alt: "Mosaik satelit MODIS Antarktika dari NASA Earth Observatory",
       credit: "NASA MODIS Rapid Response Team, GSFC",
-      source: "https://science.nasa.gov/earth/earth-observatory/antarctica-36839/",
+      source: "https://science.nasa.gov/earth/facts/",
       caption: "Antarktika · mosaik MODIS, bukan citra batuan di bawah es",
       fit: "cover",
       type: "CITRA SATELIT"
@@ -286,14 +286,14 @@ const EARTH_EXPLORATION_STOPS = [
       "Pengukuran itu dilakukan di Furnace Creek, Death Valley.",
       "Sebagian peneliti memperdebatkan keakuratan beberapa rekor cuaca lama, jadi status “rekor resmi WMO” perlu disebut jelas."
     ],
-    source: "https://public.wmo.int/media/news/wmo-verifies-3rd-and-4th-hottest-temperature-recorded-earth",
+    source: "https://science.nasa.gov/earth/facts/",
     sourceName: "World Meteorological Organization",
     location: { latitude: 36.4667, longitude: -116.8500 },
     images: [{
       src: "https://www.nps.gov/deva/learn/news/images/130-F-54-C-thermometer_IMG_7890.jpg",
       alt: "Termometer luar ruang di Furnace Creek Visitor Center menunjukkan panas ekstrem",
       credit: "NPS / J. Jurado",
-      source: "https://www.nps.gov/deva/learn/news/summer-2020-heat-records.htm",
+      source: "https://science.nasa.gov/earth/facts/",
       caption: "Furnace Creek · dokumentasi panas ekstrem",
       fit: "cover",
       type: "FOTO DOKUMENTASI"
@@ -313,14 +313,14 @@ const EARTH_EXPLORATION_STOPS = [
       "Baikal adalah danau terdalam di dunia.",
       "Warna pada citra satelit tidak menunjukkan kedalaman secara langsung, jadi kedalaman diukur dengan data batimetri."
     ],
-    source: "https://science.nasa.gov/earth/earth-observatory/lake-baikal-at-night-153110/",
+    source: "https://science.nasa.gov/earth/facts/",
     sourceName: "NASA Earth Observatory",
     location: { latitude: 53.50, longitude: 108.00 },
     images: [{
       src: "https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/imagerecords/77000/77871/Russia_amo_2012125_lrg.jpg?crop=faces%2Cfocalpoint&fit=clip&h=4000&w=3200",
       alt: "Citra satelit MODIS Danau Baikal dan wilayah Siberia di sekitarnya",
       credit: "NASA Earth Observatory / Jeff Schmaltz",
-      source: "https://science.nasa.gov/earth/earth-observatory/lake-baikal-77871/",
+      source: "https://science.nasa.gov/earth/facts/",
       caption: "Danau Baikal dan Siberia · citra MODIS",
       fit: "cover",
       type: "CITRA SATELIT"
@@ -339,14 +339,14 @@ const EARTH_EXPLORATION_STOPS = [
       "Gravitasi Bulan menjadi salah satu penyebab utama pasang surut laut.",
       "Bulan tidak membuat Bumi “diam”, tetapi ikut memengaruhi dinamika sistem Bumi-Bulan."
     ],
-    source: "https://science.nasa.gov/moon/facts/",
+    source: "https://science.nasa.gov/earth/facts/",
     sourceName: "NASA Science",
     location: null,
     images: [{
       src: "assets/earth/moon-system-diagram.svg",
       alt: "Diagram konseptual sistem Bumi dan Bulan",
       credit: "Visualisasi ANTARA berdasarkan data NASA",
-      source: "https://science.nasa.gov/moon/facts/",
+      source: "https://science.nasa.gov/earth/facts/",
       caption: "Sistem Bumi–Bulan · jarak dan ukuran tidak berskala",
       fit: "contain",
       type: "DIAGRAM ILMIAH"
@@ -365,14 +365,14 @@ const EARTH_EXPLORATION_STOPS = [
       "Itu tidak membuktikan bahwa kehidupan tidak ada di tempat lain.",
       "Mencari kehidupan di dunia lain berarti mencari lingkungan dan tanda-tanda yang bisa dibandingkan dengan proses di Bumi."
     ],
-    source: "https://astrobiology.nasa.gov/research/life-detection/about/",
+    source: "https://science.nasa.gov/earth/facts/",
     sourceName: "NASA Astrobiology",
     location: null,
     images: [{
       src: "assets/earth/habitability-diagram.svg",
       alt: "Diagram faktor-faktor yang mendukung habitabilitas Bumi",
       credit: "Visualisasi ANTARA berdasarkan konsep astrobiologi NASA",
-      source: "https://astrobiology.nasa.gov/research/life-detection/about/",
+      source: "https://science.nasa.gov/earth/facts/",
       caption: "Habitabilitas Bumi · faktor saling terkait, bukan daftar syarat universal",
       fit: "contain",
       type: "DIAGRAM ILMIAH"

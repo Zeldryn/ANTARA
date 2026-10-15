@@ -21,7 +21,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04866/PIA04866.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
         "alt": "Citra global Jupiter dengan pita atmosfer dan Bintik Merah Besar",
         "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
-        "source": "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
+        "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
         "caption": "Jupiter · pita atmosfer global",
         "fit": "contain",
         "type": "CITRA TELESKOP"
@@ -44,7 +44,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04866/PIA04866.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
         "alt": "Citra global Jupiter dengan pita atmosfer dan Bintik Merah Besar",
         "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
-        "source": "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
+        "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
         "caption": "Jupiter · pita atmosfer global",
         "fit": "contain",
         "type": "CITRA TELESKOP"
@@ -107,13 +107,13 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
       "Badai ini merupakan anticyclone yang berputar berlawanan arah dengan cyclone biasa di wilayah sekitarnya.",
       "Data Juno menunjukkan struktur badai memanjang ratusan kilometer ke bawah puncak awan."
     ],
-    "source": "https://science.nasa.gov/asset/hubble/jupiters-great-red-spot/",
+    "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia02/pia02821/PIA02821.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1200&w=1200",
         "alt": "Detail Bintik Merah Besar pada tekstur atmosfer Jupiter",
         "credit": "NASA/JPL/University of Arizona",
-        "source": "https://science.nasa.gov/photojournal/jupiters-great-red-spot-in-cassini-image/",
+        "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
         "caption": "Great Red Spot · citra Cassini",
         "fit": "cover",
         "type": "CITRA TELESKOP"
@@ -158,7 +158,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia04/pia04866/PIA04866.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=1600",
         "alt": "Citra global Jupiter dengan pita atmosfer dan Bintik Merah Besar",
         "credit": "NASA, ESA, A. Simon (GSFC), M.H. Wong (UC Berkeley)",
-        "source": "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
+        "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
         "caption": "Jupiter · pita atmosfer global",
         "fit": "contain",
         "type": "CITRA TELESKOP"
@@ -203,7 +203,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia09/pia09249/PIA09249.jpg?crop=faces%2Cfocalpoint&fit=clip&h=626&w=835",
         "alt": "Citra cincin tipis Jupiter",
         "credit": "NASA/Johns Hopkins University APL/Southwest Research Institute",
-        "source": "https://science.nasa.gov/photojournal/jupiters-main-ring-and-halo/",
+        "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
         "caption": "Cincin lokal Jupiter · halo, main ring, gossamer",
         "fit": "contain",
         "type": "CITRA WAHANA"
@@ -226,7 +226,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia01/pia01481/PIA01481.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1654&w=2081",
         "alt": "Montase Jupiter dan bulan Galilea dari data Voyager",
         "credit": "NASA/JPL",
-        "source": "https://science.nasa.gov/jupiter/moons/",
+        "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
         "caption": "Empat bulan Galilea",
         "fit": "contain",
         "type": "CITRA WAHANA"
@@ -249,7 +249,7 @@ const JUPITER_EXPLORATION_STOPS = Object.freeze([
         "src": "./assets/jupiter-missions-diagram.svg",
         "alt": "Garis waktu misi Pioneer, Voyager, Galileo, dan Juno",
         "credit": "Visualisasi ANTARA",
-        "source": "https://science.nasa.gov/jupiter/exploration/",
+        "source": "https://science.nasa.gov/jupiter/jupiter-facts/",
         "caption": "Tonggak eksplorasi Jupiter",
         "fit": "contain"
       }

@@ -7217,3 +7217,186 @@ h1 { margin: 11px 0 20px; font-size: clamp(47px, 5vw, 82px); text-shadow: 0 7px 
     clip-path:polygon(0 6px,6px 0,40% 0,44% 2px,70% 2px,74% 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,60% 100%,56% calc(100% - 2px),20% calc(100% - 2px),16% 100%,0 100%);
   }
 }
+
+/* ========================================================================
+   2026-10-05 FINAL LEGIBILITY PASS
+   - Enlarge cockpit navbar typography for desktop/laptop/mobile.
+   - Restore and reposition hero subtitle so it does not collide with the title.
+   - Keep overrides at file end so older patches cannot shrink them again.
+   ======================================================================== */
+
+/* Desktop / laptop: make the whole top navigation easier to read. */
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy {
+  gap: 1px !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-kicker {
+  font-size: clamp(5.1px, .36vw, 6.3px) !important;
+  letter-spacing: .16em !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong {
+  font-size: clamp(9.2px, .70vw, 11.6px) !important;
+  letter-spacing: .095em !important;
+  line-height: 1.02 !important;
+}
+.cockpit-profile-hud .profile-login-trigger .profile-hud-copy small {
+  font-size: clamp(5.3px, .40vw, 6.6px) !important;
+  line-height: 1.05 !important;
+}
+.cockpit-profile-hud .hud-nav-copy {
+  gap: 1px !important;
+}
+.cockpit-profile-hud .hud-nav-copy small {
+  display: block !important;
+  font-size: clamp(5.2px, .38vw, 6.5px) !important;
+  letter-spacing: .155em !important;
+  line-height: 1.05 !important;
+}
+.cockpit-profile-hud .hud-nav-copy strong {
+  font-size: clamp(8.8px, .70vw, 11.2px) !important;
+  letter-spacing: .095em !important;
+  line-height: 1.04 !important;
+}
+
+/* Hero title/subtitle: give the subtitle its own breathing room below the title. */
+.intro h1 {
+  top: 15.8% !important;
+  width: min(920px, 80vw) !important;
+  font-size: clamp(29px, 3.7vw, 56px) !important;
+  line-height: 1.04 !important;
+}
+.intro-kicker {
+  display: block !important;
+  top: 33.2% !important;
+  width: min(760px, 76vw) !important;
+  font-size: clamp(7px, .72vw, 10.6px) !important;
+  letter-spacing: .26em !important;
+  line-height: 1.55 !important;
+}
+
+/* Laptop-specific breathing room: this is where the subtitle was colliding most. */
+@media (min-width: 901px) and (max-width: 1600px) {
+  .intro h1 {
+    top: 15.6% !important;
+    width: min(860px, 78vw) !important;
+    font-size: clamp(28px, 3.55vw, 52px) !important;
+  }
+  .intro-kicker {
+    top: 34.6% !important;
+    width: min(720px, 72vw) !important;
+    font-size: clamp(7px, .68vw, 9.8px) !important;
+  }
+}
+
+/* Tablet and medium screens. */
+@media (max-width: 900px) {
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-kicker {
+    font-size: 4.5px !important;
+    letter-spacing: .14em !important;
+  }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong {
+    font-size: 8.6px !important;
+  }
+  .cockpit-profile-hud .hud-nav-copy small {
+    font-size: 4.8px !important;
+    letter-spacing: .14em !important;
+  }
+  .cockpit-profile-hud .hud-nav-copy strong {
+    font-size: 8.1px !important;
+    letter-spacing: .085em !important;
+  }
+
+  .intro h1 {
+    top: 15.2% !important;
+    width: 84vw !important;
+    font-size: clamp(26px, 5.2vw, 40px) !important;
+    line-height: 1.07 !important;
+  }
+  .intro-kicker {
+    top: 31.2% !important;
+    width: 80vw !important;
+    font-size: clamp(6px, .95vw, 8.6px) !important;
+    line-height: 1.55 !important;
+  }
+}
+
+/* Mobile: keep subtitle visible and enlarge drawer labels without causing overflow. */
+@media (max-width: 700px) {
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-kicker {
+    display: block !important;
+    font-size: 4px !important;
+    letter-spacing: .13em !important;
+  }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong {
+    font-size: 7.7px !important;
+    letter-spacing: .075em !important;
+  }
+
+  .profile-primary-cluster .profile-nav-suite .hud-nav-module {
+    height: 34px !important;
+    grid-template-columns: 22px 1fr !important;
+    padding: 0 7px !important;
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-copy small {
+    display: block !important;
+    font-size: 3.8px !important;
+    letter-spacing: .12em !important;
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-copy strong {
+    font-size: 7px !important;
+    letter-spacing: .07em !important;
+    line-height: 1.03 !important;
+  }
+
+  .intro h1 {
+    top: 16.8% !important;
+    width: 87vw !important;
+    font-size: clamp(23px, 6.9vw, 32px) !important;
+    line-height: 1.08 !important;
+  }
+  .intro-kicker {
+    display: block !important;
+    top: 30.8% !important;
+    width: 84vw !important;
+    font-size: 5px !important;
+    letter-spacing: .18em !important;
+    line-height: 1.48 !important;
+  }
+  .mission.profile-more-open .intro h1 {
+    top: 31.2% !important;
+  }
+  .mission.profile-more-open .intro-kicker {
+    top: 44% !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-kicker {
+    font-size: 3.7px !important;
+  }
+  .cockpit-profile-hud .profile-login-trigger .profile-hud-copy strong {
+    font-size: 7.2px !important;
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-copy small {
+    font-size: 3.4px !important;
+  }
+  .profile-primary-cluster .profile-nav-suite .hud-nav-copy strong {
+    font-size: 6.4px !important;
+  }
+  .intro h1 {
+    top: 17.2% !important;
+    width: 88vw !important;
+    font-size: clamp(22px, 7.6vw, 29px) !important;
+  }
+  .intro-kicker {
+    top: 31.8% !important;
+    width: 86vw !important;
+    font-size: 4.7px !important;
+    letter-spacing: .16em !important;
+  }
+  .mission.profile-more-open .intro h1 {
+    top: 30.6% !important;
+  }
+  .mission.profile-more-open .intro-kicker {
+    top: 43.2% !important;
+  }
+}

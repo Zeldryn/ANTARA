@@ -45,7 +45,9 @@ check('quiz result refreshes server achievement state', quiz.includes('refreshCo
 check('context badge CSS exists', css.includes('.antara-context-achievement-wrap') && css.includes('--badge-progress'));
 check('mobile contextual badge CSS exists', css.includes('(pointer:coarse)') && css.includes('bottom:max(118px'));
 check('progress +delta animation exists', css.includes('antara-context-delta') && js.includes('is-progressing'));
-check('index cache key updated', index.includes('achievement-client.js?v=20261005-context-badge-1') && index.includes('achievement-notify.css?v=20261005-context-badge-1'));
-check('quiz cache key updated', game.includes('achievement-client.js?v=20261005-context-badge-1') && game.includes('permainan.js?v=20261005-context-badge-1'));
+check('context badge auto-hides after 7 seconds', js.includes('CONTEXT_DISPLAY_MS = 7000') && js.includes('scheduleContextAutoHide(key)'));
+check('progress change reopens auto-hidden badge', js.includes('delta > 0 || unlockChanged') && js.includes('contextAutoHiddenKey'));
+check('index cache key updated', index.includes('achievement-client.js?v=20261005-linkaudit-livebadge-1') && index.includes('achievement-notify.css?v=20261005-linkaudit-livebadge-1'));
+check('quiz cache key updated', game.includes('achievement-client.js?v=20261005-linkaudit-livebadge-1') && game.includes('achievement-notify.css?v=20261005-linkaudit-livebadge-1') && game.includes('permainan.js?v=20261005-context-badge-1'));
 console.log(`\n${pass}/${total} PASS`);
 process.exit(pass===total?0:1);

@@ -21,12 +21,12 @@
   const SOURCES = Object.freeze({
     facts: "https://science.nasa.gov/neptune/neptune-facts/",
     voyager: "https://science.nasa.gov/mission/voyager/fact-sheet/",
-    clouds: "https://science.nasa.gov/photojournal/neptunes-clouds/",
-    darkspot: "https://science.nasa.gov/photojournal/neptune-clouds-on-the-dark-spot/",
-    rings: "https://science.nasa.gov/resource/neptunes-rings/",
-    arcs: "https://science.nasa.gov/resource/neptune-ring-arcs/",
-    moons: "https://science.nasa.gov/neptune/moons/facts/",
-    triton: "https://science.nasa.gov/asset/webb/triton-voyager-2/"
+    clouds: "https://science.nasa.gov/neptune/neptune-facts/",
+    darkspot: "https://science.nasa.gov/neptune/neptune-facts/",
+    rings: "https://science.nasa.gov/neptune/neptune-facts/",
+    arcs: "https://science.nasa.gov/neptune/neptune-facts/",
+    moons: "https://science.nasa.gov/neptune/moons/triton/",
+    triton: "https://science.nasa.gov/neptune/moons/triton/"
   });
 
   const DESTINATIONS = Object.freeze([

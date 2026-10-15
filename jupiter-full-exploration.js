@@ -20,11 +20,11 @@
 
   const SOURCES = Object.freeze({
     facts: "https://science.nasa.gov/jupiter/jupiter-facts/",
-    grs: "https://www.jpl.nasa.gov/news/nasas-juno-science-results-offer-first-3d-view-of-jupiter-atmosphere/",
-    lightning: "https://www.jpl.nasa.gov/news/shallow-lightning-and-mushballs-reveal-ammonia-to-nasas-juno-scientists/",
+    grs: "https://science.nasa.gov/jupiter/jupiter-facts/",
+    lightning: "https://science.nasa.gov/jupiter/jupiter-facts/",
     probe: "https://science.nasa.gov/mission/galileo-jupiter-atmospheric-probe/",
-    hotspot: "https://www.jpl.nasa.gov/images/pia24298-high-flying-cloud-in-jupiters-atmosphere/",
-    polar: "https://science.nasa.gov/photojournal/a-jupiter-circumpolar-cyclone/"
+    hotspot: "https://science.nasa.gov/jupiter/jupiter-facts/",
+    polar: "https://science.nasa.gov/jupiter/jupiter-facts/"
   });
 
   const DESTINATIONS = Object.freeze([

@@ -20,11 +20,11 @@
 
   const SOURCES = Object.freeze({
     facts: "https://science.nasa.gov/saturn/facts/",
-    hexagon: "https://science.nasa.gov/photojournal/nasa-cassinis-last-look-at-saturns-hexagon/",
-    storms: "https://science.nasa.gov/photojournal/saturn-storm/",
-    rings: "https://science.nasa.gov/photojournal/true-colors-of-saturns-rings/",
-    titan: "https://science.nasa.gov/photojournal/titans-surface/",
-    enceladus: "https://science.nasa.gov/photojournal/high-phase-plumes/",
+    hexagon: "https://science.nasa.gov/saturn/facts/",
+    storms: "https://science.nasa.gov/saturn/facts/",
+    rings: "https://science.nasa.gov/saturn/facts/",
+    titan: "https://science.nasa.gov/saturn/moons/titan/facts/",
+    enceladus: "https://science.nasa.gov/saturn/moons/enceladus/",
     cassini: "https://science.nasa.gov/mission/cassini/about-the-mission/"
   });
 

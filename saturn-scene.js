@@ -135,7 +135,7 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia14/pia14646/PIA14646.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1016&w=1016",
         "alt": "Citra hexagon kutub utara Saturnus dari Cassini",
         "credit": "NASA/JPL-Caltech/Space Science Institute",
-        "source": "https://science.nasa.gov/mission/cassini/about-the-mission/",
+        "source": "https://science.nasa.gov/saturn/facts/",
         "caption": "Hexagon kutub utara Saturnus",
         "fit": "contain",
         "type": "CITRA WAHANA"
@@ -175,13 +175,13 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
       "Bulan kecil dapat bertindak seperti “penggembala” yang membantu membatasi bagian cincin.",
       "Masing-masing bulan menyimpan sejarah tumbukan dan geologi yang berbeda."
     ],
-    "source": "https://science.nasa.gov/saturn/facts/",
+    "source": "https://science.nasa.gov/saturn/moons/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06475/PIA06475.jpg?crop=faces%2Cfocalpoint&fit=clip&h=870&w=1021",
         "alt": "Saturnus bersama Dione, Enceladus, Tethys, Mimas, dan Rhea dalam citra Cassini",
         "credit": "NASA/JPL/Space Science Institute",
-        "source": "https://science.nasa.gov/photojournal/family-portrait/",
+        "source": "https://science.nasa.gov/saturn/moons/",
         "caption": "Family Portrait · Saturnus dan lima bulan · Cassini PIA06475",
         "fit": "contain",
         "type": "CITRA WAHANA"
@@ -198,13 +198,13 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
       "Huygens mendarat di Titan pada 2005 dan mengirim foto dari permukaan.",
       "Siklus metana Titan punya kemiripan menarik dengan siklus air di Bumi, walaupun suhunya jauh lebih dingin."
     ],
-    "source": "https://science.nasa.gov/saturn/facts/",
+    "source": "https://science.nasa.gov/saturn/moons/titan/facts/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia06/pia06440/PIA06440.jpg?crop=faces%2Cfocalpoint&fit=clip&h=718&w=504",
         "alt": "Permukaan Titan dipotret Huygens",
         "credit": "ESA/NASA/JPL/University of Arizona",
-        "source": "https://science.nasa.gov/photojournal/titans-surface/",
+        "source": "https://science.nasa.gov/saturn/moons/titan/facts/",
         "caption": "Permukaan Titan dari Huygens · PIA06440",
         "fit": "cover",
         "type": "CITRA WAHANA"
@@ -221,13 +221,13 @@ const SATURN_EXPLORATION_STOPS = Object.freeze([
       "Plume di kutub selatan mengandung uap air dan partikel es.",
       "Sebagian material plume memasok partikel ke cincin E Saturnus."
     ],
-    "source": "https://science.nasa.gov/saturn/facts/",
+    "source": "https://science.nasa.gov/saturn/moons/enceladus/",
     "images": [
       {
         "src": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12713/PIA12713.jpg?crop=faces%2Cfocalpoint&fit=clip&h=826&w=826",
         "alt": "Plume Enceladus dipotret Cassini",
         "credit": "NASA/JPL/Space Science Institute",
-        "source": "https://science.nasa.gov/photojournal/enceladus-plumes/",
+        "source": "https://science.nasa.gov/saturn/moons/enceladus/",
         "caption": "Plume Enceladus dari Cassini · PIA12713",
         "fit": "contain",
         "type": "CITRA WAHANA"
